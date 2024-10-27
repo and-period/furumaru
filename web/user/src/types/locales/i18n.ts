@@ -29,6 +29,14 @@ export interface I18n {
       shippingFeeAnnotation: string
       shippingFeeAnnotationLinkText: string
       shippingFeeAnnotationCheckText: string
+
+      cartTitle: string
+      marcheLabel: string
+      boxTypeLabel: string
+      boxSizeLabel: string
+      boxUsedText: string
+      quantityLabel: string
+      deleteButtonText: string
     }
 
     footer: {
@@ -92,6 +100,12 @@ export interface I18n {
       lineAddFriendImageUrl: string
       lineAddFriendImageAlt: string
       lineCouponText: string
+      deepJapanText: string
+      localVideoMediaText: string
+      discoverExperienceLinkText: string
+      discoverConjunctionText: string
+      discoverProductLinkText: string
+      discoverText: string
       marcheListSubTitle: string
       liveStreamingText: string
       liveUpcomingText: string
@@ -119,6 +133,15 @@ export interface I18n {
       forthPointDescription: string
       forthPointLinkText: string
     }
+
+    contact: {
+      contactTitle: string
+      description: string
+      lineAddFriendImageUrl: string
+      lineAddFriendImageAlt: string
+      contactNotice: string
+    }
+
   }
 
   purchase: {
@@ -275,8 +298,15 @@ export interface I18n {
       paymentMethodAUPayText: string
     }
     complete: {
-      thanksMessage: string
-      completeMessage: string
+      thanksMessageFirst: string
+      thanksMessageSecond: string
+      orderIDMessage: string
+      completeMessageFirst: string
+      completeMessageSecond: string
+      completeMessageThird: string
+      topLinkText: string
+      cancellMessage: string
+      cartLinkText: string
     }
   }
 

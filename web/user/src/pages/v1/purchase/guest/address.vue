@@ -23,6 +23,7 @@ const itemThumbnailAlt = (itemName: string) => {
 
 const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
+const { guestAddress, email } = storeToRefs(addressStore)
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId, verifyGuestPromotionCode }
@@ -34,22 +35,38 @@ const calcCartResponseItemState = ref<{
   errorMessage: string
 }>({ isLoading: true, hasError: false, errorMessage: '' })
 
-const formData = ref<GuestCheckoutAddress>({
-  lastname: '',
-  firstname: '',
-  lastnameKana: '',
-  firstnameKana: '',
-  postalCode: '',
-  prefectureCode: 0,
-  city: '',
-  addressLine1: '',
-  addressLine2: '',
-  phoneNumber: '',
-})
+const initFormData = (): GuestCheckoutAddress => {
+  if (guestAddress.value) {
+    return guestAddress.value
+  }
+  else {
+    return {
+      lastname: '',
+      firstname: '',
+      lastnameKana: '',
+      firstnameKana: '',
+      postalCode: '',
+      prefectureCode: 0,
+      city: '',
+      addressLine1: '',
+      addressLine2: '',
+      phoneNumber: '',
+    }
+  }
+}
 
-const formEmailData = ref({
-  email: '',
-})
+const initEmailData = (): { email: string } => {
+  if (email.value) {
+    return { email: email.value }
+  }
+  else {
+    return { email: '' }
+  }
+}
+
+const formData = ref<GuestCheckoutAddress>(initFormData())
+
+const formEmailData = ref(initEmailData())
 
 const promotionCodeFormValue = ref<string>('')
 const invalidPromotion = ref<boolean>(false)
@@ -95,10 +112,15 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
-  const res = await searchAddressByPostalCode(formData.value.postalCode)
-  formData.value.prefectureCode = res.prefectureCode
-  formData.value.city = res.city
-  formData.value.addressLine1 = res.town
+  try {
+    const res = await searchAddressByPostalCode(formData.value.postalCode)
+    formData.value.prefectureCode = res.prefectureCode
+    formData.value.city = res.city
+    formData.value.addressLine1 = res.town
+  }
+  catch (_) {
+    postalCodeErrorMessage.value = gt('addressNotFoundErrorMessage')
+  }
 }
 
 const handleClickBackCartButton = () => {
@@ -308,8 +330,7 @@ onMounted(async () => {
       calcCartResponseItemState.value.errorMessage = error.message
     }
     else {
-      calcCartResponseItemState.value.errorMessage
-        = gt('unknownErrorMessage')
+      calcCartResponseItemState.value.errorMessage = gt('unknownErrorMessage')
     }
   }
   finally {
@@ -327,7 +348,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      {{ gt('checkoutTitle') }}
+      {{ gt("checkoutTitle") }}
     </div>
 
     <the-alert
@@ -345,7 +366,7 @@ useSeoMeta({
         <div
           class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
         >
-          {{ gt('customerInformationTitle') }}
+          {{ gt("customerInformationTitle") }}
         </div>
 
         <the-guest-address-form
@@ -368,7 +389,7 @@ useSeoMeta({
         class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
       >
         <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-          {{ gt('orderDetailsTitle') }}
+          {{ gt("orderDetailsTitle") }}
         </div>
 
         <template v-if="calcCartResponseItem">
@@ -377,15 +398,18 @@ useSeoMeta({
               {{ calcCartResponseItem.coordinator.marcheName }}
             </p>
             <p>
-              {{ gt('shipFromLabel') }}{{
+              {{ gt("shipFromLabel")
+              }}{{
                 `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
               }}
             </p>
             <p>
-              {{ gt('coordinatorLabel') }}
+              {{ gt("coordinatorLabel") }}
               {{ calcCartResponseItem.coordinator.username }}
             </p>
-            <p>{{ gt('boxCountLabel') }}{{ calcCartResponseItem.carts.length }}</p>
+            <p>
+              {{ gt("boxCountLabel") }}{{ calcCartResponseItem.carts.length }}
+            </p>
           </div>
           <div>
             <div class="divide-y border-y">
@@ -395,21 +419,34 @@ useSeoMeta({
                 class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
               >
                 <template v-if="item.product">
-                  <nuxt-img
-                    v-if="item.product.thumbnail"
-                    width="56px"
-                    height="56px"
-                    provider="cloudFront"
-                    :src="item.product.thumbnail.url"
-                    :alt="itemThumbnailAlt(item.product.name)"
-                    class="block aspect-square h-[56px] w-[56px]"
-                  />
+                  <template v-if="item.product.thumbnail">
+                    <template
+                      v-if="item.product.thumbnail.url.endsWith('.mp4')"
+                    >
+                      <video
+                        width="56px"
+                        height="56px"
+                        :src="item.product.thumbnail.url"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      />
+                    </template>
+                    <template v-else>
+                      <nuxt-img
+                        width="56px"
+                        height="56px"
+                        provider="cloudFront"
+                        :src="item.product.thumbnail.url"
+                        :alt="itemThumbnailAlt(item.product.name)"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      />
+                    </template>
+                  </template>
                   <div class="col-span-3 pl-[24px] md:pl-0">
                     <div>{{ item.product.name }}</div>
                     <div
                       class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                     >
-                      {{ gt('quantityLabel') }}{{ item.quantity }}
+                      {{ gt("quantityLabel") }}{{ item.quantity }}
                     </div>
                   </div>
 
@@ -439,7 +476,7 @@ useSeoMeta({
                       d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                     />
                   </svg>
-                  {{ gt('couponAppliedMessage') }}
+                  {{ gt("couponAppliedMessage") }}
                 </div>
                 <button @click="handleClickCancelPromotionCodeButton">
                   <svg
@@ -474,14 +511,14 @@ useSeoMeta({
                   class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
                   @click="handleClickUsePromotionCodeButton"
                 >
-                  {{ gt('applyButtonText') }}
+                  {{ gt("applyButtonText") }}
                 </button>
               </div>
               <div
                 v-if="invalidPromotion"
                 class="mt-2 px-1 text-[12px] leading-[1.2px]"
               >
-                {{ gt('couponInvalidMessage') }}
+                {{ gt("couponInvalidMessage") }}
               </div>
             </template>
 
@@ -489,29 +526,29 @@ useSeoMeta({
               class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
             >
               <div class="col-span-2 md:col-span-1">
-                {{ gt('totalPriceLabel') }}
+                {{ gt("totalPriceLabel") }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.subtotal) }}
               </div>
               <div class="col-span-2 md:col-span-1">
-                {{ gt('applyCouponLabel') }}
+                {{ gt("applyCouponLabel") }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.discount) }}
               </div>
               <div class="col-span-2 md:col-span-1">
-                {{ gt('shippingFeeLabel') }}
+                {{ gt("shippingFeeLabel") }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
-                {{ gt('calculateNextPageMessage') }}
+                {{ gt("calculateNextPageMessage") }}
               </div>
             </div>
 
             <div
               class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
             >
-              <div>{{ gt('totalPriceLabel') }}</div>
+              <div>{{ gt("totalPriceLabel") }}</div>
               <div class="text-right">
                 {{ priceFormatter(calcCartResponseItem.total) }}
               </div>
@@ -528,7 +565,7 @@ useSeoMeta({
           @click="handleClickBackCartButton"
         >
           <the-left-arrow-icon class="h-4 w-4" />
-          {{ gt('backToCartButtonText') }}
+          {{ gt("backToCartButtonText") }}
         </button>
 
         <div>
@@ -536,7 +573,7 @@ useSeoMeta({
             class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
             @click="handleClickNextStepButton()"
           >
-            {{ gt('paymentMethodButtonText') }}
+            {{ gt("paymentMethodButtonText") }}
           </button>
         </div>
       </div>

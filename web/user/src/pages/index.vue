@@ -28,6 +28,8 @@ const updateScrollLeft = () => {
   }
 }
 
+const isEnglish = computed<boolean>(() => i18n.locale.value === 'en')
+
 useAsyncData('home-content', async () => {
   isInItLoading.value = true
   await getHomeContent()
@@ -117,8 +119,8 @@ useSeoMeta({
         <div
           class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
         >
-          <p>&#035;Deep Japan 体験型</p>
-          <p>ローカル映像メディア</p>
+          <p>&#035;{{ tt('deepJapanText') }}</p>
+          <p>{{ tt('localVideoMediaText') }}</p>
         </div>
 
         <div
@@ -126,15 +128,31 @@ useSeoMeta({
         >
           <nuxt-link
             to="/items"
-            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+            class="flex flex-col sm:flex-row justify-center sm:items-baseline bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">商品</span>と出会う
+            <div class="">
+              <span class="md:text-[24px] text-[18px]">{{ tt('discoverProductLinkText') }}</span>
+              <span
+                v-if="isEnglish"
+                class="sm:mr-1"
+              >{{ tt('discoverConjunctionText') }}</span>
+              <span v-else>{{ tt('discoverConjunctionText') }}</span>
+            </div>
+            {{ tt('discoverText') }}
           </nuxt-link>
           <nuxt-link
             to="/marches"
-            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+            class="flex flex-col sm:flex-row justify-center sm:items-baseline bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">体験</span>と出会う
+            <div class="flex flex-row items-baseline">
+              <span class="md:text-[24px] text-[18px]">{{ tt('discoverExperienceLinkText') }}</span>
+              <span
+                v-if="isEnglish"
+                class="sm:mr-1"
+              >{{ tt('discoverConjunctionText') }}</span>
+              <span v-else>{{ tt('discoverConjunctionText') }}</span>
+            </div>
+            {{ tt('discoverText') }}
           </nuxt-link>
         </div>
       </div>
@@ -163,6 +181,7 @@ useSeoMeta({
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box
+        v-if="false"
         title="live"
         :sub-title="tt('marcheListSubTitle')"
       >
@@ -255,7 +274,7 @@ useSeoMeta({
       </the-content-box>
 
       <the-content-box
-        title="archive"
+        title="video"
         :sub-title="tt('archiveListSubTitle')"
       >
         <div class="relative mx-auto flex max-w-[1440px]">

@@ -11,19 +11,19 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	kpayment "github.com/and-period/furumaru/api/internal/store/komoju/payment"
 	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
@@ -77,6 +77,10 @@ type params struct {
 	dbPort                   string
 	dbUsername               string
 	dbPassword               string
+	tidbHost                 string
+	tidbPort                 string
+	tidbUsername             string
+	tidbPassword             string
 	slackToken               string
 	slackChannelID           string
 	newRelicLicense          string
@@ -330,7 +334,7 @@ func (a *app) inject(ctx context.Context) error {
 func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// データベース認証情報の取得
+		// データベース（MySQL）認証情報の取得
 		if a.DBSecretName == "" {
 			p.dbHost = a.DBHost
 			p.dbPort = a.DBPort
@@ -346,6 +350,25 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
+		return nil
+	})
+	eg.Go(func() error {
+		// データベース（TiDB）認証情報の取得
+		if a.TiDBSecretName == "" {
+			p.tidbHost = a.TiDBHost
+			p.tidbPort = a.TiDBPort
+			p.tidbUsername = a.TiDBUsername
+			p.tidbPassword = a.TiDBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.TiDBSecretName)
+		if err != nil {
+			return err
+		}
+		p.tidbHost = secrets["host"]
+		p.tidbPort = secrets["port"]
+		p.tidbUsername = secrets["username"]
+		p.tidbPassword = secrets["password"]
 		return nil
 	})
 	eg.Go(func() error {
@@ -406,10 +429,11 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// Google API認証情報の取得
-		if a.GoogleClientSecret == "" {
+		if a.GoogleSecretName == "" {
 			p.googleClientID = a.GoogleClientID
 			p.googleClientSecret = a.GoogleClientSecret
 			p.googleMapsPlatformAPIKey = a.GoogleMapsPlatformAPIKey
+			return nil
 		}
 		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
 		if err != nil {
@@ -451,8 +475,35 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
+func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
+		Host:     p.tidbHost,
+		Port:     p.tidbPort,
+		Database: dbname,
+		Username: p.tidbUsername,
+		Password: p.tidbPassword,
+	}
+	location, err := time.LoadLocation(a.DBTimeZone)
+	if err != nil {
+		return nil, err
+	}
+	cli, err := mysql.NewTiDBClient(
+		params,
+		mysql.WithNow(p.now),
+		mysql.WithLocation(location),
+		mysql.WithLogger(p.logger), // TODO: 動作検証が終わり次第削除
+	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.tidbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
+}
+
 func (a *app) newMediaService(p *params) (media.Service, error) {
-	mysql, err := a.newDatabase("media", p)
+	mysql, err := a.newTiDB("media", p)
 	if err != nil {
 		return nil, err
 	}
@@ -505,7 +556,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 }
 
 func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
-	mysql, err := a.newDatabase("users", p)
+	mysql, err := a.newTiDB("users", p)
 	if err != nil {
 		return nil, err
 	}
@@ -528,7 +579,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 func (a *app) newStoreService(
 	p *params, user user.Service, media media.Service, messenger messenger.Service,
 ) (store.Service, error) {
-	mysql, err := a.newDatabase("stores", p)
+	mysql, err := a.newTiDB("stores", p)
 	if err != nil {
 		return nil, err
 	}

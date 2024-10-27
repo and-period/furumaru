@@ -45,6 +45,11 @@ type app struct {
 	DBTimeZone           string  `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
 	DBEnabledTLS         bool    `default:"false"          envconfig:"DB_ENABLED_TLS"`
 	DBSecretName         string  `default:""               envconfig:"DB_SECRET_NAME"`
+	TiDBHost             string  `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
+	TiDBPort             string  `default:"4000"           envconfig:"TIDB_PORT"`
+	TiDBUsername         string  `default:""               envconfig:"TIDB_USERNAME"`
+	TiDBPassword         string  `default:""               envconfig:"TIDB_PASSWORD"`
+	TiDBSecretName       string  `default:""               envconfig:"TIDB_SECRET_NAME"`
 	GinMode              string  `default:"release"        envconfig:"GIN_MODE"`
 	NewRelicLicense      string  `default:""               envconfig:"NEW_RELIC_LICENSE"`
 	NewRelicSecretName   string  `default:""               envconfig:"NEW_RELIC_SECRET_NAME"`
@@ -61,12 +66,12 @@ type app struct {
 	KomojuClientID       string  `default:""               envconfig:"KOMOJU_CLIENT_ID"`
 	KomojuClientPassword string  `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
 	KomojuSecretName     string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
+	CheckoutAutoCaptured bool    `default:"false"          envconfig:"CHECKOUT_AUTO_CAPTURED"`
 	SlackAPIToken        string  `default:""               envconfig:"SLACK_API_TOKEN"`
 	SlackChannelID       string  `default:""               envconfig:"SLACK_CHANNEL_ID"`
 	SlackSecretName      string  `default:""               envconfig:"SLACK_SECRET_NAME"`
 	AminWebURL           string  `default:""               envconfig:"ADMIN_WEB_URL"`
 	UserWebURL           string  `default:""               envconfig:"USER_WEB_URL"`
-	CheckoutRedirectURL  string  `default:""               envconfig:"CHECKOUT_REDIRECT_URL"` // TODO: クライアント側修正が完了し次第削除
 }
 
 //nolint:revive

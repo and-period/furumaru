@@ -218,7 +218,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		if order.Experience == nil {
+		if order.Experience == nil || order.Experience.ExperienceID == "" {
 			return nil
 		}
 		experience, err = h.getExperience(ectx, order.Experience.ExperienceID)

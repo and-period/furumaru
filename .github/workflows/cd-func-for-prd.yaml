@@ -43,7 +43,6 @@ jobs:
     environment: prd
     needs:
     - setup
-    - cloudfront_origin_response
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -95,6 +94,7 @@ jobs:
     name: update cloudfront distribution
     environment: prd
     needs:
+    - setup
     - cloudfront_origin_response
     runs-on: ubuntu-latest
     defaults:

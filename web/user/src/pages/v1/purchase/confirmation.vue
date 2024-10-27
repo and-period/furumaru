@@ -204,7 +204,8 @@ onMounted(async () => {
     validPromotionCode.value ? promotionCode.value : undefined,
   )
 
-  checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
+  checkoutFormData.value.requestId
+    = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
   checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
   checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
@@ -223,7 +224,7 @@ useSeoMeta({
 <template>
   <div class="container mx-auto">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
-      {{ ct('checkoutTitle') }}
+      {{ ct("checkoutTitle") }}
     </div>
 
     <the-alert
@@ -231,9 +232,7 @@ useSeoMeta({
       class="mt-4 bg-white"
       type="error"
     >
-      {{
-        checkoutError
-      }}
+      {{ checkoutError }}
     </the-alert>
 
     <div
@@ -249,7 +248,7 @@ useSeoMeta({
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
-            {{ ct('customerInformationTitle') }}
+            {{ ct("customerInformationTitle") }}
           </div>
           <the-address-info
             v-if="address"
@@ -259,7 +258,7 @@ useSeoMeta({
             <a
               href="#"
               class="underline"
-            >{{ ct('changeButtonText') }}</a>
+            >{{ ct("changeButtonText") }}</a>
           </div>
 
           <div class="items-center border-b py-2" />
@@ -268,21 +267,21 @@ useSeoMeta({
             <div
               class="pt-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
             >
-              {{ ct('shippingInformationLabel') }}
+              {{ ct("shippingInformationLabel") }}
             </div>
             <div class="pt-[27px] text-[14px] tracking-[1.4px] text-main">
-              {{ ct('shippingAvobeAdderssLabel') }}
+              {{ ct("shippingAvobeAdderssLabel") }}
             </div>
             <div class="pt-4 text-right tracking-[1.4px]">
               <a
                 href="#"
                 class="underline"
-              >{{ ct('changeButtonText') }}</a>
+              >{{ ct("changeButtonText") }}</a>
             </div>
           </div>
 
           <div class="items-center border-b py-2" />
-          {{ ct('paymentInformationTitle') }}
+          {{ ct("paymentInformationTitle") }}
           <div>
             <div
               class="pt-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
@@ -400,7 +399,7 @@ useSeoMeta({
                     :value="0"
                     disabled
                   >
-                    {{ ct('expirationMonthPlaceholder') }}
+                    {{ ct("expirationMonthPlaceholder") }}
                   </option>
                   <option
                     v-for="i in 12"
@@ -419,7 +418,7 @@ useSeoMeta({
                     value="0"
                     disabled
                   >
-                    {{ ct('expirationYearPlaceholder') }}
+                    {{ ct("expirationYearPlaceholder") }}
                   </option>
                   <option
                     v-for="i in 11"
@@ -449,7 +448,7 @@ useSeoMeta({
           class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
         >
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-            {{ ct('orderDetailsTitle') }}
+            {{ ct("orderDetailsTitle") }}
           </div>
           <template v-if="calcCartResponseItem">
             <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
@@ -457,15 +456,18 @@ useSeoMeta({
                 {{ calcCartResponseItem.coordinator.marcheName }}
               </p>
               <p>
-                {{ ct('shipFromLabel') }} {{
+                {{ ct("shipFromLabel") }}
+                {{
                   `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
                 }}
               </p>
               <p>
-                {{ ct('coordinatorLabel') }}
+                {{ ct("coordinatorLabel") }}
                 {{ calcCartResponseItem.coordinator.username }}
               </p>
-              <p>{{ ct('coordinatorLabel') }}{{ calcCartResponseItem.carts.length }}</p>
+              <p>
+                {{ ct("boxCountLabel") }}{{ calcCartResponseItem.carts.length }}
+              </p>
             </div>
             <div>
               <div>
@@ -475,18 +477,29 @@ useSeoMeta({
                   class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
                 >
                   <template v-if="item.product">
-                    <img
-                      v-if="item.product.thumbnail"
-                      :src="item.product.thumbnailUrl"
-                      :alt="`${item.product.name}の画像`"
-                      class="block aspect-square h-[56px] w-[56px]"
+                    <template
+                      v-if="item.product.thumbnail.url.endsWith('.mp4')"
                     >
+                      <video
+                        width="56px"
+                        height="56px"
+                        :src="item.product.thumbnail.url"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="item.product.thumbnail.url"
+                        :alt="`${item.product.name}の画像`"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      >
+                    </template>
                     <div class="col-span-3 pl-[24px] md:pl-0">
                       <div>{{ item.product?.name }}</div>
                       <div
                         class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                       >
-                        {{ ct('quantityLabel') }}{{ item.quantity }}
+                        {{ ct("quantityLabel") }}{{ item.quantity }}
                       </div>
                     </div>
 
@@ -501,19 +514,19 @@ useSeoMeta({
                 class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
                 <div class="col-span-3 md:col-span-1">
-                  {{ ct('itemTotalPriceLabel') }}
+                  {{ ct("itemTotalPriceLabel") }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
                 <div class="col-span-3 md:col-span-1">
-                  {{ ct('applyCouponLabel') }}
+                  {{ ct("applyCouponLabel") }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
                 <div class="col-span-3 md:col-span-1">
-                  {{ ct('shippingFeeLabel') }}
+                  {{ ct("shippingFeeLabel") }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.shippingFee) }}
@@ -523,7 +536,7 @@ useSeoMeta({
               <div
                 class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
               >
-                <div>{{ ct('totalPriceLabel') }}</div>
+                <div>{{ ct("totalPriceLabel") }}</div>
                 <div class="text-right">
                   {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
@@ -540,7 +553,7 @@ useSeoMeta({
             @click="handleClickPreviousStepButton"
           >
             <the-left-arrow-icon class="h-4 w-4" />
-            {{ ct('backToPreviousPageButtonText') }}
+            {{ ct("backToPreviousPageButtonText") }}
           </button>
           <button
             class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
@@ -550,7 +563,7 @@ useSeoMeta({
             "
             @click="handleClickNextStepButton"
           >
-            {{ ct('proceedToPaymentButtonText') }}
+            {{ ct("proceedToPaymentButtonText") }}
           </button>
         </div>
       </template>

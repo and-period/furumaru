@@ -10,9 +10,10 @@ import (
 type ReportTemplateID string
 
 const (
-	ReportTemplateIDReceivedContact ReportTemplateID = "received-contact" // お問い合わせ受領
-	ReportTemplateIDNotification    ReportTemplateID = "notification"     // お知らせ投稿
-	ReportTemplateIDOrderAuthorized ReportTemplateID = "order-authorized" // 支払い完了
+	ReportTemplateIDReceivedContact           ReportTemplateID = "received-contact"            // お問い合わせ受領
+	ReportTemplateIDNotification              ReportTemplateID = "notification"                // お知らせ投稿
+	ReportTemplateIDOrderProductAuthorized    ReportTemplateID = "order-product-authorized"    // 支払い完了（商品）
+	ReportTemplateIDOrderExperienceAuthorized ReportTemplateID = "order-experience-authorized" // 支払い完了（体験）
 )
 
 // ReportConfig - システムレポート送信設定

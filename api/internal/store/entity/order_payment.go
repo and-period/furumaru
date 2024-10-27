@@ -35,15 +35,16 @@ type PaymentMethodType int32
 
 const (
 	PaymentMethodTypeUnknown      PaymentMethodType = 0
-	PaymentMethodTypeCash         PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard   PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini      PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTransfer PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay       PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay      PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay       PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay   PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay        PaymentMethodType = 9 // QR決済（au PAY）
+	PaymentMethodTypeCash         PaymentMethodType = 1  // 代引支払い
+	PaymentMethodTypeCreditCard   PaymentMethodType = 2  // クレジットカード決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済
+	PaymentMethodTypeBankTransfer PaymentMethodType = 4  // 銀行振込決済
+	PaymentMethodTypePayPay       PaymentMethodType = 5  // QR決済（PayPay）
+	PaymentMethodTypeLinePay      PaymentMethodType = 6  // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay       PaymentMethodType = 7  // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
+	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済なし
 )
 
 // 注文キャンセル種別
@@ -171,6 +172,8 @@ func (t PaymentMethodType) String() string {
 		return "QR決済（楽天ペイ）"
 	case PaymentMethodTypeAUPay:
 		return "QR決済（au PAY）"
+	case PaymentMethodTypeNone:
+		return "決済なし"
 	default:
 		return ""
 	}

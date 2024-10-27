@@ -49,7 +49,7 @@ defineExpose({ videoRef })
 <template>
   <video
     ref="videoRef"
-    :src="videoSrc"
+    :src="isArchive ? `${videoSrc}#t=0.1` : videoSrc"
     class="aspect-video w-full bg-black"
     controls
     controlsList="nodownload"
