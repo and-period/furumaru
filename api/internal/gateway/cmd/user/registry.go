@@ -13,7 +13,7 @@ import (
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/tidb"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
@@ -63,10 +63,6 @@ type params struct {
 	postalCode           postalcode.Client
 	now                  func() time.Time
 	debugMode            bool
-	dbHost               string
-	dbPort               string
-	dbUsername           string
-	dbPassword           string
 	tidbHost             string
 	tidbPort             string
 	tidbUsername         string
@@ -279,25 +275,6 @@ func (a *app) inject(ctx context.Context) error {
 func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// データベース（MySQL）認証情報の取得
-		if a.DBSecretName == "" {
-			p.dbHost = a.DBHost
-			p.dbPort = a.DBPort
-			p.dbUsername = a.DBUsername
-			p.dbPassword = a.DBPassword
-			return nil
-		}
-		secrets, err := p.secret.Get(ectx, a.DBSecretName)
-		if err != nil {
-			return err
-		}
-		p.dbHost = secrets["host"]
-		p.dbPort = secrets["port"]
-		p.dbUsername = secrets["username"]
-		p.dbPassword = secrets["password"]
-		return nil
-	})
-	eg.Go(func() error {
 		// データベース（TiDB）認証情報の取得
 		if a.TiDBSecretName == "" {
 			p.tidbHost = a.TiDBHost
@@ -375,34 +352,6 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	return eg.Wait()
 }
 
-func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
-	params := &mysql.Params{
-		Socket:   a.DBSocket,
-		Host:     p.dbHost,
-		Port:     p.dbPort,
-		Database: dbname,
-		Username: p.dbUsername,
-		Password: p.dbPassword,
-	}
-	location, err := time.LoadLocation(a.DBTimeZone)
-	if err != nil {
-		return nil, err
-	}
-	cli, err := mysql.NewClient(
-		params,
-		mysql.WithNow(p.now),
-		mysql.WithTLS(a.DBEnabledTLS),
-		mysql.WithLocation(location),
-	)
-	if err != nil {
-		return nil, err
-	}
-	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.dbHost, string(newrelic.DatastoreMySQL))); err != nil {
-		return nil, err
-	}
-	return cli, nil
-}
-
 func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
 		Host:     p.tidbHost,
@@ -446,7 +395,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 }
 
 func (a *app) newMessengerService(p *params) (messenger.Service, error) {
-	db, err := a.newDatabase("messengers", p)
+	db, err := a.newTiDB("messengers", p)
 	if err != nil {
 		return nil, err
 	}
