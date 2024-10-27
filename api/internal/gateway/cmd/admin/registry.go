@@ -17,7 +17,7 @@ import (
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	kpayment "github.com/and-period/furumaru/api/internal/store/komoju/payment"
 	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
@@ -579,7 +579,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 func (a *app) newStoreService(
 	p *params, user user.Service, media media.Service, messenger messenger.Service,
 ) (store.Service, error) {
-	mysql, err := a.newDatabase("stores", p)
+	mysql, err := a.newTiDB("stores", p)
 	if err != nil {
 		return nil, err
 	}

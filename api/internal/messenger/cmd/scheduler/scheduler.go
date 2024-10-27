@@ -32,6 +32,11 @@ type app struct {
 	DBTimeZone       string `default:"Asia/Tokyo"          envconfig:"DB_TIMEZONE"`
 	DBEnabledTLS     bool   `default:"false"               envconfig:"DB_ENABLED_TLS"`
 	DBSecretName     string `default:""                    envconfig:"DB_SECRET_NAME"`
+	TiDBHost         string `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
+	TiDBPort         string `default:"4000"           envconfig:"TIDB_PORT"`
+	TiDBUsername     string `default:""               envconfig:"TIDB_USERNAME"`
+	TiDBPassword     string `default:""               envconfig:"TIDB_PASSWORD"`
+	TiDBSecretName   string `default:""               envconfig:"TIDB_SECRET_NAME"`
 	SentryDsn        string `default:""                    envconfig:"SENTRY_DSN"`
 	SentrySecretName string `default:""                    envconfig:"SENTRY_SECRET_NAME"`
 	AWSRegion        string `default:"ap-northeast-1"      envconfig:"AWS_REGION"`

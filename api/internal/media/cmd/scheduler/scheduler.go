@@ -25,14 +25,7 @@ type app struct {
 	RunType                 string `default:""                envconfig:"RUN_TYPE"`
 	LogPath                 string `default:""                envconfig:"LOG_PATH"`
 	LogLevel                string `default:"info"            envconfig:"LOG_LEVEL"`
-	DBSocket                string `default:"tcp"             envconfig:"DB_SOCKET"`
-	DBHost                  string `default:"127.0.0.1"       envconfig:"DB_HOST"`
-	DBPort                  string `default:"3306"            envconfig:"DB_PORT"`
-	DBUsername              string `default:"root"            envconfig:"DB_USERNAME"`
-	DBPassword              string `default:""                envconfig:"DB_PASSWORD"`
 	DBTimeZone              string `default:"Asia/Tokyo"      envconfig:"DB_TIMEZONE"`
-	DBEnabledTLS            bool   `default:"false"           envconfig:"DB_ENABLED_TLS"`
-	DBSecretName            string `default:""                envconfig:"DB_SECRET_NAME"`
 	TiDBHost                string `default:"127.0.0.1"       envconfig:"TIDB_HOST"`
 	TiDBPort                string `default:"4000"            envconfig:"TIDB_PORT"`
 	TiDBUsername            string `default:""                envconfig:"TIDB_USERNAME"`
