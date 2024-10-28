@@ -6,7 +6,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
@@ -410,10 +409,6 @@ func TestExperienceOrderPaymentSummary(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
@@ -483,10 +478,6 @@ func TestExperienceOrderPaymentSummary(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
@@ -567,10 +558,6 @@ func TestExperienceOrderPaymentSummary(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
