@@ -8,7 +8,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
@@ -56,9 +55,8 @@ type Experience struct {
 	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
 	HostAddressLine1      string               `gorm:""`                                       // 開催場所(町名・番地)
 	HostAddressLine2      string               `gorm:""`                                       // 開催場所(ビル名・号室など)
-	HostGeolocation       mysql.Geometry       `gorm:""`                                       // 開催場所(座標情報)
-	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度)
-	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度)
+	HostLongitude         float64              `gorm:""`                                       // 開催場所(座標情報:経度)
+	HostLatitude          float64              `gorm:""`                                       // 開催場所(座標情報:緯度)
 	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
 	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
 	CreatedAt             time.Time            `gorm:"<-:create"`                              // 登録日時
@@ -190,7 +188,6 @@ func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err erro
 		return
 	}
 	e.SetStatus(now)
-	e.SetLocation()
 	e.SetThumbnail()
 	e.ExperienceRevision = *revision
 	e.HostPrefecture, _ = codes.ToPrefectureJapanese(e.HostPrefectureCode)
@@ -212,11 +209,6 @@ func (e *Experience) SetStatus(now time.Time) {
 	default:
 		e.Status = ExperienceStatusFinished
 	}
-}
-
-func (e *Experience) SetLocation() {
-	e.HostLongitude = e.HostGeolocation.X
-	e.HostLatitude = e.HostGeolocation.Y
 }
 
 func (e *Experience) SetThumbnail() {
@@ -255,16 +247,11 @@ func (e *Experience) FillJSON() error {
 	}
 	e.MediaJSON = media
 	e.RecommendedPointsJSON = points
-	e.HostGeolocation = ExperienceHostGeolocation(e.HostLongitude, e.HostLatitude)
 	return nil
 }
 
 func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
 	return json.Marshal(points)
-}
-
-func ExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
-	return mysql.Geometry{X: longitude, Y: latitude}
 }
 
 func (es Experiences) Fill(revisions map[string]*ExperienceRevision, now time.Time) error {

@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -236,10 +235,6 @@ func TestExperience_FillJSON(t *testing.T) {
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 				HostLongitude:         136.251739,
 				HostLatitude:          35.276833,
-				HostGeolocation: mysql.Geometry{
-					X: 136.251739,
-					Y: 35.276833,
-				},
 			},
 			hasErr: false,
 		},
@@ -296,14 +291,10 @@ func TestExperience_Fill(t *testing.T) {
 					HostCity:              "彦根市",
 					HostAddressLine1:      "金亀町１−１",
 					HostAddressLine2:      "",
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
-					StartAt:   now.AddDate(0, 0, -1),
-					EndAt:     now.AddDate(0, 0, 1),
-					CreatedAt: now,
-					UpdatedAt: now,
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
 				},
 			},
 			revisions: map[string]*ExperienceRevision{},
@@ -345,15 +336,11 @@ func TestExperience_Fill(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
-					ExperienceRevision: ExperienceRevision{ExperienceID: "experience-id"},
-					StartAt:            now.AddDate(0, 0, -1),
-					EndAt:              now.AddDate(0, 0, 1),
-					CreatedAt:          now,
-					UpdatedAt:          now,
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
 				},
 			},
 			hasErr: false,

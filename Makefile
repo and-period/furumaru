@@ -71,6 +71,6 @@ migrate: ## データベースにDDLを適用
 	docker compose up -d mysql mysql_test
 	docker compose exec mysql bash -c "until mysqladmin ping -u root -p12345678 2> /dev/null; do echo 'waiting for ping response..'; sleep 3; done; echo 'mysql_test is ready!'"
 	docker compose exec mysql_test bash -c "until mysqladmin ping -u root -p12345678 2> /dev/null; do echo 'waiting for ping response..'; sleep 3; done; echo 'mysql_test is ready!'"
-	docker compose run --rm executor sh -c "cd ./hack/database-migrate; go run ./main.go -db-host=mysql -db-port=3306"
-	docker compose run --rm executor sh -c "cd ./hack/database-migrate; go run ./main.go -db-host=mysql_test -db-port=3306"
+	docker compose run --rm executor sh -c "cd ./hack/database-migrate-mysql; go run ./main.go -db-host=mysql -db-port=3306"
+	docker compose run --rm executor sh -c "cd ./hack/database-migrate-mysql; go run ./main.go -db-host=mysql_test -db-port=3306"
 	docker compose stop mysql mysql_test
