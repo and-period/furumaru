@@ -1,5 +1,18 @@
 # Changelog
 
+## [v3.0.0](https://github.com/and-period/furumaru/compare/v2.0.1...v3.0.0) - 2024-10-29
+- feat(user): DBクライアントの詰め替え by @taba2424 in https://github.com/and-period/furumaru/pull/2457
+- fix(user): cognito idの管理方法を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2459
+- fix(user): TiDB用のDBクライアントを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2463
+- fix(user): バッチ処理のDBクライアントを差し替え by @taba2424 in https://github.com/and-period/furumaru/pull/2464
+- feat(media): DBクライアントの置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2465
+- feat(store): DBクライアントの置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2466
+- feat(messenger): DBクライアントの置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2467
+- feat(infra): TiDBのマイグレーション用DDLを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2468
+- fix(store): experienceのDB操作を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2469
+- build(deps): bump the dependencies group in /docs/swagger with 5 updates by @dependabot in https://github.com/and-period/furumaru/pull/2460
+- build(deps): bump the dependencies group across 1 directory with 36 updates by @dependabot in https://github.com/and-period/furumaru/pull/2461
+
 ## [v2.0.1](https://github.com/and-period/furumaru/compare/v2.0.0...v2.0.1) - 2024-10-16
 - setup: clarityのJSコードを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2455
 
