@@ -334,8 +334,8 @@ func TestExperience_Fill(t *testing.T) {
 					HostCity:              "彦根市",
 					HostAddressLine1:      "金亀町１−１",
 					HostAddressLine2:      "",
-					HostLongitude:         136.251739,
-					HostLatitude:          35.276833,
+					HostLongitude:         0,
+					HostLatitude:          0,
 					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
 					StartAt:               now.AddDate(0, 0, -1),
 					EndAt:                 now.AddDate(0, 0, 1),
@@ -352,7 +352,7 @@ func TestExperience_Fill(t *testing.T) {
 			t.Parallel()
 			err := tt.experiences.Fill(tt.revisions, tt.now)
 			assert.Equal(t, err != nil, tt.hasErr)
-			assert.Equal(t, tt.experiences, tt.expect)
+			assert.Equal(t, tt.expect, tt.experiences)
 		})
 	}
 }

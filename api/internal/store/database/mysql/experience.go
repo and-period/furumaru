@@ -317,7 +317,7 @@ func newExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
 }
 
 func (e *internalExperience) entity() *entity.Experience {
-	if e == nil || e.HostGeolocation.X == 0 && e.HostGeolocation.Y == 0 {
+	if e == nil {
 		return nil
 	}
 	e.Experience.HostLongitude = e.HostGeolocation.X
