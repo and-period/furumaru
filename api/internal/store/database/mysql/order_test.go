@@ -754,7 +754,7 @@ func TestOrder_Create(t *testing.T) {
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
 	experience := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&experience).Error
+	err = db.DB.Table(experienceTable).Create(&experience).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&experience.ExperienceRevision).Error
 	require.NoError(t, err)
