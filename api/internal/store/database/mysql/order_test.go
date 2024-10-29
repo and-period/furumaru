@@ -165,9 +165,9 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	experienceTypes[0] = testExperienceType("experience-type-id", "体験", now())
 	err = db.DB.Create(&experienceTypes).Error
 	require.NoError(t, err)
-	experiences := make(entity.Experiences, 1)
+	experiences := make(internalExperiences, 1)
 	experiences[0] = testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&experiences).Error
+	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
 		err = db.DB.Create(&experiences[i].ExperienceRevision).Error

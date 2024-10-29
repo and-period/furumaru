@@ -16,7 +16,7 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 	client := mysql.NewDatabase(db)
 	return &database.Database{
 		Category:       newCategory(db, client.Category),
-		Experience:     newExperience(db, client.Experience),
+		Experience:     newExperience(db),
 		ExperienceType: newExperienceType(db, client.ExperienceType),
 		Live:           client.Live,
 		Order:          client.Order,

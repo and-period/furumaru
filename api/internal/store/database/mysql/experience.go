@@ -90,7 +90,7 @@ func (e *experience) List(ctx context.Context, params *database.ListExperiencesP
 func (e *experience) Count(ctx context.Context, params *database.ListExperiencesParams) (int64, error) {
 	p := listExperiencesParams(*params)
 
-	total, err := e.db.Count(ctx, e.db.DB, &internalExperience{}, p.stmt)
+	total, err := e.db.Count(ctx, e.db.DB, &entity.Experience{}, p.stmt)
 	return total, dbError(err)
 }
 
@@ -317,11 +317,11 @@ func newExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
 }
 
 func (e *internalExperience) entity() *entity.Experience {
-	if e == nil {
+	if e == nil || e.HostGeolocation.X == 0 && e.HostGeolocation.Y == 0 {
 		return nil
 	}
-	e.Experience.HostLongitude = e.HostLongitude
-	e.Experience.HostLatitude = e.HostLatitude
+	e.Experience.HostLongitude = e.HostGeolocation.X
+	e.Experience.HostLatitude = e.HostGeolocation.Y
 	return &e.Experience
 }
 
