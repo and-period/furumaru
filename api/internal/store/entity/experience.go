@@ -55,8 +55,8 @@ type Experience struct {
 	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
 	HostAddressLine1      string               `gorm:""`                                       // 開催場所(町名・番地)
 	HostAddressLine2      string               `gorm:""`                                       // 開催場所(ビル名・号室など)
-	HostLongitude         float64              `gorm:""`                                       // 開催場所(座標情報:経度)
-	HostLatitude          float64              `gorm:""`                                       // 開催場所(座標情報:緯度)
+	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度) FIXME: MySQLに存在しないカラム
+	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度) FIXME: MySQLに存在しないカラム
 	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
 	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
 	CreatedAt             time.Time            `gorm:"<-:create"`                              // 登録日時

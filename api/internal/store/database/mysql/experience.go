@@ -90,7 +90,7 @@ func (e *experience) List(ctx context.Context, params *database.ListExperiencesP
 func (e *experience) Count(ctx context.Context, params *database.ListExperiencesParams) (int64, error) {
 	p := listExperiencesParams(*params)
 
-	total, err := e.db.Count(ctx, e.db.DB, &internalExperience{}, p.stmt)
+	total, err := e.db.Count(ctx, e.db.DB, &entity.Experience{}, p.stmt)
 	return total, dbError(err)
 }
 
@@ -143,7 +143,7 @@ func (e *experience) Create(ctx context.Context, experience *entity.Experience) 
 		experience.CreatedAt, experience.UpdatedAt = now, now
 		experience.ExperienceRevision.CreatedAt, experience.ExperienceRevision.UpdatedAt = now, now
 
-		internal := newInternelExperience(experience)
+		internal := newInternalExperience(experience)
 
 		if err := tx.WithContext(ctx).Table(experienceTable).Create(&internal).Error; err != nil {
 			return err
@@ -292,15 +292,15 @@ func (e *experience) fill(ctx context.Context, tx *gorm.DB, experiences ...*enti
 }
 
 type internalExperience struct {
-	entity.Experience
-	HostGeolocation mysql.Geometry `gorm:""`  // 開催場所(座標情報)
-	HostLongitude   float64        `gorm:"-"` // 開催場所(座標情報:経度)
-	HostLatitude    float64        `gorm:"-"` // 開催場所(座標情報:緯度)
+	entity.Experience `gorm:"embedded"`
+	HostGeolocation   mysql.Geometry `gorm:""`  // 開催場所(座標情報)
+	HostLongitude     float64        `gorm:"-"` // 開催場所(座標情報:経度)
+	HostLatitude      float64        `gorm:"-"` // 開催場所(座標情報:緯度)
 }
 
 type internalExperiences []*internalExperience
 
-func newInternelExperience(experience *entity.Experience) *internalExperience {
+func newInternalExperience(experience *entity.Experience) *internalExperience {
 	return &internalExperience{
 		Experience:      *experience,
 		HostGeolocation: newExperienceHostGeolocation(experience.HostLongitude, experience.HostLatitude),
@@ -320,8 +320,8 @@ func (e *internalExperience) entity() *entity.Experience {
 	if e == nil {
 		return nil
 	}
-	e.Experience.HostLongitude = e.HostLongitude
-	e.Experience.HostLatitude = e.HostLatitude
+	e.Experience.HostLongitude = e.HostGeolocation.X
+	e.Experience.HostLatitude = e.HostGeolocation.Y
 	return &e.Experience
 }
 
