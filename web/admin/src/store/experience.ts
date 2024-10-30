@@ -1,7 +1,14 @@
 import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { CreateExperienceRequest, Experience, ExperiencesResponse, GetUploadUrlRequest, UploadUrlResponse } from '~/types/api'
+import type {
+  CreateExperienceRequest,
+  Experience,
+  ExperiencesResponse,
+  GetUploadUrlRequest,
+  UpdateExperienceRequest,
+  UploadUrlResponse,
+} from '~/types/api'
 
 export const useExperienceStore = defineStore('experience', {
   state: () => ({
@@ -20,7 +27,9 @@ export const useExperienceStore = defineStore('experience', {
      */
     async fetchExperiences(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.experienceApi().v1ListExperiences(limit, offset)
+        const res = await apiClient
+          .experienceApi()
+          .v1ListExperiences(limit, offset)
 
         const experienceStore = useExperienceStore()
         this.experiencesResponse = res.data
@@ -31,7 +40,25 @@ export const useExperienceStore = defineStore('experience', {
         return this.errorHandler(err)
       }
     },
-    async createExperiece(payload: CreateExperienceRequest) {
+
+    /**
+     * 体験詳細を取得する非同期関数
+     * @param experienceId 取得対象の体験ID
+     * @returns
+     */
+    async fetchExperience(experienceId: string) {
+      try {
+        const res = await apiClient
+          .experienceApi()
+          .v1GetExperience(experienceId)
+        return res.data
+      }
+      catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    async createExperience(payload: CreateExperienceRequest) {
       try {
         const res = await apiClient.experienceApi().v1CreateExperience(payload)
         return res.data
@@ -43,6 +70,28 @@ export const useExperienceStore = defineStore('experience', {
         })
       }
     },
+
+    /**
+     * 体験を更新する非同期関数
+     * @param experienceId 更新対象の体験ID
+     * @param payload 更新内容
+     * @returns
+     */
+    async updateExperience(
+      experienceId: string,
+      payload: UpdateExperienceRequest,
+    ) {
+      try {
+        const res = await apiClient
+          .experienceApi()
+          .v1UpdateExperience(experienceId, payload)
+        return res.data
+      }
+      catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
     /**
      * 体験メディアファイルをアップロードする非同期関数
      * @param payload
@@ -56,30 +105,42 @@ export const useExperienceStore = defineStore('experience', {
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
-    async getExperienceMediaUploadUrl(contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
+    async getExperienceMediaUploadUrl(
+      contentType: string,
+    ): Promise<AxiosResponse<UploadUrlResponse, any>> {
       const body: GetUploadUrlRequest = {
         fileType: contentType,
       }
       if (contentType.includes('image/')) {
         try {
-          const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
+          const res = await apiClient
+            .productApi()
+            .v1GetProductImageUploadUrl(body)
           return res
         }
         catch (err) {
-          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+          return this.errorHandler(err, {
+            400: 'このファイルはアップロードできません。',
+          })
         }
       }
       if (contentType.includes('video/')) {
         try {
-          const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
+          const res = await apiClient
+            .productApi()
+            .v1GetProductVideoUploadUrl(body)
           return res
         }
         catch (err) {
-          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+          return this.errorHandler(err, {
+            400: 'このファイルはアップロードできません。',
+          })
         }
       }
       throw new Error('不明なMINEタイプです。')
@@ -92,7 +153,9 @@ export const useExperienceStore = defineStore('experience', {
     async deleteExperience(experienceId: string) {
       try {
         await apiClient.experienceApi().v1DeleteExperience(experienceId)
-        const index = this.experiences.findIndex(experience => experience.id === experienceId)
+        const index = this.experiences.findIndex(
+          experience => experience.id === experienceId,
+        )
         this.experiences.splice(index, 1)
         this.totalItems--
       }

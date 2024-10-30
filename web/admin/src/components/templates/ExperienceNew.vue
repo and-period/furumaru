@@ -8,6 +8,7 @@ import type {
   CreateExperienceRequest,
   ExperienceType,
   Producer,
+  UpdateExperienceRequest,
 } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import {
@@ -17,77 +18,26 @@ import {
 } from '~/types/validations'
 import { getErrorMessage } from '~/lib/validations'
 
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  isAlert: {
-    type: Boolean,
-    default: false,
-  },
-  alertType: {
-    type: String as PropType<AlertType>,
-    default: undefined,
-  },
-  alertText: {
-    type: String,
-    default: '',
-  },
-  formData: {
-    type: Object as PropType<CreateExperienceRequest>,
-    default: (): CreateExperienceRequest => ({
-      title: '',
-      description: '',
-      public: false,
-      soldOut: false,
-      coordinatorId: '',
-      producerId: '',
-      experienceTypeId: '',
-      media: [],
-      priceAdult: 0,
-      priceJuniorHighSchool: 0,
-      priceElementarySchool: 0,
-      pricePreschool: 0,
-      priceSenior: 0,
-      recommendedPoint1: '',
-      recommendedPoint2: '',
-      recommendedPoint3: '',
-      hostPostalCode: '',
-      hostPrefectureCode: 0,
-      hostCity: '',
-      hostAddressLine1: '',
-      hostAddressLine2: '',
-      startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-      promotionVideoUrl: '',
-      duration: 0,
-      direction: '',
-      businessOpenTime: '',
-      businessCloseTime: '',
-    }),
-  },
-  producers: {
-    type: Array<Producer>,
-    default: () => [],
-  },
-  experienceTypes: {
-    type: Array<ExperienceType>,
-    default: () => [],
-  },
-  searchErrorMessage: {
-    type: String,
-    default: '',
-  },
-  searchLoading: {
-    type: Boolean,
-    default: false,
-  },
-})
+interface Props {
+  loading: boolean
+  isAlert: boolean
+  alertType: AlertType
+  alertText: string
+  formData: CreateExperienceRequest | UpdateExperienceRequest
+  producers: Producer[]
+  experienceTypes: ExperienceType[]
+  searchErrorMessage: string
+  searchLoading: boolean
+}
+
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
-  (e: 'update:form-data', formData: CreateExperienceRequest): void
+  (
+    e: 'update:form-data',
+    formData: CreateExperienceRequest | UpdateExperienceRequest,
+  ): void
   (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
@@ -172,8 +122,8 @@ const onClickSearchAddress = (): void => {
 }
 
 const formDataValue = computed({
-  get: (): CreateExperienceRequest => props.formData,
-  set: (formData: CreateExperienceRequest): void =>
+  get: (): CreateExperienceRequest | UpdateExperienceRequest => props.formData,
+  set: (formData: CreateExperienceRequest | UpdateExperienceRequest): void =>
     emit('update:form-data', formData),
 })
 const startTimeDataValue = computed({
@@ -253,6 +203,7 @@ const onSubmit = async (): Promise<void> => {
         <v-card
           elevation="0"
           class="mb-4"
+          :loading="loading"
         >
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
@@ -407,7 +358,9 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text>
             <v-text-field
               v-model.number="formDataValidate.priceAdult.$model"
-              :error-messages="getErrorMessage(formDataValidate.priceAdult.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.priceAdult.$errors)
+              "
               label="大人(高校生以上）(〜64歳)"
               type="number"
               min="0"
@@ -415,7 +368,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model.number="formDataValidate.priceJuniorHighSchool.$model"
-              :error-messages="getErrorMessage(formDataValidate.priceJuniorHighSchool.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.priceJuniorHighSchool.$errors)
+              "
               label="中学生"
               type="number"
               min="0"
@@ -423,7 +378,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model.number="formDataValidate.priceElementarySchool.$model"
-              :error-messages="getErrorMessage(formDataValidate.priceElementarySchool.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.priceElementarySchool.$errors)
+              "
               label="小学生"
               type="number"
               min="0"
@@ -431,7 +388,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model.number="formDataValidate.pricePreschool.$model"
-              :error-messages="getErrorMessage(formDataValidate.pricePreschool.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.pricePreschool.$errors)
+              "
               label="未就学児 (3歳〜）"
               type="number"
               min="0"
@@ -439,7 +398,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model.number="formDataValidate.priceSenior.$model"
-              :error-messages="getErrorMessage(formDataValidate.priceSenior.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.priceSenior.$errors)
+              "
               label="シニア (65歳〜）"
               type="number"
               min="0"
