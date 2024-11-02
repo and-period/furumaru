@@ -3,6 +3,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin'
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',
+
   app: {
     head: {
       titleTemplate: 'ふるマル - 管理者ツール',
@@ -18,7 +19,9 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
+
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
+
   plugins: [
     '~/plugins/axios',
     '~/plugins/chartjs.client',
@@ -28,6 +31,7 @@ export default defineNuxtConfig({
     '~/plugins/vuetify',
     '~/plugins/api-client',
   ],
+
   modules: [
     '@nuxt/devtools',
     '@nuxt/eslint',
@@ -36,6 +40,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
   ],
+
   eslint: {
     config: {
       stylistic: {
@@ -45,6 +50,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   googleFonts: {
     download: true,
     inject: true,
@@ -54,6 +60,7 @@ export default defineNuxtConfig({
       'BIZ+UDGothic': true,
     },
   },
+
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18010',
@@ -82,11 +89,13 @@ export default defineNuxtConfig({
       ),
     },
   },
+
   devtools: {
     timeline: {
       enabled: true,
     },
   },
+
   vite: {
     vue: {
       script: {
@@ -105,4 +114,6 @@ export default defineNuxtConfig({
       }),
     ],
   },
+
+  compatibilityDate: '2024-10-27',
 })
