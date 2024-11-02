@@ -18,12 +18,9 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListProductsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListProductsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListProductsOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list products orders: err=%s: %w", err, exception.ErrInvalidArgument)
 	}
 	params := &database.ListProductsParams{
 		Name:           in.Name,
@@ -56,6 +53,40 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		return nil, 0, internalError(err)
 	}
 	return products, total, nil
+}
+
+func (s *service) newListProductsOrders(in []*store.ListProductsOrder) ([]*database.ListProductsOrder, error) {
+	res := make([]*database.ListProductsOrder, len(in))
+	for i := range in {
+		var key database.ListProductsOrderKey
+		switch in[i].Key {
+		case store.ListProductsOrderByName:
+			key = database.ListProductsOrderByName
+		case store.ListProductsOrderBySoldOut:
+			key = database.ListProductsOrderBySoldOut
+		case store.ListProductsOrderByPublic:
+			key = database.ListProductsOrderByPublic
+		case store.ListProductsOrderByInventory:
+			key = database.ListProductsOrderByInventory
+		case store.ListProductsOrderByOriginPrefecture:
+			key = database.ListProductsOrderByOriginPrefecture
+		case store.ListProductsOrderByOriginCity:
+			key = database.ListProductsOrderByOriginCity
+		case store.ListProductsOrderByStartAt:
+			key = database.ListProductsOrderByStartAt
+		case store.ListProductsOrderByCreatedAt:
+			key = database.ListProductsOrderByCreatedAt
+		case store.ListProductsOrderByUpdatedAt:
+			key = database.ListProductsOrderByUpdatedAt
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListProductsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) MultiGetProducts(

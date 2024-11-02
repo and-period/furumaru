@@ -22,7 +22,7 @@ func TestListProductTags(t *testing.T) {
 		Limit:  30,
 		Offset: 0,
 		Orders: []*database.ListProductTagsOrder{
-			{Key: entity.ProductTagOrderByName, OrderByASC: true},
+			{Key: database.ListProductTagsOrderByName, OrderByASC: true},
 		},
 	}
 	productTags := entity.ProductTags{
@@ -53,7 +53,7 @@ func TestListProductTags(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListProductTagsOrder{
-					{Key: entity.ProductTagOrderByName, OrderByASC: true},
+					{Key: store.ListProductTagsOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      productTags,
@@ -79,7 +79,7 @@ func TestListProductTags(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListProductTagsOrder{
-					{Key: entity.ProductTagOrderByName, OrderByASC: true},
+					{Key: store.ListProductTagsOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      nil,
@@ -97,7 +97,7 @@ func TestListProductTags(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListProductTagsOrder{
-					{Key: entity.ProductTagOrderByName, OrderByASC: true},
+					{Key: store.ListProductTagsOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      nil,

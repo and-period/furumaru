@@ -7,6 +7,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+type ListCategoriesOrderKey int32
+
+const (
+	ListCategoriesOrderByName ListCategoriesOrderKey = iota + 1
+)
+
 type ListCategoriesInput struct {
 	Name   string                 `validate:"max=32"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -15,7 +21,7 @@ type ListCategoriesInput struct {
 }
 
 type ListCategoriesOrder struct {
-	Key        entity.CategoryOrderBy `validate:"required"`
+	Key        ListCategoriesOrderKey `validate:"required"`
 	OrderByASC bool                   `validate:""`
 }
 
@@ -40,6 +46,12 @@ type DeleteCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
 
+type ListProductTypesOrderKey int32
+
+const (
+	ListProductTypesOrderByName ListProductTypesOrderKey = iota + 1
+)
+
 type ListProductTypesInput struct {
 	Name       string                   `validate:"max=32"`
 	CategoryID string                   `validate:""`
@@ -49,8 +61,8 @@ type ListProductTypesInput struct {
 }
 
 type ListProductTypesOrder struct {
-	Key        entity.ProductTypeOrderBy `validate:"required"`
-	OrderByASC bool                      `validate:""`
+	Key        ListProductTypesOrderKey `validate:"required"`
+	OrderByASC bool                     `validate:""`
 }
 
 type MultiGetProductTypesInput struct {
@@ -77,6 +89,12 @@ type DeleteProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 }
 
+type ListProductTagsOrderKey int32
+
+const (
+	ListProductTagsOrderByName ListProductTagsOrderKey = iota + 1
+)
+
 type ListProductTagsInput struct {
 	Name   string                  `validate:"max=32"`
 	Limit  int64                   `validate:"required,max=200"`
@@ -85,8 +103,8 @@ type ListProductTagsInput struct {
 }
 
 type ListProductTagsOrder struct {
-	Key        entity.ProductTagOrderBy `validate:"required"`
-	OrderByASC bool                     `validate:""`
+	Key        ListProductTagsOrderKey `validate:"required"`
+	OrderByASC bool                    `validate:""`
 }
 
 type MultiGetProductTagsInput struct {
@@ -159,6 +177,20 @@ type UpdateDefaultShippingRate struct {
 	PrefectureCodes []int32 `validate:"required"`
 }
 
+type ListProductsOrderKey int32
+
+const (
+	ListProductsOrderByName ListProductsOrderKey = iota + 1
+	ListProductsOrderBySoldOut
+	ListProductsOrderByPublic
+	ListProductsOrderByInventory
+	ListProductsOrderByOriginPrefecture
+	ListProductsOrderByOriginCity
+	ListProductsOrderByStartAt
+	ListProductsOrderByCreatedAt
+	ListProductsOrderByUpdatedAt
+)
+
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
 	CoordinatorID    string               `validate:""`
@@ -174,8 +206,8 @@ type ListProductsInput struct {
 }
 
 type ListProductsOrder struct {
-	Key        entity.ProductOrderBy `validate:"required"`
-	OrderByASC bool                  `validate:""`
+	Key        ListProductsOrderKey `validate:"required"`
+	OrderByASC bool                 `validate:""`
 }
 
 type MultiGetProductsInput struct {
@@ -263,6 +295,18 @@ type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
 
+type ListPromotionsOrderKey int32
+
+const (
+	ListPromotionsOrderByTitle ListPromotionsOrderKey = iota + 1
+	ListPromotionsOrderByPublic
+	ListPromotionsOrderByPublishedAt
+	ListPromotionsOrderByStartAt
+	ListPromotionsOrderByEndAt
+	ListPromotionsOrderByCreatedAt
+	ListPromotionsOrderByUpdatedAt
+)
+
 type ListPromotionsInput struct {
 	Title  string                 `validate:"max=64"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -271,8 +315,8 @@ type ListPromotionsInput struct {
 }
 
 type ListPromotionsOrder struct {
-	Key        entity.PromotionOrderBy `validate:"required"`
-	OrderByASC bool                    `validate:""`
+	Key        ListPromotionsOrderKey `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type MultiGetPromotionsInput struct {

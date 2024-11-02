@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -17,12 +18,9 @@ func (s *service) ListCategories(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListCategoriesOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListCategoriesOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListCategoriesOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list caterogies orders: err=%s: %w", err, exception.ErrInvalidArgument)
 	}
 	params := &database.ListCategoriesParams{
 		Name:   in.Name,
@@ -47,6 +45,24 @@ func (s *service) ListCategories(
 		return nil, 0, internalError(err)
 	}
 	return categories, total, nil
+}
+
+func (s *service) newListCategoriesOrders(in []*store.ListCategoriesOrder) ([]*database.ListCategoriesOrder, error) {
+	res := make([]*database.ListCategoriesOrder, len(in))
+	for i := range in {
+		var key database.ListCategoriesOrderKey
+		switch in[i].Key {
+		case store.ListCategoriesOrderByName:
+			key = database.ListCategoriesOrderByName
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListCategoriesOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) MultiGetCategories(

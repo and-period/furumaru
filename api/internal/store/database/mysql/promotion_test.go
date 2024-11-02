@@ -72,8 +72,8 @@ func TestPromotion_List(t *testing.T) {
 			args: args{
 				params: &database.ListPromotionsParams{
 					Orders: []*database.ListPromotionsOrder{
-						{Key: entity.PromotionOrderByCreatedAt, OrderByASC: true},
-						{Key: entity.PromotionOrderByUpdatedAt, OrderByASC: false},
+						{Key: database.ListPromotionsOrderByCreatedAt, OrderByASC: true},
+						{Key: database.ListPromotionsOrderByUpdatedAt, OrderByASC: false},
 					},
 				},
 			},
