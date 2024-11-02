@@ -34,7 +34,7 @@ func TestListBroadcasts(t *testing.T) {
 		Offset:        0,
 		OnlyArchived:  true,
 		Orders: []*database.ListBroadcastsOrder{
-			{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
+			{Key: database.ListBroadcastsOrderByUpdatedAt, OrderByASC: true},
 		},
 	}
 	broadcasts := entity.Broadcasts{
@@ -72,7 +72,7 @@ func TestListBroadcasts(t *testing.T) {
 				Offset:        0,
 				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
-					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
+					{Key: media.ListBroadcastsOrderByUpdatedAt, OrderByASC: true},
 				},
 			},
 			expect:      broadcasts,
@@ -100,7 +100,7 @@ func TestListBroadcasts(t *testing.T) {
 				Offset:        0,
 				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
-					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
+					{Key: media.ListBroadcastsOrderByUpdatedAt, OrderByASC: true},
 				},
 			},
 			expect:      nil,
@@ -120,7 +120,7 @@ func TestListBroadcasts(t *testing.T) {
 				Offset:        0,
 				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
-					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
+					{Key: media.ListBroadcastsOrderByUpdatedAt, OrderByASC: true},
 				},
 			},
 			expect:      nil,

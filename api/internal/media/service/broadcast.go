@@ -24,12 +24,9 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListBroadcastsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListBroadcastsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListBroadcastsOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invlid list broadcasts orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListBroadcastsParams{
 		ScheduleIDs:   in.ScheduleIDs,
@@ -56,6 +53,24 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 		return nil, 0, internalError(err)
 	}
 	return broadcasts, total, nil
+}
+
+func (s *service) newListBroadcastsOrders(in []*media.ListBroadcastsOrder) ([]*database.ListBroadcastsOrder, error) {
+	res := make([]*database.ListBroadcastsOrder, len(in))
+	for i := range in {
+		var key database.ListBroadcastsOrderKey
+		switch in[i].Key {
+		case media.ListBroadcastsOrderByUpdatedAt:
+			key = database.ListBroadcastsOrderByUpdatedAt
+		default:
+			return nil, errors.New("service: invalid list broadcasts order key")
+		}
+		res[i] = &database.ListBroadcastsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {

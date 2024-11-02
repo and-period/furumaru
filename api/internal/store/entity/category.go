@@ -6,12 +6,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
-type CategoryOrderBy string
-
-const (
-	CategoryOrderByName CategoryOrderBy = "name"
-)
-
 // Category - 商品種別情報
 type Category struct {
 	ID        string    `gorm:"primaryKey;<-:create"` // カテゴリID

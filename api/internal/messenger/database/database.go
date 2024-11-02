@@ -119,6 +119,13 @@ type Notification interface {
 	Delete(ctx context.Context, notificationID string) error
 }
 
+type ListNotificationsOrderKey string
+
+const (
+	ListNotificationsOrderByTitle       ListNotificationsOrderKey = "title"
+	ListNotificationsOrderByPublishedAt ListNotificationsOrderKey = "published_at"
+)
+
 type ListNotificationsParams struct {
 	Limit  int
 	Offset int
@@ -128,7 +135,7 @@ type ListNotificationsParams struct {
 }
 
 type ListNotificationsOrder struct {
-	Key        entity.NotificationOrderBy
+	Key        ListNotificationsOrderKey
 	OrderByASC bool
 }
 

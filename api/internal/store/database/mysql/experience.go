@@ -68,7 +68,7 @@ func (p listExperiencesParams) pagination(stmt *gorm.DB) *gorm.DB {
 }
 
 func (e *experience) List(ctx context.Context, params *database.ListExperiencesParams, fields ...string) (entity.Experiences, error) {
-	var experiences entity.Experiences
+	var internal internalExperiences
 
 	p := listExperiencesParams(*params)
 
@@ -76,9 +76,11 @@ func (e *experience) List(ctx context.Context, params *database.ListExperiencesP
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	if err := stmt.Find(&experiences).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
+	experiences := internal.entities()
+
 	if err := e.fill(ctx, e.db.DB, experiences...); err != nil {
 		return nil, dbError(err)
 	}
@@ -140,10 +142,13 @@ func (e *experience) Create(ctx context.Context, experience *entity.Experience) 
 
 		experience.CreatedAt, experience.UpdatedAt = now, now
 		experience.ExperienceRevision.CreatedAt, experience.ExperienceRevision.UpdatedAt = now, now
-		if err := tx.WithContext(ctx).Table(experienceTable).Create(&experience).Error; err != nil {
+
+		internal := newInternalExperience(experience)
+
+		if err := tx.WithContext(ctx).Table(experienceTable).Create(&internal).Error; err != nil {
 			return err
 		}
-		return tx.WithContext(ctx).Table(experienceRevisionTable).Create(&experience.ExperienceRevision).Error
+		return tx.WithContext(ctx).Table(experienceRevisionTable).Create(&internal.ExperienceRevision).Error
 	})
 	return dbError(err)
 }
@@ -199,7 +204,7 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 			"host_city":           params.HostCity,
 			"host_address_line1":  params.HostAddressLine1,
 			"host_address_line2":  params.HostAddressLine2,
-			"host_geolocation":    entity.ExperienceHostGeolocation(params.HostLongitude, params.HostLatitude),
+			"host_geolocation":    newExperienceHostGeolocation(params.HostLongitude, params.HostLatitude),
 			"start_at":            params.StartAt,
 			"end_at":              params.EndAt,
 			"updated_at":          now,
@@ -229,14 +234,16 @@ func (e *experience) Delete(ctx context.Context, experienceID string) error {
 }
 
 func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []string, fields ...string) (entity.Experiences, error) {
-	var experiences entity.Experiences
+	var internal internalExperiences
 
 	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
 		Where("id IN (?)", experienceIDs)
 
-	if err := stmt.Find(&experiences).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, err
 	}
+	experiences := internal.entities()
+
 	if err := e.fill(ctx, tx, experiences...); err != nil {
 		return nil, err
 	}
@@ -244,14 +251,16 @@ func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []
 }
 
 func (e *experience) get(ctx context.Context, tx *gorm.DB, experienceID string, fields ...string) (*entity.Experience, error) {
-	var experience *entity.Experience
+	var internal *internalExperience
 
 	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
 		Where("id = ?", experienceID)
 
-	if err := stmt.First(&experience).Error; err != nil {
+	if err := stmt.First(&internal).Error; err != nil {
 		return nil, err
 	}
+	experience := internal.entity()
+
 	if err := e.fill(ctx, tx, experience); err != nil {
 		return nil, err
 	}
@@ -280,4 +289,46 @@ func (e *experience) fill(ctx context.Context, tx *gorm.DB, experiences ...*enti
 		return nil
 	}
 	return entity.Experiences(experiences).Fill(revisions.MapByExperienceID(), e.now())
+}
+
+type internalExperience struct {
+	entity.Experience `gorm:"embedded"`
+	HostGeolocation   mysql.Geometry `gorm:""`  // 開催場所(座標情報)
+	HostLongitude     float64        `gorm:"-"` // 開催場所(座標情報:経度)
+	HostLatitude      float64        `gorm:"-"` // 開催場所(座標情報:緯度)
+}
+
+type internalExperiences []*internalExperience
+
+func newInternalExperience(experience *entity.Experience) *internalExperience {
+	return &internalExperience{
+		Experience:      *experience,
+		HostGeolocation: newExperienceHostGeolocation(experience.HostLongitude, experience.HostLatitude),
+		HostLongitude:   experience.HostLongitude,
+		HostLatitude:    experience.HostLatitude,
+	}
+}
+
+func newExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
+	return mysql.Geometry{
+		X: longitude,
+		Y: latitude,
+	}
+}
+
+func (e *internalExperience) entity() *entity.Experience {
+	if e == nil {
+		return nil
+	}
+	e.Experience.HostLongitude = e.HostGeolocation.X
+	e.Experience.HostLatitude = e.HostGeolocation.Y
+	return &e.Experience
+}
+
+func (es internalExperiences) entities() entity.Experiences {
+	res := make(entity.Experiences, len(es))
+	for i := range es {
+		res[i] = es[i].entity()
+	}
+	return res
 }

@@ -19,6 +19,12 @@ type GetUploadEventInput struct {
 	Key string `validate:"required"`
 }
 
+type ListBroadcastsOrderKey int32
+
+const (
+	ListBroadcastsOrderByUpdatedAt ListBroadcastsOrderKey = iota + 1
+)
+
 type ListBroadcastsInput struct {
 	ScheduleIDs   []string               `validate:"dive,required"`
 	CoordinatorID string                 `validate:""`
@@ -30,8 +36,8 @@ type ListBroadcastsInput struct {
 }
 
 type ListBroadcastsOrder struct {
-	Key        entity.BroadcastOrderBy `validate:"required"`
-	OrderByASC bool                    `validate:""`
+	Key        ListBroadcastsOrderKey `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type GetBroadcastByScheduleIDInput struct {
