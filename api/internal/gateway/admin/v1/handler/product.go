@@ -12,7 +12,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -169,14 +168,14 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 }
 
 func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder, error) {
-	products := map[string]sentity.ProductOrderBy{
-		"name":             sentity.ProductOrderByName,
-		"public":           sentity.ProductOrderByPublic,
-		"inventory":        sentity.ProductOrderByInventory,
-		"originPrefecture": sentity.ProductOrderByOriginPrefecture,
-		"originCity":       sentity.ProductOrderByOriginCity,
-		"createdAt":        sentity.ProductOrderByCreatedAt,
-		"updatedAt":        sentity.ProductOrderByUpdatedAt,
+	products := map[string]store.ListProductsOrderKey{
+		"name":             store.ListProductsOrderByName,
+		"public":           store.ListProductsOrderByPublic,
+		"inventory":        store.ListProductsOrderByInventory,
+		"originPrefecture": store.ListProductsOrderByOriginPrefecture,
+		"originCity":       store.ListProductsOrderByOriginCity,
+		"createdAt":        store.ListProductsOrderByCreatedAt,
+		"updatedAt":        store.ListProductsOrderByUpdatedAt,
 	}
 	params := util.GetOrders(ctx)
 	res := make([]*store.ListProductsOrder, len(params))

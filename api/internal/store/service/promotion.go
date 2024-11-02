@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -17,12 +18,9 @@ func (s *service) ListPromotions(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListPromotionsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListPromotionsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListPromotionsOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list promotions orders: err=%s: %w", err, exception.ErrInvalidArgument)
 	}
 	params := &database.ListPromotionsParams{
 		Title:  in.Title,
@@ -47,6 +45,36 @@ func (s *service) ListPromotions(
 		return nil, 0, internalError(err)
 	}
 	return promotions, total, nil
+}
+
+func (s *service) newListPromotionsOrders(in []*store.ListPromotionsOrder) ([]*database.ListPromotionsOrder, error) {
+	res := make([]*database.ListPromotionsOrder, len(in))
+	for i := range in {
+		var key database.ListPromotionsOrderKey
+		switch in[i].Key {
+		case store.ListPromotionsOrderByTitle:
+			key = database.ListPromotionsOrderByTitle
+		case store.ListPromotionsOrderByPublic:
+			key = database.ListPromotionsOrderByPublic
+		case store.ListPromotionsOrderByPublishedAt:
+			key = database.ListPromotionsOrderByPublishedAt
+		case store.ListPromotionsOrderByStartAt:
+			key = database.ListPromotionsOrderByStartAt
+		case store.ListPromotionsOrderByEndAt:
+			key = database.ListPromotionsOrderByEndAt
+		case store.ListPromotionsOrderByCreatedAt:
+			key = database.ListPromotionsOrderByCreatedAt
+		case store.ListPromotionsOrderByUpdatedAt:
+			key = database.ListPromotionsOrderByUpdatedAt
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListPromotionsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) MultiGetPromotions(

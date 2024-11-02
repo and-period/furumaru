@@ -48,6 +48,12 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
+type ListCategoriesOrderKey string
+
+const (
+	ListCategoriesOrderByName ListCategoriesOrderKey = "name"
+)
+
 type ListCategoriesParams struct {
 	Name   string
 	Limit  int
@@ -56,7 +62,7 @@ type ListCategoriesParams struct {
 }
 
 type ListCategoriesOrder struct {
-	Key        entity.CategoryOrderBy
+	Key        ListCategoriesOrderKey
 	OrderByASC bool
 }
 
@@ -239,6 +245,20 @@ type Product interface {
 	Delete(ctx context.Context, productID string) error
 }
 
+type ListProductsOrderKey string
+
+const (
+	ListProductsOrderByName             ListProductsOrderKey = "name"
+	ListProductsOrderBySoldOut          ListProductsOrderKey = "CASE WHEN (inventory = 0) THEN 1 ELSE 0 END"
+	ListProductsOrderByPublic           ListProductsOrderKey = "public"
+	ListProductsOrderByInventory        ListProductsOrderKey = "inventory"
+	ListProductsOrderByOriginPrefecture ListProductsOrderKey = "origin_prefecture"
+	ListProductsOrderByOriginCity       ListProductsOrderKey = "origin_city"
+	ListProductsOrderByStartAt          ListProductsOrderKey = "start_at"
+	ListProductsOrderByCreatedAt        ListProductsOrderKey = "created_at"
+	ListProductsOrderByUpdatedAt        ListProductsOrderKey = "updated_at"
+)
+
 type ListProductsParams struct {
 	Name           string
 	CoordinatorID  string
@@ -255,7 +275,7 @@ type ListProductsParams struct {
 }
 
 type ListProductsOrder struct {
-	Key        entity.ProductOrderBy
+	Key        ListProductsOrderKey
 	OrderByASC bool
 }
 
@@ -297,6 +317,12 @@ type ProductTag interface {
 	Delete(ctx context.Context, productTagID string) error
 }
 
+type ListProductTagsOrderKey string
+
+const (
+	ListProductTagsOrderByName ListProductTagsOrderKey = "name"
+)
+
 type ListProductTagsParams struct {
 	Name   string
 	Limit  int
@@ -305,7 +331,7 @@ type ListProductTagsParams struct {
 }
 
 type ListProductTagsOrder struct {
-	Key        entity.ProductTagOrderBy
+	Key        ListProductTagsOrderKey
 	OrderByASC bool
 }
 
@@ -319,6 +345,12 @@ type ProductType interface {
 	Delete(ctx context.Context, productTypeID string) error
 }
 
+type ListProductTypesOrderKey string
+
+const (
+	ListProductTypesOrderByName ListProductTypesOrderKey = "name"
+)
+
 type ListProductTypesParams struct {
 	Name       string
 	CategoryID string
@@ -328,7 +360,7 @@ type ListProductTypesParams struct {
 }
 
 type ListProductTypesOrder struct {
-	Key        entity.ProductTypeOrderBy
+	Key        ListProductTypesOrderKey
 	OrderByASC bool
 }
 
@@ -343,6 +375,18 @@ type Promotion interface {
 	Delete(ctx context.Context, promotionID string) error
 }
 
+type ListPromotionsOrderKey string
+
+const (
+	ListPromotionsOrderByTitle       ListPromotionsOrderKey = "title"
+	ListPromotionsOrderByPublic      ListPromotionsOrderKey = "public"
+	ListPromotionsOrderByPublishedAt ListPromotionsOrderKey = "published_at"
+	ListPromotionsOrderByStartAt     ListPromotionsOrderKey = "start_at"
+	ListPromotionsOrderByEndAt       ListPromotionsOrderKey = "end_at"
+	ListPromotionsOrderByCreatedAt   ListPromotionsOrderKey = "created_at"
+	ListPromotionsOrderByUpdatedAt   ListPromotionsOrderKey = "updated_at"
+)
+
 type ListPromotionsParams struct {
 	Title  string
 	Limit  int
@@ -351,7 +395,7 @@ type ListPromotionsParams struct {
 }
 
 type ListPromotionsOrder struct {
-	Key        entity.PromotionOrderBy
+	Key        ListPromotionsOrderKey
 	OrderByASC bool
 }
 

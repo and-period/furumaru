@@ -19,12 +19,9 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListNotificationsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListNotificationsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListNotificationsOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list notifications orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListNotificationsParams{
 		Limit:  int(in.Limit),
@@ -50,6 +47,26 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 		return nil, 0, internalError(err)
 	}
 	return notifications, total, nil
+}
+
+func (s *service) newListNotificationsOrders(in []*messenger.ListNotificationsOrder) ([]*database.ListNotificationsOrder, error) {
+	res := make([]*database.ListNotificationsOrder, len(in))
+	for i := range in {
+		var key database.ListNotificationsOrderKey
+		switch in[i].Key {
+		case messenger.ListNotificationsOrderByTitle:
+			key = database.ListNotificationsOrderByTitle
+		case messenger.ListNotificationsOrderByPublishedAt:
+			key = database.ListNotificationsOrderByPublishedAt
+		default:
+			return nil, errors.New("service: invalid list notifications order key")
+		}
+		res[i] = &database.ListNotificationsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) GetNotification(ctx context.Context, in *messenger.GetNotificationInput) (*entity.Notification, error) {
