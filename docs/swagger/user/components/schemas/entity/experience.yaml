@@ -68,6 +68,22 @@ experience:
     recommendedPoint3:
       type: string
       description: おすすめポイント3(128文字まで)
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    duration:
+      type: integer
+      format: int64
+      description: 体験時間（分）
+    direction:
+      type: string
+      description: アクセス方法
+    businessOpenTime:
+      type: string
+      description: 営業開始時間
+    businessCloseTime:
+      type: string
+      description: 営業終了時間
     hostPostalCode:
       type: string
       description: 開催場所（郵便番号）
@@ -117,6 +133,11 @@ experience:
   - recommendedPoint1
   - recommendedPoint2
   - recommendedPoint3
+  - promotionVideoUrl
+  - duration
+  - direction
+  - businessOpenTime
+  - businessCloseTime
   - hostPostalCode
   - hostPrefecture
   - hostCity
@@ -148,6 +169,11 @@ experience:
     recommendedPoint1: 'おすすめポイント1'
     recommendedPoint2: 'おすすめポイント2'
     recommendedPoint3: 'おすすめポイント3'
+    promotionVideoUrl: 'https://example.com/promotion.mp4'
+    duration: 60
+    direction: '新宿駅から徒歩10分'
+    businessOpenTime: '1000'
+    businessCloseTime: '1700'
     hostPostalCode: '123-4567'
     hostPrefecture: '東京都'
     hostCity: '千代田区'

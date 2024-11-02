@@ -9,6 +9,12 @@ useHead({
       defer: true,
       type: 'text/javascript',
     },
+    {
+      key: 'clarity',
+      src: `/clarity/${config.public.ENVIRONMENT}.js`,
+      defer: true,
+      type: 'text/javascript',
+    },
     // 本番環境にだけ Meta Pixel Code を仕込む
     ...(config.public.ENVIRONMENT === 'prd'
       ? [

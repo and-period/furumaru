@@ -8,6 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// OrderType - 注文種別
+type OrderType int32
+
+const (
+	OrderTypeUnknown    OrderType = 0
+	OrderTypeProduct    OrderType = 1 // 商品
+	OrderTypeExperience OrderType = 2 // 体験
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -28,12 +37,14 @@ type Order struct {
 	OrderPayment      `gorm:"-"`
 	OrderFulfillments `gorm:"-"`
 	OrderItems        `gorm:"-"`
+	OrderExperience   `gorm:"-"`
 	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string         `gorm:""`                     // ユーザーID
 	SessionID         string         `gorm:""`                     // 注文時セッションID
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
 	ManagementID      int64          `gorm:""`                     // 管理番号
+	Type              OrderType      `gorm:""`                     // 注文種別
 	Status            OrderStatus    `gorm:""`                     // 注文ステータス
 	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
 	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
@@ -64,7 +75,7 @@ type AggregatedOrderPromotion struct {
 
 type AggregatedOrderPromotions []*AggregatedOrderPromotion
 
-type NewOrderParams struct {
+type NewProductOrderParams struct {
 	OrderID           string
 	SessionID         string
 	CoordinatorID     string
@@ -78,12 +89,31 @@ type NewOrderParams struct {
 	Promotion         *Promotion
 }
 
-func NewOrder(params *NewOrderParams) (*Order, error) {
+type NewExperienceOrderParams struct {
+	OrderID               string
+	SessionID             string
+	CoordinatorID         string
+	Customer              *entity.User
+	BillingAddress        *entity.Address
+	Experience            *Experience
+	PaymentMethodType     PaymentMethodType
+	Promotion             *Promotion
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
+	Transportation        string
+	RequetsedDate         string
+	RequetsedTime         string
+}
+
+func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	var promotionID string
 	if params.Promotion != nil {
 		promotionID = params.Promotion.ID
 	}
-	pparams := &NewOrderPaymentParams{
+	pparams := &NewProductOrderPaymentParams{
 		OrderID:    params.OrderID,
 		Address:    params.BillingAddress,
 		MethodType: params.PaymentMethodType,
@@ -92,7 +122,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		Shipping:   params.Shipping,
 		Promotion:  params.Promotion,
 	}
-	payment, err := NewOrderPayment(pparams)
+	payment, err := NewProductOrderPayment(pparams)
 	if err != nil {
 		return nil, err
 	}
@@ -115,13 +145,70 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
+		Type:              OrderTypeProduct,
 		Status:            OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
 		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil
 }
 
-func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems) {
-	o.OrderPayment = *payment
+func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
+	var promotionID string
+	if params.Promotion != nil {
+		promotionID = params.Promotion.ID
+	}
+	pparams := &NewExperienceOrderPaymentParams{
+		OrderID:               params.OrderID,
+		MethodType:            params.PaymentMethodType,
+		Address:               params.BillingAddress,
+		Experience:            params.Experience,
+		Promotion:             params.Promotion,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+	}
+	payment, err := NewExperienceOrderPayment(pparams)
+	if err != nil {
+		return nil, err
+	}
+	eparams := &NewOrderExperienceParams{
+		OrderID:               params.OrderID,
+		Experience:            params.Experience,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+		Transportation:        params.Transportation,
+		RequestedDate:         params.RequetsedDate,
+		RequestedTime:         params.RequetsedTime,
+	}
+	experience, err := NewOrderExperience(eparams)
+	if err != nil {
+		return nil, err
+	}
+	return &Order{
+		OrderPayment:    *payment,
+		OrderExperience: *experience,
+		ID:              params.OrderID,
+		SessionID:       params.SessionID,
+		UserID:          params.Customer.ID,
+		CoordinatorID:   params.CoordinatorID,
+		PromotionID:     promotionID,
+		Type:            OrderTypeExperience,
+		Status:          OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
+		ShippingMessage: "",
+	}, nil
+}
+
+func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems, experience *OrderExperience) {
+	if payment != nil {
+		o.OrderPayment = *payment
+	}
+	if experience != nil {
+		o.OrderExperience = *experience
+	}
 	o.OrderFulfillments = fulfillments
 	o.OrderItems = items
 }
@@ -157,6 +244,19 @@ func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentSta
 	} else {
 		o.Status = OrderStatusPreparing
 	}
+}
+
+func (o *Order) SetTransaction(transactionID string, now time.Time) {
+	if o.Total > 0 {
+		o.OrderPayment.SetTransactionID(transactionID, now)
+		return
+	}
+	// 金額が0円の場合は支払い処理が不要なため、トランザクションIDを詰めると同時に支払い完了とする
+	o.Status = OrderStatusPreparing
+	o.OrderPayment.SetTransactionID(o.ID, now) // 支払い状態を取得できるよう、なにかしらの値を詰める
+	o.OrderPayment.MethodType = PaymentMethodTypeNone
+	o.OrderPayment.Status = PaymentStatusCaptured
+	o.OrderPayment.PaidAt, o.OrderPayment.CapturedAt = now, now
 }
 
 func (o *Order) Completed() bool {
@@ -262,13 +362,33 @@ func (os Orders) ProductRevisionIDs() []int64 {
 	return res.Slice()
 }
 
-func (os Orders) Fill(payments map[string]*OrderPayment, fulfillments map[string]OrderFulfillments, items map[string]OrderItems) {
+func (os Orders) ExperienceRevisionIDs() []int64 {
+	res := set.NewEmpty[int64](len(os))
+	for i := range os {
+		if os[i].OrderExperience.ExperienceRevisionID == 0 {
+			continue
+		}
+		res.Add(os[i].ExperienceRevisionID)
+	}
+	return res.Slice()
+}
+
+func (os Orders) Fill(
+	payments map[string]*OrderPayment,
+	fulfillments map[string]OrderFulfillments,
+	items map[string]OrderItems,
+	experiences map[string]*OrderExperience,
+) {
 	for _, o := range os {
 		payment, ok := payments[o.ID]
 		if !ok {
 			payment = &OrderPayment{}
 		}
-		o.Fill(payment, fulfillments[o.ID], items[o.ID])
+		experience, ok := experiences[o.ID]
+		if !ok {
+			experience = &OrderExperience{}
+		}
+		o.Fill(payment, fulfillments[o.ID], items[o.ID], experience)
 	}
 }
 

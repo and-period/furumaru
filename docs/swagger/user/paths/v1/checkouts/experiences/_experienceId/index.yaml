@@ -1,0 +1,47 @@
+post:
+  summary: 体験購入
+  operation: v1CheckoutExperience
+  tags:
+  - Checkout
+  security:
+  - bearerAuth: []
+  - cookieAuth: []
+  parameters:
+  - in: path
+    name: experienceId
+    schema:
+      type: string
+    description: 体験ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CheckoutExperienceRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1CheckoutResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 決済システムがメンテナンス中
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 前提条件エラー(体験販売期間外、無効なプロモーションなど...)
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -165,6 +165,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.uploadRoutes(v1)
 	h.userRoutes(v1)
 	h.videoRoutes(v1)
+	h.videoCommentRoutes(v1)
 
 	// 認証が不要なエンドポイント
 	h.guestBroadcastRoutes(v1)

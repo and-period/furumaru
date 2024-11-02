@@ -11,7 +11,6 @@ import (
 
 const (
 	sessionMode      = "payment"
-	captureMode      = "manual"
 	defaultExpiresIn = 7200 // 2時間
 	defaultCurrency  = "JPY"
 	defaultLocale    = "ja"
@@ -19,9 +18,10 @@ const (
 )
 
 type client struct {
-	client *komoju.APIClient
-	logger *zap.Logger
-	host   string
+	client      *komoju.APIClient
+	logger      *zap.Logger
+	host        string
+	captureMode komoju.CaptureMode
 }
 
 type Params struct {
@@ -29,13 +29,15 @@ type Params struct {
 	Host         string // KOMOJU接続用URL
 	ClientID     string // KOMOJU接続時のBasic認証ユーザー名
 	ClientSecret string // KOMOJU接続時のBasic認証パスワード
+	CaptureMode  komoju.CaptureMode
 }
 
 func NewClient(cli *http.Client, params *Params, opts ...komoju.Option) komoju.Session {
 	return &client{
-		client: komoju.NewAPIClient(cli, params.ClientID, params.ClientSecret, opts...),
-		logger: params.Logger,
-		host:   params.Host,
+		client:      komoju.NewAPIClient(cli, params.ClientID, params.ClientSecret, opts...),
+		logger:      params.Logger,
+		host:        params.Host,
+		captureMode: params.CaptureMode,
 	}
 }
 
@@ -110,14 +112,6 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 			ExternalOrderNumber: params.OrderID,
 			Name:                params.Customer.Name,
 			NameKana:            params.Customer.NameKana,
-			ShippingAddress: &createSessionAddress{
-				ZipCode:        params.ShippingAddress.ZipCode,
-				Country:        defaultCountry,
-				State:          params.ShippingAddress.Prefecture,
-				City:           params.ShippingAddress.City,
-				StreetAddress1: params.ShippingAddress.AddressLine1,
-				StreetAddress2: params.ShippingAddress.AddressLine2,
-			},
 			BillingAddress: &createSessionAddress{
 				ZipCode:        params.BillingAddress.ZipCode,
 				Country:        defaultCountry,
@@ -126,8 +120,18 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 				StreetAddress1: params.BillingAddress.AddressLine1,
 				StreetAddress2: params.BillingAddress.AddressLine2,
 			},
-			Capture: captureMode,
+			Capture: string(c.captureMode),
 		},
+	}
+	if params.ShippingAddress != nil {
+		body.PaymentData.ShippingAddress = &createSessionAddress{
+			ZipCode:        params.ShippingAddress.ZipCode,
+			Country:        defaultCountry,
+			State:          params.ShippingAddress.Prefecture,
+			City:           params.ShippingAddress.City,
+			StreetAddress1: params.ShippingAddress.AddressLine1,
+			StreetAddress2: params.ShippingAddress.AddressLine2,
+		}
 	}
 	req := &komoju.APIParams{
 		Host:   c.host,
@@ -178,7 +182,7 @@ type creditCardDetails struct {
 func (c *client) OrderCreditCard(ctx context.Context, params *komoju.OrderCreditCardParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderCreditCardRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &creditCardDetails{
 			Type:              string(komoju.PaymentTypeCreditCard),
 			Email:             params.Email,
@@ -222,7 +226,7 @@ type bankTransferDetails struct {
 func (c *client) OrderBankTransfer(ctx context.Context, params *komoju.OrderBankTransferParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderBankTransferRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &bankTransferDetails{
 			Type:           string(komoju.PaymentTypeBankTransfer),
 			Email:          params.Email,
@@ -262,7 +266,7 @@ type konbiniDetails struct {
 func (c *client) OrderKonbini(ctx context.Context, params *komoju.OrderKonbiniParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderKonbiniRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &konbiniDetails{
 			Type:  string(komoju.PaymentTypeKonbini),
 			Store: string(params.Store),
@@ -297,7 +301,7 @@ type paypayDetails struct {
 func (c *client) OrderPayPay(ctx context.Context, params *komoju.OrderPayPayParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderPayPayRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &paypayDetails{
 			Type: string(komoju.PaymentTypePayPay),
 		},
@@ -330,7 +334,7 @@ type linePayDetails struct {
 func (c *client) OrderLinePay(ctx context.Context, params *komoju.OrderLinePayParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderLinePayRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &linePayDetails{
 			Type: string(komoju.PaymentTypeLinePay),
 		},
@@ -361,7 +365,7 @@ type merpayDetails struct {
 func (c *client) OrderMerpay(ctx context.Context, params *komoju.OrderMerpayParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderMerpayRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &merpayDetails{
 			Type: string(komoju.PaymentTypeMerpay),
 		},
@@ -392,7 +396,7 @@ type rakutenPayDetails struct {
 func (c *client) OrderRakutenPay(ctx context.Context, params *komoju.OrderRakutenPayParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderMerpayRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &merpayDetails{
 			Type: string(komoju.PaymentTypeRakutenPay),
 		},
@@ -424,7 +428,7 @@ type auPayDetails struct {
 func (c *client) OrderAUPay(ctx context.Context, params *komoju.OrderAUPayParams) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderAUPayRequest{
-		Capture: captureMode,
+		Capture: string(c.captureMode),
 		PaymentDetails: &auPayDetails{
 			Type: string(komoju.PaymentTypeAUPay),
 		},

@@ -25,6 +25,8 @@ type Database struct {
 	BroadcastComment   BroadcastComment
 	BroadcastViewerLog BroadcastViewerLog
 	Video              Video
+	VideoComment       VideoComment
+	VideoViewerLog     VideoViewerLog
 }
 
 type Broadcast interface {
@@ -34,6 +36,12 @@ type Broadcast interface {
 	Create(ctx context.Context, broadcast *entity.Broadcast) error
 	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
+
+type ListBroadcastsOrderKey string
+
+const (
+	ListBroadcastsOrderByUpdatedAt ListBroadcastsOrderKey = "updated_at"
+)
 
 type ListBroadcastsParams struct {
 	ScheduleIDs   []string
@@ -45,7 +53,7 @@ type ListBroadcastsParams struct {
 }
 
 type ListBroadcastsOrder struct {
-	Key        entity.BroadcastOrderBy
+	Key        ListBroadcastsOrderKey
 	OrderByASC bool
 }
 
@@ -96,12 +104,6 @@ type ListBroadcastCommentsParams struct {
 	CreatedAtLt  time.Time
 	Limit        int64
 	NextToken    string
-	Orders       []*ListBroadcastCommentsOrder
-}
-
-type ListBroadcastCommentsOrder struct {
-	Key        entity.BroadcastCommentOrderBy
-	OrderByASC bool
 }
 
 type UpdateBroadcastCommentParams struct {
@@ -143,7 +145,6 @@ type ListVideosParams struct {
 	OnlyDisplayProduct    bool
 	OnlyDisplayExperience bool
 	ExcludeLimited        bool
-	ExcludeDeleted        bool
 	Limit                 int
 	Offset                int
 }
@@ -160,6 +161,44 @@ type UpdateVideoParams struct {
 	DisplayProduct    bool
 	DisplayExperience bool
 	PublishedAt       time.Time
+}
+
+type VideoComment interface {
+	List(ctx context.Context, params *ListVideoCommentsParams, fields ...string) (entity.VideoComments, string, error)
+	Create(ctx context.Context, comment *entity.VideoComment) error
+	Update(ctx context.Context, commentID string, params *UpdateVideoCommentParams) error
+}
+
+type ListVideoCommentsParams struct {
+	VideoID      string
+	WithDisabled bool
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
+	Limit        int64
+	NextToken    string
+}
+
+type UpdateVideoCommentParams struct {
+	Disabled bool
+}
+
+type VideoViewerLog interface {
+	Create(ctx context.Context, log *entity.VideoViewerLog) error
+	GetTotal(ctx context.Context, params *GetVideoTotalViewersParams) (int64, error)
+	Aggregate(ctx context.Context, params *AggregateVideoViewerLogsParams) (entity.AggregatedVideoViewerLogs, error)
+}
+
+type GetVideoTotalViewersParams struct {
+	VideoID      string
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
+}
+
+type AggregateVideoViewerLogsParams struct {
+	VideoID      string
+	Interval     entity.AggregateVideoViewerLogInterval
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
 }
 
 type Error struct {

@@ -60,13 +60,6 @@ var targetAdmins = []int32{
 	int32(NotificationTargetAdministrators),
 }
 
-type NotificationOrderBy string
-
-const (
-	NotificationOrderByTitle       NotificationOrderBy = "title"
-	NotificationOrderByPublishedAt NotificationOrderBy = "published_at"
-)
-
 // Notification - お知らせ情報
 type Notification struct {
 	ID          string               `gorm:"primaryKey;<-:create"`        // お知らせID

@@ -37,14 +37,14 @@ func TestExperience_List(t *testing.T) {
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
-	experiences := make(entity.Experiences, 3)
+	experiences := make(internalExperiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
 	experiences[0].StartAt = now().AddDate(0, 0, -1)
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
 	experiences[1].StartAt = now().AddDate(0, 0, -2)
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
 	experiences[2].StartAt = now().AddDate(0, -1, 0)
-	err = db.DB.Create(&experiences).Error
+	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
 		err := db.DB.Create(&experiences[i].ExperienceRevision).Error
@@ -75,7 +75,7 @@ func TestExperience_List(t *testing.T) {
 				},
 			},
 			want: want{
-				experiences: experiences[1:],
+				experiences: experiences[1:].entities(),
 				err:         nil,
 			},
 		},
@@ -93,7 +93,7 @@ func TestExperience_List(t *testing.T) {
 			actual, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 			fillIgnoreExperiencesFields(actual, now())
-			assert.ElementsMatch(t, tt.want.experiences, actual)
+			assert.Equal(t, tt.want.experiences, actual)
 		})
 	}
 }
@@ -117,11 +117,11 @@ func TestExperience_Count(t *testing.T) {
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
-	experiences := make(entity.Experiences, 3)
+	experiences := make(internalExperiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
-	err = db.DB.Create(&experiences).Error
+	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
 		err := db.DB.Create(&experiences[i].ExperienceRevision).Error
@@ -193,11 +193,11 @@ func TestExperience_MultiGet(t *testing.T) {
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
-	experiences := make(entity.Experiences, 3)
+	experiences := make(internalExperiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
-	err = db.DB.Create(&experiences).Error
+	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
 		err := db.DB.Create(&experiences[i].ExperienceRevision).Error
@@ -224,7 +224,7 @@ func TestExperience_MultiGet(t *testing.T) {
 				experienceIDs: []string{"experience-id01", "experience-id02"},
 			},
 			want: want{
-				experiences: experiences[:2],
+				experiences: experiences[:2].entities(),
 				err:         nil,
 			},
 		},
@@ -266,11 +266,11 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
-	experiences := make(entity.Experiences, 3)
+	experiences := make(internalExperiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
-	err = db.DB.Create(&experiences).Error
+	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
 		err := db.DB.Create(&experiences[i].ExperienceRevision).Error
@@ -297,7 +297,7 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 				revisionIDs: []int64{1, 2, 3},
 			},
 			want: want{
-				experiences: experiences,
+				experiences: experiences.entities(),
 				err:         nil,
 			},
 		},
@@ -338,7 +338,7 @@ func TestExperience_Get(t *testing.T) {
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)
 	e := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&e).Error
+	err = db.DB.Table(experienceTable).Create(&e).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&e.ExperienceRevision).Error
 	require.NoError(t, err)
@@ -363,7 +363,7 @@ func TestExperience_Get(t *testing.T) {
 				experienceID: "experience-id",
 			},
 			want: want{
-				experience: e,
+				experience: e.entity(),
 				err:        nil,
 			},
 		},
@@ -431,7 +431,7 @@ func TestExperience_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				experience: testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now()),
+				experience: testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now()).entity(),
 			},
 			want: want{
 				err: nil,
@@ -441,13 +441,13 @@ func TestExperience_Create(t *testing.T) {
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				e := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-				err := db.DB.Create(&e).Error
+				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				experience: testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now()),
+				experience: testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now()).entity(),
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -507,7 +507,7 @@ func TestExperience_Update(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				e := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-				err := db.DB.Create(&e).Error
+				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
 				require.NoError(t, err)
@@ -531,6 +531,10 @@ func TestExperience_Update(t *testing.T) {
 						"じゃがいもを食べる",
 						"じゃがいもを持ち帰る",
 					},
+					Duration:           60,
+					Direction:          "彦根駅から徒歩10分",
+					BusinessOpenTime:   "1000",
+					BusinessCloseTime:  "1800",
 					HostPrefectureCode: 25,
 					HostCity:           "彦根市",
 					StartAt:            now().AddDate(0, -1, 0),
@@ -594,7 +598,7 @@ func TestExperience_Delete(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				e := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
-				err := db.DB.Create(&e).Error
+				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
 				require.NoError(t, err)
@@ -625,50 +629,59 @@ func TestExperience_Delete(t *testing.T) {
 	}
 }
 
-func testExperience(experienceID, typeID, coordinatorID, producerID string, revisionID int64, now time.Time) *entity.Experience {
-	e := &entity.Experience{
-		ID:            experienceID,
-		CoordinatorID: coordinatorID,
-		ProducerID:    producerID,
-		TypeID:        typeID,
-		Title:         "じゃがいも収穫",
-		Description:   "じゃがいもを収穫する体験です。",
-		Public:        true,
-		SoldOut:       false,
-		Status:        entity.ExperienceStatusAccepting,
-		ThumbnailURL:  "http://example.com/thumbnail01.png",
-		Media: entity.MultiExperienceMedia{
-			{
-				URL:         "http://example.com/thumbnail01.png",
-				IsThumbnail: true,
+func testExperience(experienceID, typeID, coordinatorID, producerID string, revisionID int64, now time.Time) *internalExperience {
+	internal := &internalExperience{
+		Experience: entity.Experience{
+			ID:            experienceID,
+			CoordinatorID: coordinatorID,
+			ProducerID:    producerID,
+			TypeID:        typeID,
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいもを収穫する体験です。",
+			Public:        true,
+			SoldOut:       false,
+			Status:        entity.ExperienceStatusAccepting,
+			ThumbnailURL:  "http://example.com/thumbnail01.png",
+			Media: entity.MultiExperienceMedia{
+				{
+					URL:         "http://example.com/thumbnail01.png",
+					IsThumbnail: true,
+				},
+				{
+					URL:         "http://example.com/thumbnail02.png",
+					IsThumbnail: false,
+				},
 			},
-			{
-				URL:         "http://example.com/thumbnail02.png",
-				IsThumbnail: false,
+			RecommendedPoints: []string{
+				"じゃがいもを収穫する",
+				"じゃがいもを食べる",
+				"じゃがいもを持ち帰る",
 			},
+			PromotionVideoURL:  "http://example.com/promotion.mp4",
+			Duration:           60,
+			Direction:          "彦根駅から徒歩10分",
+			BusinessOpenTime:   "1000",
+			BusinessCloseTime:  "1800",
+			HostPostalCode:     "5220061",
+			HostPrefecture:     "滋賀県",
+			HostPrefectureCode: 25,
+			HostCity:           "彦根市",
+			HostAddressLine1:   "金亀町１−１",
+			HostAddressLine2:   "",
+			HostLongitude:      136.251739,
+			HostLatitude:       35.276833,
+			StartAt:            now.AddDate(0, -1, 0),
+			EndAt:              now.AddDate(0, 1, 0),
+			ExperienceRevision: *testExperienceRevision(revisionID, experienceID, now),
+			CreatedAt:          now,
+			UpdatedAt:          now,
 		},
-		RecommendedPoints: []string{
-			"じゃがいもを収穫する",
-			"じゃがいもを食べる",
-			"じゃがいもを持ち帰る",
-		},
-		PromotionVideoURL:  "http://example.com/promotion.mp4",
-		HostPostalCode:     "5220061",
-		HostPrefecture:     "滋賀県",
-		HostPrefectureCode: 25,
-		HostCity:           "彦根市",
-		HostAddressLine1:   "金亀町１−１",
-		HostAddressLine2:   "",
-		HostLongitude:      136.251739,
-		HostLatitude:       35.276833,
-		StartAt:            now.AddDate(0, -1, 0),
-		EndAt:              now.AddDate(0, 1, 0),
-		ExperienceRevision: *testExperienceRevision(revisionID, experienceID, now),
-		CreatedAt:          now,
-		UpdatedAt:          now,
+		HostGeolocation: newExperienceHostGeolocation(136.251739, 35.276833),
+		HostLongitude:   136.251739,
+		HostLatitude:    35.276833,
 	}
-	_ = e.FillJSON()
-	return e
+	_ = internal.FillJSON()
+	return internal
 }
 
 func testExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {

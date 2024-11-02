@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/datatypes"
 )
 
 func TestPaymentStatus(t *testing.T) {
@@ -190,6 +191,11 @@ func TestPaymentMethodType_String(t *testing.T) {
 			expect:     "QR決済（au PAY）",
 		},
 		{
+			name:       "none",
+			methodType: PaymentMethodTypeNone,
+			expect:     "決済なし",
+		},
+		{
 			name:       "unknown",
 			methodType: PaymentMethodTypeUnknown,
 			expect:     "",
@@ -204,7 +210,7 @@ func TestPaymentMethodType_String(t *testing.T) {
 	}
 }
 
-func TestOrderPayment(t *testing.T) {
+func TestProductOrderPayment(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -226,13 +232,13 @@ func TestOrderPayment(t *testing.T) {
 	}
 	tests := []struct {
 		name      string
-		params    *NewOrderPaymentParams
+		params    *NewProductOrderPaymentParams
 		expect    *OrderPayment
 		expectErr error
 	}{
 		{
 			name: "success with shipping free",
-			params: &NewOrderPaymentParams{
+			params: &NewProductOrderPaymentParams{
 				OrderID: "order-id",
 				Address: &entity.Address{
 					AddressRevision: entity.AddressRevision{
@@ -322,7 +328,7 @@ func TestOrderPayment(t *testing.T) {
 		},
 		{
 			name: "success with discount",
-			params: &NewOrderPaymentParams{
+			params: &NewProductOrderPaymentParams{
 				OrderID: "order-id",
 				Address: &entity.Address{
 					AddressRevision: entity.AddressRevision{
@@ -422,7 +428,7 @@ func TestOrderPayment(t *testing.T) {
 		},
 		{
 			name: "failed to calc total price",
-			params: &NewOrderPaymentParams{
+			params: &NewProductOrderPaymentParams{
 				OrderID: "order-id",
 				Address: &entity.Address{
 					AddressRevision: entity.AddressRevision{
@@ -468,7 +474,7 @@ func TestOrderPayment(t *testing.T) {
 		},
 		{
 			name: "failed to calc shipping fee",
-			params: &NewOrderPaymentParams{
+			params: &NewProductOrderPaymentParams{
 				OrderID: "order-id",
 				Address: &entity.Address{
 					AddressRevision: entity.AddressRevision{
@@ -538,13 +544,404 @@ func TestOrderPayment(t *testing.T) {
 			expect:    nil,
 			expectErr: errNotFoundShippingRate,
 		},
+		{
+			name: "empty address",
+			params: &NewProductOrderPaymentParams{
+				OrderID:    "order-id",
+				Address:    nil,
+				MethodType: PaymentMethodTypeCreditCard,
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: []*CartItem{
+							{
+								ProductID: "product-id01",
+								Quantity:  1,
+							},
+							{
+								ProductID: "product-id02",
+								Quantity:  2,
+							},
+						},
+						CoordinatorID: "coordinator-id",
+					},
+				},
+				Products: []*Product{
+					{
+						ID:   "product-id01",
+						Name: "じゃがいも",
+						ProductRevision: ProductRevision{
+							ID:        1,
+							ProductID: "product-id01",
+							Price:     500,
+						},
+					},
+					{
+						ID:   "product-id02",
+						Name: "人参",
+						ProductRevision: ProductRevision{
+							ID:        2,
+							ProductID: "product-id02",
+							Price:     1980,
+						},
+					},
+				},
+				Shipping: &Shipping{
+					ID:            "coordinator-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						ShippingID:      "coordinator-id",
+						HasFreeShipping: false,
+					},
+				},
+				Promotion: nil,
+			},
+			expect:    nil,
+			expectErr: errNotFoundAddress,
+		},
+		{
+			name: "invalid prefecture code",
+			params: &NewProductOrderPaymentParams{
+				OrderID: "order-id",
+				Address: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: -1,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "090-1234-1234",
+					},
+					ID:     "address-id",
+					UserID: "user-id",
+				},
+				MethodType: PaymentMethodTypeCreditCard,
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: []*CartItem{
+							{
+								ProductID: "product-id01",
+								Quantity:  1,
+							},
+							{
+								ProductID: "product-id02",
+								Quantity:  2,
+							},
+						},
+						CoordinatorID: "coordinator-id",
+					},
+				},
+				Products: []*Product{
+					{
+						ID:   "product-id01",
+						Name: "じゃがいも",
+						ProductRevision: ProductRevision{
+							ID:        1,
+							ProductID: "product-id01",
+							Price:     500,
+						},
+					},
+					{
+						ID:   "product-id02",
+						Name: "人参",
+						ProductRevision: ProductRevision{
+							ID:        2,
+							ProductID: "product-id02",
+							Price:     1980,
+						},
+					},
+				},
+				Shipping: &Shipping{
+					ID:            "coordinator-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						ShippingID:      "coordinator-id",
+						HasFreeShipping: false,
+					},
+				},
+				Promotion: nil,
+			},
+			expect:    nil,
+			expectErr: codes.ErrUnknownPrefecture,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := NewOrderPayment(tt.params)
+			actual, err := NewProductOrderPayment(tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperienceOrderPayment(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		params *NewExperienceOrderPaymentParams
+		expect *OrderPayment
+		hasErr bool
+	}{
+		{
+			name: "success",
+			params: &NewExperienceOrderPaymentParams{
+				OrderID: "order-id",
+				Address: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "090-1234-1234",
+					},
+					ID:     "address-id",
+					UserID: "user-id",
+				},
+				MethodType: PaymentMethodTypeCreditCard,
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 500,
+						PriceElementarySchool: 300,
+						PricePreschool:        0,
+						PriceSenior:           200,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion:             nil,
+				AdultCount:            2,
+				JuniorHighSchoolCount: 0,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: &OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				Status:            PaymentStatusPending,
+				TransactionID:     "",
+				MethodType:        PaymentMethodTypeCreditCard,
+				Subtotal:          2000,
+				Discount:          0,
+				ShippingFee:       0,
+				Tax:               181,
+				Total:             2000,
+			},
+			hasErr: false,
+		},
+		{
+			name: "empty address",
+			params: &NewExperienceOrderPaymentParams{
+				OrderID:    "order-id",
+				Address:    nil,
+				MethodType: PaymentMethodTypeCreditCard,
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 500,
+						PriceElementarySchool: 300,
+						PricePreschool:        0,
+						PriceSenior:           200,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion:             nil,
+				AdultCount:            2,
+				JuniorHighSchoolCount: 0,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: nil,
+			hasErr: true,
+		},
+		{
+			name: "invalid prefecture code",
+			params: &NewExperienceOrderPaymentParams{
+				OrderID: "order-id",
+				Address: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: -1,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "090-1234-1234",
+					},
+					ID:     "address-id",
+					UserID: "user-id",
+				},
+				MethodType: PaymentMethodTypeCreditCard,
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 500,
+						PriceElementarySchool: 300,
+						PricePreschool:        0,
+						PriceSenior:           200,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion:             nil,
+				AdultCount:            2,
+				JuniorHighSchoolCount: 0,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: nil,
+			hasErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := NewExperienceOrderPayment(tt.params)
+			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -667,11 +1064,14 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		expect        *OrderPayment
 	}{
 		{
-			name:          "success",
-			payment:       &OrderPayment{},
+			name: "success",
+			payment: &OrderPayment{
+				Total: 1000,
+			},
 			transactionID: "transaction-id",
 			now:           now,
 			expect: &OrderPayment{
+				Total:         1000,
 				TransactionID: "transaction-id",
 				OrderedAt:     now,
 			},
@@ -682,7 +1082,7 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.payment.SetTransactionID(tt.transactionID, tt.now)
-			assert.Equal(t, tt.expect, tt.expect)
+			assert.Equal(t, tt.expect, tt.payment)
 		})
 	}
 }

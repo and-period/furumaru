@@ -19,6 +19,12 @@ type GetUploadEventInput struct {
 	Key string `validate:"required"`
 }
 
+type ListBroadcastsOrderKey int32
+
+const (
+	ListBroadcastsOrderByUpdatedAt ListBroadcastsOrderKey = iota + 1
+)
+
 type ListBroadcastsInput struct {
 	ScheduleIDs   []string               `validate:"dive,required"`
 	CoordinatorID string                 `validate:""`
@@ -30,8 +36,8 @@ type ListBroadcastsInput struct {
 }
 
 type ListBroadcastsOrder struct {
-	Key        entity.BroadcastOrderBy `validate:"required"`
-	OrderByASC bool                    `validate:""`
+	Key        ListBroadcastsOrderKey `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type GetBroadcastByScheduleIDInput struct {
@@ -94,33 +100,13 @@ type CreateYoutubeBroadcastInput struct {
 	Public      bool   `validate:""`
 }
 
-type CreateBroadcastViewerLogInput struct {
-	ScheduleID string `validate:"required"`
-	SessionID  string `validate:"required"`
-	UserID     string `validate:""`
-	UserAgent  string `validate:""`
-	ClientIP   string `validate:"omitempty,ip_addr"`
-}
-
-type AggregateBroadcastViewerLogsInput struct {
-	ScheduleID   string                                     `validate:"required"`
-	Interval     entity.AggregateBroadcastViewerLogInterval `validate:"required"`
-	CreatedAtGte time.Time                                  `validate:""`
-	CreatedAtLt  time.Time                                  `validate:""`
-}
-
 type ListBroadcastCommentsInput struct {
-	ScheduleID   string                        `validate:"required"`
-	CreatedAtGte time.Time                     `validate:""`
-	CreatedAtLt  time.Time                     `validate:""`
-	Limit        int64                         `validate:"max=200"`
-	NextToken    string                        `validate:""`
-	Orders       []*ListBroadcastCommentsOrder `validate:"dive,required"`
-}
-
-type ListBroadcastCommentsOrder struct {
-	Key        entity.BroadcastCommentOrderBy `validate:"required"`
-	OrderByASC bool                           `validate:""`
+	ScheduleID   string    `validate:"required"`
+	WithDisabled bool      `validate:""`
+	CreatedAtGte time.Time `validate:""`
+	CreatedAtLt  time.Time `validate:""`
+	Limit        int64     `validate:"max=200"`
+	NextToken    string    `validate:""`
 }
 
 type CreateBroadcastCommentInput struct {
@@ -139,6 +125,21 @@ type UpdateBroadcastCommentInput struct {
 	Disabled  bool   `validate:""`
 }
 
+type CreateBroadcastViewerLogInput struct {
+	ScheduleID string `validate:"required"`
+	SessionID  string `validate:"required"`
+	UserID     string `validate:""`
+	UserAgent  string `validate:""`
+	ClientIP   string `validate:"omitempty,ip_addr"`
+}
+
+type AggregateBroadcastViewerLogsInput struct {
+	ScheduleID   string                                     `validate:"required"`
+	Interval     entity.AggregateBroadcastViewerLogInterval `validate:"required"`
+	CreatedAtGte time.Time                                  `validate:""`
+	CreatedAtLt  time.Time                                  `validate:""`
+}
+
 type ListVideosInput struct {
 	Name                  string `validate:""`
 	CoordinatorID         string `validate:""`
@@ -146,7 +147,6 @@ type ListVideosInput struct {
 	OnlyDisplayProduct    bool   `validate:""`
 	OnlyDisplayExperience bool   `validate:""`
 	ExcludeLimited        bool   `validate:""`
-	ExcludeDeleted        bool   `validate:""`
 	Limit                 int64  `validate:"required_without=NoLimit,min=0,max=200"`
 	Offset                int64  `validate:"min=0"`
 	NoLimit               bool   `validate:""`
@@ -188,4 +188,44 @@ type UpdateVideoInput struct {
 
 type DeleteVideoInput struct {
 	VideoID string `validate:"required"`
+}
+
+type ListVideoCommentsInput struct {
+	VideoID      string    `validate:"required"`
+	WithDisabled bool      `validate:""`
+	CreatedAtGte time.Time `validate:""`
+	CreatedAtLt  time.Time `validate:""`
+	Limit        int64     `validate:"max=200"`
+	NextToken    string    `validate:""`
+}
+
+type CreateVideoCommentInput struct {
+	VideoID string `validate:"required"`
+	UserID  string `validate:"required"`
+	Content string `validate:"required,max=200"`
+}
+
+type CreateVideoGuestCommentInput struct {
+	VideoID string `validate:"required"`
+	Content string `validate:"required,max=200"`
+}
+
+type UpdateVideoCommentInput struct {
+	CommentID string `validate:"required"`
+	Disabled  bool   `validate:""`
+}
+
+type CreateVideoViewerLogInput struct {
+	VideoID   string `validate:"required"`
+	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
+}
+
+type AggregateVideoViewerLogsInput struct {
+	VideoID      string                                 `validate:"required"`
+	Interval     entity.AggregateVideoViewerLogInterval `validate:"required"`
+	CreatedAtGte time.Time                              `validate:""`
+	CreatedAtLt  time.Time                              `validate:""`
 }

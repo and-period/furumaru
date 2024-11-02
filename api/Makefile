@@ -36,10 +36,10 @@ test: ## テストの実行
 	go test -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)
 
 build: ## アプリケーションのコンパイル
-	GOOS=linux GOARCH=amd64 go build -o ./app ./cmd/${SERVICE}/main.go
+	GOOS=linux GOARCH=arm64 go build -o ./app ./cmd/${SERVICE}/main.go
 
 build-dev: ## アプリケーションのコンパイル(dev環境用)
-	GOOS=linux GOARCH=amd64 go build -o ./cmd/${SERVICE}/app ./cmd/${SERVICE}/main.go
+	GOOS=linux GOARCH=arm64 go build -o ./cmd/${SERVICE}/app ./cmd/${SERVICE}/main.go
 
 start-dev: ## アプリケーションの起動(dev環境用)
 	air -c ./config/${SERVICE}/.air.toml

@@ -30,6 +30,7 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 	params := &database.ListOrdersParams{
 		CoordinatorID: in.CoordinatorID,
 		UserID:        in.UserID,
+		Types:         in.Types,
 		Statuses:      in.Statuses,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
@@ -136,6 +137,9 @@ func (s *service) CompleteOrder(ctx context.Context, in *store.CompleteOrderInpu
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
+		if order.Type == entity.OrderTypeExperience {
+			return // 配送しないため通知不要
+		}
 		in := &messenger.NotifyOrderShippedInput{
 			OrderID: order.ID,
 		}

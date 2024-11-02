@@ -1,4 +1,4 @@
-checkoutRequest:
+checkoutProductRequest:
   type: object
   properties:
     requestId:
@@ -49,6 +49,94 @@ checkoutRequest:
     billingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
     shippingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
     promotionCode: 'code1234'
+    paymentMethod: 2
+    callbackUrl: 'http://example.com/redirect-url'
+    total: 1980
+    creditCard:
+      number: '4111111111111111'
+      month: 12
+      year: 2024
+      verificationValue: '123'
+checkoutExperienceRequest:
+  type: object
+  properties:
+    requestId:
+      type: string
+      description: 支払いキー(重複判定用)
+    billingAddressId:
+      type: string
+      description: 請求先住所ID
+    promotionCode:
+      type: string
+      description: プロモーションコード（割引適用時のみ）
+    adultCount:
+      type: integer
+      format: int64
+      description: 大人の人数（0以上）
+    juniorHighSchoolCount:
+      type: integer
+      format: int64
+      description: 中学生の人数（0以上）
+    elementarySchoolCount:
+      type: integer
+      format: int64
+      description: 小学生の人数（0以上）
+    preschoolCount:
+      type: integer
+      format: int64
+      description: 幼児の人数（0以上）
+    seniorCount:
+      type: integer
+      format: int64
+      description: 高齢者の人数（0以上）
+    transportation:
+      type: string
+      description: 交通手段（256文字以内）
+    requestedDate:
+      type: string
+      description: 体験希望日（形式:yyyymmdd）
+    requestedTime:
+      type: string
+      description: 体験希望時間（形式:hhmm）
+    paymentMethod:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
+    callbackUrl:
+      type: string
+      description: 決済ページからの遷移先URL
+    total:
+      type: integer
+      format: int64
+      description: 支払い合計金額（誤り検出用）
+    creditCard:
+      $ref: '#/checkoutCreditCard'
+  required:
+  - requestId
+  - billingAddressId
+  - promotionCode
+  - adultCount
+  - juniorHighSchoolCount
+  - elementarySchoolCount
+  - preschoolCount
+  - seniorCount
+  - transportation
+  - requestedDate
+  - requestedTime
+  - paymentMethod
+  - callbackUrl
+  - total
+  - creditCard
+  example:
+    requestId: 'kSByoE6FetnPs5Byk3a9Zx'
+    billingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
+    promotionCode: 'code1234'
+    adultCount: 1
+    juniorHighSchoolCount: 2
+    elementarySchoolCount: 3
+    preschoolCount: 4
+    seniorCount: 5
+    transportation: '電車'
+    requestedDate: '20221231'
+    requestedTime: '1200'
     paymentMethod: 2
     callbackUrl: 'http://example.com/redirect-url'
     total: 1980

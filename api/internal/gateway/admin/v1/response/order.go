@@ -8,11 +8,13 @@ type Order struct {
 	PromotionID     string              `json:"promotionId"`     // プロモーションID
 	ManagementID    int64               `json:"managementId"`    // 注文管理用ID
 	ShippingMessage string              `json:"shippingMessage"` // 発送連絡時のメッセージ
+	Type            int32               `json:"type"`            // 注文種別
 	Status          int32               `json:"status"`          // 注文ステータス
 	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
 	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報
 	Fulfillments    []*OrderFulfillment `json:"fulfillments"`    // 配送情報一覧
 	Items           []*OrderItem        `json:"items"`           // 注文商品一覧
+	Experience      *OrderExperience    `json:"experience"`      // 注文体験情報
 	CreatedAt       int64               `json:"createdAt"`       // 登録日時
 	UpdatedAt       int64               `json:"updatedAt"`       // 更新日時
 	CompletedAt     int64               `json:"completedAt"`     // 対応完了日時
@@ -63,12 +65,36 @@ type OrderItem struct {
 	Quantity      int64  `json:"quantity"`      // 購入数量
 }
 
+// OrderExperience - 注文体験情報
+type OrderExperience struct {
+	ExperienceID          string                  `json:"experienceId"`          // 体験ID
+	AdultCount            int64                   `json:"adultCount"`            // 大人人数
+	AdultPrice            int64                   `json:"adultPrice"`            // 大人価格
+	JuniorHighSchoolCount int64                   `json:"juniorHighSchoolCount"` // 中学生人数
+	JuniorHighSchoolPrice int64                   `json:"juniorHighSchoolPrice"` // 中学生価格
+	ElementarySchoolCount int64                   `json:"elementarySchoolCount"` // 小学生人数
+	ElementarySchoolPrice int64                   `json:"elementarySchoolPrice"` // 小学生価格
+	PreschoolCount        int64                   `json:"preschoolCount"`        // 幼児人数
+	PreschoolPrice        int64                   `json:"preschoolPrice"`        // 幼児価格
+	SeniorCount           int64                   `json:"seniorCount"`           // シニア人数
+	SeniorPrice           int64                   `json:"seniorPrice"`           // シニア価格
+	Remarks               *OrderExperienceRemarks `json:"remarks"`               // 備考
+}
+
+// OrderExperienceRemarks - 体験希望情報
+type OrderExperienceRemarks struct {
+	Transportation string `json:"transportation"` // 交通手段
+	RequestedDate  string `json:"requestedDate"`  // 体験希望日
+	RequestedTime  string `json:"requestedTime"`  // 体験希望時間
+}
+
 type OrderResponse struct {
 	Order       *Order       `json:"order"`       // 注文履歴情報
 	User        *User        `json:"user"`        // 購入者情報
 	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
 	Promotion   *Promotion   `json:"promotion"`   // プロモーション情報
 	Products    []*Product   `json:"products"`    // 商品一覧
+	Experience  *Experience  `json:"experience"`  // 体験情報
 }
 
 type OrdersResponse struct {

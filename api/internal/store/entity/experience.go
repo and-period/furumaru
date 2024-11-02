@@ -3,10 +3,11 @@ package entity
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/pkg/mysql"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
@@ -44,15 +45,18 @@ type Experience struct {
 	RecommendedPoints     []string             `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
+	Duration              int64                `gorm:""`                                       // 体験時間(分)
+	Direction             string               `gorm:""`                                       // アクセス方法
+	BusinessOpenTime      string               `gorm:""`                                       // 営業開始時間
+	BusinessCloseTime     string               `gorm:""`                                       // 営業終了時間
 	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
 	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
 	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
 	HostAddressLine1      string               `gorm:""`                                       // 開催場所(町名・番地)
 	HostAddressLine2      string               `gorm:""`                                       // 開催場所(ビル名・号室など)
-	HostGeolocation       mysql.Geometry       `gorm:""`                                       // 開催場所(座標情報)
-	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度)
-	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度)
+	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度) FIXME: MySQLに存在しないカラム
+	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度) FIXME: MySQLに存在しないカラム
 	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
 	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
 	CreatedAt             time.Time            `gorm:"<-:create"`                              // 登録日時
@@ -81,6 +85,10 @@ type NewExperienceParams struct {
 	Media                 MultiExperienceMedia
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	Duration              int64
+	Direction             string
+	BusinessOpenTime      string
+	BusinessCloseTime     string
 	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
@@ -124,6 +132,10 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		Media:              params.Media,
 		RecommendedPoints:  params.RecommendedPoints,
 		PromotionVideoURL:  params.PromotionVideoURL,
+		Duration:           params.Duration,
+		Direction:          params.Direction,
+		BusinessOpenTime:   params.BusinessOpenTime,
+		BusinessCloseTime:  params.BusinessCloseTime,
 		HostPostalCode:     params.HostPostalCode,
 		HostPrefecture:     prefecture,
 		HostPrefectureCode: params.HostPrefectureCode,
@@ -152,6 +164,17 @@ func (e *Experience) Validate() error {
 	if e.HostLatitude < -90 || 90 < e.HostLatitude {
 		return errors.New("entity: invalid host latitude")
 	}
+	openTime, err := jst.ParseFromHHMM(e.BusinessOpenTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business open time: %w", err)
+	}
+	closeTime, err := jst.ParseFromHHMM(e.BusinessCloseTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business close time: %w", err)
+	}
+	if !openTime.Before(closeTime) {
+		return errors.New("entity: invalid business time")
+	}
 	return e.Media.Validate()
 }
 
@@ -165,7 +188,6 @@ func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err erro
 		return
 	}
 	e.SetStatus(now)
-	e.SetLocation()
 	e.SetThumbnail()
 	e.ExperienceRevision = *revision
 	e.HostPrefecture, _ = codes.ToPrefectureJapanese(e.HostPrefectureCode)
@@ -187,11 +209,6 @@ func (e *Experience) SetStatus(now time.Time) {
 	default:
 		e.Status = ExperienceStatusFinished
 	}
-}
-
-func (e *Experience) SetLocation() {
-	e.HostLongitude = e.HostGeolocation.X
-	e.HostLatitude = e.HostGeolocation.Y
 }
 
 func (e *Experience) SetThumbnail() {
@@ -230,16 +247,11 @@ func (e *Experience) FillJSON() error {
 	}
 	e.MediaJSON = media
 	e.RecommendedPointsJSON = points
-	e.HostGeolocation = ExperienceHostGeolocation(e.HostLongitude, e.HostLatitude)
 	return nil
 }
 
 func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
 	return json.Marshal(points)
-}
-
-func ExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
-	return mysql.Geometry{X: longitude, Y: latitude}
 }
 
 func (es Experiences) Fill(revisions map[string]*ExperienceRevision, now time.Time) error {

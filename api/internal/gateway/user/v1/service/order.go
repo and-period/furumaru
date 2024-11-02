@@ -6,6 +6,15 @@ import (
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
+// OrderType - 注文種別
+type OrderType int32
+
+const (
+	OrderTypeUnknown    OrderType = 0
+	OrderTypeProduct    OrderType = 1 // 商品
+	OrderTypeExperience OrderType = 2 // 体験
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -24,6 +33,43 @@ type Order struct {
 }
 
 type Orders []*Order
+
+func NewOrderType(typ entity.OrderType) OrderType {
+	switch typ {
+	case entity.OrderTypeProduct:
+		return OrderTypeProduct
+	case entity.OrderTypeExperience:
+		return OrderTypeExperience
+	default:
+		return OrderTypeUnknown
+	}
+}
+
+func NewOrderTypeFromString(typ string) OrderType {
+	switch typ {
+	case "product":
+		return OrderTypeProduct
+	case "experience":
+		return OrderTypeExperience
+	default:
+		return OrderTypeUnknown
+	}
+}
+
+func (t OrderType) StoreEntity() entity.OrderType {
+	switch t {
+	case OrderTypeProduct:
+		return entity.OrderTypeProduct
+	case OrderTypeExperience:
+		return entity.OrderTypeExperience
+	default:
+		return entity.OrderTypeUnknown
+	}
+}
+
+func (t OrderType) Response() int32 {
+	return int32(t)
+}
 
 func NewOrderStatus(status entity.OrderStatus) OrderStatus {
 	switch status {
@@ -48,10 +94,16 @@ func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product) *Order {
-	var billingAddress, shippingAddress *Address
+func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {
+	var (
+		billingAddress, shippingAddress *Address
+		experience                      *Experience
+	)
 	if address, ok := addresses[order.OrderPayment.AddressRevisionID]; ok {
 		billingAddress = address
+	}
+	if exp, ok := experiences[order.OrderExperience.ExperienceRevisionID]; ok {
+		experience = exp
 	}
 	if len(order.OrderFulfillments) > 0 {
 		// 現状すべての配送先が同一になっているため
@@ -64,11 +116,13 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			ID:              order.ID,
 			CoordinatorID:   order.CoordinatorID,
 			PromotionID:     order.PromotionID,
+			Type:            NewOrderType(order.Type).Response(),
 			Status:          NewOrderStatus(order.Status).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
 			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments).Response(),
 			Items:           NewOrderItems(order.OrderItems, products).Response(),
+			Experience:      NewOrderExperience(&order.OrderExperience, experience).Response(),
 			BillingAddress:  billingAddress.Response(),
 			ShippingAddress: shippingAddress.Response(),
 		},
@@ -85,10 +139,10 @@ func (o *Order) Response() *response.Order {
 	return &o.Order
 }
 
-func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product) Orders {
+func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) Orders {
 	res := make(Orders, len(orders))
 	for i := range orders {
-		res[i] = NewOrder(orders[i], addresses, products)
+		res[i] = NewOrder(orders[i], addresses, products, experiences)
 	}
 	return res
 }

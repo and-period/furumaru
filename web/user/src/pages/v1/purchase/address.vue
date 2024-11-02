@@ -51,6 +51,7 @@ const formData = ref<CreateAddressRequest>({
 })
 
 const promotionCodeFormValue = ref<string>('')
+const postalCodeErrorMessage = ref<string>('')
 const invalidPromotion = ref<boolean>(false)
 const validPromotion = ref<boolean>(false)
 
@@ -94,10 +95,15 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
-  const res = await searchAddressByPostalCode(formData.value.postalCode)
-  formData.value.prefectureCode = res.prefectureCode
-  formData.value.city = res.city
-  formData.value.addressLine1 = res.town
+  try {
+    const res = await searchAddressByPostalCode(formData.value.postalCode)
+    formData.value.prefectureCode = res.prefectureCode
+    formData.value.city = res.city
+    formData.value.addressLine1 = res.town
+  }
+  catch (_) {
+    postalCodeErrorMessage.value = at('addressNotFoundErrorMessage')
+  }
 }
 
 const handleClickBackCartButton = () => {
@@ -240,7 +246,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      {{ at('checkoutTitle') }}
+      {{ at("checkoutTitle") }}
     </div>
 
     <the-alert
@@ -263,7 +269,7 @@ useSeoMeta({
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
-            {{ at('customerInformationTitle') }}
+            {{ at("customerInformationTitle") }}
           </div>
 
           <!-- デフォルトの住所が登録されている場合 -->
@@ -279,7 +285,9 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="default"
                 >
-                <label for="default-radio">{{ at('shippingAvobeAdderssLabel') }}</label>
+                <label for="default-radio">{{
+                  at("shippingAvobeAdderssLabel")
+                }}</label>
               </div>
               <div class="flex items-center gap-2">
                 <input
@@ -289,18 +297,21 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="other"
                 >
-                <label for="other-radio">{{ at('shippingAnotherAdderssLabel') }}</label>
+                <label for="other-radio">{{
+                  at("shippingAnotherAdderssLabel")
+                }}</label>
               </div>
             </div>
             <template v-if="targetAddress === 'other'">
               <div
                 class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
               >
-                {{ at('shippingInformationLabel') }}
+                {{ at("shippingInformationLabel") }}
               </div>
               <the-new-address-form
                 v-model:form-data="formData"
                 form-id="new-address-form"
+                :postal-code-error-message="postalCodeErrorMessage"
                 @click:search-address-button="handleClickSearchAddressButton"
                 @submit="handleSubmitNewAddressForm"
               />
@@ -312,6 +323,7 @@ useSeoMeta({
             <the-new-address-form
               v-model:form-data="formData"
               form-id="new-address-form"
+              :postal-code-error-message="postalCodeErrorMessage"
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
             />
@@ -323,7 +335,7 @@ useSeoMeta({
           class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
         >
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-            {{ at('orderDetailsTitle') }}
+            {{ at("orderDetailsTitle") }}
           </div>
 
           <template v-if="calcCartResponseItem">
@@ -332,17 +344,17 @@ useSeoMeta({
                 {{ calcCartResponseItem.coordinator.marcheName }}
               </p>
               <p>
-                {{ at('shipFromLabel') }}
+                {{ at("shipFromLabel") }}
                 {{
                   `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
                 }}
               </p>
               <p>
-                {{ at('coordinatorLabel') }}
+                {{ at("coordinatorLabel") }}
                 {{ calcCartResponseItem.coordinator.username }}
               </p>
               <p>
-                {{ at('boxCountLabel') }}
+                {{ at("boxCountLabel") }}
                 {{ calcCartResponseItem.carts.length }}
               </p>
             </div>
@@ -354,27 +366,42 @@ useSeoMeta({
                   class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
                 >
                   <template v-if="item.product">
-                    <nuxt-img
-                      v-if="item.product.thumbnail"
-                      provider="cloudFront"
-                      :src="item.product.thumbnail.url"
-                      :alt="itemThumbnailAlt(item.product.name)"
-                      width="56px"
-                      height="56px"
-                      class="block aspect-square h-[56px] w-[56px]"
-                    />
-                    <div class="col-span-3 pl-[24px] md:pl-0">
-                      <div>{{ item.product.name }}</div>
-                      <div
-                        class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                    <template v-if="item.product.thumbnail">
+                      <template
+                        v-if="item.product.thumbnail.url.endsWith('.mp4')"
                       >
-                        {{ at('quantityLabel') }}{{ item.quantity }}
+                        <video
+                          width="56px"
+                          height="56px"
+                          :src="item.product.thumbnail.url"
+                          class="block aspect-square h-[56px] w-[56px]"
+                        />
+                      </template>
+                      <template v-else>
+                        <nuxt-img
+                          provider="cloudFront"
+                          :src="item.product.thumbnail.url"
+                          :alt="itemThumbnailAlt(item.product.name)"
+                          width="56px"
+                          height="56px"
+                          class="block aspect-square h-[56px] w-[56px]"
+                        />
+                      </template>
+                      <div class="col-span-3 pl-[24px] md:pl-0">
+                        <div>{{ item.product.name }}</div>
+                        <div
+                          class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                        >
+                          {{ at("quantityLabel") }}{{ item.quantity }}
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="flex items-center justify-self-end text-right">
-                      {{ priceFormatter(item.product.price) }}
-                    </div>
+                      <div
+                        class="flex items-center justify-self-end text-right"
+                      >
+                        {{ priceFormatter(item.product.price) }}
+                      </div>
+                    </template>
                   </template>
                 </div>
               </div>
@@ -398,7 +425,7 @@ useSeoMeta({
                         d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    {{ at('couponAppliedMessage') }}
+                    {{ at("couponAppliedMessage") }}
                   </div>
                   <button @click="handleClickCancelPromotionCodeButton">
                     <svg
@@ -433,14 +460,14 @@ useSeoMeta({
                     class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
                     @click="handleClickUsePromotionCodeButton"
                   >
-                    {{ at('applyButtonText') }}
+                    {{ at("applyButtonText") }}
                   </button>
                 </div>
                 <div
                   v-if="invalidPromotion"
                   class="mt-2 px-1 text-[12px] leading-[1.2px]"
                 >
-                  {{ at('couponInvalidMessage') }}
+                  {{ at("couponInvalidMessage") }}
                 </div>
               </template>
 
@@ -448,29 +475,29 @@ useSeoMeta({
                 class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
                 <div class="col-span-2 md:col-span-1">
-                  {{ at('itemTotalPriceLabel') }}
+                  {{ at("itemTotalPriceLabel") }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                  {{ at('applyCouponLabel') }}
+                  {{ at("applyCouponLabel") }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                  {{ at('shippingFeeLabel') }}
+                  {{ at("shippingFeeLabel") }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
-                  {{ at('calculateNextPageMessage') }}
+                  {{ at("calculateNextPageMessage") }}
                 </div>
               </div>
 
               <div
                 class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
               >
-                <div>{{ at('totalPriceLabel') }}</div>
+                <div>{{ at("totalPriceLabel") }}</div>
                 <div class="text-right">
                   {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
@@ -487,7 +514,7 @@ useSeoMeta({
             @click="handleClickBackCartButton"
           >
             <the-left-arrow-icon class="h-4 w-4" />
-            {{ at('backToCartButtonText') }}
+            {{ at("backToCartButtonText") }}
           </button>
 
           <template v-if="defaultAddress && targetAddress === 'default'">
@@ -496,7 +523,7 @@ useSeoMeta({
               class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               @click="handleClickNextStepButton(defaultAddress.id)"
             >
-              {{ at('paymentMethodButtonText') }}
+              {{ at("paymentMethodButtonText") }}
             </button>
           </template>
           <template v-else>
@@ -506,7 +533,7 @@ useSeoMeta({
               type="submit"
               form="new-address-form"
             >
-              {{ at('paymentMethodButtonText') }}
+              {{ at("paymentMethodButtonText") }}
             </button>
           </template>
         </div>

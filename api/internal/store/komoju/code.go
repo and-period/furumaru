@@ -56,3 +56,11 @@ const (
 	BankAccountTypeChecking BankAccountType = "checking" // 当座口座
 	BankAccountTypeSaving   BankAccountType = "saving"   // 貯蓄口座
 )
+
+// CaptureMode 売上処理方法
+type CaptureMode string
+
+const (
+	CaptureModeManual CaptureMode = "manual" // 仮売上・実売上
+	CaptureModeAuto   CaptureMode = "auto"   // 即時売上
+)

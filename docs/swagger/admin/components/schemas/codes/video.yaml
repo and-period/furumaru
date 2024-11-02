@@ -21,3 +21,19 @@ videoStatus:
   - 公開前
   - 限定公開
   - 公開済み
+videoViewerLogInterval:
+  type: string
+  description: オンデマンド配信ログ取得間隔
+  nullable: false
+  enum:
+  - second
+  - minute
+  - hour
+  x-enum-varnames:
+  - SECOND
+  - MINUTE
+  - HOUR
+  x-enum-description:
+  - 1秒間隔
+  - 1分間隔
+  - 1時間間隔

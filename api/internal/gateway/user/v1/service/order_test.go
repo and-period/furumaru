@@ -75,11 +75,12 @@ func TestOrderStatus(t *testing.T) {
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name      string
-		order     *entity.Order
-		addresses map[int64]*Address
-		products  map[int64]*Product
-		expect    *Order
+		name        string
+		order       *entity.Order
+		addresses   map[int64]*Address
+		products    map[int64]*Product
+		experiences map[int64]*Experience
+		expect      *Order
 	}{
 		{
 			name: "success",
@@ -134,6 +135,20 @@ func TestOrder(t *testing.T) {
 						Quantity:          1,
 						CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 						UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					},
+				},
+				OrderExperience: entity.OrderExperience{
+					ExperienceRevisionID:  1,
+					OrderID:               "order-id",
+					AdultCount:            2,
+					JuniorHighSchoolCount: 1,
+					ElementarySchoolCount: 0,
+					PreschoolCount:        0,
+					SeniorCount:           0,
+					Remarks: entity.OrderExperienceRemarks{
+						Transportation: "電車",
+						RequestedDate:  jst.Date(2024, 1, 2, 0, 0, 0, 0),
+						RequestedTime:  jst.Date(0, 1, 1, 18, 30, 0, 0),
 					},
 				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -195,6 +210,43 @@ func TestOrder(t *testing.T) {
 					},
 				},
 			},
+			experiences: map[int64]*Experience{
+				1: {
+					Experience: response.Experience{
+						ID:               "experience-id",
+						CoordinatorID:    "coordinator-id",
+						ProducerID:       "producer-id",
+						ExperienceTypeID: "experience-type-id",
+						Title:            "じゃがいも収穫",
+						Description:      "じゃがいもを収穫する体験です。",
+						Status:           int32(ExperienceStatusAccepting),
+						Media: []*response.ExperienceMedia{
+							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+						},
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 800,
+						PriceElementarySchool: 600,
+						PricePreschool:        400,
+						PriceSenior:           700,
+						RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+						RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+						RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+						PromotionVideoURL:     "http://example.com/promotion.mp4",
+						Duration:              60,
+						Direction:             "彦根駅から徒歩10分",
+						BusinessOpenTime:      "1000",
+						BusinessCloseTime:     "1800",
+						HostPostalCode:        "5220061",
+						HostCity:              "彦根市",
+						HostAddressLine1:      "金亀町１−１",
+						HostAddressLine2:      "",
+						StartAt:               1640962800,
+						EndAt:                 1640962800,
+					},
+					revisionID: 1,
+				},
+			},
 			expect: &Order{
 				Order: response.Order{
 					ID:            "order-id",
@@ -239,6 +291,22 @@ func TestOrder(t *testing.T) {
 							Quantity:      1,
 						},
 					},
+					Experience: &response.OrderExperience{
+						ExperienceID:          "experience-id",
+						AdultCount:            2,
+						AdultPrice:            1000,
+						JuniorHighSchoolCount: 1,
+						JuniorHighSchoolPrice: 800,
+						ElementarySchoolCount: 0,
+						ElementarySchoolPrice: 600,
+						PreschoolCount:        0,
+						PreschoolPrice:        400,
+						SeniorCount:           0,
+						SeniorPrice:           700,
+						Transportation:        "電車",
+						RequestedDate:         "20240102",
+						RequestedTime:         "1830",
+					},
 					BillingAddress: &response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
@@ -266,7 +334,7 @@ func TestOrder(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products))
+			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products, tt.experiences))
 		})
 	}
 }

@@ -12,6 +12,7 @@ import {
   mdiAccount,
   mdiCog,
   mdiBell,
+  mdiFootPrint,
 } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
@@ -55,6 +56,12 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/products',
     icon: mdiCart,
     title: '商品管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
+    to: '/experiences',
+    icon: mdiFootPrint,
+    title: '体験管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {

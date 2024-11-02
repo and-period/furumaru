@@ -8,6 +8,12 @@ import type {
 } from '~/types/api'
 
 export const useAddressStore = defineStore('address', {
+  persist: {
+    storage: persistedState.cookiesWithOptions({
+      sameSite: 'strict',
+    }),
+  },
+
   state: () => {
     return {
       total: 0,
@@ -25,13 +31,23 @@ export const useAddressStore = defineStore('address', {
   },
 
   actions: {
+    /**
+     * 郵便番号から住所を取得する関数
+     * @param postalCode 郵便番号
+     * @returns
+     */
     async searchAddressByPostalCode(
       postalCode: string,
     ): Promise<PostalCodeResponse> {
-      const res = await this.addressApiClient().v1SearchPostalCode({
-        postalCode,
-      })
-      return res
+      try {
+        const res = await this.addressApiClient().v1SearchPostalCode({
+          postalCode,
+        })
+        return res
+      }
+      catch (e) {
+        return this.errorHandler(e)
+      }
     },
 
     async registerAddress(payload: CreateAddressRequest): Promise<Address> {

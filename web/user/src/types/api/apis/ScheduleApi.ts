@@ -67,7 +67,6 @@ export interface V1ListLiveCommentsRequest {
     next?: string;
     start?: number;
     end?: number;
-    orders?: string;
 }
 
 export interface V1LiveSchedulesRequest {
@@ -276,10 +275,6 @@ export class ScheduleApi extends runtime.BaseAPI {
 
         if (requestParameters['end'] != null) {
             queryParameters['end'] = requestParameters['end'];
-        }
-
-        if (requestParameters['orders'] != null) {
-            queryParameters['orders'] = requestParameters['orders'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

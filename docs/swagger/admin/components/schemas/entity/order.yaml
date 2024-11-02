@@ -21,6 +21,8 @@ order:
     shippingMessage:
       type: string
       description: 発送連絡時のメッセージ
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/orderType'
     status:
       $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
     payment:
@@ -37,6 +39,8 @@ order:
       description: 注文商品一覧
       items:
         $ref: '#/orderItem'
+    experience:
+      $ref: '#/orderExperience'
     createdAt:
       type: integer
       format: int64
@@ -56,11 +60,13 @@ order:
   - promotionId
   - managementId
   - shippingMessage
+  - type
   - status
   - payment
   - refund
   - fulfillments
   - items
+  - experience
   - createdAt
   - updatedAt
   - completedAt
@@ -71,6 +77,7 @@ order:
     promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
     managementId: 1
     shippingMessage: '購入ありがとうございます'
+    type: 1
     status: 5
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -121,6 +128,22 @@ order:
       productId: 'kSByoE6FetnPs5Byk3a9Zx'
       price: 500
       quantity: 2
+    experience:
+      experienceId: 'kSByoE6FetnPs5Byk3a9Zx'
+      adultCount: 1
+      adultPrice: 1000
+      juniorHighSchoolCount: 1
+      juniorHighSchoolPrice: 800
+      elementarySchoolCount: 1
+      elementarySchoolPrice: 600
+      preschoolCount: 1
+      preschoolPrice: 400
+      seniorCount: 1
+      seniorPrice: 900
+      remarks:
+        transportation: '電車'
+        requestedDate: '20221231'
+        requestedTime: '1200'
     createdAt: 1640962800
     updatedAt: 1640962800
     completedAt: 1640962800
@@ -379,3 +402,102 @@ orderItem:
     productId: 'kSByoE6FetnPs5Byk3a9Zx'
     price: 500
     quantity: 2
+orderExperience:
+  type: object
+  description: 注文体験情報
+  properties:
+    experienceId:
+      type: string
+      description: 体験ID
+    adultCount:
+      type: integer
+      format: int64
+      description: 大人人数
+    adultPrice:
+      type: integer
+      format: int64
+      description: 大人価格（税込）
+    juniorHighSchoolCount:
+      type: integer
+      format: int64
+      description: 中学生人数
+    juniorHighSchoolPrice:
+      type: integer
+      format: int64
+      description: 中学生価格（税込）
+    elementarySchoolCount:
+      type: integer
+      format: int64
+      description: 小学生人数
+    elementarySchoolPrice:
+      type: integer
+      format: int64
+      description: 小学生価格（税込）
+    preschoolCount:
+      type: integer
+      format: int64
+      description: 幼児人数
+    preschoolPrice:
+      type: integer
+      format: int64
+      description: 幼児価格（税込）
+    seniorCount:
+      type: integer
+      format: int64
+      description: シニア人数
+    seniorPrice:
+      type: integer
+      format: int64
+      description: シニア価格（税込）
+    remarks:
+      $ref: '#/orderExperienceRemarks'
+  required:
+  - experienceId
+  - adultCount
+  - adultPrice
+  - juniorHighSchoolCount
+  - juniorHighSchoolPrice
+  - elementarySchoolCount
+  - elementarySchoolPrice
+  - preschoolCount
+  - preschoolPrice
+  - seniorCount
+  - seniorPrice
+  - remarks
+  example:
+    experienceId: 'kSByoE6FetnPs5Byk3a9Zx'
+    adultCount: 1
+    adultPrice: 1000
+    juniorHighSchoolCount: 1
+    juniorHighSchoolPrice: 800
+    elementarySchoolCount: 1
+    elementarySchoolPrice: 600
+    preschoolCount: 1
+    preschoolPrice: 400
+    seniorCount: 1
+    seniorPrice: 900
+    remarks:
+      transportation: '電車'
+      requestedDate: '20221231'
+      requestedTime: '1200'
+orderExperienceRemarks:
+  type: object
+  description: 注文体験備考
+  properties:
+    transportation:
+      type: string
+      description: 交通手段
+    requestedDate:
+      type: string
+      description: 体験希望日
+    requestedTime:
+      type: string
+      description: 体験希望時間
+  required:
+  - transportation
+  - requestedDate
+  - requestedTime
+  example:
+    transportation: '電車'
+    requestedDate: '20221231'
+    requestedTime: '1200'

@@ -41,18 +41,6 @@ const (
 	PromotionCodeTypeAlways  PromotionCodeType = 2 // 期間内回数無制限
 )
 
-type PromotionOrderBy string
-
-const (
-	PromotionOrderByTitle       PromotionOrderBy = "title"
-	PromotionOrderByPublic      PromotionOrderBy = "public"
-	PromotionOrderByPublishedAt PromotionOrderBy = "published_at"
-	PromotionOrderByStartAt     PromotionOrderBy = "start_at"
-	PromotionOrderByEndAt       PromotionOrderBy = "end_at"
-	PromotionOrderByCreatedAt   PromotionOrderBy = "created_at"
-	PromotionOrderByUpdatedAt   PromotionOrderBy = "updated_at"
-)
-
 // Promotion - プロモーション情報
 type Promotion struct {
 	ID           string            `gorm:"primaryKey;<-:create"` // プロモーションID

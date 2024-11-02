@@ -35,15 +35,16 @@ type PaymentMethodType int32
 
 const (
 	PaymentMethodTypeUnknown      PaymentMethodType = 0
-	PaymentMethodTypeCash         PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard   PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini      PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTransfer PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay       PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay      PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay       PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay   PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay        PaymentMethodType = 9 // QR決済（au PAY）
+	PaymentMethodTypeCash         PaymentMethodType = 1  // 代引支払い
+	PaymentMethodTypeCreditCard   PaymentMethodType = 2  // クレジットカード決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済
+	PaymentMethodTypeBankTransfer PaymentMethodType = 4  // 銀行振込決済
+	PaymentMethodTypePayPay       PaymentMethodType = 5  // QR決済（PayPay）
+	PaymentMethodTypeLinePay      PaymentMethodType = 6  // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay       PaymentMethodType = 7  // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
+	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済なし
 )
 
 // 注文キャンセル種別
@@ -83,7 +84,7 @@ type OrderPayment struct {
 
 type OrderPayments []*OrderPayment
 
-type NewOrderPaymentParams struct {
+type NewProductOrderPaymentParams struct {
 	OrderID    string
 	MethodType PaymentMethodType
 	Address    *entity.Address
@@ -91,6 +92,19 @@ type NewOrderPaymentParams struct {
 	Products   Products
 	Shipping   *Shipping
 	Promotion  *Promotion
+}
+
+type NewExperienceOrderPaymentParams struct {
+	OrderID               string
+	MethodType            PaymentMethodType
+	Address               *entity.Address
+	Experience            *Experience
+	Promotion             *Promotion
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
 }
 
 func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
@@ -158,29 +172,62 @@ func (t PaymentMethodType) String() string {
 		return "QR決済（楽天ペイ）"
 	case PaymentMethodTypeAUPay:
 		return "QR決済（au PAY）"
+	case PaymentMethodTypeNone:
+		return "決済なし"
 	default:
 		return ""
 	}
 }
 
-func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
+func NewProductOrderPayment(params *NewProductOrderPaymentParams) (*OrderPayment, error) {
 	if params.Address == nil {
 		return nil, errNotFoundAddress
 	}
 	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
 		return nil, err
 	}
-	sparams := &NewOrderPaymentSummaryParams{
+	sparams := &NewProductOrderPaymentSummaryParams{
 		PrefectureCode: params.Address.PrefectureCode,
 		Baskets:        params.Baskets,
 		Products:       params.Products,
 		Shipping:       params.Shipping,
 		Promotion:      params.Promotion,
 	}
-	summary, err := NewOrderPaymentSummary(sparams)
+	summary, err := NewProductOrderPaymentSummary(sparams)
 	if err != nil {
 		return nil, err
 	}
+	return &OrderPayment{
+		OrderID:           params.OrderID,
+		AddressRevisionID: params.Address.AddressRevision.ID,
+		Status:            PaymentStatusPending,
+		TransactionID:     "",
+		MethodType:        params.MethodType,
+		Subtotal:          summary.Subtotal,
+		Discount:          summary.Discount,
+		ShippingFee:       summary.ShippingFee,
+		Tax:               summary.Tax,
+		Total:             summary.Total,
+	}, nil
+}
+
+func NewExperienceOrderPayment(params *NewExperienceOrderPaymentParams) (*OrderPayment, error) {
+	if params.Address == nil {
+		return nil, errNotFoundAddress
+	}
+	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
+		return nil, err
+	}
+	sparams := &NewExperienceOrderPaymentSummaryParams{
+		Experience:            params.Experience,
+		Promotion:             params.Promotion,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+	}
+	summary := NewExperienceOrderPaymentSummary(sparams)
 	return &OrderPayment{
 		OrderID:           params.OrderID,
 		AddressRevisionID: params.Address.AddressRevision.ID,

@@ -225,7 +225,7 @@ func NewReceipt(params *ReceiptParams) exporter.Receipt {
 }
 
 func (r *Receipt) SetReceiptDetails(order *entity.Order, fulfillment *entity.OrderFulfillment) {
-	r.OrderID = order.OrderID
+	r.OrderID = order.ID
 	r.UserID = order.UserID
 	r.DivisionClientCodeType = ""
 	r.DivisionClientCode = ""

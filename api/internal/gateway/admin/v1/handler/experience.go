@@ -95,6 +95,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, res)
 			return
 		}
+		in.CoordinatorID = getAdminID(ctx)
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {
@@ -257,6 +258,10 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 		PriceSenior:           req.PriceSenior,
 		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
 		PromotionVideoURL:     req.PromotionVideoURL,
+		Duration:              req.Duration,
+		Direction:             req.Direction,
+		BusinessOpenTime:      req.BusinessOpenTime,
+		BusinessCloseTime:     req.BusinessCloseTime,
 		HostPostalCode:        req.HostPostalCode,
 		HostPrefectureCode:    req.HostPrefectureCode,
 		HostCity:              req.HostCity,
@@ -319,6 +324,10 @@ func (h *handler) UpdateExperience(ctx *gin.Context) {
 		PriceSenior:           req.PriceSenior,
 		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
 		PromotionVideoURL:     req.PromotionVideoURL,
+		Duration:              req.Duration,
+		Direction:             req.Direction,
+		BusinessOpenTime:      req.BusinessOpenTime,
+		BusinessCloseTime:     req.BusinessCloseTime,
 		HostPostalCode:        req.HostPostalCode,
 		HostPrefectureCode:    req.HostPrefectureCode,
 		HostCity:              req.HostCity,
@@ -364,6 +373,20 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 		ExperienceIDs: experienceIDs,
 	}
 	experiences, err := h.store.MultiGetExperiences(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences), nil
+}
+
+func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (service.Experiences, error) {
+	if len(revisionIDs) == 0 {
+		return service.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesByRevisionInput{
+		ExperienceRevisionIDs: revisionIDs,
+	}
+	experiences, err := h.store.MultiGetExperiencesByRevision(ctx, in)
 	if err != nil {
 		return nil, err
 	}

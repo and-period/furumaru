@@ -7,6 +7,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+type ListCategoriesOrderKey int32
+
+const (
+	ListCategoriesOrderByName ListCategoriesOrderKey = iota + 1
+)
+
 type ListCategoriesInput struct {
 	Name   string                 `validate:"max=32"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -15,7 +21,7 @@ type ListCategoriesInput struct {
 }
 
 type ListCategoriesOrder struct {
-	Key        entity.CategoryOrderBy `validate:"required"`
+	Key        ListCategoriesOrderKey `validate:"required"`
 	OrderByASC bool                   `validate:""`
 }
 
@@ -40,6 +46,12 @@ type DeleteCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
 
+type ListProductTypesOrderKey int32
+
+const (
+	ListProductTypesOrderByName ListProductTypesOrderKey = iota + 1
+)
+
 type ListProductTypesInput struct {
 	Name       string                   `validate:"max=32"`
 	CategoryID string                   `validate:""`
@@ -49,8 +61,8 @@ type ListProductTypesInput struct {
 }
 
 type ListProductTypesOrder struct {
-	Key        entity.ProductTypeOrderBy `validate:"required"`
-	OrderByASC bool                      `validate:""`
+	Key        ListProductTypesOrderKey `validate:"required"`
+	OrderByASC bool                     `validate:""`
 }
 
 type MultiGetProductTypesInput struct {
@@ -77,6 +89,12 @@ type DeleteProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 }
 
+type ListProductTagsOrderKey int32
+
+const (
+	ListProductTagsOrderByName ListProductTagsOrderKey = iota + 1
+)
+
 type ListProductTagsInput struct {
 	Name   string                  `validate:"max=32"`
 	Limit  int64                   `validate:"required,max=200"`
@@ -85,8 +103,8 @@ type ListProductTagsInput struct {
 }
 
 type ListProductTagsOrder struct {
-	Key        entity.ProductTagOrderBy `validate:"required"`
-	OrderByASC bool                     `validate:""`
+	Key        ListProductTagsOrderKey `validate:"required"`
+	OrderByASC bool                    `validate:""`
 }
 
 type MultiGetProductTagsInput struct {
@@ -159,6 +177,20 @@ type UpdateDefaultShippingRate struct {
 	PrefectureCodes []int32 `validate:"required"`
 }
 
+type ListProductsOrderKey int32
+
+const (
+	ListProductsOrderByName ListProductsOrderKey = iota + 1
+	ListProductsOrderBySoldOut
+	ListProductsOrderByPublic
+	ListProductsOrderByInventory
+	ListProductsOrderByOriginPrefecture
+	ListProductsOrderByOriginCity
+	ListProductsOrderByStartAt
+	ListProductsOrderByCreatedAt
+	ListProductsOrderByUpdatedAt
+)
+
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
 	CoordinatorID    string               `validate:""`
@@ -174,8 +206,8 @@ type ListProductsInput struct {
 }
 
 type ListProductsOrder struct {
-	Key        entity.ProductOrderBy `validate:"required"`
-	OrderByASC bool                  `validate:""`
+	Key        ListProductsOrderKey `validate:"required"`
+	OrderByASC bool                 `validate:""`
 }
 
 type MultiGetProductsInput struct {
@@ -263,6 +295,18 @@ type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
 
+type ListPromotionsOrderKey int32
+
+const (
+	ListPromotionsOrderByTitle ListPromotionsOrderKey = iota + 1
+	ListPromotionsOrderByPublic
+	ListPromotionsOrderByPublishedAt
+	ListPromotionsOrderByStartAt
+	ListPromotionsOrderByEndAt
+	ListPromotionsOrderByCreatedAt
+	ListPromotionsOrderByUpdatedAt
+)
+
 type ListPromotionsInput struct {
 	Title  string                 `validate:"max=64"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -271,8 +315,8 @@ type ListPromotionsInput struct {
 }
 
 type ListPromotionsOrder struct {
-	Key        entity.PromotionOrderBy `validate:"required"`
-	OrderByASC bool                    `validate:""`
+	Key        ListPromotionsOrderKey `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type MultiGetPromotionsInput struct {
@@ -414,6 +458,7 @@ type DeleteLiveInput struct {
 type ListOrdersInput struct {
 	CoordinatorID string               `validate:""`
 	UserID        string               `validate:""`
+	Types         []entity.OrderType   `validate:""`
 	Statuses      []entity.OrderStatus `validate:""`
 	Limit         int64                `validate:"required,max=200"`
 	Offset        int64                `validate:"min=0"`
@@ -539,19 +584,39 @@ type CheckoutAUPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutFreeInput struct {
+	CheckoutDetail
+}
+
 type CheckoutDetail struct {
-	UserID            string `validate:"required"`
-	SessionID         string `validate:"required"`
-	RequestID         string `validate:"required"`
+	CheckoutProductDetail    `validate:"-"`
+	CheckoutExperienceDetail `validate:"-"`
+	Type                     entity.OrderType `validate:"required"`
+	UserID                   string           `validate:"required"`
+	SessionID                string           `validate:"required"`
+	RequestID                string           `validate:"required"`
+	PromotionCode            string           `validate:"omitempty,len=8"`
+	BillingAddressID         string           `validate:"required"`
+	CallbackURL              string           `validate:"required,http_url"`
+	Total                    int64            `validate:"min=0"`
+}
+
+type CheckoutProductDetail struct {
 	CoordinatorID     string `validate:"required"`
 	BoxNumber         int64  `validate:"min=0"`
-	PromotionCode     string `validate:"omitempty,len=8"`
-	BillingAddressID  string `validate:"required"`
 	ShippingAddressID string `validate:"required"`
-	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
-	// CallbackURL       string `validate:"required,http_url"`
-	CallbackURL string `validate:"omitempty,http_url"`
-	Total       int64  `validate:"required"`
+}
+
+type CheckoutExperienceDetail struct {
+	ExperienceID          string `validate:"required"`
+	AdultCount            int64  `validate:"min=0"`
+	JuniorHighSchoolCount int64  `validate:"min=0"`
+	ElementarySchoolCount int64  `validate:"min=0"`
+	PreschoolCount        int64  `validate:"min=0"`
+	SeniorCount           int64  `validate:"min=0"`
+	Transportation        string `validate:"max=256"`
+	RequestedDate         string `validate:"omitempty,date"`
+	RequestedTime         string `validate:"omitempty,time"`
 }
 
 type MultiGetPaymentSystemsInput struct {
@@ -655,6 +720,10 @@ type CreateExperienceInput struct {
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
 	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`
@@ -684,6 +753,10 @@ type UpdateExperienceInput struct {
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
 	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`

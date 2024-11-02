@@ -73,7 +73,7 @@ func TestNotification_List(t *testing.T) {
 			args: args{
 				params: &database.ListNotificationsParams{
 					Orders: []*database.ListNotificationsOrder{
-						{Key: entity.NotificationOrderByPublishedAt, OrderByASC: false},
+						{Key: database.ListNotificationsOrderByPublishedAt, OrderByASC: false},
 					},
 				},
 			},

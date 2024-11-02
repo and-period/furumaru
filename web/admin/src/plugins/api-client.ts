@@ -9,6 +9,8 @@ import {
   Configuration,
   ContactApi,
   CoordinatorApi,
+  ExperienceApi,
+  ExperienceTypeApi,
   GuestApi,
   LiveApi,
   MessageApi,
@@ -66,6 +68,14 @@ export class ApiClient {
 
   coordinatorApi() {
     return new CoordinatorApi(this.config, this.basePath, this.instance)
+  }
+
+  experienceApi() {
+    return new ExperienceApi(this.config, this.basePath, this.instance)
+  }
+
+  experienceTypeApi() {
+    return new ExperienceTypeApi(this.config, this.basePath, this.instance)
   }
 
   liveApi() {

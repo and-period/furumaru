@@ -83,7 +83,7 @@ func (r AdminRole) Validate() error {
 func NewAdmin(params *NewAdminParams) *Admin {
 	return &Admin{
 		ID:            uuid.Base58Encode(uuid.New()),
-		CognitoID:     params.CognitoID,
+		CognitoID:     strings.ToLower(params.CognitoID), // Cognitoでは大文字小文字の区別がされず管理されているため
 		Role:          params.Role,
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,

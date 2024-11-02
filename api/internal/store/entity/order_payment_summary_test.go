@@ -2,14 +2,16 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/datatypes"
 )
 
-func TestOrderPaymentSummary(t *testing.T) {
+func TestProductOrderPaymentSummary(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -31,13 +33,13 @@ func TestOrderPaymentSummary(t *testing.T) {
 	}
 	tests := []struct {
 		name      string
-		params    *NewOrderPaymentSummaryParams
+		params    *NewProductOrderPaymentSummaryParams
 		expect    *OrderPaymentSummary
 		expectErr error
 	}{
 		{
 			name: "success with shipping free",
-			params: &NewOrderPaymentSummaryParams{
+			params: &NewProductOrderPaymentSummaryParams{
 				PrefectureCode: 13,
 				Baskets: CartBaskets{
 					{
@@ -106,7 +108,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		},
 		{
 			name: "success with discount",
-			params: &NewOrderPaymentSummaryParams{
+			params: &NewProductOrderPaymentSummaryParams{
 				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
@@ -184,8 +186,87 @@ func TestOrderPaymentSummary(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success free",
+			params: &NewProductOrderPaymentSummaryParams{
+				PrefectureCode: 13,
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: []*CartItem{
+							{
+								ProductID: "product-id01",
+								Quantity:  1,
+							},
+							{
+								ProductID: "product-id02",
+								Quantity:  2,
+							},
+						},
+						CoordinatorID: "coordinator-id",
+					},
+				},
+				Products: []*Product{
+					{
+						ID:   "product-id01",
+						Name: "じゃがいも",
+						ProductRevision: ProductRevision{
+							ID:        1,
+							ProductID: "product-id01",
+							Price:     0,
+						},
+					},
+					{
+						ID:   "product-id02",
+						Name: "人参",
+						ProductRevision: ProductRevision{
+							ID:        2,
+							ProductID: "product-id02",
+							Price:     0,
+						},
+					},
+				},
+				Shipping: &Shipping{
+					ID:            "coordinator-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						ShippingID:      "coordinator-id",
+						Box60Rates:      rates,
+						Box60Frozen:     800,
+						Box80Rates:      rates,
+						Box80Frozen:     800,
+						Box100Rates:     rates,
+						Box100Frozen:    800,
+						HasFreeShipping: false,
+					},
+				},
+				Promotion: &Promotion{
+					Title:        "プロモーションタイトル",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeRate,
+					DiscountRate: 10,
+					Code:         "excode01",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: &OrderPaymentSummary{
+				Subtotal:    0,
+				Discount:    0,
+				ShippingFee: 0,
+				Tax:         0,
+				TaxRate:     10,
+				Total:       0,
+			},
+			expectErr: nil,
+		},
+		{
 			name: "failed to calc total price",
-			params: &NewOrderPaymentSummaryParams{
+			params: &NewProductOrderPaymentSummaryParams{
 				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
@@ -214,7 +295,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		},
 		{
 			name: "failed to calc shipping fee",
-			params: &NewOrderPaymentSummaryParams{
+			params: &NewProductOrderPaymentSummaryParams{
 				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
@@ -272,8 +353,259 @@ func TestOrderPaymentSummary(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := NewOrderPaymentSummary(tt.params)
+			actual, err := NewProductOrderPaymentSummary(tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperienceOrderPaymentSummary(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		params *NewExperienceOrderPaymentSummaryParams
+		expect *OrderPaymentSummary
+	}{
+		{
+			name: "success with no promotion",
+			params: &NewExperienceOrderPaymentSummaryParams{
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 500,
+						PriceElementarySchool: 300,
+						PricePreschool:        0,
+						PriceSenior:           200,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion:             nil,
+				AdultCount:            2,
+				JuniorHighSchoolCount: 0,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: &OrderPaymentSummary{
+				Subtotal:    2000,
+				Discount:    0,
+				ShippingFee: 0,
+				Tax:         181,
+				TaxRate:     10,
+				Total:       2000,
+			},
+		},
+		{
+			name: "success with promotion",
+			params: &NewExperienceOrderPaymentSummaryParams{
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 500,
+						PriceElementarySchool: 300,
+						PricePreschool:        0,
+						PriceSenior:           200,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion: &Promotion{
+					Title:        "プロモーションタイトル",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeAmount,
+					DiscountRate: 500,
+					Code:         "excode02",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+				AdultCount:            1,
+				JuniorHighSchoolCount: 2,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: &OrderPaymentSummary{
+				Subtotal:    2900,
+				Discount:    500,
+				ShippingFee: 0,
+				Tax:         218,
+				TaxRate:     10,
+				Total:       2400,
+			},
+		},
+		{
+			name: "success free",
+			params: &NewExperienceOrderPaymentSummaryParams{
+				Experience: &Experience{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					ExperienceRevision: ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            0,
+						PriceJuniorHighSchool: 0,
+						PriceElementarySchool: 0,
+						PricePreschool:        0,
+						PriceSenior:           0,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+				Promotion: &Promotion{
+					Title:        "プロモーションタイトル",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeAmount,
+					DiscountRate: 500,
+					Code:         "excode02",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+				AdultCount:            1,
+				JuniorHighSchoolCount: 2,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+			},
+			expect: &OrderPaymentSummary{
+				Subtotal:    0,
+				Discount:    0,
+				ShippingFee: 0,
+				Tax:         0,
+				TaxRate:     10,
+				Total:       0,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewExperienceOrderPaymentSummary(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

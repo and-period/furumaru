@@ -30,9 +30,8 @@ const (
 )
 
 var (
-	errNotFoundCart    = errors.New("handler: not found cart")
-	errNotFoundOrder   = errors.New("handler: not found order")
-	errInvalidOrderKey = errors.New("handler: invalid order key")
+	errNotFoundCart  = errors.New("handler: not found cart")
+	errNotFoundOrder = errors.New("handler: not found order")
 )
 
 /**
@@ -150,13 +149,15 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	// ゲスト用エンドポイント
 	h.guestCheckoutRoutes(v1)
 	h.guestLiveCommentRoutes(v1)
+	h.guestVideoCommentRoutes(v1)
 	// 要認証エンドポイント
 	h.authUserRoutes(v1)
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
 	h.checkoutRoutes(v1)
-	h.orderRoutes(v1)
 	h.liveCommentRoutes(v1)
+	h.orderRoutes(v1)
+	h.videoCommentRoutes(v1)
 	h.uploadRoutes(v1)
 }
 
@@ -262,6 +263,29 @@ func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
 		defer h.waitGroup.Done()
 		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
 			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
+		}
+	}()
+	ctx.Next()
+}
+
+func (h *handler) createVideoViewerLog(ctx *gin.Context) {
+	videoID := util.GetParam(ctx, "videoId")
+	if videoID == "" {
+		ctx.Next()
+		return // オンデマンド動画IDがない場合、オンデマンド配信と関係ないエンドポイントとなるためスキップ
+	}
+	in := &media.CreateVideoViewerLogInput{
+		VideoID:   videoID,
+		SessionID: h.getSessionID(ctx),
+		UserID:    h.getUserID(ctx),
+		UserAgent: ctx.Request.UserAgent(),
+		ClientIP:  ctx.ClientIP(),
+	}
+	h.waitGroup.Add(1)
+	go func() {
+		defer h.waitGroup.Done()
+		if err := h.media.CreateVideoViewerLog(context.Background(), in); err != nil {
+			h.logger.Error("Failed to create video viewer log", zap.Error(err))
 		}
 	}()
 	ctx.Next()

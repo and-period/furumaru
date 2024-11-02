@@ -67,15 +67,11 @@ func TestBroadcastComment_List(t *testing.T) {
 					CreatedAtLt:  now().Add(time.Hour),
 					Limit:        1,
 					NextToken:    "",
-					Orders: []*database.ListBroadcastCommentsOrder{{
-						Key:        entity.BroadcastCommentOrderByCreatedAt,
-						OrderByASC: true,
-					}},
 				},
 			},
 			want: want{
-				comments: comments[0:1],
-				token:    strconv.FormatInt(comments[1].CreatedAt.UnixNano(), 10),
+				comments: comments[1:],
+				token:    strconv.FormatInt(comments[0].CreatedAt.UnixNano(), 10),
 				err:      nil,
 			},
 		},
@@ -90,7 +86,6 @@ func TestBroadcastComment_List(t *testing.T) {
 					CreatedAtLt:  now().Add(time.Hour),
 					Limit:        2,
 					NextToken:    strconv.FormatInt(comments[1].CreatedAt.UnixNano(), 10),
-					Orders:       []*database.ListBroadcastCommentsOrder{},
 				},
 			},
 			want: want{
