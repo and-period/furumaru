@@ -1,5 +1,11 @@
 # Changelog
 
+## [v3.0.1](https://github.com/and-period/furumaru/compare/v3.0.0...v3.0.1) - 2024-11-02
+- build(deps): bump the dependencies group in /api with 35 updates by @dependabot in https://github.com/and-period/furumaru/pull/2472
+- build(deps): bump the dependencies group in /docs/swagger with 2 updates by @dependabot in https://github.com/and-period/furumaru/pull/2471
+- refactor(api): 検証用にいれていたloggerの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2474
+- fix(api): DBのorderロジックを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2475
+
 ## [v3.0.0](https://github.com/and-period/furumaru/compare/v2.0.1...v3.0.0) - 2024-10-29
 - feat(user): DBクライアントの詰め替え by @taba2424 in https://github.com/and-period/furumaru/pull/2457
 - fix(user): cognito idの管理方法を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2459
