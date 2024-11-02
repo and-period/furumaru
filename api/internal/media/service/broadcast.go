@@ -26,7 +26,7 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 	}
 	orders, err := s.newListBroadcastsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: failed to create broadcast orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invlid list broadcasts orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListBroadcastsParams{
 		ScheduleIDs:   in.ScheduleIDs,
@@ -63,7 +63,7 @@ func (s *service) newListBroadcastsOrders(in []*media.ListBroadcastsOrder) ([]*d
 		case media.ListBroadcastsOrderByUpdatedAt:
 			key = database.ListBroadcastsOrderByUpdatedAt
 		default:
-			return nil, errors.New("service: invalid broadcast order key")
+			return nil, errors.New("service: invalid list broadcasts order key")
 		}
 		res[i] = &database.ListBroadcastsOrder{
 			Key:        key,
