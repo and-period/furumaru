@@ -37,6 +37,12 @@ type Broadcast interface {
 	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
 
+type ListBroadcastsOrderKey string
+
+const (
+	ListBroadcastsOrderByUpdatedAt ListBroadcastsOrderKey = "updated_at"
+)
+
 type ListBroadcastsParams struct {
 	ScheduleIDs   []string
 	CoordinatorID string
@@ -47,7 +53,7 @@ type ListBroadcastsParams struct {
 }
 
 type ListBroadcastsOrder struct {
-	Key        entity.BroadcastOrderBy
+	Key        ListBroadcastsOrderKey
 	OrderByASC bool
 }
 
