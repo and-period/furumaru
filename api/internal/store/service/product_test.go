@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
+	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -1010,6 +1012,11 @@ func TestUpdateProduct(t *testing.T) {
 func TestDeleteProduct(t *testing.T) {
 	t.Parallel()
 
+	videosIn := &media.ListProductVideosInput{
+		ProductID: "product-id",
+	}
+	videos := mentity.Videos{}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -1019,6 +1026,7 @@ func TestDeleteProduct(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListProductVideos(ctx, videosIn).Return(videos, nil)
 				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(nil)
 			},
 			input: &store.DeleteProductInput{
@@ -1033,8 +1041,30 @@ func TestDeleteProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to list product videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListProductVideos(ctx, videosIn).Return(nil, assert.AnError)
+			},
+			input: &store.DeleteProductInput{
+				ProductID: "product-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "product has videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				videos := mentity.Videos{{ID: "video-id"}}
+				mocks.media.EXPECT().ListProductVideos(ctx, videosIn).Return(videos, nil)
+			},
+			input: &store.DeleteProductInput{
+				ProductID: "product-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to delete product",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListProductVideos(ctx, videosIn).Return(videos, nil)
 				mocks.db.Product.EXPECT().Delete(ctx, "product-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductInput{

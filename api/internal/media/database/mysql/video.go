@@ -82,6 +82,46 @@ func (v *video) List(ctx context.Context, params *database.ListVideosParams, fie
 	return videos, nil
 }
 
+func (v *video) ListByProductID(ctx context.Context, productID string, fields ...string) (entity.Videos, error) {
+	var videos entity.Videos
+
+	sub := v.db.DB.
+		Table(videoProductTable).
+		Select("video_id").
+		Where("product_id = ?", productID)
+	stmt := v.db.DB.WithContext(ctx).
+		Table(videoTable).
+		Where("video_id IN (?)", sub)
+
+	if err := stmt.Find(&videos).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := v.fill(ctx, v.db.DB, videos...); err != nil {
+		return nil, dbError(err)
+	}
+	return videos, nil
+}
+
+func (v *video) ListByExperienceID(ctx context.Context, experienceID string, fields ...string) (entity.Videos, error) {
+	var videos entity.Videos
+
+	sub := v.db.DB.
+		Table(videoExperienceTable).
+		Select("video_id").
+		Where("experience_id = ?", experienceID)
+	stmt := v.db.DB.WithContext(ctx).
+		Table(videoTable).
+		Where("video_id IN (?)", sub)
+
+	if err := stmt.Find(&videos).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := v.fill(ctx, v.db.DB, videos...); err != nil {
+		return nil, dbError(err)
+	}
+	return videos, nil
+}
+
 func (v *video) Count(ctx context.Context, params *database.ListVideosParams) (int64, error) {
 	p := listVideosParams(*params)
 

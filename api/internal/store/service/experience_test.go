@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
+	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -1234,6 +1236,11 @@ func TestUpdateExperience(t *testing.T) {
 func TestDeleteExperience(t *testing.T) {
 	t.Parallel()
 
+	videosIn := &media.ListExperienceVideosInput{
+		ExperienceID: "experience-id",
+	}
+	videos := mentity.Videos{}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -1243,6 +1250,7 @@ func TestDeleteExperience(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListExperienceVideos(ctx, videosIn).Return(videos, nil)
 				mocks.db.Experience.EXPECT().Delete(ctx, "experience-id").Return(nil)
 			},
 			input: &store.DeleteExperienceInput{
@@ -1257,8 +1265,30 @@ func TestDeleteExperience(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to list experience videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListExperienceVideos(ctx, videosIn).Return(nil, assert.AnError)
+			},
+			input: &store.DeleteExperienceInput{
+				ExperienceID: "experience-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "experience has videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				videos := mentity.Videos{{ID: "video-id"}}
+				mocks.media.EXPECT().ListExperienceVideos(ctx, videosIn).Return(videos, nil)
+			},
+			input: &store.DeleteExperienceInput{
+				ExperienceID: "experience-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to delete experience",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.media.EXPECT().ListExperienceVideos(ctx, videosIn).Return(videos, nil)
 				mocks.db.Experience.EXPECT().Delete(ctx, "experience-id").Return(assert.AnError)
 			},
 			input: &store.DeleteExperienceInput{

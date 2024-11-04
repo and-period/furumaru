@@ -154,6 +154,174 @@ func TestListVideos(t *testing.T) {
 	}
 }
 
+func TestListProductVideos(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	videos := entity.Videos{
+		{
+			ID:            "video-id",
+			CoordinatorID: "coordinator-id",
+			ProductIDs:    []string{"product-id"},
+			ExperienceIDs: []string{"experience-id"},
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいも収穫の説明",
+			Status:        entity.VideoStatusPublished,
+			ThumbnailURL:  "https://example.com/thumbnail.jpg",
+			VideoURL:      "https://example.com/video.mp4",
+			Public:        true,
+			Limited:       false,
+			VideoProducts: []*entity.VideoProduct{{
+				VideoID:   "video-id",
+				ProductID: "product-id",
+				Priority:  1,
+				CreatedAt: now,
+				UpdatedAt: now,
+			}},
+			VideoExperiences: []*entity.VideoExperience{{
+				VideoID:      "video-id",
+				ExperienceID: "experience-id",
+				Priority:     1,
+				CreatedAt:    now,
+				UpdatedAt:    now,
+			}},
+			PublishedAt: now.AddDate(0, 0, -1),
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.ListProductVideosInput
+		expect    entity.Videos
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().ListByProductID(gomock.Any(), "product-id").Return(videos, nil)
+			},
+			input: &media.ListProductVideosInput{
+				ProductID: "product-id",
+			},
+			expect:    videos,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.ListProductVideosInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().ListByProductID(gomock.Any(), "product-id").Return(nil, assert.AnError)
+			},
+			input: &media.ListProductVideosInput{
+				ProductID: "product-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListProductVideos(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestListExperienceVideos(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	videos := entity.Videos{
+		{
+			ID:            "video-id",
+			CoordinatorID: "coordinator-id",
+			ProductIDs:    []string{"product-id"},
+			ExperienceIDs: []string{"experience-id"},
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいも収穫の説明",
+			Status:        entity.VideoStatusPublished,
+			ThumbnailURL:  "https://example.com/thumbnail.jpg",
+			VideoURL:      "https://example.com/video.mp4",
+			Public:        true,
+			Limited:       false,
+			VideoProducts: []*entity.VideoProduct{{
+				VideoID:   "video-id",
+				ProductID: "product-id",
+				Priority:  1,
+				CreatedAt: now,
+				UpdatedAt: now,
+			}},
+			VideoExperiences: []*entity.VideoExperience{{
+				VideoID:      "video-id",
+				ExperienceID: "experience-id",
+				Priority:     1,
+				CreatedAt:    now,
+				UpdatedAt:    now,
+			}},
+			PublishedAt: now.AddDate(0, 0, -1),
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.ListExperienceVideosInput
+		expect    entity.Videos
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().ListByExperienceID(gomock.Any(), "experience-id").Return(videos, nil)
+			},
+			input: &media.ListExperienceVideosInput{
+				ExperienceID: "experience-id",
+			},
+			expect:    videos,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.ListExperienceVideosInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().ListByExperienceID(gomock.Any(), "experience-id").Return(nil, assert.AnError)
+			},
+			input: &media.ListExperienceVideosInput{
+				ExperienceID: "experience-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListExperienceVideos(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetVideo(t *testing.T) {
 	t.Parallel()
 
