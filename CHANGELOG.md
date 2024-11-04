@@ -1,5 +1,10 @@
 # Changelog
 
+## [v3.0.2](https://github.com/and-period/furumaru/compare/v3.0.1...v3.0.2) - 2024-11-04
+- Feat/experience by @hamachans in https://github.com/and-period/furumaru/pull/2423
+- feat(web): ヘルスチェック用のページを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2477
+- fix(media): メディア配信周りの改善 by @taba2424 in https://github.com/and-period/furumaru/pull/2478
+
 ## [v3.0.1](https://github.com/and-period/furumaru/compare/v3.0.0...v3.0.1) - 2024-11-02
 - build(deps): bump the dependencies group in /api with 35 updates by @dependabot in https://github.com/and-period/furumaru/pull/2472
 - build(deps): bump the dependencies group in /docs/swagger with 2 updates by @dependabot in https://github.com/and-period/furumaru/pull/2471
