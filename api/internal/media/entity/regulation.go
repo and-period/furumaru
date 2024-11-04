@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -45,6 +46,8 @@ const (
 	VideoMP4Path                  = "videos/mp4"                   // オンデマンド配信動画(mp4)
 )
 
+const defaultCacheTTL = 14 * 24 * time.Hour // 2週間
+
 // ConversionType - ファイルの変換種別
 type ConversionType int32
 
@@ -58,129 +61,152 @@ type Regulation struct {
 	MaxSize        int64            // ファイルサイズ上限
 	Formats        *set.Set[string] // ファイル形式
 	ConversionType ConversionType   // ファイル変換が必要な場合の変換種別
+	CacheTTL       time.Duration    // キャッシュの有効期限
 	dir            string           // 保管先ディレクトリPath
 }
 
 var (
 	// ライブ配信関連
 	BroadcastArchiveRegulation = &Regulation{
-		MaxSize: 3 << 30, // 3GB
-		Formats: set.New("video/mp4"),
-		dir:     BroadcastArchiveMP4Path,
+		MaxSize:  3 << 30, // 3GB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      BroadcastArchiveMP4Path,
 	}
 	BroadcastLiveMP4Regulation = &Regulation{
-		MaxSize: 3 << 30, // 3GB
-		Formats: set.New("video/mp4"),
-		dir:     BroadcastLiveMP4Path,
+		MaxSize:  3 << 30, // 3GB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      BroadcastLiveMP4Path,
 	}
 	// コーディネータ関連
 	CoordinatorThumbnailRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     CoordinatorThumbnailPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      CoordinatorThumbnailPath,
 	}
 	CoordinatorHeaderRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     CoordinatorHeaderPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      CoordinatorHeaderPath,
 	}
 	CoordinatorPromotionVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     CoordinatorPromotionVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      CoordinatorPromotionVideoPath,
 	}
 	CoordinatorBonusVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     CoordinatorBonusVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      CoordinatorBonusVideoPath,
 	}
 	// 生産者関連
 	ProducerThumbnailRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProducerThumbnailPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProducerThumbnailPath,
 	}
 	ProducerHeaderRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProducerHeaderPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProducerHeaderPath,
 	}
 	ProducerPromotionVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ProducerPromotionVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProducerPromotionVideoPath,
 	}
 	ProducerBonusVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ProducerBonusVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProducerBonusVideoPath,
 	}
 	// 購入者関連
 	UserThumbnailRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     UserThumbnailPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      UserThumbnailPath,
 	}
 	// 商品関連
 	ProductMediaImageRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProductMediaImagePath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProductMediaImagePath,
 	}
 	ProductMediaVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ProductMediaVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProductMediaVideoPath,
 	}
 	// 品目関連
 	ProductTypeIconRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProductTypeIconPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ProductTypeIconPath,
 	}
 	// 開催スケジュール関連
 	ScheduleThumbnailRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ScheduleThumbnailPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ScheduleThumbnailPath,
 	}
 	ScheduleImageRegulation = &Regulation{
 		MaxSize:        10 << 20, // 10MB
 		Formats:        set.New("image/png", "image/jpeg"),
 		ConversionType: ConversionTypeJPEGToPNG, // MediaLiveの仕様に合わせてPNG形式に変換
+		CacheTTL:       defaultCacheTTL,
 		dir:            ScheduleImagePath,
 	}
 	ScheduleOpeningVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ScheduleOpeningVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ScheduleOpeningVideoPath,
 	}
 	// 体験関連
 	ExperienceMediaImageRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ExperienceMediaImagePath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ExperienceMediaImagePath,
 	}
 	ExperienceMediaVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ExperienceMediaVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ExperienceMediaVideoPath,
 	}
 	ExperiencePromotionVideoRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
-		Formats: set.New("video/mp4"),
-		dir:     ExperiencePromotionVideoPath,
+		MaxSize:  200 << 20, // 200MB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      ExperiencePromotionVideoPath,
 	}
 	// オンデマンド配信関連
 	VideoThumbnailRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		dir:     VideoThumbnailPath,
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      VideoThumbnailPath,
 	}
 	VideoMP4Regulation = &Regulation{
-		MaxSize: 3 << 30, // 3GB
-		Formats: set.New("video/mp4"),
-		dir:     VideoMP4Path,
+		MaxSize:  3 << 30, // 3GB
+		Formats:  set.New("video/mp4"),
+		CacheTTL: defaultCacheTTL,
+		dir:      VideoMP4Path,
 	}
 )
 

@@ -85,7 +85,6 @@ func (a *app) inject(ctx context.Context) error {
 	uploaderOpts := []uploader.Option{
 		uploader.WithLogger(params.logger),
 		uploader.WithStorageURL(a.CDNURL),
-		uploader.WithCacheTTL(a.CDNCacheTTL),
 	}
 	a.uploader = uploader.NewUploader(uploaderParams, uploaderOpts...)
 	a.logger = params.logger

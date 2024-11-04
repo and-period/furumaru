@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"sync"
 	"time"
@@ -33,17 +34,24 @@ type closer struct {
 	sfn         sfn.StepFunction
 	media       medialive.MediaLive
 	convert     mediaconvert.MediaConvert
+	storageURL  func() *url.URL
 	bucketName  string
 	jobTemplate string
 }
 
 func NewCloser(params *Params, opts ...Option) Scheduler {
+	defaultURL, _ := params.Storage.GetHost()
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 2,
+		storageURL:  defaultURL,
 	}
 	for i := range opts {
 		opts[i](dopts)
+	}
+	storageURL := func() *url.URL {
+		url := *dopts.storageURL // copy
+		return &url
 	}
 	return &closer{
 		now:         jst.Now,
@@ -56,6 +64,7 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 		sfn:         params.StepFunction,
 		media:       params.MediaLive,
 		convert:     params.MediaConvert,
+		storageURL:  storageURL,
 		bucketName:  params.ArchiveBucketName,
 		jobTemplate: params.ConvertJobTemplate,
 	}
@@ -193,15 +202,13 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			}
 			c.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))
 
-			archiveURL, err := c.storage.GenerateObjectURL(filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename))
-			if err != nil {
-				c.logger.Error("Failed to generate archive url", zap.String("scheduleId", schedule.ID), zap.Error(err))
-				return err
-			}
+			archiveURL := c.storageURL()
+			archiveURL.Path = filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename)
+
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusDisabled,
 				UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-					ArchiveURL: archiveURL,
+					ArchiveURL: archiveURL.String(),
 				},
 			}
 			return c.db.Broadcast.Update(ectx, broadcast.ID, params)

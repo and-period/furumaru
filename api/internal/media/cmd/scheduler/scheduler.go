@@ -40,6 +40,7 @@ type app struct {
 	MediaConvertEndpoint    string `default:""                envconfig:"MEDIA_CONVERT_ENDPOINT"`
 	MediaConvertRoleARN     string `default:""                envconfig:"MEDIA_CONVERT_ROLE_ARN"`
 	MediaConvertJobTemplate string `default:""                envconfig:"MEDIA_CONVERT_JOB_TEMPLATE"`
+	CDNURL                  string `default:""                envconfig:"CDN_URL"`
 }
 
 //nolint:revive
