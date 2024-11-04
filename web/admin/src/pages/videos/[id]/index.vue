@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { useVideoStore, useProductStore } from '~/store'
+import { useVideoStore, useProductStore, useExperienceStore } from '~/store'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
-import { getProductThumbnailUrl } from '~/lib/formatter'
+import {
+  getProductThumbnailUrl,
+  getExperienceThumbnailUrl,
+} from '~/lib/formatter'
 
 const route = useRoute()
 const router = useRouter()
@@ -10,6 +13,9 @@ const videoStore = useVideoStore()
 
 const productStore = useProductStore()
 const { products } = storeToRefs(productStore)
+
+const experienceStore = useExperienceStore()
+const { experiences } = storeToRefs(experienceStore)
 
 const videoId = route.params.id as string
 
@@ -125,8 +131,12 @@ const handleUploadThumbnail = async (file: File) => {
 const isOpenLinkProductDialog = ref<boolean>(false)
 
 const handleClickLinkProductButton = () => {
-  console.log('link product')
   isOpenLinkProductDialog.value = true
+}
+
+const handleClickLinkExperienceButton = () => {
+  console.log('link experience')
+  isOpenLinkExperienceDialog.value = true
 }
 
 const linkTargetProductIds = ref<string[]>([])
@@ -181,6 +191,61 @@ const handleClickLinkProductAddButton = () => {
 }
 
 searchProducts('')
+
+const isOpenLinkExperienceDialog = ref<boolean>(false)
+const linkTargetExperienceIds = ref<string[]>([])
+
+/**
+ * 体験検索ステータス
+ */
+const experienceSearchStatus = ref<{
+  isLoading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({
+  isLoading: false,
+  hasError: false,
+  errorMessage: '',
+})
+
+/**
+ * 体験検索関数
+ * @param text
+ */
+const searchExperiences = (text: string) => {
+  try {
+    experienceSearchStatus.value.isLoading = true
+    experienceStore.searchExperiences(text)
+  }
+  catch (error) {
+    experienceSearchStatus.value.hasError = true
+  }
+  finally {
+    experienceSearchStatus.value.isLoading = false
+  }
+}
+
+/**
+ * 紐づけ対象の体験をフォームに加える処理
+ */
+const handleClickLinkExperienceAddButton = () => {
+  // 未選択の体験でかつ選択対象の体験IDリストに含まれる体験を対象とする
+  const targetExperiences = experiences.value
+    .filter((experience) => {
+      return linkTargetExperienceIds.value.includes(experience.id)
+    })
+    .filter((experience) => {
+      return !formData.value.experienceIds.includes(experience.id)
+    })
+
+  selectedExperiences.value.push(...targetExperiences)
+  formData.value.experienceIds.push(
+    ...targetExperiences.map(experience => experience.id),
+  )
+  isOpenLinkExperienceDialog.value = false
+}
+
+searchExperiences('')
 
 const handleSubmit = async () => {
   try {
@@ -246,6 +311,53 @@ const handleClickBackButton = () => {
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="isOpenLinkExperienceDialog">
+      <v-card>
+        <v-card-title>体験紐づけ</v-card-title>
+        <v-card-text>
+          <v-autocomplete
+            v-model="linkTargetExperienceIds"
+            :items="experiences"
+            item-title="title"
+            item-value="id"
+            label="体験名"
+            messages="体験名を入力することで紐づける体験を検索できます。"
+            :loading="experienceSearchStatus.isLoading"
+            multiple
+            chips
+            @update:search-text="searchExperiences"
+          >
+            <template #chip="{ props: val, item }">
+              <v-chip
+                v-bind="val"
+                :text="item.raw.title"
+                rounded
+                class="px-4"
+                variant="outlined"
+                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
+              />
+            </template>
+            <template #item="{ props: val, item }">
+              <v-list-item
+                v-bind="val"
+                :title="item.raw.title"
+                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
+              />
+            </template>
+          </v-autocomplete>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            variant="outlined"
+            @click="handleClickLinkExperienceAddButton"
+          >
+            追加
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card
       class="mb-16"
       :loading="isInitLoading"
@@ -267,6 +379,7 @@ const handleClickBackButton = () => {
             @update:video="handleUploadVideo"
             @update:thumbnail="handleUploadThumbnail"
             @click:link-product="handleClickLinkProductButton"
+            @click:link-experience="handleClickLinkExperienceButton"
             @submit="handleSubmit"
           />
         </template>
