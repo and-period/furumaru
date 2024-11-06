@@ -211,7 +211,7 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				experienceID: "product-id",
+				experienceID: "experience-id",
 			},
 			want: want{
 				videos: videos,
@@ -232,7 +232,7 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 			db := &video{db: db, now: now}
 			actual, err := db.ListByExperienceID(ctx, tt.args.experienceID)
 			assert.ErrorIs(t, err, tt.want.err)
-			assert.ElementsMatch(t, tt.want.videos, actual)
+			assert.Equal(t, tt.want.videos, actual)
 		})
 	}
 }
