@@ -1,3 +1,9 @@
+<script lang="ts">
+definePageMeta({
+  layout: 'health',
+})
+</script>
+
 <template>
   <v-app dark>
     <h1>
