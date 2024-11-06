@@ -50,8 +50,8 @@ require (
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.8.0
-	google.golang.org/api v0.203.0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53
+	google.golang.org/api v0.204.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241021214115-324edc3d5d38
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 	googlemaps.github.io/maps v1.7.0
@@ -64,12 +64,12 @@ require (
 
 require (
 	cel.dev/expr v0.18.0 // indirect
-	cloud.google.com/go/auth v0.9.9 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
+	cloud.google.com/go/auth v0.10.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.5 // indirect
 	cloud.google.com/go/monitoring v1.21.2 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.24.3 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.48.3 // indirect
-	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.48.3 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.25.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.49.0 // indirect
+	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.49.0 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.7.1 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
@@ -93,7 +93,7 @@ require (
 	cloud.google.com/go/firestore v1.17.0 // indirect
 	cloud.google.com/go/iam v1.2.2 // indirect
 	cloud.google.com/go/longrunning v0.6.2 // indirect
-	cloud.google.com/go/storage v1.45.0 // indirect
+	cloud.google.com/go/storage v1.46.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.6 // indirect
@@ -114,7 +114,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.32.3 // indirect
 	github.com/aws/smithy-go v1.22.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.12.3 // indirect
+	github.com/bytedance/sonic v1.12.4 // indirect
 	github.com/casbin/govaluate v1.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -126,7 +126,7 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
@@ -168,7 +168,7 @@ require (
 	golang.org/x/text v0.19.0
 	golang.org/x/time v0.7.0 // indirect
 	google.golang.org/appengine/v2 v2.0.6 // indirect
-	google.golang.org/genproto v0.0.0-20241015192408-796eee8c2d53 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9 // indirect
+	google.golang.org/genproto v0.0.0-20241021214115-324edc3d5d38 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
