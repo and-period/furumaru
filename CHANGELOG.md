@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.0.4](https://github.com/and-period/furumaru/compare/v3.0.3...v3.0.4) - 2024-11-06
+- fix(user): 外形監視用のページのscriptを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2485
+
 ## [v3.0.3](https://github.com/and-period/furumaru/compare/v3.0.2...v3.0.3) - 2024-11-06
 - fix(user): 外形監視用のページではcart情報を取らない by @taba2424 in https://github.com/and-period/furumaru/pull/2482
 
