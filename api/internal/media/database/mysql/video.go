@@ -91,7 +91,7 @@ func (v *video) ListByProductID(ctx context.Context, productID string, fields ..
 		Where("product_id = ?", productID)
 	stmt := v.db.DB.WithContext(ctx).
 		Table(videoTable).
-		Where("video_id IN (?)", sub)
+		Where("id IN (?)", sub)
 
 	if err := stmt.Find(&videos).Error; err != nil {
 		return nil, dbError(err)
@@ -111,7 +111,7 @@ func (v *video) ListByExperienceID(ctx context.Context, experienceID string, fie
 		Where("experience_id = ?", experienceID)
 	stmt := v.db.DB.WithContext(ctx).
 		Table(videoTable).
-		Where("video_id IN (?)", sub)
+		Where("id IN (?)", sub)
 
 	if err := stmt.Find(&videos).Error; err != nil {
 		return nil, dbError(err)
