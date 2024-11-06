@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.0.3](https://github.com/and-period/furumaru/compare/v3.0.2...v3.0.3) - 2024-11-06
+- fix(user): 外形監視用のページではcart情報を取らない by @taba2424 in https://github.com/and-period/furumaru/pull/2482
+- fix(api): オンデマンド配信に紐づいている商品・体験が削除できないように by @taba2424 in https://github.com/and-period/furumaru/pull/2479
+
 ## [v3.0.2](https://github.com/and-period/furumaru/compare/v3.0.1...v3.0.2) - 2024-11-04
 - Feat/experience by @hamachans in https://github.com/and-period/furumaru/pull/2423
 - feat(web): ヘルスチェック用のページを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2477
