@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -234,6 +235,16 @@ func (s *service) DeleteExperience(ctx context.Context, in *store.DeleteExperien
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.Experience.Delete(ctx, in.ExperienceID)
+	videosIn := &media.ListExperienceVideosInput{
+		ExperienceID: in.ExperienceID,
+	}
+	videos, err := s.media.ListExperienceVideos(ctx, videosIn)
+	if err != nil {
+		return internalError(err)
+	}
+	if len(videos) > 0 {
+		return fmt.Errorf("service: experience has videos: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.db.Experience.Delete(ctx, in.ExperienceID)
 	return internalError(err)
 }

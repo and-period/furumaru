@@ -47,6 +47,22 @@ func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (en
 	return videos, total, nil
 }
 
+func (s *service) ListProductVideos(ctx context.Context, in *media.ListProductVideosInput) (entity.Videos, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	videos, err := s.db.Video.ListByProductID(ctx, in.ProductID)
+	return videos, internalError(err)
+}
+
+func (s *service) ListExperienceVideos(ctx context.Context, in *media.ListExperienceVideosInput) (entity.Videos, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	videos, err := s.db.Video.ListByExperienceID(ctx, in.ExperienceID)
+	return videos, internalError(err)
+}
+
 func (s *service) GetVideo(ctx context.Context, in *media.GetVideoInput) (*entity.Video, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

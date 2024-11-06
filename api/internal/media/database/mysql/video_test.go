@@ -91,6 +91,152 @@ func TestVideo_List(t *testing.T) {
 	}
 }
 
+func TestVideo_ListByProductID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	videos := make(entity.Videos, 3)
+	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0].PublishedAt = now().AddDate(0, 0, -1)
+	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1].PublishedAt = now().AddDate(0, 0, -2)
+	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2].PublishedAt = now().AddDate(0, -1, 0)
+	err = db.DB.Create(&videos).Error
+	require.NoError(t, err)
+	for _, video := range videos {
+		err = db.DB.Create(&video.VideoProducts).Error
+		require.NoError(t, err)
+		err = db.DB.Create(&video.VideoExperiences).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		productID string
+	}
+	type want struct {
+		videos entity.Videos
+		err    error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				productID: "product-id",
+			},
+			want: want{
+				videos: videos,
+				err:    nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &video{db: db, now: now}
+			actual, err := db.ListByProductID(ctx, tt.args.productID)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.ElementsMatch(t, tt.want.videos, actual)
+		})
+	}
+}
+
+func TestVideo_ListByExperienceID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	videos := make(entity.Videos, 3)
+	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0].PublishedAt = now().AddDate(0, 0, -1)
+	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1].PublishedAt = now().AddDate(0, 0, -2)
+	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2].PublishedAt = now().AddDate(0, -1, 0)
+	err = db.DB.Create(&videos).Error
+	require.NoError(t, err)
+	for _, video := range videos {
+		err = db.DB.Create(&video.VideoProducts).Error
+		require.NoError(t, err)
+		err = db.DB.Create(&video.VideoExperiences).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		experienceID string
+	}
+	type want struct {
+		videos entity.Videos
+		err    error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				experienceID: "experience-id",
+			},
+			want: want{
+				videos: videos,
+				err:    nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &video{db: db, now: now}
+			actual, err := db.ListByExperienceID(ctx, tt.args.experienceID)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.videos, actual)
+		})
+	}
+}
+
 func TestVideo_Count(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

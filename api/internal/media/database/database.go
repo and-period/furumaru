@@ -131,6 +131,8 @@ type AggregateBroadcastViewerLogsParams struct {
 
 type Video interface {
 	List(ctx context.Context, params *ListVideosParams, fields ...string) (entity.Videos, error)
+	ListByProductID(ctx context.Context, productID string, fields ...string) (entity.Videos, error)
+	ListByExperienceID(ctx context.Context, experienceID string, fields ...string) (entity.Videos, error)
 	Count(ctx context.Context, params *ListVideosParams) (int64, error)
 	Get(ctx context.Context, videoID string, fields ...string) (*entity.Video, error)
 	Create(ctx context.Context, video *entity.Video) error

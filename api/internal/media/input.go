@@ -152,6 +152,14 @@ type ListVideosInput struct {
 	NoLimit               bool   `validate:""`
 }
 
+type ListProductVideosInput struct {
+	ProductID string `validate:"required"`
+}
+
+type ListExperienceVideosInput struct {
+	ExperienceID string `validate:"required"`
+}
+
 type GetVideoInput struct {
 	VideoID string `validate:"required"`
 }
