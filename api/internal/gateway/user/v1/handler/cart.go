@@ -26,6 +26,18 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) GetCart(ctx *gin.Context) {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		// ブラウザ以外の場合は空のレスポンスを返す
+		res := &response.CartResponse{
+			Carts:        []*response.Cart{},
+			Coordinators: []*response.Coordinator{},
+			Products:     []*response.Product{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
 	in := &store.GetCartInput{
 		SessionID: h.getSessionID(ctx),
 	}

@@ -246,6 +246,11 @@ func (h *handler) authentication(ctx *gin.Context) {
 }
 
 func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		ctx.Next()
+		return // サーバーサイドからのリクエストはスキップする
+	}
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	if scheduleID == "" {
 		ctx.Next()
@@ -269,6 +274,11 @@ func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
 }
 
 func (h *handler) createVideoViewerLog(ctx *gin.Context) {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		ctx.Next()
+		return // サーバーサイドからのリクエストはスキップする
+	}
 	videoID := util.GetParam(ctx, "videoId")
 	if videoID == "" {
 		ctx.Next()
