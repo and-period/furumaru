@@ -316,6 +316,10 @@ func (h *handler) setAuth(ctx *gin.Context) error {
 }
 
 func (h *handler) getSessionID(ctx *gin.Context) string {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		return "" // サーバーサイドからのリクエストはセッションIDを生成しない
+	}
 	sessionID, err := ctx.Cookie(sessionKey)
 	if err == nil && sessionID != "" {
 		return sessionID
