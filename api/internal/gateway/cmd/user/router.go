@@ -131,6 +131,7 @@ func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter
 		zap.String("route", ctx.FullPath()),
 		zap.String("ip", ctx.ClientIP()),
 		zap.String("userAgent", ctx.Request.UserAgent()),
+		zap.String("referer", ctx.GetHeader("Referer")),
 		zap.Int64("latency", endAt.Sub(startAt).Milliseconds()),
 		zap.String("requestedAt", startAt.Format(time.RFC3339Nano)),
 		zap.String("responsedAt", endAt.Format(time.RFC3339Nano)),
