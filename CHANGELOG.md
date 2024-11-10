@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.0.6](https://github.com/and-period/furumaru/compare/v3.0.5...v3.0.6) - 2024-11-10
+- feat(api): UserAgentがnodeの場合はいくつか処理をスキップするように by @taba2424 in https://github.com/and-period/furumaru/pull/2489
+
 ## [v3.0.5](https://github.com/and-period/furumaru/compare/v3.0.4...v3.0.5) - 2024-11-10
 - build(deps): bump the dependencies group in /api with 12 updates by @dependabot in https://github.com/and-period/furumaru/pull/2480
 - feat(api): アクセスログにrefererを含める by @taba2424 in https://github.com/and-period/furumaru/pull/2488
