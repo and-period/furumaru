@@ -20,6 +20,38 @@ export const useExperienceStore = defineStore('experience', {
 
   actions: {
     /**
+     * 体験検索関数
+     */
+    async searchExperiences(
+      name: string = '',
+      producerId: string = '',
+      experienceId: string[] = [],
+    ) {
+      try {
+        const res = await apiClient
+          .experienceApi()
+          .v1ListExperiences(undefined, undefined, producerId, name)
+        const experiences: Experience[] = []
+        this.experiences.forEach((experience) => {
+          if (experienceId.includes(experience.id)) {
+            experiences.push(experience)
+          }
+        })
+        res.data.experiences.forEach((experience) => {
+          if (experiences.find(e => e.id === experience.id)) {
+            return
+          }
+          experiences.push(experience)
+        })
+        this.experiences = experiences
+        this.totalItems = res.data.total
+      }
+      catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * 体験一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置

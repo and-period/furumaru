@@ -6,6 +6,7 @@ import {
   mdiCart,
   mdiAntenna,
   mdiAccountDetails,
+  mdiVideo,
   mdiBellRing,
   mdiCash100,
   mdiAccount,
@@ -67,6 +68,12 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
+    to: '/videos',
+    icon: mdiVideo,
+    title: '動画管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
