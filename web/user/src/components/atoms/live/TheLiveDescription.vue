@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { datetimeformatterFromUnixtime } from '~/lib/dayjs'
 import type { I18n } from '~/types/locales'
+import type { Snackbar } from '~/types/props'
 
 interface Props {
   title: string
@@ -16,6 +17,8 @@ interface Props {
 }
 
 const i18n = useI18n()
+
+const snackbarItems = ref<Snackbar[]>([])
 
 const dt = (str: keyof I18n['lives']['details']) => {
   return i18n.t(`lives.details.${str}`)
@@ -39,6 +42,14 @@ const handleCLickCoordinator = () => {
   emits('click:coordinator', props.coordinatorId)
 }
 
+const handleClickCopyButton = async () => {
+  snackbarItems.value.push({
+    text: 'リンクをコピーしました',
+    isShow: true,
+  })
+  await navigator.clipboard.writeText(window.location.href)
+}
+
 const handleClickXButton = () => {
   const shareXUrl = `https://twitter.com/intent/tweet?text=${props.title}&url=${window.location.href}`
   window.open(shareXUrl, '_blank')
@@ -56,6 +67,15 @@ const handleClickShowDetailButton = () => {
 </script>
 
 <template>
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
+    <the-snackbar
+      v-model:is-show="snackbarItem.isShow"
+      :text="snackbarItem.text"
+    />
+  </template>
   <div class="mt-2 px-4">
     <div class="md:flex block md:justify-between">
       <div class="flex items-center gap-2">
@@ -94,6 +114,12 @@ const handleClickShowDetailButton = () => {
         </template>
         <template #content>
           <div class="flex flex-col">
+            <button
+              class="px-4 py-2 text-left hover:bg-gray-200"
+              @click="handleClickCopyButton"
+            >
+              リンクをコピー
+            </button>
             <button
               class="px-4 py-2 text-left hover:bg-gray-200"
               @click="handleClickXButton"
