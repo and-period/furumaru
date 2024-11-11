@@ -169,8 +169,23 @@ searchProducts('')
 const isOpenLinkExperienceDialog = ref<boolean>(false)
 
 const handleClickLinkExperienceButton = () => {
-  console.log('link experience')
   isOpenLinkExperienceDialog.value = true
+}
+
+/**
+ * 紐づけ済みの商品を削除する処理
+ * @param productId
+ */
+const handleDeleteLinkedProduct = (productId: string) => {
+  formData.value.productIds = formData.value.productIds.filter(
+    id => id !== productId,
+  )
+  linkTargetProductIds.value = linkTargetProductIds.value.filter(
+    id => id !== productId,
+  )
+  selectedProducts.value = selectedProducts.value.filter(
+    product => product.id !== productId,
+  )
 }
 
 const handleSubmit = async () => {
@@ -262,6 +277,7 @@ const handleClickBackButton = () => {
           @update:thumbnail="handleUploadThumbnail"
           @click:link-product="handleClickLinkProductButton"
           @click:link-experience="handleClickLinkExperienceButton"
+          @click:delete-linked-product="handleDeleteLinkedProduct"
           @submit="handleSubmit"
         />
       </v-card-text>

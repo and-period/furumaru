@@ -7,6 +7,16 @@ interface Props {
 }
 
 defineProps<Props>()
+
+interface Emits {
+  (e: 'click:delete'): void
+}
+
+const emits = defineEmits<Emits>()
+
+const handleClickDeleteButton = () => {
+  emits('click:delete')
+}
 </script>
 
 <template>
@@ -22,5 +32,15 @@ defineProps<Props>()
   <td>{{ item.price }}</td>
   <td>
     {{ item.inventory }}
+  </td>
+  <td width="36">
+    <v-btn
+      variant="outlined"
+      color="error"
+      size="small"
+      @click="handleClickDeleteButton"
+    >
+      削除
+    </v-btn>
   </td>
 </template>

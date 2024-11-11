@@ -27,6 +27,7 @@ interface Emits {
   (e: 'click:link-experience'): void
   (e: 'update:video', files: File): void
   (e: 'update:thumbnail', files: File): void
+  (e: 'click:delete-linked-product', productId: string): void
   (e: 'submit'): void
 }
 
@@ -146,6 +147,14 @@ const handleChangeThumbnailFile = (files?: FileList): void => {
  */
 const handleClickLinkProductButton = (): void => {
   emits('click:link-product')
+}
+
+/**
+ * 商品を削除するボタンクリック時の処理
+ * @param productId 削除する商品のID
+ */
+const handleClickDeleteProductButton = (productId: string): void => {
+  emits('click:delete-linked-product', productId)
 }
 
 /**
@@ -270,6 +279,7 @@ const handleSubmit = () => {
               <th>商品名</th>
               <th>価格</th>
               <th>在庫</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -277,7 +287,10 @@ const handleSubmit = () => {
               v-for="product in selectedProducts"
               :key="product.id"
             >
-              <molecules-video-linked-product-item :item="product" />
+              <molecules-video-linked-product-item
+                :item="product"
+                @click:delete="handleClickDeleteProductButton(product.id)"
+              />
             </tr>
           </tbody>
         </v-table>
