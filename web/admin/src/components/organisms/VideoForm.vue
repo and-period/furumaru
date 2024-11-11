@@ -28,6 +28,7 @@ interface Emits {
   (e: 'update:video', files: File): void
   (e: 'update:thumbnail', files: File): void
   (e: 'click:delete-linked-product', productId: string): void
+  (e: 'click:delete-linked-experience', experienceId: string): void
   (e: 'submit'): void
 }
 
@@ -162,6 +163,14 @@ const handleClickDeleteProductButton = (productId: string): void => {
  */
 const handleClickLinkExperienceButton = (): void => {
   emits('click:link-experience')
+}
+
+/**
+ * 体験を削除するボタンクリック時の処理
+ * @param experienceId 削除する体験のID
+ */
+const handleClickDeleteExperienceButton = (experienceId: string): void => {
+  emits('click:delete-linked-experience', experienceId)
 }
 
 /**
@@ -309,11 +318,26 @@ const handleSubmit = () => {
       <p class="text-subtitle-2 text-gray mb-2">
         体験を紐づける
       </p>
-      <template
-        v-for="experience in selectedExperiences"
-        :key="experience.id"
-      >
-        <molecules-video-linked-experience-item :item="experience" />
+      <template v-if="selectedExperiences.length === 0">
+        <v-alert
+          dense
+          variant="outlined"
+          type="info"
+          class="my-2"
+        >
+          体験が紐づけられていません
+        </v-alert>
+      </template>
+      <template v-else>
+        <template
+          v-for="experience in selectedExperiences"
+          :key="experience.id"
+        >
+          <molecules-video-linked-experience-item
+            :item="experience"
+            @click:delete="handleClickDeleteExperienceButton(experience.id)"
+          />
+        </template>
       </template>
 
       <v-btn

@@ -188,6 +188,21 @@ const handleDeleteLinkedProduct = (productId: string) => {
   )
 }
 
+/**
+ * 紐づけ済みの体験を削除する処理
+ */
+const handleDeleteLinkedExperience = (experienceId: string) => {
+  formData.value.experienceIds = formData.value.experienceIds.filter(
+    id => id !== experienceId,
+  )
+  linkTargetExperienceIds.value = linkTargetExperienceIds.value.filter(
+    id => id !== experienceId,
+  )
+  selectedExperiences.value = selectedExperiences.value.filter(
+    experience => experience.id !== experienceId,
+  )
+}
+
 const handleSubmit = async () => {
   try {
     await videoStore.createVideo({
@@ -278,6 +293,7 @@ const handleClickBackButton = () => {
           @click:link-product="handleClickLinkProductButton"
           @click:link-experience="handleClickLinkExperienceButton"
           @click:delete-linked-product="handleDeleteLinkedProduct"
+          @click:delete-linked-experience="handleDeleteLinkedExperience"
           @submit="handleSubmit"
         />
       </v-card-text>
