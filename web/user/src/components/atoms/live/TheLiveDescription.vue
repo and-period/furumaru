@@ -39,6 +39,15 @@ const handleCLickCoordinator = () => {
   emits('click:coordinator', props.coordinatorId)
 }
 
+const handleClickXButton = () => {
+  const shareXUrl = `https://twitter.com/intent/tweet?text=${props.title}&url=${window.location.href}`
+  window.open(shareXUrl, '_blank')
+}
+
+const handleClickFacebookButton = () => {
+
+}
+
 const showDetail = ref<boolean>(false)
 
 const handleClickShowDetailButton = () => {
@@ -48,30 +57,58 @@ const handleClickShowDetailButton = () => {
 
 <template>
   <div class="mt-2 px-4">
-    <div class="flex items-center gap-2">
-      <template v-if="isArchive">
-        <div
-          class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main"
-        >
-          {{ dt('archivedStreamText') }}
-        </div>
-      </template>
-      <template v-else-if="isLiveStreaming">
-        <div
-          class="flex max-w-fit items-center justify-center rounded border-2 border-orange bg-orange px-2 font-bold text-white"
-        >
-          <div class="mr-2 pt-[2px]">
-            <the-live-icon />
+    <div class="md:flex block md:justify-between">
+      <div class="flex items-center gap-2">
+        <template v-if="isArchive">
+          <div
+            class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main"
+          >
+            {{ dt('archivedStreamText') }}
           </div>
-          <div class="align-middle">
-            LIVE
+        </template>
+        <template v-else-if="isLiveStreaming">
+          <div
+            class="flex max-w-fit items-center justify-center rounded border-2 border-orange bg-orange px-2 font-bold text-white"
+          >
+            <div class="mr-2 pt-[2px]">
+              <the-live-icon />
+            </div>
+            <div class="align-middle">
+              LIVE
+            </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-      <div class="text-[14px] tracking-[1.4px] after:content-['〜']">
-        {{ datetimeformatterFromUnixtime(startAt) }}
+        <div class="text-[14px] tracking-[1.4px] after:content-['〜']">
+          {{ datetimeformatterFromUnixtime(startAt) }}
+        </div>
       </div>
+      <the-dropdown-with-icon ref="dropdownRef">
+        <template #icon>
+          <div class="flex md:mt-0 mt-2 text-[14px] tracking-[1.4px] ">
+            <the-sns-share-icon />
+            <p class="ml-2">
+              SHARE
+            </p>
+          </div>
+        </template>
+        <template #content>
+          <div class="flex flex-col">
+            <button
+              class="px-4 py-2 text-left hover:bg-gray-200"
+              @click="handleClickXButton"
+            >
+              X (Twitter)
+            </button>
+            <button
+              class="px-4 py-2 text-left hover:bg-gray-200"
+              @click="handleClickFacebookButton"
+            >
+              Facebook
+            </button>
+          </div>
+        </template>
+      </the-dropdown-with-icon>
     </div>
     <p class="mt-2 line-clamp-1 tracking-[1.6px]">
       {{ title }}
