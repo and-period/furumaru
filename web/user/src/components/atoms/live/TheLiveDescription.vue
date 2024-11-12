@@ -56,7 +56,8 @@ const handleClickXButton = () => {
 }
 
 const handleClickFacebookButton = () => {
-
+  const shareFacebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`
+  window.open(shareFacebookUrl, '_blank')
 }
 
 const showDetail = ref<boolean>(false)
@@ -115,21 +116,24 @@ const handleClickShowDetailButton = () => {
         <template #content>
           <div class="flex flex-col">
             <button
-              class="px-4 py-2 text-left hover:bg-gray-200"
+              class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
               @click="handleClickCopyButton"
             >
+              <the-share-icon class="mr-2" />
               リンクをコピー
             </button>
             <button
-              class="px-4 py-2 text-left hover:bg-gray-200"
+              class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
               @click="handleClickXButton"
             >
+              <the-share-x-icon class="mr-2" />
               X (Twitter)
             </button>
             <button
-              class="px-4 py-2 text-left hover:bg-gray-200"
+              class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
               @click="handleClickFacebookButton"
             >
+              <the-share-facebook-icon class="mr-2" />
               Facebook
             </button>
           </div>
