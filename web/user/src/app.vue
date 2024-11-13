@@ -19,7 +19,7 @@ useHead({
     ...(config.public.ENVIRONMENT === 'prd'
       ? [
           {
-            key: 'meta-picel',
+            key: 'meta-pixel',
             src: '/meta/pixel-code.js',
             defer: true,
             type: 'text/javascript',
