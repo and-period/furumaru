@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.0.8](https://github.com/and-period/furumaru/compare/v3.0.7...v3.0.8) - 2024-11-13
+- build(deps): bump cross-spawn from 7.0.3 to 7.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2494
+- setup: 本番環境向けのGoogle Tag Managerを仕込む by @wf-yamaday in https://github.com/and-period/furumaru/pull/2497
+
 ## [v3.0.7](https://github.com/and-period/furumaru/compare/v3.0.6...v3.0.7) - 2024-11-12
 - 動画管理画面の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2385
 - fix(api): Sentryのトレーシング機能を無効に by @taba2424 in https://github.com/and-period/furumaru/pull/2492
