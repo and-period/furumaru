@@ -1,0 +1,128 @@
+spotResponse:
+  type: object
+  properties:
+    spot:
+      $ref: './../../../openapi.yaml#/components/schemas/spot'
+    user:
+      $ref: './../../../openapi.yaml#/components/schemas/user'
+    admins:
+      type: array
+      description: 管理者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/admin'
+  required:
+  - spot
+  - user
+  - admins
+  example:
+    spot:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      userType: 1
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '東京タワー'
+      description: '東京タワーの説明'
+      thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      longitude: 139.732293
+      latitude: 35.658580
+      approved: true
+      createdAt: 1614556800
+      updatedAt: 1614556800
+    user:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 3
+      registered: true
+      username: 'username'
+      accountId: 'account-id'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    admins:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+spotsResponse:
+  type: object
+  properties:
+    spots:
+      type: array
+      description: スポット一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/spot'
+    users:
+      type: array
+      description: ユーザ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/user'
+    admins:
+      type: array
+      description: 管理者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/admin'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - spots
+  - users
+  - admins
+  - total
+  example:
+    spots:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      userType: 1
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '東京タワー'
+      description: '東京タワーの説明'
+      thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      longitude: 139.732293
+      latitude: 35.658580
+      approved: true
+      createdAt: 1614556800
+      updatedAt: 1614556800
+    users:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 3
+      registered: true
+      username: 'username'
+      accountId: 'account-id'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    admins:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      role: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      email: 'test-user@and-period.jp'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    total: 1

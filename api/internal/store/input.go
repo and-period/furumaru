@@ -774,3 +774,59 @@ type UpdateExperienceMedia struct {
 type DeleteExperienceInput struct {
 	ExperienceID string `validate:"required"`
 }
+
+type ListSpotsInput struct {
+	UserID          string `validate:""`
+	ExcludeApproved bool   `validate:""`
+	ExcludeDisabled bool   `validate:""`
+	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64  `validate:"min=0"`
+	NoLimit         bool   `validate:""`
+}
+
+type ListSpotsByGeolocationInput struct {
+	Latitude  float64 `validate:"min=-90,max=90"`
+	Longitude float64 `validate:"min=-180,max=180"`
+	Radius    int64   `validate:"min=0"`
+}
+
+type GetSpotInput struct {
+	SpotID string `validate:"required"`
+}
+
+type CreateSpotByUserInput struct {
+	UserID       string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type CreateSpotByAdminInput struct {
+	AdminID      string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type UpdateSpotInput struct {
+	SpotID       string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type ApproveSpotInput struct {
+	SpotID   string `validate:"required"`
+	AdminID  string `validate:"required"`
+	Approved bool   `validate:""`
+}
+
+type DeleteSpotInput struct {
+	SpotID string `validate:"required"`
+}

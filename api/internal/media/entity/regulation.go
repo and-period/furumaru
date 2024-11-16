@@ -36,7 +36,7 @@ const (
 	ProductMediaImagePath         = "products/media/image"         // 商品メディア(画像)
 	ProductMediaVideoPath         = "products/media/video"         // 商品メディア(映像)
 	ProductTypeIconPath           = "product-types/icon"           // 品目アイコン
-	ScheduleThumbnailPath         = "schedules/thumbnail"          // 開催スケジュールサムネイル
+	ScheduleThumbnailPath         = "schedules/thumbnail"          // 開催スケジュールサムネイル画像
 	ScheduleImagePath             = "schedules/image"              // 開催スケジュール蓋絵
 	ScheduleOpeningVideoPath      = "schedules/opening-video"      // 開催スケジュールオープニング動画
 	ExperienceMediaImagePath      = "experiences/media/image"      // 体験メディア(画像)
@@ -44,6 +44,7 @@ const (
 	ExperiencePromotionVideoPath  = "experiences/promotion-video"  // 体験紹介映像
 	VideoThumbnailPath            = "videos/thumbnail"             // オンデマンド配信サムネイル画像
 	VideoMP4Path                  = "videos/mp4"                   // オンデマンド配信動画(mp4)
+	SpotThumbnailPath             = "spots/thumbnail"              // スポットサムネイル画像
 )
 
 const defaultCacheTTL = 14 * 24 * time.Hour // 2週間
@@ -207,6 +208,13 @@ var (
 		Formats:  set.New("video/mp4"),
 		CacheTTL: defaultCacheTTL,
 		dir:      VideoMP4Path,
+	}
+	// スポット関連
+	SpotThumbnailRegulation = &Regulation{
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("image/png", "image/jpeg"),
+		CacheTTL: defaultCacheTTL,
+		dir:      SpotThumbnailPath,
 	}
 )
 
