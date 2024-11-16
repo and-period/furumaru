@@ -103,9 +103,9 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
-	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
-	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[0] = testSpot("spot-id01", 35.65861, 139.74545, now())
+	spots[1] = testSpot("spot-id02", 0, 0, now())
+	spots[2] = testSpot("spot-id03", 0, 0, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -123,17 +123,92 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 		want  want
 	}{
 		{
-			name:  "success",
+			name:  "inside",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListSpotsByGeolocationParams{
-					Longitude: 139.745433 + 0.018,
-					Latitude:  35.658581 + 0.018,
-					Radius:    2,
+					Longitude: 139.81083,
+					Latitude:  35.71014,
+					Radius:    9,
 				},
 			},
 			want: want{
-				spots: spots,
+				spots: spots[:1],
+				err:   nil,
+			},
+		},
+		{
+			name:  "inside longitude",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListSpotsByGeolocationParams{
+					Longitude: 0.1,
+					Latitude:  0.0,
+					Radius:    12,
+				},
+			},
+			want: want{
+				spots: spots[1:],
+				err:   nil,
+			},
+		},
+		{
+			name:  "inside latitude",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListSpotsByGeolocationParams{
+					Longitude: 0.0,
+					Latitude:  0.1,
+					Radius:    12,
+				},
+			},
+			want: want{
+				spots: spots[1:],
+				err:   nil,
+			},
+		},
+		{
+			name:  "inside",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListSpotsByGeolocationParams{
+					Longitude: 139.81083,
+					Latitude:  35.71014,
+					Radius:    8,
+				},
+			},
+			want: want{
+				spots: entity.Spots{},
+				err:   nil,
+			},
+		},
+		{
+			name:  "outside longitude",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListSpotsByGeolocationParams{
+					Longitude: 0.1,
+					Latitude:  0.0,
+					Radius:    11,
+				},
+			},
+			want: want{
+				spots: entity.Spots{},
+				err:   nil,
+			},
+		},
+		{
+			name:  "outside latitude",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListSpotsByGeolocationParams{
+					Longitude: 0.0,
+					Latitude:  0.1,
+					Radius:    11,
+				},
+			},
+			want: want{
+				spots: entity.Spots{},
 				err:   nil,
 			},
 		},
