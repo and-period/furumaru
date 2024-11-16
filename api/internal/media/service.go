@@ -78,4 +78,6 @@ type Service interface {
 	GetExperienceMediaImageUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // メディア(画像)アップロード用URLの生成
 	GetExperienceMediaVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // メディア(映像)アップロード用URLの生成
 	GetExperiencePromotionVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // 紹介映像アップロード用URLの生成
+	// スポット
+	GetSpotThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
 }

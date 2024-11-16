@@ -1,0 +1,45 @@
+spotResponse:
+  type: object
+  properties:
+    spot:
+      $ref: './../../../openapi.yaml#/components/schemas/spot'
+  required:
+  - spot
+  example:
+    spot:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '東京タワー'
+      description: '東京タワーの説明'
+      thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      longitude: 139.732293
+      latitude: 35.658580
+      userType: 1
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userName: 'ふるまる太郎'
+      userThumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      createdAt: 1614556800
+      updatedAt: 1614556800
+spotsResponse:
+  type: object
+  properties:
+    spots:
+      type: array
+      description: スポット一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/spot'
+  required:
+  - spots
+  example:
+    spots:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '東京タワー'
+      description: '東京タワーの説明'
+      thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      longitude: 139.732293
+      latitude: 35.658580
+      userType: 1
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userName: 'ふるまる太郎'
+      userThumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+      createdAt: 1614556800
+      updatedAt: 1614556800

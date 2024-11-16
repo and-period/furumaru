@@ -24,15 +24,16 @@ type Database struct {
 	Category       Category
 	Experience     Experience
 	ExperienceType ExperienceType
+	Live           Live
 	Order          Order
 	PaymentSystem  PaymentSystem
 	Product        Product
 	ProductTag     ProductTag
 	ProductType    ProductType
 	Promotion      Promotion
-	Shipping       Shipping
 	Schedule       Schedule
-	Live           Live
+	Shipping       Shipping
+	Spot           Spot
 }
 
 /**
@@ -469,6 +470,44 @@ type UpdateShippingParams struct {
 	Box100Frozen      int64
 	HasFreeShipping   bool
 	FreeShippingRates int64
+}
+
+type Spot interface {
+	List(ctx context.Context, params *ListSpotsParams, fields ...string) (entity.Spots, error)
+	ListByGeolocation(ctx context.Context, params *ListSpotsByGeolocationParams, fields ...string) (entity.Spots, error)
+	Count(ctx context.Context, params *ListSpotsParams) (int64, error)
+	Get(ctx context.Context, spotID string, fields ...string) (*entity.Spot, error)
+	Create(ctx context.Context, spot *entity.Spot) error
+	Update(ctx context.Context, spotID string, params *UpdateSpotParams) error
+	Delete(ctx context.Context, spotID string) error
+	Approve(ctx context.Context, spotID string, params *ApproveSpotParams) error
+}
+
+type ListSpotsParams struct {
+	UserID          string
+	ExcludeApproved bool
+	ExcludeDisabled bool
+	Limit           int
+	Offset          int
+}
+
+type ListSpotsByGeolocationParams struct {
+	Longitude float64
+	Latitude  float64
+	Radius    int
+}
+
+type UpdateSpotParams struct {
+	Name         string
+	Description  string
+	ThumbnailURL string
+	Longitude    float64
+	Latitude     float64
+}
+
+type ApproveSpotParams struct {
+	Approved        bool
+	ApprovedAdminID string
 }
 
 type Error struct {

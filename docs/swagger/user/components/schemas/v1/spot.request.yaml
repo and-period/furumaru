@@ -1,0 +1,64 @@
+createSpotRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: スポット名（64文字まで）
+    description:
+      type: string
+      description: 説明（2000文字まで）
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    latitude:
+      type: number
+      format: double
+      description: 緯度
+    longitude:
+      type: number
+      format: double
+      description: 経度
+  required:
+  - name
+  - description
+  - thumbnailUrl
+  - latitude
+  - longitude
+  example:
+    name: '東京タワー'
+    description: '東京タワーの説明'
+    thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+    longitude: 139.732293
+    latitude: 35.658580
+updateSpotRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: スポット名（64文字まで）
+    description:
+      type: string
+      description: 説明（2000文字まで）
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    latitude:
+      type: number
+      format: double
+      description: 緯度
+    longitude:
+      type: number
+      format: double
+      description: 経度
+  required:
+  - name
+  - description
+  - thumbnailUrl
+  - latitude
+  - longitude
+  example:
+    name: '東京タワー'
+    description: '東京タワーの説明'
+    thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
+    longitude: 139.732293
+    latitude: 35.658580
