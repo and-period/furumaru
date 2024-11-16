@@ -776,6 +776,7 @@ type DeleteExperienceInput struct {
 }
 
 type ListSpotsInput struct {
+	Name            string `validate:"max=64"`
 	UserID          string `validate:""`
 	ExcludeApproved bool   `validate:""`
 	ExcludeDisabled bool   `validate:""`
