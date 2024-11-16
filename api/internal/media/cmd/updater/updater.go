@@ -33,6 +33,7 @@ type app struct {
 	SentryDsn        string `default:""                envconfig:"SENTRY_DSN"`
 	SentrySecretName string `default:""                envconfig:"SENTRY_SECRET_NAME"`
 	AWSRegion        string `default:"ap-northeast-1"  envconfig:"AWS_REGION"`
+	CDNURL           string `default:""                envconfig:"CDN_URL"`
 }
 
 //nolint:revive
