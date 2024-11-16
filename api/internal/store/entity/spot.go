@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
@@ -27,8 +28,8 @@ type Spot struct {
 	Latitude        float64      `gorm:""`                     // 座標情報:緯度
 	Approved        bool         `gorm:""`                     // 承認フラグ
 	ApprovedAdminID string       `gorm:""`                     // 承認した管理者ID
-	CreatedAt       string       `gorm:"<-:create"`            // 登録日時
-	UpdatedAt       string       `gorm:""`                     // 更新日時
+	CreatedAt       time.Time    `gorm:"<-:create"`            // 登録日時
+	UpdatedAt       time.Time    `gorm:""`                     // 更新日時
 }
 
 type Spots []*Spot
@@ -42,15 +43,35 @@ type SpotParams struct {
 	Latitude     float64
 }
 
-func NewSpot(params *SpotParams) (*Spot, error) {
+func NewSpotByUser(params *SpotParams) (*Spot, error) {
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
+		UserType:        SpotUserTypeUser,
 		UserID:          params.UserID,
 		Name:            params.Name,
 		Description:     params.Description,
 		ThumbnailURL:    params.ThumbnailURL,
-		Approved:        false,
+		Approved:        true, // デフォルトで承認済みにする
 		ApprovedAdminID: "",
+		Longitude:       params.Longitude,
+		Latitude:        params.Latitude,
+	}
+	if err := res.Validate(); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func NewSpotByAdmin(params *SpotParams) (*Spot, error) {
+	res := &Spot{
+		ID:              uuid.Base58Encode(uuid.New()),
+		UserType:        SpotUserTypeAdmin,
+		UserID:          params.UserID,
+		Name:            params.Name,
+		Description:     params.Description,
+		ThumbnailURL:    params.ThumbnailURL,
+		Approved:        true,
+		ApprovedAdminID: params.UserID,
 		Longitude:       params.Longitude,
 		Latitude:        params.Latitude,
 	}

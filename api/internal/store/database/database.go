@@ -484,6 +484,7 @@ type Spot interface {
 }
 
 type ListSpotsParams struct {
+	Name            string
 	UserID          string
 	ExcludeApproved bool
 	ExcludeDisabled bool
