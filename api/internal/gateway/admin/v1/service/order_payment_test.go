@@ -63,6 +63,11 @@ func TestPaymentMethodType(t *testing.T) {
 			expect:     PaymentMethodTypeAUPay,
 		},
 		{
+			name:       "none",
+			methodType: entity.PaymentMethodTypeNone,
+			expect:     PaymentMethodTypeNone,
+		},
+		{
 			name:       "unknown",
 			methodType: entity.PaymentMethodTypeUnknown,
 			expect:     PaymentMethodTypeUnknown,
@@ -128,6 +133,11 @@ func TestPaymentMethodType_StoreEntity(t *testing.T) {
 			name:       "au pay",
 			methodType: PaymentMethodTypeAUPay,
 			expect:     entity.PaymentMethodTypeAUPay,
+		},
+		{
+			name:       "none",
+			methodType: PaymentMethodTypeNone,
+			expect:     entity.PaymentMethodTypeNone,
 		},
 		{
 			name:       "unknown",

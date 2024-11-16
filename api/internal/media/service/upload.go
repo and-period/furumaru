@@ -151,6 +151,13 @@ func (s *service) GetExperiencePromotionVideoUploadURL(ctx context.Context, in *
 }
 
 /**
+ * スポット関連
+ */
+func (s *service) GetSpotThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	return s.generateUploadURL(ctx, in, entity.SpotThumbnailRegulation)
+}
+
+/**
  * private
  */
 func (s *service) generateUploadURL(

@@ -160,6 +160,11 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutAUPay(ctx, in)
+	case service.PaymentMethodTypeFree:
+		in := &store.CheckoutFreeInput{
+			CheckoutDetail: *params.detail,
+		}
+		redirectURL, err = h.store.CheckoutFree(ctx, in)
 	default:
 		err := errors.New("handler: not implemented payment method")
 		h.httpError(ctx, status.Error(codes.Unimplemented, err.Error()))

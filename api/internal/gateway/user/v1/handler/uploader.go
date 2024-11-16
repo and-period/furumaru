@@ -18,6 +18,7 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 
 	r.GET("/state", h.GetUploadState)
 	r.POST("/users/thumbnail", h.authentication, h.CreateUserThumbnailURL)
+	r.POST("/spots/thumbnail", h.authentication, h.CreateSpotThumbnailURL)
 }
 
 func (h *handler) GetUploadState(ctx *gin.Context) {
@@ -38,6 +39,10 @@ func (h *handler) GetUploadState(ctx *gin.Context) {
 
 func (h *handler) CreateUserThumbnailURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetUserThumbnailUploadURL)
+}
+
+func (h *handler) CreateSpotThumbnailURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetSpotThumbnailUploadURL)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {

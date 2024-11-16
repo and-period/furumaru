@@ -72,7 +72,7 @@ func TestCategory_List(t *testing.T) {
 			args: args{
 				params: &database.ListCategoriesParams{
 					Orders: []*database.ListCategoriesOrder{
-						{Key: entity.CategoryOrderByName, OrderByASC: true},
+						{Key: database.ListCategoriesOrderByName, OrderByASC: true},
 					},
 				},
 			},
@@ -87,7 +87,7 @@ func TestCategory_List(t *testing.T) {
 			args: args{
 				params: &database.ListCategoriesParams{
 					Orders: []*database.ListCategoriesOrder{
-						{Key: entity.CategoryOrderByName, OrderByASC: false},
+						{Key: database.ListCategoriesOrderByName, OrderByASC: false},
 					},
 				},
 			},

@@ -1,0 +1,100 @@
+get:
+  summary: スポット取得
+  operationId: v1GetSpot
+  tags:
+  - Spot
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: spotId
+    schema:
+      type: string
+    description: スポットID
+    required: true
+    example: "spot-id"
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1SpotResponse'
+    404:
+      description: スポットが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+patch:
+  summary: スポット更新
+  operationId: v1UpdateSpot
+  tags:
+  - Spot
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: スポットID
+    required: true
+    example: "spot-id"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateSpotRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: スポットが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: スポット削除
+  operationId: v1DeleteSpot
+  tags:
+  - Spot
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: spotId
+    schema:
+      type: string
+    description: スポットID
+    required: true
+    example: "spot-id"
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: スポットが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -53,6 +53,8 @@ tags:
   description: マルシェ開催スケジュール関連
 - name: Shipping
   description: 配送設定関連
+- name: Spot
+  description: スポット関連
 - name: Thread
   description: お問い合わせ会話履歴関連
 - name: User
@@ -210,6 +212,13 @@ paths:
     $ref: './paths/v1/shippings/default.yaml'
   /v1/coordinators/{coordinatorId}/shippings:
     $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
+  # Spot
+  /v1/spots:
+    $ref: './paths/v1/spots/index.yaml'
+  /v1/spots/{spotId}:
+    $ref: './paths/v1/spots/_spotId/index.yaml'
+  /v1/spots/{spotId}/approval:
+    $ref: './paths/v1/spots/_spotId/approval.yaml'
   # Thread
   /v1/contacts/{contactId}/threads:
     $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
@@ -287,6 +296,8 @@ paths:
     $ref: './paths/v1/upload/schedules/_scheduleId/broadcasts/archive.yaml'
   /v1/upload/schedules/-/broadcasts/live:
     $ref: './paths/v1/upload/schedules/-/broadcasts/live.yaml'
+  /v1/upload/spots/thumbnail:
+    $ref: './paths/v1/upload/spots/thumbnail.yaml'
   /v1/upload/videos/thumbnail:
     $ref: './paths/v1/upload/videos/thumbnail.yaml'
   /v1/upload/videos/file:
@@ -376,6 +387,8 @@ components:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    spotUserType:
+      $ref: './components/schemas/codes/spot.yaml#/spotUserType'
     uploadStatus:
       $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     userStatus:
@@ -437,6 +450,8 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     shipping:
       $ref: './components/schemas/entity/shipping.yaml#/shipping'
+    spot:
+      $ref: './components/schemas/entity/spot.yaml#/spot'
     thread:
       $ref: './components/schemas/entity/thread.yaml#/thread'
     user:
@@ -562,6 +577,12 @@ components:
       $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
     v1UpdateDefaultShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/updateDefaultShippingRequest'
+    v1CreateSpotRequest:
+      $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
+    v1UpdateSpotRequest:
+      $ref: './components/schemas/v1/spot.request.yaml#/updateSpotRequest'
+    v1ApproveSpotRequest:
+      $ref: './components/schemas/v1/spot.request.yaml#/approveSpotRequest'
     v1CreateThreadRequest:
       $ref: './components/schemas/v1/thread.request.yaml#/createThreadRequest'
     v1UpdateThreadRequest:
@@ -661,6 +682,10 @@ components:
       $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1SpotResponse:
+      $ref: './components/schemas/v1/spot.response.yaml#/spotResponse'
+    v1SpotsResponse:
+      $ref: './components/schemas/v1/spot.response.yaml#/spotsResponse'
     v1ThreadResponse:
       $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
     v1ThreadsResponse:

@@ -59,14 +59,17 @@ const handelClickRemoveItemButton = (id: string) => {
       </div>
 
       <div class="my-9">
-        <div>{{ ct('cartCountLabel') }}{{ cart.items.length }}</div>
-        <div>{{ ct('shipFromLabel') }}{{ `${coordinator.prefecture}${coordinator.city}` }}</div>
-        <div>{{ ct('coordinatorLabel') }}{{ coordinator.username }}</div>
+        <div>{{ ct("cartCountLabel") }}{{ cart.items.length }}</div>
+        <div>
+          {{ ct("shipFromLabel")
+          }}{{ `${coordinator.prefecture}${coordinator.city}` }}
+        </div>
+        <div>{{ ct("coordinatorLabel") }}{{ coordinator.username }}</div>
       </div>
 
       <div class="flex items-center justify-between font-bold">
         <div class="text-[14px]">
-          {{ ct('totalPriceLabel') }}
+          {{ ct("totalPriceLabel") }}
         </div>
         <div class="text-[20px]">
           {{ priceStringFormatter(totalPrice) }}
@@ -75,18 +78,18 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <hr class="my-5 border-main">
 
-      <div>{{ ct('shippingFeeNotice') }}</div>
+      <div>{{ ct("shippingFeeNotice") }}</div>
 
       <button
         class="mt-8 bg-main p-[14px] text-[16px] text-white"
         @click="handleBuyButton"
       >
-        {{ ct('checkoutButtonText') }}
+        {{ ct("checkoutButtonText") }}
       </button>
     </div>
 
     <div
-      class="relative col-span-10 rounded-3xl bg-white px-4 py-6 lg:px-16 lg:py-12"
+      class="relative rounded-3xl bg-white px-4 py-6 lg:px-16 lg:py-12 col-span-10"
     >
       <div
         class="absolute -left-4 top-12 hidden h-8 w-8 rotate-45 bg-white lg:block"
@@ -96,7 +99,7 @@ const handelClickRemoveItemButton = (id: string) => {
         <div
           class="mb-7 rounded-2xl bg-base p-2 text-center font-bold tracking-[1.2px] text-main"
         >
-          {{ ct('cartTitle') }} #{{ cartNumber }} -{{ coordinator.marcheName }}-
+          {{ ct("cartTitle") }} #{{ cartNumber }} -{{ coordinator.marcheName }}-
         </div>
 
         <div class="flex w-full flex-col text-main">
@@ -105,11 +108,11 @@ const handelClickRemoveItemButton = (id: string) => {
             class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
           >
             <div class="col-span-2">
-              {{ ct('productNameLabel') }}
+              {{ ct("productNameLabel") }}
             </div>
-            <div>{{ ct('productPriceLabel') }}</div>
-            <div>{{ ct('quantityLabel') }}</div>
-            <div>{{ ct('subtotalLabel') }}</div>
+            <div>{{ ct("productPriceLabel") }}</div>
+            <div>{{ ct("quantityLabel") }}</div>
+            <div>{{ ct("subtotalLabel") }}</div>
           </div>
 
           <!-- PC、タブレットのみで表示する -->
@@ -119,15 +122,27 @@ const handelClickRemoveItemButton = (id: string) => {
             class="hidden grid-cols-5 items-center border-b py-2 md:grid"
           >
             <div class="col-span-2 flex gap-4">
-              <nuxt-img
-                provider="cloudFront"
-                :src="item.product.thumbnail.url"
-                class="block h-16 w-16"
-                height="64px"
-                width="64px"
-                :alt="`${item.product.name}のサムネイル画像`"
-              />
-              {{ item.product.name }}
+              <template v-if="item.product?.thumbnail.url.endsWith('.mp4')">
+                <video
+                  :src="item.product.thumbnail.url"
+                  class="block h-16 w-16 aspect-square"
+                  autoplay
+                  loop
+                />
+              </template>
+              <template v-else>
+                <nuxt-img
+                  provider="cloudFront"
+                  :src="item.product.thumbnail.url"
+                  class="block h-16 w-16"
+                  height="64px"
+                  width="64px"
+                  :alt="`${item.product.name}のサムネイル画像`"
+                />
+              </template>
+              <div class="w-40 line-clamp-4 break-before-all">
+                {{ item.product.name }}
+              </div>
             </div>
             <div>
               {{ priceStringFormatter(item.product.price) }}
@@ -139,7 +154,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 type="button"
                 @click="handelClickRemoveItemButton(item.product.id)"
               >
-                {{ ct('deleteButtonText') }}
+                {{ ct("deleteButtonText") }}
               </button>
             </div>
             <div>
@@ -153,14 +168,24 @@ const handelClickRemoveItemButton = (id: string) => {
             :key="j"
             class="flex gap-3 border-b py-2 md:hidden"
           >
-            <nuxt-img
-              provider="cloudFront"
-              :src="item.product.thumbnail.url"
-              class="block h-16 w-16"
-              width="64px"
-              height="64px"
-              :alt="`${item.product.name}のサムネイル画像`"
-            />
+            <template v-if="item.product?.thumbnail.url.endsWith('.mp4')">
+              <video
+                :src="item.product.thumbnail.url"
+                class="block h-16 w-16 aspect-square"
+                autoplay
+                loop
+              />
+            </template>
+            <template v-else>
+              <nuxt-img
+                provider="cloudFront"
+                :src="item.product.thumbnail.url"
+                class="block h-16 w-16"
+                width="64px"
+                height="64px"
+                :alt="`${item.product.name}のサムネイル画像`"
+              />
+            </template>
             <div class="flex grow flex-col justify-between">
               <div>
                 {{ item.product.name }}
@@ -171,13 +196,13 @@ const handelClickRemoveItemButton = (id: string) => {
                 </div>
 
                 <div class="flex items-center gap-4 text-[12px]">
-                  <div>{{ ct('quantityLabel') }}: {{ item.quantity }}</div>
+                  <div>{{ ct("quantityLabel") }}: {{ item.quantity }}</div>
                   <button
                     class="text-[12px] underline"
                     type="button"
                     @click="handelClickRemoveItemButton(item.product.id)"
                   >
-                    {{ ct('deleteButtonText') }}
+                    {{ ct("deleteButtonText") }}
                   </button>
                 </div>
               </div>
@@ -190,7 +215,7 @@ const handelClickRemoveItemButton = (id: string) => {
           <div class="lg:hidden">
             <div class="flex items-center justify-between">
               <div class="text-[14px]">
-                {{ ct('subtotalLabel') }}
+                {{ ct("subtotalLabel") }}
               </div>
               <div class="text-[20px]">
                 {{ priceStringFormatter(totalPrice) }}
@@ -198,12 +223,13 @@ const handelClickRemoveItemButton = (id: string) => {
             </div>
             <hr class="my-4 border-main">
             <div class="text-[12px]">
-              {{ ct('shippingFeeNotice') }}
+              {{ ct("shippingFeeNotice") }}
             </div>
           </div>
 
           <div class="flex grow gap-10">
             <the-cardboard
+              v-if="false"
               :box-size="cart.size"
               :use-rate="cart.useRate"
             />
@@ -211,16 +237,17 @@ const handelClickRemoveItemButton = (id: string) => {
             <div class="flex grow flex-col gap-4 whitespace-nowrap">
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  {{ ct('boxTypeLabel') }}
+                  {{ ct("boxTypeLabel") }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.boxType }}
                 </div>
               </div>
 
+              <!-- 購入の検証のため一旦コメントアウト
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  {{ ct('boxSizeLabel') }}
+                  {{ ct("boxSizeLabel") }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.boxSize }}
@@ -229,12 +256,13 @@ const handelClickRemoveItemButton = (id: string) => {
 
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  {{ ct('utilizationRateLabel') }}
+                  {{ ct("utilizationRateLabel") }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.useRate }}
                 </div>
               </div>
+            -->
             </div>
           </div>
 
@@ -242,21 +270,21 @@ const handelClickRemoveItemButton = (id: string) => {
             <div class="hidden lg:block">
               <div class="flex items-center justify-between">
                 <div class="text-[14px]">
-                  {{ ct('subtotalLabel') }}
+                  {{ ct("subtotalLabel") }}
                 </div>
                 <div class="text-[20px]">
                   {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
               <hr class="my-4 border-main">
-              <div>{{ ct('shippingFeeNotice') }}</div>
+              <div>{{ ct("shippingFeeNotice") }}</div>
             </div>
 
             <button
               class="bg-main p-[14px] text-[16px] text-white"
               @click="handleCartBuyButton"
             >
-              {{ ct('checkoutButtonText') }}
+              {{ ct("checkoutButtonText") }}
             </button>
           </div>
         </div>

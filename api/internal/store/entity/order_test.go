@@ -565,6 +565,69 @@ func TestOrder_SetFulfillmentStatus(t *testing.T) {
 	}
 }
 
+func TestOrder_SetTransaction(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name          string
+		order         *Order
+		transactionID string
+		now           time.Time
+		expect        *Order
+	}{
+		{
+			name: "transaction with positive total",
+			order: &Order{
+				ID: "order-id",
+				OrderPayment: OrderPayment{
+					Total: 1000,
+				},
+			},
+			transactionID: "transaction-id",
+			now:           now,
+			expect: &Order{
+				ID: "order-id",
+				OrderPayment: OrderPayment{
+					Total:         1000,
+					TransactionID: "transaction-id",
+					OrderedAt:     now,
+				},
+			},
+		},
+		{
+			name: "transaction with zero total",
+			order: &Order{
+				ID: "order-id",
+				OrderPayment: OrderPayment{
+					Total: 0,
+				},
+			},
+			transactionID: "transaction-id",
+			now:           now,
+			expect: &Order{
+				ID:     "order-id",
+				Status: OrderStatusPreparing,
+				OrderPayment: OrderPayment{
+					Total:         0,
+					TransactionID: "order-id",
+					MethodType:    PaymentMethodTypeNone,
+					Status:        PaymentStatusCaptured,
+					OrderedAt:     now,
+					PaidAt:        now,
+					CapturedAt:    now,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.order.SetTransaction(tt.transactionID, tt.now)
+			assert.Equal(t, tt.expect, tt.order)
+		})
+	}
+}
+
 func TestOrder_Completed(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

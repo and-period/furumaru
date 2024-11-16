@@ -28,7 +28,7 @@ func TestListNotificaitons(t *testing.T) {
 		Since:  since,
 		Until:  until,
 		Orders: []*database.ListNotificationsOrder{
-			{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+			{Key: database.ListNotificationsOrderByPublishedAt, OrderByASC: true},
 		},
 	}
 	notifications := entity.Notifications{
@@ -66,7 +66,7 @@ func TestListNotificaitons(t *testing.T) {
 				Since:  since,
 				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
-					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+					{Key: messenger.ListNotificationsOrderByPublishedAt, OrderByASC: true},
 				},
 			},
 			expect:      notifications,
@@ -93,7 +93,7 @@ func TestListNotificaitons(t *testing.T) {
 				Since:  since,
 				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
-					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+					{Key: messenger.ListNotificationsOrderByPublishedAt, OrderByASC: true},
 				},
 			},
 			expect:      nil,
@@ -112,7 +112,7 @@ func TestListNotificaitons(t *testing.T) {
 				Since:  since,
 				Until:  until,
 				Orders: []*messenger.ListNotificationsOrder{
-					{Key: entity.NotificationOrderByPublishedAt, OrderByASC: true},
+					{Key: messenger.ListNotificationsOrderByPublishedAt, OrderByASC: true},
 				},
 			},
 			expect:      nil,

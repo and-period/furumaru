@@ -16,6 +16,8 @@ import (
 	"go.uber.org/zap"
 )
 
+const captureMode = "manual"
+
 type testResponse struct {
 	body interface{}
 	err  error
@@ -43,6 +45,7 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 			Logger:       logger,
 			ClientID:     "client-id",
 			ClientSecret: "client-secret",
+			CaptureMode:  captureMode,
 		}
 		client := NewClient(ts.Client(), params, komoju.WithLogger(logger))
 		ctx, cancel := context.WithCancel(context.Background())

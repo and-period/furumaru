@@ -37,6 +37,8 @@ type Service interface {
 	AggregateBroadcastViewerLogs(ctx context.Context, in *AggregateBroadcastViewerLogsInput) (entity.AggregatedBroadcastViewerLogs, int64, error) // ライブ配信視聴履歴集計
 	// オンデマンド配信
 	ListVideos(ctx context.Context, in *ListVideosInput) (entity.Videos, int64, error)                       // 一覧取得
+	ListProductVideos(ctx context.Context, in *ListProductVideosInput) (entity.Videos, error)                // 一覧取得（商品別）
+	ListExperienceVideos(ctx context.Context, in *ListExperienceVideosInput) (entity.Videos, error)          // 一覧取得（体験別）
 	GetVideo(ctx context.Context, in *GetVideoInput) (*entity.Video, error)                                  // １件取得
 	CreateVideo(ctx context.Context, in *CreateVideoInput) (*entity.Video, error)                            // 登録
 	UpdateVideo(ctx context.Context, in *UpdateVideoInput) error                                             // 更新
@@ -76,4 +78,6 @@ type Service interface {
 	GetExperienceMediaImageUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // メディア(画像)アップロード用URLの生成
 	GetExperienceMediaVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // メディア(映像)アップロード用URLの生成
 	GetExperiencePromotionVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // 紹介映像アップロード用URLの生成
+	// スポット
+	GetSpotThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
 }

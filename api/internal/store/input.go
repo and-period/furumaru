@@ -7,6 +7,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+type ListCategoriesOrderKey int32
+
+const (
+	ListCategoriesOrderByName ListCategoriesOrderKey = iota + 1
+)
+
 type ListCategoriesInput struct {
 	Name   string                 `validate:"max=32"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -15,7 +21,7 @@ type ListCategoriesInput struct {
 }
 
 type ListCategoriesOrder struct {
-	Key        entity.CategoryOrderBy `validate:"required"`
+	Key        ListCategoriesOrderKey `validate:"required"`
 	OrderByASC bool                   `validate:""`
 }
 
@@ -40,6 +46,12 @@ type DeleteCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
 
+type ListProductTypesOrderKey int32
+
+const (
+	ListProductTypesOrderByName ListProductTypesOrderKey = iota + 1
+)
+
 type ListProductTypesInput struct {
 	Name       string                   `validate:"max=32"`
 	CategoryID string                   `validate:""`
@@ -49,8 +61,8 @@ type ListProductTypesInput struct {
 }
 
 type ListProductTypesOrder struct {
-	Key        entity.ProductTypeOrderBy `validate:"required"`
-	OrderByASC bool                      `validate:""`
+	Key        ListProductTypesOrderKey `validate:"required"`
+	OrderByASC bool                     `validate:""`
 }
 
 type MultiGetProductTypesInput struct {
@@ -77,6 +89,12 @@ type DeleteProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 }
 
+type ListProductTagsOrderKey int32
+
+const (
+	ListProductTagsOrderByName ListProductTagsOrderKey = iota + 1
+)
+
 type ListProductTagsInput struct {
 	Name   string                  `validate:"max=32"`
 	Limit  int64                   `validate:"required,max=200"`
@@ -85,8 +103,8 @@ type ListProductTagsInput struct {
 }
 
 type ListProductTagsOrder struct {
-	Key        entity.ProductTagOrderBy `validate:"required"`
-	OrderByASC bool                     `validate:""`
+	Key        ListProductTagsOrderKey `validate:"required"`
+	OrderByASC bool                    `validate:""`
 }
 
 type MultiGetProductTagsInput struct {
@@ -159,6 +177,20 @@ type UpdateDefaultShippingRate struct {
 	PrefectureCodes []int32 `validate:"required"`
 }
 
+type ListProductsOrderKey int32
+
+const (
+	ListProductsOrderByName ListProductsOrderKey = iota + 1
+	ListProductsOrderBySoldOut
+	ListProductsOrderByPublic
+	ListProductsOrderByInventory
+	ListProductsOrderByOriginPrefecture
+	ListProductsOrderByOriginCity
+	ListProductsOrderByStartAt
+	ListProductsOrderByCreatedAt
+	ListProductsOrderByUpdatedAt
+)
+
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
 	CoordinatorID    string               `validate:""`
@@ -174,8 +206,8 @@ type ListProductsInput struct {
 }
 
 type ListProductsOrder struct {
-	Key        entity.ProductOrderBy `validate:"required"`
-	OrderByASC bool                  `validate:""`
+	Key        ListProductsOrderKey `validate:"required"`
+	OrderByASC bool                 `validate:""`
 }
 
 type MultiGetProductsInput struct {
@@ -263,6 +295,18 @@ type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
 
+type ListPromotionsOrderKey int32
+
+const (
+	ListPromotionsOrderByTitle ListPromotionsOrderKey = iota + 1
+	ListPromotionsOrderByPublic
+	ListPromotionsOrderByPublishedAt
+	ListPromotionsOrderByStartAt
+	ListPromotionsOrderByEndAt
+	ListPromotionsOrderByCreatedAt
+	ListPromotionsOrderByUpdatedAt
+)
+
 type ListPromotionsInput struct {
 	Title  string                 `validate:"max=64"`
 	Limit  int64                  `validate:"required,max=200"`
@@ -271,8 +315,8 @@ type ListPromotionsInput struct {
 }
 
 type ListPromotionsOrder struct {
-	Key        entity.PromotionOrderBy `validate:"required"`
-	OrderByASC bool                    `validate:""`
+	Key        ListPromotionsOrderKey `validate:"required"`
+	OrderByASC bool                   `validate:""`
 }
 
 type MultiGetPromotionsInput struct {
@@ -540,6 +584,10 @@ type CheckoutAUPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutFreeInput struct {
+	CheckoutDetail
+}
+
 type CheckoutDetail struct {
 	CheckoutProductDetail    `validate:"-"`
 	CheckoutExperienceDetail `validate:"-"`
@@ -549,10 +597,8 @@ type CheckoutDetail struct {
 	RequestID                string           `validate:"required"`
 	PromotionCode            string           `validate:"omitempty,len=8"`
 	BillingAddressID         string           `validate:"required"`
-	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
-	// CallbackURL       string `validate:"required,http_url"`
-	CallbackURL string `validate:"omitempty,http_url"`
-	Total       int64  `validate:"required"`
+	CallbackURL              string           `validate:"required,http_url"`
+	Total                    int64            `validate:"min=0"`
 }
 
 type CheckoutProductDetail struct {
@@ -727,4 +773,60 @@ type UpdateExperienceMedia struct {
 
 type DeleteExperienceInput struct {
 	ExperienceID string `validate:"required"`
+}
+
+type ListSpotsInput struct {
+	UserID          string `validate:""`
+	ExcludeApproved bool   `validate:""`
+	ExcludeDisabled bool   `validate:""`
+	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64  `validate:"min=0"`
+	NoLimit         bool   `validate:""`
+}
+
+type ListSpotsByGeolocationInput struct {
+	Latitude  float64 `validate:"min=-90,max=90"`
+	Longitude float64 `validate:"min=-180,max=180"`
+	Radius    int64   `validate:"min=0"`
+}
+
+type GetSpotInput struct {
+	SpotID string `validate:"required"`
+}
+
+type CreateSpotByUserInput struct {
+	UserID       string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type CreateSpotByAdminInput struct {
+	AdminID      string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type UpdateSpotInput struct {
+	SpotID       string  `validate:"required"`
+	Name         string  `validate:"required,max=64"`
+	Description  string  `validate:"required,max=2000"`
+	ThumbnailURL string  `validate:"omitempty,url"`
+	Longitude    float64 `validate:"min=-180,max=180"`
+	Latitude     float64 `validate:"min=-90,max=90"`
+}
+
+type ApproveSpotInput struct {
+	SpotID   string `validate:"required"`
+	AdminID  string `validate:"required"`
+	Approved bool   `validate:""`
+}
+
+type DeleteSpotInput struct {
+	SpotID string `validate:"required"`
 }

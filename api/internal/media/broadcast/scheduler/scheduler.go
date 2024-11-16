@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"sync"
 	"time"
 
@@ -37,6 +38,7 @@ type Params struct {
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
+	storageURL  *url.URL
 }
 
 type Option func(*options)
@@ -50,6 +52,16 @@ func WithLogger(logger *zap.Logger) Option {
 func WithConcurrency(concurrency int64) Option {
 	return func(opts *options) {
 		opts.concurrency = concurrency
+	}
+}
+
+func WithStorageURL(storageURL string) Option {
+	return func(opts *options) {
+		url, err := url.Parse(storageURL)
+		if err != nil {
+			return
+		}
+		opts.storageURL = url
 	}
 }
 

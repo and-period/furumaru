@@ -391,6 +391,19 @@ export interface ApproveScheduleRequest {
 /**
  * 
  * @export
+ * @interface ApproveSpotRequest
+ */
+export interface ApproveSpotRequest {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof ApproveSpotRequest
+     */
+    'approved': boolean;
+}
+/**
+ * 
+ * @export
  * @interface AuthResponse
  */
 export interface AuthResponse {
@@ -2257,6 +2270,43 @@ export interface CreateScheduleRequest {
      * @memberof CreateScheduleRequest
      */
     'endAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface CreateSpotRequest
+ */
+export interface CreateSpotRequest {
+    /**
+     * スポット名（64文字まで）
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'name': string;
+    /**
+     * 説明（2000文字まで）
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * 緯度
+     * @type {number}
+     * @memberof CreateSpotRequest
+     */
+    'latitude': number;
+    /**
+     * 経度
+     * @type {number}
+     * @memberof CreateSpotRequest
+     */
+    'longitude': number;
 }
 /**
  * 
@@ -4257,7 +4307,11 @@ export const PaymentMethodType = {
     /**
     * QR決済（au PAY）
     */
-    AU_PAY: 9
+    AU_PAY: 9,
+    /**
+    * 決済無し（0円決済）
+    */
+    NONE: 10
 } as const;
 
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
@@ -5921,6 +5975,161 @@ export interface SignInRequest {
     'password': string;
 }
 /**
+ * スポット情報
+ * @export
+ * @interface Spot
+ */
+export interface Spot {
+    /**
+     * スポットID
+     * @type {string}
+     * @memberof Spot
+     */
+    'id': string;
+    /**
+     * 
+     * @type {SpotUserType}
+     * @memberof Spot
+     */
+    'userType': SpotUserType;
+    /**
+     * 投稿者ID
+     * @type {string}
+     * @memberof Spot
+     */
+    'userId': string;
+    /**
+     * スポット名
+     * @type {string}
+     * @memberof Spot
+     */
+    'name': string;
+    /**
+     * スポット説明
+     * @type {string}
+     * @memberof Spot
+     */
+    'description': string;
+    /**
+     * スポットURL
+     * @type {string}
+     * @memberof Spot
+     */
+    'thumbnailUrl': string;
+    /**
+     * 経度
+     * @type {number}
+     * @memberof Spot
+     */
+    'longitude': number;
+    /**
+     * 緯度
+     * @type {number}
+     * @memberof Spot
+     */
+    'latitude': number;
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof Spot
+     */
+    'approved': boolean;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Spot
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Spot
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SpotResponse
+ */
+export interface SpotResponse {
+    /**
+     * 
+     * @type {Spot}
+     * @memberof SpotResponse
+     */
+    'spot': Spot;
+    /**
+     * 
+     * @type {User}
+     * @memberof SpotResponse
+     */
+    'user': User;
+    /**
+     * 管理者一覧
+     * @type {Array<Admin>}
+     * @memberof SpotResponse
+     */
+    'admins': Array<Admin>;
+}
+/**
+ * 投稿者の種別
+ * @export
+ * @enum {string}
+ */
+
+export const SpotUserType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 利用者
+    */
+    USER: 1,
+    /**
+    * 管理者
+    */
+    ADMIN: 2
+} as const;
+
+export type SpotUserType = typeof SpotUserType[keyof typeof SpotUserType];
+
+
+/**
+ * 
+ * @export
+ * @interface SpotsResponse
+ */
+export interface SpotsResponse {
+    /**
+     * スポット一覧
+     * @type {Array<Spot>}
+     * @memberof SpotsResponse
+     */
+    'spots': Array<Spot>;
+    /**
+     * ユーザ一覧
+     * @type {Array<User>}
+     * @memberof SpotsResponse
+     */
+    'users': Array<User>;
+    /**
+     * 管理者一覧
+     * @type {Array<Admin>}
+     * @memberof SpotsResponse
+     */
+    'admins': Array<Admin>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof SpotsResponse
+     */
+    'total': number;
+}
+/**
  * 保管方法
  * @export
  * @enum {string}
@@ -7173,6 +7382,43 @@ export interface UpdateScheduleRequest {
 /**
  * 
  * @export
+ * @interface UpdateSpotRequest
+ */
+export interface UpdateSpotRequest {
+    /**
+     * スポット名（64文字まで）
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'name': string;
+    /**
+     * 説明（2000文字まで）
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'description': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * 緯度
+     * @type {number}
+     * @memberof UpdateSpotRequest
+     */
+    'latitude': number;
+    /**
+     * 経度
+     * @type {number}
+     * @memberof UpdateSpotRequest
+     */
+    'longitude': number;
+}
+/**
+ * 
+ * @export
  * @interface UpdateThreadRequest
  */
 export interface UpdateThreadRequest {
@@ -7736,6 +7982,37 @@ export interface UsersResponse {
      * 合計数
      * @type {number}
      * @memberof UsersResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1SpotsResponse
+ */
+export interface V1SpotsResponse {
+    /**
+     * スポット一覧
+     * @type {Array<Spot>}
+     * @memberof V1SpotsResponse
+     */
+    'spots': Array<Spot>;
+    /**
+     * ユーザ一覧
+     * @type {Array<User>}
+     * @memberof V1SpotsResponse
+     */
+    'users': Array<User>;
+    /**
+     * 管理者一覧
+     * @type {Array<Admin>}
+     * @memberof V1SpotsResponse
+     */
+    'admins': Array<Admin>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof V1SpotsResponse
      */
     'total': number;
 }
@@ -20551,6 +20828,587 @@ export class ShippingApi extends BaseAPI {
      */
     public v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: RawAxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1UpsertShipping(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * SpotApi - axios parameter creator
+ * @export
+ */
+export const SpotApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary スポット承認
+         * @param {string} spotId スポットID
+         * @param {ApproveSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule: async (spotId: string, body: ApproveSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'spotId' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'spotId', spotId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'body', body)
+            const localVarPath = `/v1/spots/{spotId}/approval`
+                .replace(`{${"spotId"}}`, encodeURIComponent(String(spotId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポット登録
+         * @param {CreateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateSpot: async (body: CreateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateSpot', 'body', body)
+            const localVarPath = `/v1/spots`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポット削除
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteSpot: async (spotId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'spotId' is not null or undefined
+            assertParamExists('v1DeleteSpot', 'spotId', spotId)
+            const localVarPath = `/v1/spots/{spotId}`
+                .replace(`{${"spotId"}}`, encodeURIComponent(String(spotId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポット取得
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSpot: async (spotId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'spotId' is not null or undefined
+            assertParamExists('v1GetSpot', 'spotId', spotId)
+            const localVarPath = `/v1/spots/{spotId}`
+                .replace(`{${"spotId"}}`, encodeURIComponent(String(spotId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポットサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSpotThumbnailUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetSpotThumbnailUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/spots/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポット一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListSpots: async (limit?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/spots`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary スポット更新
+         * @param {string} scheduleId スポットID
+         * @param {UpdateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateSpot: async (scheduleId: string, body: UpdateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1UpdateSpot', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateSpot', 'body', body)
+            const localVarPath = `/v1/spots/{spotId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SpotApi - functional programming interface
+ * @export
+ */
+export const SpotApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SpotApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary スポット承認
+         * @param {string} spotId スポットID
+         * @param {ApproveSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ApproveSchedule(spotId: string, body: ApproveSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ApproveSchedule(spotId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1ApproveSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポット登録
+         * @param {CreateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateSpot(body: CreateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateSpot(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1CreateSpot']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポット削除
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteSpot(spotId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteSpot(spotId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1DeleteSpot']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポット取得
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetSpot(spotId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetSpot(spotId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1GetSpot']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポットサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetSpotThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetSpotThumbnailUploadUrl(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1GetSpotThumbnailUploadUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポット一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListSpots(limit, offset, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1ListSpots']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary スポット更新
+         * @param {string} scheduleId スポットID
+         * @param {UpdateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateSpot(scheduleId: string, body: UpdateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateSpot(scheduleId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SpotApi.v1UpdateSpot']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SpotApi - factory interface
+ * @export
+ */
+export const SpotApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SpotApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary スポット承認
+         * @param {string} spotId スポットID
+         * @param {ApproveSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule(spotId: string, body: ApproveSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1ApproveSchedule(spotId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポット登録
+         * @param {CreateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateSpot(body: CreateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<SpotResponse> {
+            return localVarFp.v1CreateSpot(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポット削除
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteSpot(spotId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1DeleteSpot(spotId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポット取得
+         * @param {string} spotId スポットID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSpot(spotId: string, options?: RawAxiosRequestConfig): AxiosPromise<SpotResponse> {
+            return localVarFp.v1GetSpot(spotId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポットサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetSpotThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetSpotThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポット一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ListSpots(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary スポット更新
+         * @param {string} scheduleId スポットID
+         * @param {UpdateSpotRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateSpot(scheduleId: string, body: UpdateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateSpot(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SpotApi - object-oriented interface
+ * @export
+ * @class SpotApi
+ * @extends {BaseAPI}
+ */
+export class SpotApi extends BaseAPI {
+    /**
+     * 
+     * @summary スポット承認
+     * @param {string} spotId スポットID
+     * @param {ApproveSpotRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1ApproveSchedule(spotId: string, body: ApproveSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1ApproveSchedule(spotId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポット登録
+     * @param {CreateSpotRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1CreateSpot(body: CreateSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1CreateSpot(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポット削除
+     * @param {string} spotId スポットID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1DeleteSpot(spotId: string, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1DeleteSpot(spotId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポット取得
+     * @param {string} spotId スポットID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1GetSpot(spotId: string, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1GetSpot(spotId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポットサムネイルアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1GetSpotThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1GetSpotThumbnailUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポット一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1ListSpots(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary スポット更新
+     * @param {string} scheduleId スポットID
+     * @param {UpdateSpotRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpotApi
+     */
+    public v1UpdateSpot(scheduleId: string, body: UpdateSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1UpdateSpot(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

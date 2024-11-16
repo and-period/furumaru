@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -55,7 +56,7 @@ func NewUser(params *NewUserParams) *User {
 	userID := uuid.Base58Encode(uuid.New())
 	if params.Registered {
 		member.UserID = userID
-		member.CognitoID = params.CognitoID
+		member.CognitoID = strings.ToLower(params.CognitoID) // Cognitoでは大文字小文字の区別がされず管理されているため
 		member.Username = params.Username
 		member.AccountID = params.AccountID
 		member.Lastname = params.Lastname

@@ -38,6 +38,7 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/-/broadcasts/live", h.CreateBroadcastLiveMP4UploadURL)
 	r.POST("/videos/thumbnail", h.CreateVideoThumbnailUploadURL)
 	r.POST("/videos/file", h.CreateVideoFileUploadURL)
+	r.POST("/spots/thumbnail", h.CreateSpotThumbnailURL)
 }
 
 func (h *handler) GetUploadState(ctx *gin.Context) {
@@ -158,6 +159,10 @@ func (h *handler) CreateVideoThumbnailUploadURL(ctx *gin.Context) {
 
 func (h *handler) CreateVideoFileUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetVideoFileUploadURL)
+}
+
+func (h *handler) CreateSpotThumbnailURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetSpotThumbnailUploadURL)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {

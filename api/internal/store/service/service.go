@@ -34,17 +34,16 @@ const (
 )
 
 type Params struct {
-	WaitGroup           *sync.WaitGroup
-	Database            *database.Database
-	Cache               dynamodb.Client
-	User                user.Service
-	Messenger           messenger.Service
-	Media               media.Service
-	PostalCode          postalcode.Client
-	Geolocation         geolocation.Client
-	Ivs                 ivs.Client
-	Komoju              *komoju.Komoju
-	CheckoutRedirectURL string
+	WaitGroup   *sync.WaitGroup
+	Database    *database.Database
+	Cache       dynamodb.Client
+	User        user.Service
+	Messenger   messenger.Service
+	Media       media.Service
+	PostalCode  postalcode.Client
+	Geolocation geolocation.Client
+	Ivs         ivs.Client
+	Komoju      *komoju.Komoju
 }
 
 type service struct {
@@ -65,7 +64,6 @@ type service struct {
 	komoju              *komoju.Komoju
 	cartTTL             time.Duration
 	cartRefreshInterval time.Duration
-	checkoutRedirectURL string
 }
 
 type options struct {
@@ -123,7 +121,6 @@ func NewService(params *Params, opts ...Option) store.Service {
 		komoju:              params.Komoju,
 		cartTTL:             dopts.cartTTL,
 		cartRefreshInterval: defaultCartRefreshInterval,
-		checkoutRedirectURL: params.CheckoutRedirectURL,
 	}
 }
 

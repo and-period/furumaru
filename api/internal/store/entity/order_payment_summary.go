@@ -47,6 +47,9 @@ func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) 
 	if err != nil {
 		return nil, err
 	}
+	if subtotal == 0 {
+		return &OrderPaymentSummary{TaxRate: taxRate}, nil
+	}
 	// 商品配送料金の算出
 	for _, basket := range params.Baskets {
 		if params.PrefectureCode == 0 {
@@ -83,6 +86,9 @@ func NewExperienceOrderPaymentSummary(params *NewExperienceOrderPaymentSummaryPa
 	subtotal += params.Experience.PriceElementarySchool * params.ElementarySchoolCount
 	subtotal += params.Experience.PricePreschool * params.PreschoolCount
 	subtotal += params.Experience.PriceSenior * params.SeniorCount
+	if subtotal == 0 {
+		return &OrderPaymentSummary{TaxRate: taxRate}
+	}
 	// 割引金額の算出
 	discount := params.Promotion.CalcDiscount(subtotal, 0)
 	// 支払い金額の算出（消費税額＝税込価格÷（1+消費税率）×消費税率）

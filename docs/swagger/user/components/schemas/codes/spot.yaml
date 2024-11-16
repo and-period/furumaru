@@ -1,0 +1,17 @@
+spotUserType:
+  type: integer
+  format: int32
+  description: 投稿者の種別
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - USER
+  - ADMIN
+  x-enum-descriptions:
+  - 不明
+  - 利用者
+  - 管理者

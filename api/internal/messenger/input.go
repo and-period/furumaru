@@ -6,6 +6,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
+type ListNotificationsOrderKey int32
+
+const (
+	ListNotificationsOrderByTitle ListNotificationsOrderKey = iota + 1
+	ListNotificationsOrderByPublishedAt
+)
+
 type ListNotificationsInput struct {
 	Limit  int64                     `validate:"required,max=200"`
 	Offset int64                     `validate:"min=0"`
@@ -15,8 +22,8 @@ type ListNotificationsInput struct {
 }
 
 type ListNotificationsOrder struct {
-	Key        entity.NotificationOrderBy `validate:"required"`
-	OrderByASC bool                       `validate:""`
+	Key        ListNotificationsOrderKey `validate:"required"`
+	OrderByASC bool                      `validate:""`
 }
 
 type GetNotificationInput struct {

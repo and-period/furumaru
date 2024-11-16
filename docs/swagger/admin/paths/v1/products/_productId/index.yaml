@@ -110,3 +110,9 @@ delete:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 関連付けられている箇所があるため削除できない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -89,6 +89,12 @@ p, shipping_get, /v1/coordinators/*/shippings, GET, allow
 p, shipping_upsert, /v1/coordinators/*/shippings, PATCH, allow
 p, default_shipping_get, /v1/shippings/default, GET, allow
 p, default_shipping_update, /v1/shippings/default, PATCH, allow
+p, spot_list, /v1/spots, GET, allow
+p, spot_get, /v1/spots/*, GET, allow
+p, spot_create, /v1/spots, POST, allow
+p, spot_update, /v1/spots/*, PATCH, allow
+p, spot_delete, /v1/spots/*, DELETE, allow
+p, spot_upload, /v1/upload/spots/*, POST, allow
 p, thread_get, /v1/contacts/*/threads/*, GET, allow
 p, thread_list_by_contactId, /v1/contacts/*/threads, GET, allow
 p, thread_create, /v1/contacts/*/threads, POST, allow
@@ -197,6 +203,12 @@ g, administrator, shipping_get
 g, administrator, shipping_upsert
 g, administrator, default_shipping_get
 g, administrator, default_shipping_update
+g, administrator, spot_list
+g, administrator, spot_get
+g, administrator, spot_create
+g, administrator, spot_update
+g, administrator, spot_delete
+g, administrator, spot_upload
 g, administrator, thread_list_by_contactId
 g, administrator, thread_get
 g, administrator, thread_create
@@ -274,6 +286,12 @@ g, coordinator, schedule_schedule
 g, coordinator, schedule_upload
 g, coordinator, shipping_get
 g, coordinator, shipping_upsert
+g, coordinator, spot_list
+g, coordinator, spot_get
+g, coordinator, spot_create
+g, coordinator, spot_update
+g, coordinator, spot_delete
+g, coordinator, spot_upload
 g, coordinator, thread_list_by_contactId
 g, coordinator, thread_get
 g, coordinator, thread_create
@@ -320,6 +338,8 @@ g, producer, promotion_list
 g, producer, promotion_get
 g, producer, schedule_list
 g, producer, schedule_get
+g, producer, spot_list
+g, producer, spot_get
 g, producer, thread_list_by_contactId
 g, producer, thread_get
 g, producer, thread_create

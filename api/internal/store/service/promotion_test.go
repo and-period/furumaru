@@ -21,7 +21,7 @@ func TestListPromotions(t *testing.T) {
 		Limit:  30,
 		Offset: 0,
 		Orders: []*database.ListPromotionsOrder{
-			{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+			{Key: database.ListPromotionsOrderByPublic, OrderByASC: true},
 		},
 	}
 	promotions := entity.Promotions{
@@ -60,7 +60,7 @@ func TestListPromotions(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListPromotionsOrder{
-					{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+					{Key: store.ListPromotionsOrderByPublic, OrderByASC: true},
 				},
 			},
 			expect:      promotions,
@@ -85,7 +85,7 @@ func TestListPromotions(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListPromotionsOrder{
-					{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+					{Key: store.ListPromotionsOrderByPublic, OrderByASC: true},
 				},
 			},
 			expect:      nil,
@@ -102,7 +102,7 @@ func TestListPromotions(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListPromotionsOrder{
-					{Key: entity.PromotionOrderByPublic, OrderByASC: true},
+					{Key: store.ListPromotionsOrderByPublic, OrderByASC: true},
 				},
 			},
 			expect:      nil,

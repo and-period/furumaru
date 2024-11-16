@@ -27,7 +27,8 @@ export const PaymentMethodType = {
     LINE_PAY: 6,
     MERPAY: 7,
     RAKUTEN_PAY: 8,
-    AU_PAY: 9
+    AU_PAY: 9,
+    FREE: 10
 } as const;
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
 

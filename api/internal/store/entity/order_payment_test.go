@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
@@ -190,6 +189,11 @@ func TestPaymentMethodType_String(t *testing.T) {
 			name:       "au pay",
 			methodType: PaymentMethodTypeAUPay,
 			expect:     "QR決済（au PAY）",
+		},
+		{
+			name:       "none",
+			methodType: PaymentMethodTypeNone,
+			expect:     "決済なし",
 		},
 		{
 			name:       "unknown",
@@ -749,10 +753,6 @@ func TestExperienceOrderPayment(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
@@ -830,10 +830,6 @@ func TestExperienceOrderPayment(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
@@ -915,10 +911,6 @@ func TestExperienceOrderPayment(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					HostGeolocation: mysql.Geometry{
-						X: 136.251739,
-						Y: 35.276833,
-					},
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",
@@ -1072,11 +1064,14 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		expect        *OrderPayment
 	}{
 		{
-			name:          "success",
-			payment:       &OrderPayment{},
+			name: "success",
+			payment: &OrderPayment{
+				Total: 1000,
+			},
 			transactionID: "transaction-id",
 			now:           now,
 			expect: &OrderPayment{
+				Total:         1000,
 				TransactionID: "transaction-id",
 				OrderedAt:     now,
 			},
@@ -1087,7 +1082,7 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.payment.SetTransactionID(tt.transactionID, tt.now)
-			assert.Equal(t, tt.expect, tt.expect)
+			assert.Equal(t, tt.expect, tt.payment)
 		})
 	}
 }
