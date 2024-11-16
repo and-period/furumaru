@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"sync"
 	"time"
 
@@ -67,10 +68,17 @@ func (a *app) inject(ctx context.Context) error {
 		return fmt.Errorf("cmd: failed to create database client: %w", err)
 	}
 
+	// CDNのURL設定
+	storageURL, err := url.Parse(a.CDNURL)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to parse cdn url: %w", err)
+	}
+
 	// Jobの設定
 	jobParams := &updater.Params{
-		WaitGroup: params.waitGroup,
-		Database:  mediadb.NewDatabase(dbClient),
+		WaitGroup:  params.waitGroup,
+		Database:   mediadb.NewDatabase(dbClient),
+		StorageURL: storageURL,
 	}
 	switch a.RunType {
 	case "START":

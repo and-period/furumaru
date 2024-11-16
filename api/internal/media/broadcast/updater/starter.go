@@ -19,6 +19,7 @@ type starter struct {
 	waitGroup  *sync.WaitGroup
 	db         *database.Database
 	maxRetries int64
+	storageURL func() *url.URL
 }
 
 func NewStarter(params *Params, opts ...Option) Updater {
@@ -29,26 +30,32 @@ func NewStarter(params *Params, opts ...Option) Updater {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	storageURL := func() *url.URL {
+		url := *params.StorageURL // copy
+		return &url
+	}
 	return &starter{
 		now:        jst.Now,
 		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
 		db:         params.Database,
 		maxRetries: dopts.maxRetries,
+		storageURL: storageURL,
 	}
 }
 
 func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 	s.logger.Debug("Received event", zap.Any("payload", payload))
-	u := &url.URL{
-		Scheme: "https",
-		Host:   payload.CloudFrontURL,
-		Path:   fmt.Sprintf("%s.m3u8", payload.MediaLiveRtmpStreamName),
-	}
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, payload.ScheduleID)
 	if err != nil {
 		s.logger.Error("Not found broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
 		return nil
+	}
+	dir := fmt.Sprintf(entity.BroadcastArchiveHLSPath, payload.ScheduleID)
+	u := &url.URL{
+		Scheme: s.storageURL().Scheme,
+		Host:   s.storageURL().Host,
+		Path:   fmt.Sprintf("%s/index.m3u8", dir),
 	}
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
@@ -62,7 +69,7 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 			MediaLiveRTMPInputName:    payload.MediaLiveRtmpInputName,
 			MediaLiveMP4InputArn:      payload.MediaLiveMp4InputARN,
 			MediaLiveMP4InputName:     payload.MediaLiveMp4InputName,
-			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
+			MediaStoreContainerArn:    payload.MediaStoreContainerARN, // TODO: MediaStoreが廃止されるため、他実装削除後に削除
 		},
 	}
 	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
