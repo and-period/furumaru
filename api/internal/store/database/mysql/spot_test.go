@@ -34,7 +34,7 @@ func TestSpot_List(t *testing.T) {
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
 	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[3] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -105,7 +105,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
 	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[3] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -173,7 +173,7 @@ func TestSpot_Count(t *testing.T) {
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
 	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[3] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
