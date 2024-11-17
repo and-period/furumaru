@@ -55,7 +55,7 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 	u := &url.URL{
 		Scheme: s.storageURL().Scheme,
 		Host:   s.storageURL().Host,
-		Path:   fmt.Sprintf("%s/index.m3u8", dir),
+		Path:   fmt.Sprintf("%s/live.m3u8", dir),
 	}
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
