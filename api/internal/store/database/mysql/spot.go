@@ -66,7 +66,9 @@ func (s *spot) List(ctx context.Context, params *database.ListSpotsParams, field
 	return spots, dbError(err)
 }
 
-func (s *spot) ListByGeolocation(ctx context.Context, params *database.ListSpotsByGeolocationParams, fields ...string) (entity.Spots, error) {
+func (s *spot) ListByGeolocation(
+	ctx context.Context, params *database.ListSpotsByGeolocationParams, fields ...string,
+) (entity.Spots, error) {
 	var spots entity.Spots
 
 	// Haversine式を用いて2点間の距離を計算する
