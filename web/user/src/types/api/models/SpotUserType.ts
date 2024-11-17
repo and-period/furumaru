@@ -20,7 +20,8 @@
 export const SpotUserType = {
     UNKNOWN: 0,
     USER: 1,
-    ADMIN: 2
+    COORDINATOR: 2,
+    PRODUCER: 3
 } as const;
 export type SpotUserType = typeof SpotUserType[keyof typeof SpotUserType];
 

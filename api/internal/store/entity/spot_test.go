@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -93,6 +94,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "success",
 			params: &SpotParams{
+				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -101,7 +103,7 @@ func TestSpotByAdmin(t *testing.T) {
 				Latitude:     35.6895,
 			},
 			expect: &Spot{
-				UserType:        SpotUserTypeAdmin,
+				UserType:        SpotUserTypeCoordinator,
 				UserID:          "user-id",
 				Name:            "東京タワー",
 				Description:     "おすすめの観光地です。",
@@ -116,6 +118,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "invalid longitude",
 			params: &SpotParams{
+				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -129,6 +132,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "invalid latitude",
 			params: &SpotParams{
+				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -152,6 +156,102 @@ func TestSpotByAdmin(t *testing.T) {
 			assert.False(t, tt.hasErr)
 
 			actual.ID = "" // ignore
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestSpots_UserIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		spots  Spots
+		expect []string
+	}{
+		{
+			name: "success",
+			spots: Spots{
+				{
+					ID:           "spot-id",
+					UserType:     SpotUserTypeUser,
+					UserID:       "user-id",
+					Name:         "東京タワー",
+					Description:  "東京タワーの説明",
+					ThumbnailURL: "https://example.com/thumbnail.jpg",
+					Longitude:    139.732293,
+					Latitude:     35.658580,
+					Approved:     true,
+					CreatedAt:    now,
+					UpdatedAt:    now,
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.spots.UserIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestSpots_GroupByUserType(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		spots  Spots
+		expect map[SpotUserType]Spots
+	}{
+		{
+			name: "success",
+			spots: Spots{
+				{
+					ID:           "spot-id",
+					UserType:     1,
+					UserID:       "user-id",
+					Name:         "東京タワー",
+					Description:  "東京タワーの説明",
+					ThumbnailURL: "https://example.com/thumbnail.jpg",
+					Longitude:    139.732293,
+					Latitude:     35.658580,
+					Approved:     true,
+					CreatedAt:    now,
+					UpdatedAt:    now,
+				},
+			},
+			expect: map[SpotUserType]Spots{
+				SpotUserTypeUser: {
+					{
+						ID:           "spot-id",
+						UserType:     1,
+						UserID:       "user-id",
+						Name:         "東京タワー",
+						Description:  "東京タワーの説明",
+						ThumbnailURL: "https://example.com/thumbnail.jpg",
+						Longitude:    139.732293,
+						Latitude:     35.658580,
+						Approved:     true,
+						CreatedAt:    now,
+						UpdatedAt:    now,
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.spots.GroupByUserType()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

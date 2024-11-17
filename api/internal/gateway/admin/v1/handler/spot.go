@@ -9,12 +9,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) spotRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/spots")
+	r := rg.Group("/spots", h.authentication)
 
 	r.GET("", h.ListSpots)
 	r.POST("", h.CreateSpot)
@@ -31,7 +32,7 @@ func (h *handler) filterAccessSpot(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if service.NewSpotUserTypeFromInt32(spot.UserType) != service.SpotUserTypeAdmin {
+			if spot.UserType != service.SpotUserTypeCoordinator {
 				return false, nil
 			}
 			return spot.UserID == getAdminID(ctx), nil
@@ -68,37 +69,42 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 		Limit:           limit,
 		Offset:          offset,
 	}
-	sspots, total, err := h.store.ListSpots(ctx, in)
+	spots, total, err := h.store.ListSpots(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	if len(sspots) == 0 {
+	if len(spots) == 0 {
 		res := &response.SpotsResponse{
-			Spots:  []*response.Spot{},
-			Users:  []*response.User{},
-			Admins: []*response.Admin{},
+			Spots:        []*response.Spot{},
+			Users:        []*response.User{},
+			Coordinators: []*response.Coordinator{},
+			Producers:    []*response.Producer{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
 	}
-
-	spots := service.NewSpots(sspots)
 	spotsMap := spots.GroupByUserType()
 
 	var (
-		users  service.Users
-		admins service.Admins
+		users        service.Users
+		coordinators service.Coordinators
+		producers    service.Producers
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		spots := spotsMap[service.SpotUserTypeUser]
+		spots := spotsMap[entity.SpotUserTypeUser]
 		users, err = h.multiGetUsers(ectx, spots.UserIDs())
 		return
 	})
 	eg.Go(func() (err error) {
-		spots := spotsMap[service.SpotUserTypeAdmin]
-		admins, err = h.multiGetAdmins(ectx, spots.UserIDs())
+		spots := spotsMap[entity.SpotUserTypeCoordinator]
+		coordinators, err = h.multiGetCoordinators(ectx, spots.UserIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		spots := spotsMap[entity.SpotUserTypeProducer]
+		producers, err = h.multiGetProducers(ectx, spots.UserIDs())
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -107,10 +113,11 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	}
 
 	res := &response.SpotsResponse{
-		Spots:  spots.Response(),
-		Users:  users.Response(),
-		Admins: admins.Response(),
-		Total:  total,
+		Spots:        service.NewSpots(spots).Response(),
+		Users:        users.Response(),
+		Coordinators: coordinators.Response(),
+		Producers:    producers.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -126,7 +133,7 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 		Spot: spot.Response(),
 	}
 
-	switch service.NewSpotUserTypeFromInt32(spot.UserType) {
+	switch spot.UserType {
 	case service.SpotUserTypeUser:
 		user, err := h.getUser(ctx, spot.UserID)
 		if err != nil {
@@ -134,13 +141,20 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 			return
 		}
 		res.User = user.Response()
-	case service.SpotUserTypeAdmin:
-		admin, err := h.getAdmin(ctx, spot.UserID)
+	case service.SpotUserTypeCoordinator:
+		coordinator, err := h.getCoordinator(ctx, spot.UserID)
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
-		res.Admin = admin.Response()
+		res.Coordinator = coordinator.Response()
+	case service.SpotUserTypeProducer:
+		producer, err := h.getProducer(ctx, spot.UserID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		res.Producer = producer.Response()
 	}
 
 	ctx.JSON(http.StatusOK, res)
@@ -153,14 +167,28 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		return
 	}
 
-	admin, err := h.getAdmin(ctx, getAdminID(ctx))
-	if err != nil {
-		h.httpError(ctx, err)
-		return
+	adminID := getAdminID(ctx)
+
+	res := &response.SpotResponse{}
+	switch getRole(ctx) {
+	case service.AdminRoleCoordinator:
+		coordinator, err := h.getCoordinator(ctx, adminID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		res.Coordinator = coordinator.Response()
+	case service.AdminRoleProducer:
+		producer, err := h.getProducer(ctx, adminID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		res.Producer = producer.Response()
 	}
 
 	in := &store.CreateSpotByAdminInput{
-		AdminID:      admin.ID,
+		AdminID:      adminID,
 		Name:         req.Name,
 		Description:  req.Description,
 		ThumbnailURL: req.ThumbnailURL,
@@ -173,10 +201,7 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.SpotResponse{
-		Spot:  service.NewSpot(spot).Response(),
-		Admin: admin.Response(),
-	}
+	res.Spot = service.NewSpot(spot).Response()
 	ctx.JSON(http.StatusOK, res)
 }
 

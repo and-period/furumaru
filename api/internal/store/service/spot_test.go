@@ -8,6 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -346,6 +348,16 @@ func TestCreateSpotByUser(t *testing.T) {
 func TestCreateSpotByAdmin(t *testing.T) {
 	t.Parallel()
 
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := func(role uentity.AdminRole) *uentity.Admin {
+		return &uentity.Admin{
+			ID:   "admin-id",
+			Role: role,
+		}
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -355,12 +367,13 @@ func TestCreateSpotByAdmin(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, spot *entity.Spot) error {
 						expect := &entity.Spot{
 							ID:              spot.ID, // ignore
-							UserType:        entity.SpotUserTypeAdmin,
+							UserType:        entity.SpotUserTypeCoordinator,
 							UserID:          "admin-id",
 							Name:            "東京タワー",
 							Description:     "東京タワーの説明",
@@ -391,8 +404,54 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "not found admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.CreateSpotByAdminInput{
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreateSpotByAdminInput{
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to unsppoted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleAdministrator), nil)
+			},
+			input: &store.CreateSpotByAdminInput{
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{

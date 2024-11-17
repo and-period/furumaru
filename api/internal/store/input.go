@@ -786,9 +786,10 @@ type ListSpotsInput struct {
 }
 
 type ListSpotsByGeolocationInput struct {
-	Latitude  float64 `validate:"min=-90,max=90"`
-	Longitude float64 `validate:"min=-180,max=180"`
-	Radius    int64   `validate:"min=0"`
+	Latitude        float64 `validate:"min=-90,max=90"`
+	Longitude       float64 `validate:"min=-180,max=180"`
+	Radius          int64   `validate:"min=0"`
+	ExcludeDisabled bool    `validate:""`
 }
 
 type GetSpotInput struct {

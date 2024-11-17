@@ -6069,10 +6069,16 @@ export interface SpotResponse {
     'user': User;
     /**
      * 
-     * @type {Admin}
+     * @type {Coordinator}
      * @memberof SpotResponse
      */
-    'admin': Admin;
+    'coordinator': Coordinator;
+    /**
+     * 
+     * @type {Producer}
+     * @memberof SpotResponse
+     */
+    'producer': Producer;
 }
 /**
  * 投稿者の種別
@@ -6090,9 +6096,13 @@ export const SpotUserType = {
     */
     USER: 1,
     /**
-    * 管理者
+    * コーディネータ
     */
-    ADMIN: 2
+    COORDINATOR: 2,
+    /**
+    * 生産者
+    */
+    PRODUCER: 3
 } as const;
 
 export type SpotUserType = typeof SpotUserType[keyof typeof SpotUserType];
@@ -6117,11 +6127,17 @@ export interface SpotsResponse {
      */
     'users': Array<User>;
     /**
-     * 管理者一覧
-     * @type {Array<Admin>}
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
      * @memberof SpotsResponse
      */
-    'admins': Array<Admin>;
+    'coordinators': Array<Coordinator>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof SpotsResponse
+     */
+    'producers': Array<Producer>;
     /**
      * 合計数
      * @type {number}
@@ -8004,11 +8020,17 @@ export interface V1SpotsResponse {
      */
     'users': Array<User>;
     /**
-     * 管理者一覧
-     * @type {Array<Admin>}
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
      * @memberof V1SpotsResponse
      */
-    'admins': Array<Admin>;
+    'coordinators': Array<Coordinator>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof V1SpotsResponse
+     */
+    'producers': Array<Producer>;
     /**
      * 合計数
      * @type {number}

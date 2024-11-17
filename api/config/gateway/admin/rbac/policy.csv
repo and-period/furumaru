@@ -205,7 +205,6 @@ g, administrator, default_shipping_get
 g, administrator, default_shipping_update
 g, administrator, spot_list
 g, administrator, spot_get
-g, administrator, spot_create
 g, administrator, spot_update
 g, administrator, spot_delete
 g, administrator, spot_upload
