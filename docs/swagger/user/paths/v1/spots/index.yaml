@@ -30,7 +30,7 @@ get:
     description: 取得半径（単位：km）
     required: false
     default: 20
-  responess:
+  responses:
     200:
       description: 成功
       content:

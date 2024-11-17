@@ -8004,43 +8004,6 @@ export interface UsersResponse {
 /**
  * 
  * @export
- * @interface V1SpotsResponse
- */
-export interface V1SpotsResponse {
-    /**
-     * スポット一覧
-     * @type {Array<Spot>}
-     * @memberof V1SpotsResponse
-     */
-    'spots': Array<Spot>;
-    /**
-     * ユーザ一覧
-     * @type {Array<User>}
-     * @memberof V1SpotsResponse
-     */
-    'users': Array<User>;
-    /**
-     * コーディネータ一覧
-     * @type {Array<Coordinator>}
-     * @memberof V1SpotsResponse
-     */
-    'coordinators': Array<Coordinator>;
-    /**
-     * 生産者一覧
-     * @type {Array<Producer>}
-     * @memberof V1SpotsResponse
-     */
-    'producers': Array<Producer>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof V1SpotsResponse
-     */
-    'total': number;
-}
-/**
- * 
- * @export
  * @interface VerifyAuthEmailRequest
  */
 export interface VerifyAuthEmailRequest {
@@ -21233,7 +21196,7 @@ export const SpotApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListSpots(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1ListSpots']?.[localVarOperationServerIndex]?.url;
@@ -21322,7 +21285,7 @@ export const SpotApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        v1ListSpots(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<SpotsResponse> {
             return localVarFp.v1ListSpots(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
