@@ -495,7 +495,7 @@ type ListSpotsParams struct {
 type ListSpotsByGeolocationParams struct {
 	Longitude float64
 	Latitude  float64
-	Radius    int
+	Radius    int64
 }
 
 type UpdateSpotParams struct {
