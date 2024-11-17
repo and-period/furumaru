@@ -113,7 +113,6 @@ export * from './UploadStatus';
 export * from './UploadUrlResponse';
 export * from './V1CreateVideoCommentRequest';
 export * from './V1GuestCheckoutExperienceRequest';
-export * from './V1SpotsResponse';
 export * from './V1VideoCommentsResponse';
 export * from './VerifyAuthUserEmailRequest';
 export * from './VerifyAuthUserRequest';

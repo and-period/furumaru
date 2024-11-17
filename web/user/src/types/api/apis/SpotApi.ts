@@ -18,6 +18,7 @@ import type {
   CreateSpotRequest,
   ErrorResponse,
   SpotResponse,
+  SpotsResponse,
 } from '../models/index';
 import {
     CreateSpotRequestFromJSON,
@@ -26,6 +27,8 @@ import {
     ErrorResponseToJSON,
     SpotResponseFromJSON,
     SpotResponseToJSON,
+    SpotsResponseFromJSON,
+    SpotsResponseToJSON,
 } from '../models/index';
 
 export interface V1CreateSpotRequest {
@@ -185,7 +188,7 @@ export class SpotApi extends runtime.BaseAPI {
     /**
      * スポット一覧取得
      */
-    async v1ListSpotsRaw(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async v1ListSpotsRaw(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SpotsResponse>> {
         if (requestParameters['longitude'] == null) {
             throw new runtime.RequiredError(
                 'longitude',
@@ -231,14 +234,15 @@ export class SpotApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => SpotsResponseFromJSON(jsonValue));
     }
 
     /**
      * スポット一覧取得
      */
-    async v1ListSpots(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1ListSpotsRaw(requestParameters, initOverrides);
+    async v1ListSpots(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SpotsResponse> {
+        const response = await this.v1ListSpotsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
