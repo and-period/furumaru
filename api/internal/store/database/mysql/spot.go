@@ -82,6 +82,9 @@ func (s *spot) ListByGeolocation(ctx context.Context, params *database.ListSpots
 
 	stmt := s.db.Statement(ctx, s.db.DB, spotTable, fields...).
 		Where(distance, params.Latitude, params.Latitude, params.Longitude, params.Radius)
+	if params.ExcludeDisabled {
+		stmt = stmt.Where("approved = ?", true)
+	}
 
 	err := stmt.Find(&spots).Error
 	return spots, dbError(err)

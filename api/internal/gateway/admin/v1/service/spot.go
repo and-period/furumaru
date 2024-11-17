@@ -4,31 +4,29 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // SpotUserType - 投稿者の種別
 type SpotUserType int32
 
 const (
-	SpotUserTypeUnknown SpotUserType = 0
-	SpotUserTypeUser    SpotUserType = 1 // ユーザー
-	SpotUserTypeAdmin   SpotUserType = 2 // 管理者
+	SpotUserTypeUnknown     SpotUserType = 0
+	SpotUserTypeUser        SpotUserType = 1 // ユーザー
+	SpotUserTypeCoordinator SpotUserType = 2 // コーディネータ
+	SpotUserTypeProducer    SpotUserType = 3 // 生産者
 )
 
 func NewSpotUserType(userType entity.SpotUserType) SpotUserType {
 	switch userType {
 	case entity.SpotUserTypeUser:
 		return SpotUserTypeUser
-	case entity.SpotUserTypeAdmin:
-		return SpotUserTypeAdmin
+	case entity.SpotUserTypeCoordinator:
+		return SpotUserTypeCoordinator
+	case entity.SpotUserTypeProducer:
+		return SpotUserTypeProducer
 	default:
 		return SpotUserTypeUnknown
 	}
-}
-
-func NewSpotUserTypeFromInt32(userType int32) SpotUserType {
-	return SpotUserType(userType)
 }
 
 func (t SpotUserType) Response() int32 {
@@ -37,16 +35,17 @@ func (t SpotUserType) Response() int32 {
 
 type Spot struct {
 	response.Spot
-	userType SpotUserType
+	UserType SpotUserType
 }
 
 type Spots []*Spot
 
 func NewSpot(spot *entity.Spot) *Spot {
+	userType := NewSpotUserType(spot.UserType)
 	return &Spot{
 		Spot: response.Spot{
 			ID:           spot.ID,
-			UserType:     NewSpotUserType(spot.UserType).Response(),
+			UserType:     userType.Response(),
 			UserID:       spot.UserID,
 			Name:         spot.Name,
 			Description:  spot.Description,
@@ -57,7 +56,7 @@ func NewSpot(spot *entity.Spot) *Spot {
 			CreatedAt:    jst.Unix(spot.CreatedAt),
 			UpdatedAt:    jst.Unix(spot.UpdatedAt),
 		},
-		userType: NewSpotUserType(spot.UserType),
+		UserType: userType,
 	}
 }
 
@@ -69,23 +68,6 @@ func NewSpots(spots []*entity.Spot) Spots {
 	res := make(Spots, len(spots))
 	for i := range spots {
 		res[i] = NewSpot(spots[i])
-	}
-	return res
-}
-
-func (ss Spots) UserIDs() []string {
-	return set.UniqBy(ss, func(s *Spot) string {
-		return s.UserID
-	})
-}
-
-func (ss Spots) GroupByUserType() map[SpotUserType]Spots {
-	res := make(map[SpotUserType]Spots, 2)
-	for _, s := range ss {
-		if _, ok := res[s.userType]; !ok {
-			res[s.userType] = make(Spots, 0, len(ss))
-		}
-		res[s.userType] = append(res[s.userType], s)
 	}
 	return res
 }

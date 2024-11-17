@@ -198,6 +198,71 @@ func TestProducers(t *testing.T) {
 	}
 }
 
+func TestProducers_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		producers Producers
+		expect    map[string]*Producer
+	}{
+		{
+			name: "success",
+			producers: Producers{
+				{
+					Producer: response.Producer{
+						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
+						Username:      "&.農園",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+					},
+				},
+				{
+					Producer: response.Producer{
+						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
+						Username:      "&.農園",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+					},
+				},
+			},
+			expect: map[string]*Producer{
+				"producer-id01": {
+					Producer: response.Producer{
+						ID:            "producer-id01",
+						CoordinatorID: "coordinator-id",
+						Username:      "&.農園",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+					},
+				},
+				"producer-id02": {
+					Producer: response.Producer{
+						ID:            "producer-id02",
+						CoordinatorID: "coordinator-id",
+						Username:      "&.農園",
+						HeaderURL:     "https://and-period.jp/header.png",
+						Prefecture:    "東京都",
+						City:          "千代田区",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.producers.Map()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestProducers_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

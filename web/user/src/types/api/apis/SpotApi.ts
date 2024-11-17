@@ -41,6 +41,8 @@ export interface V1GetSpotRequest {
 }
 
 export interface V1ListSpotsRequest {
+    longitude: number;
+    latitude: number;
     radius?: number;
 }
 
@@ -184,7 +186,29 @@ export class SpotApi extends runtime.BaseAPI {
      * スポット一覧取得
      */
     async v1ListSpotsRaw(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['longitude'] == null) {
+            throw new runtime.RequiredError(
+                'longitude',
+                'Required parameter "longitude" was null or undefined when calling v1ListSpots().'
+            );
+        }
+
+        if (requestParameters['latitude'] == null) {
+            throw new runtime.RequiredError(
+                'latitude',
+                'Required parameter "latitude" was null or undefined when calling v1ListSpots().'
+            );
+        }
+
         const queryParameters: any = {};
+
+        if (requestParameters['longitude'] != null) {
+            queryParameters['longitude'] = requestParameters['longitude'];
+        }
+
+        if (requestParameters['latitude'] != null) {
+            queryParameters['latitude'] = requestParameters['latitude'];
+        }
 
         if (requestParameters['radius'] != null) {
             queryParameters['radius'] = requestParameters['radius'];
@@ -213,7 +237,7 @@ export class SpotApi extends runtime.BaseAPI {
     /**
      * スポット一覧取得
      */
-    async v1ListSpots(requestParameters: V1ListSpotsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async v1ListSpots(requestParameters: V1ListSpotsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1ListSpotsRaw(requestParameters, initOverrides);
     }
 

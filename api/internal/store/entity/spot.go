@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
@@ -11,9 +12,10 @@ import (
 type SpotUserType int32
 
 const (
-	SpotUserTypeUnknown SpotUserType = 0
-	SpotUserTypeUser    SpotUserType = 1 // ユーザー
-	SpotUserTypeAdmin   SpotUserType = 2 // 管理者
+	SpotUserTypeUnknown     SpotUserType = 0
+	SpotUserTypeUser        SpotUserType = 1 // ユーザー
+	SpotUserTypeCoordinator SpotUserType = 2 // コーディネータ
+	SpotUserTypeProducer    SpotUserType = 3 // 生産者
 )
 
 // Spot - スポット情報
@@ -35,6 +37,7 @@ type Spot struct {
 type Spots []*Spot
 
 type SpotParams struct {
+	UserType     SpotUserType
 	UserID       string
 	Name         string
 	Description  string
@@ -65,7 +68,7 @@ func NewSpotByUser(params *SpotParams) (*Spot, error) {
 func NewSpotByAdmin(params *SpotParams) (*Spot, error) {
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
-		UserType:        SpotUserTypeAdmin,
+		UserType:        params.UserType,
 		UserID:          params.UserID,
 		Name:            params.Name,
 		Description:     params.Description,
@@ -89,4 +92,21 @@ func (c *Spot) Validate() error {
 		return errors.New("entity: latitude is invalid")
 	}
 	return nil
+}
+
+func (cs Spots) UserIDs() []string {
+	return set.UniqBy(cs, func(c *Spot) string {
+		return c.UserID
+	})
+}
+
+func (cs Spots) GroupByUserType() map[SpotUserType]Spots {
+	res := make(map[SpotUserType]Spots, 3)
+	for _, c := range cs {
+		if _, ok := res[c.UserType]; !ok {
+			res[c.UserType] = make(Spots, 0, len(cs))
+		}
+		res[c.UserType] = append(res[c.UserType], c)
+	}
+	return res
 }

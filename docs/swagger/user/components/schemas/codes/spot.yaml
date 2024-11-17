@@ -7,11 +7,14 @@ spotUserType:
   - 0
   - 1
   - 2
+  - 3
   x-enum-varnames:
   - UNKNOWN
   - USER
-  - ADMIN
+  - COORDINATOR
+  - PRODUCER
   x-enum-descriptions:
   - 不明
   - 利用者
-  - 管理者
+  - コーディネータ
+  - 生産者

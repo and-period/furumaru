@@ -2,12 +2,15 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -47,9 +50,10 @@ func (s *service) ListSpotsByGeolocation(ctx context.Context, in *store.ListSpot
 		return nil, internalError(err)
 	}
 	params := &database.ListSpotsByGeolocationParams{
-		Longitude: in.Longitude,
-		Latitude:  in.Latitude,
-		Radius:    in.Radius,
+		Longitude:       in.Longitude,
+		Latitude:        in.Latitude,
+		Radius:          in.Radius,
+		ExcludeDisabled: in.ExcludeDisabled,
 	}
 	spots, err := s.db.Spot.ListByGeolocation(ctx, params)
 	return spots, internalError(err)
@@ -89,7 +93,29 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+	adminIn := &user.GetAdminInput{
+		AdminID: in.AdminID,
+	}
+	admin, err := s.user.GetAdmin(ctx, adminIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("service: this admin is not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
+
+	var userType entity.SpotUserType
+	switch admin.Role {
+	case uentity.AdminRoleCoordinator:
+		userType = entity.SpotUserTypeCoordinator
+	case uentity.AdminRoleProducer:
+		userType = entity.SpotUserTypeProducer
+	default:
+		return nil, fmt.Errorf("service: unsupported role: %w", exception.ErrFailedPrecondition)
+	}
+
 	params := &entity.SpotParams{
+		UserType:     userType,
 		UserID:       in.AdminID,
 		Name:         in.Name,
 		Description:  in.Description,

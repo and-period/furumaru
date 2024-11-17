@@ -16,14 +16,16 @@ type Spot struct {
 }
 
 type SpotResponse struct {
-	Spot  *Spot  `json:"spot"`  // スポット情報
-	User  *User  `json:"user"`  // ユーザ情報
-	Admin *Admin `json:"admin"` // 管理者情報
+	Spot        *Spot        `json:"spot"`        // スポット情報
+	User        *User        `json:"user"`        // ユーザ情報
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+	Producer    *Producer    `json:"producer"`    // 生産者情報
 }
 
 type SpotsResponse struct {
-	Spots  []*Spot  `json:"spots"`  // スポット一覧
-	Users  []*User  `json:"users"`  // ユーザ一覧
-	Admins []*Admin `json:"admins"` // 管理者一覧
-	Total  int64    `json:"total"`  // 合計数
+	Spots        []*Spot        `json:"spots"`        // スポット一覧
+	Users        []*User        `json:"users"`        // ユーザ一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	Producers    []*Producer    `json:"producers"`    // 生産者一覧
+	Total        int64          `json:"total"`        // 合計数
 }
