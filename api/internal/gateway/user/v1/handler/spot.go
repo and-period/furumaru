@@ -23,9 +23,9 @@ func (h *handler) spotRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListSpots)
 	r.GET("/:spotId", h.GetSpot)
-	r.POST("", h.CreateSpot)
-	r.PATCH("/:spotId", h.UpdateSpot)
-	r.DELETE("/:spotId", h.DeleteSpot)
+	r.POST("", h.authentication, h.CreateSpot)
+	r.PATCH("/:spotId", h.authentication, h.UpdateSpot)
+	r.DELETE("/:spotId", h.authentication, h.DeleteSpot)
 }
 
 func (h *handler) ListSpots(ctx *gin.Context) {

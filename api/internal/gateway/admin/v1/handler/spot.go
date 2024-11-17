@@ -15,7 +15,7 @@ import (
 )
 
 func (h *handler) spotRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/spots")
+	r := rg.Group("/spots", h.authentication)
 
 	r.GET("", h.ListSpots)
 	r.POST("", h.CreateSpot)
