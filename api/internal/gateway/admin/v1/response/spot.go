@@ -16,9 +16,9 @@ type Spot struct {
 }
 
 type SpotResponse struct {
-	Spot   *Spot    `json:"spot"`   // スポット情報
-	User   *User    `json:"user"`   // ユーザ情報
-	Admins []*Admin `json:"admins"` // 管理者一覧
+	Spot  *Spot  `json:"spot"`  // スポット情報
+	User  *User  `json:"user"`  // ユーザ情報
+	Admin *Admin `json:"admin"` // 管理者情報
 }
 
 type SpotsResponse struct {

@@ -5,15 +5,12 @@ spotResponse:
       $ref: './../../../openapi.yaml#/components/schemas/spot'
     user:
       $ref: './../../../openapi.yaml#/components/schemas/user'
-    admins:
-      type: array
-      description: 管理者一覧
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/admin'
+    admin:
+      $ref: './../../../openapi.yaml#/components/schemas/admin'
   required:
   - spot
   - user
-  - admins
+  - admin
   example:
     spot:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -46,8 +43,8 @@ spotResponse:
       addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
-    admins:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+    admin:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
       role: 2
       lastname: '&.'
       firstname: '管理者'

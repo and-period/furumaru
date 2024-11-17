@@ -6068,11 +6068,11 @@ export interface SpotResponse {
      */
     'user': User;
     /**
-     * 管理者一覧
-     * @type {Array<Admin>}
+     * 
+     * @type {Admin}
      * @memberof SpotResponse
      */
-    'admins': Array<Admin>;
+    'admin': Admin;
 }
 /**
  * 投稿者の種別
