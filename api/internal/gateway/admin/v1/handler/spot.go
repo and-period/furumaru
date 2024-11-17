@@ -8,7 +8,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) spotRoutes(rg *gin.RouterGroup) {
@@ -48,31 +50,99 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 		defaultOffset = 0
 	)
 
-	_, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
-	_, err = util.GetQueryInt64(ctx, "offset", defaultOffset)
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &store.ListSpotsInput{
+		Name:            util.GetQuery(ctx, "name", ""),
+		ExcludeApproved: false,
+		ExcludeDisabled: false,
+		Limit:           limit,
+		Offset:          offset,
+	}
+	sspots, total, err := h.store.ListSpots(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if len(sspots) == 0 {
+		res := &response.SpotsResponse{
+			Spots:  []*response.Spot{},
+			Users:  []*response.User{},
+			Admins: []*response.Admin{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	spots := service.NewSpots(sspots)
+	spotsMap := spots.GroupByUserType()
+
+	var (
+		users  service.Users
+		admins service.Admins
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		spots := spotsMap[service.SpotUserTypeUser]
+		users, err = h.multiGetUsers(ectx, spots.UserIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		spots := spotsMap[service.SpotUserTypeAdmin]
+		admins, err = h.multiGetAdmins(ectx, spots.UserIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.SpotsResponse{
-		Spots:  []*response.Spot{},
-		Users:  []*response.User{},
-		Admins: []*response.Admin{},
+		Spots:  spots.Response(),
+		Users:  users.Response(),
+		Admins: admins.Response(),
+		Total:  total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetSpot(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.SpotResponse{
-		Admins: []*response.Admin{},
+	spot, err := h.getSpot(ctx, util.GetParam(ctx, "spotId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
 	}
+
+	res := &response.SpotResponse{
+		Spot: spot.Response(),
+	}
+
+	switch service.NewSpotUserTypeFromInt32(spot.UserType) {
+	case service.SpotUserTypeUser:
+		user, err := h.getUser(ctx, spot.UserID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		res.User = user.Response()
+	case service.SpotUserTypeAdmin:
+		admin, err := h.getAdmin(ctx, spot.UserID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		res.Admin = admin.Response()
+	}
+
 	ctx.JSON(http.StatusOK, res)
 }
 
@@ -83,9 +153,29 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	admin, err := h.getAdmin(ctx, getAdminID(ctx))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	in := &store.CreateSpotByAdminInput{
+		AdminID:      admin.ID,
+		Name:         req.Name,
+		Description:  req.Description,
+		ThumbnailURL: req.ThumbnailURL,
+		Longitude:    req.Longitude,
+		Latitude:     req.Latitude,
+	}
+	spot, err := h.store.CreateSpotByAdmin(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.SpotResponse{
-		Admins: []*response.Admin{},
+		Spot:  service.NewSpot(spot).Response(),
+		Admin: admin.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -97,12 +187,29 @@ func (h *handler) UpdateSpot(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &store.UpdateSpotInput{
+		SpotID:       util.GetParam(ctx, "spotId"),
+		Name:         req.Name,
+		Description:  req.Description,
+		ThumbnailURL: req.ThumbnailURL,
+		Longitude:    req.Longitude,
+		Latitude:     req.Latitude,
+	}
+	if err := h.store.UpdateSpot(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteSpot(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &store.DeleteSpotInput{
+		SpotID: util.GetParam(ctx, "spotId"),
+	}
+	if err := h.store.DeleteSpot(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
@@ -113,10 +220,25 @@ func (h *handler) ApproveSpot(ctx *gin.Context) {
 		return
 	}
 
-	// TODO: 詳細の実装
+	in := &store.ApproveSpotInput{
+		SpotID:   util.GetParam(ctx, "spotId"),
+		AdminID:  getAdminID(ctx),
+		Approved: req.Approved,
+	}
+	if err := h.store.ApproveSpot(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getSpot(ctx context.Context, spotID string) (*service.Spot, error) {
-	return &service.Spot{}, nil
+	in := &store.GetSpotInput{
+		SpotID: spotID,
+	}
+	spot, err := h.store.GetSpot(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewSpot(spot), nil
 }
