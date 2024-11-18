@@ -346,9 +346,9 @@
       "archivedStreamText": "archived stream",
       "coordinatorThumbnailAlt": "{coordinatorName}'s Profile Picture",
       "coordinatorLabel": "Coordinator",
-      "hideMarcheDetailsText": "Hide Marché Details",
-      "showMarcheDetailsText": "Show Marché Details",
-      "itemsTabLabel": "Marché Items",
+      "hideMarcheDetailsText": "Hide Video Details",
+      "showMarcheDetailsText": "Show Video Details",
+      "itemsTabLabel": "Video Items",
       "commentsTabLabel": "Comments",
       "itemPriceTaxIncludedText": "(tax included)",
       "addToCartText": "Add to Cart",
@@ -357,7 +357,9 @@
       "submitButtonText": "Submit",
       "guestCommentNote": "Note: Comment as a Guest",
       "noCommentsText": "No comments yet",
-      "guestNameLabel": "guest"
+      "guestNameLabel": "guest",
+      "linkCopy": "Link copy",
+      "linkCopied": "Link copied"
     }
   }
 }
