@@ -217,51 +217,6 @@ stepFunctions:
                       Type: MP4_FILE
                       Sources:
                         - Url.$: $.InputUrl
-              - StartAt: CreateContainer
-                States:
-                  CreateContainer:
-                    Type: Task
-                    Comment: ライブ配信 - 配信用ストレージを作成
-                    Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
-                    ResultPath: $.ContainerResult
-                    Parameters:
-                      ContainerName.$: States.UUID()
-                    Next: DescribeContainer
-                  DescribeContainer:
-                    Type: Task
-                    Comment: ライブ配信 - 配信用ストレージのステータスを取得する
-                    ResultPath: $.ContainerStatus
-                    Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
-                    Parameters:
-                      ContainerName.$: $.ContainerResult.Container.Name
-                    Next: CheckContainerActive
-                  CheckContainerActive:
-                    Type: Choice
-                    InputPath: $
-                    Choices:
-                      - Variable: $.ContainerStatus.Container.Status
-                        StringEquals: "ACTIVE"
-                        Next: ExtractMediaStoreDomain
-                      - Variable: $.ContainerStatus.Container.Status
-                        StringEquals: "CREATING"
-                        Next: WaitActive
-                    Default: failed
-                  WaitActive:
-                    Type: Wait
-                    Seconds: 2
-                    Next: DescribeContainer
-                  ExtractMediaStoreDomain:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreのドメイン名を抽出
-                    InputPath: $
-                    Resource:
-                      Fn::GetAtt: [extractMediaStoreDomain, Arn]
-                    ResultPath: $.ContainerStatus.Container.Endpoint
-                    Next: success
-                  success:
-                    Type: Succeed
-                  failed:
-                    Type: Fail
             Next: CreateStreamingResoures
           CreateStreamingResoures:
             Type: Parallel
@@ -382,36 +337,6 @@ stepFunctions:
                             InputLossImageSlate:
                               Uri.$: $[0].ChannelInput.InputLossImageSlateUri
                       RTMPOutputs.$: $[0].RtmpOutputs
-                    End: true
-              - StartAt: PutCorsPolicy
-                States:
-                  PutCorsPolicy:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreコンテナに対するCORSポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].CorsPolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putCorsPolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      CorsPolicy:
-                        - AllowedOrigins:
-                            - '*'
-                          AllowedMethods:
-                            - GET
-                            - HEAD
-                          AllowedHeaders:
-                            - '*'
-                          MaxAgeSeconds: 3000
-                    Next: PutLifecyclePolicy
-                  PutLifecyclePolicy:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreコンテナに対するライフサイクルポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].LifecyclePolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putLifecyclePolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      LifecyclePolicy:  {"rules":[{"definition":{"path":[{"wildcard":"*"}],"days_since_create":[{"numeric":[">",1]}]},"action":"EXPIRE"}]}
                     End: true
           RegisterResoursesInfo:
             Type: Task
