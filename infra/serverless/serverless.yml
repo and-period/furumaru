@@ -270,8 +270,6 @@ stepFunctions:
             InputPath: $
             ResultSelector:
               ScheduleId.$: $[0][0].ScheduleId
-              CloudFrontUrl.$: $[1][2].DistributionResult.Distribution.DomainName
-              CloudFrontDistributionArn.$: $[1][2].DistributionResult.Distribution.Arn
               MediaLiveRtmpInputArn.$: $[0][0].RtmpResult.Input.Arn
               MediaLiveRtmpInputUrl.$: $[0][0].RtmpResult.Input.Destinations[0].Url
               MediaLiveRtmpInputName.$: $[0][0].RtmpResult.Input.Name
@@ -384,93 +382,6 @@ stepFunctions:
                             InputLossImageSlate:
                               Uri.$: $[0].ChannelInput.InputLossImageSlateUri
                       RTMPOutputs.$: $[0].RtmpOutputs
-                    End: true
-              - StartAt: CreateOriginAccessControl
-                States:
-                  CreateOriginAccessControl:
-                    Type: Task
-                    Comment: ライブ配信 - CloudFrontのOriginAccessControlを作成
-                    InputPath: $
-                    ResultPath: $[2].OriginAccessControlResult
-                    Resource: arn:aws:states:::aws-sdk:cloudfront:createOriginAccessControl
-                    Parameters:
-                      OriginAccessControlConfig:
-                        Name.$: States.Format('ForMediaStoreOrigin-{}', States.UUID())
-                        Description: MediaStoreをオリジンにするCloudFrontディストリビューション用
-                        OriginAccessControlOriginType: mediastore
-                        SigningBehavior: always
-                        SigningProtocol: sigv4
-                    Next: CreateDistribution
-                  CreateDistribution:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
-                    InputPath: $
-                    ResultPath: $[2].DistributionResult
-                    Resource: arn:aws:states:::aws-sdk:cloudfront:createDistribution
-                    Parameters:
-                      DistributionConfig:
-                        CallerReference.$: $[2].ContainerResult.Container.Name
-                        Comment: MediaStoreをオリジンにするCloudFrontディストリビューション
-                        Enabled: true
-                        HttpVersion: http2
-                        Origins:
-                          Quantity: 1
-                          Items:
-                          - Id.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
-                            DomainName.$: $[2].ContainerStatus.Container.Endpoint
-                            CustomOriginConfig:
-                              HttpPort: 80
-                              HttpsPort: 443
-                              OriginProtocolPolicy: https-only
-                            OriginAccessControlId.$: $[2].OriginAccessControlResult.OriginAccessControl.Id
-                        DefaultCacheBehavior:
-                          TargetOriginId.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
-                          ViewerProtocolPolicy: redirect-to-https
-                          AllowedMethods:
-                            Quantity: 7
-                            Items:
-                              - GET
-                              - HEAD
-                              - OPTIONS
-                              - PUT
-                              - POST
-                              - PATCH
-                              - DELETE
-                          ForwardedValues:
-                            QueryString: false
-                            Cookies:
-                              Forward: none
-                            Headers:
-                              Quantity: 2
-                              Items:
-                                - Origin
-                                - Access-Con
-                          MinTTL: 1
-                    Next: PutContainerPolicy
-                  PutContainerPolicy:
-                    Type: Task
-                    Comment: ライブ配信 - チャンネルに対するポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].ContainerPolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putContainerPolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      Policy:
-                        Version: '2012-10-17'
-                        Statement:
-                          - Sid: AllowCloudFrontServicePrincipalReadOnly
-                            Effect: Allow
-                            Principal:
-                              AWS: '*'
-                            Action:
-                              - mediastore:GetObject
-                              - mediastore:DescribeObject
-                            Resource.$: States.Format('{}/*', $[2].ContainerResult.Container.Arn)
-                            Condition:
-                              StringEquals:
-                                AWS:SourceArn.$: $[2].DistributionResult.Distribution.Arn
-                              Bool:
-                                aws:SecureTransport: 'true'
                     End: true
               - StartAt: PutCorsPolicy
                 States:
