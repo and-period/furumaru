@@ -321,9 +321,6 @@ stepFunctions:
                           InputSettings:
                             SourceEndBehavior: LOOP
                       Destinations:
-                        - Id: MediaStore
-                          Settings:
-                            - Url.$: States.Format('mediastoressl://{}/{}', $[2].ContainerStatus.Container.Endpoint, $[0].RtmpInput.StreamName)
                         - Id: S3
                           Settings:
                             - Url.$: States.Format('s3ssl://{}{}/live', $[0].ArchiveInput.BucketName, $[0].ArchiveInput.Path)
