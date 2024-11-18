@@ -44,7 +44,7 @@ const handleCLickCoordinator = () => {
 
 const handleClickCopyButton = async () => {
   snackbarItems.value.push({
-    text: 'リンクをコピーしました',
+    text: i18n.t('lives.details.linkCopied'),
     isShow: true,
   })
   await navigator.clipboard.writeText(window.location.href)
@@ -120,7 +120,7 @@ const handleClickShowDetailButton = () => {
               @click="handleClickCopyButton"
             >
               <the-share-icon class="mr-2" />
-              リンクをコピー
+              {{ dt('linkCopy') }}
             </button>
             <button
               class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"

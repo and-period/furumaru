@@ -357,7 +357,9 @@
       "submitButtonText": "Submit",
       "guestCommentNote": "Note: Comment as a Guest",
       "noCommentsText": "No comments yet",
-      "guestNameLabel": "guest"
+      "guestNameLabel": "guest",
+      "linkCopy": "Link copy",
+      "linkCopied": "Link copied"
     }
   }
 }

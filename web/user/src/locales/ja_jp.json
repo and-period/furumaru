@@ -357,7 +357,9 @@
       "submitButtonText": "送信",
       "guestCommentNote": "※ゲストとしてコメントします",
       "noCommentsText": "コメントはありません",
-      "guestNameLabel": "ゲスト"
+      "guestNameLabel": "ゲスト",
+      "linkCopy": "リンクをコピー",
+      "linkCopied": "リンクをコピーしました"
     }
   }
 }
