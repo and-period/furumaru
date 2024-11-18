@@ -68,21 +68,21 @@ const handleClickShowDetailButton = () => {
 </script>
 
 <template>
-  <template
-    v-for="(snackbarItem, i) in snackbarItems"
-    :key="i"
-  >
-    <the-snackbar
-      v-model:is-show="snackbarItem.isShow"
-      :text="snackbarItem.text"
-    />
-  </template>
   <div class="mt-2 px-4">
-    <div class="md:flex block md:justify-between">
+    <div
+      v-for="(snackbarItem, i) in snackbarItems"
+      :key="i"
+    >
+      <the-snackbar
+        v-model:is-show="snackbarItem.isShow"
+        :text="snackbarItem.text"
+      />
+    </div>
+    <div class="flex justify-between">
       <div class="flex items-center gap-2">
         <template v-if="isArchive">
           <div
-            class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main"
+            class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main md:text-[16px] text-[12px]"
           >
             {{ dt('archivedStreamText') }}
           </div>
@@ -100,15 +100,15 @@ const handleClickShowDetailButton = () => {
           </div>
         </template>
 
-        <div class="text-[14px] tracking-[1.4px] after:content-['〜']">
+        <div class="md:text-[14px] text-[12px] tracking-[1.4px] after:content-['〜']">
           {{ datetimeformatterFromUnixtime(startAt) }}
         </div>
       </div>
       <the-dropdown-with-icon ref="dropdownRef">
         <template #icon>
-          <div class="flex md:mt-0 mt-2 text-[14px] tracking-[1.4px] ">
+          <div class="flex text-[14px] tracking-[1.4px] ">
             <the-sns-share-icon />
-            <p class="ml-2">
+            <p class="ml-2 md:text-[16px] text-[12px] md:block hidden">
               SHARE
             </p>
           </div>
