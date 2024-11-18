@@ -13,11 +13,28 @@ interface Props {
 
 defineProps<Props>()
 
-const infoWindow = ref<boolean>(false)
+const isShowInfoWindow = ref<boolean>(false)
+const infoWindowRef = ref<InstanceType<typeof InfoWindow> | null>(null)
 
 const handleClickMarker = () => {
-  infoWindow.value = !infoWindow.value
+  isShowInfoWindow.value = !isShowInfoWindow.value
 }
+
+let initChange = false
+
+watch(isShowInfoWindow, (newValue) => {
+  if (initChange) {
+    return
+  }
+  else if (newValue) {
+    // 初回の変更時だけInfoWindowを強制的に閉じる
+    initChange = true
+    if (infoWindowRef.value) {
+      isShowInfoWindow.value = false
+      infoWindowRef.value.close()
+    }
+  }
+})
 </script>
 
 <template>
@@ -31,10 +48,14 @@ const handleClickMarker = () => {
       <the-furuneko-icon />
     </div>
     <InfoWindow
-      v-model="infoWindow"
+      ref="infoWindowRef"
+      v-model="isShowInfoWindow"
       :options="{ position }"
     >
-      <div class="text-main grid grid-cols-5 gap-2 max-w-sm">
+      <div
+        v-show="isShowInfoWindow"
+        class="text-main grid grid-cols-5 gap-2 max-w-sm"
+      >
         <div class=" col-span-1">
           <img
             :src="imgSrc"
