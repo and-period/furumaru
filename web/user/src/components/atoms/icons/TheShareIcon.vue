@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="max-w-[16px] max-y-[16px]"
+    class="max-w-[16px] max-h-[16px]"
     viewBox="0 0 24 24"
   ><path
     fill="none"
