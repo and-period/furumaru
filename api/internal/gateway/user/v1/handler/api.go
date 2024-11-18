@@ -157,6 +157,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.checkoutRoutes(v1)
 	h.liveCommentRoutes(v1)
 	h.orderRoutes(v1)
+	h.spotRoutes(v1)
 	h.videoCommentRoutes(v1)
 	h.uploadRoutes(v1)
 }
@@ -246,6 +247,11 @@ func (h *handler) authentication(ctx *gin.Context) {
 }
 
 func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		ctx.Next()
+		return // サーバーサイドからのリクエストはスキップする
+	}
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	if scheduleID == "" {
 		ctx.Next()
@@ -269,6 +275,11 @@ func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
 }
 
 func (h *handler) createVideoViewerLog(ctx *gin.Context) {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		ctx.Next()
+		return // サーバーサイドからのリクエストはスキップする
+	}
 	videoID := util.GetParam(ctx, "videoId")
 	if videoID == "" {
 		ctx.Next()
@@ -306,6 +317,10 @@ func (h *handler) setAuth(ctx *gin.Context) error {
 }
 
 func (h *handler) getSessionID(ctx *gin.Context) string {
+	agent := ctx.Request.UserAgent()
+	if agent == "node" {
+		return "" // サーバーサイドからのリクエストはセッションIDを生成しない
+	}
 	sessionID, err := ctx.Cookie(sessionKey)
 	if err == nil && sessionID != "" {
 		return sessionID

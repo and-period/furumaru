@@ -15,6 +15,7 @@ export * from './ProducerApi';
 export * from './ProductApi';
 export * from './PromotionApi';
 export * from './ScheduleApi';
+export * from './SpotApi';
 export * from './StatusApi';
 export * from './TopApi';
 export * from './VideoApi';

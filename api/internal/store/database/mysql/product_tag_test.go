@@ -72,7 +72,7 @@ func TestProductTag_List(t *testing.T) {
 			args: args{
 				params: &database.ListProductTagsParams{
 					Orders: []*database.ListProductTagsOrder{
-						{Key: entity.ProductTagOrderByName, OrderByASC: true},
+						{Key: database.ListProductTagsOrderByName, OrderByASC: true},
 					},
 				},
 			},
@@ -87,7 +87,7 @@ func TestProductTag_List(t *testing.T) {
 			args: args{
 				params: &database.ListProductTagsParams{
 					Orders: []*database.ListProductTagsOrder{
-						{Key: entity.ProductTagOrderByName, OrderByASC: false},
+						{Key: database.ListProductTagsOrderByName, OrderByASC: false},
 					},
 				},
 			},

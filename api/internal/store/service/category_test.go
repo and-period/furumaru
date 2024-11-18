@@ -22,7 +22,7 @@ func TestListCategories(t *testing.T) {
 		Limit:  30,
 		Offset: 0,
 		Orders: []*database.ListCategoriesOrder{
-			{Key: entity.CategoryOrderByName, OrderByASC: true},
+			{Key: database.ListCategoriesOrderByName, OrderByASC: true},
 		},
 	}
 	categories := entity.Categories{
@@ -53,7 +53,7 @@ func TestListCategories(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListCategoriesOrder{
-					{Key: entity.CategoryOrderByName, OrderByASC: true},
+					{Key: store.ListCategoriesOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      categories,
@@ -79,7 +79,7 @@ func TestListCategories(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListCategoriesOrder{
-					{Key: entity.CategoryOrderByName, OrderByASC: true},
+					{Key: store.ListCategoriesOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      nil,
@@ -97,7 +97,7 @@ func TestListCategories(t *testing.T) {
 				Limit:  30,
 				Offset: 0,
 				Orders: []*store.ListCategoriesOrder{
-					{Key: entity.CategoryOrderByName, OrderByASC: true},
+					{Key: store.ListCategoriesOrderByName, OrderByASC: true},
 				},
 			},
 			expect:      nil,

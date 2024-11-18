@@ -37,6 +37,8 @@ tags:
   description: プロモーション関連
 - name: Schedule
   description: マルシェ開催スケジュール関連
+- name: Spot
+  description: スポット関連
 - name: Status
   description: システム状態関連
 - name: Top
@@ -148,6 +150,11 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   /v1/schedules/{scheduleId}/comments:
     $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
+  # Spot
+  /v1/spots:
+    $ref: './paths/v1/spots/index.yaml'
+  /v1/spots/{spotId}:
+    $ref: './paths/v1/spots/_spotId/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -214,6 +221,8 @@ components:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    spotUserType:
+      $ref: './components/schemas/codes/spot.yaml#/spotUserType'
     paymentSystemStatus:
       $ref: './components/schemas/codes/status.yaml#/paymentSystemStatus'
     uploadStatus:
@@ -259,6 +268,8 @@ components:
       $ref: './components/schemas/entity/promotion.yaml#/promotion'
     schedule:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
+    spot:
+      $ref: './components/schemas/entity/spot.yaml#/spot'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
     video:
@@ -318,6 +329,10 @@ components:
       $ref: './components/schemas/v1/guest-video-comment.request.yaml#/createGuestVideoCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
+    v1CreateSpotRequest:
+      $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
+    v1UpdateSpotRequest:
+      $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
     v1CreateVideoCommentRequest:
       $ref: './components/schemas/v1/video-comment.request.yaml#/createVideoCommentRequest'
     v1GetUploadUrlRequest:
@@ -375,6 +390,10 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
     v1PromotionResponse:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
+    v1SpotResponse:
+      $ref: './components/schemas/v1/spot.response.yaml#/spotResponse'
+    v1SpotsResponse:
+      $ref: './components/schemas/v1/spot.response.yaml#/spotsResponse'
     v1PaymentSystemsResponse:
       $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:

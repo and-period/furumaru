@@ -72,7 +72,7 @@ func TestBroadcast_List(t *testing.T) {
 					OnlyArchived: true,
 					Orders: []*database.ListBroadcastsOrder{
 						{
-							Key:        entity.BroadcastOrderByUpdatedAt,
+							Key:        database.ListBroadcastsOrderByUpdatedAt,
 							OrderByASC: true,
 						},
 					},
@@ -157,7 +157,7 @@ func TestBroadcast_Count(t *testing.T) {
 					OnlyArchived: true,
 					Orders: []*database.ListBroadcastsOrder{
 						{
-							Key:        entity.BroadcastOrderByUpdatedAt,
+							Key:        database.ListBroadcastsOrderByUpdatedAt,
 							OrderByASC: true,
 						},
 					},

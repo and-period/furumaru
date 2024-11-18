@@ -16,7 +16,6 @@ import type {
   GetUploadUrlRequest,
   UploadUrlResponse,
 } from '~/types/api'
-import { NotFoundError, PermissionError, ValidationError } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -60,9 +59,15 @@ export const useProductStore = defineStore('product', {
      * @param producerId 生産者ID
      * @param productIds stateの更新時に残しておく必要がある商品情報
      */
-    async searchProducts(name = '', producerId = '', productIds: string[] = []): Promise<void> {
+    async searchProducts(
+      name = '',
+      producerId = '',
+      productIds: string[] = [],
+    ): Promise<void> {
       try {
-        const res = await apiClient.productApi().v1ListProducts(undefined, undefined, producerId, name)
+        const res = await apiClient
+          .productApi()
+          .v1ListProducts(undefined, undefined, producerId, name)
         const products: Product[] = []
         this.products.forEach((product: Product): void => {
           if (!productIds.includes(product.id)) {
@@ -127,30 +132,42 @@ export const useProductStore = defineStore('product', {
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
-    async getProductMediaUploadUrl(contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
+    async getProductMediaUploadUrl(
+      contentType: string,
+    ): Promise<AxiosResponse<UploadUrlResponse, any>> {
       const body: GetUploadUrlRequest = {
         fileType: contentType,
       }
       if (contentType.includes('image/')) {
         try {
-          const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
+          const res = await apiClient
+            .productApi()
+            .v1GetProductImageUploadUrl(body)
           return res
         }
         catch (err) {
-          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+          return this.errorHandler(err, {
+            400: 'このファイルはアップロードできません。',
+          })
         }
       }
       if (contentType.includes('video/')) {
         try {
-          const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
+          const res = await apiClient
+            .productApi()
+            .v1GetProductVideoUploadUrl(body)
           return res
         }
         catch (err) {
-          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+          return this.errorHandler(err, {
+            400: 'このファイルはアップロードできません。',
+          })
         }
       }
       throw new Error('不明なMINEタイプです。')
@@ -200,7 +217,9 @@ export const useProductStore = defineStore('product', {
     async deleteProduct(productId: string) {
       try {
         await apiClient.productApi().v1DeleteProduct(productId)
-        const index = this.products.findIndex(product => product.id === productId)
+        const index = this.products.findIndex(
+          product => product.id === productId,
+        )
         this.products.splice(index, 1)
         this.totalItems--
       }

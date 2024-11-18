@@ -149,14 +149,14 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 }
 
 func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNotificationsOrder, error) {
-	notifications := map[string]mentity.NotificationOrderBy{
-		"title":       mentity.NotificationOrderByTitle,
-		"publishedAt": mentity.NotificationOrderByPublishedAt,
+	notifications := map[string]messenger.ListNotificationsOrderKey{
+		"title":       messenger.ListNotificationsOrderByTitle,
+		"publishedAt": messenger.ListNotificationsOrderByPublishedAt,
 	}
 	params := util.GetOrders(ctx)
 	if len(params) == 0 {
 		res := []*messenger.ListNotificationsOrder{
-			{Key: mentity.NotificationOrderByPublishedAt, OrderByASC: false},
+			{Key: messenger.ListNotificationsOrderByPublishedAt, OrderByASC: false},
 		}
 		return res, nil
 	}

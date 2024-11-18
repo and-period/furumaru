@@ -161,6 +161,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.relatedProducerRoutes(v1)
 	h.scheduleRoutes(v1)
 	h.shippingRoutes(v1)
+	h.spotRoutes(v1)
 	h.threadRoutes(v1)
 	h.uploadRoutes(v1)
 	h.userRoutes(v1)

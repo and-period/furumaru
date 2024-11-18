@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -83,8 +82,8 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 }
 
 func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTypesOrder, error) {
-	types := map[string]sentity.ProductTypeOrderBy{
-		"name": sentity.ProductTypeOrderByName,
+	types := map[string]store.ListProductTypesOrderKey{
+		"name": store.ListProductTypesOrderByName,
 	}
 	params := util.GetOrders(ctx)
 	res := make([]*store.ListProductTypesOrder, len(params))

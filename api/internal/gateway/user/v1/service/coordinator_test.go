@@ -250,6 +250,99 @@ func TestCoordinators(t *testing.T) {
 	}
 }
 
+func TestCoordinators_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		coordinators Coordinators
+		expect       map[string]*Coordinator
+	}{
+		{
+			name: "success",
+			coordinators: Coordinators{
+				{
+					Coordinator: response.Coordinator{
+						ID:                "coordinator-id01",
+						MarcheName:        "&.マルシェ",
+						Username:          "&.農園",
+						Profile:           "紹介文です。",
+						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+						HeaderURL:         "https://and-period.jp/header.png",
+						PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+						InstagramID:       "instagram-id",
+						FacebookID:        "facebook-id",
+						Prefecture:        "東京都",
+						City:              "千代田区",
+					},
+				},
+				{
+					Coordinator: response.Coordinator{
+						ID:                "coordinator-id02",
+						MarcheName:        "&.マルシェ",
+						Username:          "&.農園",
+						Profile:           "紹介文です。",
+						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+						HeaderURL:         "https://and-period.jp/header.png",
+						PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+						InstagramID:       "instagram-id",
+						FacebookID:        "facebook-id",
+						Prefecture:        "東京都",
+						City:              "千代田区",
+					},
+				},
+			},
+			expect: map[string]*Coordinator{
+				"coordinator-id01": {
+					Coordinator: response.Coordinator{
+						ID:                "coordinator-id01",
+						MarcheName:        "&.マルシェ",
+						Username:          "&.農園",
+						Profile:           "紹介文です。",
+						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+						HeaderURL:         "https://and-period.jp/header.png",
+						PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+						InstagramID:       "instagram-id",
+						FacebookID:        "facebook-id",
+						Prefecture:        "東京都",
+						City:              "千代田区",
+					},
+				},
+				"coordinator-id02": {
+					Coordinator: response.Coordinator{
+						ID:                "coordinator-id02",
+						MarcheName:        "&.マルシェ",
+						Username:          "&.農園",
+						Profile:           "紹介文です。",
+						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+						HeaderURL:         "https://and-period.jp/header.png",
+						PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+						InstagramID:       "instagram-id",
+						FacebookID:        "facebook-id",
+						Prefecture:        "東京都",
+						City:              "千代田区",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.coordinators.Map()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestCoordinators_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
