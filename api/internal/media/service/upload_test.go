@@ -757,6 +757,33 @@ func generateUploadURLMocks(mocks *mocks, t *testing.T, path, ext string, err er
 		})
 }
 
+func TestGetSpotThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.SpotThumbnailPath, "png", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetSpotThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
 func TestGenerateUploadURL(t *testing.T) {
 	t.Parallel()
 	now := time.Now()

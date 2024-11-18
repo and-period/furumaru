@@ -19,14 +19,15 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 		Experience:     newExperience(db),
 		ExperienceType: newExperienceType(db, client.ExperienceType),
 		Live:           client.Live,
-		Order:          client.Order,
+		Order:          newOrder(db, client.Order),
 		PaymentSystem:  client.PaymentSystem,
 		Product:        newProduct(db, client.Product),
 		ProductTag:     newProductTag(db, client.ProductTag),
 		ProductType:    newProductType(db, client.ProductType),
 		Promotion:      newPromotion(db, client.Promotion),
-		Shipping:       client.Shipping,
 		Schedule:       client.Schedule,
+		Shipping:       client.Shipping,
+		Spot:           newSpot(db, client.Spot),
 	}
 }
 

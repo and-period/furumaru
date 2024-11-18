@@ -62,7 +62,9 @@ const onChangeFile = (): void => {
     <v-card
       :disabled="loading"
       :loading="loading"
-      :style="{ border: props.validationErrorMessage !== '' ? '1px solid red' : '' }"
+      :style="{
+        border: props.validationErrorMessage !== '' ? '1px solid red' : '',
+      }"
       class="text-center"
       role="button"
       flat
@@ -96,7 +98,7 @@ const onChangeFile = (): void => {
           @change="onChangeFile"
         >
         <p class="ma-0">
-          {{ props.label }}を{{ props.videoUrl === '' ? '選択' : '変更' }}
+          {{ props.label }}を{{ props.videoUrl === "" ? "選択" : "変更" }}
         </p>
       </v-card-text>
     </v-card>
@@ -108,7 +110,7 @@ const onChangeFile = (): void => {
     </p>
     <p
       v-show="props.error"
-      class="red--text ma-0"
+      class="text-red ma-0"
     >
       {{ props.message }}
     </p>
@@ -117,9 +119,9 @@ const onChangeFile = (): void => {
 
 <style scoped>
 #wrapper {
-  position:relative;
+  position: relative;
   width: 100%;
-  height:100%;
-  background-color:#030303;
+  height: 100%;
+  background-color: #030303;
 }
 </style>

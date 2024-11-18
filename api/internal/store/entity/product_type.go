@@ -7,12 +7,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
-type ProductTypeOrderBy string
-
-const (
-	ProductTypeOrderByName ProductTypeOrderBy = "name"
-)
-
 // ProductType - 品目情報
 type ProductType struct {
 	ID         string    `gorm:"primaryKey;<-:create"` // 品目ID

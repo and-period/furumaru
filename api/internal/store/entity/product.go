@@ -56,20 +56,6 @@ const (
 	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
 )
 
-type ProductOrderBy string
-
-const (
-	ProductOrderByName             ProductOrderBy = "name"
-	ProductOrderBySoldOut          ProductOrderBy = "CASE WHEN (inventory = 0) THEN 1 ELSE 0 END"
-	ProductOrderByPublic           ProductOrderBy = "public"
-	ProductOrderByInventory        ProductOrderBy = "inventory"
-	ProductOrderByOriginPrefecture ProductOrderBy = "origin_prefecture"
-	ProductOrderByOriginCity       ProductOrderBy = "origin_city"
-	ProductOrderByStartAt          ProductOrderBy = "start_at"
-	ProductOrderByCreatedAt        ProductOrderBy = "created_at"
-	ProductOrderByUpdatedAt        ProductOrderBy = "updated_at"
-)
-
 // Product - 商品情報
 type Product struct {
 	ProductRevision       `gorm:"-"`

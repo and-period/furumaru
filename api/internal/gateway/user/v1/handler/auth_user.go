@@ -272,3 +272,10 @@ func (h *handler) multiGetUsers(ctx context.Context, userIDs []string) (entity.U
 	}
 	return h.user.MultiGetUsers(ctx, in)
 }
+
+func (h *handler) getMember(ctx context.Context, userID string) (*entity.User, error) {
+	in := &user.GetUserInput{
+		UserID: userID,
+	}
+	return h.user.GetUser(ctx, in)
+}

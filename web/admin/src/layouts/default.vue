@@ -6,12 +6,13 @@ import {
   mdiCart,
   mdiAntenna,
   mdiAccountDetails,
-  mdiForum,
+  mdiVideo,
   mdiBellRing,
   mdiCash100,
   mdiAccount,
   mdiCog,
   mdiBell,
+  mdiFootPrint,
 } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
@@ -58,9 +59,21 @@ const generalDrawers: NavigationDrawerItem[] = [
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
+    to: '/experiences',
+    icon: mdiFootPrint,
+    title: '体験管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
+    to: '/videos',
+    icon: mdiVideo,
+    title: '動画管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {

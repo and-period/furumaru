@@ -1,0 +1,59 @@
+get:
+  summary: スポット一覧取得
+  operationId: v1ListSpots
+  tags:
+  - Spot
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: query
+    name: longitude
+    schema:
+      type: number
+      format: double
+    description: 経度
+    required: true
+    example: 139.7673068
+  - in: query
+    name: latitude
+    schema:
+      type: number
+      format: double
+    description: 緯度
+    required: true
+    example: 35.681167
+  - in: query
+    name: radius
+    schema:
+      type: integer
+      format: int64
+    description: 取得半径（単位：km）
+    required: false
+    default: 20
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1SpotsResponse'
+post:
+  summary: スポット登録
+  operationId: v1CreateSpot
+  tags:
+  - Spot
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateSpotRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1SpotResponse'

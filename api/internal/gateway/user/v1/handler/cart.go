@@ -26,8 +26,20 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) GetCart(ctx *gin.Context) {
+	sessionID := h.getSessionID(ctx)
+	if sessionID == "" {
+		// セッションIDがない場合は空のレスポンスを返す
+		res := &response.CartResponse{
+			Carts:        []*response.Cart{},
+			Coordinators: []*response.Coordinator{},
+			Products:     []*response.Product{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
 	in := &store.GetCartInput{
-		SessionID: h.getSessionID(ctx),
+		SessionID: sessionID,
 	}
 	cart, err := h.store.GetCart(ctx, in)
 	if err != nil {
@@ -38,6 +50,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		h.notFound(ctx, errNotFoundCart)
 		return
 	}
+
 	var (
 		coordinators service.Coordinators
 		products     service.Products
@@ -55,6 +68,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+
 	res := &response.CartResponse{
 		Carts:        service.NewCarts(cart).Response(),
 		Coordinators: coordinators.Response(),
@@ -76,6 +90,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 	}
 	promotionCode := util.GetQuery(ctx, "promotion", "")
 	coordinatorID := util.GetParam(ctx, "coordinatorId")
+
 	var (
 		cart        *entity.Cart
 		summary     *entity.OrderPaymentSummary
@@ -112,12 +127,14 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+
 	items := cart.Baskets.MergeByProductID()
 	products, err := h.multiGetProducts(ctx, items.ProductIDs())
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
+
 	res := &response.CalcCartResponse{
 		Carts:       service.NewCarts(cart).Response(),
 		Items:       service.NewCartItems(items).Response(),

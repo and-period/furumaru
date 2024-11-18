@@ -1,5 +1,37 @@
 # Changelog
 
+## [v3.0.8](https://github.com/and-period/furumaru/compare/v3.0.7...v3.0.8) - 2024-11-13
+- build(deps): bump cross-spawn from 7.0.3 to 7.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2494
+- setup: 本番環境向けのGoogle Tag Managerを仕込む by @wf-yamaday in https://github.com/and-period/furumaru/pull/2497
+
+## [v3.0.7](https://github.com/and-period/furumaru/compare/v3.0.6...v3.0.7) - 2024-11-12
+- 動画管理画面の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2385
+- fix(api): Sentryのトレーシング機能を無効に by @taba2424 in https://github.com/and-period/furumaru/pull/2492
+
+## [v3.0.6](https://github.com/and-period/furumaru/compare/v3.0.5...v3.0.6) - 2024-11-10
+- feat(api): UserAgentがnodeの場合はいくつか処理をスキップするように by @taba2424 in https://github.com/and-period/furumaru/pull/2489
+
+## [v3.0.5](https://github.com/and-period/furumaru/compare/v3.0.4...v3.0.5) - 2024-11-10
+- build(deps): bump the dependencies group in /api with 12 updates by @dependabot in https://github.com/and-period/furumaru/pull/2480
+- feat(api): アクセスログにrefererを含める by @taba2424 in https://github.com/and-period/furumaru/pull/2488
+
+## [v3.0.4](https://github.com/and-period/furumaru/compare/v3.0.3...v3.0.4) - 2024-11-06
+- fix(user): 外形監視用のページのscriptを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2485
+
+## [v3.0.3](https://github.com/and-period/furumaru/compare/v3.0.2...v3.0.3) - 2024-11-06
+- fix(user): 外形監視用のページではcart情報を取らない by @taba2424 in https://github.com/and-period/furumaru/pull/2482
+
+## [v3.0.2](https://github.com/and-period/furumaru/compare/v3.0.1...v3.0.2) - 2024-11-04
+- Feat/experience by @hamachans in https://github.com/and-period/furumaru/pull/2423
+- feat(web): ヘルスチェック用のページを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2477
+- fix(media): メディア配信周りの改善 by @taba2424 in https://github.com/and-period/furumaru/pull/2478
+
+## [v3.0.1](https://github.com/and-period/furumaru/compare/v3.0.0...v3.0.1) - 2024-11-02
+- build(deps): bump the dependencies group in /api with 35 updates by @dependabot in https://github.com/and-period/furumaru/pull/2472
+- build(deps): bump the dependencies group in /docs/swagger with 2 updates by @dependabot in https://github.com/and-period/furumaru/pull/2471
+- refactor(api): 検証用にいれていたloggerの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2474
+- fix(api): DBのorderロジックを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2475
+
 ## [v3.0.0](https://github.com/and-period/furumaru/compare/v2.0.1...v3.0.0) - 2024-10-29
 - feat(user): DBクライアントの詰め替え by @taba2424 in https://github.com/and-period/furumaru/pull/2457
 - fix(user): cognito idの管理方法を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2459

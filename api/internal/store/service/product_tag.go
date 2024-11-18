@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -17,12 +18,9 @@ func (s *service) ListProductTags(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	orders := make([]*database.ListProductTagsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListProductTagsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
+	orders, err := s.newListProductTagsOrders(in.Orders)
+	if err != nil {
+		return nil, 0, fmt.Errorf("service: invalid list product tags orders: err=%s: %w", err, exception.ErrInvalidArgument)
 	}
 	params := &database.ListProductTagsParams{
 		Name:   in.Name,
@@ -47,6 +45,24 @@ func (s *service) ListProductTags(
 		return nil, 0, internalError(err)
 	}
 	return productTags, total, nil
+}
+
+func (s *service) newListProductTagsOrders(in []*store.ListProductTagsOrder) ([]*database.ListProductTagsOrder, error) {
+	res := make([]*database.ListProductTagsOrder, len(in))
+	for i := range in {
+		var key database.ListProductTagsOrderKey
+		switch in[i].Key {
+		case store.ListProductTagsOrderByName:
+			key = database.ListProductTagsOrderByName
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListProductTagsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
 }
 
 func (s *service) MultiGetProductTags(

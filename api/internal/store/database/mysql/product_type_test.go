@@ -78,7 +78,7 @@ func TestProductType_List(t *testing.T) {
 			args: args{
 				params: &database.ListProductTypesParams{
 					Orders: []*database.ListProductTypesOrder{
-						{Key: entity.ProductTypeOrderByName, OrderByASC: true},
+						{Key: database.ListProductTypesOrderByName, OrderByASC: true},
 					},
 				},
 			},
@@ -93,7 +93,7 @@ func TestProductType_List(t *testing.T) {
 			args: args{
 				params: &database.ListProductTypesParams{
 					Orders: []*database.ListProductTypesOrder{
-						{Key: entity.ProductTypeOrderByName, OrderByASC: false},
+						{Key: database.ListProductTypesOrderByName, OrderByASC: false},
 					},
 				},
 			},

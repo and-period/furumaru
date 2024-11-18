@@ -173,7 +173,6 @@ func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithNow(p.now),
 		mysql.WithLocation(location),
-		mysql.WithLogger(p.logger), // TODO: 動作検証が終わり次第削除
 	)
 	if err != nil {
 		return nil, err

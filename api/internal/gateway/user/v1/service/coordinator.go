@@ -43,6 +43,14 @@ func NewCoordinators(coordinators entity.Coordinators) Coordinators {
 	return res
 }
 
+func (cs Coordinators) Map() map[string]*Coordinator {
+	res := make(map[string]*Coordinator, len(cs))
+	for i := range cs {
+		res[cs[i].ID] = cs[i]
+	}
+	return res
+}
+
 func (cs Coordinators) Response() []*response.Coordinator {
 	res := make([]*response.Coordinator, len(cs))
 	for i := range cs {

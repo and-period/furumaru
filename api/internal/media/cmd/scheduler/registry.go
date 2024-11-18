@@ -118,7 +118,7 @@ func (a *app) inject(ctx context.Context) error {
 	case "START":
 		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(params.logger))
 	case "CLOSE":
-		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(params.logger))
+		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(params.logger), scheduler.WithStorageURL(a.CDNURL))
 	default:
 		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
