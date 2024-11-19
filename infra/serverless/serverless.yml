@@ -136,16 +136,6 @@ resources:
                   Resource:
                     - '*'
 functions:
-  extractMediaStoreDomain:
-    role: lambdaRole
-    handler: functions/extractMediaStoreDomain/handler.extractDomainName
-    memorySize: 128
-    timeout: 10
-  calculateMP4StartTime:
-    role: lambdaRole
-    handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
-    memorySize: 128
-    timeout: 10
   getExistsChannelIndex:
     role: lambdaRole
     handler: functions/getExistsChannelIndex/handler.getExistsChannelIndex
@@ -154,21 +144,6 @@ functions:
   createChannelWithRTMPOutputs:
     role: lambdaRole
     handler: functions/createChannelWithRTMPOutputs/handler.createChannelWithRTMPOutputs
-    memorySize: 128
-    timeout: 10
-  disableDistribution:
-    role: lambdaRole
-    handler: functions/disableDistribution/handler.disableDistribution
-    memorySize: 128
-    timeout: 10
-  listMediaStoreItems:
-    role: lambdaRole
-    handler: functions/listMediaStoreItems/handler.listMediaStoreItems
-    memorySize: 128
-    timeout: 10
-  deleteMediaStoreObjects:
-    role: lambdaRole
-    handler: functions/deleteMediaStoreObjects/handler.deleteMediaStoreObjects
     memorySize: 128
     timeout: 10
 
