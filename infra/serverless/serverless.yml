@@ -233,7 +233,6 @@ stepFunctions:
               MediaLiveMp4InputName.$: $[0][1].MP4Result.Input.Name
               MediaLiveChannelArn.$: $[0][0].ChannelResult.Channel.Arn
               MediaLiveChannelId.$: $[0][0].ChannelResult.Channel.Id
-              MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
               - StartAt: ListChannels
                 States:
