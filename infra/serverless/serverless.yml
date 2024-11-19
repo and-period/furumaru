@@ -363,19 +363,6 @@ stepFunctions:
                         ChannelId.$: $.MediaLiveChannelId
                         AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
                     End: true
-              - StartAt: deleteCloudFrontResources
-                States:
-                  deleteCloudFrontResources:
-                    Type: Task
-                    Comment: CloudFrontのリソースを削除
-                    InputPath: $
-                    Resource: arn:aws:states:::states:startExecution.sync
-                    Parameters:
-                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteCloudFrontResoursesFunction-${self:provider.stage}
-                      Input:
-                        CloudFrontDistributionArn.$: $.CloudFrontDistributionArn
-                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
-                    End: true
               - StartAt: deleteMediaStoreResources
                 States:
                   deleteMediaStoreResources:
@@ -471,106 +458,6 @@ stepFunctions:
                   End: true
                 DeletedInput:
                   Type: Succeed
-    deleteCloudFrontMachine:
-      name: deleteCloudFrontResoursesFunction-${self:provider.stage}
-      role:
-        Fn::GetAtt: [defaultRole, Arn]
-      definition:
-        StartAt: ExtractDistributionId
-        States:
-          ExtractDistributionId:
-            Type: Pass
-            InputPath: $
-            ResultPath: $
-            Parameters:
-              DistributionId.$: States.ArrayGetItem(States.StringSplit($.CloudFrontDistributionArn, '/'), 1)
-            Next: GetDistributionConfig
-          GetDistributionConfig:
-            Type: Task
-            Comment: CloudFrontのディストリビューション設定を取得
-            InputPath: $
-            ResultPath: $.GetDistributionConfigResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistributionConfig
-            Parameters:
-              Id.$: $.DistributionId
-            Catch:
-              - ErrorEquals:
-                  - CloudFront.NoSuchDistribution
-                Comment: ディストリビューションが存在しない場合は終了
-                Next: Finish
-            Next: DisableDistribution
-          DisableDistribution:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを無効化
-            InputPath: $
-            ResultPath: $.DisableDistributionResult
-            Resource:
-              Fn::GetAtt: [disableDistribution, Arn]
-            Next: WaitDisabled
-          WaitDisabled:
-            Type: Wait
-            Seconds: 30
-            Next: GetDistributionStatus
-          GetDistributionStatus:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを取得
-            InputPath: $
-            ResultPath: $.DistributionStatus
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistribution
-            Parameters:
-              Id.$: $.DistributionId
-            Next: CheckDistributionDisabled
-          CheckDistributionDisabled:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.DistributionStatus.Distribution.DistributionConfig.Enabled
-                BooleanEquals: false
-                Next: CheckDistributionDeployed
-            Default: WaitDisabled
-          WaitDeployed:
-            Type: Wait
-            Seconds: 60
-            Next: GetDistributionStatus
-          CheckDistributionDeployed:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.DistributionStatus.Distribution.Status
-                StringEquals: "Deployed"
-                Next: DeleteDistribution
-            Default: WaitDeployed
-          DeleteDistribution:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを削除
-            InputPath: $
-            ResultPath: $.DeleteDistributionResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteDistribution
-            Parameters:
-              Id.$: $.DistributionId
-              IfMatch.$: $.DistributionStatus.ETag
-            Next: GetOriginAccessControl
-          GetOriginAccessControl:
-            Type: Task
-            Comment: CloudFrontのOriginAccessControlを取得
-            InputPath: $
-            ResultPath: $.GetOriginAccessControlResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getOriginAccessControl
-            Parameters:
-              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
-            Next: DeleteOriginAccessControl
-          DeleteOriginAccessControl:
-            Type: Task
-            Comment: CloudFrontのOriginAccessControlを削除
-            InputPath: $
-            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteOriginAccessControl
-            Parameters:
-              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
-              IfMatch.$: $.GetOriginAccessControlResult.ETag
-            Next: Finish
-          Finish:
-            Type: Pass
-            End: true
     deleteMediaStoreMachine:
       name: deleteMediaStoreResoursesFunction-${self:provider.stage}
       role:
