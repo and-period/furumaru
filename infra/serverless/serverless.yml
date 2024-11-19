@@ -363,19 +363,6 @@ stepFunctions:
                         ChannelId.$: $.MediaLiveChannelId
                         AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
                     End: true
-              - StartAt: deleteMediaStoreResources
-                States:
-                  deleteMediaStoreResources:
-                    Type: Task
-                    Comment: MediaStoreのリソースを削除
-                    InputPath: $
-                    Resource: arn:aws:states:::states:startExecution.sync
-                    Parameters:
-                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteMediaStoreResoursesFunction-${self:provider.stage}
-                      Input:
-                        MediaStoreContainerArn.$: $.MediaStoreContainerArn
-                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
-                    End: true
 
     deleteMediaLiveMachine:
       name: deleteMediaLiveResoursesFunction-${self:provider.stage}
@@ -458,80 +445,6 @@ stepFunctions:
                   End: true
                 DeletedInput:
                   Type: Succeed
-    deleteMediaStoreMachine:
-      name: deleteMediaStoreResoursesFunction-${self:provider.stage}
-      role:
-        Fn::GetAtt: [defaultRole, Arn]
-      definition:
-        StartAt: ExtractContainerName
-        States:
-          ExtractContainerName:
-            Type: Pass
-            InputPath: $
-            ResultPath: $.ExtractContainerNameResult
-            Parameters:
-              ContainerName.$: States.ArrayGetItem(States.StringSplit($.MediaStoreContainerArn, '/'), 1)
-            Next: CheckContainerExists
-          CheckContainerExists:
-            Type: Task
-            Comment: MediaStoreのコンテナがあるか確認
-            InputPath: $
-            ResultPath: $.CheckContainerExistsResult
-            Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
-            Parameters:
-              ContainerName.$: $.ExtractContainerNameResult.ContainerName
-            Catch:
-              - ErrorEquals:
-                  - MediaStore.ContainerNotFoundException
-                Comment: コンテナが存在しない場合は終了
-                Next: Finish
-            Next: ListMediaStoreItems
-          ListMediaStoreItems:
-            Type: Task
-            Comment: MediaStoreのコンテナ内にオブジェクトがあるか確認
-            InputPath: $
-            ResultPath: $.ListMediaStoreItemsResult
-            Resource:
-              Fn::GetAtt: [listMediaStoreItems, Arn]
-            Next: CheckObjectExists
-          CheckObjectExists:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.ListMediaStoreItemsResult.Items[0]
-                IsPresent: false
-                Next: DeleteContainer
-            Default: DeleteObjects
-          DeleteObjects:
-            Type: Task
-            Comment: MediaStoreのコンテナ内のオブジェクトを削除
-            InputPath: $
-            ResultPath: $.DeleteObjectsResult
-            Resource:
-              Fn::GetAtt: [deleteMediaStoreObjects, Arn]
-            Next: DeleteContainer
-          DeleteContainer:
-            Type: Task
-            Comment: MediaStoreのコンテナを削除
-            InputPath: $
-            Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
-            Parameters:
-              ContainerName.$: $.ExtractContainerNameResult.ContainerName
-            Retry:
-              - ErrorEquals:
-                  - MediaStore.ContainerInUseException
-                IntervalSeconds: 3
-                MaxAttempts: 10
-                BackoffRate: 2
-            Catch:
-              - ErrorEquals:
-                  - MediaStore.ContainerNotFoundException
-                Comment: コンテナが存在しない場合は終了
-                Next: Finish
-            Next: Finish
-          Finish:
-            Type: Pass
-            End: true
 
 plugins:
   - serverless-step-functions
