@@ -60,19 +60,6 @@ resources:
                     - mediaLive:ListChannels
                     - mediaLive:CreateChannel
                     - mediaLive:DeleteChannel
-                    - mediaStore:CreateContainer
-                    - mediaStore:DescribeContainer
-                    - mediaStore:PutContainerPolicy
-                    - mediaStore:PutCorsPolicy
-                    - mediaStore:PutLifecyclePolicy
-                    - mediastore:DeleteContainer
-                    - cloudfront:CreateOriginAccessControl
-                    - cloudFront:CreateDistribution
-                    - cloudFront:GetDistribution
-                    - cloudFront:GetDistributionConfig
-                    - cloudFront:GetOriginAccessControl
-                    - cloudFront:DeleteDistribution
-                    - cloudFront:DeleteOriginAccessControl
                     - iam:PassRole
                     - states:StartExecution
                     - states:DescribeExecution
@@ -117,35 +104,10 @@ resources:
                     - '*'
                 - Effect: Allow
                   Action:
-                    - mediaStore:DescribeContainer
-                    - mediaStore:ListItems
-                    - mediaStore:DeleteObject
-                  Resource:
-                    - '*'
-                - Effect: Allow
-                  Action:
-                    - cloudFront:GetDistribution
-                    - cloudFront:GetDistributionConfig
-                    - cloudFront:UpdateDistribution
-                    - cloudFront:DeleteDistribution
-                  Resource:
-                    - '*'
-                - Effect: Allow
-                  Action:
                     - iam:PassRole
                   Resource:
                     - '*'
 functions:
-  extractMediaStoreDomain:
-    role: lambdaRole
-    handler: functions/extractMediaStoreDomain/handler.extractDomainName
-    memorySize: 128
-    timeout: 10
-  calculateMP4StartTime:
-    role: lambdaRole
-    handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
-    memorySize: 128
-    timeout: 10
   getExistsChannelIndex:
     role: lambdaRole
     handler: functions/getExistsChannelIndex/handler.getExistsChannelIndex
@@ -154,21 +116,6 @@ functions:
   createChannelWithRTMPOutputs:
     role: lambdaRole
     handler: functions/createChannelWithRTMPOutputs/handler.createChannelWithRTMPOutputs
-    memorySize: 128
-    timeout: 10
-  disableDistribution:
-    role: lambdaRole
-    handler: functions/disableDistribution/handler.disableDistribution
-    memorySize: 128
-    timeout: 10
-  listMediaStoreItems:
-    role: lambdaRole
-    handler: functions/listMediaStoreItems/handler.listMediaStoreItems
-    memorySize: 128
-    timeout: 10
-  deleteMediaStoreObjects:
-    role: lambdaRole
-    handler: functions/deleteMediaStoreObjects/handler.deleteMediaStoreObjects
     memorySize: 128
     timeout: 10
 
@@ -217,51 +164,6 @@ stepFunctions:
                       Type: MP4_FILE
                       Sources:
                         - Url.$: $.InputUrl
-              - StartAt: CreateContainer
-                States:
-                  CreateContainer:
-                    Type: Task
-                    Comment: ライブ配信 - 配信用ストレージを作成
-                    Resource: arn:aws:states:::aws-sdk:mediastore:createContainer
-                    ResultPath: $.ContainerResult
-                    Parameters:
-                      ContainerName.$: States.UUID()
-                    Next: DescribeContainer
-                  DescribeContainer:
-                    Type: Task
-                    Comment: ライブ配信 - 配信用ストレージのステータスを取得する
-                    ResultPath: $.ContainerStatus
-                    Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
-                    Parameters:
-                      ContainerName.$: $.ContainerResult.Container.Name
-                    Next: CheckContainerActive
-                  CheckContainerActive:
-                    Type: Choice
-                    InputPath: $
-                    Choices:
-                      - Variable: $.ContainerStatus.Container.Status
-                        StringEquals: "ACTIVE"
-                        Next: ExtractMediaStoreDomain
-                      - Variable: $.ContainerStatus.Container.Status
-                        StringEquals: "CREATING"
-                        Next: WaitActive
-                    Default: failed
-                  WaitActive:
-                    Type: Wait
-                    Seconds: 2
-                    Next: DescribeContainer
-                  ExtractMediaStoreDomain:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreのドメイン名を抽出
-                    InputPath: $
-                    Resource:
-                      Fn::GetAtt: [extractMediaStoreDomain, Arn]
-                    ResultPath: $.ContainerStatus.Container.Endpoint
-                    Next: success
-                  success:
-                    Type: Succeed
-                  failed:
-                    Type: Fail
             Next: CreateStreamingResoures
           CreateStreamingResoures:
             Type: Parallel
@@ -270,8 +172,6 @@ stepFunctions:
             InputPath: $
             ResultSelector:
               ScheduleId.$: $[0][0].ScheduleId
-              CloudFrontUrl.$: $[1][2].DistributionResult.Distribution.DomainName
-              CloudFrontDistributionArn.$: $[1][2].DistributionResult.Distribution.Arn
               MediaLiveRtmpInputArn.$: $[0][0].RtmpResult.Input.Arn
               MediaLiveRtmpInputUrl.$: $[0][0].RtmpResult.Input.Destinations[0].Url
               MediaLiveRtmpInputName.$: $[0][0].RtmpResult.Input.Name
@@ -280,7 +180,6 @@ stepFunctions:
               MediaLiveMp4InputName.$: $[0][1].MP4Result.Input.Name
               MediaLiveChannelArn.$: $[0][0].ChannelResult.Channel.Arn
               MediaLiveChannelId.$: $[0][0].ChannelResult.Channel.Id
-              MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
               - StartAt: ListChannels
                 States:
@@ -368,9 +267,6 @@ stepFunctions:
                           InputSettings:
                             SourceEndBehavior: LOOP
                       Destinations:
-                        - Id: MediaStore
-                          Settings:
-                            - Url.$: States.Format('mediastoressl://{}/{}', $[2].ContainerStatus.Container.Endpoint, $[0].RtmpInput.StreamName)
                         - Id: S3
                           Settings:
                             - Url.$: States.Format('s3ssl://{}{}/live', $[0].ArchiveInput.BucketName, $[0].ArchiveInput.Path)
@@ -384,123 +280,6 @@ stepFunctions:
                             InputLossImageSlate:
                               Uri.$: $[0].ChannelInput.InputLossImageSlateUri
                       RTMPOutputs.$: $[0].RtmpOutputs
-                    End: true
-              - StartAt: CreateOriginAccessControl
-                States:
-                  CreateOriginAccessControl:
-                    Type: Task
-                    Comment: ライブ配信 - CloudFrontのOriginAccessControlを作成
-                    InputPath: $
-                    ResultPath: $[2].OriginAccessControlResult
-                    Resource: arn:aws:states:::aws-sdk:cloudfront:createOriginAccessControl
-                    Parameters:
-                      OriginAccessControlConfig:
-                        Name.$: States.Format('ForMediaStoreOrigin-{}', States.UUID())
-                        Description: MediaStoreをオリジンにするCloudFrontディストリビューション用
-                        OriginAccessControlOriginType: mediastore
-                        SigningBehavior: always
-                        SigningProtocol: sigv4
-                    Next: CreateDistribution
-                  CreateDistribution:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreをオリジンにするCloudFrontディストリビューションを作成
-                    InputPath: $
-                    ResultPath: $[2].DistributionResult
-                    Resource: arn:aws:states:::aws-sdk:cloudfront:createDistribution
-                    Parameters:
-                      DistributionConfig:
-                        CallerReference.$: $[2].ContainerResult.Container.Name
-                        Comment: MediaStoreをオリジンにするCloudFrontディストリビューション
-                        Enabled: true
-                        HttpVersion: http2
-                        Origins:
-                          Quantity: 1
-                          Items:
-                          - Id.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
-                            DomainName.$: $[2].ContainerStatus.Container.Endpoint
-                            CustomOriginConfig:
-                              HttpPort: 80
-                              HttpsPort: 443
-                              OriginProtocolPolicy: https-only
-                            OriginAccessControlId.$: $[2].OriginAccessControlResult.OriginAccessControl.Id
-                        DefaultCacheBehavior:
-                          TargetOriginId.$: States.Format('{}.data.mediastore.ap-northeast-1.amazonaws.com', $[2].ContainerResult.Container.Name)
-                          ViewerProtocolPolicy: redirect-to-https
-                          AllowedMethods:
-                            Quantity: 7
-                            Items:
-                              - GET
-                              - HEAD
-                              - OPTIONS
-                              - PUT
-                              - POST
-                              - PATCH
-                              - DELETE
-                          ForwardedValues:
-                            QueryString: false
-                            Cookies:
-                              Forward: none
-                            Headers:
-                              Quantity: 2
-                              Items:
-                                - Origin
-                                - Access-Con
-                          MinTTL: 1
-                    Next: PutContainerPolicy
-                  PutContainerPolicy:
-                    Type: Task
-                    Comment: ライブ配信 - チャンネルに対するポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].ContainerPolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putContainerPolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      Policy:
-                        Version: '2012-10-17'
-                        Statement:
-                          - Sid: AllowCloudFrontServicePrincipalReadOnly
-                            Effect: Allow
-                            Principal:
-                              AWS: '*'
-                            Action:
-                              - mediastore:GetObject
-                              - mediastore:DescribeObject
-                            Resource.$: States.Format('{}/*', $[2].ContainerResult.Container.Arn)
-                            Condition:
-                              StringEquals:
-                                AWS:SourceArn.$: $[2].DistributionResult.Distribution.Arn
-                              Bool:
-                                aws:SecureTransport: 'true'
-                    End: true
-              - StartAt: PutCorsPolicy
-                States:
-                  PutCorsPolicy:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreコンテナに対するCORSポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].CorsPolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putCorsPolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      CorsPolicy:
-                        - AllowedOrigins:
-                            - '*'
-                          AllowedMethods:
-                            - GET
-                            - HEAD
-                          AllowedHeaders:
-                            - '*'
-                          MaxAgeSeconds: 3000
-                    Next: PutLifecyclePolicy
-                  PutLifecyclePolicy:
-                    Type: Task
-                    Comment: ライブ配信 - MediaStoreコンテナに対するライフサイクルポリシーを設定
-                    InputPath: $
-                    ResultPath: $[2].LifecyclePolicyResult
-                    Resource: arn:aws:states:::aws-sdk:mediastore:putLifecyclePolicy
-                    Parameters:
-                      ContainerName.$: $[2].ContainerResult.Container.Name
-                      LifecyclePolicy:  {"rules":[{"definition":{"path":[{"wildcard":"*"}],"days_since_create":[{"numeric":[">",1]}]},"action":"EXPIRE"}]}
                     End: true
           RegisterResoursesInfo:
             Type: Task
@@ -529,32 +308,6 @@ stepFunctions:
                       StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteMediaLiveResoursesFunction-${self:provider.stage}
                       Input:
                         ChannelId.$: $.MediaLiveChannelId
-                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
-                    End: true
-              - StartAt: deleteCloudFrontResources
-                States:
-                  deleteCloudFrontResources:
-                    Type: Task
-                    Comment: CloudFrontのリソースを削除
-                    InputPath: $
-                    Resource: arn:aws:states:::states:startExecution.sync
-                    Parameters:
-                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteCloudFrontResoursesFunction-${self:provider.stage}
-                      Input:
-                        CloudFrontDistributionArn.$: $.CloudFrontDistributionArn
-                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
-                    End: true
-              - StartAt: deleteMediaStoreResources
-                States:
-                  deleteMediaStoreResources:
-                    Type: Task
-                    Comment: MediaStoreのリソースを削除
-                    InputPath: $
-                    Resource: arn:aws:states:::states:startExecution.sync
-                    Parameters:
-                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteMediaStoreResoursesFunction-${self:provider.stage}
-                      Input:
-                        MediaStoreContainerArn.$: $.MediaStoreContainerArn
                         AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
                     End: true
 
@@ -639,180 +392,6 @@ stepFunctions:
                   End: true
                 DeletedInput:
                   Type: Succeed
-    deleteCloudFrontMachine:
-      name: deleteCloudFrontResoursesFunction-${self:provider.stage}
-      role:
-        Fn::GetAtt: [defaultRole, Arn]
-      definition:
-        StartAt: ExtractDistributionId
-        States:
-          ExtractDistributionId:
-            Type: Pass
-            InputPath: $
-            ResultPath: $
-            Parameters:
-              DistributionId.$: States.ArrayGetItem(States.StringSplit($.CloudFrontDistributionArn, '/'), 1)
-            Next: GetDistributionConfig
-          GetDistributionConfig:
-            Type: Task
-            Comment: CloudFrontのディストリビューション設定を取得
-            InputPath: $
-            ResultPath: $.GetDistributionConfigResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistributionConfig
-            Parameters:
-              Id.$: $.DistributionId
-            Catch:
-              - ErrorEquals:
-                  - CloudFront.NoSuchDistribution
-                Comment: ディストリビューションが存在しない場合は終了
-                Next: Finish
-            Next: DisableDistribution
-          DisableDistribution:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを無効化
-            InputPath: $
-            ResultPath: $.DisableDistributionResult
-            Resource:
-              Fn::GetAtt: [disableDistribution, Arn]
-            Next: WaitDisabled
-          WaitDisabled:
-            Type: Wait
-            Seconds: 30
-            Next: GetDistributionStatus
-          GetDistributionStatus:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを取得
-            InputPath: $
-            ResultPath: $.DistributionStatus
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistribution
-            Parameters:
-              Id.$: $.DistributionId
-            Next: CheckDistributionDisabled
-          CheckDistributionDisabled:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.DistributionStatus.Distribution.DistributionConfig.Enabled
-                BooleanEquals: false
-                Next: CheckDistributionDeployed
-            Default: WaitDisabled
-          WaitDeployed:
-            Type: Wait
-            Seconds: 60
-            Next: GetDistributionStatus
-          CheckDistributionDeployed:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.DistributionStatus.Distribution.Status
-                StringEquals: "Deployed"
-                Next: DeleteDistribution
-            Default: WaitDeployed
-          DeleteDistribution:
-            Type: Task
-            Comment: CloudFrontのディストリビューションを削除
-            InputPath: $
-            ResultPath: $.DeleteDistributionResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteDistribution
-            Parameters:
-              Id.$: $.DistributionId
-              IfMatch.$: $.DistributionStatus.ETag
-            Next: GetOriginAccessControl
-          GetOriginAccessControl:
-            Type: Task
-            Comment: CloudFrontのOriginAccessControlを取得
-            InputPath: $
-            ResultPath: $.GetOriginAccessControlResult
-            Resource: arn:aws:states:::aws-sdk:cloudfront:getOriginAccessControl
-            Parameters:
-              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
-            Next: DeleteOriginAccessControl
-          DeleteOriginAccessControl:
-            Type: Task
-            Comment: CloudFrontのOriginAccessControlを削除
-            InputPath: $
-            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteOriginAccessControl
-            Parameters:
-              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
-              IfMatch.$: $.GetOriginAccessControlResult.ETag
-            Next: Finish
-          Finish:
-            Type: Pass
-            End: true
-    deleteMediaStoreMachine:
-      name: deleteMediaStoreResoursesFunction-${self:provider.stage}
-      role:
-        Fn::GetAtt: [defaultRole, Arn]
-      definition:
-        StartAt: ExtractContainerName
-        States:
-          ExtractContainerName:
-            Type: Pass
-            InputPath: $
-            ResultPath: $.ExtractContainerNameResult
-            Parameters:
-              ContainerName.$: States.ArrayGetItem(States.StringSplit($.MediaStoreContainerArn, '/'), 1)
-            Next: CheckContainerExists
-          CheckContainerExists:
-            Type: Task
-            Comment: MediaStoreのコンテナがあるか確認
-            InputPath: $
-            ResultPath: $.CheckContainerExistsResult
-            Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
-            Parameters:
-              ContainerName.$: $.ExtractContainerNameResult.ContainerName
-            Catch:
-              - ErrorEquals:
-                  - MediaStore.ContainerNotFoundException
-                Comment: コンテナが存在しない場合は終了
-                Next: Finish
-            Next: ListMediaStoreItems
-          ListMediaStoreItems:
-            Type: Task
-            Comment: MediaStoreのコンテナ内にオブジェクトがあるか確認
-            InputPath: $
-            ResultPath: $.ListMediaStoreItemsResult
-            Resource:
-              Fn::GetAtt: [listMediaStoreItems, Arn]
-            Next: CheckObjectExists
-          CheckObjectExists:
-            Type: Choice
-            InputPath: $
-            Choices:
-              - Variable: $.ListMediaStoreItemsResult.Items[0]
-                IsPresent: false
-                Next: DeleteContainer
-            Default: DeleteObjects
-          DeleteObjects:
-            Type: Task
-            Comment: MediaStoreのコンテナ内のオブジェクトを削除
-            InputPath: $
-            ResultPath: $.DeleteObjectsResult
-            Resource:
-              Fn::GetAtt: [deleteMediaStoreObjects, Arn]
-            Next: DeleteContainer
-          DeleteContainer:
-            Type: Task
-            Comment: MediaStoreのコンテナを削除
-            InputPath: $
-            Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
-            Parameters:
-              ContainerName.$: $.ExtractContainerNameResult.ContainerName
-            Retry:
-              - ErrorEquals:
-                  - MediaStore.ContainerInUseException
-                IntervalSeconds: 3
-                MaxAttempts: 10
-                BackoffRate: 2
-            Catch:
-              - ErrorEquals:
-                  - MediaStore.ContainerNotFoundException
-                Comment: コンテナが存在しない場合は終了
-                Next: Finish
-            Next: Finish
-          Finish:
-            Type: Pass
-            End: true
 
 plugins:
   - serverless-step-functions
