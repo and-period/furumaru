@@ -27,6 +27,7 @@ const items = [
   <div class="bg-white px-[15px] py-[48px] text-main md:px-[36px]">
     <div class="container mx-auto">
       <GoogleMap
+        :clickable-icons="false"
         :api-key="config.public.GOOGLE_MAPS_API_KEY"
         style="width: 100%; height: 700px"
         :center="center"
