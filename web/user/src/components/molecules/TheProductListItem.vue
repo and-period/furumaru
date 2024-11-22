@@ -110,16 +110,18 @@ const handleClickAddCartButton = () => {
           />
         </template>
         <template v-else>
-          <picture class="w-full">
-            <nuxt-img
-              provider="cloudFront"
-              :src="thumbnail.url"
-              :alt="itemThumbnailAlt"
-              fit="cover"
-              sizes="180px md:250px"
-              class="aspect-square w-full"
-            />
-          </picture>
+          <div class="aspect-square">
+            <picture>
+              <nuxt-img
+                provider="cloudFront"
+                :src="thumbnail.url"
+                :alt="itemThumbnailAlt"
+                fit="contain"
+                sizes="180px md:250px"
+                class="w-full h-full object-contain"
+              />
+            </picture>
+          </div>
         </template>
       </div>
     </div>
