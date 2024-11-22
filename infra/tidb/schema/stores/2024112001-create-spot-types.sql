@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS `stores`.`spot_types` (
 CREATE UNIQUE INDEX `ui_spot_types_name` ON `stores`.`spot_types` (`name`) VISIBLE;
 
 -- 外部キー制約の追加（既存レコードを考慮してNULLABLEにする）
-ALTER TABLE `stores`.`spots` ADD COLUMN `spot_type_id` VARCHAR(22) NULL;
+ALTER TABLE `stores`.`spots` ADD COLUMN `spot_type_id` VARCHAR(22) NULL DEFAULT NULL;
 
-ALTER TABLE `stores`.`spots` ADD FOREIGN KEY `stores`.`spot_types` (`spot_type_id`)
-  REFERENCES `stores`.`spot_types` (`id`);
+ALTER TABLE `stores`.`spots` ADD CONSTRAINT `fk_spot_types_spot_type_id`
+  FOREIGN KEY `stores`.`spot_types` (`spot_type_id`) REFERENCES `stores`.`spot_types` (`id`)
   ON DELETE SET NULL ON UPDATE CASCADE;
