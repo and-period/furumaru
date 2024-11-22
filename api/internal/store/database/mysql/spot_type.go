@@ -72,7 +72,6 @@ func (t *spotType) MultiGet(ctx context.Context, spotTypeIDs []string, fields ..
 
 	err := stmt.Find(&types).Error
 	return types, dbError(err)
-
 }
 
 func (t *spotType) Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error) {
