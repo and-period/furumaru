@@ -23,6 +23,9 @@ func NewSpotType(spotType *entity.SpotType) *SpotType {
 }
 
 func (t *SpotType) Response() *response.SpotType {
+	if t == nil {
+		return nil
+	}
 	return &t.SpotType
 }
 
