@@ -28,6 +28,7 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 		Schedule:       client.Schedule,
 		Shipping:       client.Shipping,
 		Spot:           newSpot(db, client.Spot),
+		SpotType:       newSpotType(db, client.SpotType),
 	}
 }
 
