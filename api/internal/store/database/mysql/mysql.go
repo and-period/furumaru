@@ -26,6 +26,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Schedule:       newSchedule(db),
 		Shipping:       newShipping(db),
 		Spot:           newSpot(db),
+		SpotType:       newSpotType(db),
 	}
 }
 

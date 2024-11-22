@@ -20,6 +20,7 @@ func (s *service) ListSpots(ctx context.Context, in *store.ListSpotsInput) (enti
 	}
 	params := &database.ListSpotsParams{
 		Name:            in.Name,
+		SpotTypeIDs:     in.TypeIDs,
 		UserID:          in.UserID,
 		ExcludeApproved: in.ExcludeApproved,
 		ExcludeDisabled: in.ExcludeDisabled,
@@ -50,6 +51,7 @@ func (s *service) ListSpotsByGeolocation(ctx context.Context, in *store.ListSpot
 		return nil, internalError(err)
 	}
 	params := &database.ListSpotsByGeolocationParams{
+		SpotTypeIDs:     in.TypeIDs,
 		Longitude:       in.Longitude,
 		Latitude:        in.Latitude,
 		Radius:          in.Radius,
@@ -71,8 +73,16 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+	_, err := s.db.SpotType.Get(ctx, in.TypeID)
+	if errors.Is(err, database.ErrNotFound) {
+		return nil, fmt.Errorf("service: this spot type is not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
 	params := &entity.SpotParams{
 		UserID:       in.UserID,
+		SpotTypeID:   in.TypeID,
 		Name:         in.Name,
 		Description:  in.Description,
 		ThumbnailURL: in.ThumbnailURL,
@@ -91,6 +101,13 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 
 func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByAdminInput) (*entity.Spot, error) {
 	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	_, err := s.db.SpotType.Get(ctx, in.TypeID)
+	if errors.Is(err, database.ErrNotFound) {
+		return nil, fmt.Errorf("service: this spot type is not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
 		return nil, internalError(err)
 	}
 	adminIn := &user.GetAdminInput{
@@ -117,6 +134,7 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 	params := &entity.SpotParams{
 		UserType:     userType,
 		UserID:       in.AdminID,
+		SpotTypeID:   in.TypeID,
 		Name:         in.Name,
 		Description:  in.Description,
 		ThumbnailURL: in.ThumbnailURL,
@@ -137,14 +155,22 @@ func (s *service) UpdateSpot(ctx context.Context, in *store.UpdateSpotInput) err
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	_, err := s.db.SpotType.Get(ctx, in.TypeID)
+	if errors.Is(err, database.ErrNotFound) {
+		return fmt.Errorf("service: this spot type is not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return internalError(err)
+	}
 	params := &database.UpdateSpotParams{
+		SpotTypeID:   in.TypeID,
 		Name:         in.Name,
 		Description:  in.Description,
 		ThumbnailURL: in.ThumbnailURL,
 		Longitude:    in.Longitude,
 		Latitude:     in.Latitude,
 	}
-	err := s.db.Spot.Update(ctx, in.SpotID, params)
+	err = s.db.Spot.Update(ctx, in.SpotID, params)
 	return internalError(err)
 }
 

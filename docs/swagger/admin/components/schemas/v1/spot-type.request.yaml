@@ -1,0 +1,20 @@
+createSpotTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: スポット種別名(32文字まで)
+  required:
+  - name
+  example:
+    name: 'じゃがいも堀り'
+updateSpotTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: スポット種別名(32文字まで)
+  required:
+  - name
+  example:
+    name: 'じゃがいも堀り'

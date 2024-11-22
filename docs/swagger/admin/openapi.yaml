@@ -55,6 +55,8 @@ tags:
   description: 配送設定関連
 - name: Spot
   description: スポット関連
+- name: SpotType
+  description: スポット種別関連
 - name: Thread
   description: お問い合わせ会話履歴関連
 - name: User
@@ -219,6 +221,11 @@ paths:
     $ref: './paths/v1/spots/_spotId/index.yaml'
   /v1/spots/{spotId}/approval:
     $ref: './paths/v1/spots/_spotId/approval.yaml'
+  # SpotType
+  /v1/spot-types:
+    $ref: './paths/v1/spot-types/index.yaml'
+  /v1/spot-types/{spotTypeId}:
+    $ref: './paths/v1/spot-types/_spotTypeId/index.yaml'
   # Thread
   /v1/contacts/{contactId}/threads:
     $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
@@ -452,6 +459,8 @@ components:
       $ref: './components/schemas/entity/shipping.yaml#/shipping'
     spot:
       $ref: './components/schemas/entity/spot.yaml#/spot'
+    spotType:
+      $ref: './components/schemas/entity/spot-type.yaml#/spotType'
     thread:
       $ref: './components/schemas/entity/thread.yaml#/thread'
     user:
@@ -583,6 +592,10 @@ components:
       $ref: './components/schemas/v1/spot.request.yaml#/updateSpotRequest'
     v1ApproveSpotRequest:
       $ref: './components/schemas/v1/spot.request.yaml#/approveSpotRequest'
+    v1CreateSpotTypeRequest:
+      $ref: './components/schemas/v1/spot-type.request.yaml#/createSpotTypeRequest'
+    v1UpdateSpotTypeRequest:
+      $ref: './components/schemas/v1/spot-type.request.yaml#/updateSpotTypeRequest'
     v1CreateThreadRequest:
       $ref: './components/schemas/v1/thread.request.yaml#/createThreadRequest'
     v1UpdateThreadRequest:
@@ -686,6 +699,10 @@ components:
       $ref: './components/schemas/v1/spot.response.yaml#/spotResponse'
     v1SpotsResponse:
       $ref: './components/schemas/v1/spot.response.yaml#/spotsResponse'
+    v1SpotTypeResponse:
+      $ref: './components/schemas/v1/spot-type.response.yaml#/spotTypeResponse'
+    v1SpotTypesResponse:
+      $ref: './components/schemas/v1/spot-type.response.yaml#/spotTypesResponse'
     v1ThreadResponse:
       $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
     v1ThreadsResponse:

@@ -44,6 +44,7 @@ func NewSpotByUser(spot *sentity.Spot, user *uentity.User) *Spot {
 	return &Spot{
 		Spot: response.Spot{
 			ID:               spot.ID,
+			TypeID:           spot.TypeID,
 			Name:             spot.Name,
 			Description:      spot.Description,
 			ThumbnailURL:     spot.ThumbnailURL,
@@ -63,6 +64,7 @@ func NewSpotByCoordinator(spot *sentity.Spot, coordinator *Coordinator) *Spot {
 	return &Spot{
 		Spot: response.Spot{
 			ID:               spot.ID,
+			TypeID:           spot.TypeID,
 			Name:             spot.Name,
 			Description:      spot.Description,
 			ThumbnailURL:     spot.ThumbnailURL,
@@ -82,6 +84,7 @@ func NewSpotByProducer(spot *sentity.Spot, producer *Producer) *Spot {
 	return &Spot{
 		Spot: response.Spot{
 			ID:               spot.ID,
+			TypeID:           spot.TypeID,
 			Name:             spot.Name,
 			Description:      spot.Description,
 			ThumbnailURL:     spot.ThumbnailURL,

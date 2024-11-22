@@ -775,21 +775,50 @@ type DeleteExperienceInput struct {
 	ExperienceID string `validate:"required"`
 }
 
+type ListSpotTypesInput struct {
+	Name   string `validate:"max=32"`
+	Limit  int64  `validate:"required,max=200"`
+	Offset int64  `validate:"min=0"`
+}
+
+type MultiGetSpotTypesInput struct {
+	SpotTypeIDs []string `validate:"dive,required"`
+}
+
+type GetSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
+}
+
+type CreateSpotTypeInput struct {
+	Name string `validate:"required,max=32"`
+}
+
+type UpdateSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
+	Name       string `validate:"required,max=32"`
+}
+
+type DeleteSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
+}
+
 type ListSpotsInput struct {
-	Name            string `validate:"max=64"`
-	UserID          string `validate:""`
-	ExcludeApproved bool   `validate:""`
-	ExcludeDisabled bool   `validate:""`
-	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset          int64  `validate:"min=0"`
-	NoLimit         bool   `validate:""`
+	Name            string   `validate:"max=64"`
+	TypeIDs         []string `validate:""`
+	UserID          string   `validate:""`
+	ExcludeApproved bool     `validate:""`
+	ExcludeDisabled bool     `validate:""`
+	Limit           int64    `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64    `validate:"min=0"`
+	NoLimit         bool     `validate:""`
 }
 
 type ListSpotsByGeolocationInput struct {
-	Latitude        float64 `validate:"min=-90,max=90"`
-	Longitude       float64 `validate:"min=-180,max=180"`
-	Radius          int64   `validate:"min=0"`
-	ExcludeDisabled bool    `validate:""`
+	TypeIDs         []string `validate:""`
+	Latitude        float64  `validate:"min=-90,max=90"`
+	Longitude       float64  `validate:"min=-180,max=180"`
+	Radius          int64    `validate:"min=0"`
+	ExcludeDisabled bool     `validate:""`
 }
 
 type GetSpotInput struct {
@@ -797,6 +826,7 @@ type GetSpotInput struct {
 }
 
 type CreateSpotByUserInput struct {
+	TypeID       string  `validate:"required"`
 	UserID       string  `validate:"required"`
 	Name         string  `validate:"required,max=64"`
 	Description  string  `validate:"required,max=2000"`
@@ -806,6 +836,7 @@ type CreateSpotByUserInput struct {
 }
 
 type CreateSpotByAdminInput struct {
+	TypeID       string  `validate:"required"`
 	AdminID      string  `validate:"required"`
 	Name         string  `validate:"required,max=64"`
 	Description  string  `validate:"required,max=2000"`
@@ -815,6 +846,7 @@ type CreateSpotByAdminInput struct {
 }
 
 type UpdateSpotInput struct {
+	TypeID       string  `validate:"required"`
 	SpotID       string  `validate:"required"`
 	Name         string  `validate:"required,max=64"`
 	Description  string  `validate:"required,max=2000"`

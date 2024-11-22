@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -77,6 +79,7 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	if len(spots) == 0 {
 		res := &response.SpotsResponse{
 			Spots:        []*response.Spot{},
+			SpotTypes:    []*response.SpotType{},
 			Users:        []*response.User{},
 			Coordinators: []*response.Coordinator{},
 			Producers:    []*response.Producer{},
@@ -87,11 +90,16 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	spotsMap := spots.GroupByUserType()
 
 	var (
+		spotTypes    service.SpotTypes
 		users        service.Users
 		coordinators service.Coordinators
 		producers    service.Producers
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		spotTypes, err = h.multiGetSpotTypes(ectx, spots.TypeIDs())
+		return
+	})
 	eg.Go(func() (err error) {
 		spots := spotsMap[entity.SpotUserTypeUser]
 		users, err = h.multiGetUsers(ectx, spots.UserIDs())
@@ -114,6 +122,7 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 
 	res := &response.SpotsResponse{
 		Spots:        service.NewSpots(spots).Response(),
+		SpotTypes:    spotTypes.Response(),
 		Users:        users.Response(),
 		Coordinators: coordinators.Response(),
 		Producers:    producers.Response(),
@@ -128,9 +137,15 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	spotType, err := h.getSpotType(ctx, spot.TypeID)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		h.httpError(ctx, err)
+		return
+	}
 
 	res := &response.SpotResponse{
-		Spot: spot.Response(),
+		Spot:     spot.Response(),
+		SpotType: spotType.Response(),
 	}
 
 	switch spot.UserType {
@@ -164,6 +179,11 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	req := &request.CreateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
+		return
+	}
+	spotType, err := h.getSpotType(ctx, req.TypeID)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -202,6 +222,7 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	}
 
 	res.Spot = service.NewSpot(spot).Response()
+	res.SpotType = spotType.Response()
 	ctx.JSON(http.StatusOK, res)
 }
 

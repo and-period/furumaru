@@ -19,6 +19,7 @@ func TestSpotByUser(t *testing.T) {
 		{
 			name: "success",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -27,6 +28,7 @@ func TestSpotByUser(t *testing.T) {
 				Latitude:     35.6895,
 			},
 			expect: &Spot{
+				TypeID:       "spot-type-id",
 				UserType:     SpotUserTypeUser,
 				UserID:       "user-id",
 				Name:         "東京タワー",
@@ -41,6 +43,7 @@ func TestSpotByUser(t *testing.T) {
 		{
 			name: "invalid longitude",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -54,6 +57,7 @@ func TestSpotByUser(t *testing.T) {
 		{
 			name: "invalid latitude",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "おすすめの観光地です。",
@@ -94,6 +98,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "success",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
@@ -103,6 +108,7 @@ func TestSpotByAdmin(t *testing.T) {
 				Latitude:     35.6895,
 			},
 			expect: &Spot{
+				TypeID:          "spot-type-id",
 				UserType:        SpotUserTypeCoordinator,
 				UserID:          "user-id",
 				Name:            "東京タワー",
@@ -118,6 +124,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "invalid longitude",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
@@ -132,6 +139,7 @@ func TestSpotByAdmin(t *testing.T) {
 		{
 			name: "invalid latitude",
 			params: &SpotParams{
+				SpotTypeID:   "spot-type-id",
 				UserType:     SpotUserTypeCoordinator,
 				UserID:       "user-id",
 				Name:         "東京タワー",
@@ -157,6 +165,47 @@ func TestSpotByAdmin(t *testing.T) {
 
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestSpots_TypeIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		spots  Spots
+		expect []string
+	}{
+		{
+			name: "success",
+			spots: Spots{
+				{
+					ID:           "spot-id",
+					TypeID:       "spot-type-id",
+					UserType:     SpotUserTypeUser,
+					UserID:       "user-id",
+					Name:         "東京タワー",
+					Description:  "東京タワーの説明",
+					ThumbnailURL: "https://example.com/thumbnail.jpg",
+					Longitude:    139.732293,
+					Latitude:     35.658580,
+					Approved:     true,
+					CreatedAt:    now,
+					UpdatedAt:    now,
+				},
+			},
+			expect: []string{"spot-type-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.spots.TypeIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
 		})
 	}
 }

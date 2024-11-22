@@ -97,6 +97,8 @@ export * from './ShippingType';
 export * from './SignInRequest';
 export * from './Spot';
 export * from './SpotResponse';
+export * from './SpotType';
+export * from './SpotTypesResponse';
 export * from './SpotUserType';
 export * from './SpotsResponse';
 export * from './StorageMethodType';

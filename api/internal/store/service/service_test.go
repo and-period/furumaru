@@ -54,6 +54,7 @@ type dbMocks struct {
 	Schedule       *mock_database.MockSchedule
 	Shipping       *mock_database.MockShipping
 	Spot           *mock_database.MockSpot
+	SpotType       *mock_database.MockSpotType
 }
 
 type testOptions struct {
@@ -102,6 +103,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Schedule:       mock_database.NewMockSchedule(ctrl),
 		Shipping:       mock_database.NewMockShipping(ctrl),
 		Spot:           mock_database.NewMockSpot(ctrl),
+		SpotType:       mock_database.NewMockSpotType(ctrl),
 	}
 }
 
@@ -128,6 +130,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Schedule:       mocks.db.Schedule,
 			Shipping:       mocks.db.Shipping,
 			Spot:           mocks.db.Spot,
+			SpotType:       mocks.db.SpotType,
 		},
 		Cache:       mocks.cache,
 		User:        mocks.user,

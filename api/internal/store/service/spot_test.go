@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -30,6 +31,7 @@ func TestListSpots(t *testing.T) {
 	spots := entity.Spots{
 		{
 			ID:              "spot-id",
+			TypeID:          "type-id",
 			UserType:        entity.SpotUserTypeUser,
 			UserID:          "user-id",
 			Name:            "東京タワー",
@@ -138,6 +140,7 @@ func TestListSpotsByGeolocation(t *testing.T) {
 	spots := entity.Spots{
 		{
 			ID:              "spot-id",
+			TypeID:          "type-id",
 			UserType:        entity.SpotUserTypeUser,
 			UserID:          "user-id",
 			Name:            "東京タワー",
@@ -213,6 +216,7 @@ func TestGetSpot(t *testing.T) {
 	now := jst.Date(2024, 11, 17, 18, 30, 0, 0)
 	spot := &entity.Spot{
 		ID:              "spot-id",
+		TypeID:          "type-id",
 		UserType:        entity.SpotUserTypeUser,
 		UserID:          "user-id",
 		Name:            "東京タワー",
@@ -276,6 +280,14 @@ func TestGetSpot(t *testing.T) {
 func TestCreateSpotByUser(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
+	spotType := &entity.SpotType{
+		ID:        "type-id",
+		Name:      "観光地",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -285,11 +297,13 @@ func TestCreateSpotByUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, spot *entity.Spot) error {
 						expect := &entity.Spot{
 							ID:              spot.ID, // ignore
+							TypeID:          "type-id",
 							UserType:        entity.SpotUserTypeUser,
 							UserID:          "user-id",
 							Name:            "東京タワー",
@@ -305,6 +319,7 @@ func TestCreateSpotByUser(t *testing.T) {
 					})
 			},
 			input: &store.CreateSpotByUserInput{
+				TypeID:       "type-id",
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -321,11 +336,45 @@ func TestCreateSpotByUser(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "not found spot type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, database.ErrNotFound)
+			},
+			input: &store.CreateSpotByUserInput{
+				TypeID:       "type-id",
+				UserID:       "user-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get spot type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, assert.AnError)
+			},
+			input: &store.CreateSpotByUserInput{
+				TypeID:       "type-id",
+				UserID:       "user-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateSpotByUserInput{
+				TypeID:       "type-id",
 				UserID:       "user-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -348,6 +397,13 @@ func TestCreateSpotByUser(t *testing.T) {
 func TestCreateSpotByAdmin(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
+	spotType := &entity.SpotType{
+		ID:        "type-id",
+		Name:      "観光地",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 	adminIn := &user.GetAdminInput{
 		AdminID: "admin-id",
 	}
@@ -367,12 +423,14 @@ func TestCreateSpotByAdmin(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, spot *entity.Spot) error {
 						expect := &entity.Spot{
 							ID:              spot.ID, // ignore
+							TypeID:          "type-id",
 							UserType:        entity.SpotUserTypeCoordinator,
 							UserID:          "admin-id",
 							Name:            "東京タワー",
@@ -388,6 +446,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 					})
 			},
 			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
 				AdminID:      "admin-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -404,11 +463,45 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "not found spot type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, database.ErrNotFound)
+			},
+			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get spot type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, assert.AnError)
+			},
+			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "not found admin",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
 				AdminID:      "admin-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -421,9 +514,11 @@ func TestCreateSpotByAdmin(t *testing.T) {
 		{
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
 				AdminID:      "admin-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -436,9 +531,11 @@ func TestCreateSpotByAdmin(t *testing.T) {
 		{
 			name: "failed to unsppoted",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleAdministrator), nil)
 			},
 			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
 				AdminID:      "admin-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -451,10 +548,12 @@ func TestCreateSpotByAdmin(t *testing.T) {
 		{
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
 				AdminID:      "admin-id",
 				Name:         "東京タワー",
 				Description:  "東京タワーの説明",
@@ -477,7 +576,15 @@ func TestCreateSpotByAdmin(t *testing.T) {
 func TestUpdateSpot(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
+	spotType := &entity.SpotType{
+		ID:        "type-id",
+		Name:      "観光地",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 	params := &database.UpdateSpotParams{
+		SpotTypeID:   "type-id",
 		Name:         "東京スカイツリー",
 		Description:  "東京スカイツリーの説明",
 		ThumbnailURL: "https://example.com/thumbnail.jpg",
@@ -494,9 +601,11 @@ func TestUpdateSpot(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.db.Spot.EXPECT().Update(ctx, "spot-id", params).Return(nil)
 			},
 			input: &store.UpdateSpotInput{
+				TypeID:       "type-id",
 				SpotID:       "spot-id",
 				Name:         "東京スカイツリー",
 				Description:  "東京スカイツリーの説明",
@@ -515,9 +624,43 @@ func TestUpdateSpot(t *testing.T) {
 		{
 			name: "failed to update spot",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, database.ErrNotFound)
+			},
+			input: &store.UpdateSpotInput{
+				TypeID:       "type-id",
+				SpotID:       "spot-id",
+				Name:         "東京スカイツリー",
+				Description:  "東京スカイツリーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.81083,
+				Latitude:     35.71014,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get spot type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, assert.AnError)
+			},
+			input: &store.UpdateSpotInput{
+				TypeID:       "type-id",
+				SpotID:       "spot-id",
+				Name:         "東京スカイツリー",
+				Description:  "東京スカイツリーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.81083,
+				Latitude:     35.71014,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to update spot",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.db.Spot.EXPECT().Update(ctx, "spot-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateSpotInput{
+				TypeID:       "type-id",
 				SpotID:       "spot-id",
 				Name:         "東京スカイツリー",
 				Description:  "東京スカイツリーの説明",

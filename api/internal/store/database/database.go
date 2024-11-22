@@ -34,6 +34,7 @@ type Database struct {
 	Schedule       Schedule
 	Shipping       Shipping
 	Spot           Spot
+	SpotType       SpotType
 }
 
 /**
@@ -485,6 +486,7 @@ type Spot interface {
 
 type ListSpotsParams struct {
 	Name            string
+	SpotTypeIDs     []string
 	UserID          string
 	ExcludeApproved bool
 	ExcludeDisabled bool
@@ -493,6 +495,7 @@ type ListSpotsParams struct {
 }
 
 type ListSpotsByGeolocationParams struct {
+	SpotTypeIDs     []string
 	Longitude       float64
 	Latitude        float64
 	Radius          int64
@@ -500,6 +503,7 @@ type ListSpotsByGeolocationParams struct {
 }
 
 type UpdateSpotParams struct {
+	SpotTypeID   string
 	Name         string
 	Description  string
 	ThumbnailURL string
@@ -510,6 +514,26 @@ type UpdateSpotParams struct {
 type ApproveSpotParams struct {
 	Approved        bool
 	ApprovedAdminID string
+}
+
+type SpotType interface {
+	List(ctx context.Context, params *ListSpotTypesParams, fields ...string) (entity.SpotTypes, error)
+	Count(ctx context.Context, params *ListSpotTypesParams) (int64, error)
+	MultiGet(ctx context.Context, spotTypeIDs []string, fields ...string) (entity.SpotTypes, error)
+	Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error)
+	Create(ctx context.Context, spotType *entity.SpotType) error
+	Update(ctx context.Context, spotTypeID string, params *UpdateSpotTypeParams) error
+	Delete(ctx context.Context, spotTypeID string) error
+}
+
+type ListSpotTypesParams struct {
+	Name   string
+	Limit  int
+	Offset int
+}
+
+type UpdateSpotTypeParams struct {
+	Name string
 }
 
 type Error struct {

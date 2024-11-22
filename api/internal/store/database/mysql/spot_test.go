@@ -31,10 +31,13 @@ func TestSpot_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
 	spots := make(entity.Spots, 3)
-	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
-	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
+	spots[1] = testSpot("spot-id02", "spot-type-id", 35.658581, 139.745433, now())
+	spots[2] = testSpot("spot-id03", "spot-type-id", 35.658581, 139.745433, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -102,10 +105,13 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
 	spots := make(entity.Spots, 3)
-	spots[0] = testSpot("spot-id01", 35.65861, 139.74545, now())
-	spots[1] = testSpot("spot-id02", 0, 0, now())
-	spots[2] = testSpot("spot-id03", 0, 0, now())
+	spots[0] = testSpot("spot-id01", "spot-type-id", 35.65861, 139.74545, now())
+	spots[1] = testSpot("spot-id02", "spot-type-id", 0, 0, now())
+	spots[2] = testSpot("spot-id03", "spot-type-id", 0, 0, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -245,10 +251,13 @@ func TestSpot_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
 	spots := make(entity.Spots, 3)
-	spots[0] = testSpot("spot-id01", 35.658581, 139.745433, now())
-	spots[1] = testSpot("spot-id02", 35.658581, 139.745433, now())
-	spots[2] = testSpot("spot-id03", 35.658581, 139.745433, now())
+	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
+	spots[1] = testSpot("spot-id02", "spot-type-id", 35.658581, 139.745433, now())
+	spots[2] = testSpot("spot-id03", "spot-type-id", 35.658581, 139.745433, now())
 	err = db.DB.Create(&spots).Error
 	require.NoError(t, err)
 
@@ -316,7 +325,10 @@ func TestSpot_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testSpot("spot-id", 35.658581, 139.745433, now())
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
+	s := testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
@@ -388,6 +400,9 @@ func TestSpot_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
 	type args struct {
 		spot *entity.Spot
 	}
@@ -404,7 +419,7 @@ func TestSpot_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				spot: testSpot("spot-id", 35.658581, 139.745433, now()),
+				spot: testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now()),
 			},
 			want: want{
 				err: nil,
@@ -413,12 +428,12 @@ func TestSpot_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				spot := testSpot("spot-id", 35.658581, 139.745433, now())
+				spot := testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now())
 				err := db.DB.Create(&spot).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				spot: testSpot("spot-id", 35.658581, 139.745433, now()),
+				spot: testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now()),
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -457,6 +472,9 @@ func TestSpot_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	spotType := testSpotType("spot-type-id", "観光地", now())
+	err = db.DB.Create(&spotType).Error
+
 	type args struct {
 		spotID string
 		params *database.UpdateSpotParams
@@ -473,13 +491,14 @@ func TestSpot_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				spot := testSpot("spot-id", 35.658581, 139.745433, now())
+				spot := testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now())
 				err := db.DB.Create(&spot).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				spotID: "spot-id",
 				params: &database.UpdateSpotParams{
+					SpotTypeID:   "spot-type-id",
 					Name:         "東京スカイツリー",
 					Description:  "東京スカイツリーの説明",
 					ThumbnailURL: "http://example.com/thumbnail.jpg",
@@ -539,7 +558,7 @@ func TestSpot_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				spot := testSpot("spot-id", 35.658581, 139.745433, now())
+				spot := testSpot("spot-id", "", 35.658581, 139.745433, now())
 				err := db.DB.Create(&spot).Error
 				require.NoError(t, err)
 			},
@@ -599,7 +618,7 @@ func TestSpot_Approve(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				spot := testSpot("spot-id", 35.658581, 139.745433, now())
+				spot := testSpot("spot-id", "", 35.658581, 139.745433, now())
 				err := db.DB.Create(&spot).Error
 				require.NoError(t, err)
 			},
@@ -633,9 +652,10 @@ func TestSpot_Approve(t *testing.T) {
 	}
 }
 
-func testSpot(spotID string, latitude, longitude float64, now time.Time) *entity.Spot {
+func testSpot(spotID, typeID string, latitude, longitude float64, now time.Time) *entity.Spot {
 	return &entity.Spot{
 		ID:           spotID,
+		TypeID:       typeID,
 		UserType:     entity.SpotUserTypeUser,
 		UserID:       "user-id",
 		Name:         "東京タワー",

@@ -144,6 +144,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.producerRoutes(v1)
 	h.promotionRoutes(v1)
 	h.postalCodeRoutes(v1)
+	h.spotTypeRoutes(v1)
 	h.statusRoutes(v1)
 	h.videoRoutes(v1)
 	// ゲスト用エンドポイント

@@ -45,6 +45,7 @@ func NewSpot(spot *entity.Spot) *Spot {
 	return &Spot{
 		Spot: response.Spot{
 			ID:           spot.ID,
+			TypeID:       spot.TypeID,
 			UserType:     userType.Response(),
 			UserID:       spot.UserID,
 			Name:         spot.Name,
