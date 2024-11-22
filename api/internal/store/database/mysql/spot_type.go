@@ -29,7 +29,7 @@ type listSpotTypesParams database.ListSpotTypesParams
 
 func (p listSpotTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("MATCH (`name`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
+		stmt = stmt.Where("MATCH (`name`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	return stmt
 }

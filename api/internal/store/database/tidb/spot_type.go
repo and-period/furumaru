@@ -31,8 +31,7 @@ type listSpotTypesParams database.ListSpotTypesParams
 
 func (p listSpotTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("`name` LIKE ?", "%"+p.Name+"%").
-			Or("`description` LIKE ?", "%"+p.Name+"%")
+		stmt = stmt.Where("`name` LIKE ?", "%"+p.Name+"%")
 	}
 	return stmt
 }
