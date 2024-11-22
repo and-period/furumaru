@@ -20,23 +20,25 @@ const (
 
 // Spot - スポット情報
 type Spot struct {
-	ID              string       `gorm:"primaryKey;<-:create"` // スポットID
-	UserType        SpotUserType `gorm:""`                     // 投稿者の種別
-	UserID          string       `gorm:""`                     // ユーザーID
-	Name            string       `gorm:""`                     // スポット名
-	Description     string       `gorm:""`                     // 説明
-	ThumbnailURL    string       `gorm:""`                     // サムネイル画像URL
-	Longitude       float64      `gorm:""`                     // 座標情報:経度
-	Latitude        float64      `gorm:""`                     // 座標情報:緯度
-	Approved        bool         `gorm:""`                     // 承認フラグ
-	ApprovedAdminID string       `gorm:""`                     // 承認した管理者ID
-	CreatedAt       time.Time    `gorm:"<-:create"`            // 登録日時
-	UpdatedAt       time.Time    `gorm:""`                     // 更新日時
+	ID              string       `gorm:"primaryKey;<-:create"`             // スポットID
+	TypeID          string       `gorm:"column:spot_type_id;default:null"` // 種別ID
+	UserType        SpotUserType `gorm:""`                                 // 投稿者の種別
+	UserID          string       `gorm:""`                                 // ユーザーID
+	Name            string       `gorm:""`                                 // スポット名
+	Description     string       `gorm:""`                                 // 説明
+	ThumbnailURL    string       `gorm:""`                                 // サムネイル画像URL
+	Longitude       float64      `gorm:""`                                 // 座標情報:経度
+	Latitude        float64      `gorm:""`                                 // 座標情報:緯度
+	Approved        bool         `gorm:""`                                 // 承認フラグ
+	ApprovedAdminID string       `gorm:""`                                 // 承認した管理者ID
+	CreatedAt       time.Time    `gorm:"<-:create"`                        // 登録日時
+	UpdatedAt       time.Time    `gorm:""`                                 // 更新日時
 }
 
 type Spots []*Spot
 
 type SpotParams struct {
+	SpotTypeID   string
 	UserType     SpotUserType
 	UserID       string
 	Name         string
@@ -49,6 +51,7 @@ type SpotParams struct {
 func NewSpotByUser(params *SpotParams) (*Spot, error) {
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
+		TypeID:          params.SpotTypeID,
 		UserType:        SpotUserTypeUser,
 		UserID:          params.UserID,
 		Name:            params.Name,
@@ -68,6 +71,7 @@ func NewSpotByUser(params *SpotParams) (*Spot, error) {
 func NewSpotByAdmin(params *SpotParams) (*Spot, error) {
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
+		TypeID:          params.SpotTypeID,
 		UserType:        params.UserType,
 		UserID:          params.UserID,
 		Name:            params.Name,
@@ -92,6 +96,12 @@ func (c *Spot) Validate() error {
 		return errors.New("entity: latitude is invalid")
 	}
 	return nil
+}
+
+func (cs Spots) TypeIDs() []string {
+	return set.UniqBy(cs, func(c *Spot) string {
+		return c.TypeID
+	})
 }
 
 func (cs Spots) UserIDs() []string {

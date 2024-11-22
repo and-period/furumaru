@@ -67,12 +67,28 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	if len(sspots) == 0 {
+		res := &response.SpotsResponse{
+			Spots:     []*response.Spot{},
+			SpotTypes: []*response.SpotType{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
 	spotsMap := sspots.GroupByUserType()
 
-	var mu sync.Mutex
+	var (
+		mu        sync.Mutex
+		spotTypes service.SpotTypes
+	)
 	spots := make(service.Spots, 0, len(sspots))
 
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		spotTypes, err = h.multiGetSpotTypes(ectx, sspots.TypeIDs())
+		return
+	})
 	eg.Go(func() error {
 		sspots := spotsMap[sentity.SpotUserTypeUser]
 		users, err := h.multiGetUsers(ectx, sspots.UserIDs())
@@ -112,7 +128,8 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	}
 
 	res := &response.SpotsResponse{
-		Spots: spots.Response(),
+		Spots:     spots.Response(),
+		SpotTypes: spotTypes.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -123,8 +140,14 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	spotType, err := h.getSpotType(ctx, spot.TypeID)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		h.httpError(ctx, err)
+		return
+	}
 	res := &response.SpotResponse{
-		Spot: spot.Response(),
+		Spot:     spot.Response(),
+		SpotType: spotType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -140,7 +163,13 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	spotType, err := h.getSpotType(ctx, req.TypeID)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		h.httpError(ctx, err)
+		return
+	}
 	in := &store.CreateSpotByUserInput{
+		TypeID:       req.TypeID,
 		UserID:       user.ID,
 		Name:         req.Name,
 		Description:  req.Description,
@@ -154,7 +183,8 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		return
 	}
 	res := &response.SpotResponse{
-		Spot: service.NewSpotByUser(spot, user).Response(),
+		Spot:     service.NewSpotByUser(spot, user).Response(),
+		SpotType: spotType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

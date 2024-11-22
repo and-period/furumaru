@@ -19,6 +19,12 @@ import {
     SpotFromJSONTyped,
     SpotToJSON,
 } from './Spot';
+import type { SpotType } from './SpotType';
+import {
+    SpotTypeFromJSON,
+    SpotTypeFromJSONTyped,
+    SpotTypeToJSON,
+} from './SpotType';
 
 /**
  * 
@@ -32,6 +38,12 @@ export interface SpotResponse {
      * @memberof SpotResponse
      */
     spot: Spot;
+    /**
+     * 
+     * @type {SpotType}
+     * @memberof SpotResponse
+     */
+    spotType: SpotType;
 }
 
 /**
@@ -39,6 +51,7 @@ export interface SpotResponse {
  */
 export function instanceOfSpotResponse(value: object): value is SpotResponse {
     if (!('spot' in value) || value['spot'] === undefined) return false;
+    if (!('spotType' in value) || value['spotType'] === undefined) return false;
     return true;
 }
 
@@ -53,6 +66,7 @@ export function SpotResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         
         'spot': SpotFromJSON(json['spot']),
+        'spotType': SpotTypeFromJSON(json['spotType']),
     };
 }
 
@@ -63,6 +77,7 @@ export function SpotResponseToJSON(value?: SpotResponse | null): any {
     return {
         
         'spot': SpotToJSON(value['spot']),
+        'spotType': SpotTypeToJSON(value['spotType']),
     };
 }
 

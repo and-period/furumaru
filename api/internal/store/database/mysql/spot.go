@@ -28,6 +28,9 @@ func newSpot(db *mysql.Client) database.Spot {
 type listSpotsParams database.ListSpotsParams
 
 func (p listSpotsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if len(p.SpotTypeIDs) > 0 {
+		stmt = stmt.Where("spot_type_id IN (?)", p.SpotTypeIDs)
+	}
 	if p.Name != "" {
 		stmt = stmt.Where("MATCH (`name`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
@@ -84,6 +87,9 @@ func (s *spot) ListByGeolocation(
 
 	stmt := s.db.Statement(ctx, s.db.DB, spotTable, fields...).
 		Where(distance, params.Latitude, params.Latitude, params.Longitude, params.Radius)
+	if len(params.SpotTypeIDs) > 0 {
+		stmt = stmt.Where("spot_type_id IN (?)", params.SpotTypeIDs)
+	}
 	if params.ExcludeDisabled {
 		stmt = stmt.Where("approved = ?", true)
 	}
@@ -120,6 +126,7 @@ func (s *spot) Create(ctx context.Context, spot *entity.Spot) error {
 
 func (s *spot) Update(ctx context.Context, spotID string, params *database.UpdateSpotParams) error {
 	updates := map[string]interface{}{
+		"spot_type_id":  params.SpotTypeID,
 		"name":          params.Name,
 		"description":   params.Description,
 		"thumbnail_url": params.ThumbnailURL,

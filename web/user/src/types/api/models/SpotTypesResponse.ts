@@ -13,12 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { Spot } from './Spot';
-import {
-    SpotFromJSON,
-    SpotFromJSONTyped,
-    SpotToJSON,
-} from './Spot';
 import type { SpotType } from './SpotType';
 import {
     SpotTypeFromJSON,
@@ -29,55 +23,55 @@ import {
 /**
  * 
  * @export
- * @interface SpotsResponse
+ * @interface SpotTypesResponse
  */
-export interface SpotsResponse {
-    /**
-     * スポット一覧
-     * @type {Array<Spot>}
-     * @memberof SpotsResponse
-     */
-    spots: Array<Spot>;
+export interface SpotTypesResponse {
     /**
      * スポット種別一覧
      * @type {Array<SpotType>}
-     * @memberof SpotsResponse
+     * @memberof SpotTypesResponse
      */
     spotTypes: Array<SpotType>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof SpotTypesResponse
+     */
+    total: number;
 }
 
 /**
- * Check if a given object implements the SpotsResponse interface.
+ * Check if a given object implements the SpotTypesResponse interface.
  */
-export function instanceOfSpotsResponse(value: object): value is SpotsResponse {
-    if (!('spots' in value) || value['spots'] === undefined) return false;
+export function instanceOfSpotTypesResponse(value: object): value is SpotTypesResponse {
     if (!('spotTypes' in value) || value['spotTypes'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
-export function SpotsResponseFromJSON(json: any): SpotsResponse {
-    return SpotsResponseFromJSONTyped(json, false);
+export function SpotTypesResponseFromJSON(json: any): SpotTypesResponse {
+    return SpotTypesResponseFromJSONTyped(json, false);
 }
 
-export function SpotsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SpotsResponse {
+export function SpotTypesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SpotTypesResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'spots': ((json['spots'] as Array<any>).map(SpotFromJSON)),
         'spotTypes': ((json['spotTypes'] as Array<any>).map(SpotTypeFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function SpotsResponseToJSON(value?: SpotsResponse | null): any {
+export function SpotTypesResponseToJSON(value?: SpotTypesResponse | null): any {
     if (value == null) {
         return value;
     }
     return {
         
-        'spots': ((value['spots'] as Array<any>).map(SpotToJSON)),
         'spotTypes': ((value['spotTypes'] as Array<any>).map(SpotTypeToJSON)),
+        'total': value['total'],
     };
 }
 

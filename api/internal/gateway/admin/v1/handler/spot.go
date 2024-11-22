@@ -77,6 +77,7 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	if len(spots) == 0 {
 		res := &response.SpotsResponse{
 			Spots:        []*response.Spot{},
+			SpotTypes:    []*response.SpotType{},
 			Users:        []*response.User{},
 			Coordinators: []*response.Coordinator{},
 			Producers:    []*response.Producer{},

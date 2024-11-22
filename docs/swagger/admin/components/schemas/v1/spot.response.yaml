@@ -3,6 +3,8 @@ spotResponse:
   properties:
     spot:
       $ref: './../../../openapi.yaml#/components/schemas/spot'
+    spotType:
+      $ref: './../../../openapi.yaml#/components/schemas/spotType'
     user:
       $ref: './../../../openapi.yaml#/components/schemas/user'
     coordinator:
@@ -11,12 +13,14 @@ spotResponse:
       $ref: './../../../openapi.yaml#/components/schemas/producer'
   required:
   - spot
+  - spotType
   - user
   - coordinator
   - producer
   example:
     spot:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
+      spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       userType: 1
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '東京タワー'
@@ -27,6 +31,11 @@ spotResponse:
       approved: true
       createdAt: 1614556800
       updatedAt: 1614556800
+    spotType:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも堀り'
+      createdAt: 1640962800
+      updatedAt: 1640962800
     user:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 3
@@ -105,6 +114,11 @@ spotsResponse:
       description: スポット一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/spot'
+    spotTypes:
+      type: array
+      description: スポット種別一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/spotType'
     users:
       type: array
       description: ユーザ一覧
@@ -126,6 +140,7 @@ spotsResponse:
       description: 合計数
   required:
   - spots
+  - spotTypes
   - users
   - coordinators
   - producers
@@ -133,6 +148,7 @@ spotsResponse:
   example:
     spots:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       userType: 1
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '東京タワー'
@@ -143,6 +159,11 @@ spotsResponse:
       approved: true
       createdAt: 1614556800
       updatedAt: 1614556800
+    spotTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも堀り'
+      createdAt: 1640962800
+      updatedAt: 1640962800
     users:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 3
