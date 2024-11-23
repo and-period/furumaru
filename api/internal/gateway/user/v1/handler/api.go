@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
@@ -171,7 +170,6 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
 	h.reportError(ctx, err, res)
-	h.filterResponse(res)
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
@@ -190,14 +188,6 @@ func (h *handler) forbidden(ctx *gin.Context, err error) {
 
 func (h *handler) notFound(ctx *gin.Context, err error) {
 	h.httpError(ctx, status.Error(codes.NotFound, err.Error()))
-}
-
-func (h *handler) filterResponse(res *util.ErrorResponse) {
-	if res == nil || !strings.Contains(h.env, "prd") {
-		return
-	}
-	// 本番環境の場合、エラーメッセージは返却しない
-	res.Detail = ""
 }
 
 func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorResponse) {
