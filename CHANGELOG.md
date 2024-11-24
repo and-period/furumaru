@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.1.1](https://github.com/and-period/furumaru/compare/v3.1.0...v3.1.1) - 2024-11-24
+- fix: 位置情報取得クライアントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2517
+- feat: 画像加工時の背景を透過させるように by @taba2424 in https://github.com/and-period/furumaru/pull/2519
+
 ## [v3.1.0](https://github.com/and-period/furumaru/compare/v3.0.8...v3.1.0) - 2024-11-24
 - build(deps): bump the dependencies group in /api with 45 updates by @dependabot in https://github.com/and-period/furumaru/pull/2496
 - feat(api): スポット関連APIの定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2499
