@@ -1,5 +1,25 @@
 # Changelog
 
+## [v3.1.0](https://github.com/and-period/furumaru/compare/v3.0.8...v3.1.0) - 2024-11-24
+- build(deps): bump the dependencies group in /api with 45 updates by @dependabot in https://github.com/and-period/furumaru/pull/2496
+- feat(api): スポット関連APIの定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2499
+- feat(store): スポット関連のビジネスロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2501
+- fix(media): MediaStore廃止にあたってライブ配信用のURLを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2502
+- feat(store): スポット操作の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2503
+- feat(admin): 管理者側のスポットAPIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2504
+- feat(user): ユーザー側のスポットAPI実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2505
+- fix(media): 配信エンドポイントの指定を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2506
+- fix(docs): APIドキュメントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2507
+- Feat/sns share by @hamachans in https://github.com/and-period/furumaru/pull/2493
+- Feat/sns share by @hamachans in https://github.com/and-period/furumaru/pull/2508
+- chore: MediaStore廃止に合わせた構成変更に伴い、StepFunctionsを修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2509
+- build(deps): bump cross-spawn from 7.0.5 to 7.0.6 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2510
+- build(deps): bump the dependencies group in /api with 40 updates by @dependabot in https://github.com/and-period/furumaru/pull/2513
+- build(deps): bump codecov/codecov-action from 4 to 5 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2511
+- fix: 商品一覧の表示をobject-containに変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2514
+- feat(store): スポット種別の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2515
+- fix(api): 500エラー時に本番環境でもレスポンスを返すように by @taba2424 in https://github.com/and-period/furumaru/pull/2516
+
 ## [v3.0.8](https://github.com/and-period/furumaru/compare/v3.0.7...v3.0.8) - 2024-11-13
 - build(deps): bump cross-spawn from 7.0.3 to 7.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2494
 - setup: 本番環境向けのGoogle Tag Managerを仕込む by @wf-yamaday in https://github.com/and-period/furumaru/pull/2497
