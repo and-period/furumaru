@@ -17,6 +17,7 @@ import sharp, { ResizeOptions, RGBA, Color } from 'sharp';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const cacheControl = 'max-age=0,s-maxage=2592000'; // 30 days
+const defaultBgColor: Color = { r: 0, g: 0, b: 0, alpha: 0 };
 
 /**
  * Lambda@Edgeを利用して画像オブジェクトが存在するかを確認し、必要に応じて画像リサイズを実行する
@@ -223,7 +224,7 @@ function getImageOptions(params: querystring.ParsedUrlQuery): ConvertOptions {
   const { width, height, format, fit, blur, dpr, bg_color } = params;
 
   const options: ConvertOptions = {
-    bgColor: '0,0,0,0', // 透過背景
+    bgColor: defaultBgColor,
   };
   if (width && Number(width) > 0) {
     options.width = Number(width);
@@ -251,11 +252,22 @@ function getImageOptions(params: querystring.ParsedUrlQuery): ConvertOptions {
 }
 
 // RGBAの背景色を取得
-function getBackgroundColor(color: string): Color {
+function getBackgroundColor(color: string): Color | undefined {
   const strs: string[] = color.split(',');
   if (strs.length < 3) {
     return color;
   }
+
+  // バリデーション検証
+  if (strs.slice(0, 3).some((v): boolean => Number(v) < 0 || 255 < Number(v))) {
+    console.log(`invalid rgba range. color='${color}'`);
+    return defaultBgColor;
+  }
+  if (strs.length > 3 && (Number(strs[3]) < 0 || 1 < Number(strs[3]))) {
+    console.log(`invalid alpha range. color='${color}'`);
+    return defaultBgColor;
+  }
+
   const rgba: RGBA = {
     r: Number(strs[0]),
     g: Number(strs[1]),
