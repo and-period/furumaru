@@ -7,7 +7,7 @@ provider:
   runtime: nodejs18.x
   account: ${self:custom.envMap.${self:provider.stage}.accountId}
   stage: ${opt:stage, self:custom.defaultStage}
-  region: ${self:custom.envMap.${self:provider.stage}.region}
+  region: ap-northeast-1
   vpc:
     securityGroupIds: ${self:custom.envMap.${self:provider.stage}.vpc.securityGroups}
     subnetIds: ${self:custom.envMap.${self:provider.stage}.vpc.subnetIds}
