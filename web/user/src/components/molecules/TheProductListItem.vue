@@ -118,6 +118,7 @@ const handleClickAddCartButton = () => {
                 :alt="itemThumbnailAlt"
                 fit="contain"
                 sizes="180px md:250px"
+                format="png"
                 class="w-full h-full object-contain"
               />
             </picture>
