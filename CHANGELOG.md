@@ -1,5 +1,10 @@
 # Changelog
 
+## [v3.1.2](https://github.com/and-period/furumaru/compare/v3.1.1...v3.1.2) - 2024-11-27
+- feat(serverless): regionを直で指定する by @sea-kai in https://github.com/and-period/furumaru/pull/2520
+- Upgrade serveless v4 by @sea-kai in https://github.com/and-period/furumaru/pull/2522
+- fix(store): プロモーション公開日時を埋める処理を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2523
+
 ## [v3.1.1](https://github.com/and-period/furumaru/compare/v3.1.0...v3.1.1) - 2024-11-24
 - fix: 位置情報取得クライアントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2517
 - feat: 画像加工時の背景を透過させるように by @taba2424 in https://github.com/and-period/furumaru/pull/2519
