@@ -359,6 +359,7 @@ func TestGetPromotionByCode(t *testing.T) {
 func TestCreatePromotion(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 8, 1, 0, 0, 0, 0)
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -377,6 +378,7 @@ func TestCreatePromotion(t *testing.T) {
 							Title:        "プロモーションタイトル",
 							Description:  "プロモーションの詳細です。",
 							Public:       true,
+							PublishedAt:  now,
 							DiscountType: entity.DiscountTypeRate,
 							DiscountRate: 10,
 							Code:         "excode01",
@@ -432,17 +434,19 @@ func TestCreatePromotion(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreatePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 
 func TestUpdatePromotion(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 8, 1, 0, 0, 0, 0)
 	params := &database.UpdatePromotionParams{
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
+		PublishedAt:  now,
 		DiscountType: entity.DiscountTypeRate,
 		DiscountRate: 10,
 		Code:         "excode01",
@@ -508,7 +512,7 @@ func TestUpdatePromotion(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdatePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 

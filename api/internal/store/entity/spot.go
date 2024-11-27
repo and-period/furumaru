@@ -29,6 +29,11 @@ type Spot struct {
 	ThumbnailURL    string       `gorm:""`                                 // サムネイル画像URL
 	Longitude       float64      `gorm:""`                                 // 座標情報:経度
 	Latitude        float64      `gorm:""`                                 // 座標情報:緯度
+	PostalCode      string       `gorm:""`                                 // 郵便番号
+	Prefecture      string       `gorm:""`                                 // 都道府県
+	City            string       `gorm:""`                                 // 市区町村
+	AddressLine1    string       `gorm:""`                                 // 町名・番地
+	AddressLine2    string       `gorm:""`                                 // ビル名・号室など
 	Approved        bool         `gorm:""`                                 // 承認フラグ
 	ApprovedAdminID string       `gorm:""`                                 // 承認した管理者ID
 	CreatedAt       time.Time    `gorm:"<-:create"`                        // 登録日時

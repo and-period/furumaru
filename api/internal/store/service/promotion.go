@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -119,10 +120,16 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+	// TODO: クライアントから受け取るように
+	var publishedAt time.Time
+	if in.Public {
+		publishedAt = s.now()
+	}
 	params := &entity.NewPromotionParams{
 		Title:        in.Title,
 		Description:  in.Description,
 		Public:       in.Public,
+		PublishedAt:  publishedAt,
 		DiscountType: in.DiscountType,
 		DiscountRate: in.DiscountRate,
 		Code:         in.Code,
@@ -144,10 +151,16 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	// TODO: クライアントから受け取るように
+	var publishedAt time.Time
+	if in.Public {
+		publishedAt = s.now()
+	}
 	params := &database.UpdatePromotionParams{
 		Title:        in.Title,
 		Description:  in.Description,
 		Public:       in.Public,
+		PublishedAt:  publishedAt,
 		DiscountType: in.DiscountType,
 		DiscountRate: in.DiscountRate,
 		Code:         in.Code,
