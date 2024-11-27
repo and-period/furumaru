@@ -2,8 +2,10 @@ package entity
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
@@ -30,7 +32,8 @@ type Spot struct {
 	Longitude       float64      `gorm:""`                                 // 座標情報:経度
 	Latitude        float64      `gorm:""`                                 // 座標情報:緯度
 	PostalCode      string       `gorm:""`                                 // 郵便番号
-	Prefecture      string       `gorm:""`                                 // 都道府県
+	Prefecture      string       `gorm:"-"`                                // 都道府県
+	PrefectureCode  int32        `gorm:"column:prefecture"`                // 都道府県コード
 	City            string       `gorm:""`                                 // 市区町村
 	AddressLine1    string       `gorm:""`                                 // 町名・番地
 	AddressLine2    string       `gorm:""`                                 // ビル名・号室など
@@ -51,9 +54,18 @@ type SpotParams struct {
 	ThumbnailURL string
 	Longitude    float64
 	Latitude     float64
+	PostalCode   string
+	Prefecture   string
+	City         string
+	AddressLine1 string
+	AddressLine2 string
 }
 
 func NewSpotByUser(params *SpotParams) (*Spot, error) {
+	prefectureCode, err := codes.ToPrefectureValue(params.Prefecture)
+	if err != nil {
+		return nil, fmt.Errorf("entity: invalid prefecture name: %w", err)
+	}
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
 		TypeID:          params.SpotTypeID,
@@ -66,6 +78,12 @@ func NewSpotByUser(params *SpotParams) (*Spot, error) {
 		ApprovedAdminID: "",
 		Longitude:       params.Longitude,
 		Latitude:        params.Latitude,
+		PostalCode:      params.PostalCode,
+		Prefecture:      params.Prefecture,
+		PrefectureCode:  prefectureCode,
+		City:            params.City,
+		AddressLine1:    params.AddressLine1,
+		AddressLine2:    params.AddressLine2,
 	}
 	if err := res.Validate(); err != nil {
 		return nil, err
@@ -74,6 +92,10 @@ func NewSpotByUser(params *SpotParams) (*Spot, error) {
 }
 
 func NewSpotByAdmin(params *SpotParams) (*Spot, error) {
+	prefectureCode, err := codes.ToPrefectureValue(params.Prefecture)
+	if err != nil {
+		return nil, fmt.Errorf("entity: invalid prefecture name: %w", err)
+	}
 	res := &Spot{
 		ID:              uuid.Base58Encode(uuid.New()),
 		TypeID:          params.SpotTypeID,
@@ -86,6 +108,12 @@ func NewSpotByAdmin(params *SpotParams) (*Spot, error) {
 		ApprovedAdminID: params.UserID,
 		Longitude:       params.Longitude,
 		Latitude:        params.Latitude,
+		PostalCode:      params.PostalCode,
+		Prefecture:      params.Prefecture,
+		PrefectureCode:  prefectureCode,
+		City:            params.City,
+		AddressLine1:    params.AddressLine1,
+		AddressLine2:    params.AddressLine2,
 	}
 	if err := res.Validate(); err != nil {
 		return nil, err
@@ -103,6 +131,11 @@ func (c *Spot) Validate() error {
 	return nil
 }
 
+func (c *Spot) Fill() (err error) {
+	c.Prefecture, err = codes.ToPrefectureJapanese(c.PrefectureCode)
+	return
+}
+
 func (cs Spots) TypeIDs() []string {
 	return set.UniqBy(cs, func(c *Spot) string {
 		return c.TypeID
@@ -113,6 +146,15 @@ func (cs Spots) UserIDs() []string {
 	return set.UniqBy(cs, func(c *Spot) string {
 		return c.UserID
 	})
+}
+
+func (cs Spots) Fill() error {
+	for _, c := range cs {
+		if err := c.Fill(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (cs Spots) GroupByUserType() map[SpotUserType]Spots {

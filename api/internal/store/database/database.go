@@ -503,12 +503,17 @@ type ListSpotsByGeolocationParams struct {
 }
 
 type UpdateSpotParams struct {
-	SpotTypeID   string
-	Name         string
-	Description  string
-	ThumbnailURL string
-	Longitude    float64
-	Latitude     float64
+	SpotTypeID     string
+	Name           string
+	Description    string
+	ThumbnailURL   string
+	Longitude      float64
+	Latitude       float64
+	PostalCode     string
+	PrefectureCode int32
+	City           string
+	AddressLine1   string
+	AddressLine2   string
 }
 
 type ApproveSpotParams struct {

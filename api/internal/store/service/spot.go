@@ -5,12 +5,14 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -80,6 +82,14 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 	if err != nil {
 		return nil, internalError(err)
 	}
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+	address, err := s.geolocation.GetAddress(ctx, addressIn)
+	if err != nil {
+		return nil, internalError(err)
+	}
 	params := &entity.SpotParams{
 		UserID:       in.UserID,
 		SpotTypeID:   in.TypeID,
@@ -88,6 +98,11 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 		ThumbnailURL: in.ThumbnailURL,
 		Longitude:    in.Longitude,
 		Latitude:     in.Latitude,
+		PostalCode:   address.PostalCode,
+		Prefecture:   address.Prefecture,
+		City:         address.City,
+		AddressLine1: address.AddressLine1,
+		AddressLine2: address.AddressLine2,
 	}
 	spot, err := entity.NewSpotByUser(params)
 	if err != nil {
@@ -120,7 +135,6 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 	if err != nil {
 		return nil, internalError(err)
 	}
-
 	var userType entity.SpotUserType
 	switch admin.Role {
 	case uentity.AdminRoleCoordinator:
@@ -129,6 +143,14 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 		userType = entity.SpotUserTypeProducer
 	default:
 		return nil, fmt.Errorf("service: unsupported role: %w", exception.ErrFailedPrecondition)
+	}
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+	address, err := s.geolocation.GetAddress(ctx, addressIn)
+	if err != nil {
+		return nil, internalError(err)
 	}
 
 	params := &entity.SpotParams{
@@ -140,6 +162,11 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 		ThumbnailURL: in.ThumbnailURL,
 		Longitude:    in.Longitude,
 		Latitude:     in.Latitude,
+		PostalCode:   address.PostalCode,
+		Prefecture:   address.Prefecture,
+		City:         address.City,
+		AddressLine1: address.AddressLine1,
+		AddressLine2: address.AddressLine2,
 	}
 	spot, err := entity.NewSpotByAdmin(params)
 	if err != nil {
@@ -162,13 +189,30 @@ func (s *service) UpdateSpot(ctx context.Context, in *store.UpdateSpotInput) err
 	if err != nil {
 		return internalError(err)
 	}
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: in.Longitude,
+		Latitude:  in.Latitude,
+	}
+	address, err := s.geolocation.GetAddress(ctx, addressIn)
+	if err != nil {
+		return internalError(err)
+	}
+	prefectureCode, err := codes.ToPrefectureValue(address.Prefecture)
+	if err != nil {
+		return fmt.Errorf("service: invalid prefecture: %w", exception.ErrInvalidArgument)
+	}
 	params := &database.UpdateSpotParams{
-		SpotTypeID:   in.TypeID,
-		Name:         in.Name,
-		Description:  in.Description,
-		ThumbnailURL: in.ThumbnailURL,
-		Longitude:    in.Longitude,
-		Latitude:     in.Latitude,
+		SpotTypeID:     in.TypeID,
+		Name:           in.Name,
+		Description:    in.Description,
+		ThumbnailURL:   in.ThumbnailURL,
+		Longitude:      in.Longitude,
+		Latitude:       in.Latitude,
+		PostalCode:     address.PostalCode,
+		PrefectureCode: prefectureCode,
+		City:           address.City,
+		AddressLine1:   address.AddressLine1,
+		AddressLine2:   address.AddressLine2,
 	}
 	err = s.db.Spot.Update(ctx, in.SpotID, params)
 	return internalError(err)

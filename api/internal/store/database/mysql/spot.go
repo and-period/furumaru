@@ -65,8 +65,13 @@ func (s *spot) List(ctx context.Context, params *database.ListSpotsParams, field
 	stmt = prm.stmt(stmt)
 	stmt = prm.pagination(stmt)
 
-	err := stmt.Find(&spots).Error
-	return spots, dbError(err)
+	if err := stmt.Find(&spots).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := spots.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return spots, nil
 }
 
 func (s *spot) ListByGeolocation(
@@ -94,8 +99,13 @@ func (s *spot) ListByGeolocation(
 		stmt = stmt.Where("approved = ?", true)
 	}
 
-	err := stmt.Find(&spots).Error
-	return spots, dbError(err)
+	if err := stmt.Find(&spots).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := spots.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return spots, nil
 }
 
 func (s *spot) Count(ctx context.Context, params *database.ListSpotsParams) (int64, error) {
@@ -111,6 +121,9 @@ func (s *spot) Get(ctx context.Context, spotID string, fields ...string) (*entit
 	stmt := s.db.Statement(ctx, s.db.DB, spotTable, fields...).Where("id = ?", spotID)
 
 	if err := stmt.First(&spot).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := spot.Fill(); err != nil {
 		return nil, dbError(err)
 	}
 	return spot, nil
@@ -132,6 +145,11 @@ func (s *spot) Update(ctx context.Context, spotID string, params *database.Updat
 		"thumbnail_url": params.ThumbnailURL,
 		"longitude":     params.Longitude,
 		"latitude":      params.Latitude,
+		"postal_code":   params.PostalCode,
+		"prefecture":    params.PrefectureCode,
+		"city":          params.City,
+		"address_line1": params.AddressLine1,
+		"address_line2": params.AddressLine2,
 		"updated_at":    s.now(),
 	}
 	stmt := s.db.DB.WithContext(ctx).Table(spotTable).Where("id = ?", spotID)
