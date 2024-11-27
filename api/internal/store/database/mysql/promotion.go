@@ -124,7 +124,7 @@ func (p *promotion) Update(ctx context.Context, promotionID string, params *data
 		"title":         params.Title,
 		"description":   params.Description,
 		"public":        params.Public,
-		"published_at":  params.PublishedAt,
+		"published_at":  nil,
 		"discount_type": params.DiscountType,
 		"discount_rate": params.DiscountRate,
 		"code":          params.Code,
@@ -132,6 +132,9 @@ func (p *promotion) Update(ctx context.Context, promotionID string, params *data
 		"start_at":      params.StartAt,
 		"end_at":        params.EndAt,
 		"updated_at":    p.now(),
+	}
+	if !params.PublishedAt.IsZero() {
+		updates["published_at"] = params.PublishedAt
 	}
 	stmt := p.db.DB.WithContext(ctx).
 		Table(promotionTable).
