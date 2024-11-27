@@ -47,7 +47,7 @@ type Promotion struct {
 	Status       PromotionStatus   `gorm:"-"`                    // 状態
 	Title        string            `gorm:""`                     // タイトル
 	Description  string            `gorm:""`                     // 詳細説明
-	Public       bool              `gorm:""`                     // 公開フラグ
+	Public       bool              `gorm:""`                     // Deprecated: 公開フラグ
 	PublishedAt  time.Time         `gorm:"default:null"`         // 公開日時
 	DiscountType DiscountType      `gorm:""`                     // 割引計算方法
 	DiscountRate int64             `gorm:""`                     // 割引額(%/円)

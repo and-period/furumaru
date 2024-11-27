@@ -120,6 +120,7 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+	// TODO: クライアントから受け取るように
 	var publishedAt time.Time
 	if in.Public {
 		publishedAt = s.now()
@@ -150,6 +151,7 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	// TODO: クライアントから受け取るように
 	var publishedAt time.Time
 	if in.Public {
 		publishedAt = s.now()
