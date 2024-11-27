@@ -66,8 +66,13 @@ func (s *spot) List(ctx context.Context, params *database.ListSpotsParams, field
 	stmt = prm.stmt(stmt)
 	stmt = prm.pagination(stmt)
 
-	err := stmt.Find(&spots).Error
-	return spots, dbError(err)
+	if err := stmt.Find(&spots).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := spots.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return spots, nil
 }
 
 func (s *spot) Count(ctx context.Context, params *database.ListSpotsParams) (int64, error) {

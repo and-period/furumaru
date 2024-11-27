@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -39,6 +40,12 @@ func TestListSpots(t *testing.T) {
 			ThumbnailURL:    "https://example.com/thumbnail.jpg",
 			Longitude:       139.74545,
 			Latitude:        35.65861,
+			PostalCode:      "100-0001",
+			Prefecture:      "東京都",
+			PrefectureCode:  13,
+			City:            "千代田区",
+			AddressLine1:    "千代田1-1",
+			AddressLine2:    "",
 			Approved:        true,
 			ApprovedAdminID: "admin-id",
 			CreatedAt:       now,
@@ -148,6 +155,12 @@ func TestListSpotsByGeolocation(t *testing.T) {
 			ThumbnailURL:    "https://example.com/thumbnail.jpg",
 			Longitude:       139.74545,
 			Latitude:        35.65861,
+			PostalCode:      "100-0001",
+			Prefecture:      "東京都",
+			PrefectureCode:  13,
+			City:            "千代田区",
+			AddressLine1:    "千代田1-1",
+			AddressLine2:    "",
 			Approved:        true,
 			ApprovedAdminID: "admin-id",
 			CreatedAt:       now,
@@ -224,6 +237,12 @@ func TestGetSpot(t *testing.T) {
 		ThumbnailURL:    "https://example.com/thumbnail.jpg",
 		Longitude:       139.74545,
 		Latitude:        35.65861,
+		PostalCode:      "100-0001",
+		Prefecture:      "東京都",
+		PrefectureCode:  13,
+		City:            "千代田区",
+		AddressLine1:    "千代田1-1",
+		AddressLine2:    "",
 		Approved:        true,
 		ApprovedAdminID: "admin-id",
 		CreatedAt:       now,
@@ -281,6 +300,19 @@ func TestCreateSpotByUser(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: 139.74545,
+		Latitude:  35.65861,
+	}
+	addressOut := &geolocation.GetAddressOutput{
+		Address: &geolocation.Address{
+			PostalCode:   "100-0001",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "千代田1-1",
+			AddressLine2: "",
+		},
+	}
 	spotType := &entity.SpotType{
 		ID:        "type-id",
 		Name:      "観光地",
@@ -298,6 +330,7 @@ func TestCreateSpotByUser(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, spot *entity.Spot) error {
@@ -311,6 +344,12 @@ func TestCreateSpotByUser(t *testing.T) {
 							ThumbnailURL:    "https://example.com/thumbnail.jpg",
 							Longitude:       139.74545,
 							Latitude:        35.65861,
+							PostalCode:      "100-0001",
+							Prefecture:      "東京都",
+							PrefectureCode:  13,
+							City:            "千代田区",
+							AddressLine1:    "千代田1-1",
+							AddressLine2:    "",
 							Approved:        true,
 							ApprovedAdminID: "",
 						}
@@ -368,9 +407,27 @@ func TestCreateSpotByUser(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to get address",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreateSpotByUserInput{
+				TypeID:       "type-id",
+				UserID:       "user-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateSpotByUserInput{
@@ -413,6 +470,19 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			Role: role,
 		}
 	}
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: 139.74545,
+		Latitude:  35.65861,
+	}
+	addressOut := &geolocation.GetAddressOutput{
+		Address: &geolocation.Address{
+			PostalCode:   "100-0001",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "千代田1-1",
+			AddressLine2: "",
+		},
+	}
 
 	tests := []struct {
 		name      string
@@ -425,6 +495,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, spot *entity.Spot) error {
@@ -438,6 +509,12 @@ func TestCreateSpotByAdmin(t *testing.T) {
 							ThumbnailURL:    "https://example.com/thumbnail.jpg",
 							Longitude:       139.74545,
 							Latitude:        35.65861,
+							PostalCode:      "100-0001",
+							Prefecture:      "東京都",
+							PrefectureCode:  13,
+							City:            "千代田区",
+							AddressLine1:    "千代田1-1",
+							AddressLine2:    "",
 							Approved:        true,
 							ApprovedAdminID: "admin-id",
 						}
@@ -546,10 +623,29 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
+			name: "failed to get address",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreateSpotByAdminInput{
+				TypeID:       "type-id",
+				AdminID:      "admin-id",
+				Name:         "東京タワー",
+				Description:  "東京タワーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.74545,
+				Latitude:     35.65861,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{
@@ -583,13 +679,31 @@ func TestUpdateSpot(t *testing.T) {
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
+	addressIn := &geolocation.GetAddressInput{
+		Longitude: 139.81083,
+		Latitude:  35.71014,
+	}
+	addressOut := &geolocation.GetAddressOutput{
+		Address: &geolocation.Address{
+			PostalCode:   "100-0001",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "千代田1-1",
+			AddressLine2: "",
+		},
+	}
 	params := &database.UpdateSpotParams{
-		SpotTypeID:   "type-id",
-		Name:         "東京スカイツリー",
-		Description:  "東京スカイツリーの説明",
-		ThumbnailURL: "https://example.com/thumbnail.jpg",
-		Longitude:    139.81083,
-		Latitude:     35.71014,
+		SpotTypeID:     "type-id",
+		Name:           "東京スカイツリー",
+		Description:    "東京スカイツリーの説明",
+		ThumbnailURL:   "https://example.com/thumbnail.jpg",
+		Longitude:      139.81083,
+		Latitude:       35.71014,
+		PostalCode:     "100-0001",
+		PrefectureCode: 13,
+		City:           "千代田区",
+		AddressLine1:   "千代田1-1",
+		AddressLine2:   "",
 	}
 
 	tests := []struct {
@@ -602,6 +716,7 @@ func TestUpdateSpot(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Update(ctx, "spot-id", params).Return(nil)
 			},
 			input: &store.UpdateSpotInput{
@@ -622,7 +737,7 @@ func TestUpdateSpot(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to update spot",
+			name: "not found spot type",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(nil, database.ErrNotFound)
 			},
@@ -654,9 +769,27 @@ func TestUpdateSpot(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to get addresss",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(nil, assert.AnError)
+			},
+			input: &store.UpdateSpotInput{
+				TypeID:       "type-id",
+				SpotID:       "spot-id",
+				Name:         "東京スカイツリー",
+				Description:  "東京スカイツリーの説明",
+				ThumbnailURL: "https://example.com/thumbnail.jpg",
+				Longitude:    139.81083,
+				Latitude:     35.71014,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to update spot",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
+				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Update(ctx, "spot-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateSpotInput{
