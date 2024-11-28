@@ -18,6 +18,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.34.0
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.1
 	github.com/casbin/casbin/v2 v2.101.0
+	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/dlclark/regexp2 v1.11.4
 	github.com/getsentry/sentry-go v0.29.1
 	github.com/gin-contrib/gzip v0.0.6
