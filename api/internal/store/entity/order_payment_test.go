@@ -403,7 +403,6 @@ func TestProductOrderPayment(t *testing.T) {
 					Title:        "プロモーションタイトル",
 					Description:  "プロモーションの詳細です。",
 					Public:       true,
-					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
 					DiscountType: DiscountTypeRate,
 					DiscountRate: 10,
 					Code:         "excode01",

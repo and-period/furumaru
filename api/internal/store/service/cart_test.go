@@ -351,7 +351,6 @@ func TestCalcCart(t *testing.T) {
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
-		PublishedAt:  now.AddDate(0, -1, 0),
 		DiscountType: entity.DiscountTypeRate,
 		DiscountRate: 10,
 		Code:         "code1234",

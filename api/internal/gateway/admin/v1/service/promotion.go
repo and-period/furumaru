@@ -94,7 +94,6 @@ func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrder
 			Description:  promotion.Description,
 			Status:       NewPromotionStatus(promotion.Status).Response(),
 			Public:       promotion.Public,
-			PublishedAt:  promotion.PublishedAt.Unix(),
 			DiscountType: NewDiscountType(promotion.DiscountType).Response(),
 			DiscountRate: promotion.DiscountRate,
 			Code:         promotion.Code,

@@ -405,7 +405,6 @@ type UpdatePromotionParams struct {
 	Title        string
 	Description  string
 	Public       bool
-	PublishedAt  time.Time
 	DiscountType entity.DiscountType
 	DiscountRate int64
 	Code         string
