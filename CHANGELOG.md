@@ -1,5 +1,14 @@
 # Changelog
 
+## [v3.1.3](https://github.com/and-period/furumaru/compare/v3.1.2...v3.1.3) - 2024-11-28
+- feat(store): スポット住所を管理できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2527
+- feat(store): TiDB用のDDL追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2529
+- build(deps): bump the dependencies group in /api with 10 updates by @dependabot in https://github.com/and-period/furumaru/pull/2524
+- fix(store): 都道府県数をカウントしている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2530
+- fix: リサイズ画像の取得でpngを指定するように改善 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2526
+- fix(store): 未使用項目を削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2531
+- fix(mysql): ErrBadConnエラー時にリトライするように by @taba2424 in https://github.com/and-period/furumaru/pull/2532
+
 ## [v3.1.2](https://github.com/and-period/furumaru/compare/v3.1.1...v3.1.2) - 2024-11-27
 - feat(serverless): regionを直で指定する by @sea-kai in https://github.com/and-period/furumaru/pull/2520
 - Upgrade serveless v4 by @sea-kai in https://github.com/and-period/furumaru/pull/2522
