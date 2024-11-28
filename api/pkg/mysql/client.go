@@ -3,10 +3,12 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	dmysql "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -16,7 +18,8 @@ import (
 
 // Client - DB操作用のクライアント構造体
 type Client struct {
-	DB *gorm.DB
+	DB         *gorm.DB
+	maxRetries uint64
 }
 
 type Params struct {
@@ -37,6 +40,7 @@ type options struct {
 	enabledTLS           bool
 	allowNativePasswords bool
 	maxAllowedPacket     int
+	maxRetries           int
 }
 
 type Option func(opts *options)
@@ -89,6 +93,12 @@ func WithMaxAllowedPacket(size int) Option {
 	}
 }
 
+func WithMaxRetries(retries int) Option {
+	return func(opts *options) {
+		opts.maxRetries = retries
+	}
+}
+
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
@@ -100,6 +110,7 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 		enabledTLS:           false,
 		allowNativePasswords: true,
 		maxAllowedPacket:     4194304, // 4MiB
+		maxRetries:           3,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -112,7 +123,8 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 	}
 
 	c := &Client{
-		DB: db,
+		DB:         db,
+		maxRetries: uint64(dopts.maxRetries),
 	}
 	return c, nil
 }
@@ -137,23 +149,29 @@ func (c *Client) Close(tx *gorm.DB) func() {
 
 // Transaction - トランザクション処理
 func (c *Client) Transaction(ctx context.Context, f func(tx *gorm.DB) error) (err error) {
-	tx, err := c.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			return
-		}
+	txFn := func() error {
+		tx, err := c.Begin(ctx)
 		if err != nil {
-			tx.Rollback()
-			return
+			return err
 		}
-		err = tx.Commit().Error
-	}()
-	err = f(tx)
-	return
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+				return
+			}
+			if err == nil {
+				err = tx.Commit().Error
+				return
+			}
+			if !IsRetryable(err) {
+				err = backoff.Permanent(err)
+			}
+			tx.Rollback()
+		}()
+		return f(tx)
+	}
+	retry := backoff.WithMaxRetries(backoff.NewExponentialBackOff(), c.maxRetries)
+	return backoff.Retry(txFn, backoff.WithContext(retry, ctx))
 }
 
 // Statement - セレクトクエリの生成
@@ -176,6 +194,11 @@ func (c *Client) Count(ctx context.Context, tx *gorm.DB, model interface{}, fn f
 		stmt = fn(stmt)
 	}
 	return total, stmt.Find(&total).Error
+}
+
+// IsRetryable - リトライ対象のエラーかの判定
+func IsRetryable(err error) bool {
+	return errors.Is(err, driver.ErrBadConn)
 }
 
 // Retryable - リトライ可能かの判定
