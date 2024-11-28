@@ -27,7 +27,7 @@ func TestListShippingsByCoordinatorIDs(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
@@ -118,7 +118,7 @@ func TestMutiGetShippingsByRevision(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
@@ -211,7 +211,7 @@ func TestGetDefaultShipping(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
@@ -289,7 +289,7 @@ func TestGetShippingByCoordinatorID(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
@@ -377,7 +377,7 @@ func TestUpdateDefaultShipping(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
@@ -475,7 +475,7 @@ func TestUpsertShipping(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}
