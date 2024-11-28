@@ -9,13 +9,13 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.28.5
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.46
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.15.17
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.46.6
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.47.0
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.37.1
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.62.1
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.63.0
 	github.com/aws/aws-sdk-go-v2/service/medialive v1.62.6
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.67.1
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.69.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.6
-	github.com/aws/aws-sdk-go-v2/service/sfn v1.33.6
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.34.0
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.1
 	github.com/casbin/casbin/v2 v2.101.0
 	github.com/dlclark/regexp2 v1.11.4
@@ -45,12 +45,12 @@ require (
 	github.com/shopspring/decimal v1.4.0
 	github.com/slack-go/slack v0.15.0
 	github.com/spf13/cobra v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.9.0
-	google.golang.org/api v0.207.0
+	google.golang.org/api v0.209.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241113202542-65e8d215514f
 	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.35.2
@@ -64,8 +64,8 @@ require (
 
 require (
 	cel.dev/expr v0.18.0 // indirect
-	cloud.google.com/go/auth v0.10.2 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.5 // indirect
+	cloud.google.com/go/auth v0.11.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.6 // indirect
 	cloud.google.com/go/monitoring v1.21.2 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.25.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.49.0 // indirect
@@ -114,12 +114,12 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.1 // indirect
 	github.com/aws/smithy-go v1.22.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.12.4 // indirect
+	github.com/bytedance/sonic v1.12.5 // indirect
 	github.com/casbin/govaluate v1.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.6 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.7 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
