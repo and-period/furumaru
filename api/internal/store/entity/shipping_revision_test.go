@@ -731,7 +731,7 @@ func TestShippingRates_Validate(t *testing.T) {
 	}
 	set := set.New(shikoku...)
 	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
+	for val := range codes.PrefectureNames {
 		if set.Contains(val) {
 			continue
 		}

@@ -188,7 +188,7 @@ func (rs ShippingRates) Validate() error {
 		}
 		total += len(rs[i].PrefectureCodes)
 	}
-	if total != len(codes.PrefectureValues) { // 都道府県が全て指定されているかのチェック(重複チェック含め)
+	if total != len(codes.PrefectureNames) { // 都道府県が全て指定されているかのチェック(重複チェック含め)
 		return errInvalidShippingRatePrefLength
 	}
 	return nil
