@@ -380,13 +380,12 @@ type Promotion interface {
 type ListPromotionsOrderKey string
 
 const (
-	ListPromotionsOrderByTitle       ListPromotionsOrderKey = "title"
-	ListPromotionsOrderByPublic      ListPromotionsOrderKey = "public"
-	ListPromotionsOrderByPublishedAt ListPromotionsOrderKey = "published_at"
-	ListPromotionsOrderByStartAt     ListPromotionsOrderKey = "start_at"
-	ListPromotionsOrderByEndAt       ListPromotionsOrderKey = "end_at"
-	ListPromotionsOrderByCreatedAt   ListPromotionsOrderKey = "created_at"
-	ListPromotionsOrderByUpdatedAt   ListPromotionsOrderKey = "updated_at"
+	ListPromotionsOrderByTitle     ListPromotionsOrderKey = "title"
+	ListPromotionsOrderByPublic    ListPromotionsOrderKey = "public"
+	ListPromotionsOrderByStartAt   ListPromotionsOrderKey = "start_at"
+	ListPromotionsOrderByEndAt     ListPromotionsOrderKey = "end_at"
+	ListPromotionsOrderByCreatedAt ListPromotionsOrderKey = "created_at"
+	ListPromotionsOrderByUpdatedAt ListPromotionsOrderKey = "updated_at"
 )
 
 type ListPromotionsParams struct {

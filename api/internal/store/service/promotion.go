@@ -56,8 +56,6 @@ func (s *service) newListPromotionsOrders(in []*store.ListPromotionsOrder) ([]*d
 			key = database.ListPromotionsOrderByTitle
 		case store.ListPromotionsOrderByPublic:
 			key = database.ListPromotionsOrderByPublic
-		case store.ListPromotionsOrderByPublishedAt:
-			key = database.ListPromotionsOrderByPublishedAt
 		case store.ListPromotionsOrderByStartAt:
 			key = database.ListPromotionsOrderByStartAt
 		case store.ListPromotionsOrderByEndAt:
