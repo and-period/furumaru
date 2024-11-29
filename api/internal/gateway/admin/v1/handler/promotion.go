@@ -73,18 +73,17 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 
 func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsOrder, error) {
 	categories := map[string]store.ListPromotionsOrderKey{
-		"title":       store.ListPromotionsOrderByTitle,
-		"public":      store.ListPromotionsOrderByPublic,
-		"publishedAt": store.ListPromotionsOrderByPublishedAt,
-		"startAt":     store.ListPromotionsOrderByStartAt,
-		"endAt":       store.ListPromotionsOrderByEndAt,
-		"createdAt":   store.ListPromotionsOrderByCreatedAt,
-		"updatedAt":   store.ListPromotionsOrderByUpdatedAt,
+		"title":     store.ListPromotionsOrderByTitle,
+		"public":    store.ListPromotionsOrderByPublic,
+		"startAt":   store.ListPromotionsOrderByStartAt,
+		"endAt":     store.ListPromotionsOrderByEndAt,
+		"createdAt": store.ListPromotionsOrderByCreatedAt,
+		"updatedAt": store.ListPromotionsOrderByUpdatedAt,
 	}
 	params := util.GetOrders(ctx)
 	if len(params) == 0 {
 		res := []*store.ListPromotionsOrder{
-			{Key: store.ListPromotionsOrderByPublishedAt, OrderByASC: false},
+			{Key: store.ListPromotionsOrderByStartAt, OrderByASC: false},
 			{Key: store.ListPromotionsOrderByPublic, OrderByASC: false},
 		}
 		return res, nil

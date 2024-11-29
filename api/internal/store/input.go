@@ -300,7 +300,6 @@ type ListPromotionsOrderKey int32
 const (
 	ListPromotionsOrderByTitle ListPromotionsOrderKey = iota + 1
 	ListPromotionsOrderByPublic
-	ListPromotionsOrderByPublishedAt
 	ListPromotionsOrderByStartAt
 	ListPromotionsOrderByEndAt
 	ListPromotionsOrderByCreatedAt
