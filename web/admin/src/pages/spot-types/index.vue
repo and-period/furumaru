@@ -136,7 +136,6 @@ catch (err) {
     v-model:new-dialog="newDialog"
     v-model:edit-dialog="editDialog"
     v-model:delete-dialog="deleteDialog"
-    v-model:sort-by="sortBy"
     :loading="isLoading()"
     :role="role"
     :is-alert="isShow"

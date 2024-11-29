@@ -15,7 +15,6 @@ export const useSpotTypeStore = defineStore('spotType', {
      * スポット種別一覧を取得する非同期関数
      * @param limit 取得上限数
      * @param offset 取得開始位置
-     * @param orders ソートキー
      */
     async fetchSpotTypes(limit = 20, offset = 0): Promise<void> {
       try {
@@ -101,7 +100,7 @@ export const useSpotTypeStore = defineStore('spotType', {
         await apiClient.spotTypeApi().v1DeleteSpotType(spotTypeId)
       }
       catch (err) {
-        this.errorHandler(err, { 404: 'このスポット種別は存在しません。' })
+        return this.errorHandler(err, { 404: 'このスポット種別は存在しません。' })
       }
     },
   },
