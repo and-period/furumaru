@@ -47,7 +47,7 @@ const fetchExperienceTypes = async (): Promise<void> => {
       }
     }) || []
 
-    await ExperienceTypeStore.fetchExperienceTypes(pagination.itemsPerPage.value, pagination.offset.value, orders)
+    await experienceTypeStore.fetchExperienceTypes(pagination.itemsPerPage.value, pagination.offset.value, orders)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -69,7 +69,7 @@ const handleUpdatePage = async (page: number): Promise<void> => {
 const handleCreate = async (): Promise<void> => {
   try {
     loading.value = true
-    await ExperienceTypeStore.createExperienceType(newFormData.value)
+    await experienceTypeStore.createExperienceType(newFormData.value)
     commonStore.addSnackbar({
       message: '体験種別を追加しました。',
       color: 'info',
@@ -88,10 +88,10 @@ const handleCreate = async (): Promise<void> => {
   }
 }
 
-const handleUpdate = async (ExperienceTypeId: string): Promise<void> => {
+const handleUpdate = async (experienceTypeId: string): Promise<void> => {
   try {
     loading.value = true
-    await ExperienceTypeStore.updateExperienceType(ExperienceTypeId, editFormData.value)
+    await experienceTypeStore.updateExperienceType(experienceTypeId, editFormData.value)
     commonStore.addSnackbar({
       message: '体験種別を更新しました。',
       color: 'info',
@@ -110,10 +110,10 @@ const handleUpdate = async (ExperienceTypeId: string): Promise<void> => {
   }
 }
 
-const handleDelete = async (ExperienceTypeId: string): Promise<void> => {
+const handleDelete = async (experienceTypeId: string): Promise<void> => {
   try {
     loading.value = true
-    await ExperienceTypeStore.deleteExperienceType(ExperienceTypeId)
+    await experienceTypeStore.deleteExperienceType(experienceTypeId)
     commonStore.addSnackbar({
       message: '体験種別を削除しました。',
       color: 'info',
