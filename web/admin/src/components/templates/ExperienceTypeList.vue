@@ -1,4 +1,13 @@
 <script lang="ts" setup>
+import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import useVuelidate from '@vuelidate/core'
+
+import type { AlertType } from '~/lib/hooks'
+import { AdminRole, type CreateExperienceTypeRequest, type ExperienceType, type UpdateExperienceTypeRequest } from '~/types/api'
+import { getErrorMessage } from '~/lib/validations'
+import { CreateExperienceTypeValidationRules, UpdateExperienceTypeValidationRules } from '~/types/validations'
+
 const props = defineProps({
   loading: {
     type: Boolean,
