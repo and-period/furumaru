@@ -1,5 +1,12 @@
 # Changelog
 
+## [v3.2.0](https://github.com/and-period/furumaru/compare/v3.1.3...v3.2.0) - 2024-11-29
+- feat(admin): 体験種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2533
+- feat(admin): スポット種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2534
+- fix(store): プロモーション一覧APIのソート修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2536
+- fix(admin): バリデーションルールの定義忘れがあった箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2537
+- feat(workflow): バックエンドCDのキャッシュ設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2538
+
 ## [v3.1.3](https://github.com/and-period/furumaru/compare/v3.1.2...v3.1.3) - 2024-11-28
 - feat(store): スポット住所を管理できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2527
 - feat(store): TiDB用のDDL追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2529
