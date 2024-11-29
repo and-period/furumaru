@@ -31,6 +31,11 @@ const menus: SettingMenu[] = [
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
+    text: '体験種別管理',
+    action: () => router.push('/experience-types'),
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
     text: '配送設定管理',
     action: () => router.push('/shippings'),
     roles: [AdminRole.COORDINATOR],
