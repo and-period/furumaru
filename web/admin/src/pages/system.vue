@@ -46,6 +46,11 @@ const menus: SettingMenu[] = [
     roles: [AdminRole.ADMINISTRATOR],
   },
   {
+    text: 'スポット種別管理',
+    action: () => router.push('/spot-types'),
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
     text: '決済システム管理',
     action: () => router.push('/payment-systems'),
     roles: [AdminRole.ADMINISTRATOR],
