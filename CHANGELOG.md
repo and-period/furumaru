@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.2.1](https://github.com/and-period/furumaru/compare/v3.2.0...v3.2.1) - 2024-12-04
+- build(deps): bump shell-quote from 1.8.1 to 1.8.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2539
+- Fix: fixed live open by @hamachans in https://github.com/and-period/furumaru/pull/2542
+
 ## [v3.2.0](https://github.com/and-period/furumaru/compare/v3.1.3...v3.2.0) - 2024-11-29
 - feat(admin): 体験種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2533
 - feat(admin): スポット種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2534
