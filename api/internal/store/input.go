@@ -538,12 +538,18 @@ type CalcCartInput struct {
 
 type AddCartItemInput struct {
 	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
 	ProductID string `validate:"required"`
 	Quantity  int64  `validate:"min=1"`
 }
 
 type RemoveCartItemInput struct {
 	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
 	BoxNumber int64  `validate:"min=0"`
 	ProductID string `validate:"required"`
 }

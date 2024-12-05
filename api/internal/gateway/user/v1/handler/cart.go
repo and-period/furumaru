@@ -158,6 +158,9 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 	}
 	in := &store.AddCartItemInput{
 		SessionID: h.getSessionID(ctx),
+		UserID:    h.getUserID(ctx),
+		UserAgent: ctx.Request.UserAgent(),
+		ClientIP:  ctx.ClientIP(),
 		ProductID: req.ProductID,
 		Quantity:  req.Quantity,
 	}
@@ -176,6 +179,9 @@ func (h *handler) RemoveCartItem(ctx *gin.Context) {
 	}
 	in := &store.RemoveCartItemInput{
 		SessionID: h.getSessionID(ctx),
+		UserID:    h.getUserID(ctx),
+		UserAgent: ctx.Request.UserAgent(),
+		ClientIP:  ctx.ClientIP(),
 		BoxNumber: boxNumber,
 		ProductID: util.GetParam(ctx, "productId"),
 	}

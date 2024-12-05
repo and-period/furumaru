@@ -13,6 +13,7 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
+		CartActionLog:  newCartActionLog(db),
 		Category:       newCategory(db),
 		Experience:     newExperience(db),
 		ExperienceType: newExperienceType(db),

@@ -41,6 +41,7 @@ type mocks struct {
 }
 
 type dbMocks struct {
+	CartActionLog  *mock_database.MockCartActionLog
 	Category       *mock_database.MockCategory
 	Experience     *mock_database.MockExperience
 	ExperienceType *mock_database.MockExperienceType
@@ -90,6 +91,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
+		CartActionLog:  mock_database.NewMockCartActionLog(ctrl),
 		Category:       mock_database.NewMockCategory(ctrl),
 		Experience:     mock_database.NewMockExperience(ctrl),
 		ExperienceType: mock_database.NewMockExperienceType(ctrl),
@@ -117,6 +119,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
+			CartActionLog:  mocks.db.CartActionLog,
 			Category:       mocks.db.Category,
 			Experience:     mocks.db.Experience,
 			ExperienceType: mocks.db.ExperienceType,

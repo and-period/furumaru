@@ -21,6 +21,7 @@ var (
 )
 
 type Database struct {
+	CartActionLog  CartActionLog
 	Category       Category
 	Experience     Experience
 	ExperienceType ExperienceType
@@ -40,6 +41,10 @@ type Database struct {
 /**
  * interface
  */
+type CartActionLog interface {
+	Create(ctx context.Context, log *entity.CartActionLog) error
+}
+
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
 	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)

@@ -113,8 +113,25 @@ func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) e
 	}
 	// カートに商品を追加し、買い物かご内を整理
 	cart.AddItem(in.ProductID, in.Quantity)
-	err = s.refreshCart(ctx, cart)
-	return internalError(err)
+	if err := s.refreshCart(ctx, cart); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		params := &entity.AddCartItemActionLogParams{
+			SessionID: in.SessionID,
+			UserID:    in.UserID,
+			UserAgent: in.UserAgent,
+			ClientIP:  in.ClientIP,
+			ProductID: in.ProductID,
+		}
+		log := entity.NewAddCartItemActionLog(params)
+		if err := s.db.CartActionLog.Create(context.Background(), log); err != nil {
+			s.logger.Warn("Failed to create cart action log", zap.Error(err))
+		}
+	}()
+	return nil
 }
 
 func (s *service) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemInput) error {
@@ -127,8 +144,25 @@ func (s *service) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemIn
 	}
 	// カートから商品削除し、買い物かご内を整理
 	cart.RemoveItem(in.ProductID, in.BoxNumber)
-	err = s.refreshCart(ctx, cart)
-	return internalError(err)
+	if err := s.refreshCart(ctx, cart); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		params := &entity.RemoveCartItemActionLogParams{
+			SessionID: in.SessionID,
+			UserID:    in.UserID,
+			UserAgent: in.UserAgent,
+			ClientIP:  in.ClientIP,
+			ProductID: in.ProductID,
+		}
+		log := entity.NewRemoveCartItemActionLog(params)
+		if err := s.db.CartActionLog.Create(context.Background(), log); err != nil {
+			s.logger.Warn("Failed to create cart action log", zap.Error(err))
+		}
+	}()
+	return nil
 }
 
 // getCart - カートを取得する もしくは 新規で登録する
