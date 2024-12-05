@@ -132,7 +132,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
  * ###############################################
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	v1 := rg.Group("/v1")
+	v1 := rg.Group("/v1", h.prerequest)
 	// 公開エンドポイント
 	h.authRoutes(v1)
 	h.topRoutes(v1)
@@ -229,6 +229,11 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
  * other
  * ###############################################
  */
+func (h *handler) prerequest(ctx *gin.Context) {
+	h.setAuth(ctx) //nolint:errcheck
+	ctx.Next()
+}
+
 func (h *handler) authentication(ctx *gin.Context) {
 	if err := h.setAuth(ctx); err != nil {
 		h.unauthorized(ctx, err)
@@ -294,6 +299,9 @@ func (h *handler) createVideoViewerLog(ctx *gin.Context) {
 }
 
 func (h *handler) setAuth(ctx *gin.Context) error {
+	if _, ok := ctx.Get(userIDKey); ok {
+		return nil // すでに設定済みの場合はスキップする
+	}
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		return err
