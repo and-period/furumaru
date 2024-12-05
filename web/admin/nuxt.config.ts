@@ -1,5 +1,6 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
+/* eslint-disable nuxt/nuxt-config-keys-order */
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',

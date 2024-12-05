@@ -17,7 +17,7 @@
     "sw:build": "node src/sw/firebase-messaging-sw.ts"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.8.0",
+    "@pinia/nuxt": "0.9.0",
     "@sentry/vue": "^7.120.0",
     "@tiptap/pm": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
@@ -33,6 +33,7 @@
     "hls.js": "^1.5.17",
     "marked": "^12.0.2",
     "nuxt": "^3.14.1592",
+    "pinia": "^2.3.0",
     "sass": "^1.82.0",
     "sortablejs": "^1",
     "universal-cookie": "^7.2.2",
