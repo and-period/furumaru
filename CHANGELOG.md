@@ -1,5 +1,11 @@
 # Changelog
 
+## [v3.2.2](https://github.com/and-period/furumaru/compare/v3.2.1...v3.2.2) - 2024-12-05
+- build(deps): bump the dependencies group in /api with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2540
+- feat(store): カート操作ログをDB管理するように by @taba2424 in https://github.com/and-period/furumaru/pull/2544
+- fix(store): DBのインジェクションを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2546
+- build(deps): bump the dependencies group across 1 directory with 253 updates by @dependabot in https://github.com/and-period/furumaru/pull/2541
+
 ## [v3.2.0](https://github.com/and-period/furumaru/compare/v3.1.3...v3.2.0) - 2024-11-29
 - feat(admin): 体験種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2533
 - feat(admin): スポット種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2534
