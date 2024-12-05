@@ -15,6 +15,7 @@ import (
 func NewDatabase(db *apmysql.Client) *database.Database {
 	client := mysql.NewDatabase(db)
 	return &database.Database{
+		CartActionLog:  client.CartActionLog,
 		Category:       newCategory(db, client.Category),
 		Experience:     newExperience(db),
 		ExperienceType: newExperienceType(db, client.ExperienceType),
