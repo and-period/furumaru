@@ -5,6 +5,9 @@ spot:
     id:
       type: string
       description: スポットID
+    spotTypeId:
+      type: string
+      description: スポット種別ID
     userType:
       $ref: './../../../openapi.yaml#/components/schemas/spotUserType'
     userId:
@@ -40,6 +43,7 @@ spot:
       description: 更新日時 (unixtime)
   required:
   - id
+  - spotTypeId
   - userType
   - userId
   - name
@@ -52,6 +56,7 @@ spot:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     userType: 1
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     name: '東京タワー'

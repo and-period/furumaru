@@ -124,7 +124,6 @@ func (p *promotion) Update(ctx context.Context, promotionID string, params *data
 		"title":         params.Title,
 		"description":   params.Description,
 		"public":        params.Public,
-		"published_at":  params.PublishedAt,
 		"discount_type": params.DiscountType,
 		"discount_rate": params.DiscountRate,
 		"code":          params.Code,

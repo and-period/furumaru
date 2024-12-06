@@ -21,6 +21,7 @@ var (
 )
 
 type Database struct {
+	CartActionLog  CartActionLog
 	Category       Category
 	Experience     Experience
 	ExperienceType ExperienceType
@@ -34,11 +35,16 @@ type Database struct {
 	Schedule       Schedule
 	Shipping       Shipping
 	Spot           Spot
+	SpotType       SpotType
 }
 
 /**
  * interface
  */
+type CartActionLog interface {
+	Create(ctx context.Context, log *entity.CartActionLog) error
+}
+
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
 	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)
@@ -379,13 +385,12 @@ type Promotion interface {
 type ListPromotionsOrderKey string
 
 const (
-	ListPromotionsOrderByTitle       ListPromotionsOrderKey = "title"
-	ListPromotionsOrderByPublic      ListPromotionsOrderKey = "public"
-	ListPromotionsOrderByPublishedAt ListPromotionsOrderKey = "published_at"
-	ListPromotionsOrderByStartAt     ListPromotionsOrderKey = "start_at"
-	ListPromotionsOrderByEndAt       ListPromotionsOrderKey = "end_at"
-	ListPromotionsOrderByCreatedAt   ListPromotionsOrderKey = "created_at"
-	ListPromotionsOrderByUpdatedAt   ListPromotionsOrderKey = "updated_at"
+	ListPromotionsOrderByTitle     ListPromotionsOrderKey = "title"
+	ListPromotionsOrderByPublic    ListPromotionsOrderKey = "public"
+	ListPromotionsOrderByStartAt   ListPromotionsOrderKey = "start_at"
+	ListPromotionsOrderByEndAt     ListPromotionsOrderKey = "end_at"
+	ListPromotionsOrderByCreatedAt ListPromotionsOrderKey = "created_at"
+	ListPromotionsOrderByUpdatedAt ListPromotionsOrderKey = "updated_at"
 )
 
 type ListPromotionsParams struct {
@@ -404,7 +409,6 @@ type UpdatePromotionParams struct {
 	Title        string
 	Description  string
 	Public       bool
-	PublishedAt  time.Time
 	DiscountType entity.DiscountType
 	DiscountRate int64
 	Code         string
@@ -484,6 +488,8 @@ type Spot interface {
 }
 
 type ListSpotsParams struct {
+	Name            string
+	SpotTypeIDs     []string
 	UserID          string
 	ExcludeApproved bool
 	ExcludeDisabled bool
@@ -492,22 +498,50 @@ type ListSpotsParams struct {
 }
 
 type ListSpotsByGeolocationParams struct {
-	Longitude float64
-	Latitude  float64
-	Radius    int
+	SpotTypeIDs     []string
+	Longitude       float64
+	Latitude        float64
+	Radius          int64
+	ExcludeDisabled bool
 }
 
 type UpdateSpotParams struct {
-	Name         string
-	Description  string
-	ThumbnailURL string
-	Longitude    float64
-	Latitude     float64
+	SpotTypeID     string
+	Name           string
+	Description    string
+	ThumbnailURL   string
+	Longitude      float64
+	Latitude       float64
+	PostalCode     string
+	PrefectureCode int32
+	City           string
+	AddressLine1   string
+	AddressLine2   string
 }
 
 type ApproveSpotParams struct {
 	Approved        bool
 	ApprovedAdminID string
+}
+
+type SpotType interface {
+	List(ctx context.Context, params *ListSpotTypesParams, fields ...string) (entity.SpotTypes, error)
+	Count(ctx context.Context, params *ListSpotTypesParams) (int64, error)
+	MultiGet(ctx context.Context, spotTypeIDs []string, fields ...string) (entity.SpotTypes, error)
+	Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error)
+	Create(ctx context.Context, spotType *entity.SpotType) error
+	Update(ctx context.Context, spotTypeID string, params *UpdateSpotTypeParams) error
+	Delete(ctx context.Context, spotTypeID string) error
+}
+
+type ListSpotTypesParams struct {
+	Name   string
+	Limit  int
+	Offset int
+}
+
+type UpdateSpotTypeParams struct {
+	Name string
 }
 
 type Error struct {

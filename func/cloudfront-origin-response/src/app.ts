@@ -13,10 +13,11 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import * as querystring from 'querystring';
-import sharp, { ResizeOptions } from 'sharp';
+import sharp, { ResizeOptions, RGBA, Color } from 'sharp';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const cacheControl = 'max-age=0,s-maxage=2592000'; // 30 days
+const defaultBgColor: Color = { r: 0, g: 0, b: 0, alpha: 0 };
 
 /**
  * Lambda@Edgeを利用して画像オブジェクトが存在するかを確認し、必要に応じて画像リサイズを実行する
@@ -126,6 +127,7 @@ type ConvertOptions = {
   format?: ImageFormat;
   fit?: ImageFitType;
   blur?: number;
+  bgColor?: Color;
 };
 
 type ImageFormat = 'jpg' | 'jpeg' | 'png' | 'svg' | 'webp';
@@ -219,9 +221,11 @@ function isConvertableOptions(opts: ConvertOptions): boolean {
 
 // クエリパラメータから画像のリサイズオプションを取得
 function getImageOptions(params: querystring.ParsedUrlQuery): ConvertOptions {
-  const { width, height, format, fit, blur, dpr } = params;
+  const { width, height, format, fit, blur, dpr, bg_color } = params;
 
-  const options: ConvertOptions = {};
+  const options: ConvertOptions = {
+    bgColor: defaultBgColor,
+  };
   if (width && Number(width) > 0) {
     options.width = Number(width);
   }
@@ -241,7 +245,36 @@ function getImageOptions(params: querystring.ParsedUrlQuery): ConvertOptions {
   if (blur && Number(blur) >= 0.3 && Number(blur) <= 1000) {
     options.blur = Number(blur);
   }
+  if (bg_color) {
+    options.bgColor = getBackgroundColor(String(bg_color));
+  }
   return options;
+}
+
+// RGBAの背景色を取得
+function getBackgroundColor(color: string): Color | undefined {
+  const strs: string[] = color.split(',');
+  if (strs.length < 3) {
+    return color;
+  }
+
+  // バリデーション検証
+  if (strs.slice(0, 3).some((v): boolean => Number(v) < 0 || 255 < Number(v))) {
+    console.log(`invalid rgba range. color='${color}'`);
+    return defaultBgColor;
+  }
+  if (strs.length > 3 && (Number(strs[3]) < 0 || 1 < Number(strs[3]))) {
+    console.log(`invalid alpha range. color='${color}'`);
+    return defaultBgColor;
+  }
+
+  const rgba: RGBA = {
+    r: Number(strs[0]),
+    g: Number(strs[1]),
+    b: Number(strs[2]),
+    alpha: strs.length > 3 ? Number(strs[3]) : 1,
+  };
+  return rgba;
 }
 
 // 画像のMIMEタイプを取得
@@ -274,11 +307,12 @@ async function resizeImage(object: Uint8Array, options: ConvertOptions): Promise
   }
 
   let resize = sharp(object);
-  if (options.height || options.height) {
+  if (options.height || options.height || options.bgColor) {
     const opts: ResizeOptions = {
       width: options.width,
       height: options.height,
       fit: options.fit,
+      background: options.bgColor,
     };
     resize = resize.resize(opts);
   }

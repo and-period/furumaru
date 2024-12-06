@@ -1,5 +1,56 @@
 # Changelog
 
+## [v3.2.2](https://github.com/and-period/furumaru/compare/v3.2.1...v3.2.2) - 2024-12-05
+- build(deps): bump the dependencies group in /api with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2540
+- feat(store): カート操作ログをDB管理するように by @taba2424 in https://github.com/and-period/furumaru/pull/2544
+- fix(store): DBのインジェクションを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2546
+- build(deps): bump the dependencies group across 1 directory with 253 updates by @dependabot in https://github.com/and-period/furumaru/pull/2541
+
+## [v3.2.0](https://github.com/and-period/furumaru/compare/v3.1.3...v3.2.0) - 2024-11-29
+- feat(admin): 体験種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2533
+- feat(admin): スポット種別管理ページの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2534
+- fix(store): プロモーション一覧APIのソート修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2536
+- fix(admin): バリデーションルールの定義忘れがあった箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2537
+- feat(workflow): バックエンドCDのキャッシュ設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2538
+
+## [v3.1.3](https://github.com/and-period/furumaru/compare/v3.1.2...v3.1.3) - 2024-11-28
+- feat(store): スポット住所を管理できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2527
+- feat(store): TiDB用のDDL追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2529
+- build(deps): bump the dependencies group in /api with 10 updates by @dependabot in https://github.com/and-period/furumaru/pull/2524
+- fix(store): 都道府県数をカウントしている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2530
+- fix: リサイズ画像の取得でpngを指定するように改善 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2526
+- fix(store): 未使用項目を削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2531
+- fix(mysql): ErrBadConnエラー時にリトライするように by @taba2424 in https://github.com/and-period/furumaru/pull/2532
+
+## [v3.1.2](https://github.com/and-period/furumaru/compare/v3.1.1...v3.1.2) - 2024-11-27
+- feat(serverless): regionを直で指定する by @sea-kai in https://github.com/and-period/furumaru/pull/2520
+- Upgrade serveless v4 by @sea-kai in https://github.com/and-period/furumaru/pull/2522
+- fix(store): プロモーション公開日時を埋める処理を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2523
+
+## [v3.1.1](https://github.com/and-period/furumaru/compare/v3.1.0...v3.1.1) - 2024-11-24
+- fix: 位置情報取得クライアントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2517
+- feat: 画像加工時の背景を透過させるように by @taba2424 in https://github.com/and-period/furumaru/pull/2519
+
+## [v3.1.0](https://github.com/and-period/furumaru/compare/v3.0.8...v3.1.0) - 2024-11-24
+- build(deps): bump the dependencies group in /api with 45 updates by @dependabot in https://github.com/and-period/furumaru/pull/2496
+- feat(api): スポット関連APIの定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2499
+- feat(store): スポット関連のビジネスロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2501
+- fix(media): MediaStore廃止にあたってライブ配信用のURLを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2502
+- feat(store): スポット操作の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2503
+- feat(admin): 管理者側のスポットAPIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2504
+- feat(user): ユーザー側のスポットAPI実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2505
+- fix(media): 配信エンドポイントの指定を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2506
+- fix(docs): APIドキュメントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2507
+- Feat/sns share by @hamachans in https://github.com/and-period/furumaru/pull/2493
+- Feat/sns share by @hamachans in https://github.com/and-period/furumaru/pull/2508
+- chore: MediaStore廃止に合わせた構成変更に伴い、StepFunctionsを修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2509
+- build(deps): bump cross-spawn from 7.0.5 to 7.0.6 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2510
+- build(deps): bump the dependencies group in /api with 40 updates by @dependabot in https://github.com/and-period/furumaru/pull/2513
+- build(deps): bump codecov/codecov-action from 4 to 5 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2511
+- fix: 商品一覧の表示をobject-containに変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2514
+- feat(store): スポット種別の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2515
+- fix(api): 500エラー時に本番環境でもレスポンスを返すように by @taba2424 in https://github.com/and-period/furumaru/pull/2516
+
 ## [v3.0.8](https://github.com/and-period/furumaru/compare/v3.0.7...v3.0.8) - 2024-11-13
 - build(deps): bump cross-spawn from 7.0.3 to 7.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2494
 - setup: 本番環境向けのGoogle Tag Managerを仕込む by @wf-yamaday in https://github.com/and-period/furumaru/pull/2497

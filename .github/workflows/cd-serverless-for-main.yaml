@@ -51,3 +51,5 @@ jobs:
       with:
         args: -c "cd infra/serverless/ && serverless deploy"
         entrypoint: /bin/bash
+      env:
+        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}

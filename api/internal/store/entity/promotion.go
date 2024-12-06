@@ -47,8 +47,7 @@ type Promotion struct {
 	Status       PromotionStatus   `gorm:"-"`                    // 状態
 	Title        string            `gorm:""`                     // タイトル
 	Description  string            `gorm:""`                     // 詳細説明
-	Public       bool              `gorm:""`                     // 公開フラグ
-	PublishedAt  time.Time         `gorm:""`                     // 公開日時
+	Public       bool              `gorm:""`                     // Deprecated: 公開フラグ
 	DiscountType DiscountType      `gorm:""`                     // 割引計算方法
 	DiscountRate int64             `gorm:""`                     // 割引額(%/円)
 	Code         string            `gorm:"<-:create"`            // クーポンコード
@@ -65,7 +64,6 @@ type NewPromotionParams struct {
 	Title        string
 	Description  string
 	Public       bool
-	PublishedAt  time.Time
 	DiscountType DiscountType
 	DiscountRate int64
 	Code         string
@@ -80,7 +78,6 @@ func NewPromotion(params *NewPromotionParams) *Promotion {
 		Title:        params.Title,
 		Description:  params.Description,
 		Public:       params.Public,
-		PublishedAt:  params.PublishedAt,
 		DiscountType: params.DiscountType,
 		DiscountRate: params.DiscountRate,
 		Code:         params.Code,

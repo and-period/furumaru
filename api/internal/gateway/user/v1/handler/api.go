@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
@@ -133,7 +132,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
  * ###############################################
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	v1 := rg.Group("/v1")
+	v1 := rg.Group("/v1", h.prerequest)
 	// 公開エンドポイント
 	h.authRoutes(v1)
 	h.topRoutes(v1)
@@ -144,6 +143,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.producerRoutes(v1)
 	h.promotionRoutes(v1)
 	h.postalCodeRoutes(v1)
+	h.spotTypeRoutes(v1)
 	h.statusRoutes(v1)
 	h.videoRoutes(v1)
 	// ゲスト用エンドポイント
@@ -157,6 +157,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.checkoutRoutes(v1)
 	h.liveCommentRoutes(v1)
 	h.orderRoutes(v1)
+	h.spotRoutes(v1)
 	h.videoCommentRoutes(v1)
 	h.uploadRoutes(v1)
 }
@@ -169,7 +170,6 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
 	h.reportError(ctx, err, res)
-	h.filterResponse(res)
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
@@ -188,14 +188,6 @@ func (h *handler) forbidden(ctx *gin.Context, err error) {
 
 func (h *handler) notFound(ctx *gin.Context, err error) {
 	h.httpError(ctx, status.Error(codes.NotFound, err.Error()))
-}
-
-func (h *handler) filterResponse(res *util.ErrorResponse) {
-	if res == nil || !strings.Contains(h.env, "prd") {
-		return
-	}
-	// 本番環境の場合、エラーメッセージは返却しない
-	res.Detail = ""
 }
 
 func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorResponse) {
@@ -237,6 +229,11 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
  * other
  * ###############################################
  */
+func (h *handler) prerequest(ctx *gin.Context) {
+	h.setAuth(ctx) //nolint:errcheck
+	ctx.Next()
+}
+
 func (h *handler) authentication(ctx *gin.Context) {
 	if err := h.setAuth(ctx); err != nil {
 		h.unauthorized(ctx, err)
@@ -302,6 +299,9 @@ func (h *handler) createVideoViewerLog(ctx *gin.Context) {
 }
 
 func (h *handler) setAuth(ctx *gin.Context) error {
+	if _, ok := ctx.Get(userIDKey); ok {
+		return nil // すでに設定済みの場合はスキップする
+	}
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		return err

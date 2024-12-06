@@ -119,7 +119,14 @@ type Service interface {
 	UpdatePaymentSystem(ctx context.Context, in *UpdatePaymentStatusInput) error                                // 更新
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
-	// スポット情報
+	// スポット種別
+	ListSpotTypes(ctx context.Context, in *ListSpotTypesInput) (entity.SpotTypes, int64, error)  // 一覧取得
+	MultiGetSpotTypes(ctx context.Context, in *MultiGetSpotTypesInput) (entity.SpotTypes, error) // 一覧取得(ID指定)
+	GetSpotType(ctx context.Context, in *GetSpotTypeInput) (*entity.SpotType, error)             // １件取得
+	CreateSpotType(ctx context.Context, in *CreateSpotTypeInput) (*entity.SpotType, error)       // 登録
+	UpdateSpotType(ctx context.Context, in *UpdateSpotTypeInput) error                           // 更新
+	DeleteSpotType(ctx context.Context, in *DeleteSpotTypeInput) error                           // 削除
+	// スポット
 	ListSpots(ctx context.Context, in *ListSpotsInput) (entity.Spots, int64, error)                    // 一覧取得
 	ListSpotsByGeolocation(ctx context.Context, in *ListSpotsByGeolocationInput) (entity.Spots, error) // 一覧取得（座標指定）
 	GetSpot(ctx context.Context, in *GetSpotInput) (*entity.Spot, error)                               // １件取得

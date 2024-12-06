@@ -80,3 +80,5 @@ jobs:
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
         push: true
         provenance: false
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

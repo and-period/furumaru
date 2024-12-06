@@ -2,6 +2,7 @@ package updater
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/media/database"
@@ -13,8 +14,9 @@ type Updater interface {
 }
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
+	WaitGroup  *sync.WaitGroup
+	Database   *database.Database
+	StorageURL *url.URL
 }
 
 type options struct {

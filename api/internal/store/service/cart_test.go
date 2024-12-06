@@ -351,7 +351,6 @@ func TestCalcCart(t *testing.T) {
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
-		PublishedAt:  now.AddDate(0, -1, 0),
 		DiscountType: entity.DiscountTypeRate,
 		DiscountRate: 10,
 		Code:         "code1234",
@@ -538,6 +537,15 @@ func TestAddCartItem(t *testing.T) {
 			Box100Rate:    30,
 		}
 	}
+	log := &entity.CartActionLog{
+		SessionID: "session-id",
+		Type:      entity.CartActionLogTypeAddCartItem,
+		UserID:    "user-id",
+		UserAgent: "user-agent",
+		ClientIP:  "127.0.0.1",
+		ProductID: "product-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -578,9 +586,13 @@ func TestAddCartItem(t *testing.T) {
 					UpdatedAt: now,
 				}
 				mocks.cache.EXPECT().Insert(ctx, cart).Return(nil)
+				mocks.db.CartActionLog.EXPECT().Create(gomock.Any(), log).Return(assert.AnError)
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -599,6 +611,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  2,
 			},
@@ -613,6 +628,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -627,6 +645,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -649,6 +670,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  2,
 			},
@@ -672,6 +696,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -714,6 +741,9 @@ func TestAddCartItem(t *testing.T) {
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -749,6 +779,15 @@ func TestRemoveCartItem(t *testing.T) {
 			Box100Rate:    30,
 		}
 	}
+	log := &entity.CartActionLog{
+		SessionID: "session-id",
+		Type:      entity.CartActionLogTypeRemoveCartItem,
+		UserID:    "user-id",
+		UserAgent: "user-agent",
+		ClientIP:  "127.0.0.1",
+		ProductID: "product-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -787,9 +826,13 @@ func TestRemoveCartItem(t *testing.T) {
 					UpdatedAt: now,
 				}
 				mocks.cache.EXPECT().Insert(ctx, cart).Return(nil)
+				mocks.db.CartActionLog.EXPECT().Create(gomock.Any(), log).Return(assert.AnError)
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},
@@ -849,9 +892,13 @@ func TestRemoveCartItem(t *testing.T) {
 					UpdatedAt: now,
 				}
 				mocks.cache.EXPECT().Insert(ctx, cart).Return(nil)
+				mocks.db.CartActionLog.EXPECT().Create(gomock.Any(), log).Return(assert.AnError)
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},
@@ -878,9 +925,13 @@ func TestRemoveCartItem(t *testing.T) {
 					UpdatedAt: now,
 				}
 				mocks.cache.EXPECT().Insert(ctx, cart).Return(nil)
+				mocks.db.CartActionLog.EXPECT().Create(gomock.Any(), log).Return(assert.AnError)
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},
@@ -899,6 +950,9 @@ func TestRemoveCartItem(t *testing.T) {
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},
@@ -931,6 +985,9 @@ func TestRemoveCartItem(t *testing.T) {
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},
@@ -971,6 +1028,9 @@ func TestRemoveCartItem(t *testing.T) {
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
+				UserID:    "user-id",
+				UserAgent: "user-agent",
+				ClientIP:  "127.0.0.1",
 				BoxNumber: 1,
 				ProductID: "product-id",
 			},

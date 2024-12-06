@@ -25,6 +25,7 @@ import {
   PromotionApi,
   ScheduleApi,
   ShippingApi,
+  SpotTypeApi,
   UserApi,
   VideoApi,
 } from '~/types/api'
@@ -124,6 +125,10 @@ export class ApiClient {
 
   shippingApi() {
     return new ShippingApi(this.config, this.basePath, this.instance)
+  }
+
+  spotTypeApi() {
+    return new SpotTypeApi(this.config, this.basePath, this.instance)
   }
 
   userApi() {

@@ -39,6 +39,8 @@ tags:
   description: マルシェ開催スケジュール関連
 - name: Spot
   description: スポット関連
+- name: SpotType
+  description: スポット種別関連
 - name: Status
   description: システム状態関連
 - name: Top
@@ -155,6 +157,9 @@ paths:
     $ref: './paths/v1/spots/index.yaml'
   /v1/spots/{spotId}:
     $ref: './paths/v1/spots/_spotId/index.yaml'
+  # SpotType
+  /v1/spot-types:
+    $ref: './paths/v1/spot-types/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -270,6 +275,8 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     spot:
       $ref: './components/schemas/entity/spot.yaml#/spot'
+    spotType:
+      $ref: './components/schemas/entity/spot-type.yaml#/spotType'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
     video:
@@ -394,6 +401,8 @@ components:
       $ref: './components/schemas/v1/spot.response.yaml#/spotResponse'
     v1SpotsResponse:
       $ref: './components/schemas/v1/spot.response.yaml#/spotsResponse'
+    v1SpotTypesResponse:
+      $ref: './components/schemas/v1/spot-type.response.yaml#/spotTypesResponse'
     v1PaymentSystemsResponse:
       $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:
