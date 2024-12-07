@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.2.3](https://github.com/and-period/furumaru/compare/v3.2.2...v3.2.3) - 2024-12-07
+- fix(admin): ファイルアップロード周りの処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2547
+
 ## [v3.2.2](https://github.com/and-period/furumaru/compare/v3.2.1...v3.2.2) - 2024-12-05
 - build(deps): bump the dependencies group in /api with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2540
 - feat(store): カート操作ログをDB管理するように by @taba2424 in https://github.com/and-period/furumaru/pull/2544
