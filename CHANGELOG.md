@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.2.4](https://github.com/and-period/furumaru/compare/v3.2.3...v3.2.4) - 2024-12-12
+- feat(api): DBへのヘルスチェック機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2551
+- fix(api): TiDB用のデフォルト設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2553
+
 ## [v3.2.2](https://github.com/and-period/furumaru/compare/v3.2.1...v3.2.2) - 2024-12-05
 - build(deps): bump the dependencies group in /api with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2540
 - feat(store): カート操作ログをDB管理するように by @taba2424 in https://github.com/and-period/furumaru/pull/2544
