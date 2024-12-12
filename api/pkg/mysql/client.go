@@ -18,8 +18,10 @@ import (
 
 // Client - DB操作用のクライアント構造体
 type Client struct {
-	DB         *gorm.DB
-	maxRetries uint64
+	DB             *gorm.DB
+	logger         *zap.Logger
+	maxRetries     uint64
+	healthInterval time.Duration
 }
 
 type Params struct {
@@ -41,6 +43,7 @@ type options struct {
 	allowNativePasswords bool
 	maxAllowedPacket     int
 	maxRetries           int
+	healthInterval       time.Duration
 }
 
 type Option func(opts *options)
@@ -99,6 +102,12 @@ func WithMaxRetries(retries int) Option {
 	}
 }
 
+func WithHealthInterval(interval time.Duration) Option {
+	return func(opts *options) {
+		opts.healthInterval = interval
+	}
+}
+
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
@@ -111,6 +120,7 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 		allowNativePasswords: true,
 		maxAllowedPacket:     4194304, // 4MiB
 		maxRetries:           3,
+		healthInterval:       10 * time.Second,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -123,10 +133,42 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 	}
 
 	c := &Client{
-		DB:         db,
-		maxRetries: uint64(dopts.maxRetries),
+		DB:             db,
+		logger:         dopts.logger,
+		maxRetries:     uint64(dopts.maxRetries),
+		healthInterval: dopts.healthInterval,
 	}
 	return c, nil
+}
+
+// Health - 定期的なDB接続の確認
+func (c *Client) Health(ctx context.Context) error {
+	ticker := time.NewTicker(c.healthInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-ticker.C:
+			if err := c.Ping(); err != nil {
+				c.logger.Warn("Failed to ping db", zap.Error(err))
+			}
+		}
+	}
+}
+
+// Ping - DB接続の確認
+func (c *Client) Ping() error {
+	connector, ok := c.DB.ConnPool.(gorm.GetDBConnector)
+	if !ok || connector == nil {
+		return gorm.ErrInvalidDB
+	}
+	conn, err := connector.GetDBConn()
+	if err != nil {
+		return gorm.ErrInvalidDB
+	}
+	return conn.Ping()
 }
 
 // Begin - トランザクションの開始処理

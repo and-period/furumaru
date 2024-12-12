@@ -62,6 +62,7 @@ type params struct {
 	userWebURL           *url.URL
 	postalCode           postalcode.Client
 	now                  func() time.Time
+	health               func(ctx context.Context) error
 	debugMode            bool
 	tidbHost             string
 	tidbPort             string
@@ -83,6 +84,7 @@ func (a *app) inject(ctx context.Context) error {
 		now:         jst.Now,
 		waitGroup:   &sync.WaitGroup{},
 		debugMode:   a.LogLevel == "debug",
+		health:      func(ctx context.Context) error { return nil },
 	}
 
 	// AWS SDKの設定
@@ -269,6 +271,7 @@ func (a *app) inject(ctx context.Context) error {
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack
 	a.newRelic = params.newRelic
+	a.health = params.health
 	return nil
 }
 
@@ -374,6 +377,9 @@ func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 	}
 	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.tidbHost, string(newrelic.DatastoreMySQL))); err != nil {
 		return nil, err
+	}
+	p.health = func(ctx context.Context) error {
+		return cli.Health(ctx)
 	}
 	return cli, nil
 }
