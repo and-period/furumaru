@@ -11,25 +11,31 @@ const items = [
     position: { lat: 34.2684527, lng: 132.91340017 },
     title: 'ふじやファーム',
     description: 'レモン農家',
-    imgSrc: 'https://image-cdn.tabechoku.com/crop/w/126/h/120/cw/120/ch/120/images/d4c7ef52c346e13fbbf63eb936a9b0bda59ec418cdcc299c7a6a1248c3ef9cbb.jpeg',
+    imgSrc:
+      'https://image-cdn.tabechoku.com/crop/w/126/h/120/cw/120/ch/120/images/d4c7ef52c346e13fbbf63eb936a9b0bda59ec418cdcc299c7a6a1248c3ef9cbb.jpeg',
   },
   {
     id: 2,
     position: { lat: 34.63416837, lng: 132.65951729 },
-    title: '酒蔵見学＆どぶろく体験ツアー　Brewery tour & Doburoku tasting experience',
+    title:
+      '酒蔵見学＆どぶろく体験ツアー　Brewery tour & Doburoku tasting experience',
     description: '酒蔵見学＆どぶろく体験ツアー',
-    imgSrc: 'https://assets.furumaru.and-period.co.jp/products/media/image/gsztHcK7CvWhDyhYRvpTT4.jpg',
+    imgSrc:
+      'https://assets.furumaru.and-period.co.jp/products/media/image/gsztHcK7CvWhDyhYRvpTT4.jpg',
   },
   {
     id: 3,
     position: { lat: 35.62539905972506, lng: 139.5175404502735 },
     title: 'よみうりランド',
     description: '遊園地',
-    imgSrc: 'https://lh5.googleusercontent.com/p/AF1QipMcu3Mp8owZq5nbe2FEAtE21wg9T7LA21tjbwgg=w426-h240-k-no',
+    imgSrc:
+      'https://lh5.googleusercontent.com/p/AF1QipMcu3Mp8owZq5nbe2FEAtE21wg9T7LA21tjbwgg=w426-h240-k-no',
   },
 ]
 
-const renderer = ref<undefined | { render: (obj: { count: number, position: any }) => any }>(undefined)
+const renderer = ref<
+  undefined | { render: (obj: { count: number, position: any }) => any }
+    >(undefined)
 
 onMounted(() => {
   const svg = window.btoa(`
