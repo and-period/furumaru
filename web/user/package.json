@@ -47,6 +47,7 @@
     "@nuxtjs/tailwindcss": "^6.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@sentry/vite-plugin": "^2.16.1",
+    "@types/google.maps": "^3.58.1",
     "@types/hls.js": "^1.0.0",
     "@vitest/coverage-c8": "^0.28.5",
     "@vue/test-utils": "^2.2.6",
