@@ -122,6 +122,20 @@ const handleClickMyPageButton = () => {
 const handleClickLogoutButton = () => {
   emits('click:logoutButton')
 }
+
+const cartMenuRef = ref<{ open: () => void }>({ open: () => {} })
+
+const handleOpenCartMenu = () => {
+  cartMenuRef.value?.open()
+}
+
+interface Expose {
+  openCartMenu: () => void
+}
+
+defineExpose<Expose>({
+  openCartMenu: handleOpenCartMenu,
+})
 </script>
 
 <template>
@@ -186,6 +200,7 @@ const handleClickLogoutButton = () => {
         />
 
         <the-pc-cart-menu
+          ref="cartMenuRef"
           :is-authenticated="isAuthenticated"
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"

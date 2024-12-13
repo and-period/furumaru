@@ -25,7 +25,14 @@ interface Emits {
 
 const emits = defineEmits<Emits>()
 
-const area = ref<{ close: () => void }>({ close: () => {} })
+interface Expose {
+  open: () => void
+}
+
+const area = ref<{ open: () => void, close: () => void }>({
+  open: () => {},
+  close: () => {},
+})
 
 const priceStringFormatter = (price: number): string => {
   return new Intl.NumberFormat('ja-JP', {
@@ -42,6 +49,14 @@ const handleClickBuyButton = () => {
 const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
   emits('click:removeItemFromCart', cartNumber, id)
 }
+
+const handleOpen = () => {
+  area.value.open()
+}
+
+defineExpose<Expose>({
+  open: handleOpen,
+})
 </script>
 
 <template>
@@ -70,10 +85,9 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
         <hr class="border-main">
         <div>
           {{ cartTotalPriceText }}:
-          <p
-            class="font-bold after:ml-2 after:text-[16px]"
-          >
-            {{ priceStringFormatter(totalPrice) }}{{ cartTotalPriceTaxIncludedText }}
+          <p class="font-bold after:ml-2 after:text-[16px]">
+            {{ priceStringFormatter(totalPrice)
+            }}{{ cartTotalPriceTaxIncludedText }}
           </p>
         </div>
         <button

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useEventBus } from '@vueuse/core'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { Snackbar } from '~/types/props'
@@ -16,6 +17,8 @@ const shoppingCartStore = useShoppingCartStore()
 const { fetchProducts } = productStore
 const { addCart } = shoppingCartStore
 const { products, totalProductsCount } = storeToRefs(productStore)
+
+const { emit } = useEventBus('add-to-cart')
 
 const lt = (str: keyof I18n['items']['list']) => {
   return i18n.t(`items.list.${str}`)
@@ -36,6 +39,7 @@ const handleClickAddCartButton = async (
     productId: id,
     quantity,
   })
+  emit('add-to-cart')
 }
 
 // 1ページ当たりに表示する商品数
