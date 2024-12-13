@@ -28,7 +28,6 @@ type app struct {
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	v1                   v1.Handler
-	health               func(ctx context.Context) error
 	AppName              string  `default:"user-gateway"   envconfig:"APP_NAME"`
 	Environment          string  `default:"none"           envconfig:"ENV"`
 	Port                 int64   `default:"8080"           envconfig:"PORT"`
@@ -105,12 +104,6 @@ func (a *app) run() error {
 
 	// Serverの起動
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		if err = a.health(ectx); err != nil {
-			a.logger.Warn("Failed to health check", zap.Error(err))
-		}
-		return
-	})
 	eg.Go(func() (err error) {
 		if err = ms.Serve(); err != nil {
 			a.logger.Warn("Failed to run metrics server", zap.Error(err))
