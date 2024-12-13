@@ -32,16 +32,9 @@ const handleClickAddCartButton = async (
   id: string,
   quantity: number,
 ) => {
-  const message = i18n.t('items.list.addCartSnackbarMessage', {
-    itemName: name,
-  })
   await addCart({
     productId: id,
     quantity,
-  })
-  snackbarItems.value.push({
-    text: message,
-    isShow: true,
   })
 }
 

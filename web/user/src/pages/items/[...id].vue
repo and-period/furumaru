@@ -73,16 +73,9 @@ const canAddCart = computed<boolean>(() => {
 })
 
 const handleClickAddCartButton = () => {
-  const message = i18n.t('items.details.addCartSnackbarMessage', {
-    itemName: product.value.name,
-  })
   addCart({
     productId: id.value,
     quantity: quantity.value,
-  })
-  snackbarItems.value.push({
-    text: message,
-    isShow: true,
   })
 }
 
