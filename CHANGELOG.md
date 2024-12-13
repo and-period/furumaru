@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.2.5](https://github.com/and-period/furumaru/compare/v3.2.4...v3.2.5) - 2024-12-13
+- build(deps): bump the dependencies group in /api with 20 updates by @dependabot in https://github.com/and-period/furumaru/pull/2549
+- fix(api): DBとのコネクション設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2555
+
 ## [v3.2.4](https://github.com/and-period/furumaru/compare/v3.2.3...v3.2.4) - 2024-12-12
 - feat(api): DBへのヘルスチェック機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2551
 - fix(api): TiDB用のデフォルト設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2553
