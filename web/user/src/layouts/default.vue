@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
+import { useEventBus } from '@vueuse/core'
 import { useAuthStore } from '~/store/auth'
 import { useNotificationStore } from '~/store/notification'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -23,6 +24,15 @@ const { getCart, removeProductFromCart } = shoppingStore
 const { cartIsEmpty, shoppingCart, totalPrice } = storeToRefs(shoppingStore)
 
 getCart()
+
+const appHeaderRef = ref<{ openCartMenu: () => void }>({
+  openCartMenu: () => {},
+})
+
+const { on } = useEventBus('add-to-cart')
+on(() => {
+  appHeaderRef.value.openCartMenu()
+})
 
 const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
@@ -152,6 +162,7 @@ onUnmounted(() => {
 <template>
   <div class="sticky top-0 z-[60]">
     <the-app-header
+      ref="appHeaderRef"
       :home-path="localePath('/')"
       :is-authenticated="isAuthenticated"
       :user="user"

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 interface Expose {
+  open: () => void
   close: () => void
 }
 
@@ -15,12 +16,33 @@ const handleCloseIconClick = () => {
 
 const dropdownArea = ref<HTMLElement | null>(null)
 
+// isShowがtrueになってから0.3秒経過しているかのフラグ
+let isShowFlag = false
+watch(isShow, (newValue) => {
+  if (newValue === true) {
+    setTimeout(() => {
+      isShowFlag = true
+    }, 300)
+  }
+  else {
+    isShowFlag = false
+  }
+})
+
 const clickOutside = (e: MouseEvent) => {
   if (e.target instanceof Node && !dropdownArea.value?.contains(e.target)) {
     if (isShow.value === true) {
+      // isShowがtrueになってから0.3秒経過していない場合は、クリックイベントを無視する
+      if (!isShowFlag) {
+        return
+      }
       isShow.value = false
     }
   }
+}
+
+const handleOpen = () => {
+  isShow.value = true
 }
 
 onMounted(() => {
@@ -32,6 +54,7 @@ onBeforeUnmount(() => {
 })
 
 defineExpose<Expose>({
+  open: handleOpen,
   close: handleCloseIconClick,
 })
 </script>

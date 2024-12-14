@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useEventBus } from '@vueuse/core'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ProductStatus } from '~/types/api'
@@ -17,6 +18,8 @@ const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
+
+const { emit } = useEventBus('add-to-cart')
 
 const dt = (str: keyof I18n['items']['details']) => {
   return i18n.t(`items.details.${str}`)
@@ -73,17 +76,11 @@ const canAddCart = computed<boolean>(() => {
 })
 
 const handleClickAddCartButton = () => {
-  const message = i18n.t('items.details.addCartSnackbarMessage', {
-    itemName: product.value.name,
-  })
   addCart({
     productId: id.value,
     quantity: quantity.value,
   })
-  snackbarItems.value.push({
-    text: message,
-    isShow: true,
-  })
+  emit('add-to-cart')
 }
 
 const getDeliveryType = (type: number) => {
