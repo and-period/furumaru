@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.2.7](https://github.com/and-period/furumaru/compare/v3.2.6...v3.2.7) - 2024-12-14
+- Fix: fixed cart message by @hamachans in https://github.com/and-period/furumaru/pull/2558
+
 ## [v3.2.6](https://github.com/and-period/furumaru/compare/v3.2.5...v3.2.6) - 2024-12-14
 - 買い物カゴに追加したときの挙動を変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2556
 
