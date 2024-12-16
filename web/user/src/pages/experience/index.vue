@@ -37,6 +37,18 @@ const canAddCart = computed<boolean>(() => {
   }
 })
 
+const priceString = (price: number) => {
+  if (price) {
+    return new Intl.NumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY',
+    }).format(price)
+  }
+  else {
+    return ''
+  }
+}
+
 const items = {
   experience: {
     id: 'kSByoE6FetnPs5Byk3a9Zx',
@@ -187,7 +199,7 @@ const items = {
                 </a>
               </div>
               <div class="text-[12px] tracking-[1.4px] md:text-[14px]">
-                {{ items.producer.prefecture}} {{ items.producer.city }}
+                {{ items.producer.prefecture }} {{ items.producer.city }}
               </div>
             </div>
 
@@ -223,6 +235,222 @@ const items = {
                 </li>
               </ol>
             </div>
+
+            <div class="items-center grid grid-cols-12">
+              <p class="text-[24px] font-bold col-span-6">
+                大人 (高校生以上)
+              </p>
+              <div
+                class="col-span-4"
+              >
+                <div class="flex">
+                  <p class="text-[24px] font-bold">
+                    {{ priceString(items.experience.priceAdult) }}
+                  </p>
+                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                    (税込)
+                  </p>
+                </div>
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-if="items.experience"
+                  class="flex justify-end"
+                >
+                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                    数量
+                  </label>
+                  <select
+                    class="h-full border-[1px] border-main px-2"
+                  >
+                    <option
+                      v-for="(_, i) in Array.from({
+                        length: 10,
+                      })"
+                      :key="i + 1"
+                      :value="i + 1"
+                    >
+                      {{ i + 1 }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
+            />
+            <div class="items-center grid grid-cols-12">
+              <p class="text-[24px] font-bold col-span-6">
+                中学生
+              </p>
+              <div
+                class="col-span-4"
+              >
+                <div class="flex">
+                  <p class="text-[24px] font-bold">
+                    {{ priceString(items.experience.priceJuniorHighSchool) }}
+                  </p>
+                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                    (税込)
+                  </p>
+                </div>
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-if="items.experience"
+                  class="flex justify-end"
+                >
+                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                    数量
+                  </label>
+                  <select
+                    class="h-full border-[1px] border-main px-2"
+                  >
+                    <option
+                      v-for="(_, i) in Array.from({
+                        length: 10,
+                      })"
+                      :key="i + 1"
+                      :value="i + 1"
+                    >
+                      {{ i + 1 }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
+            />
+            <div class="items-center grid grid-cols-12">
+              <p class="text-[24px] font-bold col-span-6">
+                小学生
+              </p>
+              <div
+                class="col-span-4"
+              >
+                <div class="flex">
+                  <p class="text-[24px] font-bold">
+                    {{ priceString(items.experience.priceElementarySchool) }}
+                  </p>
+                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                    (税込)
+                  </p>
+                </div>
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-if="items.experience"
+                  class="flex justify-end"
+                >
+                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                    数量
+                  </label>
+                  <select
+                    class="h-full border-[1px] border-main px-2"
+                  >
+                    <option
+                      v-for="(_, i) in Array.from({
+                        length: 10,
+                      })"
+                      :key="i + 1"
+                      :value="i + 1"
+                    >
+                      {{ i + 1 }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
+            />
+            <div class="items-center grid grid-cols-12">
+              <p class="text-[24px] font-bold col-span-6">
+                未就学児 (3歳〜)
+              </p>
+              <div
+                class="col-span-4"
+              >
+                <div class="flex">
+                  <p class="text-[24px] font-bold">
+                    {{ priceString(items.experience.pricePreschool) }}
+                  </p>
+                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                    (税込)
+                  </p>
+                </div>
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-if="items.experience"
+                  class="flex justify-end"
+                >
+                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                    数量
+                  </label>
+                  <select
+                    class="h-full border-[1px] border-main px-2"
+                  >
+                    <option
+                      v-for="(_, i) in Array.from({
+                        length: 10,
+                      })"
+                      :key="i + 1"
+                      :value="i + 1"
+                    >
+                      {{ i + 1 }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
+            />
+            <div class="items-center grid grid-cols-12">
+              <p class="text-[24px] font-bold col-span-6">
+                シニア (65歳〜)
+              </p>
+              <div
+                class="col-span-4"
+              >
+                <div class="flex">
+                  <p class="text-[24px] font-bold">
+                    {{ priceString(items.experience.priceSenior) }}
+                  </p>
+                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                    (税込)
+                  </p>
+                </div>
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-if="items.experience"
+                  class="flex justify-end"
+                >
+                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                    数量
+                  </label>
+                  <select
+                    class="h-full border-[1px] border-main px-2"
+                  >
+                    <option
+                      v-for="(_, i) in Array.from({
+                        length: 10,
+                      })"
+                      :key="i + 1"
+                      :value="i + 1"
+                    >
+                      {{ i + 1 }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
+            />
 
             <button
               class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
