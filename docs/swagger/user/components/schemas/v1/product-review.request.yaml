@@ -1,0 +1,46 @@
+createProductReviewRequest:
+  type: object
+  properties:
+    rate:
+      type: integer
+      format: int64
+      description: 評価（1〜5）
+      minimum: 1
+      maximum: 5
+    title:
+      type: string
+      description: タイトル（64文字以内）
+    comment:
+      type: string
+      description: コメント（2000文字以内）
+  required:
+  - rate
+  - title
+  - comment
+  example:
+    rate: 5
+    title: とても良い商品
+    comment: とても良い商品でした。また購入したいです。
+updateProductReviewRequest:
+  type: object
+  properties:
+    rate:
+      type: integer
+      format: int64
+      description: 評価（1〜5）
+      minimum: 1
+      maximum: 5
+    title:
+      type: string
+      description: タイトル（64文字以内）
+    comment:
+      type: string
+      description: コメント（2000文字以内）
+  required:
+  - rate
+  - title
+  - comment
+  example:
+    rate: 5
+    title: とても良い商品
+    comment: とても良い商品でした。また購入したいです。

@@ -1,0 +1,56 @@
+productReview:
+  type: object
+  description: 商品レビュー情報
+  properties:
+    id:
+      type: string
+      description: 商品レビューID
+    productId:
+      type: string
+      description: 商品ID
+    userId:
+      type: string
+      description: ユーザID
+    username:
+      type: string
+      description: ユーザ名
+    accountId:
+      type: string
+      description: アカウントID
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    rate:
+      type: integer
+      format: int64
+      description: 評価
+    title:
+      type: string
+      description: レビュータイトル
+    comment:
+      type: string
+      description: レビューコメント
+    publishedAt:
+      type: int64
+      description: レビュー日時（unixtime）
+  required:
+  - id
+  - productId
+  - userId
+  - username
+  - accountId
+  - rate
+  - title
+  - comment
+  - publishedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    productId: 'kSByoE6FetnPs5Byk3a9Zx'
+    userId: 'kSByoE6FetnPs5Byk3a9Zx'
+    username: 'username'
+    accountId: 1
+    thumbnailUrl: https://example.com/thumbnail.jpg
+    rate: 5
+    title: とても良い商品
+    comment: とても良い商品でした。また購入したいです。
+    publishedAt: 1614556800

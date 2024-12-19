@@ -29,6 +29,7 @@ type Product struct {
 	Box100Rate        int64           `json:"box100Rate"`        // 箱の占有率(サイズ:100)
 	OriginPrefecture  string          `json:"originPrefecture"`  // 原産地(都道府県)
 	OriginCity        string          `json:"originCity"`        // 原産地(市区町村)
+	Rate              *ProductRate    `json:"rate"`              // 商品評価
 	StartAt           int64           `json:"startAt"`           // 販売開始日時
 	EndAt             int64           `json:"endAt"`             // 販売終了日時
 }
@@ -37,6 +38,13 @@ type Product struct {
 type ProductMedia struct {
 	URL         string `json:"url"`         // メディアURL
 	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+}
+
+// ProductRate - 商品評価情報
+type ProductRate struct {
+	Average float64         `json:"average"` // 平均評価
+	Count   int64           `json:"count"`   // 合計評価数
+	Detail  map[int64]int64 `json:"detail"`  // 評価詳細
 }
 
 type ProductResponse struct {
