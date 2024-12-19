@@ -1,0 +1,46 @@
+productReviewResponse:
+  type: object
+  properties:
+    review:
+      $ref: './../../../openapi.yaml#/components/schemas/productReview'
+  required:
+  - review
+  example:
+    review:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com/thumbnail.jpg
+      rate: 5
+      title: とても良い商品
+      comment: とても良い商品でした。また購入したいです。
+      publishedAt: 1614556800
+productReviewsResponse:
+  type: object
+  properties:
+    reviews:
+      type: array
+      description: 商品レビュー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productReview'
+    nextToken:
+      type: string
+      description: 次の取得位置
+  required:
+  - reviews
+  - nextToken
+  example:
+    reviews:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com/thumbnail.jpg
+      rate: 5
+      title: とても良い商品
+      comment: とても良い商品でした。また購入したいです。
+      publishedAt: 1614556800
+    nextToken: '1640962800'
