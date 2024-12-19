@@ -31,7 +31,8 @@ productReview:
       type: string
       description: レビューコメント
     publishedAt:
-      type: int64
+      type: integer
+      format: int64
       description: レビュー日時（unixtime）
   required:
   - id

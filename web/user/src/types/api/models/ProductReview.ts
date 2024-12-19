@@ -13,13 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { Int64 } from './Int64';
-import {
-    Int64FromJSON,
-    Int64FromJSONTyped,
-    Int64ToJSON,
-} from './Int64';
-
 /**
  * 商品レビュー情報
  * @export
@@ -82,10 +75,10 @@ export interface ProductReview {
     comment: string;
     /**
      * レビュー日時（unixtime）
-     * @type {Int64}
+     * @type {number}
      * @memberof ProductReview
      */
-    publishedAt: Int64;
+    publishedAt: number;
 }
 
 /**
@@ -123,7 +116,7 @@ export function ProductReviewFromJSONTyped(json: any, ignoreDiscriminator: boole
         'rate': json['rate'],
         'title': json['title'],
         'comment': json['comment'],
-        'publishedAt': Int64FromJSON(json['publishedAt']),
+        'publishedAt': json['publishedAt'],
     };
 }
 
@@ -142,7 +135,7 @@ export function ProductReviewToJSON(value?: ProductReview | null): any {
         'rate': value['rate'],
         'title': value['title'],
         'comment': value['comment'],
-        'publishedAt': Int64ToJSON(value['publishedAt']),
+        'publishedAt': value['publishedAt'],
     };
 }
 
