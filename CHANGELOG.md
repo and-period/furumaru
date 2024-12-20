@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.3.0](https://github.com/and-period/furumaru/compare/v3.2.8...v3.3.0) - 2024-12-20
+- feat(store): 商品レビュー機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2566
+- feat(store): 商品レビューの集計ロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2568
+
 ## [v3.2.8](https://github.com/and-period/furumaru/compare/v3.2.7...v3.2.8) - 2024-12-20
 - build(deps-dev): bump npm-run-all2 from 7.0.1 to 7.0.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2560
 - feat(api): 商品レビュー機能の定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2563
