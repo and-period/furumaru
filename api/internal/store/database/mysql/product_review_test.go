@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
@@ -48,9 +48,9 @@ func TestProductReview_List(t *testing.T) {
 	require.NoError(t, err)
 
 	reviews := make(entity.ProductReviews, 3)
-	reviews[0] = testProductReview("review-id01", "product-id", "user-id01", now().Add(time.Hour))
+	reviews[0] = testProductReview("review-id01", "product-id", "user-id01", now().Add(-time.Hour))
 	reviews[1] = testProductReview("review-id02", "product-id", "user-id02", now())
-	reviews[2] = testProductReview("review-id03", "product-id", "user-id03", now().Add(-time.Hour))
+	reviews[2] = testProductReview("review-id03", "product-id", "user-id03", now().Add(time.Hour))
 	err = db.DB.Create(&reviews).Error
 	require.NoError(t, err)
 
@@ -75,12 +75,12 @@ func TestProductReview_List(t *testing.T) {
 				params: &database.ListProductReviewsParams{
 					ProductID: "product-id",
 					Limit:     1,
-					NextToken: fmt.Sprintf("%d", now().UnixNano()),
+					NextToken: strconv.FormatInt(now().UnixNano(), 10),
 				},
 			},
 			want: want{
 				reviews: reviews[1:2],
-				token:   fmt.Sprintf("%d", now().Add(time.Hour).UnixNano()),
+				token:   strconv.FormatInt(now().Add(-time.Hour).UnixNano(), 10),
 				err:     nil,
 			},
 		},

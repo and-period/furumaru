@@ -51,7 +51,7 @@ func (c *broadcastComment) List(
 		if err != nil {
 			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
 		}
-		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
+		stmt = stmt.Where("created_at <= ?", time.Unix(0, nsec))
 	}
 	stmt = stmt.Order("created_at DESC")
 
