@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -15,6 +16,92 @@ import (
 
 func TestProductReview(t *testing.T) {
 	assert.NotNil(t, newProductReview(nil))
+}
+
+func TestProductReview_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testCategory("category-id", "野菜", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	productTag := testProductTag("tag-id", "贈答品", now())
+	err = db.DB.Create(&productTag).Error
+	require.NoError(t, err)
+	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Create(&p).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&p.ProductRevision).Error
+	require.NoError(t, err)
+
+	reviews := make(entity.ProductReviews, 3)
+	reviews[0] = testProductReview("review-id01", "product-id", "user-id01", now().Add(time.Hour))
+	reviews[1] = testProductReview("review-id02", "product-id", "user-id02", now())
+	reviews[2] = testProductReview("review-id03", "product-id", "user-id03", now().Add(-time.Hour))
+	err = db.DB.Create(&reviews).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.ListProductReviewsParams
+	}
+	type want struct {
+		reviews entity.ProductReviews
+		token   string
+		err     error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListProductReviewsParams{
+					ProductID: "product-id",
+					Limit:     1,
+					NextToken: fmt.Sprintf("%d", now().UnixNano()),
+				},
+			},
+			want: want{
+				reviews: reviews[1:2],
+				token:   fmt.Sprintf("%d", now().Add(time.Hour).UnixNano()),
+				err:     nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &productReview{db: db, now: now}
+			actual, token, err := db.List(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.token, token)
+			assert.Equal(t, tt.want.reviews, actual)
+		})
+	}
 }
 
 func TestProductReview_Get(t *testing.T) {
@@ -338,6 +425,103 @@ func TestProductReview_Delete(t *testing.T) {
 			db := &productReview{db: db, now: now}
 			err = db.Delete(ctx, tt.args.reviewID)
 			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestProductReview_Aggregate(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testCategory("category-id", "野菜", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	productTag := testProductTag("tag-id", "贈答品", now())
+	err = db.DB.Create(&productTag).Error
+	require.NoError(t, err)
+	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Create(&p).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&p.ProductRevision).Error
+	require.NoError(t, err)
+
+	reviews := make(entity.ProductReviews, 4)
+	reviews[0] = testProductReview("review-id01", "product-id", "user-id01", now())
+	reviews[0].Rate = 1
+	reviews[1] = testProductReview("review-id02", "product-id", "user-id02", now())
+	reviews[1].Rate = 5
+	reviews[2] = testProductReview("review-id03", "product-id", "user-id03", now())
+	reviews[2].Rate = 3
+	reviews[3] = testProductReview("review-id04", "product-id", "user-id04", now())
+	reviews[3].Rate = 1
+	err = db.DB.Create(&reviews).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.AggregateProductReviewsParams
+	}
+	type want struct {
+		reviews entity.AggregatedProductReviews
+		err     error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.AggregateProductReviewsParams{
+					ProductIDs: []string{"product-id"},
+				},
+			},
+			want: want{
+				reviews: entity.AggregatedProductReviews{
+					{
+						ProductID: "product-id",
+						Count:     4,
+						Average:   2.5,
+						Rate1:     2,
+						Rate2:     0,
+						Rate3:     1,
+						Rate4:     0,
+						Rate5:     1,
+					},
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &productReview{db: db, now: now}
+			actual, err := db.Aggregate(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.reviews, actual)
 		})
 	}
 }

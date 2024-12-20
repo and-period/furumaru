@@ -46,10 +46,12 @@ type Service interface {
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                                              // 更新
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                                              // 削除
 	// 商品レビュー
-	GetProductReview(ctx context.Context, in *GetProductReviewInput) (*entity.ProductReview, error)       // １件取得
-	CreateProductReview(ctx context.Context, in *CreateProductReviewInput) (*entity.ProductReview, error) // 登録
-	UpdateProductReview(ctx context.Context, in *UpdateProductReviewInput) error                          // 更新
-	DeleteProductReview(ctx context.Context, in *DeleteProductReviewInput) error                          // 削除
+	ListProductReviews(ctx context.Context, in *ListProductReviewsInput) (entity.ProductReviews, string, error)             // 一覧取得
+	GetProductReview(ctx context.Context, in *GetProductReviewInput) (*entity.ProductReview, error)                         // １件取得
+	CreateProductReview(ctx context.Context, in *CreateProductReviewInput) (*entity.ProductReview, error)                   // 登録
+	UpdateProductReview(ctx context.Context, in *UpdateProductReviewInput) error                                            // 更新
+	DeleteProductReview(ctx context.Context, in *DeleteProductReviewInput) error                                            // 削除
+	AggregateProductReviews(ctx context.Context, in *AggregateProductReviewsInput) (entity.AggregatedProductReviews, error) // 集計結果一覧取得
 	// プロモーション
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
 	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error) // 一覧取得(ID指定)

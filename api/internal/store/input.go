@@ -299,6 +299,27 @@ type GetProductReviewInput struct {
 	ReviewID string `validate:"required"`
 }
 
+type ListProductReviewsOrderKey int32
+
+const (
+	ListProductReviewsOrderByRate ListProductReviewsOrderKey = iota + 1
+	ListProductReviewsOrderByCreatedAt
+)
+
+type ListProductReviewsInput struct {
+	ProductID string                     `validate:"required"`
+	UserID    string                     `validate:""`
+	Rates     []int64                    `validate:"dive,min=1,max=5"`
+	Limit     int64                      `validate:"required,max=200"`
+	NextToken string                     `validate:""`
+	Orders    []*ListProductReviewsOrder `validate:"dive,required"`
+}
+
+type ListProductReviewsOrder struct {
+	Key        ListProductReviewsOrderKey `validate:"required"`
+	OrderByASC bool                       `validate:""`
+}
+
 type CreateProductReviewInput struct {
 	ProductID string `validate:"required"`
 	UserID    string `validate:"required"`
@@ -316,6 +337,10 @@ type UpdateProductReviewInput struct {
 
 type DeleteProductReviewInput struct {
 	ReviewID string `validate:"required"`
+}
+
+type AggregateProductReviewsInput struct {
+	ProductIDs []string `validate:"dive,required"`
 }
 
 type ListPromotionsOrderKey int32

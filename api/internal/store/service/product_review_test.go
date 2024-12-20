@@ -13,6 +13,125 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestListProductReviews(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	params := &database.ListProductReviewsParams{
+		ProductID: "product-id",
+		UserID:    "user-id",
+		Rates:     []int64{4, 5},
+		Limit:     10,
+		Orders: []*database.ListProductReviewsOrder{
+			{
+				Key:        database.ListProductReviewsOrderByRate,
+				OrderByASC: true,
+			},
+		},
+	}
+	reviews := entity.ProductReviews{
+		{
+			ID:        "review-id",
+			ProductID: "product-id",
+			UserID:    "user-id",
+			Rate:      5,
+			Title:     "最高の商品",
+			Comment:   "最高の商品でした。",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
+	tests := []struct {
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListProductReviewsInput
+		expect      entity.ProductReviews
+		expectToken string
+		expectErr   error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductReview.EXPECT().List(ctx, params).Return(reviews, "next-token", nil)
+			},
+			input: &store.ListProductReviewsInput{
+				ProductID: "product-id",
+				UserID:    "user-id",
+				Rates:     []int64{4, 5},
+				Limit:     10,
+				Orders: []*store.ListProductReviewsOrder{
+					{
+						Key:        store.ListProductReviewsOrderByRate,
+						OrderByASC: true,
+					},
+				},
+			},
+			expect:      reviews,
+			expectToken: "next-token",
+			expectErr:   nil,
+		},
+		{
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &store.ListProductReviewsInput{},
+			expect:      nil,
+			expectToken: "",
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid order key",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListProductReviewsInput{
+				ProductID: "product-id",
+				UserID:    "user-id",
+				Rates:     []int64{4, 5},
+				Limit:     10,
+				Orders: []*store.ListProductReviewsOrder{
+					{
+						Key:        0,
+						OrderByASC: true,
+					},
+				},
+			},
+			expect:      nil,
+			expectToken: "",
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list product reviews",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductReview.EXPECT().List(ctx, params).Return(nil, "", assert.AnError)
+			},
+			input: &store.ListProductReviewsInput{
+				ProductID: "product-id",
+				UserID:    "user-id",
+				Rates:     []int64{4, 5},
+				Limit:     10,
+				Orders: []*store.ListProductReviewsOrder{
+					{
+						Key:        store.ListProductReviewsOrderByRate,
+						OrderByASC: true,
+					},
+				},
+			},
+			expect:      nil,
+			expectToken: "",
+			expectErr:   exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, token, err := service.ListProductReviews(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expectToken, token)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetProductReview(t *testing.T) {
 	t.Parallel()
 
@@ -296,6 +415,74 @@ func TestDeleteProductReview(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteProductReview(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestAggregateProductReviews(t *testing.T) {
+	t.Parallel()
+
+	params := &database.AggregateProductReviewsParams{
+		ProductIDs: []string{"product-id"},
+	}
+	reviews := entity.AggregatedProductReviews{
+		{
+			ProductID: "product-id",
+			Count:     4,
+			Average:   2.5,
+			Rate1:     2,
+			Rate2:     0,
+			Rate3:     1,
+			Rate4:     0,
+			Rate5:     1,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateProductReviewsInput
+		expect    entity.AggregatedProductReviews
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductReview.EXPECT().Aggregate(ctx, params).Return(reviews, nil)
+			},
+			input: &store.AggregateProductReviewsInput{
+				ProductIDs: []string{"product-id"},
+			},
+			expect:    reviews,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.AggregateProductReviewsInput{
+				ProductIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to aggregate product reviews",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductReview.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateProductReviewsInput{
+				ProductIDs: []string{"product-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateProductReviews(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

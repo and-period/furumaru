@@ -2,11 +2,54 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
+
+func (s *service) ListProductReviews(ctx context.Context, in *store.ListProductReviewsInput) (entity.ProductReviews, string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, "", internalError(err)
+	}
+	order, err := s.newListProductReviewsOrders(in.Orders)
+	if err != nil {
+		return nil, "", fmt.Errorf("service: invalid list product reviews orders: err=%s: %w", err, exception.ErrInvalidArgument)
+	}
+	params := &database.ListProductReviewsParams{
+		ProductID: in.ProductID,
+		UserID:    in.UserID,
+		Rates:     in.Rates,
+		Limit:     in.Limit,
+		NextToken: in.NextToken,
+		Orders:    order,
+	}
+	reviews, token, err := s.db.ProductReview.List(ctx, params)
+	return reviews, token, internalError(err)
+}
+
+func (s *service) newListProductReviewsOrders(in []*store.ListProductReviewsOrder) ([]*database.ListProductReviewsOrder, error) {
+	res := make([]*database.ListProductReviewsOrder, len(in))
+	for i := range in {
+		var key database.ListProductReviewsOrderKey
+		switch in[i].Key {
+		case store.ListProductReviewsOrderByRate:
+			key = database.ListProductReviewsOrderByRate
+		case store.ListProductReviewsOrderByCreatedAt:
+			key = database.ListProductReviewsOrderByCreatedAt
+		default:
+			return nil, errors.New("service: invalid order key")
+		}
+		res[i] = &database.ListProductReviewsOrder{
+			Key:        key,
+			OrderByASC: in[i].OrderByASC,
+		}
+	}
+	return res, nil
+}
 
 func (s *service) GetProductReview(ctx context.Context, in *store.GetProductReviewInput) (*entity.ProductReview, error) {
 	if err := s.validator.Struct(in); err != nil {
@@ -56,4 +99,17 @@ func (s *service) DeleteProductReview(ctx context.Context, in *store.DeleteProdu
 	}
 	err := s.db.ProductReview.Delete(ctx, in.ReviewID)
 	return internalError(err)
+}
+
+func (s *service) AggregateProductReviews(
+	ctx context.Context, in *store.AggregateProductReviewsInput,
+) (entity.AggregatedProductReviews, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateProductReviewsParams{
+		ProductIDs: in.ProductIDs,
+	}
+	aggregation, err := s.db.ProductReview.Aggregate(ctx, params)
+	return aggregation, internalError(err)
 }
