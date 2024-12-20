@@ -157,6 +157,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.checkoutRoutes(v1)
 	h.liveCommentRoutes(v1)
 	h.orderRoutes(v1)
+	h.productReviewRoutes(v1)
 	h.spotRoutes(v1)
 	h.videoCommentRoutes(v1)
 	h.uploadRoutes(v1)

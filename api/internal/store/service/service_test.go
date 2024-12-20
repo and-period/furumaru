@@ -49,6 +49,7 @@ type dbMocks struct {
 	Order          *mock_database.MockOrder
 	PaymentSystem  *mock_database.MockPaymentSystem
 	Product        *mock_database.MockProduct
+	ProductReview  *mock_database.MockProductReview
 	ProductTag     *mock_database.MockProductTag
 	ProductType    *mock_database.MockProductType
 	Promotion      *mock_database.MockPromotion
@@ -99,6 +100,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Order:          mock_database.NewMockOrder(ctrl),
 		PaymentSystem:  mock_database.NewMockPaymentSystem(ctrl),
 		Product:        mock_database.NewMockProduct(ctrl),
+		ProductReview:  mock_database.NewMockProductReview(ctrl),
 		ProductTag:     mock_database.NewMockProductTag(ctrl),
 		ProductType:    mock_database.NewMockProductType(ctrl),
 		Promotion:      mock_database.NewMockPromotion(ctrl),
@@ -127,6 +129,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Order:          mocks.db.Order,
 			PaymentSystem:  mocks.db.PaymentSystem,
 			Product:        mocks.db.Product,
+			ProductReview:  mocks.db.ProductReview,
 			ProductTag:     mocks.db.ProductTag,
 			ProductType:    mocks.db.ProductType,
 			Promotion:      mocks.db.Promotion,
