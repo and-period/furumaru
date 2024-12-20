@@ -8,6 +8,21 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+func (s *service) ListProductReviews(ctx context.Context, in *store.ListProductReviewsInput) (entity.ProductReviews, string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, "", internalError(err)
+	}
+	params := &database.ListProductReviewsParams{
+		ProductID: in.ProductID,
+		UserID:    in.UserID,
+		Rates:     in.Rates,
+		Limit:     in.Limit,
+		NextToken: in.NextToken,
+	}
+	reviews, token, err := s.db.ProductReview.List(ctx, params)
+	return reviews, token, internalError(err)
+}
+
 func (s *service) GetProductReview(ctx context.Context, in *store.GetProductReviewInput) (*entity.ProductReview, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
@@ -56,4 +71,17 @@ func (s *service) DeleteProductReview(ctx context.Context, in *store.DeleteProdu
 	}
 	err := s.db.ProductReview.Delete(ctx, in.ReviewID)
 	return internalError(err)
+}
+
+func (s *service) AggregateProductReviews(
+	ctx context.Context, in *store.AggregateProductReviewsInput,
+) (entity.AggregatedProductReviews, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateProductReviewsParams{
+		ProductIDs: in.ProductIDs,
+	}
+	aggregation, err := s.db.ProductReview.Aggregate(ctx, params)
+	return aggregation, internalError(err)
 }

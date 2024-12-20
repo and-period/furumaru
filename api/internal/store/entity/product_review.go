@@ -22,6 +22,20 @@ type ProductReview struct {
 
 type ProductReviews []*ProductReview
 
+// AggregatedProductReview - 商品レビュー集計情報
+type AggregatedProductReview struct {
+	ProductID string  `gorm:"primaryKey"` // 商品ID
+	Count     int64   `gorm:""`           // レビュー数
+	Average   float64 `gorm:""`           // 平均評価
+	Rate1     int64   `gorm:""`           // 評価1の数
+	Rate2     int64   `gorm:""`           // 評価2の数
+	Rate3     int64   `gorm:""`           // 評価3の数
+	Rate4     int64   `gorm:""`           // 評価4の数
+	Rate5     int64   `gorm:""`           // 評価5の数
+}
+
+type AggregatedProductReviews []*AggregatedProductReview
+
 type NewProductReviewParams struct {
 	ProductID string
 	UserID    string
@@ -39,4 +53,12 @@ func NewProductReview(params *NewProductReviewParams) *ProductReview {
 		Title:     params.Title,
 		Comment:   params.Comment,
 	}
+}
+
+func (rs AggregatedProductReviews) Map() map[string]*AggregatedProductReview {
+	m := make(map[string]*AggregatedProductReview)
+	for _, r := range rs {
+		m[r.ProductID] = r
+	}
+	return m
 }

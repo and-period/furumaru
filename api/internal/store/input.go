@@ -299,6 +299,14 @@ type GetProductReviewInput struct {
 	ReviewID string `validate:"required"`
 }
 
+type ListProductReviewsInput struct {
+	ProductID string  `validate:"required"`
+	UserID    string  `validate:""`
+	Rates     []int64 `validate:"dive,min=1,max=5"`
+	Limit     int64   `validate:"required,max=200"`
+	NextToken string  `validate:""`
+}
+
 type CreateProductReviewInput struct {
 	ProductID string `validate:"required"`
 	UserID    string `validate:"required"`
@@ -316,6 +324,10 @@ type UpdateProductReviewInput struct {
 
 type DeleteProductReviewInput struct {
 	ReviewID string `validate:"required"`
+}
+
+type AggregateProductReviewsInput struct {
+	ProductIDs []string `validate:"min=1,dive,required"`
 }
 
 type ListPromotionsOrderKey int32

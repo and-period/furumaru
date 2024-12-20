@@ -39,3 +39,46 @@ func TestProductReview(t *testing.T) {
 		})
 	}
 }
+
+func TestAggregatedProductReviews_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		reviews AggregatedProductReviews
+		expect  map[string]*AggregatedProductReview
+	}{
+		{
+			name: "success",
+			reviews: AggregatedProductReviews{
+				{
+					ProductID: "product-id",
+					Count:     4,
+					Average:   2.5,
+					Rate1:     2,
+					Rate2:     0,
+					Rate3:     1,
+					Rate4:     0,
+					Rate5:     1,
+				},
+			},
+			expect: map[string]*AggregatedProductReview{
+				"product-id": {
+					ProductID: "product-id",
+					Count:     4,
+					Average:   2.5,
+					Rate1:     2,
+					Rate2:     0,
+					Rate3:     1,
+					Rate4:     0,
+					Rate5:     1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.reviews.Map()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
