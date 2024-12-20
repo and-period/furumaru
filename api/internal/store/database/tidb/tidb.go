@@ -23,6 +23,7 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 		Order:          newOrder(db, client.Order),
 		PaymentSystem:  client.PaymentSystem,
 		Product:        newProduct(db, client.Product),
+		ProductReview:  client.ProductReview,
 		ProductTag:     newProductTag(db, client.ProductTag),
 		ProductType:    newProductType(db, client.ProductType),
 		Promotion:      newPromotion(db, client.Promotion),

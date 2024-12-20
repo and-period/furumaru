@@ -21,6 +21,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Order:          newOrder(db),
 		PaymentSystem:  newPaymentSystem(db),
 		Product:        newProduct(db),
+		ProductReview:  newProductReview(db),
 		ProductTag:     newProductTag(db),
 		ProductType:    newProductType(db),
 		Promotion:      newPromotion(db),
