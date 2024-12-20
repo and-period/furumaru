@@ -327,7 +327,7 @@ type DeleteProductReviewInput struct {
 }
 
 type AggregateProductReviewsInput struct {
-	ProductIDs []string `validate:"dive,required"`
+	ProductIDs []string `validate:"min=1,dive,required"`
 }
 
 type ListPromotionsOrderKey int32
