@@ -23,12 +23,6 @@ func TestListProductReviews(t *testing.T) {
 		UserID:    "user-id",
 		Rates:     []int64{4, 5},
 		Limit:     10,
-		Orders: []*database.ListProductReviewsOrder{
-			{
-				Key:        database.ListProductReviewsOrderByRate,
-				OrderByASC: true,
-			},
-		},
 	}
 	reviews := entity.ProductReviews{
 		{
@@ -61,12 +55,6 @@ func TestListProductReviews(t *testing.T) {
 				UserID:    "user-id",
 				Rates:     []int64{4, 5},
 				Limit:     10,
-				Orders: []*store.ListProductReviewsOrder{
-					{
-						Key:        store.ListProductReviewsOrderByRate,
-						OrderByASC: true,
-					},
-				},
 			},
 			expect:      reviews,
 			expectToken: "next-token",
@@ -81,25 +69,6 @@ func TestListProductReviews(t *testing.T) {
 			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
-			name:  "invalid order key",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.ListProductReviewsInput{
-				ProductID: "product-id",
-				UserID:    "user-id",
-				Rates:     []int64{4, 5},
-				Limit:     10,
-				Orders: []*store.ListProductReviewsOrder{
-					{
-						Key:        0,
-						OrderByASC: true,
-					},
-				},
-			},
-			expect:      nil,
-			expectToken: "",
-			expectErr:   exception.ErrInvalidArgument,
-		},
-		{
 			name: "failed to list product reviews",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ProductReview.EXPECT().List(ctx, params).Return(nil, "", assert.AnError)
@@ -109,12 +78,6 @@ func TestListProductReviews(t *testing.T) {
 				UserID:    "user-id",
 				Rates:     []int64{4, 5},
 				Limit:     10,
-				Orders: []*store.ListProductReviewsOrder{
-					{
-						Key:        store.ListProductReviewsOrderByRate,
-						OrderByASC: true,
-					},
-				},
 			},
 			expect:      nil,
 			expectToken: "",

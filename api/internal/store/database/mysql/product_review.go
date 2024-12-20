@@ -38,22 +38,13 @@ func (p listProductReviewsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.Rates) > 0 {
 		stmt = stmt.Where("rate IN (?)", p.Rates)
 	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	if len(p.Orders) == 0 {
-		stmt = stmt.Order("created_at DESC")
-	}
+	stmt = stmt.Order("created_at DESC")
 	return stmt
 }
 
-func (r *productReview) List(ctx context.Context, params *database.ListProductReviewsParams, fields ...string) (entity.ProductReviews, string, error) {
+func (r *productReview) List(
+	ctx context.Context, params *database.ListProductReviewsParams, fields ...string,
+) (entity.ProductReviews, string, error) {
 	var reviews entity.ProductReviews
 
 	p := listProductReviewsParams(*params)
@@ -68,7 +59,7 @@ func (r *productReview) List(ctx context.Context, params *database.ListProductRe
 		if err != nil {
 			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
 		}
-		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
+		stmt = stmt.Where("created_at <= ?", time.Unix(0, nsec))
 	}
 
 	if err := stmt.Find(&reviews).Error; err != nil {

@@ -324,25 +324,12 @@ type ProductReview interface {
 	Aggregate(ctx context.Context, params *AggregateProductReviewsParams) (entity.AggregatedProductReviews, error)
 }
 
-type ListProductReviewsOrderKey string
-
-const (
-	ListProductReviewsOrderByRate      ListProductReviewsOrderKey = "rate"
-	ListProductReviewsOrderByCreatedAt ListProductReviewsOrderKey = "created_at"
-)
-
 type ListProductReviewsParams struct {
 	ProductID string
 	UserID    string
 	Rates     []int64
 	Limit     int64
 	NextToken string
-	Orders    []*ListProductReviewsOrder
-}
-
-type ListProductReviewsOrder struct {
-	Key        ListProductReviewsOrderKey
-	OrderByASC bool
 }
 
 type UpdateProductReviewParams struct {
