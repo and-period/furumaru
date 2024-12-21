@@ -49,11 +49,20 @@ const priceString = (price: number) => {
   }
 }
 
+const convertToTimeString = (time: string): string => {
+  if (time.length === 4) {
+    const hour = time.slice(0, 2)
+    const minute = time.slice(2, 4)
+    return `${hour}:${minute}`
+  }
+  throw new Error('Invalid input format. Expected a 4-digit string.')
+}
+
 const items = {
   experience: {
     id: 'kSByoE6FetnPs5Byk3a9Zx',
     title: '農業体験',
-    description: '農業体験の説明',
+    description: '農業体験の説明 \n explanations of agriculture of experience',
     status: 1,
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
     producerId: 'kSByoE6FetnPs5Byk3a9Zx',
@@ -448,9 +457,6 @@ const items = {
                 </div>
               </div>
             </div>
-            <div
-              class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
-            />
 
             <button
               class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
@@ -466,6 +472,144 @@ const items = {
                 {{ items.experienceType?.name }}
               </span>
             </div>
+          </div>
+          <div class="col-span-2 mt-[40px] pb-10 md:mt-[80px] md:pb-16">
+            <article
+              class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px] whitespace-pre-wrap"
+              v-text="items.experience.description"
+            />
+          </div>
+          <div
+            class="col-span-2 flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main text-[14px] md:text-[16px]"
+          >
+            <div class="grid grid-cols-5 py-4">
+              <p class="col-span-2 md:col-span-1">
+                ・所用時間
+              </p>
+              <p class="col-span-3 md:col-span-4">
+                {{ items.experience.duration }}分
+              </p>
+            </div>
+            <div class="grid grid-cols-5 py-4">
+              <p class="col-span-2 md:col-span-1">
+                ・営業時間
+              </p>
+              <p class="col-span-3 md:col-span-4">
+                {{ convertToTimeString(items.experience.businessOpenTime) }}~{{ convertToTimeString(items.experience.businessCloseTime) }}
+              </p>
+            </div>
+            <div class="grid grid-cols-5 py-4">
+              <p class="col-span-2 md:col-span-1">
+                ・所在地 (郵便番号)
+              </p>
+              <p class="col-span-3 md:col-span-4">
+                {{ items.experience.hostPostalCode }}
+              </p>
+            </div>
+            <div class="grid grid-cols-5 py-4">
+              <p class="col-span-2 md:col-span-1">
+                ・所在地 (住所))
+              </p>
+              <p class="col-span-3 md:col-span-4">
+                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}{{ items.experience.hostAddressLine2 }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Producer Section -->
+    <template v-if="items.producer">
+      <div class="w-full">
+        <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
+          <div
+            class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+          >
+            <p
+              class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+            >
+              この体験の生産者
+            </p>
+
+            <div
+              class="mt-[64px] flex w-full flex-col gap-4 md:flex-row lg:gap-10"
+            >
+              <div
+                class="flex min-w-max flex-col items-center justify-center gap-4 md:flex-row"
+              >
+                <template v-if="items.producer.thumbnailUrl">
+                  <nuxt-img
+                    provider="cloudFront"
+                    sizes="96px md:120px"
+                    fit="cover"
+                    :src="items.producer.thumbnailUrl"
+                    :alt="`${items.producer.username}`"
+                    class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
+                  />
+                </template>
+                <template v-else>
+                  <img
+                    class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
+                    src="/img/account.png"
+                  >
+                </template>
+                <div
+                  class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
+                >
+                  <p class="text-sm font-[500] tracking-[1.4px]">
+                    {{ `${items.producer.prefecture} ${items.producer.city}` }}
+                  </p>
+                  <div
+                    class="flex flex-row items-baseline grow text-[16px] tracking-[1.4px] md:text-[24px]"
+                  >
+                    <p class="mr-1 text-[14px] font-medium">
+                      生産者
+                    </p>
+                    <p>{{ items.producer.username }}</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="pt-2 text-[14px] tracking-[1.4px] md:pt-0 md:text-[16px] md:tracking-[1.6px]"
+              >
+                {{ items.producer.profile }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template v-if="items.experience">
+      <div class="w-full">
+        <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
+          <div
+            class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+          >
+            <p
+              class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+            >
+              アクセス方法
+            </p>
+            <p class="mt-8">
+              〒{{ items.experience.hostPostalCode }}
+            </p>
+            <div class="flex mt-4">
+              <img src="/img/experience/map.svg">
+              <p class="">
+                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}
+              </p>
+              <p v-if="items.experience.hostAddressLine2">
+                {{ items.experience.hostAddressLine2 }}
+              </p>
+            </div>
+            <div
+              class="pt-2 text-[14px] tracking-[1.4px] md:pt-8 md:text-[16px] md:tracking-[1.6px]"
+            >
+              {{ items.experience.direction }}
+            </div>
+            <!-- 緯度経度をもとにgoogle mapを表示する -->
           </div>
         </div>
       </div>
