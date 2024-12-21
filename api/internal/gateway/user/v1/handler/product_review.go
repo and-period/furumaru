@@ -21,10 +21,60 @@ func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	r.PATCH("/:reviewId", h.authentication, h.UpdateProductReview)
 }
 
+func (h *handler) ListProductReviews(ctx *gin.Context) {
+	const defaultLimit = 20
+	rates, err := util.GetQueryInt64s(ctx, "rates")
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListProductReviewsInput{
+		ProductID: util.GetParam(ctx, "productId"),
+		UserID:    util.GetQuery(ctx, "userId", ""),
+		Rates:     rates,
+		Limit:     limit,
+		NextToken: util.GetQuery(ctx, "nextToken", ""),
+	}
+	reviews, nextToken, err := h.store.ListProductReviews(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if len(reviews) == 0 {
+		res := &response.ProductReviewsResponse{
+			Reviews: []*response.ProductReview{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	users, err := h.multiGetUsers(ctx, reviews.UserIDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.ProductReviewsResponse{
+		Reviews:   service.NewProductReviews(reviews, users.Map()).Response(),
+		NextToken: nextToken,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) GetProductReview(ctx *gin.Context) {
 	review, err := h.getProductReview(ctx, util.GetParam(ctx, "reviewId"))
 	if err != nil {
 		h.httpError(ctx, err)
+		return
+	}
+	if review.ProductID != util.GetParam(ctx, "productId") {
+		h.notFound(ctx, errors.New("handler: review not found"))
 		return
 	}
 	res := &response.ProductReviewResponse{
@@ -123,4 +173,15 @@ func (h *handler) getProductReview(ctx context.Context, reviewID string) (*servi
 		return nil, err
 	}
 	return service.NewProductReview(review, user), nil
+}
+
+func (h *handler) aggregateProductRates(ctx context.Context, productIDs ...string) (service.ProductRates, error) {
+	in := &store.AggregateProductReviewsInput{
+		ProductIDs: productIDs,
+	}
+	reviews, err := h.store.AggregateProductReviews(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProductRates(reviews), nil
 }

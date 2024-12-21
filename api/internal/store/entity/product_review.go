@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
@@ -53,6 +54,12 @@ func NewProductReview(params *NewProductReviewParams) *ProductReview {
 		Title:     params.Title,
 		Comment:   params.Comment,
 	}
+}
+
+func (rs ProductReviews) UserIDs() []string {
+	return set.UniqBy(rs, func(r *ProductReview) string {
+		return r.UserID
+	})
 }
 
 func (rs AggregatedProductReviews) Map() map[string]*AggregatedProductReview {

@@ -40,6 +40,35 @@ func TestProductReview(t *testing.T) {
 	}
 }
 
+func TestAggregatedProductReviews_UserIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		reviews ProductReviews
+		expect  []string
+	}{
+		{
+			name: "success",
+			reviews: ProductReviews{
+				{
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.reviews.UserIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestAggregatedProductReviews_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

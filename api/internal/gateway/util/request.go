@@ -74,6 +74,24 @@ func GetQueryInt32s(ctx *gin.Context, query string) ([]int32, error) {
 	return res, nil
 }
 
+func GetQueryInt64s(ctx *gin.Context, query string) ([]int64, error) {
+	str := GetQuery(ctx, query, "")
+	if str == "" {
+		return []int64{}, nil
+	}
+	strs := strings.Split(str, ",")
+
+	res := make([]int64, len(strs))
+	for i := range strs {
+		num, err := strconv.ParseInt(strs[i], 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		res[i] = num
+	}
+	return res, nil
+}
+
 func GetOrders(ctx *gin.Context) []*Order {
 	strs := GetQueryStrings(ctx, "orders")
 	orders := make([]*Order, len(strs))
