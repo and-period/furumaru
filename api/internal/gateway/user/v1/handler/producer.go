@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -65,7 +64,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	var (
 		lives    service.LiveSummaries
 		archives service.ArchiveSummaries
-		products entity.Products
+		products service.Products
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -91,7 +90,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
 		}
-		products, _, err = h.store.ListProducts(ectx, in)
+		products, _, err = h.listProducts(ectx, in)
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -103,7 +102,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 		Producer: producer.Response(),
 		Lives:    lives.Response(),
 		Archives: archives.Response(),
-		Products: service.NewProducts(products).Response(),
+		Products: products.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

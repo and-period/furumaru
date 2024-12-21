@@ -17,40 +17,6 @@ const (
 	ProductStatusOutOfSale ProductStatus = 3 // 販売期間外
 )
 
-// StorageMethodType - 保存方法
-type StorageMethodType int32
-
-const (
-	StorageMethodTypeUnknown      StorageMethodType = 0
-	StorageMethodTypeNormal       StorageMethodType = 1 // 常温保存
-	StorageMethodTypeCoolDark     StorageMethodType = 2 // 冷暗所保存
-	StorageMethodTypeRefrigerated StorageMethodType = 3 // 冷蔵保存
-	StorageMethodTypeFrozen       StorageMethodType = 4 // 冷凍保存
-)
-
-// DeliveryType - 配送方法
-type DeliveryType int32
-
-const (
-	DeliveryTypeUnknown      DeliveryType = 0
-	DeliveryTypeNormal       DeliveryType = 1 // 常温便
-	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
-	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
-)
-
-type Product struct {
-	response.Product
-	revisionID int64
-}
-
-type Products []*Product
-
-type ProductMedia struct {
-	response.ProductMedia
-}
-
-type MultiProductMedia []*ProductMedia
-
 func NewProductStatus(status entity.ProductStatus) ProductStatus {
 	switch status {
 	case entity.ProductStatusPrivate:
@@ -70,6 +36,17 @@ func (s ProductStatus) Response() int32 {
 	return int32(s)
 }
 
+// StorageMethodType - 保存方法
+type StorageMethodType int32
+
+const (
+	StorageMethodTypeUnknown      StorageMethodType = 0
+	StorageMethodTypeNormal       StorageMethodType = 1 // 常温保存
+	StorageMethodTypeCoolDark     StorageMethodType = 2 // 冷暗所保存
+	StorageMethodTypeRefrigerated StorageMethodType = 3 // 冷蔵保存
+	StorageMethodTypeFrozen       StorageMethodType = 4 // 冷凍保存
+)
+
 func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
 	switch typ {
 	case entity.StorageMethodTypeNormal:
@@ -88,6 +65,16 @@ func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
 func (t StorageMethodType) Response() int32 {
 	return int32(t)
 }
+
+// DeliveryType - 配送方法
+type DeliveryType int32
+
+const (
+	DeliveryTypeUnknown      DeliveryType = 0
+	DeliveryTypeNormal       DeliveryType = 1 // 常温便
+	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
+	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
+)
 
 func NewDeliveryType(typ entity.DeliveryType) DeliveryType {
 	switch typ {
@@ -123,8 +110,24 @@ func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 	return fweight
 }
 
-func NewProduct(product *entity.Product) *Product {
-	var point1, point2, point3 string
+type Product struct {
+	response.Product
+	revisionID int64
+}
+
+type Products []*Product
+
+type ProductDetailsParams struct {
+	Categories   map[string]*Category
+	ProductTypes map[string]*ProductType
+	ProductRates map[string]*ProductRate
+}
+
+func NewProduct(product *entity.Product, category *Category, rate *ProductRate) *Product {
+	var (
+		point1, point2, point3 string
+		categoryID             string
+	)
 	if len(product.RecommendedPoints) > 0 {
 		point1 = product.RecommendedPoints[0]
 	}
@@ -134,12 +137,15 @@ func NewProduct(product *entity.Product) *Product {
 	if len(product.RecommendedPoints) > 2 {
 		point3 = product.RecommendedPoints[2]
 	}
+	if category != nil {
+		categoryID = category.ID
+	}
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
 			CoordinatorID:     product.CoordinatorID,
 			ProducerID:        product.ProducerID,
-			CategoryID:        "",
+			CategoryID:        categoryID,
 			ProductTypeID:     product.TypeID,
 			ProductTagIDs:     product.TagIDs,
 			Name:              product.Name,
@@ -163,6 +169,7 @@ func NewProduct(product *entity.Product) *Product {
 			Box100Rate:        product.Box100Rate,
 			OriginPrefecture:  product.OriginPrefecture,
 			OriginCity:        product.OriginCity,
+			Rate:              rate.Response(),
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),
 		},
@@ -170,20 +177,19 @@ func NewProduct(product *entity.Product) *Product {
 	}
 }
 
-func (p *Product) Fill(category *Category) {
-	if category != nil {
-		p.CategoryID = category.ID
-	}
-}
-
 func (p *Product) Response() *response.Product {
 	return &p.Product
 }
 
-func NewProducts(products entity.Products) Products {
+func NewProducts(products entity.Products, params *ProductDetailsParams) Products {
 	res := make(Products, len(products))
-	for i := range products {
-		res[i] = NewProduct(products[i])
+	for i, product := range products {
+		var category *Category
+		typ, ok := params.ProductTypes[product.TypeID]
+		if ok {
+			category = params.Categories[typ.CategoryID]
+		}
+		res[i] = NewProduct(product, category, params.ProductRates[product.ID])
 	}
 	return res
 }
@@ -202,16 +208,6 @@ func (ps Products) MapByRevision() map[int64]*Product {
 	return res
 }
 
-func (ps Products) Fill(types map[string]*ProductType, categories map[string]*Category) {
-	for _, p := range ps {
-		typ, ok := types[p.ProductTypeID]
-		if !ok {
-			continue
-		}
-		p.Fill(categories[typ.CategoryID])
-	}
-}
-
 func (ps Products) Response() []*response.Product {
 	res := make([]*response.Product, len(ps))
 	for i := range ps {
@@ -219,6 +215,12 @@ func (ps Products) Response() []*response.Product {
 	}
 	return res
 }
+
+type ProductMedia struct {
+	response.ProductMedia
+}
+
+type MultiProductMedia []*ProductMedia
 
 func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 	return &ProductMedia{
@@ -245,6 +247,78 @@ func (m MultiProductMedia) Response() []*response.ProductMedia {
 	res := make([]*response.ProductMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
+	}
+	return res
+}
+
+type ProductRate struct {
+	response.ProductRate
+	productID string
+}
+
+type ProductRates []*ProductRate
+
+func newProductRate(review *entity.AggregatedProductReview) *ProductRate {
+	return &ProductRate{
+		ProductRate: response.ProductRate{
+			Count:   review.Count,
+			Average: review.Average,
+			Detail: map[int64]int64{
+				1: review.Rate1,
+				2: review.Rate2,
+				3: review.Rate3,
+				4: review.Rate4,
+				5: review.Rate5,
+			},
+		},
+		productID: review.ProductID,
+	}
+}
+
+func newEmptyProductRate() *ProductRate {
+	return &ProductRate{
+		ProductRate: response.ProductRate{
+			Count:   0,
+			Average: 0.0,
+			Detail: map[int64]int64{
+				1: 0,
+				2: 0,
+				3: 0,
+				4: 0,
+				5: 0,
+			},
+		},
+		productID: "",
+	}
+}
+
+func (r *ProductRate) Response() *response.ProductRate {
+	if r == nil {
+		return newEmptyProductRate().Response()
+	}
+	return &r.ProductRate
+}
+
+func NewProductRates(reviews entity.AggregatedProductReviews) ProductRates {
+	res := make(ProductRates, len(reviews))
+	for i, review := range reviews {
+		res[i] = newProductRate(review)
+	}
+	return res
+}
+
+func (rs ProductRates) MapByProductID() map[string]*ProductRate {
+	res := make(map[string]*ProductRate, len(rs))
+	for _, r := range rs {
+		res[r.productID] = r
+	}
+	return res
+}
+
+func (rs ProductRates) Response() []*response.ProductRate {
+	res := make([]*response.ProductRate, len(rs))
+	for i := range rs {
+		res[i] = rs[i].Response()
 	}
 	return res
 }
