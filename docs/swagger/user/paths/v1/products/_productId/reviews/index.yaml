@@ -12,6 +12,13 @@ get:
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   - in: query
+    name: userId
+    schema:
+      type: string
+    description: 商品ID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
     name: limit
     schema:
       type: integer
@@ -27,13 +34,12 @@ get:
     required: false
     example: '1640962800'
   - in: query
-    name: rate
+    name: rates
     schema:
-      type: integer
-      format: int64
-    description: 評価
+      type: string
+    description: 評価（カンマ区切り）
     required: false
-    example: 5
+    example: "1,5"
   responses:
     200:
       description: 成功
