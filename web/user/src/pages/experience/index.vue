@@ -4,8 +4,6 @@ import { ExperienceStatus } from '~/types/api'
 
 const i18n = useI18n()
 
-const route = useRoute()
-
 const snackbarItems = ref<Snackbar[]>([])
 
 const selectedMediaIndex = ref<number>(-1)
@@ -168,19 +166,17 @@ const items = {
             >
               <template
                 v-for="(m, i) in items.experience.media"
-                :key
+                :key="i"
               >
-                <template>
-                  <nuxt-img
-                    width="72px"
-                    fill="contain"
-                    provider="cloudFront"
-                    :src="m.url"
-                    :alt="`${itemThumbnailAlt}_${i}`"
-                    class="aspect-square w-[72px] h-[72px] cursor-pointer object-contain border block"
-                    @click="handleClickMediaItem(i)"
-                  />
-                </template>
+                <nuxt-img
+                  width="72px"
+                  fill="contain"
+                  provider="cloudFront"
+                  :src="m.url"
+                  :alt="`${itemThumbnailAlt}_${i}`"
+                  class="aspect-square w-[72px] h-[72px] cursor-pointer object-contain border block"
+                  @click="handleClickMediaItem(i)"
+                />
               </template>
             </div>
           </div>
