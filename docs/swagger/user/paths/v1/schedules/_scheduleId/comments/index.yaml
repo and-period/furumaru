@@ -20,7 +20,7 @@ get:
     required: false
     example: 20
   - in: query
-    name: next
+    name: nextToken
     schema:
       type: string
     description: 取得開始位置

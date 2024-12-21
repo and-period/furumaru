@@ -42,7 +42,7 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	nextToken := util.GetQuery(ctx, "next", "")
+	nextToken := util.GetQuery(ctx, "nextToken", "")
 
 	in := &media.ListBroadcastCommentsInput{
 		ScheduleID:   schedule.ID,

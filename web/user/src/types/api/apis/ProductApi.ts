@@ -63,7 +63,7 @@ export interface V1ListProductReviewsRequest {
     productId: string;
     userId?: string;
     limit?: number;
-    next?: string;
+    nextToken?: string;
     rates?: string;
 }
 
@@ -275,8 +275,8 @@ export class ProductApi extends runtime.BaseAPI {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters['next'] != null) {
-            queryParameters['next'] = requestParameters['next'];
+        if (requestParameters['nextToken'] != null) {
+            queryParameters['nextToken'] = requestParameters['nextToken'];
         }
 
         if (requestParameters['rates'] != null) {
