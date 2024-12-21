@@ -87,7 +87,7 @@ func GetQueryInt64s(ctx *gin.Context, query string) ([]int64, error) {
 		if err != nil {
 			return nil, err
 		}
-		res[i] = int64(num)
+		res[i] = num
 	}
 	return res, nil
 }
