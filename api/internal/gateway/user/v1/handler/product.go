@@ -176,16 +176,16 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) listProducts(ctx context.Context, in *store.ListProductsInput) (service.Products, int64, error) {
-	products, total, err := h.store.ListProducts(ctx, in)
+func (h *handler) listProducts(ctx context.Context, in *store.ListProductsInput) (service.Products, error) {
+	products, _, err := h.store.ListProducts(ctx, in)
 	if err != nil || len(products) == 0 {
-		return service.Products{}, 0, err
+		return service.Products{}, err
 	}
 	details, err := h.getProductDetails(ctx, products.IDs()...)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	return service.NewProducts(products, details), total, nil
+	return service.NewProducts(products, details), nil
 }
 
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {

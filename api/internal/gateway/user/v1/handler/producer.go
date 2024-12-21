@@ -90,7 +90,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
 		}
-		products, _, err = h.listProducts(ectx, in)
+		products, err = h.listProducts(ectx, in)
 		return
 	})
 	if err := eg.Wait(); err != nil {
