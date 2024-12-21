@@ -61,9 +61,10 @@ export interface V1GetProductReviewRequest {
 
 export interface V1ListProductReviewsRequest {
     productId: string;
+    userId?: string;
     limit?: number;
-    next?: string;
-    rate?: number;
+    nextToken?: string;
+    rates?: string;
 }
 
 export interface V1ListProductsRequest {
@@ -266,16 +267,20 @@ export class ProductApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
+        if (requestParameters['userId'] != null) {
+            queryParameters['userId'] = requestParameters['userId'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters['next'] != null) {
-            queryParameters['next'] = requestParameters['next'];
+        if (requestParameters['nextToken'] != null) {
+            queryParameters['nextToken'] = requestParameters['nextToken'];
         }
 
-        if (requestParameters['rate'] != null) {
-            queryParameters['rate'] = requestParameters['rate'];
+        if (requestParameters['rates'] != null) {
+            queryParameters['rates'] = requestParameters['rates'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

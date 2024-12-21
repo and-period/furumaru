@@ -16,6 +16,7 @@ import (
 func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/products/:productId/reviews")
 
+	r.GET("", h.ListProductReviews)
 	r.GET("/:reviewId", h.GetProductReview)
 	r.POST("", h.authentication, h.CreateProductReview)
 	r.PATCH("/:reviewId", h.authentication, h.UpdateProductReview)
