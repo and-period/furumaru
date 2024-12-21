@@ -8,6 +8,8 @@ servers:
   description: 開発環境
 - url: https://api.furumaru-stg.and-period.work
   description: 検証環境
+- url: https://api.furumaru.and-period.co.jp
+  description: 本番環境
 tags:
 - name: Auth
   description: 認証関連
@@ -140,6 +142,10 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  /v1/products/{productId}/reviews:
+    $ref: './paths/v1/products/_productId/reviews/index.yaml'
+  /v1/products/{productId}/reviews/{reviewId}:
+    $ref: './paths/v1/products/_productId/reviews/_reviewId/index.yaml'
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'

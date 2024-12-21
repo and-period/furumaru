@@ -30,7 +30,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
 patch:
   summary: 商品レビュー更新
   operationId: v1UpdateProductReview
