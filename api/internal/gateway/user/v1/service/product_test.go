@@ -204,9 +204,11 @@ func TestProductWeight(t *testing.T) {
 func TestProduct(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name    string
-		product *entity.Product
-		expect  *Product
+		name     string
+		product  *entity.Product
+		category *Category
+		rate     *ProductRate
+		expect   *Product
 	}{
 		{
 			name: "success",
@@ -259,6 +261,133 @@ func TestProduct(t *testing.T) {
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
+			category: &Category{
+				Category: response.Category{
+					ID:   "category-id",
+					Name: "野菜",
+				},
+			},
+			rate: &ProductRate{
+				ProductRate: response.ProductRate{
+					Count:   4,
+					Average: 2.5,
+					Detail: map[int64]int64{
+						1: 2,
+						2: 0,
+						3: 1,
+						4: 0,
+						5: 1,
+					},
+				},
+				productID: "product-id",
+			},
+			expect: &Product{
+				Product: response.Product{
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					CategoryID:      "category-id",
+					ProductTypeID:   "product-type-id",
+					ProductTagIDs:   []string{"product-tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Status:          int32(ProductStatusForSale),
+					Inventory:       100,
+					Weight:          1.3,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+					Media: []*response.ProductMedia{
+						{
+							URL:         "https://and-period.jp/thumbnail01.png",
+							IsThumbnail: true,
+						},
+						{
+							URL:         "https://and-period.jp/thumbnail02.png",
+							IsThumbnail: false,
+						},
+					},
+					Price:             400,
+					RecommendedPoint1: "ポイント1",
+					RecommendedPoint2: "ポイント2",
+					RecommendedPoint3: "ポイント3",
+					StorageMethodType: int32(StorageMethodTypeNormal),
+					DeliveryType:      int32(DeliveryTypeNormal),
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  "滋賀県",
+					OriginCity:        "彦根市",
+					Rate: &response.ProductRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					StartAt: 1640962800,
+					EndAt:   1640962800,
+				},
+				revisionID: 1,
+			},
+		},
+		{
+			name: "success without additional values",
+			product: &entity.Product{
+				ID:              "product-id",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				TypeID:          "product-type-id",
+				TagIDs:          []string{"product-tag-id"},
+				Name:            "新鮮なじゃがいも",
+				Status:          entity.ProductStatusForSale,
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          1300,
+				WeightUnit:      entity.WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+				Media: entity.MultiProductMedia{
+					{
+						URL:         "https://and-period.jp/thumbnail01.png",
+						IsThumbnail: true,
+					},
+					{
+						URL:         "https://and-period.jp/thumbnail02.png",
+						IsThumbnail: false,
+					},
+				},
+				RecommendedPoints:    []string{"ポイント1", "ポイント2", "ポイント3"},
+				StorageMethodType:    entity.StorageMethodTypeNormal,
+				DeliveryType:         entity.DeliveryTypeNormal,
+				Box60Rate:            50,
+				Box80Rate:            40,
+				Box100Rate:           30,
+				OriginPrefecture:     "滋賀県",
+				OriginPrefectureCode: 25,
+				OriginCity:           "彦根市",
+				StartAt:              jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				EndAt:                jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				ProductRevision: entity.ProductRevision{
+					ID:        1,
+					ProductID: "product-id",
+					Price:     400,
+					Cost:      300,
+					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			category: nil,
+			rate:     nil,
 			expect: &Product{
 				Product: response.Product{
 					ID:              "product-id",
@@ -296,8 +425,19 @@ func TestProduct(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
-					StartAt:           1640962800,
-					EndAt:             1640962800,
+					Rate: &response.ProductRate{
+						Count:   0,
+						Average: 0.0,
+						Detail: map[int64]int64{
+							1: 0,
+							2: 0,
+							3: 0,
+							4: 0,
+							5: 0,
+						},
+					},
+					StartAt: 1640962800,
+					EndAt:   1640962800,
 				},
 				revisionID: 1,
 			},
@@ -307,107 +447,7 @@ func TestProduct(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProduct(tt.product))
-		})
-	}
-}
-
-func TestProduct_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name     string
-		product  *Product
-		category *Category
-		expect   *Product
-	}{
-		{
-			name: "success",
-			product: &Product{
-				Product: response.Product{
-					ID:              "product-id",
-					ProductTypeID:   "product-type-id",
-					CategoryID:      "",
-					CoordinatorID:   "coordinator-id",
-					ProducerID:      "producer-id",
-					Name:            "新鮮なじゃがいも",
-					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
-					Inventory:       100,
-					Weight:          1.3,
-					ItemUnit:        "袋",
-					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-					Media: []*response.ProductMedia{
-						{
-							URL:         "https://and-period.jp/thumbnail01.png",
-							IsThumbnail: true,
-						},
-						{
-							URL:         "https://and-period.jp/thumbnail02.png",
-							IsThumbnail: false,
-						},
-					},
-					Price:            400,
-					DeliveryType:     int32(DeliveryTypeNormal),
-					Box60Rate:        50,
-					Box80Rate:        40,
-					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
-					OriginCity:       "彦根市",
-					StartAt:          1640962800,
-					EndAt:            1640962800,
-				},
-			},
-			category: &Category{
-				Category: response.Category{
-					ID:   "category-id",
-					Name: "野菜",
-				},
-			},
-			expect: &Product{
-				Product: response.Product{
-					ID:              "product-id",
-					ProductTypeID:   "product-type-id",
-					CategoryID:      "category-id",
-					CoordinatorID:   "coordinator-id",
-					ProducerID:      "producer-id",
-					Name:            "新鮮なじゃがいも",
-					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
-					Inventory:       100,
-					Weight:          1.3,
-					ItemUnit:        "袋",
-					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-					Media: []*response.ProductMedia{
-						{
-							URL:         "https://and-period.jp/thumbnail01.png",
-							IsThumbnail: true,
-						},
-						{
-							URL:         "https://and-period.jp/thumbnail02.png",
-							IsThumbnail: false,
-						},
-					},
-					Price:            400,
-					DeliveryType:     int32(DeliveryTypeNormal),
-					Box60Rate:        50,
-					Box80Rate:        40,
-					Box100Rate:       30,
-					OriginPrefecture: "滋賀県",
-					OriginCity:       "彦根市",
-					StartAt:          1640962800,
-					EndAt:            1640962800,
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.product.Fill(tt.category)
-			assert.Equal(t, tt.expect, tt.product)
+			assert.Equal(t, tt.expect, NewProduct(tt.product, tt.category, tt.rate))
 		})
 	}
 }
@@ -505,6 +545,7 @@ func TestProducts(t *testing.T) {
 	tests := []struct {
 		name     string
 		products entity.Products
+		params   *ProductDetailsParams
 		expect   Products
 	}{
 		{
@@ -557,12 +598,47 @@ func TestProducts(t *testing.T) {
 					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
+			params: &ProductDetailsParams{
+				ProductTypes: map[string]*ProductType{
+					"product-type-id": {
+						ProductType: response.ProductType{
+							ID:         "product-type-id",
+							CategoryID: "category-id",
+							Name:       "じゃがいも",
+						},
+					},
+				},
+				Categories: map[string]*Category{
+					"category-id": {
+						Category: response.Category{
+							ID:   "category-id",
+							Name: "野菜",
+						},
+					},
+				},
+				ProductRates: map[string]*ProductRate{
+					"product-id": {
+						ProductRate: response.ProductRate{
+							Count:   4,
+							Average: 2.5,
+							Detail: map[int64]int64{
+								1: 2,
+								2: 0,
+								3: 1,
+								4: 0,
+								5: 1,
+							},
+						},
+						productID: "product-id",
+					},
+				},
+			},
 			expect: Products{
 				{
 					Product: response.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
-						CategoryID:      "",
+						CategoryID:      "category-id",
 						CoordinatorID:   "coordinator-id",
 						ProducerID:      "producer-id",
 						Name:            "新鮮なじゃがいも",
@@ -590,8 +666,19 @@ func TestProducts(t *testing.T) {
 						Box100Rate:       30,
 						OriginPrefecture: "滋賀県",
 						OriginCity:       "彦根市",
-						StartAt:          1640962800,
-						EndAt:            1640962800,
+						Rate: &response.ProductRate{
+							Count:   4,
+							Average: 2.5,
+							Detail: map[int64]int64{
+								1: 2,
+								2: 0,
+								3: 1,
+								4: 0,
+								5: 1,
+							},
+						},
+						StartAt: 1640962800,
+						EndAt:   1640962800,
 					},
 					revisionID: 1,
 				},
@@ -602,7 +689,8 @@ func TestProducts(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProducts(tt.products))
+			actual := NewProducts(tt.products, tt.params)
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
@@ -652,120 +740,6 @@ func TestProducts_IDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.IDs())
-		})
-	}
-}
-
-func TestProducts_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name         string
-		products     Products
-		productTypes map[string]*ProductType
-		categories   map[string]*Category
-		expect       Products
-	}{
-		{
-			name: "success",
-			products: Products{
-				{
-					Product: response.Product{
-						ID:              "product-id",
-						ProductTypeID:   "product-type-id",
-						CategoryID:      "",
-						CoordinatorID:   "coordinator-id",
-						ProducerID:      "producer-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						Status:          int32(ProductStatusForSale),
-						Inventory:       100,
-						Weight:          1.3,
-						ItemUnit:        "袋",
-						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
-							{
-								URL:         "https://and-period.jp/thumbnail01.png",
-								IsThumbnail: true,
-							},
-							{
-								URL:         "https://and-period.jp/thumbnail02.png",
-								IsThumbnail: false,
-							},
-						},
-						Price:            400,
-						DeliveryType:     int32(DeliveryTypeNormal),
-						Box60Rate:        50,
-						Box80Rate:        40,
-						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
-						OriginCity:       "彦根市",
-						StartAt:          1640962800,
-						EndAt:            1640962800,
-					},
-				},
-			},
-			productTypes: map[string]*ProductType{
-				"product-type-id": {
-					ProductType: response.ProductType{
-						ID:         "product-type-id",
-						CategoryID: "category-id",
-						Name:       "じゃがいも",
-					},
-				},
-			},
-			categories: map[string]*Category{
-				"category-id": {
-					Category: response.Category{
-						ID:   "category-id",
-						Name: "野菜",
-					},
-				},
-			},
-			expect: Products{
-				{
-					Product: response.Product{
-						ID:              "product-id",
-						ProductTypeID:   "product-type-id",
-						CategoryID:      "category-id",
-						CoordinatorID:   "coordinator-id",
-						ProducerID:      "producer-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						Status:          int32(ProductStatusForSale),
-						Inventory:       100,
-						Weight:          1.3,
-						ItemUnit:        "袋",
-						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
-							{
-								URL:         "https://and-period.jp/thumbnail01.png",
-								IsThumbnail: true,
-							},
-							{
-								URL:         "https://and-period.jp/thumbnail02.png",
-								IsThumbnail: false,
-							},
-						},
-						Price:            400,
-						DeliveryType:     int32(DeliveryTypeNormal),
-						Box60Rate:        50,
-						Box80Rate:        40,
-						Box100Rate:       30,
-						OriginPrefecture: "滋賀県",
-						OriginCity:       "彦根市",
-						StartAt:          1640962800,
-						EndAt:            1640962800,
-					},
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.products.Fill(tt.productTypes, tt.categories)
-			assert.Equal(t, tt.expect, tt.products)
 		})
 	}
 }
@@ -1073,6 +1047,155 @@ func TestMultiProductMedia_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.media.Response())
+		})
+	}
+}
+
+func TestProductRates(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		reviews entity.AggregatedProductReviews
+		expect  ProductRates
+	}{
+		{
+			name: "success",
+			reviews: entity.AggregatedProductReviews{
+				{
+					ProductID: "product-id",
+					Count:     4,
+					Average:   2.5,
+					Rate1:     2,
+					Rate2:     0,
+					Rate3:     1,
+					Rate4:     0,
+					Rate5:     1,
+				},
+			},
+			expect: ProductRates{
+				{
+					ProductRate: response.ProductRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					productID: "product-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewProductRates(tt.reviews)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductRates_MapByProductID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		rates  ProductRates
+		expect map[string]*ProductRate
+	}{
+		{
+			name: "success",
+			rates: ProductRates{
+				{
+					ProductRate: response.ProductRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					productID: "product-id",
+				},
+			},
+			expect: map[string]*ProductRate{
+				"product-id": {
+					ProductRate: response.ProductRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					productID: "product-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.rates.MapByProductID()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductRates_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		rates  ProductRates
+		expect []*response.ProductRate
+	}{
+		{
+			name: "success",
+			rates: ProductRates{
+				{
+					ProductRate: response.ProductRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					productID: "product-id",
+				},
+			},
+			expect: []*response.ProductRate{
+				{
+					Count:   4,
+					Average: 2.5,
+					Detail: map[int64]int64{
+						1: 2,
+						2: 0,
+						3: 1,
+						4: 0,
+						5: 1,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.rates.Response()
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }

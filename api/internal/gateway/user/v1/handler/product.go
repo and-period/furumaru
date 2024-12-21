@@ -74,6 +74,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		categories   service.Categories
 		productTypes service.ProductTypes
 		productTags  service.ProductTags
+		productRates service.ProductRates
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -96,13 +97,21 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		productTags, err = h.multiGetProductTags(ectx, products.ProductTagIDs())
 		return
 	})
+	eg.Go(func() (err error) {
+		productRates, err = h.aggregateProductRates(ectx, products.IDs()...)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
-	sproducts := service.NewProducts(products)
-	sproducts.Fill(productTypes.Map(), categories.Map())
+	details := &service.ProductDetailsParams{
+		Categories:   categories.Map(),
+		ProductTypes: productTypes.Map(),
+		ProductRates: productRates.MapByProductID(),
+	}
+	sproducts := service.NewProducts(products, details)
 
 	res := &response.ProductsResponse{
 		Products:     sproducts.Response(),
@@ -156,8 +165,6 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	}
 
-	product.Fill(category)
-
 	res := &response.ProductResponse{
 		Product:     product.Response(),
 		Coordinator: coordinator.Response(),
@@ -169,6 +176,18 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) listProducts(ctx context.Context, in *store.ListProductsInput) (service.Products, error) {
+	products, _, err := h.store.ListProducts(ctx, in)
+	if err != nil || len(products) == 0 {
+		return service.Products{}, err
+	}
+	details, err := h.getProductDetails(ctx, products.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducts(products, details), nil
+}
+
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil
@@ -177,10 +196,15 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 		ProductIDs: productIDs,
 	}
 	products, err := h.store.MultiGetProducts(ctx, in)
+	if err != nil || len(products) == 0 {
+		return service.Products{}, err
+	}
+	products = products.FilterByPublished()
+	details, err := h.getProductDetails(ctx, products.IDs()...)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducts(products.FilterByPublished()), nil
+	return service.NewProducts(products, details), nil
 }
 
 func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
@@ -191,10 +215,15 @@ func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []
 		ProductRevisionIDs: revisionIDs,
 	}
 	products, err := h.store.MultiGetProductsByRevision(ctx, in)
+	if err != nil || len(products) == 0 {
+		return service.Products{}, err
+	}
+	products = products.FilterByPublished()
+	details, err := h.getProductDetails(ctx, products.IDs()...)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducts(products.FilterByPublished()), nil
+	return service.NewProducts(products, details), nil
 }
 
 func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
@@ -209,5 +238,41 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 		// 非公開のものは利用者側に表示しない
 		return nil, exception.ErrNotFound
 	}
-	return service.NewProduct(product), nil
+	details, err := h.getProductDetails(ctx, productID)
+	if err != nil {
+		return nil, err
+	}
+	category := details.Categories[product.TypeID]
+	rate := details.ProductRates[productID]
+	return service.NewProduct(product, category, rate), nil
+}
+
+func (h *handler) getProductDetails(ctx context.Context, productIDs ...string) (*service.ProductDetailsParams, error) {
+	var (
+		categories   service.Categories
+		productTypes service.ProductTypes
+		productRates service.ProductRates
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		productTypes, err = h.multiGetProductTypes(ectx, productIDs)
+		if err != nil {
+			return
+		}
+		categories, err = h.multiGetCategories(ectx, productTypes.CategoryIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		productRates, err = h.aggregateProductRates(ectx, productIDs...)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	res := &service.ProductDetailsParams{
+		Categories:   categories.Map(),
+		ProductTypes: productTypes.Map(),
+		ProductRates: productRates.MapByProductID(),
+	}
+	return res, nil
 }

@@ -8,6 +8,8 @@ servers:
   description: 開発環境
 - url: https://api.furumaru-stg.and-period.work
   description: 検証環境
+- url: https://api.furumaru.and-period.co.jp
+  description: 本番環境
 tags:
 - name: Auth
   description: 認証関連
@@ -140,6 +142,10 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  /v1/products/{productId}/reviews:
+    $ref: './paths/v1/products/_productId/reviews/index.yaml'
+  /v1/products/{productId}/reviews/{reviewId}:
+    $ref: './paths/v1/products/_productId/reviews/_reviewId/index.yaml'
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'
@@ -263,6 +269,8 @@ components:
       $ref: './components/schemas/entity/order.yaml#/order'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
+    productReview:
+      $ref: './components/schemas/entity/product-review.yaml#/productReview'
     productTag:
       $ref: './components/schemas/entity/product-tag.yaml#/productTag'
     productType:
@@ -336,6 +344,10 @@ components:
       $ref: './components/schemas/v1/guest-video-comment.request.yaml#/createGuestVideoCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
+    v1CreateProductReviewRequest:
+      $ref: './components/schemas/v1/product-review.request.yaml#/createProductReviewRequest'
+    v1UpdateProductReviewRequest:
+      $ref: './components/schemas/v1/product-review.request.yaml#/updateProductReviewRequest'
     v1CreateSpotRequest:
       $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
     v1UpdateSpotRequest:
@@ -395,6 +407,10 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1ProductReviewResponse:
+      $ref: './components/schemas/v1/product-review.response.yaml#/productReviewResponse'
+    v1ProductReviewsResponse:
+      $ref: './components/schemas/v1/product-review.response.yaml#/productReviewsResponse'
     v1PromotionResponse:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
     v1SpotResponse:

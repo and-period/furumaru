@@ -41,6 +41,8 @@ type options struct {
 	allowNativePasswords bool
 	maxAllowedPacket     int
 	maxRetries           int
+	maxConnLifetime      time.Duration
+	maxConnIdleTime      time.Duration
 }
 
 type Option func(opts *options)
@@ -99,6 +101,18 @@ func WithMaxRetries(retries int) Option {
 	}
 }
 
+func WithMaxConnLifetime(d time.Duration) Option {
+	return func(opts *options) {
+		opts.maxConnLifetime = d
+	}
+}
+
+func WithMaxConnIdleTime(d time.Duration) Option {
+	return func(opts *options) {
+		opts.maxConnIdleTime = d
+	}
+}
+
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
@@ -111,6 +125,8 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 		allowNativePasswords: true,
 		maxAllowedPacket:     4194304, // 4MiB
 		maxRetries:           3,
+		maxConnLifetime:      5 * time.Minute,
+		maxConnIdleTime:      5 * time.Minute,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -121,6 +137,12 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	sql, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	sql.SetConnMaxLifetime(dopts.maxConnLifetime)
+	sql.SetConnMaxIdleTime(dopts.maxConnIdleTime)
 
 	c := &Client{
 		DB:         db,

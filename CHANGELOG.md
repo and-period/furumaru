@@ -1,5 +1,25 @@
 # Changelog
 
+## [v3.2.8](https://github.com/and-period/furumaru/compare/v3.2.7...v3.2.8) - 2024-12-20
+- build(deps-dev): bump npm-run-all2 from 7.0.1 to 7.0.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2560
+- feat(api): 商品レビュー機能の定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2563
+- build(deps): bump the dependencies group in /api with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2561
+- fix(user): コーディネータの追加情報を詰める処理が漏れてたので修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2565
+
+## [v3.2.7](https://github.com/and-period/furumaru/compare/v3.2.6...v3.2.7) - 2024-12-14
+- Fix: fixed cart message by @hamachans in https://github.com/and-period/furumaru/pull/2558
+
+## [v3.2.6](https://github.com/and-period/furumaru/compare/v3.2.5...v3.2.6) - 2024-12-14
+- 買い物カゴに追加したときの挙動を変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2556
+
+## [v3.2.5](https://github.com/and-period/furumaru/compare/v3.2.4...v3.2.5) - 2024-12-13
+- build(deps): bump the dependencies group in /api with 20 updates by @dependabot in https://github.com/and-period/furumaru/pull/2549
+- fix(api): DBとのコネクション設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2555
+
+## [v3.2.4](https://github.com/and-period/furumaru/compare/v3.2.3...v3.2.4) - 2024-12-12
+- feat(api): DBへのヘルスチェック機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2551
+- fix(api): TiDB用のデフォルト設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2553
+
 ## [v3.2.2](https://github.com/and-period/furumaru/compare/v3.2.1...v3.2.2) - 2024-12-05
 - build(deps): bump the dependencies group in /api with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2540
 - feat(store): カート操作ログをDB管理するように by @taba2424 in https://github.com/and-period/furumaru/pull/2544

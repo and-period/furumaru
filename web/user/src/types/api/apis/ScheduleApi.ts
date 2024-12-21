@@ -64,7 +64,7 @@ export interface V1GetScheduleRequest {
 export interface V1ListLiveCommentsRequest {
     scheduleId: string;
     limit?: number;
-    next?: string;
+    nextToken?: string;
     start?: number;
     end?: number;
 }
@@ -265,8 +265,8 @@ export class ScheduleApi extends runtime.BaseAPI {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters['next'] != null) {
-            queryParameters['next'] = requestParameters['next'];
+        if (requestParameters['nextToken'] != null) {
+            queryParameters['nextToken'] = requestParameters['nextToken'];
         }
 
         if (requestParameters['start'] != null) {

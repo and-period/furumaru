@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -82,7 +81,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		archives     service.ArchiveSummaries
 		productTypes service.ProductTypes
 		producers    service.Producers
-		products     entity.Products
+		products     service.Products
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -109,15 +108,15 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		producers, err = h.listProducersByCoordinatorID(ectx, coordinator.ID)
 		return
 	})
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
 		in := &store.ListProductsInput{
 			CoordinatorID:    coordinator.ID,
 			OnlyPublished:    true,
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
 		}
-		products, _, err = h.store.ListProducts(ectx, in)
-		return nil
+		products, err = h.listProducts(ectx, in)
+		return
 	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
@@ -130,7 +129,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		Archives:     archives.Response(),
 		ProductTypes: productTypes.Response(),
 		Producers:    producers.Response(),
-		Products:     service.NewProducts(products).Response(),
+		Products:     products.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

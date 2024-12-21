@@ -76,7 +76,7 @@ const createLiveFormData = ref<CreateLiveRequest>({
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
 })
-const mp4FormData = ref<File[] | undefined>()
+const mp4FormData = ref<File | undefined>()
 const authYoutubeFormData = ref<AuthYoutubeBroadcastRequest>({
   youtubeHandle: '',
 })
@@ -434,12 +434,12 @@ const handleSubmitDeactivateStaticImage = async (): Promise<void> => {
 }
 
 const handleSubmitChangeMp4Input = async (): Promise<void> => {
-  if (!mp4FormData.value || mp4FormData.value.length === 0) {
+  if (!mp4FormData.value) {
     return
   }
   try {
     loading.value = true
-    await broadcastStore.activateMp4Input(scheduleId, mp4FormData.value[0])
+    await broadcastStore.activateMp4Input(scheduleId, mp4FormData.value)
     liveMp4Dialog.value = false
   }
   catch (err) {
@@ -470,12 +470,12 @@ const handleSubmitChangeRtmpInput = async (): Promise<void> => {
 }
 
 const handleSubmitUploadArchiveMp4 = async (): Promise<void> => {
-  if (!mp4FormData.value || mp4FormData.value.length === 0) {
+  if (!mp4FormData.value) {
     return
   }
   try {
     loading.value = true
-    await broadcastStore.uploadArchiveMp4(scheduleId, mp4FormData.value[0])
+    await broadcastStore.uploadArchiveMp4(scheduleId, mp4FormData.value)
     archiveMp4Dialog.value = false
     fetchState.refresh()
   }

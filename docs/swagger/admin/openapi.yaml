@@ -8,6 +8,8 @@ servers:
   description: 開発環境
 - url: https://admin-api.furumaru-stg.and-period.work
   description: 検証環境
+- url: https://admin-api.furumaru.and-period.co.jp
+  description: 本番環境
 tags:
 - name: Auth
   description: 認証関連

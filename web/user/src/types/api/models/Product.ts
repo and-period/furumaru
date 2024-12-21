@@ -37,6 +37,12 @@ import {
     DeliveryTypeFromJSONTyped,
     DeliveryTypeToJSON,
 } from './DeliveryType';
+import type { ProductRate } from './ProductRate';
+import {
+    ProductRateFromJSON,
+    ProductRateFromJSONTyped,
+    ProductRateToJSON,
+} from './ProductRate';
 
 /**
  * 商品情報
@@ -207,6 +213,12 @@ export interface Product {
      */
     originCity: string;
     /**
+     * 
+     * @type {ProductRate}
+     * @memberof Product
+     */
+    rate: ProductRate;
+    /**
      * 販売開始日時 (unixtime)
      * @type {number}
      * @memberof Product
@@ -253,6 +265,7 @@ export function instanceOfProduct(value: object): value is Product {
     if (!('box100Rate' in value) || value['box100Rate'] === undefined) return false;
     if (!('originPrefecture' in value) || value['originPrefecture'] === undefined) return false;
     if (!('originCity' in value) || value['originCity'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
     if (!('startAt' in value) || value['startAt'] === undefined) return false;
     if (!('endAt' in value) || value['endAt'] === undefined) return false;
     return true;
@@ -295,6 +308,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'box100Rate': json['box100Rate'],
         'originPrefecture': json['originPrefecture'],
         'originCity': json['originCity'],
+        'rate': ProductRateFromJSON(json['rate']),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
     };
@@ -333,6 +347,7 @@ export function ProductToJSON(value?: Product | null): any {
         'box100Rate': value['box100Rate'],
         'originPrefecture': value['originPrefecture'],
         'originCity': value['originCity'],
+        'rate': ProductRateToJSON(value['rate']),
         'startAt': value['startAt'],
         'endAt': value['endAt'],
     };

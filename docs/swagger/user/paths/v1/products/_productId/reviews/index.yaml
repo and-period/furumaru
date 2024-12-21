@@ -1,0 +1,86 @@
+get:
+  summary: 商品レビュー一覧取得
+  operationId: v1ListProductReviews
+  tags:
+  - Product
+  parameters:
+  - in: path
+    name: productId
+    schema:
+      type: string
+    description: 商品ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: userId
+    schema:
+      type: string
+    description: 商品ID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: nextToken
+    schema:
+      type: string
+    description: 取得開始位置
+    required: false
+    example: '1640962800'
+  - in: query
+    name: rates
+    schema:
+      type: string
+    description: 評価（カンマ区切り）
+    required: false
+    example: "1,5"
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ProductReviewsResponse'
+post:
+  summary: 商品レビュー投稿
+  operationId: v1CreateProductReview
+  tags:
+  - Product
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: productId
+    schema:
+      type: string
+    description: 商品ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateProductReviewRequest'
+  responses:
+    204:
+      description: 成功
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 商品が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+

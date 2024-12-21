@@ -18,6 +18,9 @@ func NewTiDBClient(params *Params, opts ...Option) (*Client, error) {
 		now:              time.Now,
 		location:         time.UTC,
 		maxAllowedPacket: 4194304, // 4MiB
+		maxRetries:       3,
+		maxConnLifetime:  5 * time.Minute,
+		maxConnIdleTime:  5 * time.Minute,
 	}
 	for _, opt := range opts {
 		opt(options)
@@ -27,7 +30,18 @@ func NewTiDBClient(params *Params, opts ...Option) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{DB: db}, nil
+	sql, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	sql.SetConnMaxLifetime(options.maxConnLifetime)
+	sql.SetConnMaxIdleTime(options.maxConnIdleTime)
+
+	c := &Client{
+		DB:         db,
+		maxRetries: uint64(options.maxRetries),
+	}
+	return c, nil
 }
 
 func newTiDBClient(params *Params, opts *options) (*gorm.DB, error) {

@@ -63,7 +63,9 @@ func (c *coordinator) List(
 	if err := stmt.Find(&coordinators).Error; err != nil {
 		return nil, dbError(err)
 	}
-
+	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
+		return nil, dbError(err)
+	}
 	return coordinators, nil
 }
 
@@ -72,4 +74,20 @@ func (c *coordinator) Count(ctx context.Context, params *database.ListCoordinato
 
 	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*entity.Coordinator) error {
+	var admins entity.Admins
+
+	ids := entity.Coordinators(coordinators).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := c.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
+	if err := stmt.Find(&admins).Error; err != nil {
+		return err
+	}
+	admins.Fill()
+	return entity.Coordinators(coordinators).Fill(admins.Map())
 }

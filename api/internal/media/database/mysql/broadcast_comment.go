@@ -53,7 +53,7 @@ func (c *broadcastComment) List(
 		}
 		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
 	}
-	stmt = stmt.Order("created_at DESC")
+	stmt = stmt.Order("created_at ASC")
 
 	if err := stmt.Find(&comments).Error; err != nil {
 		return nil, "", dbError(err)

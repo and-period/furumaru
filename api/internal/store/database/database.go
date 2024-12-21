@@ -29,6 +29,7 @@ type Database struct {
 	Order          Order
 	PaymentSystem  PaymentSystem
 	Product        Product
+	ProductReview  ProductReview
 	ProductTag     ProductTag
 	ProductType    ProductType
 	Promotion      Promotion
@@ -314,12 +315,39 @@ type UpdateProductParams struct {
 	EndAt                time.Time
 }
 
+type ProductReview interface {
+	List(ctx context.Context, params *ListProductReviewsParams, fields ...string) (entity.ProductReviews, string, error)
+	Get(ctx context.Context, productReviewID string, fields ...string) (*entity.ProductReview, error)
+	Create(ctx context.Context, productReview *entity.ProductReview) error
+	Update(ctx context.Context, productReviewID string, params *UpdateProductReviewParams) error
+	Delete(ctx context.Context, productReviewID string) error
+	Aggregate(ctx context.Context, params *AggregateProductReviewsParams) (entity.AggregatedProductReviews, error)
+}
+
+type ListProductReviewsParams struct {
+	ProductID string
+	UserID    string
+	Rates     []int64
+	Limit     int64
+	NextToken string
+}
+
+type UpdateProductReviewParams struct {
+	Rate    int64
+	Title   string
+	Comment string
+}
+
+type AggregateProductReviewsParams struct {
+	ProductIDs []string
+}
+
 type ProductTag interface {
 	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
 	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
 	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
 	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
-	Create(ctx context.Context, category *entity.ProductTag) error
+	Create(ctx context.Context, productTag *entity.ProductTag) error
 	Update(ctx context.Context, productTagID, name string) error
 	Delete(ctx context.Context, productTagID string) error
 }
