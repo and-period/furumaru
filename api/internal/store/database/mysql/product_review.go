@@ -159,7 +159,7 @@ func (r *productReview) fill(ctx context.Context, tx *gorm.DB, reviews ...*entit
 	}
 
 	stmt := r.db.Statement(ctx, tx, productReviewReactionTable, fields...).
-		Where("preview_id IN (?)", ids).
+		Where("review_id IN (?)", ids).
 		Group("review_id, reaction_type")
 
 	if err := stmt.Find(&reactions).Error; err != nil {

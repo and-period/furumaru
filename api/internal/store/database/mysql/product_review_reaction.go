@@ -53,7 +53,8 @@ func (r *productReviewReaction) GetUserReactions(ctx context.Context, productID,
 
 	stmt := r.db.Statement(ctx, r.db.DB, productReviewReactionTable).
 		Joins("JOIN product_reviews ON product_review_reactions.review_id = product_reviews.id").
-		Where("product_reviews.product_id = ? AND user_id = ?", productID, userID)
+		Where("product_reviews.product_id = ?", productID).
+		Where("product_review_reactions.user_id = ?", productID, userID)
 
 	err := stmt.Find(&reactions).Error
 	return reactions, dbError(err)
