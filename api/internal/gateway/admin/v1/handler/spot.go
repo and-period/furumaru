@@ -208,6 +208,7 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	}
 
 	in := &store.CreateSpotByAdminInput{
+		TypeID:       req.TypeID,
 		AdminID:      adminID,
 		Name:         req.Name,
 		Description:  req.Description,
