@@ -26,6 +26,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -44,35 +45,37 @@ import (
 )
 
 type params struct {
-	serviceName          string
-	logger               *zap.Logger
-	waitGroup            *sync.WaitGroup
-	aws                  aws.Config
-	secret               secret.Client
-	storage              storage.Bucket
-	tmpStorage           storage.Bucket
-	userAuth             cognito.Client
-	cache                dynamodb.Client
-	producer             sqs.Producer
-	slack                slack.Client
-	newRelic             *newrelic.Application
-	sentry               sentry.Client
-	komoju               *komoju.Komoju
-	adminWebURL          *url.URL
-	userWebURL           *url.URL
-	postalCode           postalcode.Client
-	now                  func() time.Time
-	debugMode            bool
-	tidbHost             string
-	tidbPort             string
-	tidbUsername         string
-	tidbPassword         string
-	slackToken           string
-	slackChannelID       string
-	newRelicLicense      string
-	sentryDsn            string
-	komojuClientID       string
-	komojuClientPassword string
+	serviceName              string
+	logger                   *zap.Logger
+	waitGroup                *sync.WaitGroup
+	aws                      aws.Config
+	secret                   secret.Client
+	storage                  storage.Bucket
+	tmpStorage               storage.Bucket
+	userAuth                 cognito.Client
+	cache                    dynamodb.Client
+	producer                 sqs.Producer
+	slack                    slack.Client
+	newRelic                 *newrelic.Application
+	sentry                   sentry.Client
+	komoju                   *komoju.Komoju
+	adminWebURL              *url.URL
+	userWebURL               *url.URL
+	postalCode               postalcode.Client
+	geolocation              geolocation.Client
+	now                      func() time.Time
+	debugMode                bool
+	tidbHost                 string
+	tidbPort                 string
+	tidbUsername             string
+	tidbPassword             string
+	slackToken               string
+	slackChannelID           string
+	newRelicLicense          string
+	sentryDsn                string
+	komojuClientID           string
+	komojuClientPassword     string
+	googleMapsPlatformAPIKey string
 }
 
 //nolint:funlen
@@ -221,6 +224,16 @@ func (a *app) inject(ctx context.Context) error {
 	// PostalCodeの設定
 	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
 
+	// Geolocationの設定
+	geolocationParams := &geolocation.Params{
+		APIKey: params.googleMapsPlatformAPIKey,
+	}
+	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	if err != nil {
+		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
+	}
+	params.geolocation = geolocation
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(a.AminWebURL)
 	if err != nil {
@@ -349,6 +362,19 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.komojuClientPassword = secrets["clientPassword"]
 		return nil
 	})
+	eg.Go(func() error {
+		// Google API認証情報の取得
+		if a.GoogleSecretName == "" {
+			p.googleMapsPlatformAPIKey = a.GoogleMapsPlatformAPIKey
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
+		if err != nil {
+			return err
+		}
+		p.googleMapsPlatformAPIKey = secrets["mapsPlatformAPIKey"]
+		return nil
+	})
 	return eg.Wait()
 }
 
@@ -441,14 +467,15 @@ func (a *app) newStoreService(
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup:  p.waitGroup,
-		Database:   storedb.NewDatabase(mysql),
-		Cache:      p.cache,
-		User:       user,
-		Messenger:  messenger,
-		Media:      media,
-		PostalCode: p.postalCode,
-		Komoju:     p.komoju,
+		WaitGroup:   p.waitGroup,
+		Database:    storedb.NewDatabase(mysql),
+		Cache:       p.cache,
+		User:        user,
+		Messenger:   messenger,
+		Media:       media,
+		PostalCode:  p.postalCode,
+		Geolocation: p.geolocation,
+		Komoju:      p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
