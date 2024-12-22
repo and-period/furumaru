@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { GoogleMap, MarkerCluster } from 'vue3-google-map'
+import { useSpotStore } from '~/store/spot'
 
 const config = useRuntimeConfig()
 
-const center = { lat: 34.266422, lng: 132.917558 }
+const spotStore = useSpotStore()
+const { spotsFetchState, spotsResponse } = storeToRefs(spotStore)
+const { fetchSpots } = spotStore
+
+// const center = { lat: 34.266422, lng: 132.917558 }
+const center = { lat: 35.681167, lng: 139.7673068 }
 
 const items = [
   {
@@ -36,6 +42,10 @@ const items = [
 const renderer = ref<
   undefined | { render: (obj: { count: number, position: any }) => any }
     >(undefined)
+
+const { status, error } = useAsyncData('spots', () => {
+  return fetchSpots(center.lng, center.lat)
+})
 
 onMounted(() => {
   const svg = window.btoa(`
