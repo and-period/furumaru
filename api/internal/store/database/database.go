@@ -21,22 +21,23 @@ var (
 )
 
 type Database struct {
-	CartActionLog  CartActionLog
-	Category       Category
-	Experience     Experience
-	ExperienceType ExperienceType
-	Live           Live
-	Order          Order
-	PaymentSystem  PaymentSystem
-	Product        Product
-	ProductReview  ProductReview
-	ProductTag     ProductTag
-	ProductType    ProductType
-	Promotion      Promotion
-	Schedule       Schedule
-	Shipping       Shipping
-	Spot           Spot
-	SpotType       SpotType
+	CartActionLog         CartActionLog
+	Category              Category
+	Experience            Experience
+	ExperienceType        ExperienceType
+	Live                  Live
+	Order                 Order
+	PaymentSystem         PaymentSystem
+	Product               Product
+	ProductReview         ProductReview
+	ProductReviewReaction ProductReviewReaction
+	ProductTag            ProductTag
+	ProductType           ProductType
+	Promotion             Promotion
+	Schedule              Schedule
+	Shipping              Shipping
+	Spot                  Spot
+	SpotType              SpotType
 }
 
 /**
@@ -340,6 +341,12 @@ type UpdateProductReviewParams struct {
 
 type AggregateProductReviewsParams struct {
 	ProductIDs []string
+}
+
+type ProductReviewReaction interface {
+	Upsert(ctx context.Context, reaction *entity.ProductReviewReaction) error
+	Delete(ctx context.Context, productReviewID, userID string) error
+	GetUserReactions(ctx context.Context, productID, userID string) (entity.ProductReviewReactions, error)
 }
 
 type ProductTag interface {

@@ -52,6 +52,10 @@ type Service interface {
 	UpdateProductReview(ctx context.Context, in *UpdateProductReviewInput) error                                            // 更新
 	DeleteProductReview(ctx context.Context, in *DeleteProductReviewInput) error                                            // 削除
 	AggregateProductReviews(ctx context.Context, in *AggregateProductReviewsInput) (entity.AggregatedProductReviews, error) // 集計結果一覧取得
+	// 商品レビューへのリアクション
+	UpsertProductReviewReaction(ctx context.Context, in *UpsertProductReviewReactionInput) (*entity.ProductReviewReaction, error)     // リアクション登録または更新
+	DeleteProductReviewReaction(ctx context.Context, in *DeleteProductReviewReactionInput) error                                      // リアクション削除
+	GetUserProductReviewReactions(ctx context.Context, in *GetUserProductReviewReactionsInput) (entity.ProductReviewReactions, error) // ユーザーのリアクション一覧取得
 	// プロモーション
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
 	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error) // 一覧取得(ID指定)

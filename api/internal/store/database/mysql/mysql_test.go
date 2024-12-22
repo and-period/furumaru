@@ -64,6 +64,7 @@ func deleteAll(ctx context.Context) error {
 		experienceTable,
 		experienceTypeTable,
 		productRevisionTable,
+		productReviewReactionTable,
 		productReviewTable,
 		productTable,
 		productTagTable,
