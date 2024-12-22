@@ -206,6 +206,7 @@ func (h *handler) UpdateSpot(ctx *gin.Context) {
 	}
 	in := &store.UpdateSpotInput{
 		SpotID:       spot.ID,
+		TypeID:       req.TypeID,
 		Name:         req.Name,
 		Description:  req.Description,
 		ThumbnailURL: req.ThumbnailURL,
