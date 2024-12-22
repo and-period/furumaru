@@ -40,7 +40,85 @@ func TestProductReview(t *testing.T) {
 	}
 }
 
-func TestAggregatedProductReviews_UserIDs(t *testing.T) {
+func TestProductReviews_SetReactions(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		reviews   ProductReviews
+		reactions map[string]AggregatedProductReviewReactions
+		expect    ProductReviews
+	}{
+		{
+			name: "success",
+			reviews: ProductReviews{
+				{
+					ID:        "preview-id01",
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+				},
+				{
+					ID:        "preview-id02",
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+				},
+			},
+			reactions: map[string]AggregatedProductReviewReactions{
+				"preview-id01": {
+					{
+						ReviewID:     "preview-id01",
+						ReactionType: ProductReviewReactionTypeLike,
+						Total:        1,
+					},
+					{
+						ReviewID:     "preview-id01",
+						ReactionType: ProductReviewReactionTypeDislike,
+						Total:        2,
+					},
+				},
+			},
+			expect: ProductReviews{
+				{
+					ID:        "preview-id01",
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+					Reactions: map[ProductReviewReactionType]int64{
+						ProductReviewReactionTypeLike:    1,
+						ProductReviewReactionTypeDislike: 2,
+					},
+				},
+				{
+					ID:        "preview-id02",
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+					Reactions: map[ProductReviewReactionType]int64{
+						ProductReviewReactionTypeLike:    0,
+						ProductReviewReactionTypeDislike: 0,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.reviews.SetReactions(tt.reactions)
+			assert.ElementsMatch(t, tt.expect, tt.reviews)
+		})
+	}
+}
+
+func TestProductReviews_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -51,6 +129,37 @@ func TestAggregatedProductReviews_UserIDs(t *testing.T) {
 			name: "success",
 			reviews: ProductReviews{
 				{
+					ID:        "preview-id",
+					ProductID: "product-id",
+					UserID:    "user-id",
+					Rate:      5,
+					Title:     "最高の商品",
+					Comment:   "おすすめできる商品です",
+				},
+			},
+			expect: []string{"preview-id"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := tt.reviews.IDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductReviews_UserIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		reviews ProductReviews
+		expect  []string
+	}{
+		{
+			name: "success",
+			reviews: ProductReviews{
+				{
+					ID:        "preview-id",
 					ProductID: "product-id",
 					UserID:    "user-id",
 					Rate:      5,

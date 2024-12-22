@@ -41,22 +41,23 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	CartActionLog  *mock_database.MockCartActionLog
-	Category       *mock_database.MockCategory
-	Experience     *mock_database.MockExperience
-	ExperienceType *mock_database.MockExperienceType
-	Live           *mock_database.MockLive
-	Order          *mock_database.MockOrder
-	PaymentSystem  *mock_database.MockPaymentSystem
-	Product        *mock_database.MockProduct
-	ProductReview  *mock_database.MockProductReview
-	ProductTag     *mock_database.MockProductTag
-	ProductType    *mock_database.MockProductType
-	Promotion      *mock_database.MockPromotion
-	Schedule       *mock_database.MockSchedule
-	Shipping       *mock_database.MockShipping
-	Spot           *mock_database.MockSpot
-	SpotType       *mock_database.MockSpotType
+	CartActionLog         *mock_database.MockCartActionLog
+	Category              *mock_database.MockCategory
+	Experience            *mock_database.MockExperience
+	ExperienceType        *mock_database.MockExperienceType
+	Live                  *mock_database.MockLive
+	Order                 *mock_database.MockOrder
+	PaymentSystem         *mock_database.MockPaymentSystem
+	Product               *mock_database.MockProduct
+	ProductReview         *mock_database.MockProductReview
+	ProductReviewReaction *mock_database.MockProductReviewReaction
+	ProductTag            *mock_database.MockProductTag
+	ProductType           *mock_database.MockProductType
+	Promotion             *mock_database.MockPromotion
+	Schedule              *mock_database.MockSchedule
+	Shipping              *mock_database.MockShipping
+	Spot                  *mock_database.MockSpot
+	SpotType              *mock_database.MockSpotType
 }
 
 type testOptions struct {
@@ -92,22 +93,23 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		CartActionLog:  mock_database.NewMockCartActionLog(ctrl),
-		Category:       mock_database.NewMockCategory(ctrl),
-		Experience:     mock_database.NewMockExperience(ctrl),
-		ExperienceType: mock_database.NewMockExperienceType(ctrl),
-		Live:           mock_database.NewMockLive(ctrl),
-		Order:          mock_database.NewMockOrder(ctrl),
-		PaymentSystem:  mock_database.NewMockPaymentSystem(ctrl),
-		Product:        mock_database.NewMockProduct(ctrl),
-		ProductReview:  mock_database.NewMockProductReview(ctrl),
-		ProductTag:     mock_database.NewMockProductTag(ctrl),
-		ProductType:    mock_database.NewMockProductType(ctrl),
-		Promotion:      mock_database.NewMockPromotion(ctrl),
-		Schedule:       mock_database.NewMockSchedule(ctrl),
-		Shipping:       mock_database.NewMockShipping(ctrl),
-		Spot:           mock_database.NewMockSpot(ctrl),
-		SpotType:       mock_database.NewMockSpotType(ctrl),
+		CartActionLog:         mock_database.NewMockCartActionLog(ctrl),
+		Category:              mock_database.NewMockCategory(ctrl),
+		Experience:            mock_database.NewMockExperience(ctrl),
+		ExperienceType:        mock_database.NewMockExperienceType(ctrl),
+		Live:                  mock_database.NewMockLive(ctrl),
+		Order:                 mock_database.NewMockOrder(ctrl),
+		PaymentSystem:         mock_database.NewMockPaymentSystem(ctrl),
+		Product:               mock_database.NewMockProduct(ctrl),
+		ProductReview:         mock_database.NewMockProductReview(ctrl),
+		ProductReviewReaction: mock_database.NewMockProductReviewReaction(ctrl),
+		ProductTag:            mock_database.NewMockProductTag(ctrl),
+		ProductType:           mock_database.NewMockProductType(ctrl),
+		Promotion:             mock_database.NewMockPromotion(ctrl),
+		Schedule:              mock_database.NewMockSchedule(ctrl),
+		Shipping:              mock_database.NewMockShipping(ctrl),
+		Spot:                  mock_database.NewMockSpot(ctrl),
+		SpotType:              mock_database.NewMockSpotType(ctrl),
 	}
 }
 
@@ -121,22 +123,23 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			CartActionLog:  mocks.db.CartActionLog,
-			Category:       mocks.db.Category,
-			Experience:     mocks.db.Experience,
-			ExperienceType: mocks.db.ExperienceType,
-			Live:           mocks.db.Live,
-			Order:          mocks.db.Order,
-			PaymentSystem:  mocks.db.PaymentSystem,
-			Product:        mocks.db.Product,
-			ProductReview:  mocks.db.ProductReview,
-			ProductTag:     mocks.db.ProductTag,
-			ProductType:    mocks.db.ProductType,
-			Promotion:      mocks.db.Promotion,
-			Schedule:       mocks.db.Schedule,
-			Shipping:       mocks.db.Shipping,
-			Spot:           mocks.db.Spot,
-			SpotType:       mocks.db.SpotType,
+			CartActionLog:         mocks.db.CartActionLog,
+			Category:              mocks.db.Category,
+			Experience:            mocks.db.Experience,
+			ExperienceType:        mocks.db.ExperienceType,
+			Live:                  mocks.db.Live,
+			Order:                 mocks.db.Order,
+			PaymentSystem:         mocks.db.PaymentSystem,
+			Product:               mocks.db.Product,
+			ProductReview:         mocks.db.ProductReview,
+			ProductReviewReaction: mocks.db.ProductReviewReaction,
+			ProductTag:            mocks.db.ProductTag,
+			ProductType:           mocks.db.ProductType,
+			Promotion:             mocks.db.Promotion,
+			Schedule:              mocks.db.Schedule,
+			Shipping:              mocks.db.Shipping,
+			Spot:                  mocks.db.Spot,
+			SpotType:              mocks.db.SpotType,
 		},
 		Cache:       mocks.cache,
 		User:        mocks.user,
