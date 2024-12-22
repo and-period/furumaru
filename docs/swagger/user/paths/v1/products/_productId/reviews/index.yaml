@@ -15,7 +15,7 @@ get:
     name: userId
     schema:
       type: string
-    description: 商品ID
+    description: ユーザーID
     required: false
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   - in: query
