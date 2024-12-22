@@ -50,7 +50,7 @@ export interface V1ListSpotsRequest {
 }
 
 export interface V1UpdateSpotRequest {
-    scheduleId: string;
+    spotId: string;
     body: CreateSpotRequest;
 }
 
@@ -249,10 +249,10 @@ export class SpotApi extends runtime.BaseAPI {
      * スポット更新
      */
     async v1UpdateSpotRaw(requestParameters: V1UpdateSpotRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['scheduleId'] == null) {
+        if (requestParameters['spotId'] == null) {
             throw new runtime.RequiredError(
-                'scheduleId',
-                'Required parameter "scheduleId" was null or undefined when calling v1UpdateSpot().'
+                'spotId',
+                'Required parameter "spotId" was null or undefined when calling v1UpdateSpot().'
             );
         }
 
@@ -278,7 +278,7 @@ export class SpotApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/spots/{spotId}`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
+            path: `/v1/spots/{spotId}`.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId']))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,

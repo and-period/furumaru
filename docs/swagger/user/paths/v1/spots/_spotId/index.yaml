@@ -35,7 +35,7 @@ patch:
   - bearerAuth: []
   parameters:
   - in: path
-    name: scheduleId
+    name: spotId
     schema:
       type: string
     description: スポットID

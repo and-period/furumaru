@@ -16,7 +16,7 @@ type ProductReview struct {
 	Rate      int64          `gorm:""`                     // 評価
 	Title     string         `gorm:""`                     // タイトル
 	Comment   string         `gorm:""`                     // コメント
-	CreatedAt time.Time      `gorm:""`                     // 作成日時
+	CreatedAt time.Time      `gorm:"<-:create"`            // 作成日時
 	UpdatedAt time.Time      `gorm:""`                     // 更新日時
 	DeletedAt gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
