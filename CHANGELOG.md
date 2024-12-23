@@ -1,5 +1,21 @@
 # Changelog
 
+## [v3.3.0](https://github.com/and-period/furumaru/compare/v3.2.8...v3.3.0) - 2024-12-23
+- feat(store): 商品レビュー機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2566
+- feat(store): 商品レビューの集計ロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2568
+- feat(gateway): 購入者向けの商品レビュー一覧APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2569
+- feat(docs): 商品レビュー関連APIのドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2570
+- fix(gateway): 商品レビュー一覧が404になる問題の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2571
+- fix(docs): api docsのtypo修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2573
+- fix(gateway): SpotTypeIdが渡せていなかったので修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2574
+- fix(gateway): user-gatewayでGoogle Map APIが利用できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2575
+- fix(gateway): スポット登録APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2576
+- feat(store): 商品レビューのリアクション機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2577
+- fix(docs): api docsの漏れを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2578
+- feat(gateway): 商品レビューへのリアクション実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2579
+- fix(gateway): pathの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2580
+- fix(store): 体験レビュー関連の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2581
+
 ## [v3.2.8](https://github.com/and-period/furumaru/compare/v3.2.7...v3.2.8) - 2024-12-20
 - build(deps-dev): bump npm-run-all2 from 7.0.1 to 7.0.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2560
 - feat(api): 商品レビュー機能の定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2563
