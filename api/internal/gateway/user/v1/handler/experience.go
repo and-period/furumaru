@@ -146,6 +146,19 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) listExperiences(ctx context.Context, in *store.ListExperiencesInput) (service.Experiences, error) {
+	experiences, _, err := h.store.ListExperiences(ctx, in)
+	if err != nil || len(experiences) == 0 {
+		return service.Experiences{}, err
+	}
+	experiences = experiences.FilterByPublished()
+	rates, err := h.aggregateExperienceRates(ctx, experiences.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
+}
+
 func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []string) (service.Experiences, error) {
 	if len(experienceIDs) == 0 {
 		return service.Experiences{}, nil

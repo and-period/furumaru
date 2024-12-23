@@ -181,6 +181,7 @@ func (h *handler) listProducts(ctx context.Context, in *store.ListProductsInput)
 	if err != nil || len(products) == 0 {
 		return service.Products{}, err
 	}
+	products = products.FilterByPublished()
 	details, err := h.getProductDetails(ctx, products.IDs()...)
 	if err != nil {
 		return nil, err
