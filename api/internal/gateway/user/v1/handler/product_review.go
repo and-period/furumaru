@@ -25,7 +25,7 @@ func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	r.POST("/:reviewId/reactions", h.authentication, h.UpsertProductReviewReaction)
 	r.DELETE("/:reviewId/reactions", h.authentication, h.DeleteProductReviewReaction)
 
-	auth := r.Group("/users/me/products/:productId/reviews", h.authentication)
+	auth := rg.Group("/users/me/products/:productId/reviews", h.authentication)
 	auth.GET("", h.ListUserProductReviews)
 }
 
