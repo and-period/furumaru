@@ -19,6 +19,12 @@ import {
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
+import type { Experience } from './Experience';
+import {
+    ExperienceFromJSON,
+    ExperienceFromJSONTyped,
+    ExperienceToJSON,
+} from './Experience';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
@@ -92,6 +98,12 @@ export interface CoordinatorResponse {
      * @memberof CoordinatorResponse
      */
     products: Array<Product>;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof CoordinatorResponse
+     */
+    experiences: Array<Experience>;
 }
 
 /**
@@ -104,6 +116,7 @@ export function instanceOfCoordinatorResponse(value: object): value is Coordinat
     if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
     if (!('producers' in value) || value['producers'] === undefined) return false;
     if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
     return true;
 }
 
@@ -123,6 +136,7 @@ export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
         'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
     };
 }
 
@@ -138,6 +152,7 @@ export function CoordinatorResponseToJSON(value?: CoordinatorResponse | null): a
         'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
         'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
         'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
     };
 }
 

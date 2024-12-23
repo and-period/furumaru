@@ -25,7 +25,8 @@ type CoordinatorResponse struct {
 	Archives     []*ArchiveSummary `json:"archives"`     // 過去のマルシェ一覧
 	ProductTypes []*ProductType    `json:"productTypes"` // 品目一覧
 	Producers    []*Producer       `json:"producers"`    // 生産者一覧
-	Products     []*Product        `json:"products"`     // 生産者に関連づく商品一覧
+	Products     []*Product        `json:"products"`     // コーディネータに関連する商品一覧
+	Experiences  []*Experience     `json:"experiences"`  // コーディネータに関連する体験一覧
 }
 
 type CoordinatorsResponse struct {

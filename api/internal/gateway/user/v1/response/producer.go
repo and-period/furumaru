@@ -16,10 +16,11 @@ type Producer struct {
 }
 
 type ProducerResponse struct {
-	Producer *Producer         `json:"producer"` // 生産者情報
-	Lives    []*LiveSummary    `json:"lives"`    // 配信中・配信予定のマルシェ一覧
-	Archives []*ArchiveSummary `json:"archives"` // 過去のマルシェ一覧
-	Products []*Product        `json:"products"` // 商品一覧
+	Producer    *Producer         `json:"producer"`    // 生産者情報
+	Lives       []*LiveSummary    `json:"lives"`       // 配信中・配信予定のマルシェ一覧
+	Archives    []*ArchiveSummary `json:"archives"`    // 過去のマルシェ一覧
+	Products    []*Product        `json:"products"`    // 商品一覧
+	Experiences []*Experience     `json:"experiences"` // 体験一覧
 }
 
 type ProducersResponse struct {

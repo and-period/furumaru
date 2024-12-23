@@ -19,6 +19,12 @@ import {
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
+import type { Experience } from './Experience';
+import {
+    ExperienceFromJSON,
+    ExperienceFromJSONTyped,
+    ExperienceToJSON,
+} from './Experience';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
@@ -68,6 +74,12 @@ export interface ProducerResponse {
      * @memberof ProducerResponse
      */
     products: Array<Product>;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof ProducerResponse
+     */
+    experiences: Array<Experience>;
 }
 
 /**
@@ -78,6 +90,7 @@ export function instanceOfProducerResponse(value: object): value is ProducerResp
     if (!('lives' in value) || value['lives'] === undefined) return false;
     if (!('archives' in value) || value['archives'] === undefined) return false;
     if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
     return true;
 }
 
@@ -95,6 +108,7 @@ export function ProducerResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
         'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
     };
 }
 
@@ -108,6 +122,7 @@ export function ProducerResponseToJSON(value?: ProducerResponse | null): any {
         'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
         'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
         'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
     };
 }
 
