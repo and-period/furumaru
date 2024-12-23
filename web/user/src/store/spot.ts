@@ -13,7 +13,28 @@ export const useSpotStore = defineStore('spot', {
     }
   },
 
+  getters: {
+    spots: (state) => {
+      return state.spotsResponse.spots.map((spot) => {
+        return {
+          ...spot,
+          spotType: state.spotsResponse.spotTypes.find((spotType) => {
+            // 多分実装ミス
+            return spotType.id === spot.userId
+          }),
+        }
+      })
+    },
+  },
+
   actions: {
+    /**
+     * スポット一覧取得
+     * @param longitude 経度
+     * @param latitude 軽度
+     * @param radius 取得半径（km）
+     * @returns
+     */
     async fetchSpots(
       longitude: number,
       latitude: number,
