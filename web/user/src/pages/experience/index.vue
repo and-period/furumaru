@@ -592,9 +592,12 @@ const items = {
             >
               {{ dt("accessMethod") }}
             </p>
-            <p class="mt-8 text-[14px] md:text-[16px]">
-              〒　{{ items.experience.hostPostalCode }}
-            </p>
+            <div class="mt-8 text-[14px] md:text-[16px] flex">
+              <p>〒</p>
+              <p class="ml-3 md:ml-4">
+                {{ items.experience.hostPostalCode }}
+              </p>
+            </div>
             <div
               class="flex mt-4 text-[14px] md:text-[16px] items-center"
             >
