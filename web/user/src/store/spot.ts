@@ -19,8 +19,7 @@ export const useSpotStore = defineStore('spot', {
         return {
           ...spot,
           spotType: state.spotsResponse.spotTypes.find((spotType) => {
-            // 多分実装ミス
-            return spotType.id === spot.userId
+            return spotType.id === spot.spotTypeId
           }),
         }
       })
