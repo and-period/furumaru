@@ -208,6 +208,7 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	}
 
 	in := &store.CreateSpotByAdminInput{
+		TypeID:       req.TypeID,
 		AdminID:      adminID,
 		Name:         req.Name,
 		Description:  req.Description,
@@ -235,6 +236,7 @@ func (h *handler) UpdateSpot(ctx *gin.Context) {
 
 	in := &store.UpdateSpotInput{
 		SpotID:       util.GetParam(ctx, "spotId"),
+		TypeID:       req.TypeID,
 		Name:         req.Name,
 		Description:  req.Description,
 		ThumbnailURL: req.ThumbnailURL,

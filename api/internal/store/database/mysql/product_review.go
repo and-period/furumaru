@@ -65,6 +65,10 @@ func (r *productReview) List(
 	if err := stmt.Find(&reviews).Error; err != nil {
 		return nil, "", dbError(err)
 	}
+	if err := r.fill(ctx, r.db.DB, reviews...); err != nil {
+		return nil, "", dbError(err)
+	}
+
 	var nextToken string
 	if len(reviews) > int(params.Limit) {
 		nextToken = strconv.FormatInt(reviews[params.Limit].CreatedAt.UnixNano(), 10)
@@ -80,6 +84,9 @@ func (r *productReview) Get(ctx context.Context, reviewID string, fields ...stri
 		Where("id = ?", reviewID)
 
 	if err := stmt.First(&review).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := r.fill(ctx, r.db.DB, review); err != nil {
 		return nil, dbError(err)
 	}
 	return review, nil
@@ -135,4 +142,33 @@ func (r *productReview) Aggregate(
 
 	err := stmt.Scan(&reviews).Error
 	return reviews, dbError(err)
+}
+
+func (r *productReview) fill(ctx context.Context, tx *gorm.DB, reviews ...*entity.ProductReview) error {
+	var reactions entity.AggregatedProductReviewReactions
+
+	ids := entity.ProductReviews(reviews).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	fields := []string{
+		"review_id",
+		"reaction_type",
+		"COUNT(*) as total",
+	}
+
+	stmt := r.db.Statement(ctx, tx, productReviewReactionTable, fields...).
+		Where("review_id IN (?)", ids).
+		Group("review_id, reaction_type")
+
+	if err := stmt.Find(&reactions).Error; err != nil {
+		return err
+	}
+	if len(reactions) == 0 {
+		return nil
+	}
+	entity.ProductReviews(reviews).SetReactions(reactions.GroupByReviewID())
+
+	return nil
 }

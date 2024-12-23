@@ -10,15 +10,16 @@ import (
 
 // ProductReview - 商品レビュー
 type ProductReview struct {
-	ID        string         `gorm:"primaryKey;<-:create"` // 商品レビューID
-	ProductID string         `gorm:""`                     // 商品ID
-	UserID    string         `gorm:""`                     // ユーザーID
-	Rate      int64          `gorm:""`                     // 評価
-	Title     string         `gorm:""`                     // タイトル
-	Comment   string         `gorm:""`                     // コメント
-	CreatedAt time.Time      `gorm:""`                     // 作成日時
-	UpdatedAt time.Time      `gorm:""`                     // 更新日時
-	DeletedAt gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	ID        string                              `gorm:"primaryKey;<-:create"` // 商品レビューID
+	ProductID string                              `gorm:""`                     // 商品ID
+	UserID    string                              `gorm:""`                     // ユーザーID
+	Rate      int64                               `gorm:""`                     // 評価
+	Title     string                              `gorm:""`                     // タイトル
+	Comment   string                              `gorm:""`                     // コメント
+	Reactions map[ProductReviewReactionType]int64 `gorm:"-"`                    // リアクション
+	CreatedAt time.Time                           `gorm:"<-:create"`            // 作成日時
+	UpdatedAt time.Time                           `gorm:""`                     // 更新日時
+	DeletedAt gorm.DeletedAt                      `gorm:"default:null"`         // 削除日時
 }
 
 type ProductReviews []*ProductReview
@@ -54,6 +55,22 @@ func NewProductReview(params *NewProductReviewParams) *ProductReview {
 		Title:     params.Title,
 		Comment:   params.Comment,
 	}
+}
+
+func (r *ProductReview) SetReactions(reactions AggregatedProductReviewReactions) {
+	r.Reactions = reactions.GetTotalByMap()
+}
+
+func (rs ProductReviews) SetReactions(reactions map[string]AggregatedProductReviewReactions) {
+	for _, r := range rs {
+		r.SetReactions(reactions[r.ID])
+	}
+}
+
+func (rs ProductReviews) IDs() []string {
+	return set.UniqBy(rs, func(r *ProductReview) string {
+		return r.ID
+	})
 }
 
 func (rs ProductReviews) UserIDs() []string {

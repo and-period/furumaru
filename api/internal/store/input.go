@@ -330,6 +330,22 @@ type AggregateProductReviewsInput struct {
 	ProductIDs []string `validate:"min=1,dive,required"`
 }
 
+type UpsertProductReviewReactionInput struct {
+	ReviewID     string                           `validate:"required"`
+	UserID       string                           `validate:"required"`
+	ReactionType entity.ProductReviewReactionType `validate:"required,oneof=1 2"`
+}
+
+type DeleteProductReviewReactionInput struct {
+	ReviewID string `validate:"required"`
+	UserID   string `validate:"required"`
+}
+
+type GetUserProductReviewReactionsInput struct {
+	ProductID string `validate:"required"`
+	UserID    string `validate:"required"`
+}
+
 type ListPromotionsOrderKey int32
 
 const (
