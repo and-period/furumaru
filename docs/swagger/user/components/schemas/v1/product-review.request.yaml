@@ -44,3 +44,12 @@ updateProductReviewRequest:
     rate: 5
     title: とても良い商品
     comment: とても良い商品でした。また購入したいです。
+upsertProductReviewReactionRequest:
+  type: object
+  properties:
+    reactionType:
+      $ref: './../../../openapi.yaml#/components/schemas/productReviewReactionType'
+  required:
+  - reactionType
+  example:
+    reactionType: 1

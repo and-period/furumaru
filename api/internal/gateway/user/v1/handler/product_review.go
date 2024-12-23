@@ -10,7 +10,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
@@ -20,6 +22,11 @@ func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	r.GET("/:reviewId", h.GetProductReview)
 	r.POST("", h.authentication, h.CreateProductReview)
 	r.PATCH("/:reviewId", h.authentication, h.UpdateProductReview)
+	r.POST("/:reviewId/reactions", h.authentication, h.UpsertProductReviewReaction)
+	r.DELETE("/:reviewId/reactions", h.authentication, h.DeleteProductReviewReaction)
+
+	auth := r.Group("/users/me/products/:productId/reviews", h.authentication)
+	auth.GET("", h.ListUserProductReviews)
 }
 
 func (h *handler) ListProductReviews(ctx *gin.Context) {
@@ -159,6 +166,92 @@ func (h *handler) DeleteProductReview(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) UpsertProductReviewReaction(ctx *gin.Context) {
+	req := &request.UpsertProductReviewReactionRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	reactionType, ok := service.NewProductReviewReactionTypeFromRequest(req.ReactionType)
+	if !ok {
+		h.badRequest(ctx, errors.New("handler: invalid reaction type"))
+		return
+	}
+	in := &store.UpsertProductReviewReactionInput{
+		ReviewID:     util.GetParam(ctx, "reviewId"),
+		UserID:       h.getUserID(ctx),
+		ReactionType: reactionType.StoreEntity(),
+	}
+	if _, err := h.store.UpsertProductReviewReaction(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) DeleteProductReviewReaction(ctx *gin.Context) {
+	in := &store.DeleteProductReviewReactionInput{
+		ReviewID: util.GetParam(ctx, "reviewId"),
+		UserID:   h.getUserID(ctx),
+	}
+	if err := h.store.DeleteProductReviewReaction(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) ListUserProductReviews(ctx *gin.Context) {
+	productID := util.GetParam(ctx, "productId")
+
+	user, err := h.getMember(ctx, h.getUserID(ctx))
+	if err != nil {
+		h.httpError(ctx, err)
+	}
+
+	var (
+		reviews   service.ProductReviews
+		reactions service.ProductReviewReactions
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		in := &store.ListProductReviewsInput{
+			ProductID: productID,
+			UserID:    user.ID,
+			NoLimit:   true,
+		}
+		sreviews, _, err := h.store.ListProductReviews(ectx, in)
+		if err != nil {
+			return err
+		}
+		users := map[string]*entity.User{user.ID: user}
+		reviews = service.NewProductReviews(sreviews, users)
+		return nil
+	})
+	eg.Go(func() error {
+		in := &store.GetUserProductReviewReactionsInput{
+			ProductID: productID,
+			UserID:    user.ID,
+		}
+		sreactions, err := h.store.GetUserProductReviewReactions(ectx, in)
+		if err != nil {
+			return err
+		}
+		reactions = service.NewProductReviewReactions(sreactions)
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.UserProductReviewsResponse{
+		Reviews:   reviews.Response(),
+		Reactions: reactions.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) getProductReview(ctx context.Context, reviewID string) (*service.ProductReview, error) {

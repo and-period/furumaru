@@ -303,8 +303,9 @@ type ListProductReviewsInput struct {
 	ProductID string  `validate:"required"`
 	UserID    string  `validate:""`
 	Rates     []int64 `validate:"dive,min=1,max=5"`
-	Limit     int64   `validate:"required,max=200"`
+	Limit     int64   `validate:"required_without=NoLimit,min=0,max=200"`
 	NextToken string  `validate:""`
+	NoLimit   bool    `validate:""`
 }
 
 type CreateProductReviewInput struct {
