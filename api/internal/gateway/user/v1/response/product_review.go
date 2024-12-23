@@ -12,6 +12,14 @@ type ProductReview struct {
 	Title        string `json:"title"`        // タイトル
 	Comment      string `json:"comment"`      // コメント
 	PublishedAt  int64  `json:"publishedAt"`  // 投稿日時
+	LikeTotal    int64  `json:"likeTotal"`    // いいね数
+	DislikeTotal int64  `json:"dislikeTotal"` // いまいち数
+}
+
+// ProductReviewReaction - 商品レビューのリアクション
+type ProductReviewReaction struct {
+	ReviewID     string `json:"reviewId"`     // 商品レビューID
+	ReactionType int32  `json:"reactionType"` // リアクションタイプ
 }
 
 type ProductReviewResponse struct {
@@ -21,4 +29,9 @@ type ProductReviewResponse struct {
 type ProductReviewsResponse struct {
 	Reviews   []*ProductReview `json:"reviews"`   // 商品レビュー一覧
 	NextToken string           `json:"nextToken"` // 次の取得開始位置
+}
+
+type UserProductReviewsResponse struct {
+	Reviews   []*ProductReview         `json:"reviews"`   // 商品レビュー一覧
+	Reactions []*ProductReviewReaction `json:"reactions"` // 商品レビューのリアクション一覧
 }

@@ -10,6 +10,50 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestProductReviewReactionType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		reactionType entity.ProductReviewReactionType
+		request      int32
+		expect       ProductReviewReactionType
+	}{
+		{
+			name:         "like",
+			reactionType: entity.ProductReviewReactionTypeLike,
+			request:      1,
+			expect:       ProductReviewReactionTypeLike,
+		},
+		{
+			name:         "dislike",
+			reactionType: entity.ProductReviewReactionTypeDislike,
+			request:      2,
+			expect:       ProductReviewReactionTypeDislike,
+		},
+		{
+			name:         "unknown",
+			reactionType: entity.ProductReviewReactionTypeUnknown,
+			request:      0,
+			expect:       ProductReviewReactionTypeUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			actual := NewProductReviewReactionType(tt.reactionType)
+			assert.Equal(t, tt.expect, actual)
+
+			req, _ := NewProductReviewReactionTypeFromRequest(tt.request)
+			assert.Equal(t, actual, req)
+
+			assert.Equal(t, tt.request, actual.Response())
+			assert.Equal(t, tt.reactionType, actual.StoreEntity())
+		})
+	}
+}
+
 func TestProductReviews(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
@@ -143,6 +187,78 @@ func TestProductReviews_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.reviews.Response()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductReviewReactions(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name      string
+		reactions entity.ProductReviewReactions
+		expect    ProductReviewReactions
+	}{
+		{
+			name: "success",
+			reactions: entity.ProductReviewReactions{
+				{
+					ReviewID:     "review-id",
+					UserID:       "user-id",
+					ReactionType: entity.ProductReviewReactionTypeLike,
+					CreatedAt:    now,
+					UpdatedAt:    now,
+				},
+			},
+			expect: ProductReviewReactions{
+				{
+					ProductReviewReaction: response.ProductReviewReaction{
+						ReviewID:     "review-id",
+						ReactionType: int32(ProductReviewReactionTypeLike),
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewProductReviewReactions(tt.reactions)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestProductReviewReactions_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		reactions ProductReviewReactions
+		expect    []*response.ProductReviewReaction
+	}{
+		{
+			name: "success",
+			reactions: ProductReviewReactions{
+				{
+					ProductReviewReaction: response.ProductReviewReaction{
+						ReviewID:     "review-id",
+						ReactionType: int32(ProductReviewReactionTypeLike),
+					},
+				},
+			},
+			expect: []*response.ProductReviewReaction{
+				{
+					ReviewID:     "review-id",
+					ReactionType: int32(ProductReviewReactionTypeLike),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.reactions.Response()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

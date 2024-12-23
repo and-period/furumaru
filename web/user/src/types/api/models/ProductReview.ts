@@ -79,6 +79,18 @@ export interface ProductReview {
      * @memberof ProductReview
      */
     publishedAt: number;
+    /**
+     * いいね数
+     * @type {number}
+     * @memberof ProductReview
+     */
+    likeTotal: number;
+    /**
+     * いまいち数
+     * @type {number}
+     * @memberof ProductReview
+     */
+    dislikeTotal: number;
 }
 
 /**
@@ -94,6 +106,8 @@ export function instanceOfProductReview(value: object): value is ProductReview {
     if (!('title' in value) || value['title'] === undefined) return false;
     if (!('comment' in value) || value['comment'] === undefined) return false;
     if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('likeTotal' in value) || value['likeTotal'] === undefined) return false;
+    if (!('dislikeTotal' in value) || value['dislikeTotal'] === undefined) return false;
     return true;
 }
 
@@ -117,6 +131,8 @@ export function ProductReviewFromJSONTyped(json: any, ignoreDiscriminator: boole
         'title': json['title'],
         'comment': json['comment'],
         'publishedAt': json['publishedAt'],
+        'likeTotal': json['likeTotal'],
+        'dislikeTotal': json['dislikeTotal'],
     };
 }
 
@@ -136,6 +152,8 @@ export function ProductReviewToJSON(value?: ProductReview | null): any {
         'title': value['title'],
         'comment': value['comment'],
         'publishedAt': value['publishedAt'],
+        'likeTotal': value['likeTotal'],
+        'dislikeTotal': value['dislikeTotal'],
     };
 }
 

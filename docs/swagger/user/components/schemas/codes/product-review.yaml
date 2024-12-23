@@ -1,0 +1,17 @@
+productReviewReactionType:
+  type: integer
+  format: int32
+  description: 商品レビューのリアクション種別
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - LIKE
+  - DISLIKE
+  x-enum-descriptions:
+  - 不明
+  - いいね
+  - いまいち

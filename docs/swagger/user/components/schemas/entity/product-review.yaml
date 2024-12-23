@@ -34,6 +34,14 @@ productReview:
       type: integer
       format: int64
       description: レビュー日時（unixtime）
+    likeTotal:
+      type: integer
+      format: int64
+      description: いいね数
+    dislikeTotal:
+      type: integer
+      format: int64
+      description: いまいち数
   required:
   - id
   - productId
@@ -44,6 +52,8 @@ productReview:
   - title
   - comment
   - publishedAt
+  - likeTotal
+  - dislikeTotal
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     productId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -55,3 +65,20 @@ productReview:
     title: とても良い商品
     comment: とても良い商品でした。また購入したいです。
     publishedAt: 1614556800
+    likeTotal: 10
+    dislikeTotal: 2
+productReviewReaction:
+  type: object
+  description: 商品レビューのリアクション情報
+  properties:
+    reviewId:
+      type: string
+      description: 商品レビューID
+    reactionType:
+      $ref: './../../../openapi.yaml#/components/schemas/productReviewReactionType'
+  required:
+  - reviewId
+  - reactionType
+  example:
+    reviewId: 'kSByoE6FetnPs5Byk3a9Zx'
+    reactionType: 1
