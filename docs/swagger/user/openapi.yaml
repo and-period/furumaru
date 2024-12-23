@@ -82,6 +82,8 @@ paths:
     $ref: './paths/v1/users/me/email/index.yaml'
   /v1/users/me/email/verified:
     $ref: './paths/v1/users/me/email/verified.yaml'
+  /v1/users/me/products/{productId}/reviews:
+    $ref: './paths/v1/users/me/products/_productId/reviews/index.yaml'
   # Address
   /v1/addresses:
     $ref: './paths/v1/addresses/index.yaml'
@@ -146,6 +148,8 @@ paths:
     $ref: './paths/v1/products/_productId/reviews/index.yaml'
   /v1/products/{productId}/reviews/{reviewId}:
     $ref: './paths/v1/products/_productId/reviews/_reviewId/index.yaml'
+  /v1/products/{productId}/reviews/{reviewId}/reactions:
+    $ref: './paths/v1/products/_productId/reviews/_reviewId/reactions/index.yaml'
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'
@@ -226,6 +230,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
     storageMethodType:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
+    productReviewReactionType:
+      $ref: './components/schemas/codes/product-review.yaml#/productReviewReactionType'
     promotionStatus:
       $ref: './components/schemas/codes/promotion.yaml#/promotionStatus'
     discountType:
@@ -269,14 +275,16 @@ components:
       $ref: './components/schemas/entity/order.yaml#/order'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
+    product:
+      $ref: './components/schemas/entity/product.yaml#/product'
     productReview:
       $ref: './components/schemas/entity/product-review.yaml#/productReview'
+    productReviewReaction:
+      $ref: './components/schemas/entity/product-review.yaml#/productReviewReaction'
     productTag:
       $ref: './components/schemas/entity/product-tag.yaml#/productTag'
     productType:
       $ref: './components/schemas/entity/product-type.yaml#/productType'
-    product:
-      $ref: './components/schemas/entity/product.yaml#/product'
     promotion:
       $ref: './components/schemas/entity/promotion.yaml#/promotion'
     schedule:
@@ -348,6 +356,8 @@ components:
       $ref: './components/schemas/v1/product-review.request.yaml#/createProductReviewRequest'
     v1UpdateProductReviewRequest:
       $ref: './components/schemas/v1/product-review.request.yaml#/updateProductReviewRequest'
+    v1UpsertProductReviewReactionRequest:
+      $ref: './components/schemas/v1/product-review.request.yaml#/upsertProductReviewReactionRequest'
     v1CreateSpotRequest:
       $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
     v1UpdateSpotRequest:
@@ -411,6 +421,8 @@ components:
       $ref: './components/schemas/v1/product-review.response.yaml#/productReviewResponse'
     v1ProductReviewsResponse:
       $ref: './components/schemas/v1/product-review.response.yaml#/productReviewsResponse'
+    v1UserProductReviewsResponse:
+      $ref: './components/schemas/v1/product-review.response.yaml#/userProductReviewsResponse'
     v1PromotionResponse:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
     v1SpotResponse:

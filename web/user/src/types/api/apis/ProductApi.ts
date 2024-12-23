@@ -22,6 +22,8 @@ import type {
   ProductReviewsResponse,
   ProductsResponse,
   UpdateProductReviewRequest,
+  UpsertProductReviewReactionRequest,
+  UserProductReviewsResponse,
 } from '../models/index';
 import {
     CreateProductReviewRequestFromJSON,
@@ -38,6 +40,10 @@ import {
     ProductsResponseToJSON,
     UpdateProductReviewRequestFromJSON,
     UpdateProductReviewRequestToJSON,
+    UpsertProductReviewReactionRequestFromJSON,
+    UpsertProductReviewReactionRequestToJSON,
+    UserProductReviewsResponseFromJSON,
+    UserProductReviewsResponseToJSON,
 } from '../models/index';
 
 export interface V1CreateProductReviewRequest {
@@ -46,6 +52,11 @@ export interface V1CreateProductReviewRequest {
 }
 
 export interface V1DeleteProductReviewRequest {
+    productId: string;
+    reviewId: string;
+}
+
+export interface V1DeleteProductReviewReactionRequest {
     productId: string;
     reviewId: string;
 }
@@ -77,6 +88,16 @@ export interface V1UpdateProductReviewRequest {
     productId: string;
     reviewId: string;
     body: UpdateProductReviewRequest;
+}
+
+export interface V1UpsertProductReviewReactionRequest {
+    productId: string;
+    reviewId: string;
+    body: UpsertProductReviewReactionRequest;
+}
+
+export interface V1UserListProductReviewsRequest {
+    productId: string;
 }
 
 /**
@@ -179,6 +200,53 @@ export class ProductApi extends runtime.BaseAPI {
      */
     async v1DeleteProductReview(requestParameters: V1DeleteProductReviewRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1DeleteProductReviewRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 商品レビューへのリアクション削除
+     */
+    async v1DeleteProductReviewReactionRaw(requestParameters: V1DeleteProductReviewReactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1DeleteProductReviewReaction().'
+            );
+        }
+
+        if (requestParameters['reviewId'] == null) {
+            throw new runtime.RequiredError(
+                'reviewId',
+                'Required parameter "reviewId" was null or undefined when calling v1DeleteProductReviewReaction().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/products/{productId}/reviews/{reviewId}/reactions`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 商品レビューへのリアクション削除
+     */
+    async v1DeleteProductReviewReaction(requestParameters: V1DeleteProductReviewReactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1DeleteProductReviewReactionRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -396,6 +464,96 @@ export class ProductApi extends runtime.BaseAPI {
      */
     async v1UpdateProductReview(requestParameters: V1UpdateProductReviewRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1UpdateProductReviewRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 商品レビューへのリアクション登録・更新
+     */
+    async v1UpsertProductReviewReactionRaw(requestParameters: V1UpsertProductReviewReactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1UpsertProductReviewReaction().'
+            );
+        }
+
+        if (requestParameters['reviewId'] == null) {
+            throw new runtime.RequiredError(
+                'reviewId',
+                'Required parameter "reviewId" was null or undefined when calling v1UpsertProductReviewReaction().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpsertProductReviewReaction().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/products/{productId}/reviews/{reviewId}/reactions`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 商品レビューへのリアクション登録・更新
+     */
+    async v1UpsertProductReviewReaction(requestParameters: V1UpsertProductReviewReactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpsertProductReviewReactionRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * ユーザーの商品レビュー情報
+     */
+    async v1UserListProductReviewsRaw(requestParameters: V1UserListProductReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserProductReviewsResponse>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1UserListProductReviews().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/users/me/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserProductReviewsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ユーザーの商品レビュー情報
+     */
+    async v1UserListProductReviews(requestParameters: V1UserListProductReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserProductReviewsResponse> {
+        const response = await this.v1UserListProductReviewsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

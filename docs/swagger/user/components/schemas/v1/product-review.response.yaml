@@ -17,6 +17,8 @@ productReviewResponse:
       title: とても良い商品
       comment: とても良い商品でした。また購入したいです。
       publishedAt: 1614556800
+      likeTotal: 10
+      dislikeTotal: 2
 productReviewsResponse:
   type: object
   properties:
@@ -43,4 +45,39 @@ productReviewsResponse:
       title: とても良い商品
       comment: とても良い商品でした。また購入したいです。
       publishedAt: 1614556800
+      likeTotal: 10
+      dislikeTotal: 2
     nextToken: '1640962800'
+userProductReviewsResponse:
+  type: object
+  properties:
+    reviews:
+      type: array
+      description: 商品レビュー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productReview'
+    reactions:
+      type: array
+      description: 商品レビューのリアクション一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productReviewReaction'
+  required:
+  - reviews
+  - reactions
+  example:
+    reviews:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com
+      rate: 5
+      title: とても良い商品
+      comment: とても良い商品でした。また購入したいです。
+      publishedAt: '1614556800'
+      likeTotal: 10
+      dislikeTotal: 2
+    reactions:
+    - reviewId: 'kSByoE6FetnPs5Byk3a9Zx'
+      reactionType: 1

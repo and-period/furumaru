@@ -27,6 +27,7 @@ import type {
   UpdateAuthUserThumbnailRequest,
   UpdateAuthUserUsernameRequest,
   UploadUrlResponse,
+  UserProductReviewsResponse,
   VerifyAuthUserEmailRequest,
   VerifyAuthUserRequest,
 } from '../models/index';
@@ -55,6 +56,8 @@ import {
     UpdateAuthUserUsernameRequestToJSON,
     UploadUrlResponseFromJSON,
     UploadUrlResponseToJSON,
+    UserProductReviewsResponseFromJSON,
+    UserProductReviewsResponseToJSON,
     VerifyAuthUserEmailRequestFromJSON,
     VerifyAuthUserEmailRequestToJSON,
     VerifyAuthUserRequestFromJSON,
@@ -91,6 +94,10 @@ export interface V1UpdateAuthUserThumbnailRequest {
 
 export interface V1UpdateAuthUserUsernameRequest {
     body: UpdateAuthUserUsernameRequest;
+}
+
+export interface V1UserListProductReviewsRequest {
+    productId: string;
 }
 
 export interface V1VerifyAuthUserRequest {
@@ -510,6 +517,39 @@ export class AuthUserApi extends runtime.BaseAPI {
      */
     async v1UpdateAuthUserUsername(requestParameters: V1UpdateAuthUserUsernameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1UpdateAuthUserUsernameRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * ユーザーの商品レビュー情報
+     */
+    async v1UserListProductReviewsRaw(requestParameters: V1UserListProductReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserProductReviewsResponse>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1UserListProductReviews().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/users/me/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserProductReviewsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ユーザーの商品レビュー情報
+     */
+    async v1UserListProductReviews(requestParameters: V1UserListProductReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserProductReviewsResponse> {
+        const response = await this.v1UserListProductReviewsRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
