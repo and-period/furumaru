@@ -6,19 +6,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-type GenerateUploadURLInput struct {
-	FileType string `validate:"required"`
-}
-
-type GenerateBroadcastArchiveMP4UploadInput struct {
-	GenerateUploadURLInput
-	ScheduleID string `validate:"required"`
-}
-
-type GetUploadEventInput struct {
-	Key string `validate:"required"`
-}
-
+/**
+ * Broadcast - ライブ配信
+ */
 type ListBroadcastsOrderKey int32
 
 const (
@@ -100,6 +90,9 @@ type CreateYoutubeBroadcastInput struct {
 	Public      bool   `validate:""`
 }
 
+/**
+ * BroadcastComment - ライブコメント
+ */
 type ListBroadcastCommentsInput struct {
 	ScheduleID   string    `validate:"required"`
 	WithDisabled bool      `validate:""`
@@ -125,6 +118,9 @@ type UpdateBroadcastCommentInput struct {
 	Disabled  bool   `validate:""`
 }
 
+/**
+ * BroadcastViewerLog - ライブ視聴履歴
+ */
 type CreateBroadcastViewerLogInput struct {
 	ScheduleID string `validate:"required"`
 	SessionID  string `validate:"required"`
@@ -140,6 +136,28 @@ type AggregateBroadcastViewerLogsInput struct {
 	CreatedAtLt  time.Time                                  `validate:""`
 }
 
+/**
+ * Upload - アップロード
+ */
+type GenerateUploadURLInput struct {
+	FileType string `validate:"required"`
+}
+
+type GenerateBroadcastArchiveMP4UploadInput struct {
+	GenerateUploadURLInput
+	ScheduleID string `validate:"required"`
+}
+
+/**
+ * UploadEvent - アップロード結果
+ */
+type GetUploadEventInput struct {
+	Key string `validate:"required"`
+}
+
+/**
+ * Video - オンデマンド配信
+ */
 type ListVideosInput struct {
 	Name                  string `validate:""`
 	CoordinatorID         string `validate:""`
@@ -198,6 +216,9 @@ type DeleteVideoInput struct {
 	VideoID string `validate:"required"`
 }
 
+/**
+ * VideoComment - オンデマンド配信コメント
+ */
 type ListVideoCommentsInput struct {
 	VideoID      string    `validate:"required"`
 	WithDisabled bool      `validate:""`
@@ -223,6 +244,9 @@ type UpdateVideoCommentInput struct {
 	Disabled  bool   `validate:""`
 }
 
+/**
+ * VideoViewerLog - オンデマンド配信視聴履歴
+ */
 type CreateVideoViewerLogInput struct {
 	VideoID   string `validate:"required"`
 	SessionID string `validate:"required"`
