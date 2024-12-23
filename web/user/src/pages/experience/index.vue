@@ -246,27 +246,27 @@ const items = {
             </div>
 
             <div class="items-center grid grid-cols-12 mt-4">
-              <p class="text-[24px] font-medium col-span-6">
+              <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("adult") }}
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-medium">
+                  <p class="text-[16px] font-medium">
                     {{ priceString(items.experience.priceAdult) }}
                   </p>
-                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                  <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-3 md:col-span-2">
                 <div
                   v-if="items.experience"
-                  class="flex justify-end"
+                  class="flex justify-end items-center"
                 >
-                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                  <label class="mr-2 hidden md:block text-[14px]">
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
@@ -289,27 +289,27 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-medium col-span-6">
+              <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("juniorHighSchoolStudents") }}
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-medium">
+                  <p class="text-[16px] font-medium">
                     {{ priceString(items.experience.priceJuniorHighSchool) }}
                   </p>
-                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                  <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-3 md:col-span-2">
                 <div
                   v-if="items.experience"
-                  class="flex justify-end"
+                  class="flex justify-end items-center"
                 >
-                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                  <label class="mr-2 hidden md:block text-[14px]">
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
@@ -332,27 +332,27 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-medium col-span-6">
+              <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("elementarySchoolStudents") }}
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-medium">
+                  <p class="text-[16px] font-medium">
                     {{ priceString(items.experience.priceElementarySchool) }}
                   </p>
-                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                  <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-3 md:col-span-2">
                 <div
                   v-if="items.experience"
-                  class="flex justify-end"
+                  class="flex justify-end items-center"
                 >
-                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                  <label class="mr-2 hidden md:block text-[14px]">
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
@@ -375,27 +375,27 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-medium col-span-6">
+              <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("preschoolers") }}
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-medium">
+                  <p class="text-[16px] font-medium">
                     {{ priceString(items.experience.pricePreschool) }}
                   </p>
-                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                  <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-3 md:col-span-2">
                 <div
                   v-if="items.experience"
-                  class="flex justify-end"
+                  class="flex justify-end items-center"
                 >
-                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                  <label class="mr-2 hidden md:block text-[14px]">
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
@@ -418,27 +418,27 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-medium col-span-6">
+              <p class="text-[16px] font-medium col-span-5 md:col-span-6">
                 {{ dt("senior") }}
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-medium">
+                  <p class="text-[16px] font-medium">
                     {{ priceString(items.experience.priceSenior) }}
                   </p>
-                  <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
+                  <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
-              <div class="col-span-2">
+              <div class="col-span-3 md:col-span-2">
                 <div
                   v-if="items.experience"
-                  class="flex justify-end"
+                  class="flex justify-end items-center"
                 >
-                  <label class="mr-2 block text-[14px] md:text-[16px]">
+                  <label class="mr-2 hidden md:block text-[14px]">
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
@@ -592,20 +592,22 @@ const items = {
             >
               {{ dt("accessMethod") }}
             </p>
-            <p class="mt-8">
-              〒{{ items.experience.hostPostalCode }}
+            <p class="mt-8 text-[14px] md:text-[16px]">
+              〒　{{ items.experience.hostPostalCode }}
             </p>
-            <div class="flex mt-4">
-              <img src="/img/experience/map.svg">
-              <p class="">
-                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}
-              </p>
-              <p v-if="items.experience.hostAddressLine2">
-                {{ items.experience.hostAddressLine2 }}
+            <div
+              class="flex mt-4 text-[14px] md:text-[16px] items-center"
+            >
+              <img
+                src="/img/experience/map.svg"
+                class="w-[16px] h-[21px] md:w-[20px] md:h-[42px]"
+              >
+              <p class="ml-3">
+                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}{{ items.experience.hostAddressLine2 }}
               </p>
             </div>
             <div
-              class="pt-2 text-[14px] tracking-[1.4px] md:pt-8 md:text-[16px] md:tracking-[1.6px]"
+              class="pt-4 text-[14px] tracking-[1.4px] md:pt-8 md:text-[16px] md:tracking-[1.6px]"
             >
               {{ items.experience.direction }}
             </div>
