@@ -4,6 +4,10 @@ import { ExperienceStatus } from '~/types/api'
 
 const i18n = useI18n()
 
+const dt = (str: keyof I18n['items']['experiences']) => {
+  return i18n.t(`items.experiences.${str}`)
+}
+
 const snackbarItems = ref<Snackbar[]>([])
 
 const selectedMediaIndex = ref<number>(-1)
@@ -195,7 +199,7 @@ const items = {
               <div
                 class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
               >
-                生産者
+                {{ dt("producerLabel") }}:
                 <a
                   href="#"
                   class="font-bold underline"
@@ -215,7 +219,7 @@ const items = {
               <p
                 class="mb-[12px] text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
               >
-                おすすめポイント
+                {{ dt("highlightsLabel") }}:
               </p>
               <ol
                 class="recommend-list flex flex-col divide-y divide-dashed divide-main px-[4px] pl-[24px]"
@@ -243,7 +247,7 @@ const items = {
 
             <div class="items-center grid grid-cols-12 mt-4">
               <p class="text-[24px] font-medium col-span-6">
-                大人 (高校生以上)
+                {{ dt("adult") }}
               </p>
               <div
                 class="col-span-4"
@@ -253,7 +257,7 @@ const items = {
                     {{ priceString(items.experience.priceAdult) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
-                    (税込)
+                    {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
@@ -263,7 +267,7 @@ const items = {
                   class="flex justify-end"
                 >
                   <label class="mr-2 block text-[14px] md:text-[16px]">
-                    数量
+                    {{ dt("quantityLabel") }}
                   </label>
                   <select
                     class="h-full border-[1px] border-main px-2"
@@ -286,7 +290,7 @@ const items = {
             />
             <div class="items-center grid grid-cols-12">
               <p class="text-[24px] font-medium col-span-6">
-                中学生
+                {{ dt("juniorHighSchoolStudents") }}
               </p>
               <div
                 class="col-span-4"
@@ -296,7 +300,7 @@ const items = {
                     {{ priceString(items.experience.priceJuniorHighSchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
-                    (税込)
+                    {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
@@ -306,7 +310,7 @@ const items = {
                   class="flex justify-end"
                 >
                   <label class="mr-2 block text-[14px] md:text-[16px]">
-                    数量
+                    {{ dt("quantityLabel") }}
                   </label>
                   <select
                     class="h-full border-[1px] border-main px-2"
@@ -329,7 +333,7 @@ const items = {
             />
             <div class="items-center grid grid-cols-12">
               <p class="text-[24px] font-medium col-span-6">
-                小学生
+                {{ dt("elementarySchoolStudents") }}
               </p>
               <div
                 class="col-span-4"
@@ -339,7 +343,7 @@ const items = {
                     {{ priceString(items.experience.priceElementarySchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
-                    (税込)
+                    {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
@@ -349,7 +353,7 @@ const items = {
                   class="flex justify-end"
                 >
                   <label class="mr-2 block text-[14px] md:text-[16px]">
-                    数量
+                    {{ dt("quantityLabel") }}
                   </label>
                   <select
                     class="h-full border-[1px] border-main px-2"
@@ -372,7 +376,7 @@ const items = {
             />
             <div class="items-center grid grid-cols-12">
               <p class="text-[24px] font-medium col-span-6">
-                未就学児 (3歳〜)
+                {{ dt("preschoolers") }}
               </p>
               <div
                 class="col-span-4"
@@ -382,7 +386,7 @@ const items = {
                     {{ priceString(items.experience.pricePreschool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
-                    (税込)
+                    {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
@@ -392,7 +396,7 @@ const items = {
                   class="flex justify-end"
                 >
                   <label class="mr-2 block text-[14px] md:text-[16px]">
-                    数量
+                    {{ dt("quantityLabel") }}
                   </label>
                   <select
                     class="h-full border-[1px] border-main px-2"
@@ -415,7 +419,7 @@ const items = {
             />
             <div class="items-center grid grid-cols-12">
               <p class="text-[24px] font-medium col-span-6">
-                シニア (65歳〜)
+                {{ dt("senior") }}
               </p>
               <div
                 class="col-span-4"
@@ -425,7 +429,7 @@ const items = {
                     {{ priceString(items.experience.priceSenior) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
-                    (税込)
+                    {{ dt("itemPriceTaxIncludedText") }}
                   </p>
                 </div>
               </div>
@@ -435,7 +439,7 @@ const items = {
                   class="flex justify-end"
                 >
                   <label class="mr-2 block text-[14px] md:text-[16px]">
-                    数量
+                    {{ dt("quantityLabel") }}
                   </label>
                   <select
                     class="h-full border-[1px] border-main px-2"
@@ -458,7 +462,7 @@ const items = {
               class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
               :disabled="!canAddCart"
             >
-              カゴに入れる
+              {{ dt("addToCartText") }}
             </button>
 
             <div class="mt-4 inline-flex gap-4">
@@ -480,7 +484,7 @@ const items = {
           >
             <div class="grid grid-cols-5 py-4">
               <p class="col-span-2 md:col-span-1">
-                ・所用時間
+                {{ dt("estimatedTime") }}
               </p>
               <p class="col-span-3 md:col-span-4">
                 {{ items.experience.duration }}分
@@ -488,7 +492,7 @@ const items = {
             </div>
             <div class="grid grid-cols-5 py-4">
               <p class="col-span-2 md:col-span-1">
-                ・営業時間
+                {{ dt("businessHours") }}
               </p>
               <p class="col-span-3 md:col-span-4">
                 {{ convertToTimeString(items.experience.businessOpenTime) }}~{{ convertToTimeString(items.experience.businessCloseTime) }}
@@ -496,7 +500,7 @@ const items = {
             </div>
             <div class="grid grid-cols-5 py-4">
               <p class="col-span-2 md:col-span-1">
-                ・所在地 (郵便番号)
+                {{ dt("locationPostalcode") }}
               </p>
               <p class="col-span-3 md:col-span-4">
                 {{ items.experience.hostPostalCode }}
@@ -504,7 +508,7 @@ const items = {
             </div>
             <div class="grid grid-cols-5 py-4">
               <p class="col-span-2 md:col-span-1">
-                ・所在地 (住所))
+                {{ dt("locationAddress") }}
               </p>
               <p class="col-span-3 md:col-span-4">
                 {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}{{ items.experience.hostAddressLine2 }}
@@ -525,7 +529,7 @@ const items = {
             <p
               class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
             >
-              この体験の生産者
+              {{ dt("producerInformationTitle") }}
             </p>
 
             <div
@@ -560,7 +564,7 @@ const items = {
                     class="flex flex-row items-baseline grow text-[16px] tracking-[1.4px] md:text-[24px]"
                   >
                     <p class="mr-1 text-[14px] font-medium">
-                      生産者
+                      {{ dt("producerLabel") }}
                     </p>
                     <p>{{ items.producer.username }}</p>
                   </div>
@@ -586,7 +590,7 @@ const items = {
             <p
               class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
             >
-              アクセス方法
+              {{ dt("accessMethod") }}
             </p>
             <p class="mt-8">
               〒{{ items.experience.hostPostalCode }}
