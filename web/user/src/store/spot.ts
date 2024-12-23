@@ -41,7 +41,6 @@ export const useSpotStore = defineStore('spot', {
       radius?: number,
     ): Promise<void> {
       try {
-        console.log('fetchSpots', longitude, latitude, radius)
         this.spotsFetchState.isLoading = true
         const response = await this.spotApiClient().v1ListSpots({
           longitude,
