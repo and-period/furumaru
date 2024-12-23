@@ -113,6 +113,17 @@ type Service interface {
 	CreateExperience(ctx context.Context, in *CreateExperienceInput) (*entity.Experience, error)                           // 登録
 	UpdateExperience(ctx context.Context, in *UpdateExperienceInput) error                                                 // 更新
 	DeleteExperience(ctx context.Context, in *DeleteExperienceInput) error                                                 // 削除
+	// 体験レビュー
+	ListExperienceReviews(ctx context.Context, in *ListExperienceReviewsInput) (entity.ExperienceReviews, string, error)             // 一覧取得
+	GetExperienceReview(ctx context.Context, in *GetExperienceReviewInput) (*entity.ExperienceReview, error)                         // １件取得
+	CreateExperienceReview(ctx context.Context, in *CreateExperienceReviewInput) (*entity.ExperienceReview, error)                   // 登録
+	UpdateExperienceReview(ctx context.Context, in *UpdateExperienceReviewInput) error                                               // 更新
+	DeleteExperienceReview(ctx context.Context, in *DeleteExperienceReviewInput) error                                               // 削除
+	AggregateExperienceReviews(ctx context.Context, in *AggregateExperienceReviewsInput) (entity.AggregatedExperienceReviews, error) // 集計結果一覧取得
+	// 体験レビューへのリアクション
+	UpsertExperienceReviewReaction(ctx context.Context, in *UpsertExperienceReviewReactionInput) (*entity.ExperienceReviewReaction, error)     // リアクション登録または更新
+	DeleteExperienceReviewReaction(ctx context.Context, in *DeleteExperienceReviewReactionInput) error                                         // リアクション削除
+	GetUserExperienceReviewReactions(ctx context.Context, in *GetUserExperienceReviewReactionsInput) (entity.ExperienceReviewReactions, error) // ユーザーのリアクション一覧取得
 	// 購入処理
 	GetCheckoutState(ctx context.Context, in *GetCheckoutStateInput) (string, entity.PaymentStatus, error) // 支払い状態取得
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)                   // 支払い申請（クレジットカード）

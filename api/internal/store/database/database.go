@@ -21,23 +21,25 @@ var (
 )
 
 type Database struct {
-	CartActionLog         CartActionLog
-	Category              Category
-	Experience            Experience
-	ExperienceType        ExperienceType
-	Live                  Live
-	Order                 Order
-	PaymentSystem         PaymentSystem
-	Product               Product
-	ProductReview         ProductReview
-	ProductReviewReaction ProductReviewReaction
-	ProductTag            ProductTag
-	ProductType           ProductType
-	Promotion             Promotion
-	Schedule              Schedule
-	Shipping              Shipping
-	Spot                  Spot
-	SpotType              SpotType
+	CartActionLog            CartActionLog
+	Category                 Category
+	Experience               Experience
+	ExperienceReview         ExperienceReview
+	ExperienceReviewReaction ExperienceReviewReaction
+	ExperienceType           ExperienceType
+	Live                     Live
+	Order                    Order
+	PaymentSystem            PaymentSystem
+	Product                  Product
+	ProductReview            ProductReview
+	ProductReviewReaction    ProductReviewReaction
+	ProductTag               ProductTag
+	ProductType              ProductType
+	Promotion                Promotion
+	Schedule                 Schedule
+	Shipping                 Shipping
+	Spot                     Spot
+	SpotType                 SpotType
 }
 
 /**
@@ -125,6 +127,39 @@ type UpdateExperienceParams struct {
 	HostLatitude          float64
 	StartAt               time.Time
 	EndAt                 time.Time
+}
+
+type ExperienceReview interface {
+	List(ctx context.Context, params *ListExperienceReviewsParams, fields ...string) (entity.ExperienceReviews, string, error)
+	Get(ctx context.Context, experienceReviewID string, fields ...string) (*entity.ExperienceReview, error)
+	Create(ctx context.Context, experienceReview *entity.ExperienceReview) error
+	Update(ctx context.Context, experienceReviewID string, params *UpdateExperienceReviewParams) error
+	Delete(ctx context.Context, experienceReviewID string) error
+	Aggregate(ctx context.Context, params *AggregateExperienceReviewsParams) (entity.AggregatedExperienceReviews, error)
+}
+
+type ListExperienceReviewsParams struct {
+	ExperienceID string
+	UserID       string
+	Rates        []int64
+	Limit        int64
+	NextToken    string
+}
+
+type UpdateExperienceReviewParams struct {
+	Rate    int64
+	Title   string
+	Comment string
+}
+
+type AggregateExperienceReviewsParams struct {
+	ExperienceIDs []string
+}
+
+type ExperienceReviewReaction interface {
+	Upsert(ctx context.Context, reaction *entity.ExperienceReviewReaction) error
+	Delete(ctx context.Context, experienceReviewID, userID string) error
+	GetUserReactions(ctx context.Context, experienceID, userID string) (entity.ExperienceReviewReactions, error)
 }
 
 type ExperienceType interface {

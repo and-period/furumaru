@@ -110,6 +110,7 @@ func TestExperiences(t *testing.T) {
 	tests := []struct {
 		name        string
 		experiences entity.Experiences
+		rates       map[string]*ExperienceRate
 		expect      Experiences
 	}{
 		{
@@ -165,6 +166,22 @@ func TestExperiences(t *testing.T) {
 					UpdatedAt: now,
 				},
 			},
+			rates: map[string]*ExperienceRate{
+				"experience-id": {
+					ExperienceRate: response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					experienceID: "experience-id",
+				},
+			},
 			expect: Experiences{
 				{
 					Experience: response.Experience{
@@ -200,8 +217,126 @@ func TestExperiences(t *testing.T) {
 						HostAddressLine2:      "",
 						HostLongitude:         136.251739,
 						HostLatitude:          35.276833,
-						StartAt:               now.AddDate(0, 0, -1).Unix(),
-						EndAt:                 now.AddDate(0, 0, 1).Unix(),
+						Rate: &response.ExperienceRate{
+							Count:   4,
+							Average: 2.5,
+							Detail: map[int64]int64{
+								1: 2,
+								2: 0,
+								3: 1,
+								4: 0,
+								5: 1,
+							},
+						},
+						StartAt: now.AddDate(0, 0, -1).Unix(),
+						EndAt:   now.AddDate(0, 0, 1).Unix(),
+					},
+					revisionID: 1,
+				},
+			},
+		},
+		{
+			name: "success withtout additional values",
+			experiences: entity.Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験です。",
+					Public:        true,
+					SoldOut:       false,
+					Status:        entity.ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: []*entity.ExperienceMedia{
+						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+					},
+					RecommendedPoints: []string{
+						"じゃがいもを収穫する楽しさを体験できます。",
+						"新鮮なじゃがいもを持ち帰ることができます。",
+						"じゃがいもの美味しさを再認識できます。",
+					},
+					PromotionVideoURL:  "http://example.com/promotion.mp4",
+					Duration:           60,
+					Direction:          "彦根駅から徒歩10分",
+					BusinessOpenTime:   "1000",
+					BusinessCloseTime:  "1800",
+					HostPostalCode:     "5220061",
+					HostPrefecture:     "滋賀県",
+					HostPrefectureCode: 25,
+					HostCity:           "彦根市",
+					HostAddressLine1:   "金亀町１−１",
+					HostAddressLine2:   "",
+					HostLongitude:      136.251739,
+					HostLatitude:       35.276833,
+					StartAt:            now.AddDate(0, 0, -1),
+					EndAt:              now.AddDate(0, 0, 1),
+					ExperienceRevision: entity.ExperienceRevision{
+						ID:                    1,
+						ExperienceID:          "experience-id",
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 800,
+						PriceElementarySchool: 600,
+						PricePreschool:        400,
+						PriceSenior:           700,
+						CreatedAt:             now,
+						UpdatedAt:             now,
+					},
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+			},
+			rates: map[string]*ExperienceRate{},
+			expect: Experiences{
+				{
+					Experience: response.Experience{
+						ID:               "experience-id",
+						CoordinatorID:    "coordinator-id",
+						ProducerID:       "producer-id",
+						ExperienceTypeID: "experience-type-id",
+						Title:            "じゃがいも収穫",
+						Description:      "じゃがいもを収穫する体験です。",
+						Status:           int32(ExperienceStatusAccepting),
+						ThumbnailURL:     "http://example.com/thumbnail.png",
+						Media: []*response.ExperienceMedia{
+							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+						},
+						PriceAdult:            1000,
+						PriceJuniorHighSchool: 800,
+						PriceElementarySchool: 600,
+						PricePreschool:        400,
+						PriceSenior:           700,
+						RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+						RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+						RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+						PromotionVideoURL:     "http://example.com/promotion.mp4",
+						Duration:              60,
+						Direction:             "彦根駅から徒歩10分",
+						BusinessOpenTime:      "1000",
+						BusinessCloseTime:     "1800",
+						HostPostalCode:        "5220061",
+						HostPrefecture:        "滋賀県",
+						HostCity:              "彦根市",
+						HostAddressLine1:      "金亀町１−１",
+						HostAddressLine2:      "",
+						HostLongitude:         136.251739,
+						HostLatitude:          35.276833,
+						Rate: &response.ExperienceRate{
+							Count:   0,
+							Average: 0.0,
+							Detail: map[int64]int64{
+								1: 0,
+								2: 0,
+								3: 0,
+								4: 0,
+								5: 0,
+							},
+						},
+						StartAt: now.AddDate(0, 0, -1).Unix(),
+						EndAt:   now.AddDate(0, 0, 1).Unix(),
 					},
 					revisionID: 1,
 				},
@@ -212,7 +347,7 @@ func TestExperiences(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewExperiences(tt.experiences)
+			actual := NewExperiences(tt.experiences, tt.rates)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -420,6 +555,155 @@ func TestExperiences_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.experiences.Response()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperienceRates(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		reviews entity.AggregatedExperienceReviews
+		expect  ExperienceRates
+	}{
+		{
+			name: "success",
+			reviews: entity.AggregatedExperienceReviews{
+				{
+					ExperienceID: "experience-id",
+					Count:        4,
+					Average:      2.5,
+					Rate1:        2,
+					Rate2:        0,
+					Rate3:        1,
+					Rate4:        0,
+					Rate5:        1,
+				},
+			},
+			expect: ExperienceRates{
+				{
+					ExperienceRate: response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					experienceID: "experience-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewExperienceRates(tt.reviews)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperienceRates_MapByExperienceID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		rates  ExperienceRates
+		expect map[string]*ExperienceRate
+	}{
+		{
+			name: "success",
+			rates: ExperienceRates{
+				{
+					ExperienceRate: response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					experienceID: "experience-id",
+				},
+			},
+			expect: map[string]*ExperienceRate{
+				"experience-id": {
+					ExperienceRate: response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					experienceID: "experience-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.rates.MapByExperienceID()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperienceRates_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		rates  ExperienceRates
+		expect []*response.ExperienceRate
+	}{
+		{
+			name: "success",
+			rates: ExperienceRates{
+				{
+					ExperienceRate: response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					experienceID: "experience-id",
+				},
+			},
+			expect: []*response.ExperienceRate{
+				{
+					Count:   4,
+					Average: 2.5,
+					Detail: map[int64]int64{
+						1: 2,
+						2: 0,
+						3: 1,
+						4: 0,
+						5: 1,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.rates.Response()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

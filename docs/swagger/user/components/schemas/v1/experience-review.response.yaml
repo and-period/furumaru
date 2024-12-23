@@ -1,0 +1,83 @@
+experienceReviewResponse:
+  type: object
+  properties:
+    review:
+      $ref: './../../../openapi.yaml#/components/schemas/experienceReview'
+  required:
+  - review
+  example:
+    review:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com/thumbnail.jpg
+      rate: 5
+      title: とても良い体験
+      comment: とても良い体験でした。また参加したいです。
+      publishedAt: 1614556800
+      likeTotal: 10
+      dislikeTotal: 2
+experienceReviewsResponse:
+  type: object
+  properties:
+    reviews:
+      type: array
+      description: 体験レビュー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experienceReview'
+    nextToken:
+      type: string
+      description: 次の取得位置
+  required:
+  - reviews
+  - nextToken
+  example:
+    reviews:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com/thumbnail.jpg
+      rate: 5
+      title: とても良い体験
+      comment: とても良い体験でした。また参加したいです。
+      publishedAt: 1614556800
+      likeTotal: 10
+      dislikeTotal: 2
+    nextToken: '1640962800'
+userExperienceReviewsResponse:
+  type: object
+  properties:
+    reviews:
+      type: array
+      description: 体験レビュー一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experienceReview'
+    reactions:
+      type: array
+      description: 体験レビューのリアクション一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experienceReviewReaction'
+  required:
+  - reviews
+  - reactions
+  example:
+    reviews:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceId: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'username'
+      accountId: 1
+      thumbnailUrl: https://example.com
+      rate: 5
+      title: とても良い体験
+      comment: とても良い体験でした。また参加したいです。
+      publishedAt: '1614556800'
+      likeTotal: 10
+      dislikeTotal: 2
+    reactions:
+    - reviewId: 'kSByoE6FetnPs5Byk3a9Zx'
+      reactionType: 1

@@ -27,6 +27,7 @@ import type {
   UpdateAuthUserThumbnailRequest,
   UpdateAuthUserUsernameRequest,
   UploadUrlResponse,
+  UserExperienceReviewsResponse,
   UserProductReviewsResponse,
   VerifyAuthUserEmailRequest,
   VerifyAuthUserRequest,
@@ -56,6 +57,8 @@ import {
     UpdateAuthUserUsernameRequestToJSON,
     UploadUrlResponseFromJSON,
     UploadUrlResponseToJSON,
+    UserExperienceReviewsResponseFromJSON,
+    UserExperienceReviewsResponseToJSON,
     UserProductReviewsResponseFromJSON,
     UserProductReviewsResponseToJSON,
     VerifyAuthUserEmailRequestFromJSON,
@@ -94,6 +97,10 @@ export interface V1UpdateAuthUserThumbnailRequest {
 
 export interface V1UpdateAuthUserUsernameRequest {
     body: UpdateAuthUserUsernameRequest;
+}
+
+export interface V1UserListExperienceReviewsRequest {
+    experienceId: string;
 }
 
 export interface V1UserListProductReviewsRequest {
@@ -520,6 +527,47 @@ export class AuthUserApi extends runtime.BaseAPI {
     }
 
     /**
+     * ユーザーの体験レビュー情報
+     */
+    async v1UserListExperienceReviewsRaw(requestParameters: V1UserListExperienceReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserExperienceReviewsResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1UserListExperienceReviews().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/users/me/experiences/{experienceId}/reviews`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserExperienceReviewsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ユーザーの体験レビュー情報
+     */
+    async v1UserListExperienceReviews(requestParameters: V1UserListExperienceReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserExperienceReviewsResponse> {
+        const response = await this.v1UserListExperienceReviewsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * ユーザーの商品レビュー情報
      */
     async v1UserListProductReviewsRaw(requestParameters: V1UserListProductReviewsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserProductReviewsResponse>> {
@@ -534,6 +582,14 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const response = await this.request({
             path: `/v1/users/me/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
             method: 'GET',

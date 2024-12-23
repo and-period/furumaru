@@ -295,10 +295,6 @@ type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
 
-type GetProductReviewInput struct {
-	ReviewID string `validate:"required"`
-}
-
 type ListProductReviewsInput struct {
 	ProductID string  `validate:"required"`
 	UserID    string  `validate:""`
@@ -306,6 +302,10 @@ type ListProductReviewsInput struct {
 	Limit     int64   `validate:"required_without=NoLimit,min=0,max=200"`
 	NextToken string  `validate:""`
 	NoLimit   bool    `validate:""`
+}
+
+type GetProductReviewInput struct {
+	ReviewID string `validate:"required"`
 }
 
 type CreateProductReviewInput struct {
@@ -830,6 +830,58 @@ type UpdateExperienceMedia struct {
 
 type DeleteExperienceInput struct {
 	ExperienceID string `validate:"required"`
+}
+
+type ListExperienceReviewsInput struct {
+	ExperienceID string  `validate:"required"`
+	UserID       string  `validate:""`
+	Rates        []int64 `validate:"dive,min=1,max=5"`
+	Limit        int64   `validate:"required_without=NoLimit,min=0,max=200"`
+	NextToken    string  `validate:""`
+	NoLimit      bool    `validate:""`
+}
+
+type GetExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+}
+
+type CreateExperienceReviewInput struct {
+	ExperienceID string `validate:"required"`
+	UserID       string `validate:"required"`
+	Rate         int64  `validate:"min=1,max=5"`
+	Title        string `validate:"required,max=64"`
+	Comment      string `validate:"required,max=2000"`
+}
+
+type UpdateExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+	Rate     int64  `validate:"min=1,max=5"`
+	Title    string `validate:"required,max=64"`
+	Comment  string `validate:"required,max=2000"`
+}
+
+type DeleteExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+}
+
+type AggregateExperienceReviewsInput struct {
+	ExperienceIDs []string `validate:"min=1,dive,required"`
+}
+
+type UpsertExperienceReviewReactionInput struct {
+	ReviewID     string                              `validate:"required"`
+	UserID       string                              `validate:"required"`
+	ReactionType entity.ExperienceReviewReactionType `validate:"required,oneof=1 2"`
+}
+
+type DeleteExperienceReviewReactionInput struct {
+	ReviewID string `validate:"required"`
+	UserID   string `validate:"required"`
+}
+
+type GetUserExperienceReviewReactionsInput struct {
+	ExperienceID string `validate:"required"`
+	UserID       string `validate:"required"`
 }
 
 type ListSpotTypesInput struct {

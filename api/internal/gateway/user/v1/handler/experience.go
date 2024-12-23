@@ -73,6 +73,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		coordinators    service.Coordinators
 		producers       service.Producers
 		experienceTypes service.ExperienceTypes
+		experienceRates service.ExperienceRates
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -87,13 +88,17 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		experienceTypes, err = h.multiGetExperienceTypes(ectx, experiences.ExperienceTypeIDs())
 		return
 	})
+	eg.Go(func() (err error) {
+		experienceRates, err = h.aggregateExperienceRates(ectx, experiences.IDs()...)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.ExperiencesResponse{
-		Experiences:     service.NewExperiences(experiences).Response(),
+		Experiences:     service.NewExperiences(experiences, experienceRates.MapByExperienceID()).Response(),
 		Coordinators:    coordinators.Response(),
 		Producers:       producers.Response(),
 		ExperienceTypes: experienceTypes.Response(),
@@ -152,7 +157,12 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 	if err != nil {
 		return nil, err
 	}
-	return service.NewExperiences(experiences.FilterByPublished()), nil
+	experiences = experiences.FilterByPublished()
+	rates, err := h.aggregateExperienceRates(ctx, experiences.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
 }
 
 func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (service.Experiences, error) {
@@ -166,7 +176,12 @@ func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs
 	if err != nil {
 		return nil, err
 	}
-	return service.NewExperiences(experiences.FilterByPublished()), nil
+	experiences = experiences.FilterByPublished()
+	rates, err := h.aggregateExperienceRates(ctx, experiences.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
 }
 
 func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
@@ -181,5 +196,9 @@ func (h *handler) getExperience(ctx context.Context, experienceID string) (*serv
 		// 非公開のものは利用者側に表示しない
 		return nil, exception.ErrNotFound
 	}
-	return service.NewExperience(experience), nil
+	rates, err := h.aggregateExperienceRates(ctx, experienceID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperience(experience, rates.MapByExperienceID()[experience.ID]), nil
 }
