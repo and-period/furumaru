@@ -241,15 +241,15 @@ const items = {
               </ol>
             </div>
 
-            <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-bold col-span-6">
+            <div class="items-center grid grid-cols-12 mt-4">
+              <p class="text-[24px] font-medium col-span-6">
                 大人 (高校生以上)
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-bold">
+                  <p class="text-[24px] font-medium">
                     {{ priceString(items.experience.priceAdult) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
@@ -285,14 +285,14 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-bold col-span-6">
+              <p class="text-[24px] font-medium col-span-6">
                 中学生
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-bold">
+                  <p class="text-[24px] font-medium">
                     {{ priceString(items.experience.priceJuniorHighSchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
@@ -328,14 +328,14 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-bold col-span-6">
+              <p class="text-[24px] font-medium col-span-6">
                 小学生
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-bold">
+                  <p class="text-[24px] font-medium">
                     {{ priceString(items.experience.priceElementarySchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
@@ -371,14 +371,14 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-bold col-span-6">
+              <p class="text-[24px] font-medium col-span-6">
                 未就学児 (3歳〜)
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-bold">
+                  <p class="text-[24px] font-medium">
                     {{ priceString(items.experience.pricePreschool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
@@ -414,14 +414,14 @@ const items = {
               class="flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main"
             />
             <div class="items-center grid grid-cols-12">
-              <p class="text-[24px] font-bold col-span-6">
+              <p class="text-[24px] font-medium col-span-6">
                 シニア (65歳〜)
               </p>
               <div
                 class="col-span-4"
               >
                 <div class="flex">
-                  <p class="text-[24px] font-bold">
+                  <p class="text-[24px] font-medium">
                     {{ priceString(items.experience.priceSenior) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[16px] mt-auto">
