@@ -16,51 +16,51 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CreateSpotRequest
+ * @interface UpdateSpotRequest
  */
-export interface CreateSpotRequest {
+export interface UpdateSpotRequest {
     /**
      * スポット種別ID
      * @type {string}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     spotTypeId: string;
     /**
      * スポット名（64文字まで）
      * @type {string}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     name: string;
     /**
      * 説明（2000文字まで）
      * @type {string}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     description: string;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     thumbnailUrl: string;
     /**
      * 緯度
      * @type {number}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     latitude: number;
     /**
      * 経度
      * @type {number}
-     * @memberof CreateSpotRequest
+     * @memberof UpdateSpotRequest
      */
     longitude: number;
 }
 
 /**
- * Check if a given object implements the CreateSpotRequest interface.
+ * Check if a given object implements the UpdateSpotRequest interface.
  */
-export function instanceOfCreateSpotRequest(value: object): value is CreateSpotRequest {
+export function instanceOfUpdateSpotRequest(value: object): value is UpdateSpotRequest {
     if (!('spotTypeId' in value) || value['spotTypeId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
@@ -70,11 +70,11 @@ export function instanceOfCreateSpotRequest(value: object): value is CreateSpotR
     return true;
 }
 
-export function CreateSpotRequestFromJSON(json: any): CreateSpotRequest {
-    return CreateSpotRequestFromJSONTyped(json, false);
+export function UpdateSpotRequestFromJSON(json: any): UpdateSpotRequest {
+    return UpdateSpotRequestFromJSONTyped(json, false);
 }
 
-export function CreateSpotRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateSpotRequest {
+export function UpdateSpotRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateSpotRequest {
     if (json == null) {
         return json;
     }
@@ -89,7 +89,7 @@ export function CreateSpotRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     };
 }
 
-export function CreateSpotRequestToJSON(value?: CreateSpotRequest | null): any {
+export function UpdateSpotRequestToJSON(value?: UpdateSpotRequest | null): any {
     if (value == null) {
         return value;
     }

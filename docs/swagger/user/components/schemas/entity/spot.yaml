@@ -5,6 +5,9 @@ spot:
     id:
       type: string
       description: スポットID
+    spotTypeId:
+      type: string
+      description: スポット種別ID
     name:
       type: string
       description: スポット名
@@ -43,6 +46,7 @@ spot:
       description: 更新日時 (unixtime)
   required:
   - id
+  - spotTypeId
   - name
   - description
   - thumbnailUrl
@@ -56,6 +60,7 @@ spot:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     name: '東京タワー'
     description: '東京タワーの説明'
     thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
