@@ -33,6 +33,12 @@ export interface Spot {
      */
     id: string;
     /**
+     * スポット種別ID
+     * @type {string}
+     * @memberof Spot
+     */
+    spotTypeId: string;
+    /**
      * スポット名
      * @type {string}
      * @memberof Spot
@@ -107,6 +113,7 @@ export interface Spot {
  */
 export function instanceOfSpot(value: object): value is Spot {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('spotTypeId' in value) || value['spotTypeId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
@@ -132,6 +139,7 @@ export function SpotFromJSONTyped(json: any, ignoreDiscriminator: boolean): Spot
     return {
         
         'id': json['id'],
+        'spotTypeId': json['spotTypeId'],
         'name': json['name'],
         'description': json['description'],
         'thumbnailUrl': json['thumbnailUrl'],
@@ -153,6 +161,7 @@ export function SpotToJSON(value?: Spot | null): any {
     return {
         
         'id': value['id'],
+        'spotTypeId': value['spotTypeId'],
         'name': value['name'],
         'description': value['description'],
         'thumbnailUrl': value['thumbnailUrl'],

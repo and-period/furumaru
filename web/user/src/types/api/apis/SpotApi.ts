@@ -19,6 +19,7 @@ import type {
   ErrorResponse,
   SpotResponse,
   SpotsResponse,
+  UpdateSpotRequest,
 } from '../models/index';
 import {
     CreateSpotRequestFromJSON,
@@ -29,6 +30,8 @@ import {
     SpotResponseToJSON,
     SpotsResponseFromJSON,
     SpotsResponseToJSON,
+    UpdateSpotRequestFromJSON,
+    UpdateSpotRequestToJSON,
 } from '../models/index';
 
 export interface V1CreateSpotRequest {
@@ -51,7 +54,7 @@ export interface V1ListSpotsRequest {
 
 export interface V1UpdateSpotRequest {
     spotId: string;
-    body: CreateSpotRequest;
+    body: UpdateSpotRequest;
 }
 
 /**

@@ -116,6 +116,7 @@ export * from './UpdateAuthUserNotificationRequest';
 export * from './UpdateAuthUserThumbnailRequest';
 export * from './UpdateAuthUserUsernameRequest';
 export * from './UpdateProductReviewRequest';
+export * from './UpdateSpotRequest';
 export * from './UploadStateResponse';
 export * from './UploadStatus';
 export * from './UploadUrlResponse';

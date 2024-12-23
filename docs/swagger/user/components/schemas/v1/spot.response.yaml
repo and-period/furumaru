@@ -11,6 +11,7 @@ spotResponse:
   example:
     spot:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
+      spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '東京タワー'
       description: '東京タワーの説明'
       thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
@@ -46,6 +47,7 @@ spotsResponse:
   example:
     spots:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      spotTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '東京タワー'
       description: '東京タワーの説明'
       thumbnailUrl: 'https://example.com/tokyo_tower.jpg'
