@@ -48,7 +48,9 @@ func (r *experienceReviewReaction) Delete(ctx context.Context, experienceReviewI
 	return dbError(err)
 }
 
-func (r *experienceReviewReaction) GetUserReactions(ctx context.Context, experienceID, userID string) (entity.ExperienceReviewReactions, error) {
+func (r *experienceReviewReaction) GetUserReactions(
+	ctx context.Context, experienceID, userID string,
+) (entity.ExperienceReviewReactions, error) {
 	var reactions entity.ExperienceReviewReactions
 
 	stmt := r.db.Statement(ctx, r.db.DB, experienceReviewReactionTable).
