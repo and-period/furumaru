@@ -351,7 +351,7 @@ components:
     v1CreateSpotRequest:
       $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
     v1UpdateSpotRequest:
-      $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
+      $ref: './components/schemas/v1/spot.request.yaml#/updateSpotRequest'
     v1CreateVideoCommentRequest:
       $ref: './components/schemas/v1/video-comment.request.yaml#/createVideoCommentRequest'
     v1GetUploadUrlRequest:
