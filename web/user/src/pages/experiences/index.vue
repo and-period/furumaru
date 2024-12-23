@@ -1,27 +1,43 @@
 <script setup lang="ts">
-import { GoogleMap, MarkerCluster } from 'vue3-google-map'
+import { GoogleMap, MarkerCluster, CustomControl } from 'vue3-google-map'
 import { useGeolocation } from '@vueuse/core'
 import { useSpotStore } from '~/store/spot'
+import type { GoogleMapSearchResult } from '~/types/store'
 
 const config = useRuntimeConfig()
 
 const spotStore = useSpotStore()
 const { spots, spotsFetchState } = storeToRefs(spotStore)
-const { fetchSpots } = spotStore
+const { fetchSpots, search } = spotStore
+const errorMessage = ref<string>('')
 
 const router = useRouter()
 
+// 中心座標の種類
+const centerPositionType = ref<'init' | 'geo' | 'search'>('init')
+
+// 現在地の取得
 const { coords, error: geoLocationError } = useGeolocation()
 
-const errorMessage = ref<string>('')
+// 検索用キーワード
+const searchText = ref<string>('')
+// 検索結果
+const searchResults = ref<GoogleMapSearchResult[]>([])
+// 検索結果の座標保存用
+const searchResultPosition = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 })
 
+// 中心座標の算出プロパティ
 const center = computed(() => {
-  if (geoLocationError.value) {
-    return { lat: 35.681167, lng: 139.7673068 }
+  // 検索結果
+  if (centerPositionType.value === 'search') {
+    return searchResultPosition.value
   }
-  else {
+  // 現在地
+  if (centerPositionType.value === 'geo' && coords.value.latitude !== Infinity) {
     return { lat: coords.value.latitude, lng: coords.value.longitude }
   }
+  // 初期値
+  return { lat: 35.681167, lng: 139.7673068 }
 })
 
 const renderer = ref<
@@ -30,6 +46,24 @@ const renderer = ref<
 
 const handleClickSpot = (id: string) => {
   router.push(`/experiences/${id}`)
+}
+
+const handleSubmitSearchForm = async () => {
+  const results = await search(searchText.value)
+  searchResults.value = results
+}
+
+const handleClickSearchResult = (result: GoogleMapSearchResult) => {
+  searchResultPosition.value = {
+    lat: result.latitude,
+    lng: result.longitude,
+  }
+  centerPositionType.value = 'search'
+  searchResults.value = []
+}
+
+const handleClearSearchForm = () => {
+  searchResults.value = []
 }
 
 const refetchSpots = async () => {
@@ -43,10 +77,21 @@ const refetchSpots = async () => {
   }
 }
 
+// 中心座標が変更された場合にスポット情報を再取得
 watch(center, () => {
-  if (center.value.lat !== Infinity) {
-    refetchSpots()
+  refetchSpots()
+})
+
+// ユーザーが位置情報の取得を許可した場合に中心座標を現在地に変更
+watch(geoLocationError, () => {
+  if (geoLocationError.value === null) {
+    centerPositionType.value = 'geo'
   }
+})
+
+// スポット情報の取得
+onMounted(() => {
+  refetchSpots()
 })
 
 onMounted(() => {
@@ -70,6 +115,15 @@ onMounted(() => {
         zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
       }),
   }
+})
+
+const mapTypeControlOptions = computed(() => {
+  if (typeof google !== 'undefined') {
+    return {
+      position: google.maps.ControlPosition.BOTTOM_LEFT,
+    }
+  }
+  return undefined
 })
 
 useSeoMeta({
@@ -96,9 +150,27 @@ useSeoMeta({
         :api-key="config.public.GOOGLE_MAPS_API_KEY"
         style="width: 100%; height: 700px"
         :center="center"
-        :zoom="10"
+        :zoom="12"
+        :map-type-control-options="mapTypeControlOptions"
       >
-        <MarkerCluster :options="{ renderer: renderer }">
+        <CustomControl position="TOP_LEFT">
+          <div class="relative">
+            <the-spot-search-form
+              v-model="searchText"
+              class="absolute top-2.5 w-[300px] rounded-full "
+              :results="searchResults"
+              @click:result="handleClickSearchResult"
+              @clear="handleClearSearchForm"
+              @submit="handleSubmitSearchForm"
+            />
+          </div>
+        </CustomControl>
+        <MarkerCluster
+          :options="
+            {
+              renderer,
+            }"
+        >
           <template
             v-for="spot in spots"
             :key="spot.id"

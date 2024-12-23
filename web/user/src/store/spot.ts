@@ -1,4 +1,5 @@
 import type { Spot, SpotType } from '~/types/api'
+import type { GoogleMapSearchResult } from '~/types/store'
 
 export const useSpotStore = defineStore('spot', {
   state: () => {
@@ -57,12 +58,15 @@ export const useSpotStore = defineStore('spot', {
       }
     },
 
-    async search(address: string) {
+    async search(address: string): Promise<GoogleMapSearchResult[]> {
       const geocoder = new google.maps.Geocoder()
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
-          const location = results[0].geometry.location
-          return location
+      const response = await geocoder.geocode({ address })
+
+      return response.results.map((result) => {
+        return {
+          formattedAddress: result.formatted_address,
+          longitude: result.geometry.location.lng(),
+          latitude: result.geometry.location.lat(),
         }
       })
     },
