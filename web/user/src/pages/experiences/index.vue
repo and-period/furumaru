@@ -71,6 +71,10 @@ onMounted(() => {
       }),
   }
 })
+
+useSeoMeta({
+  title: '体験一覧',
+})
 </script>
 
 <template>
