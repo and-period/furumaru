@@ -17,6 +17,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
     "@nuxt/image": "^1.6.0",
     "@pinia/nuxt": "^0.5.1",
     "@sentry/node": "^7.109.0",
