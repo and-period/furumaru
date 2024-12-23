@@ -34,7 +34,7 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
 	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&p).Error
+	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
 	require.NoError(t, err)
@@ -116,7 +116,7 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
 	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&p).Error
+	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
 	require.NoError(t, err)
@@ -190,7 +190,7 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
 	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
-	err = db.DB.Create(&p).Error
+	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
 	require.NoError(t, err)

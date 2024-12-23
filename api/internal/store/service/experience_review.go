@@ -8,7 +8,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *service) ListExperienceReviews(ctx context.Context, in *store.ListExperienceReviewsInput) (entity.ExperienceReviews, string, error) {
+func (s *service) ListExperienceReviews(
+	ctx context.Context, in *store.ListExperienceReviewsInput,
+) (entity.ExperienceReviews, string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, "", internalError(err)
 	}
