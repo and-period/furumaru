@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.3.1](https://github.com/and-period/furumaru/compare/v3.3.0...v3.3.1) - 2024-12-23
+- feat(gateway): コーディネータ取得APIに体験情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2582
+- refactor(api): インターフェース定義の並び順を整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2584
+
 ## [v3.3.0](https://github.com/and-period/furumaru/compare/v3.2.8...v3.3.0) - 2024-12-23
 - feat(store): 商品レビュー機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2566
 - feat(store): 商品レビューの集計ロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2568
