@@ -56,5 +56,15 @@ export const useSpotStore = defineStore('spot', {
         this.spotsFetchState.isLoading = false
       }
     },
+
+    async search(address: string) {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
+          const location = results[0].geometry.location
+          return location
+        }
+      })
+    },
   },
 })
