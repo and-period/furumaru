@@ -2,22 +2,38 @@
 import { CustomMarker, InfoWindow } from 'vue3-google-map'
 
 interface Props {
-  position: {
-    lat: number
-    lng: number
-  }
-  title: string
+  longitude: number
+  latitude: number
+  id: string
+  name: string
   description: string
-  imgSrc: string
+  thumbnailUrl: string
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+interface Emits {
+  (e: 'click:name', id: string): void
+}
+
+const emits = defineEmits<Emits>()
 
 const isShowInfoWindow = ref<boolean>(false)
 const infoWindowRef = ref<InstanceType<typeof InfoWindow> | null>(null)
 
+const position = computed(() => {
+  return {
+    lat: props.latitude,
+    lng: props.longitude,
+  }
+})
+
 const handleClickMarker = () => {
   isShowInfoWindow.value = !isShowInfoWindow.value
+}
+
+const handleClickName = () => {
+  emits('click:name', props.id)
 }
 
 let initChange = false
@@ -58,13 +74,17 @@ watch(isShowInfoWindow, (newValue) => {
       >
         <div class=" col-span-1">
           <img
-            :src="imgSrc"
+            :src="thumbnailUrl"
             class="w-full object-cover"
+            :alt="`${name}のサムネイル`"
           >
         </div>
         <div class=" tracking-wider col-span-4 flex flex-col gap-2">
-          <div class="font-semibold">
-            {{ title }}
+          <div
+            class="font-semibold cursor-pointer hover:underline "
+            @click="handleClickName"
+          >
+            {{ name }}
           </div>
           <div>
             {{ description }}

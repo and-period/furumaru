@@ -5,39 +5,13 @@ import { useSpotStore } from '~/store/spot'
 const config = useRuntimeConfig()
 
 const spotStore = useSpotStore()
-const { spotsFetchState, spotsResponse } = storeToRefs(spotStore)
+const { spots } = storeToRefs(spotStore)
 const { fetchSpots } = spotStore
+
+const router = useRouter()
 
 // const center = { lat: 34.266422, lng: 132.917558 }
 const center = { lat: 35.681167, lng: 139.7673068 }
-
-const items = [
-  {
-    id: 1,
-    position: { lat: 34.2684527, lng: 132.91340017 },
-    title: 'ふじやファーム',
-    description: 'レモン農家',
-    imgSrc:
-      'https://image-cdn.tabechoku.com/crop/w/126/h/120/cw/120/ch/120/images/d4c7ef52c346e13fbbf63eb936a9b0bda59ec418cdcc299c7a6a1248c3ef9cbb.jpeg',
-  },
-  {
-    id: 2,
-    position: { lat: 34.63416837, lng: 132.65951729 },
-    title:
-      '酒蔵見学＆どぶろく体験ツアー　Brewery tour & Doburoku tasting experience',
-    description: '酒蔵見学＆どぶろく体験ツアー',
-    imgSrc:
-      'https://assets.furumaru.and-period.co.jp/products/media/image/gsztHcK7CvWhDyhYRvpTT4.jpg',
-  },
-  {
-    id: 3,
-    position: { lat: 35.62539905972506, lng: 139.5175404502735 },
-    title: 'よみうりランド',
-    description: '遊園地',
-    imgSrc:
-      'https://lh5.googleusercontent.com/p/AF1QipMcu3Mp8owZq5nbe2FEAtE21wg9T7LA21tjbwgg=w426-h240-k-no',
-  },
-]
 
 const renderer = ref<
   undefined | { render: (obj: { count: number, position: any }) => any }
@@ -46,6 +20,10 @@ const renderer = ref<
 const { status, error } = useAsyncData('spots', () => {
   return fetchSpots(center.lng, center.lat)
 })
+
+const handleClickSpot = (id: string) => {
+  router.push(`/experiences/${id}`)
+}
 
 onMounted(() => {
   const svg = window.btoa(`
@@ -65,14 +43,8 @@ onMounted(() => {
           url: `data:image/svg+xml;base64,${svg}`,
           scaledSize: new google.maps.Size(75, 75),
         },
-        // adjust zIndex to be above other markers
         zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
       }),
-    // new google.maps.marker.AdvancedMarkerElement({
-    //   title: String(count),
-    //   position,
-    // },
-    // ),
   }
 })
 </script>
@@ -80,6 +52,18 @@ onMounted(() => {
 <template>
   <div class="bg-white px-[15px] py-[48px] text-main md:px-[36px]">
     <div class="container mx-auto">
+      <div v-if="status === 'pending'">
+        <div class="text-center border-t-4 border-main animate-pulse" />
+      </div>
+    </div>
+
+    <div v-if="status === 'error'">
+      <div class="border border-orange text-orange bg-white">
+        <p>{{ error }}</p>
+      </div>
+    </div>
+
+    <template v-if=" status === 'success' ">
       <ClientOnly>
         <GoogleMap
           :api-key="config.public.GOOGLE_MAPS_API_KEY"
@@ -89,19 +73,22 @@ onMounted(() => {
         >
           <MarkerCluster :options="{ renderer: renderer }">
             <template
-              v-for="item in items"
-              :key="item.id"
+              v-for="spot in spots"
+              :key="spot.id"
             >
               <the-experience-marker
-                :position="item.position"
-                :title="item.title"
-                :description="item.description"
-                :img-src="item.imgSrc"
+                :id="spot.id"
+                :longitude="spot.longitude"
+                :latitude="spot.latitude"
+                :name="spot.name"
+                :description="spot.description"
+                :thumbnail-url="spot.thumbnailUrl"
+                @click:name="handleClickSpot"
               />
             </template>
           </MarkerCluster>
         </GoogleMap>
       </ClientOnly>
-    </div>
+    </template>
   </div>
 </template>
