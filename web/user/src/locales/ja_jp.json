@@ -336,6 +336,24 @@
       "storageTypeRefrigerated": "冷蔵保存",
       "storageTypeFrozen": "冷凍保存",
       "producerInformationTitle": "この商品の生産者"
+    },
+    "experiences": {
+      "producerLabel": "生産者",
+      "highlightsLabel": "おすすめポイント",
+      "adult": "大人 (高校生以上)",
+      "itemPriceTaxIncludedText": "(税込)",
+      "quantityLabel": "数量",
+      "juniorHighSchoolStudents": "中学生",
+      "elementarySchoolStudents": "小学生",
+      "preschoolers": "未就学児 (3歳〜)",
+      "senior": "シニア (65歳〜)",
+      "addToCartText": "カゴに入れる",
+      "estimatedTime": "・所用時間",
+      "businessHours": "・営業時間",
+      "locationPostalcode": "・所在地 (郵便番号)",
+      "locationAddress": "・所在地 (住所)",
+      "producerInformationTitle": "この商品の生産者",
+      "accessMethod": "アクセス方法"
     }
   },
   "lives": {
