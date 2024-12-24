@@ -35,20 +35,32 @@ const handleSubmit = () => {
 <template>
   <div>
     <form
-      class="w-full rounded-full bg-white px-4 h-10 flex items-center shadow-md"
-      :class="{ 'rounded-t-full rounded-b-none': hasResults }"
+      class="w-full rounded-full bg-white h-10 relative z-10 shadow-md"
+      :class="{ 'shadow-none': hasResults }"
       @submit.prevent="handleSubmit"
     >
-      <input
-        v-model="modelValue"
-        type="text"
-        placeholder="検索"
-        class="w-full py-1 px-2 focus:outline-none text-[16px]"
+      <div
+        class="w-full flex items-center px-4 h-full"
       >
-      <button type="submit">
-        <the-search-icon class="h-4" />
-      </button>
+        <input
+          v-model="modelValue"
+          type="text"
+          placeholder="検索"
+          class="w-full py-1 px-2 focus:outline-none text-[16px] z-10"
+        >
+        <button
+          type="submit"
+          class="z-10 bg-white"
+        >
+          <the-search-icon class="h-4" />
+        </button>
+      </div>
+      <div
+        v-show="hasResults"
+        class="w-full bg-white absolute h-4 bottom-0 z-0"
+      />
     </form>
+
     <div
       v-if="hasResults"
     >
