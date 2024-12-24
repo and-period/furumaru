@@ -125,6 +125,7 @@ export default defineNuxtConfig({
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY || '',
       SENTRY_TRACES_SAMPLE_RATE: parseFloat(
         process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5',
       ),
