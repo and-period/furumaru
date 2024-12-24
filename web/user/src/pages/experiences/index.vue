@@ -152,6 +152,7 @@ useSeoMeta({
         :center="center"
         :zoom="12"
         :map-type-control-options="mapTypeControlOptions"
+        :clickable-icons="false"
       >
         <CustomControl position="TOP_LEFT">
           <div class="relative">
