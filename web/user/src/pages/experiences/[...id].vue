@@ -1,12 +1,25 @@
 <script setup lang="ts">
 import type { Snackbar } from '~/types/props'
 import { ExperienceStatus } from '~/types/api'
+import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
 
 const dt = (str: keyof I18n['items']['experiences']) => {
   return i18n.t(`items.experiences.${str}`)
 }
+
+const route = useRoute()
+
+const experienceId = computed<string>(() => {
+  const ids = route.params.id
+  if (Array.isArray(ids)) {
+    return ids[0]
+  }
+  else {
+    return route.params.id as string
+  }
+})
 
 const snackbarItems = ref<Snackbar[]>([])
 
