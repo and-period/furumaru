@@ -92,19 +92,8 @@ func (e *experience) ListByGeolocation(
 ) (entity.Experiences, error) {
 	var internal internalExperiences
 
-	// Haversine式を用いて2点間の距離を計算する
-	// - 第1引数: latitude
-	// - 第2引数: latitude
-	// - 第3引数: longitude
-	// - 第4引数: radius
-	const distance = `ACOS(
-    SIN(RADIANS(host_latitude)) * SIN(RADIANS(?)) +
-    COS(RADIANS(host_latitude)) * COS(RADIANS(?)) *
-    COS(RADIANS(host_longitude) - RADIANS(?))
-  ) * 6371 <= ?`
-
 	stmt := e.db.Statement(ctx, e.db.DB, experienceTable, fields...).
-		Where(distance, params.Latitude, params.Latitude, params.Longitude, params.Radius)
+		Where("ST_Distance(host_geolocation, ST_GeomFromText('POINT (? ?)') <= ?", params.Longitude, params.Latitude, params.Radius)
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", params.CoordinatorID)
 	}
