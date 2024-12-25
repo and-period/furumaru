@@ -93,7 +93,7 @@ func (e *experience) ListByGeolocation(
 	var internal internalExperiences
 
 	stmt := e.db.Statement(ctx, e.db.DB, experienceTable, fields...).
-		Where("ST_Distance(host_geolocation, ST_GeomFromText(POINT(? ?)) <= ?", params.Longitude, params.Latitude, params.Radius)
+		Where("ST_Distance(host_geolocation, ST_GeomFromText(POINT(? ?))) <= ?", params.Longitude, params.Latitude, params.Radius)
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", params.CoordinatorID)
 	}
