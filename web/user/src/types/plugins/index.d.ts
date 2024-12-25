@@ -12,6 +12,7 @@ import type {
   StatusApi,
   OrderApi,
   PromotionApi,
+  ExperienceApi,
   SpotApi,
 } from '../api'
 import type { CustomErrorMessage } from '~/plugins/api-error-handler'
@@ -42,6 +43,7 @@ declare module 'pinia' {
     promotionApiClient: (token?: string) => PromotionApi
     otherApiClient: (token?: string) => OtherApi
     spotApiClient: (token?: string) => SpotApi
+    experienceApiClient: (token?: string) => ExperienceApi
     i18n: VueI18
   }
 }

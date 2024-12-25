@@ -15,6 +15,7 @@ import {
   AuthUserApi,
   OtherApi,
   SpotApi,
+  ExperienceApi,
 } from '~/types/api'
 
 function apiClientInjector({ store }: PiniaPluginContext) {
@@ -67,6 +68,10 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const promotionApiClient = (token?: string): PromotionApi =>
     apiClientFactory.create(PromotionApi, token)
 
+  // 体験APIをStoreに定義
+  const experienceApiClient = (token?: string) =>
+    apiClientFactory.create(ExperienceApi, token)
+
   // スポットAPIをStoreに定義
   const spotApiClient = (token?: string) => apiClientFactory.create(SpotApi, token)
 
@@ -86,6 +91,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.statusApiClient = statusApiClient
   store.orderApiClient = orderApiClient
   store.promotionApiClient = promotionApiClient
+  store.experienceApiClient = experienceApiClient
   store.spotApiClient = spotApiClient
   store.otherApiClient = otherApiClient
 }
