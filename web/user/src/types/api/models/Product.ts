@@ -37,12 +37,12 @@ import {
     DeliveryTypeFromJSONTyped,
     DeliveryTypeToJSON,
 } from './DeliveryType';
-import type { ProductRate } from './ProductRate';
+import type { ExperienceRate } from './ExperienceRate';
 import {
-    ProductRateFromJSON,
-    ProductRateFromJSONTyped,
-    ProductRateToJSON,
-} from './ProductRate';
+    ExperienceRateFromJSON,
+    ExperienceRateFromJSONTyped,
+    ExperienceRateToJSON,
+} from './ExperienceRate';
 
 /**
  * 商品情報
@@ -214,10 +214,10 @@ export interface Product {
     originCity: string;
     /**
      * 
-     * @type {ProductRate}
+     * @type {ExperienceRate}
      * @memberof Product
      */
-    rate: ProductRate;
+    rate: ExperienceRate;
     /**
      * 販売開始日時 (unixtime)
      * @type {number}
@@ -308,7 +308,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'box100Rate': json['box100Rate'],
         'originPrefecture': json['originPrefecture'],
         'originCity': json['originCity'],
-        'rate': ProductRateFromJSON(json['rate']),
+        'rate': ExperienceRateFromJSON(json['rate']),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
     };
@@ -347,7 +347,7 @@ export function ProductToJSON(value?: Product | null): any {
         'box100Rate': value['box100Rate'],
         'originPrefecture': value['originPrefecture'],
         'originCity': value['originCity'],
-        'rate': ProductRateToJSON(value['rate']),
+        'rate': ExperienceRateToJSON(value['rate']),
         'startAt': value['startAt'],
         'endAt': value['endAt'],
     };

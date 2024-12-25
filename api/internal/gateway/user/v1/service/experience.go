@@ -16,19 +16,6 @@ const (
 	ExperienceStatusFinished  ExperienceStatus = 4 // 販売終了
 )
 
-type Experience struct {
-	response.Experience
-	revisionID int64
-}
-
-type Experiences []*Experience
-
-type ExperienceMedia struct {
-	response.ExperienceMedia
-}
-
-type MultiExperienceMedia []*ExperienceMedia
-
 func NewExperienceStatus(status entity.ExperienceStatus) ExperienceStatus {
 	switch status {
 	case entity.ExperienceStatusPrivate:
@@ -50,7 +37,14 @@ func (s ExperienceStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewExperience(experience *entity.Experience) *Experience {
+type Experience struct {
+	response.Experience
+	revisionID int64
+}
+
+type Experiences []*Experience
+
+func NewExperience(experience *entity.Experience, rate *ExperienceRate) *Experience {
 	var point1, point2, point3 string
 	if len(experience.RecommendedPoints) > 0 {
 		point1 = experience.RecommendedPoints[0]
@@ -92,6 +86,7 @@ func NewExperience(experience *entity.Experience) *Experience {
 			HostAddressLine2:      experience.HostAddressLine2,
 			HostLongitude:         experience.HostLongitude,
 			HostLatitude:          experience.HostLatitude,
+			Rate:                  rate.Response(),
 			StartAt:               experience.StartAt.Unix(),
 			EndAt:                 experience.EndAt.Unix(),
 		},
@@ -103,10 +98,10 @@ func (e *Experience) Response() *response.Experience {
 	return &e.Experience
 }
 
-func NewExperiences(experiences entity.Experiences) Experiences {
+func NewExperiences(experiences entity.Experiences, rates map[string]*ExperienceRate) Experiences {
 	res := make(Experiences, len(experiences))
-	for i := range experiences {
-		res[i] = NewExperience(experiences[i])
+	for i, experience := range experiences {
+		res[i] = NewExperience(experience, rates[experience.ID])
 	}
 	return res
 }
@@ -126,6 +121,12 @@ func (es Experiences) Response() []*response.Experience {
 	}
 	return res
 }
+
+type ExperienceMedia struct {
+	response.ExperienceMedia
+}
+
+type MultiExperienceMedia []*ExperienceMedia
 
 func NewExperienceMedia(media *entity.ExperienceMedia) *ExperienceMedia {
 	return &ExperienceMedia{
@@ -152,6 +153,78 @@ func (m MultiExperienceMedia) Response() []*response.ExperienceMedia {
 	res := make([]*response.ExperienceMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
+	}
+	return res
+}
+
+type ExperienceRate struct {
+	response.ExperienceRate
+	experienceID string
+}
+
+type ExperienceRates []*ExperienceRate
+
+func newExperienceRate(review *entity.AggregatedExperienceReview) *ExperienceRate {
+	return &ExperienceRate{
+		ExperienceRate: response.ExperienceRate{
+			Count:   review.Count,
+			Average: review.Average,
+			Detail: map[int64]int64{
+				1: review.Rate1,
+				2: review.Rate2,
+				3: review.Rate3,
+				4: review.Rate4,
+				5: review.Rate5,
+			},
+		},
+		experienceID: review.ExperienceID,
+	}
+}
+
+func newEmptyExperienceRate() *ExperienceRate {
+	return &ExperienceRate{
+		ExperienceRate: response.ExperienceRate{
+			Count:   0,
+			Average: 0.0,
+			Detail: map[int64]int64{
+				1: 0,
+				2: 0,
+				3: 0,
+				4: 0,
+				5: 0,
+			},
+		},
+		experienceID: "",
+	}
+}
+
+func (r *ExperienceRate) Response() *response.ExperienceRate {
+	if r == nil {
+		return newEmptyExperienceRate().Response()
+	}
+	return &r.ExperienceRate
+}
+
+func NewExperienceRates(reviews entity.AggregatedExperienceReviews) ExperienceRates {
+	res := make(ExperienceRates, len(reviews))
+	for i, review := range reviews {
+		res[i] = newExperienceRate(review)
+	}
+	return res
+}
+
+func (rs ExperienceRates) MapByExperienceID() map[string]*ExperienceRate {
+	res := make(map[string]*ExperienceRate, len(rs))
+	for _, r := range rs {
+		res[r.experienceID] = r
+	}
+	return res
+}
+
+func (rs ExperienceRates) Response() []*response.ExperienceRate {
+	res := make([]*response.ExperienceRate, len(rs))
+	for i := range rs {
+		res[i] = rs[i].Response()
 	}
 	return res
 }

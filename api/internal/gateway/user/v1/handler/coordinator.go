@@ -82,6 +82,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		productTypes service.ProductTypes
 		producers    service.Producers
 		products     service.Products
+		experiences  service.Experiences
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -118,6 +119,16 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		products, err = h.listProducts(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		in := &store.ListExperiencesInput{
+			CoordinatorID:   coordinator.ID,
+			OnlyPublished:   true,
+			ExcludeFinished: true,
+			NoLimit:         true,
+		}
+		experiences, err = h.listExperiences(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
@@ -130,6 +141,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		ProductTypes: productTypes.Response(),
 		Producers:    producers.Response(),
 		Products:     products.Response(),
+		Experiences:  experiences.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

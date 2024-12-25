@@ -7,6 +7,42 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+/**
+ * Cart - 買い物かご
+ */
+type GetCartInput struct {
+	SessionID string `validate:"required"`
+}
+
+type CalcCartInput struct {
+	SessionID      string `validate:"required"`
+	CoordinatorID  string `validate:"required"`
+	BoxNumber      int64  `validate:"min=0"`
+	PromotionCode  string `validate:"omitempty,len=8"`
+	PrefectureCode int32  `validate:"min=0,max=47"`
+}
+
+type AddCartItemInput struct {
+	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
+	ProductID string `validate:"required"`
+	Quantity  int64  `validate:"min=1"`
+}
+
+type RemoveCartItemInput struct {
+	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
+	BoxNumber int64  `validate:"min=0"`
+	ProductID string `validate:"required"`
+}
+
+/**
+ * Category - 商品カテゴリ
+ */
 type ListCategoriesOrderKey int32
 
 const (
@@ -46,137 +82,418 @@ type DeleteCategoryInput struct {
 	CategoryID string `validate:"required"`
 }
 
-type ListProductTypesOrderKey int32
-
-const (
-	ListProductTypesOrderByName ListProductTypesOrderKey = iota + 1
-)
-
-type ListProductTypesInput struct {
-	Name       string                   `validate:"max=32"`
-	CategoryID string                   `validate:""`
-	Limit      int64                    `validate:"required,max=200"`
-	Offset     int64                    `validate:"min=0"`
-	Orders     []*ListProductTypesOrder `validate:"dive,required"`
+/**
+ * Checkout - 購入処理
+ */
+type GetCheckoutStateInput struct {
+	UserID        string `validate:""`
+	SessionID     string `validate:"required_without=UserID"`
+	TransactionID string `validate:"required"`
 }
 
-type ListProductTypesOrder struct {
-	Key        ListProductTypesOrderKey `validate:"required"`
-	OrderByASC bool                     `validate:""`
+type CheckoutCreditCardInput struct {
+	CheckoutDetail
+	Name              string `validate:"required"`
+	Number            string `validate:"required,credit_card"`
+	Month             int64  `validate:"min=1,max=12"`
+	Year              int64  `validate:"min=2000,max=2100"`
+	VerificationValue string `validate:"min=3,max=4,numeric"`
 }
 
-type MultiGetProductTypesInput struct {
-	ProductTypeIDs []string `validate:"dive,required"`
+type CheckoutPayPayInput struct {
+	CheckoutDetail
 }
 
-type GetProductTypeInput struct {
-	ProductTypeID string `validate:"required"`
+type CheckoutLinePayInput struct {
+	CheckoutDetail
 }
 
-type CreateProductTypeInput struct {
-	Name       string `validate:"required,max=32"`
-	IconURL    string `validate:"required"`
-	CategoryID string `validate:"required"`
+type CheckoutMerpayInput struct {
+	CheckoutDetail
 }
 
-type UpdateProductTypeInput struct {
-	ProductTypeID string `validate:"required"`
-	Name          string `validate:"required,max=32"`
-	IconURL       string `validate:"required"`
+type CheckoutRakutenPayInput struct {
+	CheckoutDetail
 }
 
-type DeleteProductTypeInput struct {
-	ProductTypeID string `validate:"required"`
+type CheckoutAUPayInput struct {
+	CheckoutDetail
 }
 
-type ListProductTagsOrderKey int32
-
-const (
-	ListProductTagsOrderByName ListProductTagsOrderKey = iota + 1
-)
-
-type ListProductTagsInput struct {
-	Name   string                  `validate:"max=32"`
-	Limit  int64                   `validate:"required,max=200"`
-	Offset int64                   `validate:"min=0"`
-	Orders []*ListProductTagsOrder `validate:"dive,required"`
+type CheckoutFreeInput struct {
+	CheckoutDetail
 }
 
-type ListProductTagsOrder struct {
-	Key        ListProductTagsOrderKey `validate:"required"`
-	OrderByASC bool                    `validate:""`
+type CheckoutDetail struct {
+	CheckoutProductDetail    `validate:"-"`
+	CheckoutExperienceDetail `validate:"-"`
+	Type                     entity.OrderType `validate:"required"`
+	UserID                   string           `validate:"required"`
+	SessionID                string           `validate:"required"`
+	RequestID                string           `validate:"required"`
+	PromotionCode            string           `validate:"omitempty,len=8"`
+	BillingAddressID         string           `validate:"required"`
+	CallbackURL              string           `validate:"required,http_url"`
+	Total                    int64            `validate:"min=0"`
 }
 
-type MultiGetProductTagsInput struct {
-	ProductTagIDs []string `validate:"dive,required"`
+type CheckoutProductDetail struct {
+	CoordinatorID     string `validate:"required"`
+	BoxNumber         int64  `validate:"min=0"`
+	ShippingAddressID string `validate:"required"`
 }
 
-type GetProductTagInput struct {
-	ProductTagID string `validate:"required"`
+type CheckoutExperienceDetail struct {
+	ExperienceID          string `validate:"required"`
+	AdultCount            int64  `validate:"min=0"`
+	JuniorHighSchoolCount int64  `validate:"min=0"`
+	ElementarySchoolCount int64  `validate:"min=0"`
+	PreschoolCount        int64  `validate:"min=0"`
+	SeniorCount           int64  `validate:"min=0"`
+	Transportation        string `validate:"max=256"`
+	RequestedDate         string `validate:"omitempty,date"`
+	RequestedTime         string `validate:"omitempty,time"`
 }
 
-type CreateProductTagInput struct {
+type NotifyPaymentCompletedInput struct {
+	OrderID   string               `validate:"required"`
+	PaymentID string               `validate:"required"`
+	Status    entity.PaymentStatus `validate:"required"`
+	IssuedAt  time.Time            `validate:"required"`
+}
+
+type NotifyPaymentRefundedInput struct {
+	OrderID  string               `validate:"required"`
+	Status   entity.PaymentStatus `validate:"required"`
+	Type     entity.RefundType    `validate:"required,oneof=1 2"`
+	Reason   string               `validate:"max=2000"`
+	Total    int64                `validate:"min=0"`
+	IssuedAt time.Time            `validate:"required"`
+}
+
+/**
+ * Experience - 体験
+ */
+type ListExperiencesInput struct {
+	Name            string `validate:"max=64"`
+	PrefectureCode  int32  `validate:"min=0,max=47"`
+	CoordinatorID   string `validate:""`
+	ProducerID      string `validate:""`
+	OnlyPublished   bool   `validate:""`
+	ExcludeFinished bool   `validate:""`
+	ExcludeDeleted  bool   `validate:""`
+	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64  `validate:"min=0"`
+	NoLimit         bool   `validate:""`
+}
+
+type MultiGetExperiencesInput struct {
+	ExperienceIDs []string `validate:"dive,required"`
+}
+
+type MultiGetExperiencesByRevisionInput struct {
+	ExperienceRevisionIDs []int64 `validate:"dive,required"`
+}
+
+type GetExperienceInput struct {
+	ExperienceID string `validate:"required"`
+}
+
+type CreateExperienceInput struct {
+	CoordinatorID         string                   `validate:"required"`
+	ProducerID            string                   `validate:"required"`
+	TypeID                string                   `validate:"required"`
+	Title                 string                   `validate:"required,max=128"`
+	Description           string                   `validate:"required,max=20000"`
+	Public                bool                     `validate:""`
+	SoldOut               bool                     `validate:""`
+	Media                 []*CreateExperienceMedia `validate:"max=8,unique=URL"`
+	PriceAdult            int64                    `validate:"min=0"`
+	PriceJuniorHighSchool int64                    `validate:"min=0"`
+	PriceElementarySchool int64                    `validate:"min=0"`
+	PricePreschool        int64                    `validate:"min=0"`
+	PriceSenior           int64                    `validate:"min=0"`
+	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
+	HostPostalCode        string                   `validate:"required,max=16,numeric"`
+	HostPrefectureCode    int32                    `validate:"required"`
+	HostCity              string                   `validate:"required,max=32"`
+	HostAddressLine1      string                   `validate:"required,max=64"`
+	HostAddressLine2      string                   `validate:"max=64"`
+	StartAt               time.Time                `validate:"required"`
+	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
+}
+
+type CreateExperienceMedia struct {
+	URL         string `validate:"required,url"`
+	IsThumbnail bool   `validate:""`
+}
+
+type UpdateExperienceInput struct {
+	ExperienceID          string                   `validate:"required"`
+	TypeID                string                   `validate:"required"`
+	Title                 string                   `validate:"required,max=128"`
+	Description           string                   `validate:"required,max=20000"`
+	Public                bool                     `validate:""`
+	SoldOut               bool                     `validate:""`
+	Media                 []*UpdateExperienceMedia `validate:"max=8,unique=URL"`
+	PriceAdult            int64                    `validate:"min=0"`
+	PriceJuniorHighSchool int64                    `validate:"min=0"`
+	PriceElementarySchool int64                    `validate:"min=0"`
+	PricePreschool        int64                    `validate:"min=0"`
+	PriceSenior           int64                    `validate:"min=0"`
+	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
+	HostPostalCode        string                   `validate:"required,max=16,numeric"`
+	HostPrefectureCode    int32                    `validate:"required"`
+	HostCity              string                   `validate:"required,max=32"`
+	HostAddressLine1      string                   `validate:"required,max=64"`
+	HostAddressLine2      string                   `validate:"max=64"`
+	StartAt               time.Time                `validate:"required"`
+	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
+}
+
+type UpdateExperienceMedia struct {
+	URL         string `validate:"required,url"`
+	IsThumbnail bool   `validate:""`
+}
+
+type DeleteExperienceInput struct {
+	ExperienceID string `validate:"required"`
+}
+
+/**
+ * ExperienceReview - 体験レビュー
+ */
+type ListExperienceReviewsInput struct {
+	ExperienceID string  `validate:"required"`
+	UserID       string  `validate:""`
+	Rates        []int64 `validate:"dive,min=1,max=5"`
+	Limit        int64   `validate:"required_without=NoLimit,min=0,max=200"`
+	NextToken    string  `validate:""`
+	NoLimit      bool    `validate:""`
+}
+
+type GetExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+}
+
+type CreateExperienceReviewInput struct {
+	ExperienceID string `validate:"required"`
+	UserID       string `validate:"required"`
+	Rate         int64  `validate:"min=1,max=5"`
+	Title        string `validate:"required,max=64"`
+	Comment      string `validate:"required,max=2000"`
+}
+
+type UpdateExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+	Rate     int64  `validate:"min=1,max=5"`
+	Title    string `validate:"required,max=64"`
+	Comment  string `validate:"required,max=2000"`
+}
+
+type DeleteExperienceReviewInput struct {
+	ReviewID string `validate:"required"`
+}
+
+type AggregateExperienceReviewsInput struct {
+	ExperienceIDs []string `validate:"min=1,dive,required"`
+}
+
+/**
+ * ExperienceReviewReaction - 体験レビューへのリアクション
+ */
+type UpsertExperienceReviewReactionInput struct {
+	ReviewID     string                              `validate:"required"`
+	UserID       string                              `validate:"required"`
+	ReactionType entity.ExperienceReviewReactionType `validate:"required,oneof=1 2"`
+}
+
+type DeleteExperienceReviewReactionInput struct {
+	ReviewID string `validate:"required"`
+	UserID   string `validate:"required"`
+}
+
+type GetUserExperienceReviewReactionsInput struct {
+	ExperienceID string `validate:"required"`
+	UserID       string `validate:"required"`
+}
+
+/**
+ * ExperienceType - 体験種別
+ */
+type ListExperienceTypesInput struct {
+	Name   string `validate:"max=32"`
+	Limit  int64  `validate:"required,max=200"`
+	Offset int64  `validate:"min=0"`
+}
+
+type MultiGetExperienceTypesInput struct {
+	ExperienceTypeIDs []string `validate:"dive,required"`
+}
+
+type GetExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
+}
+
+type CreateExperienceTypeInput struct {
 	Name string `validate:"required,max=32"`
 }
 
-type UpdateProductTagInput struct {
-	ProductTagID string `validate:"required"`
-	Name         string `validate:"required,max=32"`
+type UpdateExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
+	Name             string `validate:"required,max=32"`
 }
 
-type DeleteProductTagInput struct {
-	ProductTagID string `validate:"required"`
+type DeleteExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
 }
 
-type ListShippingsByCoordinatorIDsInput struct {
-	CoordinatorIDs []string `validate:"dive,required"`
+/**
+ * Live - マルシェタイムテーブル
+ */
+type ListLivesInput struct {
+	ScheduleIDs   []string `validate:"dive,required"`
+	ProducerID    string   `validate:""`
+	Limit         int64    `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset        int64    `validate:"min=0"`
+	NoLimit       bool     `validate:""`
+	OnlyPublished bool     `validate:""`
 }
 
-type MultiGetShippingsByRevisionInput struct {
-	ShippingRevisionIDs []int64 `validate:"dive,required"`
+type GetLiveInput struct {
+	LiveID string `validate:"required"`
 }
 
-type GetDefaultShippingInput struct{}
-
-type GetShippingByCoordinatorIDInput struct {
-	CoordinatorID string `validate:"required"`
+type CreateLiveInput struct {
+	ScheduleID string    `validate:"required"`
+	ProducerID string    `validate:"required"`
+	ProductIDs []string  `validate:"unique"`
+	Comment    string    `validate:"required,max=2000"`
+	StartAt    time.Time `validate:"required"`
+	EndAt      time.Time `validate:"required,gtfield=StartAt"`
 }
 
-type UpsertShippingInput struct {
-	CoordinatorID     string                `validate:"required"`
-	Box60Rates        []*UpsertShippingRate `validate:"required,dive,required"`
-	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	Box80Rates        []*UpsertShippingRate `validate:"required,dive,required"`
-	Box80Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	Box100Rates       []*UpsertShippingRate `validate:"required,dive,required"`
-	Box100Frozen      int64                 `validate:"min=0,lt=10000000000"`
-	HasFreeShipping   bool                  `validate:""`
-	FreeShippingRates int64                 `validate:"min=0,lt=10000000000"`
+type UpdateLiveInput struct {
+	LiveID     string    `validate:"required"`
+	ProductIDs []string  `validate:"unique"`
+	Comment    string    `validate:"required,max=2000"`
+	StartAt    time.Time `validate:"required"`
+	EndAt      time.Time `validate:"required,gtfield=StartAt"`
 }
 
-type UpsertShippingRate struct {
-	Name            string  `validate:"required"`
-	Price           int64   `validate:"min=0,lt=10000000000"`
-	PrefectureCodes []int32 `validate:"required"`
+type DeleteLiveInput struct {
+	LiveID string `validate:"required"`
 }
 
-type UpdateDefaultShippingInput struct {
-	Box60Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box60Frozen       int64                        `validate:"min=0,lt=10000000000"`
-	Box80Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box80Frozen       int64                        `validate:"min=0,lt=10000000000"`
-	Box100Rates       []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box100Frozen      int64                        `validate:"min=0,lt=10000000000"`
-	HasFreeShipping   bool                         `validate:""`
-	FreeShippingRates int64                        `validate:"min=0,lt=10000000000"`
+/**
+ * Order - 注文履歴
+ */
+type ListOrdersInput struct {
+	CoordinatorID string               `validate:""`
+	UserID        string               `validate:""`
+	Types         []entity.OrderType   `validate:""`
+	Statuses      []entity.OrderStatus `validate:""`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
 }
 
-type UpdateDefaultShippingRate struct {
-	Name            string  `validate:"required"`
-	Price           int64   `validate:"min=0,lt=10000000000"`
-	PrefectureCodes []int32 `validate:"required"`
+type ListOrderUserIDsInput struct {
+	CoordinatorID string `validate:""`
+	Limit         int64  `validate:"required,max=200"`
+	Offset        int64  `validate:"min=0"`
 }
 
+type GetOrderInput struct {
+	OrderID string `validate:"required"`
+}
+
+type GetOrderByTransactionIDInput struct {
+	UserID        string `validate:"required"`
+	TransactionID string `validate:"required"`
+}
+
+type CaptureOrderInput struct {
+	OrderID string `validate:"required"`
+}
+
+type DraftOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"max=2000"`
+}
+
+type CompleteOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"required,max=2000"`
+}
+
+type CancelOrderInput struct {
+	OrderID string `validate:"required"`
+}
+
+type RefundOrderInput struct {
+	OrderID     string `validate:"required"`
+	Description string `validate:"required"`
+}
+
+type UpdateOrderFulfillmentInput struct {
+	OrderID         string                 `validate:"required"`
+	FulfillmentID   string                 `validate:"required"`
+	ShippingCarrier entity.ShippingCarrier `validate:"required,oneof=1 2"`
+	TrackingNumber  string                 `validate:"required"`
+}
+
+type AggregateOrdersInput struct {
+	CoordinatorID string   `validate:""`
+	UserIDs       []string `validate:"dive,required"`
+}
+
+type AggregateOrdersByPromotionInput struct {
+	CoordinatorID string   `validate:""`
+	PromotionIDs  []string `validate:"dive,required"`
+}
+
+type ExportOrdersInput struct {
+	CoordinatorID   string                      `validate:""`
+	ShippingCarrier entity.ShippingCarrier      `validate:"oneof=0 1 2"`
+	EncodingType    codes.CharacterEncodingType `validate:"oneof=0 1"`
+}
+
+/**
+ * PaymentSystem - 決済システム
+ */
+type MultiGetPaymentSystemsInput struct {
+	MethodTypes []entity.PaymentMethodType `validate:"dive,required"`
+}
+
+type GetPaymentSystemInput struct {
+	MethodType entity.PaymentMethodType `validate:"required"`
+}
+
+type UpdatePaymentStatusInput struct {
+	MethodType entity.PaymentMethodType   `validate:"required"`
+	Status     entity.PaymentSystemStatus `validate:"required"`
+}
+
+/**
+ * PostalCode - 郵便番号
+ */
+type SearchPostalCodeInput struct {
+	PostlCode string `validate:"required,numeric,len=7"`
+}
+
+/**
+ * Product - 商品
+ */
 type ListProductsOrderKey int32
 
 const (
@@ -295,10 +612,9 @@ type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
 
-type GetProductReviewInput struct {
-	ReviewID string `validate:"required"`
-}
-
+/**
+ * ProductReview - 商品レビュー
+ */
 type ListProductReviewsInput struct {
 	ProductID string  `validate:"required"`
 	UserID    string  `validate:""`
@@ -306,6 +622,10 @@ type ListProductReviewsInput struct {
 	Limit     int64   `validate:"required_without=NoLimit,min=0,max=200"`
 	NextToken string  `validate:""`
 	NoLimit   bool    `validate:""`
+}
+
+type GetProductReviewInput struct {
+	ReviewID string `validate:"required"`
 }
 
 type CreateProductReviewInput struct {
@@ -331,6 +651,9 @@ type AggregateProductReviewsInput struct {
 	ProductIDs []string `validate:"min=1,dive,required"`
 }
 
+/**
+ * ProductReviewReaction - 商品レビューへのリアクション
+ */
 type UpsertProductReviewReactionInput struct {
 	ReviewID     string                           `validate:"required"`
 	UserID       string                           `validate:"required"`
@@ -347,6 +670,97 @@ type GetUserProductReviewReactionsInput struct {
 	UserID    string `validate:"required"`
 }
 
+/**
+ * ProductTag - 商品タグ
+ */
+type ListProductTagsOrderKey int32
+
+const (
+	ListProductTagsOrderByName ListProductTagsOrderKey = iota + 1
+)
+
+type ListProductTagsInput struct {
+	Name   string                  `validate:"max=32"`
+	Limit  int64                   `validate:"required,max=200"`
+	Offset int64                   `validate:"min=0"`
+	Orders []*ListProductTagsOrder `validate:"dive,required"`
+}
+
+type ListProductTagsOrder struct {
+	Key        ListProductTagsOrderKey `validate:"required"`
+	OrderByASC bool                    `validate:""`
+}
+
+type MultiGetProductTagsInput struct {
+	ProductTagIDs []string `validate:"dive,required"`
+}
+
+type GetProductTagInput struct {
+	ProductTagID string `validate:"required"`
+}
+
+type CreateProductTagInput struct {
+	Name string `validate:"required,max=32"`
+}
+
+type UpdateProductTagInput struct {
+	ProductTagID string `validate:"required"`
+	Name         string `validate:"required,max=32"`
+}
+
+type DeleteProductTagInput struct {
+	ProductTagID string `validate:"required"`
+}
+
+/**
+ * ProductType - 品目
+ */
+type ListProductTypesOrderKey int32
+
+const (
+	ListProductTypesOrderByName ListProductTypesOrderKey = iota + 1
+)
+
+type ListProductTypesInput struct {
+	Name       string                   `validate:"max=32"`
+	CategoryID string                   `validate:""`
+	Limit      int64                    `validate:"required,max=200"`
+	Offset     int64                    `validate:"min=0"`
+	Orders     []*ListProductTypesOrder `validate:"dive,required"`
+}
+
+type ListProductTypesOrder struct {
+	Key        ListProductTypesOrderKey `validate:"required"`
+	OrderByASC bool                     `validate:""`
+}
+
+type MultiGetProductTypesInput struct {
+	ProductTypeIDs []string `validate:"dive,required"`
+}
+
+type GetProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+}
+
+type CreateProductTypeInput struct {
+	Name       string `validate:"required,max=32"`
+	IconURL    string `validate:"required"`
+	CategoryID string `validate:"required"`
+}
+
+type UpdateProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+	Name          string `validate:"required,max=32"`
+	IconURL       string `validate:"required"`
+}
+
+type DeleteProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+}
+
+/**
+ * Promotion - プロモーション
+ */
 type ListPromotionsOrderKey int32
 
 const (
@@ -413,6 +827,10 @@ type DeletePromotionInput struct {
 	PromotionID string `validate:"required"`
 }
 
+/**
+ * Schedule - マルシェ開催スケジュール
+ */
+
 type ListSchedulesInput struct {
 	CoordinatorID string    `validate:""`
 	ProducerID    string    `validate:""`
@@ -472,393 +890,61 @@ type PublishScheduleInput struct {
 	Public     bool   `validate:""`
 }
 
-type ListLivesInput struct {
-	ScheduleIDs   []string `validate:"dive,required"`
-	ProducerID    string   `validate:""`
-	Limit         int64    `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset        int64    `validate:"min=0"`
-	NoLimit       bool     `validate:""`
-	OnlyPublished bool     `validate:""`
+/**
+ * Shipping - 配送設定
+ */
+type ListShippingsByCoordinatorIDsInput struct {
+	CoordinatorIDs []string `validate:"dive,required"`
 }
 
-type GetLiveInput struct {
-	LiveID string `validate:"required"`
+type MultiGetShippingsByRevisionInput struct {
+	ShippingRevisionIDs []int64 `validate:"dive,required"`
 }
 
-type CreateLiveInput struct {
-	ScheduleID string    `validate:"required"`
-	ProducerID string    `validate:"required"`
-	ProductIDs []string  `validate:"unique"`
-	Comment    string    `validate:"required,max=2000"`
-	StartAt    time.Time `validate:"required"`
-	EndAt      time.Time `validate:"required,gtfield=StartAt"`
+type GetDefaultShippingInput struct{}
+
+type GetShippingByCoordinatorIDInput struct {
+	CoordinatorID string `validate:"required"`
 }
 
-type UpdateLiveInput struct {
-	LiveID     string    `validate:"required"`
-	ProductIDs []string  `validate:"unique"`
-	Comment    string    `validate:"required,max=2000"`
-	StartAt    time.Time `validate:"required"`
-	EndAt      time.Time `validate:"required,gtfield=StartAt"`
+type UpsertShippingInput struct {
+	CoordinatorID     string                `validate:"required"`
+	Box60Rates        []*UpsertShippingRate `validate:"required,dive,required"`
+	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
+	Box80Rates        []*UpsertShippingRate `validate:"required,dive,required"`
+	Box80Frozen       int64                 `validate:"min=0,lt=10000000000"`
+	Box100Rates       []*UpsertShippingRate `validate:"required,dive,required"`
+	Box100Frozen      int64                 `validate:"min=0,lt=10000000000"`
+	HasFreeShipping   bool                  `validate:""`
+	FreeShippingRates int64                 `validate:"min=0,lt=10000000000"`
 }
 
-type DeleteLiveInput struct {
-	LiveID string `validate:"required"`
+type UpsertShippingRate struct {
+	Name            string  `validate:"required"`
+	Price           int64   `validate:"min=0,lt=10000000000"`
+	PrefectureCodes []int32 `validate:"required"`
 }
 
-type ListOrdersInput struct {
-	CoordinatorID string               `validate:""`
-	UserID        string               `validate:""`
-	Types         []entity.OrderType   `validate:""`
-	Statuses      []entity.OrderStatus `validate:""`
-	Limit         int64                `validate:"required,max=200"`
-	Offset        int64                `validate:"min=0"`
+type UpdateDefaultShippingInput struct {
+	Box60Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box60Frozen       int64                        `validate:"min=0,lt=10000000000"`
+	Box80Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box80Frozen       int64                        `validate:"min=0,lt=10000000000"`
+	Box100Rates       []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box100Frozen      int64                        `validate:"min=0,lt=10000000000"`
+	HasFreeShipping   bool                         `validate:""`
+	FreeShippingRates int64                        `validate:"min=0,lt=10000000000"`
 }
 
-type ListOrderUserIDsInput struct {
-	CoordinatorID string `validate:""`
-	Limit         int64  `validate:"required,max=200"`
-	Offset        int64  `validate:"min=0"`
+type UpdateDefaultShippingRate struct {
+	Name            string  `validate:"required"`
+	Price           int64   `validate:"min=0,lt=10000000000"`
+	PrefectureCodes []int32 `validate:"required"`
 }
 
-type GetOrderInput struct {
-	OrderID string `validate:"required"`
-}
-
-type GetOrderByTransactionIDInput struct {
-	UserID        string `validate:"required"`
-	TransactionID string `validate:"required"`
-}
-
-type CaptureOrderInput struct {
-	OrderID string `validate:"required"`
-}
-
-type DraftOrderInput struct {
-	OrderID         string `validate:"required"`
-	ShippingMessage string `validate:"max=2000"`
-}
-
-type CompleteOrderInput struct {
-	OrderID         string `validate:"required"`
-	ShippingMessage string `validate:"required,max=2000"`
-}
-
-type CancelOrderInput struct {
-	OrderID string `validate:"required"`
-}
-
-type RefundOrderInput struct {
-	OrderID     string `validate:"required"`
-	Description string `validate:"required"`
-}
-
-type UpdateOrderFulfillmentInput struct {
-	OrderID         string                 `validate:"required"`
-	FulfillmentID   string                 `validate:"required"`
-	ShippingCarrier entity.ShippingCarrier `validate:"required,oneof=1 2"`
-	TrackingNumber  string                 `validate:"required"`
-}
-
-type AggregateOrdersInput struct {
-	CoordinatorID string   `validate:""`
-	UserIDs       []string `validate:"dive,required"`
-}
-
-type AggregateOrdersByPromotionInput struct {
-	CoordinatorID string   `validate:""`
-	PromotionIDs  []string `validate:"dive,required"`
-}
-
-type ExportOrdersInput struct {
-	CoordinatorID   string                      `validate:""`
-	ShippingCarrier entity.ShippingCarrier      `validate:"oneof=0 1 2"`
-	EncodingType    codes.CharacterEncodingType `validate:"oneof=0 1"`
-}
-
-type GetCartInput struct {
-	SessionID string `validate:"required"`
-}
-
-type CalcCartInput struct {
-	SessionID      string `validate:"required"`
-	CoordinatorID  string `validate:"required"`
-	BoxNumber      int64  `validate:"min=0"`
-	PromotionCode  string `validate:"omitempty,len=8"`
-	PrefectureCode int32  `validate:"min=0,max=47"`
-}
-
-type AddCartItemInput struct {
-	SessionID string `validate:"required"`
-	UserID    string `validate:""`
-	UserAgent string `validate:""`
-	ClientIP  string `validate:"omitempty,ip_addr"`
-	ProductID string `validate:"required"`
-	Quantity  int64  `validate:"min=1"`
-}
-
-type RemoveCartItemInput struct {
-	SessionID string `validate:"required"`
-	UserID    string `validate:""`
-	UserAgent string `validate:""`
-	ClientIP  string `validate:"omitempty,ip_addr"`
-	BoxNumber int64  `validate:"min=0"`
-	ProductID string `validate:"required"`
-}
-
-type GetCheckoutStateInput struct {
-	UserID        string `validate:""`
-	SessionID     string `validate:"required_without=UserID"`
-	TransactionID string `validate:"required"`
-}
-
-type CheckoutCreditCardInput struct {
-	CheckoutDetail
-	Name              string `validate:"required"`
-	Number            string `validate:"required,credit_card"`
-	Month             int64  `validate:"min=1,max=12"`
-	Year              int64  `validate:"min=2000,max=2100"`
-	VerificationValue string `validate:"min=3,max=4,numeric"`
-}
-
-type CheckoutPayPayInput struct {
-	CheckoutDetail
-}
-
-type CheckoutLinePayInput struct {
-	CheckoutDetail
-}
-
-type CheckoutMerpayInput struct {
-	CheckoutDetail
-}
-
-type CheckoutRakutenPayInput struct {
-	CheckoutDetail
-}
-
-type CheckoutAUPayInput struct {
-	CheckoutDetail
-}
-
-type CheckoutFreeInput struct {
-	CheckoutDetail
-}
-
-type CheckoutDetail struct {
-	CheckoutProductDetail    `validate:"-"`
-	CheckoutExperienceDetail `validate:"-"`
-	Type                     entity.OrderType `validate:"required"`
-	UserID                   string           `validate:"required"`
-	SessionID                string           `validate:"required"`
-	RequestID                string           `validate:"required"`
-	PromotionCode            string           `validate:"omitempty,len=8"`
-	BillingAddressID         string           `validate:"required"`
-	CallbackURL              string           `validate:"required,http_url"`
-	Total                    int64            `validate:"min=0"`
-}
-
-type CheckoutProductDetail struct {
-	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"min=0"`
-	ShippingAddressID string `validate:"required"`
-}
-
-type CheckoutExperienceDetail struct {
-	ExperienceID          string `validate:"required"`
-	AdultCount            int64  `validate:"min=0"`
-	JuniorHighSchoolCount int64  `validate:"min=0"`
-	ElementarySchoolCount int64  `validate:"min=0"`
-	PreschoolCount        int64  `validate:"min=0"`
-	SeniorCount           int64  `validate:"min=0"`
-	Transportation        string `validate:"max=256"`
-	RequestedDate         string `validate:"omitempty,date"`
-	RequestedTime         string `validate:"omitempty,time"`
-}
-
-type MultiGetPaymentSystemsInput struct {
-	MethodTypes []entity.PaymentMethodType `validate:"dive,required"`
-}
-
-type GetPaymentSystemInput struct {
-	MethodType entity.PaymentMethodType `validate:"required"`
-}
-
-type UpdatePaymentStatusInput struct {
-	MethodType entity.PaymentMethodType   `validate:"required"`
-	Status     entity.PaymentSystemStatus `validate:"required"`
-}
-
-type SearchPostalCodeInput struct {
-	PostlCode string `validate:"required,numeric,len=7"`
-}
-
-type NotifyPaymentCompletedInput struct {
-	OrderID   string               `validate:"required"`
-	PaymentID string               `validate:"required"`
-	Status    entity.PaymentStatus `validate:"required"`
-	IssuedAt  time.Time            `validate:"required"`
-}
-
-type NotifyPaymentRefundedInput struct {
-	OrderID  string               `validate:"required"`
-	Status   entity.PaymentStatus `validate:"required"`
-	Type     entity.RefundType    `validate:"required,oneof=1 2"`
-	Reason   string               `validate:"max=2000"`
-	Total    int64                `validate:"min=0"`
-	IssuedAt time.Time            `validate:"required"`
-}
-
-type ListExperienceTypesInput struct {
-	Name   string `validate:"max=32"`
-	Limit  int64  `validate:"required,max=200"`
-	Offset int64  `validate:"min=0"`
-}
-
-type MultiGetExperienceTypesInput struct {
-	ExperienceTypeIDs []string `validate:"dive,required"`
-}
-
-type GetExperienceTypeInput struct {
-	ExperienceTypeID string `validate:"required"`
-}
-
-type CreateExperienceTypeInput struct {
-	Name string `validate:"required,max=32"`
-}
-
-type UpdateExperienceTypeInput struct {
-	ExperienceTypeID string `validate:"required"`
-	Name             string `validate:"required,max=32"`
-}
-
-type DeleteExperienceTypeInput struct {
-	ExperienceTypeID string `validate:"required"`
-}
-
-type ListExperiencesInput struct {
-	Name            string `validate:"max=64"`
-	PrefectureCode  int32  `validate:"min=0,max=47"`
-	CoordinatorID   string `validate:""`
-	ProducerID      string `validate:""`
-	OnlyPublished   bool   `validate:""`
-	ExcludeFinished bool   `validate:""`
-	ExcludeDeleted  bool   `validate:""`
-	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset          int64  `validate:"min=0"`
-	NoLimit         bool   `validate:""`
-}
-
-type MultiGetExperiencesInput struct {
-	ExperienceIDs []string `validate:"dive,required"`
-}
-
-type MultiGetExperiencesByRevisionInput struct {
-	ExperienceRevisionIDs []int64 `validate:"dive,required"`
-}
-
-type GetExperienceInput struct {
-	ExperienceID string `validate:"required"`
-}
-
-type CreateExperienceInput struct {
-	CoordinatorID         string                   `validate:"required"`
-	ProducerID            string                   `validate:"required"`
-	TypeID                string                   `validate:"required"`
-	Title                 string                   `validate:"required,max=128"`
-	Description           string                   `validate:"required,max=20000"`
-	Public                bool                     `validate:""`
-	SoldOut               bool                     `validate:""`
-	Media                 []*CreateExperienceMedia `validate:"max=8,unique=URL"`
-	PriceAdult            int64                    `validate:"min=0"`
-	PriceJuniorHighSchool int64                    `validate:"min=0"`
-	PriceElementarySchool int64                    `validate:"min=0"`
-	PricePreschool        int64                    `validate:"min=0"`
-	PriceSenior           int64                    `validate:"min=0"`
-	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"omitempty,url"`
-	Duration              int64                    `validate:"min=0"`
-	Direction             string                   `validate:"max=2000"`
-	BusinessOpenTime      string                   `validate:"time"`
-	BusinessCloseTime     string                   `validate:"time"`
-	HostPostalCode        string                   `validate:"required,max=16,numeric"`
-	HostPrefectureCode    int32                    `validate:"required"`
-	HostCity              string                   `validate:"required,max=32"`
-	HostAddressLine1      string                   `validate:"required,max=64"`
-	HostAddressLine2      string                   `validate:"max=64"`
-	StartAt               time.Time                `validate:"required"`
-	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
-}
-
-type CreateExperienceMedia struct {
-	URL         string `validate:"required,url"`
-	IsThumbnail bool   `validate:""`
-}
-
-type UpdateExperienceInput struct {
-	ExperienceID          string                   `validate:"required"`
-	TypeID                string                   `validate:"required"`
-	Title                 string                   `validate:"required,max=128"`
-	Description           string                   `validate:"required,max=20000"`
-	Public                bool                     `validate:""`
-	SoldOut               bool                     `validate:""`
-	Media                 []*UpdateExperienceMedia `validate:"max=8,unique=URL"`
-	PriceAdult            int64                    `validate:"min=0"`
-	PriceJuniorHighSchool int64                    `validate:"min=0"`
-	PriceElementarySchool int64                    `validate:"min=0"`
-	PricePreschool        int64                    `validate:"min=0"`
-	PriceSenior           int64                    `validate:"min=0"`
-	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"omitempty,url"`
-	Duration              int64                    `validate:"min=0"`
-	Direction             string                   `validate:"max=2000"`
-	BusinessOpenTime      string                   `validate:"time"`
-	BusinessCloseTime     string                   `validate:"time"`
-	HostPostalCode        string                   `validate:"required,max=16,numeric"`
-	HostPrefectureCode    int32                    `validate:"required"`
-	HostCity              string                   `validate:"required,max=32"`
-	HostAddressLine1      string                   `validate:"required,max=64"`
-	HostAddressLine2      string                   `validate:"max=64"`
-	StartAt               time.Time                `validate:"required"`
-	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
-}
-
-type UpdateExperienceMedia struct {
-	URL         string `validate:"required,url"`
-	IsThumbnail bool   `validate:""`
-}
-
-type DeleteExperienceInput struct {
-	ExperienceID string `validate:"required"`
-}
-
-type ListSpotTypesInput struct {
-	Name   string `validate:"max=32"`
-	Limit  int64  `validate:"required,max=200"`
-	Offset int64  `validate:"min=0"`
-}
-
-type MultiGetSpotTypesInput struct {
-	SpotTypeIDs []string `validate:"dive,required"`
-}
-
-type GetSpotTypeInput struct {
-	SpotTypeID string `validate:"required"`
-}
-
-type CreateSpotTypeInput struct {
-	Name string `validate:"required,max=32"`
-}
-
-type UpdateSpotTypeInput struct {
-	SpotTypeID string `validate:"required"`
-	Name       string `validate:"required,max=32"`
-}
-
-type DeleteSpotTypeInput struct {
-	SpotTypeID string `validate:"required"`
-}
-
+/**
+ * Spot - スポット
+ */
 type ListSpotsInput struct {
 	Name            string   `validate:"max=64"`
 	TypeIDs         []string `validate:""`
@@ -920,4 +1006,34 @@ type ApproveSpotInput struct {
 
 type DeleteSpotInput struct {
 	SpotID string `validate:"required"`
+}
+
+/**
+ * SpotType - スポット種別
+ */
+type ListSpotTypesInput struct {
+	Name   string `validate:"max=32"`
+	Limit  int64  `validate:"required,max=200"`
+	Offset int64  `validate:"min=0"`
+}
+
+type MultiGetSpotTypesInput struct {
+	SpotTypeIDs []string `validate:"dive,required"`
+}
+
+type GetSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
+}
+
+type CreateSpotTypeInput struct {
+	Name string `validate:"required,max=32"`
+}
+
+type UpdateSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
+	Name       string `validate:"required,max=32"`
+}
+
+type DeleteSpotTypeInput struct {
+	SpotTypeID string `validate:"required"`
 }

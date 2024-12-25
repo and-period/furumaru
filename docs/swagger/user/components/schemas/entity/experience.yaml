@@ -107,6 +107,27 @@ experience:
       type: number
       format: double
       description: 開催場所（緯度）
+    rate:
+      type: object
+      properties:
+        average:
+          type: number
+          format: double
+          description: 評価平均値
+        count:
+          type: integer
+          format: int64
+          description: 合計評価数
+        detail:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          description: 評価詳細（キー：評価値、値：評価数）
+      required:
+      - average
+      - count
+      - detail
     startAt:
       type: integer
       format: int64
@@ -145,6 +166,7 @@ experience:
   - hostAddressLine2
   - hostLongitude
   - hostLatitude
+  - rate
   - startAt
   - endAt
   example:
@@ -181,5 +203,14 @@ experience:
     hostAddressLine2: '千代田ビル1F'
     hostLongitude: 139.767052
     hostLatitude: 35.681167
+    rate:
+      average: 4.5
+      count: 100
+      detail:
+        1: 10
+        2: 20
+        3: 30
+        4: 20
+        5: 20
     startAt: 1614556800
     endAt: 1614643199

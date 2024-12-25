@@ -31,6 +31,7 @@ type Experience struct {
 	HostAddressLine2      string             `json:"hostAddressLine2"`      // 開催場所(住所2)
 	HostLongitude         float64            `json:"hostLongitude"`         // 開催場所(座標情報:経度)
 	HostLatitude          float64            `json:"hostLatitude"`          // 開催場所(座標情報:緯度)
+	Rate                  *ExperienceRate    `json:"rate"`                  // 体験評価
 	StartAt               int64              `json:"startAt"`               // 募集開始日時
 	EndAt                 int64              `json:"endAt"`                 // 募集終了日時
 }
@@ -39,6 +40,13 @@ type Experience struct {
 type ExperienceMedia struct {
 	URL         string `json:"url"`         // メディアURL
 	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
+}
+
+// ExperienceRate - 体験評価情報
+type ExperienceRate struct {
+	Average float64         `json:"average"` // 平均評価
+	Count   int64           `json:"count"`   // 合計評価数
+	Detail  map[int64]int64 `json:"detail"`  // 評価詳細
 }
 
 type ExperienceResponse struct {

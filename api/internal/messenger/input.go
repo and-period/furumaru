@@ -6,6 +6,98 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
+/**
+ * Concact - お問い合わせ
+ */
+type ListContactsInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type GetContactInput struct {
+	ContactID string `validate:"required"`
+}
+
+type CreateContactInput struct {
+	Title       string `validate:"required,max=128"`
+	Content     string `validate:"required,max=2000"`
+	Username    string `validate:"required,max=128"`
+	UserID      string `validate:""`
+	CategoryID  string `validate:"required,max=128"`
+	Email       string `validate:"required,max=256,email"`
+	PhoneNumber string `validate:"required,e164"`
+	ResponderID string `validate:""`
+	Note        string `validate:"max=2000"`
+}
+
+type UpdateContactInput struct {
+	ContactID   string               `validate:"required"`
+	Title       string               `validate:"required,max=128"`
+	Content     string               `validate:"required,max=2000"`
+	Username    string               `validate:"required,max=128"`
+	UserID      string               `validate:""`
+	CategoryID  string               `validate:"required,max=128"`
+	Email       string               `validate:"required,max=256,email"`
+	PhoneNumber string               `validate:"required,e164"`
+	Status      entity.ContactStatus `validate:"required"`
+	ResponderID string               `validate:""`
+	Note        string               `validate:"max=2000"`
+}
+
+type DeleteContactInput struct {
+	ContactID string `validate:"required"`
+}
+
+/**
+ * ContactCategory - お問い合わせ種別
+ */
+type ListContactCategoriesInput struct {
+	Limit  int64 `validate:"required,max=200"`
+	Offset int64 `validate:"min=0"`
+}
+
+type MultiGetContactCategoriesInput struct {
+	CategoryIDs []string `validate:"opitempty,dive,required"`
+}
+
+type GetContactCategoryInput struct {
+	CategoryID string `validate:"required"`
+}
+
+/**
+ * ContactRead - お問い合わせ既読管理
+ */
+type CreateContactReadInput struct {
+	ContactID string                 `validate:"required"`
+	UserID    string                 `validate:""`
+	UserType  entity.ContactUserType `validate:"required"`
+}
+
+/**
+ * Message - メッセージ
+ */
+type ListMessagesInput struct {
+	UserType entity.UserType      `validate:"required,oneof=1 2"`
+	UserID   string               `validate:"required"`
+	Limit    int64                `validate:"required,max=200"`
+	Offset   int64                `validate:"min=0"`
+	Orders   []*ListMessagesOrder `validate:"dive,required"`
+}
+
+type ListMessagesOrder struct {
+	Key        entity.MessageOrderBy `validate:"required"`
+	OrderByASC bool                  `validate:""`
+}
+
+type GetMessageInput struct {
+	MessageID string          `validate:"required"`
+	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
+	UserID    string          `validate:""`
+}
+
+/**
+ * Notification - お知らせ
+ */
 type ListNotificationsOrderKey int32
 
 const (
@@ -55,33 +147,16 @@ type DeleteNotificationInput struct {
 	NotificationID string `validate:"required"`
 }
 
-type ListMessagesInput struct {
-	UserType entity.UserType      `validate:"required,oneof=1 2"`
-	UserID   string               `validate:"required"`
-	Limit    int64                `validate:"required,max=200"`
-	Offset   int64                `validate:"min=0"`
-	Orders   []*ListMessagesOrder `validate:"dive,required"`
-}
-
-type ListMessagesOrder struct {
-	Key        entity.MessageOrderBy `validate:"required"`
-	OrderByASC bool                  `validate:""`
-}
-
-type GetMessageInput struct {
-	MessageID string          `validate:"required"`
-	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
-	UserID    string          `validate:""`
-}
-
-type ReserveStartLiveInput struct {
-	ScheduleID string `validate:"required"`
-}
-
-type ReserveNotificationInput struct {
+/**
+ * Notify - 通知関連(共通)
+ */
+type NotifyNotificationInput struct {
 	NotificationID string `validate:"required"`
 }
 
+/**
+ * NotifyAdmin - 通知関連(管理者宛)
+ */
 type NotifyRegisterAdminInput struct {
 	AdminID  string `validate:"required"`
 	Password string `validate:"required"`
@@ -92,14 +167,9 @@ type NotifyResetAdminPasswordInput struct {
 	Password string `validate:"required"`
 }
 
-type NotifyNotificationInput struct {
-	NotificationID string `validate:"required"`
-}
-
-type NotifyReceivedContactInput struct {
-	ContactID string `validate:"required"`
-}
-
+/**
+ * NotifyUser - 通知関連(利用者宛)
+ */
 type NotifyStartLiveInput struct {
 	ScheduleID string `validate:"required"`
 }
@@ -112,58 +182,20 @@ type NotifyOrderShippedInput struct {
 	OrderID string `validate:"required"`
 }
 
-type ListContactsInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+/**
+ * ReserveNotification - 通知予約関連
+ */
+type ReserveStartLiveInput struct {
+	ScheduleID string `validate:"required"`
 }
 
-type GetContactInput struct {
-	ContactID string `validate:"required"`
+type ReserveNotificationInput struct {
+	NotificationID string `validate:"required"`
 }
 
-type CreateContactInput struct {
-	Title       string `validate:"required,max=128"`
-	Content     string `validate:"required,max=2000"`
-	Username    string `validate:"required,max=128"`
-	UserID      string `validate:""`
-	CategoryID  string `validate:"required,max=128"`
-	Email       string `validate:"required,max=256,email"`
-	PhoneNumber string `validate:"required,e164"`
-	ResponderID string `validate:""`
-	Note        string `validate:"max=2000"`
-}
-
-type UpdateContactInput struct {
-	ContactID   string               `validate:"required"`
-	Title       string               `validate:"required,max=128"`
-	Content     string               `validate:"required,max=2000"`
-	Username    string               `validate:"required,max=128"`
-	UserID      string               `validate:""`
-	CategoryID  string               `validate:"required,max=128"`
-	Email       string               `validate:"required,max=256,email"`
-	PhoneNumber string               `validate:"required,e164"`
-	Status      entity.ContactStatus `validate:"required"`
-	ResponderID string               `validate:""`
-	Note        string               `validate:"max=2000"`
-}
-
-type DeleteContactInput struct {
-	ContactID string `validate:"required"`
-}
-
-type ListContactCategoriesInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
-}
-
-type MultiGetContactCategoriesInput struct {
-	CategoryIDs []string `validate:"opitempty,dive,required"`
-}
-
-type GetContactCategoryInput struct {
-	CategoryID string `validate:"required"`
-}
-
+/**
+ * Thread - お問い合わせ会話履歴
+ */
 type ListThreadsInput struct {
 	ContactID string `validate:"required"`
 	UserID    string `validate:""`
@@ -191,10 +223,4 @@ type UpdateThreadInput struct {
 
 type DeleteThreadInput struct {
 	ThreadID string `validate:"required"`
-}
-
-type CreateContactReadInput struct {
-	ContactID string                 `validate:"required"`
-	UserID    string                 `validate:""`
-	UserType  entity.ContactUserType `validate:"required"`
 }

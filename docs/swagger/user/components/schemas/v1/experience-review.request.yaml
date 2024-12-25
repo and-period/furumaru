@@ -1,0 +1,55 @@
+createExperienceReviewRequest:
+  type: object
+  properties:
+    rate:
+      type: integer
+      format: int64
+      description: 評価（1〜5）
+      minimum: 1
+      maximum: 5
+    title:
+      type: string
+      description: タイトル（64文字以内）
+    comment:
+      type: string
+      description: コメント（2000文字以内）
+  required:
+  - rate
+  - title
+  - comment
+  example:
+    rate: 5
+    title: とても良い体験
+    comment: とても良い体験でした。また参加したいです。
+updateExperienceReviewRequest:
+  type: object
+  properties:
+    rate:
+      type: integer
+      format: int64
+      description: 評価（1〜5）
+      minimum: 1
+      maximum: 5
+    title:
+      type: string
+      description: タイトル（64文字以内）
+    comment:
+      type: string
+      description: コメント（2000文字以内）
+  required:
+  - rate
+  - title
+  - comment
+  example:
+    rate: 5
+    title: とても良い体験
+    comment: とても良い体験でした。また参加したいです。
+upsertExperienceReviewReactionRequest:
+  type: object
+  properties:
+    reactionType:
+      $ref: './../../../openapi.yaml#/components/schemas/experienceReviewReactionType'
+  required:
+  - reactionType
+  example:
+    reactionType: 1

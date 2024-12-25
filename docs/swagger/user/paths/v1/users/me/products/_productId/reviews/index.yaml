@@ -4,6 +4,8 @@ get:
   tags:
   - AuthUser
   - Product
+  security:
+  - bearerAuth: []
   parameters:
   - in: path
     name: productId

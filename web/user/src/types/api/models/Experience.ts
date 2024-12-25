@@ -25,6 +25,12 @@ import {
     ExperienceStatusFromJSONTyped,
     ExperienceStatusToJSON,
 } from './ExperienceStatus';
+import type { ExperienceRate } from './ExperienceRate';
+import {
+    ExperienceRateFromJSON,
+    ExperienceRateFromJSONTyped,
+    ExperienceRateToJSON,
+} from './ExperienceRate';
 
 /**
  * 体験情報
@@ -207,6 +213,12 @@ export interface Experience {
      */
     hostLatitude: number;
     /**
+     * 
+     * @type {ExperienceRate}
+     * @memberof Experience
+     */
+    rate: ExperienceRate;
+    /**
      * 販売開始日時 (unixtime)
      * @type {number}
      * @memberof Experience
@@ -255,6 +267,7 @@ export function instanceOfExperience(value: object): value is Experience {
     if (!('hostAddressLine2' in value) || value['hostAddressLine2'] === undefined) return false;
     if (!('hostLongitude' in value) || value['hostLongitude'] === undefined) return false;
     if (!('hostLatitude' in value) || value['hostLatitude'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
     if (!('startAt' in value) || value['startAt'] === undefined) return false;
     if (!('endAt' in value) || value['endAt'] === undefined) return false;
     return true;
@@ -299,6 +312,7 @@ export function ExperienceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'hostAddressLine2': json['hostAddressLine2'],
         'hostLongitude': json['hostLongitude'],
         'hostLatitude': json['hostLatitude'],
+        'rate': ExperienceRateFromJSON(json['rate']),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
     };
@@ -339,6 +353,7 @@ export function ExperienceToJSON(value?: Experience | null): any {
         'hostAddressLine2': value['hostAddressLine2'],
         'hostLongitude': value['hostLongitude'],
         'hostLatitude': value['hostLatitude'],
+        'rate': ExperienceRateToJSON(value['rate']),
         'startAt': value['startAt'],
         'endAt': value['endAt'],
     };

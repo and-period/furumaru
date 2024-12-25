@@ -62,9 +62,10 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	}
 
 	var (
-		lives    service.LiveSummaries
-		archives service.ArchiveSummaries
-		products service.Products
+		lives       service.LiveSummaries
+		archives    service.ArchiveSummaries
+		products    service.Products
+		experiences service.Experiences
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -93,16 +94,28 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 		products, err = h.listProducts(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		in := &store.ListExperiencesInput{
+			ProducerID:      producer.ID,
+			OnlyPublished:   true,
+			ExcludeFinished: true,
+			ExcludeDeleted:  true,
+			NoLimit:         true,
+		}
+		experiences, err = h.listExperiences(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducerResponse{
-		Producer: producer.Response(),
-		Lives:    lives.Response(),
-		Archives: archives.Response(),
-		Products: products.Response(),
+		Producer:    producer.Response(),
+		Lives:       lives.Response(),
+		Archives:    archives.Response(),
+		Products:    products.Response(),
+		Experiences: experiences.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
