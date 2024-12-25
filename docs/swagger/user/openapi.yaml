@@ -118,6 +118,8 @@ paths:
   # Experience
   /v1/experiences:
     $ref: './paths/v1/experiences/index.yaml'
+  /v1/experiences/geolocation:
+    $ref: './paths/v1/experiences/geolocation.yaml'
   /v1/experiences/{experienceId}:
     $ref: './paths/v1/experiences/_experienceId/index.yaml'
   /v1/experiences/{experienceId}/reviews:

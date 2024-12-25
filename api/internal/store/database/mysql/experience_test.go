@@ -98,6 +98,89 @@ func TestExperience_List(t *testing.T) {
 	}
 }
 
+// FIXME: テスト含めて使うときに直す
+// func TestExperience_ListByGeolocation(t *testing.T) {
+// 	ctx, cancel := context.WithCancel(context.Background())
+// 	defer cancel()
+// 	ctrl := gomock.NewController(t)
+// 	defer ctrl.Finish()
+
+// 	db := dbClient
+// 	now := func() time.Time {
+// 		return current
+// 	}
+
+// 	err := deleteAll(ctx)
+// 	require.NoError(t, err)
+
+// 	types := make(entity.ExperienceTypes, 2)
+// 	types[0] = testExperienceType("experience-type-id01", "じゃがいも収穫", now())
+// 	types[1] = testExperienceType("experience-type-id02", "トマト収穫", now())
+// 	err = db.DB.Create(&types).Error
+// 	require.NoError(t, err)
+// 	experiences := make(internalExperiences, 3)
+// 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
+// 	experiences[0].StartAt = now().AddDate(0, 0, -1)
+// 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
+// 	experiences[1].StartAt = now().AddDate(0, 0, -2)
+// 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
+// 	experiences[2].StartAt = now().AddDate(0, -1, 0)
+// 	err = db.DB.Table(experienceTable).Create(&experiences).Error
+// 	require.NoError(t, err)
+// 	for i := range experiences {
+// 		err := db.DB.Create(&experiences[i].ExperienceRevision).Error
+// 		require.NoError(t, err)
+// 	}
+
+// 	type args struct {
+// 		params *database.ListExperiencesByGeolocationParams
+// 	}
+// 	type want struct {
+// 		experiences entity.Experiences
+// 		err         error
+// 	}
+// 	tests := []struct {
+// 		name  string
+// 		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+// 		args  args
+// 		want  want
+// 	}{
+// 		{
+// 			name:  "success",
+// 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+// 			args: args{
+// 				params: &database.ListExperiencesByGeolocationParams{
+// 					CoordinatorID: "coordinator-id",
+// 					ProducerID:    "producer-id",
+// 					Latitude:      35.276833,
+// 					Longitude:     136.251739,
+// 					Radius:        1000,
+// 				},
+// 			},
+// 			want: want{
+// 				experiences: experiences.entities(),
+// 				err:         nil,
+// 			},
+// 		},
+// 	}
+
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			t.Parallel()
+// 			ctx, cancel := context.WithCancel(context.Background())
+// 			defer cancel()
+
+// 			tt.setup(ctx, t, db)
+
+// 			db := &experience{db: db, now: now}
+// 			actual, err := db.ListByGeolocation(ctx, tt.args.params)
+// 			assert.ErrorIs(t, err, tt.want.err)
+// 			fillIgnoreExperiencesFields(actual, now())
+// 			assert.Equal(t, tt.want.experiences, actual)
+// 		})
+// 	}
+// }
+
 func TestExperience_Count(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

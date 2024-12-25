@@ -173,6 +173,141 @@ func TestListExperiences(t *testing.T) {
 	}
 }
 
+func TestListExperiencesByGeolocation(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	params := &database.ListExperiencesByGeolocationParams{
+		CoordinatorID:  "coordinator-id",
+		ProducerID:     "producer-id",
+		Longitude:      136.251739,
+		Latitude:       35.276833,
+		Radius:         1000,
+		OnlyPublished:  true,
+		ExcludeDeleted: true,
+		EndAtGte:       now,
+	}
+	experiences := entity.Experiences{
+		{
+			ID:            "experience-id",
+			CoordinatorID: "coordinator-id",
+			ProducerID:    "producer-id",
+			TypeID:        "experience-type-id",
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいもを収穫する体験です。",
+			Public:        true,
+			SoldOut:       false,
+			Status:        entity.ExperienceStatusAccepting,
+			ThumbnailURL:  "http://example.com/thumbnail.png",
+			Media: []*entity.ExperienceMedia{
+				{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+				{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+			},
+			RecommendedPoints: []string{
+				"じゃがいもを収穫する楽しさを体験できます。",
+				"新鮮なじゃがいもを持ち帰ることができます。",
+			},
+			PromotionVideoURL:  "http://example.com/promotion.mp4",
+			Duration:           60,
+			Direction:          "彦根駅から徒歩10分",
+			BusinessOpenTime:   "1000",
+			BusinessCloseTime:  "1800",
+			HostPostalCode:     "5220061",
+			HostPrefecture:     "滋賀県",
+			HostPrefectureCode: 25,
+			HostCity:           "彦根市",
+			HostAddressLine1:   "金亀町１−１",
+			HostAddressLine2:   "",
+			HostLongitude:      136.251739,
+			HostLatitude:       35.276833,
+			StartAt:            now.AddDate(0, 0, -1),
+			EndAt:              now.AddDate(0, 0, 1),
+			ExperienceRevision: entity.ExperienceRevision{
+				ID:                    1,
+				ExperienceID:          "experience-id",
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				CreatedAt:             now,
+				UpdatedAt:             now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
+	tests := []struct {
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListExperiencesByGeolocationInput
+		expect      entity.Experiences
+		expectTotal int64
+		expectErr   error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().ListByGeolocation(ctx, params).Return(experiences, nil)
+			},
+			input: &store.ListExperiencesByGeolocationInput{
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				Longitude:       136.251739,
+				Latitude:        35.276833,
+				Radius:          1000,
+				OnlyPublished:   true,
+				ExcludeFinished: true,
+				ExcludeDeleted:  true,
+			},
+			expect:      experiences,
+			expectTotal: 1,
+			expectErr:   nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListExperiencesByGeolocationInput{
+				Longitude: 139.81083,
+				Latitude:  35.71014,
+				Radius:    -1,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().ListByGeolocation(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.ListExperiencesByGeolocationInput{
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				Longitude:       136.251739,
+				Latitude:        35.276833,
+				Radius:          1000,
+				OnlyPublished:   true,
+				ExcludeFinished: true,
+				ExcludeDeleted:  true,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListExperiencesByGeolocation(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}, withNow(now)))
+	}
+}
+
 func TestMultiGetExperiences(t *testing.T) {
 	t.Parallel()
 
