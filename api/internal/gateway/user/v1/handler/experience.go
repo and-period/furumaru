@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -17,6 +19,7 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/experiences")
 
 	r.GET("", h.ListExperiences)
+	r.GET("/geolocation", h.ListExperiencesByGeolocation)
 	r.GET("/:experienceId", h.GetExperience)
 }
 
@@ -52,12 +55,77 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		ExcludeFinished: true,
 		ExcludeDeleted:  true,
 		CoordinatorID:   util.GetQuery(ctx, "coordinatorId", ""),
+		ProducerID:      util.GetQuery(ctx, "producerId", ""),
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
+
+	res, err := h.newExperiencesResponse(ctx, experiences, total)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
+	const defaultRadius = 20
+
+	if _, ok := ctx.GetQuery("latitude"); !ok {
+		h.badRequest(ctx, errors.New("handler: latitude is required"))
+		return
+	}
+	if _, ok := ctx.GetQuery("longitude"); !ok {
+		h.badRequest(ctx, errors.New("handler: longitude is required"))
+		return
+	}
+
+	radius, err := util.GetQueryInt64(ctx, "radius", defaultRadius)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	latitude, err := util.GetQueryFloat64(ctx, "latitude", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	longitude, err := util.GetQueryFloat64(ctx, "longitude", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListExperiencesByGeolocationInput{
+		Latitude:        latitude,
+		Longitude:       longitude,
+		Radius:          radius,
+		OnlyPublished:   true,
+		ExcludeFinished: true,
+		ExcludeDeleted:  true,
+		CoordinatorID:   util.GetQuery(ctx, "coordinatorId", ""),
+		ProducerID:      util.GetQuery(ctx, "producerId", ""),
+	}
+	experiences, err := h.store.ListExperiencesByGeolocation(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res, err := h.newExperiencesResponse(ctx, experiences, int64(len(experiences)))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newExperiencesResponse(
+	ctx context.Context, experiences entity.Experiences, total int64,
+) (*response.ExperiencesResponse, error) {
 	if len(experiences) == 0 {
 		res := &response.ExperiencesResponse{
 			Experiences:     []*response.Experience{},
@@ -65,8 +133,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 			Producers:       []*response.Producer{},
 			ExperienceTypes: []*response.ExperienceType{},
 		}
-		ctx.JSON(http.StatusOK, res)
-		return
+		return res, nil
 	}
 
 	var (
@@ -93,8 +160,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
+		return nil, err
 	}
 
 	res := &response.ExperiencesResponse{
@@ -104,7 +170,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		ExperienceTypes: experienceTypes.Response(),
 		Total:           total,
 	}
-	ctx.JSON(http.StatusOK, res)
+	return res, nil
 }
 
 func (h *handler) GetExperience(ctx *gin.Context) {

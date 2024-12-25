@@ -52,6 +52,28 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 	return experiences, total, nil
 }
 
+func (s *service) ListExperiencesByGeolocation(
+	ctx context.Context, in *store.ListExperiencesByGeolocationInput,
+) (entity.Experiences, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.ListExperiencesByGeolocationParams{
+		CoordinatorID:  in.CoordinatorID,
+		ProducerID:     in.ProducerID,
+		Longitude:      in.Longitude,
+		Latitude:       in.Latitude,
+		Radius:         in.Radius,
+		OnlyPublished:  in.OnlyPublished,
+		ExcludeDeleted: in.ExcludeDeleted,
+	}
+	if in.ExcludeFinished {
+		params.EndAtGte = s.now()
+	}
+	experiences, err := s.db.Experience.ListByGeolocation(ctx, params)
+	return experiences, internalError(err)
+}
+
 func (s *service) MultiGetExperiences(ctx context.Context, in *store.MultiGetExperiencesInput) (entity.Experiences, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

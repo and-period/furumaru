@@ -79,6 +79,7 @@ type ListCategoriesOrder struct {
 
 type Experience interface {
 	List(ctx context.Context, params *ListExperiencesParams, fields ...string) (entity.Experiences, error)
+	ListByGeolocation(ctx context.Context, params *ListExperiencesByGeolocationParams, fields ...string) (entity.Experiences, error)
 	Count(ctx context.Context, params *ListExperiencesParams) (int64, error)
 	MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.Experiences, error)
 	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Experiences, error)
@@ -98,6 +99,17 @@ type ListExperiencesParams struct {
 	EndAtGte       time.Time
 	Limit          int
 	Offset         int
+}
+
+type ListExperiencesByGeolocationParams struct {
+	CoordinatorID  string
+	ProducerID     string
+	Longitude      float64
+	Latitude       float64
+	Radius         int64
+	OnlyPublished  bool
+	ExcludeDeleted bool
+	EndAtGte       time.Time
 }
 
 type UpdateExperienceParams struct {
