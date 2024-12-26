@@ -85,7 +85,16 @@ export interface V1ListExperiencesRequest {
     limit?: number;
     offset?: number;
     coordinatorId?: string;
+    producerId?: string;
     prefecture?: Prefecture;
+}
+
+export interface V1ListExperiencesByGeolocationRequest {
+    longitude: number;
+    latitude: number;
+    radius?: number;
+    coordinatorId?: string;
+    producerId?: string;
 }
 
 export interface V1UpdateExperienceReviewRequest {
@@ -393,6 +402,10 @@ export class ExperienceApi extends runtime.BaseAPI {
             queryParameters['coordinatorId'] = requestParameters['coordinatorId'];
         }
 
+        if (requestParameters['producerId'] != null) {
+            queryParameters['producerId'] = requestParameters['producerId'];
+        }
+
         if (requestParameters['prefecture'] != null) {
             queryParameters['prefecture'] = requestParameters['prefecture'];
         }
@@ -414,6 +427,66 @@ export class ExperienceApi extends runtime.BaseAPI {
      */
     async v1ListExperiences(requestParameters: V1ListExperiencesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExperiencesResponse> {
         const response = await this.v1ListExperiencesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 体験一覧取得
+     */
+    async v1ListExperiencesByGeolocationRaw(requestParameters: V1ListExperiencesByGeolocationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExperiencesResponse>> {
+        if (requestParameters['longitude'] == null) {
+            throw new runtime.RequiredError(
+                'longitude',
+                'Required parameter "longitude" was null or undefined when calling v1ListExperiencesByGeolocation().'
+            );
+        }
+
+        if (requestParameters['latitude'] == null) {
+            throw new runtime.RequiredError(
+                'latitude',
+                'Required parameter "latitude" was null or undefined when calling v1ListExperiencesByGeolocation().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['longitude'] != null) {
+            queryParameters['longitude'] = requestParameters['longitude'];
+        }
+
+        if (requestParameters['latitude'] != null) {
+            queryParameters['latitude'] = requestParameters['latitude'];
+        }
+
+        if (requestParameters['radius'] != null) {
+            queryParameters['radius'] = requestParameters['radius'];
+        }
+
+        if (requestParameters['coordinatorId'] != null) {
+            queryParameters['coordinatorId'] = requestParameters['coordinatorId'];
+        }
+
+        if (requestParameters['producerId'] != null) {
+            queryParameters['producerId'] = requestParameters['producerId'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/experiences/geolocation`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ExperiencesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 体験一覧取得
+     */
+    async v1ListExperiencesByGeolocation(requestParameters: V1ListExperiencesByGeolocationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExperiencesResponse> {
+        const response = await this.v1ListExperiencesByGeolocationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

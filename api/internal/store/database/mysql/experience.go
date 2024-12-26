@@ -87,6 +87,43 @@ func (e *experience) List(ctx context.Context, params *database.ListExperiencesP
 	return experiences, nil
 }
 
+func (e *experience) ListByGeolocation(
+	ctx context.Context, params *database.ListExperiencesByGeolocationParams, fields ...string,
+) (entity.Experiences, error) {
+	return entity.Experiences{}, nil
+
+	// FIXME: テスト含めて使いたいときに直す
+	// var internal internalExperiences
+
+	// stmt := e.db.Statement(ctx, e.db.DB, experienceTable, fields...).
+	// 	Where("ST_Distance(host_geolocation, ST_GeomFromText(POINT(? ?))) <= ?", params.Longitude, params.Latitude, params.Radius)
+	// if params.CoordinatorID != "" {
+	// 	stmt = stmt.Where("coordinator_id = ?", params.CoordinatorID)
+	// }
+	// if params.ProducerID != "" {
+	// 	stmt = stmt.Where("producer_id = ?", params.ProducerID)
+	// }
+	// if params.OnlyPublished {
+	// 	stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
+	// }
+	// if !params.EndAtGte.IsZero() {
+	// 	stmt = stmt.Where("end_at >= ?", params.EndAtGte)
+	// }
+	// if !params.ExcludeDeleted {
+	// 	stmt = stmt.Unscoped()
+	// }
+
+	// if err := stmt.Find(&internal).Error; err != nil {
+	// 	return nil, dbError(err)
+	// }
+	// experiences := internal.entities()
+
+	// if err := e.fill(ctx, e.db.DB, experiences...); err != nil {
+	// 	return nil, dbError(err)
+	// }
+	// return experiences, nil
+}
+
 func (e *experience) Count(ctx context.Context, params *database.ListExperiencesParams) (int64, error) {
 	p := listExperiencesParams(*params)
 

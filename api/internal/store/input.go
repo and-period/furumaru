@@ -187,6 +187,17 @@ type ListExperiencesInput struct {
 	NoLimit         bool   `validate:""`
 }
 
+type ListExperiencesByGeolocationInput struct {
+	CoordinatorID   string  `validate:""`
+	ProducerID      string  `validate:""`
+	Latitude        float64 `validate:"min=-90,max=90"`
+	Longitude       float64 `validate:"min=-180,max=180"`
+	Radius          int64   `validate:"min=0"`
+	OnlyPublished   bool    `validate:""`
+	ExcludeFinished bool    `validate:""`
+	ExcludeDeleted  bool    `validate:""`
+}
+
 type MultiGetExperiencesInput struct {
 	ExperienceIDs []string `validate:"dive,required"`
 }

@@ -297,10 +297,10 @@ const onDeleteThumbnail = (i: number): void => {
 
   const media = targetItem.isThumbnail
     ? props.formData.media
-      .filter((_, index) => index !== i)
-      .map((item, i) => {
-        return i === 0 ? { ...item, isThumbnail: true } : item
-      })
+        .filter((_, index) => index !== i)
+        .map((item, i) => {
+          return i === 0 ? { ...item, isThumbnail: true } : item
+        })
     : props.formData.media.filter((_, index) => index !== i)
   formDataValue.value.media = media
 }

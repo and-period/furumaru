@@ -34,6 +34,7 @@ type Service interface {
 	NotifyPaymentRefunded(ctx context.Context, in *NotifyPaymentRefundedInput) error                       // 返金通知
 	// Experience - 体験
 	ListExperiences(ctx context.Context, in *ListExperiencesInput) (entity.Experiences, int64, error)                      // 一覧取得
+	ListExperiencesByGeolocation(ctx context.Context, in *ListExperiencesByGeolocationInput) (entity.Experiences, error)   // 一覧取得（座標指定）
 	MultiGetExperiences(ctx context.Context, in *MultiGetExperiencesInput) (entity.Experiences, error)                     // 一覧取得（ID指定）
 	MultiGetExperiencesByRevision(ctx context.Context, in *MultiGetExperiencesByRevisionInput) (entity.Experiences, error) // 一覧取得(変更履歴ID指定)
 	GetExperience(ctx context.Context, in *GetExperienceInput) (*entity.Experience, error)                                 // １件取得
