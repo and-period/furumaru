@@ -57,9 +57,9 @@ type ExperienceResponse struct {
 }
 
 type ExperiencesResponse struct {
-	Experiences     []*Experience     `json:"experiences"`    // 体験一覧
-	Coordinators    []*Coordinator    `json:"coordinators"`   // コーディネータ一覧
-	Producers       []*Producer       `json:"producers"`      // 生産者一覧
-	ExperienceTypes []*ExperienceType `json:"experienceType"` // 体験種別一覧
-	Total           int64             `json:"total"`          // 体験合計数
+	Experiences     []*Experience     `json:"experiences"`     // 体験一覧
+	Coordinators    []*Coordinator    `json:"coordinators"`    // コーディネータ一覧
+	Producers       []*Producer       `json:"producers"`       // 生産者一覧
+	ExperienceTypes []*ExperienceType `json:"experienceTypes"` // 体験種別一覧
+	Total           int64             `json:"total"`           // 体験合計数
 }
