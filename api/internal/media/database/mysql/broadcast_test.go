@@ -187,6 +187,78 @@ func TestBroadcast_Count(t *testing.T) {
 	}
 }
 
+func TestBroadcast_Get(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	b := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&b).Error
+	require.NoError(t, err)
+
+	type args struct {
+		broadcastID string
+	}
+	type want struct {
+		broadcast *entity.Broadcast
+		err       error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				broadcastID: "broadcast-id",
+			},
+			want: want{
+				broadcast: b,
+				err:       nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				broadcastID: "",
+			},
+			want: want{
+				broadcast: nil,
+				err:       database.ErrNotFound,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &broadcast{db: db, now: now}
+			actual, err := db.Get(ctx, tt.args.broadcastID)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.broadcast, actual)
+		})
+	}
+}
+
 func TestBroadcast_GetByScheduleID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

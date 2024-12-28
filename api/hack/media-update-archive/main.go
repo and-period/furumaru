@@ -6,7 +6,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"net/url"
 	"os"
 	"os/exec"
@@ -18,17 +17,16 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/database/tidb"
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	s3 "github.com/and-period/furumaru/api/pkg/aws/s3"
 	transcribe "github.com/and-period/furumaru/api/pkg/aws/transcribe"
 	translate "github.com/and-period/furumaru/api/pkg/aws/translate"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	awss3 "github.com/aws/aws-sdk-go-v2/service/s3"
 	awstranscribe "github.com/aws/aws-sdk-go-v2/service/transcribe"
 	transcribetype "github.com/aws/aws-sdk-go-v2/service/transcribe/types"
 	awstranslate "github.com/aws/aws-sdk-go-v2/service/translate"
@@ -36,19 +34,16 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const (
-	appName    = "media-update-archive"
-	logLevel   = "debug"
-	dbDatabase = "media"
-	dbTimeZone = "Asia/Tokyo"
-)
-
 var (
+	appName          string
 	environment      string
+	logLevel         string
 	awsRegion        string
 	awsRoleARN       string
 	assetsDomain     string
 	dbSecretName     string
+	dbDatabase       string
+	dbTimeZone       string
 	sentrySecretName string
 	s3Bucket         string
 	broadcastID      string
@@ -65,7 +60,7 @@ var (
 type app struct {
 	logger     *zap.Logger
 	db         *database.Database
-	s3         s3.Client
+	s3         storage.Bucket
 	transcribe transcribe.Client
 	translate  translate.Client
 }
@@ -98,10 +93,14 @@ func main() {
 }
 
 func setup(ctx context.Context) (*app, error) {
+	flag.StringVar(&appName, "app-name", "media-update-archive", "application name")
 	flag.StringVar(&environment, "environment", "", "environment")
+	flag.StringVar(&logLevel, "log-level", "debug", "log level")
 	flag.StringVar(&awsRegion, "aws-region", "ap-northeast-1", "AWS region")
 	flag.StringVar(&awsRoleARN, "aws-role-arn", "", "AWS role ARN")
 	flag.StringVar(&dbSecretName, "db-secret-name", "", "AWS Secrets Manager secret name for TiDB")
+	flag.StringVar(&dbDatabase, "db-database", "media", "TiDB database name")
+	flag.StringVar(&dbTimeZone, "db-timezone", "Asia/Tokyo", "TiDB timezone")
 	flag.StringVar(&sentrySecretName, "sentry-secret-name", "", "AWS Secrets Manager secret name for Sentry")
 	flag.StringVar(&assetsDomain, "assets-domain", "", "assets domain")
 	flag.StringVar(&s3Bucket, "s3-bucket", "", "target S3 bucket name")
@@ -180,10 +179,15 @@ func setup(ctx context.Context) (*app, error) {
 		return nil, fmt.Errorf("failed to create tidb client: %w", err)
 	}
 
+	// Storageの設定
+	storage := storage.NewBucket(awscfg, &storage.Params{
+		Bucket: s3Bucket,
+	}, storage.WithLogger(logger))
+
 	app := &app{
 		logger:     logger,
 		db:         tidb.NewDatabase(db),
-		s3:         s3.NewClient(awscfg, s3.WithLogger(logger)),
+		s3:         storage,
 		transcribe: transcribe.NewClient(awscfg, transcribe.WithLogger(logger)),
 		translate:  translate.NewClient(awscfg, translate.WithLogger(logger)),
 	}
@@ -209,15 +213,12 @@ func (a *app) run(ctx context.Context) error {
 		return fmt.Errorf("failed to parse archive url: %w", err)
 	}
 
-	metadata, err := a.s3.HeadObject(ctx, &awss3.HeadObjectInput{
-		Bucket: aws.String(s3Bucket),
-		Key:    aws.String(strings.TrimPrefix(u.Path, "/")),
-	})
+	metadata, err := a.s3.GetMetadata(ctx, u.Path)
 	if err != nil {
-		return fmt.Errorf("failed to head object: %w", err)
+		return fmt.Errorf("failed to get metadata for archive: %w", err)
 	}
-	if aws.ToString(metadata.ContentType) != "video/mp4" {
-		return fmt.Errorf("invalid content type: %s", aws.ToString(metadata.ContentType))
+	if metadata.ContentType != "video/mp4" {
+		return fmt.Errorf("invalid content type: %s", metadata.ContentType)
 	}
 
 	a.logger.Info("start execute transcibe", zap.String("broadcastId", broadcastID))
@@ -268,7 +269,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 	}
 
 	inputKey := strings.TrimPrefix(u.Path, "/")
-	inputURI := fmt.Sprintf("s3://%s/%s", s3Bucket, inputKey)
+	inputURI := a.s3.GenerateS3URI(inputKey)
 
 	filename := strings.Split(filepath.Base(inputKey), ".")[0]
 	outputDir := fmt.Sprintf(entity.BroadcastArchiveTextPath, broadcast.ScheduleID)
@@ -303,10 +304,10 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 		},
 	}
 	transcribe, err := a.transcribe.StartTranscriptionJob(ctx, in)
-	a.logger.Debug("start transcription job", zap.String("broadcastId", broadcast.ID), zap.Any("input", in), zap.Any("output", transcribe))
 	if err != nil {
 		return "", fmt.Errorf("failed to start transcription job: %w", err)
 	}
+	a.logger.Info("started transcription job", zap.String("broadcastId", broadcast.ID), zap.String("jobName", jobName))
 
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Minute)
 	defer cancel()
@@ -334,7 +335,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 				return "", fmt.Errorf("transcription job failed: reason=%s", aws.ToString(out.TranscriptionJob.FailureReason))
 			}
 
-			a.logger.Info("text translation job in progress", zap.String("broadcastId", broadcast.ID))
+			a.logger.Info("translation job in progress", zap.String("broadcastId", broadcast.ID), zap.String("jobName", jobName))
 		}
 	}
 }
@@ -354,69 +355,57 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	japaneseTextKey := fmt.Sprintf("%s/%s-ja.srt", dir, filename)
 	englishTextKey := fmt.Sprintf("%s/%s-en.srt", dir, filename)
 
-	currentIn := &awss3.HeadObjectInput{
-		Bucket: aws.String(s3Bucket),
-		Key:    aws.String(englishTextKey),
-	}
-	current, err := a.s3.HeadObject(ctx, currentIn)
-	if err == nil && aws.ToString(current.ContentType) == "srt" {
+	current, err := a.s3.GetMetadata(ctx, englishTextKey)
+	if err == nil && current.ContentType == "srt" {
 		a.logger.Info("text translation already completed", zap.String("broadcastId", broadcast.ID))
 		return englishTextKey, nil
 	}
 
-	getIn := &awss3.GetObjectInput{
-		Bucket: aws.String(s3Bucket),
-		Key:    aws.String(japaneseTextKey),
-	}
-	japanese, err := a.s3.GetObject(ctx, getIn)
-	a.logger.Info("get object", zap.Any("input", getIn), zap.Any("output", japanese))
+	japanese, err := a.s3.DownloadAndReadAll(ctx, japaneseTextKey)
 	if err != nil {
 		return "", fmt.Errorf("failed to get object: %w", err)
 	}
-	jbuf, err := io.ReadAll(japanese.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read object: %w", err)
-	}
 
-	ebuf := &bytes.Buffer{}
-	for chunk := range slices.Chunk(jbuf, 8000) {
+	buf := &bytes.Buffer{}
+	for chunk := range slices.Chunk(japanese, 8000) {
 		in := &awstranslate.TranslateTextInput{
 			SourceLanguageCode: aws.String("ja"),
 			TargetLanguageCode: aws.String("en"),
 			Text:               aws.String(string(chunk)),
 		}
 		out, err := a.translate.TranslateText(ctx, in)
-		a.logger.Info("translate text", zap.Any("input", in), zap.Any("output", out))
 		if err != nil {
 			return "", fmt.Errorf("failed to translate text: %w", err)
 		}
-		if _, err := ebuf.WriteString(aws.ToString(out.TranslatedText)); err != nil {
+		if _, err := buf.WriteString(aws.ToString(out.TranslatedText)); err != nil {
 			return "", fmt.Errorf("failed to write object: %w", err)
 		}
 	}
 
-	putIn := &awss3.PutObjectInput{
-		Bucket:      aws.String(s3Bucket),
-		Key:         aws.String(englishTextKey),
-		Body:        ebuf,
-		ContentType: aws.String("srt"),
+	metadata := map[string]string{
+		"Content-Type": "text/plain",
 	}
-	_, err = a.s3.PutObject(ctx, putIn)
-	a.logger.Info("put object", zap.Any("input", putIn))
-	if err != nil {
-		return "", fmt.Errorf("failed to put object: %w", err)
+	if _, err := a.s3.Upload(ctx, englishTextKey, buf, metadata); err != nil {
+		return "", fmt.Errorf("failed to put translated object: %w", err)
 	}
 
 	return englishTextKey, nil
 }
 
 func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcast, japaneseTextKey, englishTextKey string) (string, error) {
-	a.logger.Info("start execute ffmepg", zap.String("broadcastId", broadcastID))
+	japaneseTextURL, err := a.s3.GenerateObjectURL(japaneseTextKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate object url from japanese text key: %w", err)
+	}
+	englishTextURL, err := a.s3.GenerateObjectURL(englishTextKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate object url from english text key: %w", err)
+	}
 
 	args := []string{
 		"-i", broadcast.ArchiveURL,
-		"-i", fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", s3Bucket, awsRegion, japaneseTextKey),
-		"-i", fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", s3Bucket, awsRegion, englishTextKey),
+		"-i", japaneseTextURL,
+		"-i", englishTextURL,
 		"-map", "0:v",
 		"-map", "0:a",
 		"-map", "1",
@@ -428,16 +417,15 @@ func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcas
 		"-c:s", "mov_text",
 		"/tmp/output.mp4",
 	}
+
+	buf := &bytes.Buffer{}
 	cmd := exec.Command("ffmpeg", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = buf
 
 	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("failed to execute command: %w", err)
+		return "", fmt.Errorf("failed to execute command. err=%s: %w", buf.String(), err)
 	}
-
-	a.logger.Info("finished execute ffmpeg", zap.String("broadcastId", broadcastID))
-	a.logger.Info("start upload archive", zap.String("broadcastId", broadcastID))
+	a.logger.Info("finished execute ffmpeg", zap.String("broadcastId", broadcast.ID))
 
 	f, err := os.Open("/tmp/output.mp4")
 	if err != nil {
@@ -447,21 +435,13 @@ func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcas
 
 	dir := fmt.Sprintf(entity.BroadcastArchiveMP4Path, broadcast.ScheduleID)
 	key := fmt.Sprintf("%s/%s.mp4", dir, uuid.Base58Encode(uuid.New()))
-	_, err = a.s3.PutObject(ctx, &awss3.PutObjectInput{
-		Bucket:      aws.String(s3Bucket),
-		Key:         aws.String(key),
-		Body:        f,
-		ContentType: aws.String("video/mp4"),
-		Metadata: map[string]string{
-			"Content-Type":  "video/mp4",
-			"Cache-Control": "s-maxage=" + entity.BroadcastArchiveRegulation.CacheTTL.String(),
-		},
-	})
-	if err != nil {
-		return "", fmt.Errorf("failed to put object: %w", err)
+
+	metadata := map[string]string{
+		"Content-Type":  "video/mp4",
+		"Cache-Control": "s-maxage=" + entity.BroadcastArchiveRegulation.CacheTTL.String(),
 	}
-
-	a.logger.Info("finished upload archive", zap.String("broadcastId", broadcastID), zap.String("key", key))
-
+	if _, err := a.s3.Upload(ctx, key, f, metadata); err != nil {
+		return "", fmt.Errorf("failed to put fixed archive video: %w", err)
+	}
 	return key, nil
 }
