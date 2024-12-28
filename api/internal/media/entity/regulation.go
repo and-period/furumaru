@@ -23,6 +23,7 @@ const (
 	BroadcastArchivePath          = "schedules/archives"           // ライブ配信後のアーカイブ動画
 	BroadcastArchiveMP4Path       = "schedules/archives/%s/mp4"    // ライブ配信後のアーカイブ動画(mp4)
 	BroadcastArchiveHLSPath       = "schedules/archives/%s/hls"    // ライブ配信後のアーカイブ動画(hls)
+	BroadcastArchiveTextPath      = "schedules/archives/%s/text"   // ライブ配信後のアーカイブ音声文字起こし
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
 	CoordinatorHeaderPath         = "coordinators/header"          // コーディネータヘッダー画像
 	CoordinatorPromotionVideoPath = "coordinators/promotion-video" // コーディネータ紹介映像

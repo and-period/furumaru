@@ -80,6 +80,18 @@ func (b *broadcast) Count(ctx context.Context, params *database.ListBroadcastsPa
 	return total, dbError(err)
 }
 
+func (b *broadcast) Get(ctx context.Context, broadcastID string, fields ...string) (*entity.Broadcast, error) {
+	var broadcast *entity.Broadcast
+
+	stmt := b.db.Statement(ctx, b.db.DB, broadcastTable, fields...).
+		Where("id = ?", broadcastID)
+
+	if err := stmt.First(&broadcast).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return broadcast, nil
+}
+
 func (b *broadcast) GetByScheduleID(
 	ctx context.Context, scheduleID string, fields ...string,
 ) (*entity.Broadcast, error) {
