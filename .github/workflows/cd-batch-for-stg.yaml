@@ -43,6 +43,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository-media-update-archive }}
+      service: media-update-archive
       image-path: ./infra/docker/api/media-update-archive/Dockerfile
       image-tag: latest
 
