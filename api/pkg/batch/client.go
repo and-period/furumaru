@@ -80,8 +80,16 @@ func (c *client) SubmitJob(ctx context.Context, params *SubmitJobParams) error {
 		JobName:       aws.String(params.JobName),
 		JobDefinition: aws.String(params.JobDefinition),
 		JobQueue:      aws.String(params.JobQueue),
-		ContainerOverrides: &types.ContainerOverrides{
-			Command: params.Command,
+		EcsPropertiesOverride: &types.EcsPropertiesOverride{
+			TaskProperties: []types.TaskPropertiesOverride{
+				{
+					Containers: []types.TaskContainerOverrides{
+						{
+							Command: params.Command,
+						},
+					},
+				},
+			},
 		},
 	}
 	_, err := c.batch.SubmitJob(ctx, in)
