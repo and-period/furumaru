@@ -70,13 +70,30 @@ jobs:
         ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
+    - uses: actions/cache@v4
+      id: cache
+      with:
+        path: |
+          go-mod-cache
+          go-build-cache
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+      with:
+        cache-map: |
+          {
+            "go-mod-cache": "/go/pkg/mod",
+            "go-build-cache": "/root/.cache/go-build"
+          }
+        skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
         context: .
         platforms: linux/arm64
         file: ${{ inputs.image-path }}
-        build-args: SERVICE=${{ inputs.service}}
+        build-args: SERVICE=${{ inputs.service }}
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
         push: true
         provenance: false

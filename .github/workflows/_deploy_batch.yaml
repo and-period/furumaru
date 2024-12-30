@@ -1,0 +1,65 @@
+name: deploy batch
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: '環境名'
+        type: string
+        required: true
+      ecr-registry:
+        description: 'ECRレジストリ名'
+        type: string
+        required: true
+      ecr-repository:
+        description: 'ECRリポジトリ名'
+        type: string
+        required: true
+      batch-job-definition:
+        description: 'Batchジョブ定義名'
+        type: string
+        required: true
+      image-tag:
+        description: 'ECRイメージタグ'
+        type: string
+        required: false
+        default: 'latest'
+
+jobs:
+  deploy_batch:
+    name: deploy batch
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Get ECR repository and image url
+      id: get-ecr-url
+      uses: ./.github/actions/generate-ecr-url
+      with:
+        ecr-registry: ${{ inputs.ecr-registry }}
+        ecr-repository: ${{ inputs.ecr-repository }}
+        image-tag: ${{ inputs.image-tag }}
+
+    - name: Fill in the template
+      run: |
+        echo -e "${BATCH_JOB_DEFINITION_TEMPLATE}" > ./job-definition.json
+        sed -i -e "s|{__IMAGE_URI__}|${IMAGE_URI}|g" ./job-definition.json
+      env:
+        BATCH_JOB_DEFINITION_TEMPLATE: ${{ inputs.batch-job-definition }}
+        IMAGE_URI: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
+
+    - name: Deploy AWS Batch job definition
+      run: |
+        aws batch register-job-definition --cli-input-json file://./job-definition.json

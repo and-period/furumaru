@@ -11,7 +11,18 @@ WORKDIR /go/src/github.com/and-period/furumaru/api
 RUN apk add --update --no-cache \
       git \
       make \
-      tzdata
+      tar \
+      tzdata \
+      wget \
+      xz
+
+ENV FFMPEG_VERSION=7.0.2
+ENV FFMPEG_ARCH=arm64
+
+RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz \
+    && tar -Jxvf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz \
+    && mv ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static/ffmpeg /usr/bin/ffmpeg \
+    && rm -rf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz
 
 RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
@@ -20,8 +31,8 @@ RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
     go mod download
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    --mount=type=bind,source=./api,target=. \
-    make build SERVICE=${SERVICE} BUILD_DIR=/dist
+    --mount=type=bind,source=./api/,target=. \
+    make build-hack SERVICE=${SERVICE} BUILD_DIR=/dist
 
 # 実行用コンテナ
 FROM alpine
@@ -31,13 +42,8 @@ ENV TZ Asia/Tokyo
 
 WORKDIR /var/api
 
-RUN apk add --update --no-cache \
-      ca-certificates \
-      curl
-
 COPY --from=builder /dist/app ./app
-COPY --from=builder /go/src/github.com/and-period/furumaru/api/config ./config
+COPY --from=builder /usr/bin/ffmpeg /usr/bin/ffmpeg
 COPY --from=builder /usr/share/zoneinfo/Asia/Tokyo /usr/share/zoneinfo/Asia/Tokyo
 
-EXPOSE 8080 9090
 CMD ["./app"]

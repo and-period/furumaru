@@ -409,6 +409,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
 		Database:  mediadb.NewDatabase(mysql),

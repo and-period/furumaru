@@ -1,0 +1,61 @@
+name: '[Backend] Deploy Batch for stg'
+on:
+  push:
+    branches:
+    - 'main'
+    paths:
+    - '.github/actions/**'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_batch.yaml'
+    - '.github/workflows/cd-batch-for-stg.yaml'
+    - 'api/internal/hack/**'
+    - 'api/pkg/**'
+    - 'api/go.mod'
+    - 'infra/docker/api/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  set_output:
+    name: set output
+    environment: stg
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository-media-update-archive: ${{ vars.ECR_REPOSITORY_MEDIA_UPDATE_ARCHIVE }}
+      batch-job-definition-media-update-archive: ${{ vars.JOB_DEFINITION_MEDIA_UPDATE_ARCHIVE }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+  build_and_push_media_update_archive:
+    name: build and push for media update archive
+    needs:
+    - set_output
+    uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository-media-update-archive }}
+      service: media-update-archive
+      image-path: ./infra/docker/api/media-update-archive/Dockerfile
+      image-tag: latest
+
+  deploy_media_update_archive:
+    name: deploy admin
+    needs:
+    - set_output
+    - build_and_push_media_update_archive
+    uses: ./.github/workflows/_deploy_batch.yaml
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository-media-update-archive }}
+      batch-job-definition: ${{ needs.set_output.outputs.batch-job-definition-media-update-archive }}

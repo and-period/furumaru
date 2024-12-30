@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	mock_database "github.com/and-period/furumaru/api/mock/media/database"
+	mock_batch "github.com/and-period/furumaru/api/mock/pkg/batch"
 	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
 	mock_medialive "github.com/and-period/furumaru/api/mock/pkg/medialive"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
@@ -40,6 +41,7 @@ type mocks struct {
 	tmp            *mock_storage.MockBucket
 	storage        *mock_storage.MockBucket
 	producer       *mock_sqs.MockProducer
+	batch          *mock_batch.MockClient
 	user           *mock_user.MockService
 	media          *mock_medialive.MockMediaLive
 	youtube        *mock_youtube.MockYoutube
@@ -89,6 +91,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		tmp:            mock_storage.NewMockBucket(ctrl),
 		storage:        mock_storage.NewMockBucket(ctrl),
 		producer:       mock_sqs.NewMockProducer(ctrl),
+		batch:          mock_batch.NewMockClient(ctrl),
 		user:           mock_user.NewMockService(ctrl),
 		media:          mock_medialive.NewMockMediaLive(ctrl),
 		youtube:        mock_youtube.NewMockYoutube(ctrl),
@@ -126,14 +129,20 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			VideoComment:       mocks.db.VideoComment,
 			VideoViewerLog:     mocks.db.VideoViewerLog,
 		},
-		Cache:     mocks.cache,
-		User:      mocks.user,
-		Store:     mocks.store,
-		Tmp:       mocks.tmp,
-		Storage:   mocks.storage,
-		Producer:  mocks.producer,
-		MediaLive: mocks.media,
-		Youtube:   mocks.youtube,
+		Cache:                        mocks.cache,
+		User:                         mocks.user,
+		Store:                        mocks.store,
+		Tmp:                          mocks.tmp,
+		Storage:                      mocks.storage,
+		Producer:                     mocks.producer,
+		Batch:                        mocks.batch,
+		MediaLive:                    mocks.media,
+		Youtube:                      mocks.youtube,
+		BatchUpdateArchiveDefinition: "batch-update-archive-definition",
+		BatchUpdateArchiveQueue:      "batch-update-archive-queue",
+		BatchUpdateArchiveCommand: func(broadcastID string) []string {
+			return []string{"batch-update-archive-command", broadcastID}
+		},
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)
