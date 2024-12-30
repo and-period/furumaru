@@ -1,4 +1,4 @@
-name: build and push
+name: deploy batch
 
 on:
   workflow_call:
@@ -15,12 +15,8 @@ on:
         description: 'ECRリポジトリ名'
         type: string
         required: true
-      service:
-        description: 'サービス名'
-        type: string
-        default: ''
-      image-path:
-        description: 'Dockerfileのパス'
+      batch-job-definition:
+        description: 'Batchジョブ定義名'
         type: string
         required: true
       image-tag:
@@ -29,13 +25,9 @@ on:
         required: false
         default: 'latest'
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  build_and_push:
-    name: build and push
+  deploy_batch:
+    name: deploy batch
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
@@ -46,21 +38,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
 
     - name: Get ECR repository and image url
       id: get-ecr-url
@@ -70,15 +52,13 @@ jobs:
         ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        platforms: linux/arm64
-        file: ${{ inputs.image-path }}
-        build-args: SERVICE=${{ inputs.service }}
-        tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
-        push: true
-        provenance: false
-        cache-from: type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache
-        cache-to: type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache,mode=max
+    - name: Fill in the template
+      run: |
+        sed -e "s/${__IMAGE_URI__}/${IMAGE_URI}/g" ${BATCH_JOB_DEFINITION_TEMPLATE} > ./job-definition.json
+      env:
+        BATCH_JOB_DEFINITION_TEMPLATE: ${{ inputs.batch-job-definition }}
+        IMAGE_URI: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
+
+    - name: Deploy AWS Batch job definition
+      run: |
+        aws batch register-job-definition --cli-input-json file://./job-definition.json

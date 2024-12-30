@@ -20,6 +20,7 @@ RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.t
 
 ADD ./api ./
 
+RUN go mod download
 RUN go build -o ./app ./hack/media-update-archive/main.go
 
 # 実行用コンテナ
