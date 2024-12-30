@@ -54,11 +54,11 @@ jobs:
 
     - name: Fill in the template
       run: |
-        sed -e 's/{__IMAGE_URI__}/${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}/g' \
-          ${BATCH_JOB_DEFINITION_TEMPLATE} \
-          > ./job-definition.json
+        sed -e 's|{__IMAGE_URI__}|${IMAGE_URI}|g' \
+          ${BATCH_JOB_DEFINITION_TEMPLATE} > ./job-definition.json
       env:
         BATCH_JOB_DEFINITION_TEMPLATE: ${{ inputs.batch-job-definition }}
+        IMAGE_URI: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
 
     - name: Deploy AWS Batch job definition
       run: |
