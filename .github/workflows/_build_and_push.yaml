@@ -80,5 +80,5 @@ jobs:
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
         push: true
         provenance: false
-        cache-from: type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache
-        cache-to: type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache,mode=max
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
