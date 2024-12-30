@@ -18,7 +18,7 @@ on:
       service:
         description: 'サービス名'
         type: string
-        default: ''
+        required: true
       image-path:
         description: 'Dockerfileのパス'
         type: string
