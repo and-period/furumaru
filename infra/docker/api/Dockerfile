@@ -15,6 +15,7 @@ RUN apk add --update --no-cache \
 
 ADD ./api ./
 
+RUN go mod download
 RUN make build SERVICE=${SERVICE}
 
 # 実行用コンテナ
