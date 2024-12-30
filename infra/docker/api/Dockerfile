@@ -13,10 +13,15 @@ RUN apk add --update --no-cache \
       make \
       tzdata
 
-ADD ./api ./
-
-RUN go mod download
-RUN make build SERVICE=${SERVICE}
+RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
+    --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
+    --mount=type=bind,source=./api/go.mod,target=go.mod \
+    --mount=type=bind,source=./api/go.sum,target=go.sum \
+    go mod download
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=bind,source=./api,target=. \
+    make build SERVICE=${SERVICE}
 
 # 実行用コンテナ
 FROM alpine

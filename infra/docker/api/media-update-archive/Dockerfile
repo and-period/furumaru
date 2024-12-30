@@ -18,14 +18,19 @@ ENV FFMPEG_VERSION=7.0.2
 ENV FFMPEG_ARCH=arm64
 
 RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz \
-  && tar -Jxvf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz \
-  && mv ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static/ffmpeg /usr/bin/ffmpeg \
-  && rm -rf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz
+    && tar -Jxvf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz \
+    && mv ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static/ffmpeg /usr/bin/ffmpeg \
+    && rm -rf ./ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-static.tar.xz
 
-ADD ./api ./
-
-RUN go mod download
-RUN go build -o ./app ./hack/media-update-archive/main.go
+RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
+    --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
+    --mount=type=bind,source=./api/go.mod,target=go.mod \
+    --mount=type=bind,source=./api/go.sum,target=go.sum \
+    go mod download
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=bind,source=./api,target=. \
+    go build -o ./app ./hack/media-update-archive/main.go
 
 # 実行用コンテナ
 FROM alpine
