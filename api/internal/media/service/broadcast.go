@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -111,8 +112,19 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 		ArchiveURL:   in.ArchiveURL,
 		ArchiveFixed: true, // ライブ配信時のコメントとの対応が取れなくなるため、編集済みにする
 	}}
-	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
-	return internalError(err)
+	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
+		return internalError(err)
+	}
+	job := &batch.SubmitJobParams{
+		JobName:       fmt.Sprintf("media-update-archive-%s-%s", broadcast.ID, jst.Format(s.now(), "20060102150405")),
+		JobDefinition: s.batchUpdateArchiveDefinition,
+		JobQueue:      s.batchUpdateArchiveQueue,
+		Command:       s.batchUpdateArchiveCommand(broadcast.ID),
+	}
+	if err := s.batch.SubmitJob(ctx, job); err != nil {
+		return internalError(err)
+	}
+	return nil
 }
 
 func (s *service) PauseBroadcast(ctx context.Context, in *media.PauseBroadcastInput) error {

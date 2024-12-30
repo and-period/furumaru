@@ -39,7 +39,6 @@ var (
 	environment      string
 	logLevel         string
 	awsRegion        string
-	awsRoleARN       string
 	assetsDomain     string
 	dbSecretName     string
 	dbDatabase       string
@@ -97,7 +96,6 @@ func setup(ctx context.Context) (*app, error) {
 	flag.StringVar(&environment, "environment", "", "environment")
 	flag.StringVar(&logLevel, "log-level", "debug", "log level")
 	flag.StringVar(&awsRegion, "aws-region", "ap-northeast-1", "AWS region")
-	flag.StringVar(&awsRoleARN, "aws-role-arn", "", "AWS role ARN")
 	flag.StringVar(&dbSecretName, "db-secret-name", "", "AWS Secrets Manager secret name for TiDB")
 	flag.StringVar(&dbDatabase, "db-database", "media", "TiDB database name")
 	flag.StringVar(&dbTimeZone, "db-timezone", "Asia/Tokyo", "TiDB timezone")
