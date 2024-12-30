@@ -25,6 +25,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
+	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
@@ -61,6 +62,7 @@ type params struct {
 	cache                    dynamodb.Client
 	messengerQueue           sqs.Producer
 	mediaQueue               sqs.Producer
+	batch                    batch.Client
 	medialive                medialive.MediaLive
 	youtube                  youtube.Youtube
 	slack                    slack.Client
@@ -69,6 +71,7 @@ type params struct {
 	komoju                   *komoju.Komoju
 	adminWebURL              *url.URL
 	userWebURL               *url.URL
+	assetsURL                *url.URL
 	postalCode               postalcode.Client
 	geolocation              geolocation.Client
 	now                      func() time.Time
@@ -167,6 +170,9 @@ func (a *app) inject(ctx context.Context) error {
 		TableSuffix: a.Environment,
 	}
 	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
+
+	// AWS Batchの設定
+	params.batch = batch.NewClient(awscfg, batch.WithLogger(params.logger))
 
 	// AWS MediaLiveの設定
 	params.medialive = medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
@@ -269,6 +275,11 @@ func (a *app) inject(ctx context.Context) error {
 		return fmt.Errorf("cmd: failed to parse user web url: %w", err)
 	}
 	params.userWebURL = userWebURL
+	assetsURL, err := url.Parse(a.AssetsURL)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to parse assets url: %w", err)
+	}
+	params.assetsURL = assetsURL
 
 	// Youtubeの設定
 	youtubeParams := &youtube.Params{
@@ -463,17 +474,33 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	batchUpdateArchiveCommand := func(broadcastID string) []string {
+		// see: ./hack/media-update-archive/main.go
+		return []string{
+			"./app",
+			"-environment", a.Environment,
+			"-db-secret-name", a.TiDBSecretName,
+			"-sentry-secret-name", a.SentrySecretName,
+			"-assets-domain", p.assetsURL.Host,
+			"-s3-bucket", a.S3Bucket,
+			"-broadcast-id", broadcastID,
+		}
+	}
 	params := &mediasrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  mediadb.NewDatabase(mysql),
-		Cache:     p.cache,
-		MediaLive: p.medialive,
-		Youtube:   p.youtube,
-		Storage:   p.storage,
-		Tmp:       p.tmpStorage,
-		Producer:  p.mediaQueue,
-		User:      user,
-		Store:     store,
+		WaitGroup:                    p.waitGroup,
+		Database:                     mediadb.NewDatabase(mysql),
+		Cache:                        p.cache,
+		MediaLive:                    p.medialive,
+		Youtube:                      p.youtube,
+		Storage:                      p.storage,
+		Tmp:                          p.tmpStorage,
+		Producer:                     p.mediaQueue,
+		Batch:                        p.batch,
+		BatchUpdateArchiveDefinition: a.BatchMediaUpdateArchiveDefinition,
+		BatchUpdateArchiveQueue:      a.BatchMediaUpdateArchiveQueue,
+		BatchUpdateArchiveCommand:    batchUpdateArchiveCommand,
+		User:                         user,
+		Store:                        store,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }
