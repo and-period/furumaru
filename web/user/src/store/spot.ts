@@ -1,4 +1,4 @@
-import type { Spot, SpotType } from '~/types/api'
+import type { Spot, SpotResponse, SpotType } from '~/types/api'
 import type { GoogleMapSearchResult } from '~/types/store'
 
 export const useSpotStore = defineStore('spot', {
@@ -10,6 +10,9 @@ export const useSpotStore = defineStore('spot', {
       spotsResponse: {
         spots: [] as Spot[],
         spotTypes: [] as SpotType[],
+      },
+      spotFetchState: {
+        isLoading: false,
       },
     }
   },
@@ -55,6 +58,25 @@ export const useSpotStore = defineStore('spot', {
       }
       finally {
         this.spotsFetchState.isLoading = false
+      }
+    },
+
+    /**
+     * スポット詳細取得
+     * @param id スポットID
+     * @returns
+     */
+    async fetchSpot(id: string): Promise<SpotResponse> {
+      try {
+        this.spotFetchState.isLoading = true
+        return await this.spotApiClient().v1GetSpot({ spotId: id })
+      }
+      catch (error) {
+        console.error(error)
+        return this.errorHandler(error)
+      }
+      finally {
+        this.spotFetchState.isLoading = false
       }
     },
 

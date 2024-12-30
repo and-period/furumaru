@@ -2,6 +2,7 @@
 import type { Snackbar } from '~/types/props'
 import { ExperienceStatus } from '~/types/api'
 import type { I18n } from '~/types/locales'
+import { useSpotStore } from '~/store/spot'
 
 const i18n = useI18n()
 
@@ -19,6 +20,13 @@ const experienceId = computed<string>(() => {
   else {
     return route.params.id as string
   }
+})
+
+const spotStore = useSpotStore()
+const { fetchSpot } = spotStore
+
+const { data, status } = await useAsyncData('spot', () => {
+  return fetchSpot(experienceId.value)
 })
 
 const snackbarItems = ref<Snackbar[]>([])

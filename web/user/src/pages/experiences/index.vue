@@ -3,12 +3,16 @@ import { GoogleMap, MarkerCluster, CustomControl } from 'vue3-google-map'
 import { useGeolocation } from '@vueuse/core'
 import { useSpotStore } from '~/store/spot'
 import type { GoogleMapSearchResult } from '~/types/store'
+import { useExperienceStore } from '~/store/experience'
 
 const config = useRuntimeConfig()
 
 const spotStore = useSpotStore()
-const { spots, spotsFetchState } = storeToRefs(spotStore)
-const { fetchSpots, search } = spotStore
+const { search } = spotStore
+
+const experienceStore = useExperienceStore()
+const { fetchExperiences } = experienceStore
+const { experiences, experiencesFetchState } = storeToRefs(experienceStore)
 const errorMessage = ref<string>('')
 
 const router = useRouter()
@@ -66,9 +70,10 @@ const handleClearSearchForm = () => {
   searchResults.value = []
 }
 
-const refetchSpots = async () => {
+const refetchExperiences = async () => {
   try {
-    await fetchSpots(center.value.lng, center.value.lat)
+    // await fetchSpots(center.value.lng, center.value.lat)
+    await fetchExperiences(center.value.lng, center.value.lat)
   }
   catch (error) {
     if (error instanceof Error) {
@@ -77,9 +82,9 @@ const refetchSpots = async () => {
   }
 }
 
-// 中心座標が変更された場合にスポット情報を再取得
+// 中心座標が変更された場合に体験情報を再取得
 watch(center, () => {
-  refetchSpots()
+  refetchExperiences()
 })
 
 // ユーザーが位置情報の取得を許可した場合に中心座標を現在地に変更
@@ -89,9 +94,9 @@ watch(geoLocationError, () => {
   }
 })
 
-// スポット情報の取得
+// 体験情報の取得
 onMounted(() => {
-  refetchSpots()
+  refetchExperiences()
 })
 
 onMounted(() => {
@@ -134,7 +139,7 @@ useSeoMeta({
 <template>
   <div class="bg-white px-[15px] py-[48px] text-main md:px-[36px]">
     <div class="container mx-auto">
-      <div v-if="spotsFetchState.isLoading">
+      <div v-if="experiencesFetchState.isLoading">
         <div class="text-center border-t-4 border-main animate-pulse" />
       </div>
     </div>
@@ -173,16 +178,16 @@ useSeoMeta({
             }"
         >
           <template
-            v-for="spot in spots"
-            :key="spot.id"
+            v-for="experience in experiences"
+            :key="experience.id"
           >
             <the-experience-marker
-              :id="spot.id"
-              :longitude="spot.longitude"
-              :latitude="spot.latitude"
-              :name="spot.name"
-              :description="spot.description"
-              :thumbnail-url="spot.thumbnailUrl"
+              :id="experience.id"
+              :longitude="experience.hostLongitude"
+              :latitude="experience.hostLatitude"
+              :title="experience.title"
+              :description="experience.description"
+              :thumbnail-url="experience.thumbnailUrl"
               @click:name="handleClickSpot"
             />
           </template>

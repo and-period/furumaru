@@ -5,7 +5,7 @@ interface Props {
   longitude: number
   latitude: number
   id: string
-  name: string
+  title: string
   description: string
   thumbnailUrl: string
 }
@@ -76,7 +76,7 @@ watch(isShowInfoWindow, (newValue) => {
           <img
             :src="thumbnailUrl"
             class="w-full object-cover"
-            :alt="`${name}のサムネイル`"
+            :alt="`${title}のサムネイル`"
           >
         </div>
         <div class=" tracking-wider col-span-4 flex flex-col gap-2">
@@ -84,7 +84,7 @@ watch(isShowInfoWindow, (newValue) => {
             class="font-semibold cursor-pointer hover:underline "
             @click="handleClickName"
           >
-            {{ name }}
+            {{ title }}
           </div>
           <div>
             {{ description }}
