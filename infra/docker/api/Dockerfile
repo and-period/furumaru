@@ -35,8 +35,9 @@ RUN apk add --update --no-cache \
       ca-certificates \
       curl
 
+COPY ./api/config ./config
+
 COPY --from=builder /dist/app ./app
-COPY --from=builder /go/src/github.com/and-period/furumaru/api/config ./config
 COPY --from=builder /usr/share/zoneinfo/Asia/Tokyo /usr/share/zoneinfo/Asia/Tokyo
 
 EXPOSE 8080 9090
