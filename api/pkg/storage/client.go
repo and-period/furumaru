@@ -139,7 +139,7 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 func (b *bucket) GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error) {
 	in := &s3.PutObjectInput{
 		Bucket: aws.String(*b.name),
-		Key:    aws.String(key),
+		Key:    b.trimKeyPrefix(key),
 	}
 	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(expiresIn))
 	if err != nil {
@@ -187,7 +187,7 @@ func (b *bucket) IsMyHost(url string) bool {
 func (b *bucket) GetMetadata(ctx context.Context, key string) (*Metadata, error) {
 	in := &s3.HeadObjectInput{
 		Bucket: b.name,
-		Key:    aws.String(key),
+		Key:    b.trimKeyPrefix(key),
 	}
 	out, err := b.s3.HeadObject(ctx, in)
 	var bne *types.NotFound
@@ -213,13 +213,13 @@ func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
 }
 
 func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, error) {
-	path, err := b.generateKeyFromObjectURL(url)
+	key, err := b.generateKeyFromObjectURL(url)
 	if err != nil {
 		return nil, err
 	}
 	in := &s3.GetObjectInput{
 		Bucket: b.name,
-		Key:    aws.String(path),
+		Key:    key,
 	}
 	out, err := b.s3.GetObject(ctx, in)
 	var bne *types.NotFound
@@ -235,7 +235,7 @@ func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, er
 func (b *bucket) Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error) {
 	in := &s3.PutObjectInput{
 		Bucket:   b.name,
-		Key:      aws.String(path),
+		Key:      b.trimKeyPrefix(path),
 		Body:     body,
 		Metadata: metadata,
 	}
@@ -250,7 +250,7 @@ func (b *bucket) Copy(ctx context.Context, srcBucket, srcKey, dstKey string, met
 	source := strings.Join([]string{srcBucket, srcKey}, "/")
 	in := &s3.CopyObjectInput{
 		Bucket:     b.name,
-		Key:        aws.String(dstKey),
+		Key:        b.trimKeyPrefix(dstKey),
 		CopySource: aws.String(source),
 		Metadata:   metadata,
 	}
@@ -261,10 +261,19 @@ func (b *bucket) Copy(ctx context.Context, srcBucket, srcKey, dstKey string, met
 	return b.GenerateObjectURL(dstKey)
 }
 
-func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {
+func (b *bucket) generateKeyFromObjectURL(objectURL string) (*string, error) {
 	u, err := url.Parse(objectURL)
 	if err != nil {
-		return "", ErrInvalidURL
+		return nil, ErrInvalidURL
 	}
-	return strings.TrimPrefix(u.Path, "/"), nil // url.URLから取得したPathは / から始まるため
+	return b.trimKeyPrefix(u.Path), nil
+}
+
+func (b *bucket) trimKeyPrefix(key string) *string {
+	if key == "" {
+		return nil
+	}
+	// keyは / なし始まりにする必要があるが、 url.URLから取得したPathなどは / から始まるため
+	fixed := strings.TrimPrefix(key, "/")
+	return aws.String(fixed)
 }
