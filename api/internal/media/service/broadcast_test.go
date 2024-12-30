@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -264,16 +265,23 @@ func TestCreateBroadcast(t *testing.T) {
 
 func TestUpdateBroadcastArchive(t *testing.T) {
 	t.Parallel()
+	now := jst.Date(2024, 12, 30, 18, 30, 0, 0)
 	broadcast := &entity.Broadcast{
 		ID:         "broadcast-id",
 		ScheduleID: "schdule-id",
 		Status:     entity.BroadcastStatusDisabled,
 	}
-	params := &database.UpdateBroadcastParams{
+	dbParams := &database.UpdateBroadcastParams{
 		UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
 			ArchiveURL:   "http://example.com/archive.mp4",
 			ArchiveFixed: true,
 		},
+	}
+	jobParams := &batch.SubmitJobParams{
+		JobName:       fmt.Sprintf("media-update-archive-%s-20241230183000", broadcast.ID),
+		JobDefinition: "batch-update-archive-definition",
+		JobQueue:      "batch-update-archive-queue",
+		Command:       []string{"batch-update-archive-command", broadcast.ID},
 	}
 	tests := []struct {
 		name      string
@@ -285,7 +293,8 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", params).Return(nil)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(nil)
+				mocks.batch.EXPECT().SubmitJob(ctx, jobParams).Return(nil)
 			},
 			input: &media.UpdateBroadcastArchiveInput{
 				ScheduleID: "schedule-id",
@@ -326,7 +335,20 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "failed to update broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", params).Return(assert.AnError)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(assert.AnError)
+			},
+			input: &media.UpdateBroadcastArchiveInput{
+				ScheduleID: "schedule-id",
+				ArchiveURL: "http://example.com/archive.mp4",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to submit job",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(nil)
+				mocks.batch.EXPECT().SubmitJob(ctx, jobParams).Return(assert.AnError)
 			},
 			input: &media.UpdateBroadcastArchiveInput{
 				ScheduleID: "schedule-id",
@@ -340,7 +362,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateBroadcastArchive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 

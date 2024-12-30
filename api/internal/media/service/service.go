@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -31,37 +32,45 @@ const (
 )
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
-	Cache     dynamodb.Client
-	MediaLive medialive.MediaLive
-	Tmp       storage.Bucket
-	Storage   storage.Bucket
-	Producer  sqs.Producer
-	User      user.Service
-	Store     store.Service
-	Youtube   youtube.Youtube
+	WaitGroup                    *sync.WaitGroup
+	Database                     *database.Database
+	Cache                        dynamodb.Client
+	MediaLive                    medialive.MediaLive
+	Tmp                          storage.Bucket
+	Storage                      storage.Bucket
+	Producer                     sqs.Producer
+	Batch                        batch.Client
+	User                         user.Service
+	Store                        store.Service
+	Youtube                      youtube.Youtube
+	BatchUpdateArchiveDefinition string
+	BatchUpdateArchiveQueue      string
+	BatchUpdateArchiveCommand    func(broadcastID string) []string
 }
 
 type service struct {
-	logger         *zap.Logger
-	waitGroup      *sync.WaitGroup
-	validator      validator.Validator
-	db             *database.Database
-	cache          dynamodb.Client
-	tmp            storage.Bucket
-	storage        storage.Bucket
-	tmpURL         func() *url.URL
-	storageURL     func() *url.URL
-	producer       sqs.Producer
-	user           user.Service
-	store          store.Service
-	media          medialive.MediaLive
-	youtube        youtube.Youtube
-	now            func() time.Time
-	generateID     func() string
-	uploadEventTTL time.Duration
-	authYoutubeTTL time.Duration
+	logger                       *zap.Logger
+	waitGroup                    *sync.WaitGroup
+	validator                    validator.Validator
+	db                           *database.Database
+	cache                        dynamodb.Client
+	tmp                          storage.Bucket
+	storage                      storage.Bucket
+	tmpURL                       func() *url.URL
+	storageURL                   func() *url.URL
+	producer                     sqs.Producer
+	batch                        batch.Client
+	user                         user.Service
+	store                        store.Service
+	media                        medialive.MediaLive
+	youtube                      youtube.Youtube
+	now                          func() time.Time
+	generateID                   func() string
+	uploadEventTTL               time.Duration
+	authYoutubeTTL               time.Duration
+	batchUpdateArchiveDefinition string
+	batchUpdateArchiveQueue      string
+	batchUpdateArchiveCommand    func(broadcastID string) []string
 }
 
 type options struct {
@@ -127,6 +136,7 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		storage:    params.Storage,
 		storageURL: storageURL,
 		producer:   params.Producer,
+		batch:      params.Batch,
 		user:       params.User,
 		store:      params.Store,
 		youtube:    params.Youtube,
@@ -134,8 +144,11 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
 		},
-		uploadEventTTL: dopts.uploadEventTTL,
-		authYoutubeTTL: dopts.authYoutubeTTL,
+		uploadEventTTL:               dopts.uploadEventTTL,
+		authYoutubeTTL:               dopts.authYoutubeTTL,
+		batchUpdateArchiveDefinition: params.BatchUpdateArchiveDefinition,
+		batchUpdateArchiveQueue:      params.BatchUpdateArchiveQueue,
+		batchUpdateArchiveCommand:    params.BatchUpdateArchiveCommand,
 	}, nil
 }
 
