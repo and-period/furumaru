@@ -1,4 +1,4 @@
-import type { ExperiencesResponse } from '~/types/api'
+import type { ExperienceResponse, ExperiencesResponse } from '~/types/api'
 
 export const useExperienceStore = defineStore('experience', {
   state: () => {
@@ -65,6 +65,25 @@ export const useExperienceStore = defineStore('experience', {
       }
       finally {
         this.experiencesFetchState.isLoading = false
+      }
+    },
+
+    /**
+     * 体験詳細取得
+     * @param id 体験ID
+     * @returns
+     */
+    async fetchExperience(id: string): Promise<ExperienceResponse> {
+      this.experienceFetchState.isLoading = true
+      try {
+        const response = await this.experienceApiClient().v1GetExperience({ experienceId: id })
+        return response
+      }
+      catch (error) {
+        return this.errorHandler(error)
+      }
+      finally {
+        this.experienceFetchState.isLoading = false
       }
     },
   },
