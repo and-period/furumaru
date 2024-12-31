@@ -13,12 +13,12 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Broadcast:          newBroadcast(db),
-		BroadcastComment:   newBroadcastComment(db),
-		BroadcastViewerLog: newBroadcastViewerLog(db),
-		Video:              newVideo(db),
-		VideoComment:       newVideoComment(db),
-		VideoViewerLog:     newVideoViewerLog(db),
+		Broadcast:          NewBroadcast(db),
+		BroadcastComment:   NewBroadcastComment(db),
+		BroadcastViewerLog: NewBroadcastViewerLog(db),
+		Video:              NewVideo(db),
+		VideoComment:       NewVideoComment(db),
+		VideoViewerLog:     NewVideoViewerLog(db),
 	}
 }
 

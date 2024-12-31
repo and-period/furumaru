@@ -14,7 +14,7 @@ import (
 )
 
 func TestContact(t *testing.T) {
-	assert.NotNil(t, newContact(nil))
+	assert.NotNil(t, NewContact(nil))
 }
 
 func TestContact_List(t *testing.T) {

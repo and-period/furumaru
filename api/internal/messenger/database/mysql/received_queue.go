@@ -18,7 +18,7 @@ type receivedQueue struct {
 	now func() time.Time
 }
 
-func newReceivedQueue(db *mysql.Client) database.ReceivedQueue {
+func NewReceivedQueue(db *mysql.Client) database.ReceivedQueue {
 	return &receivedQueue{
 		db:  db,
 		now: jst.Now,

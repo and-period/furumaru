@@ -14,7 +14,7 @@ import (
 )
 
 func TestCategory(t *testing.T) {
-	assert.NotNil(t, newCategory(nil))
+	assert.NotNil(t, NewCategory(nil))
 }
 
 func TestCategory_List(t *testing.T) {

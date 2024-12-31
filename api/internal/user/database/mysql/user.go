@@ -18,7 +18,7 @@ type user struct {
 	now func() time.Time
 }
 
-func newUser(db *mysql.Client) database.User {
+func NewUser(db *mysql.Client) database.User {
 	return &user{
 		db:  db,
 		now: jst.Now,

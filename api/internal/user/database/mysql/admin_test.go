@@ -13,7 +13,7 @@ import (
 )
 
 func TestAdmin(t *testing.T) {
-	assert.NotNil(t, newAdmin(nil))
+	assert.NotNil(t, NewAdmin(nil))
 }
 
 func TestAdmin_MultiGet(t *testing.T) {

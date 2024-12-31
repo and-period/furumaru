@@ -18,7 +18,7 @@ type order struct {
 	now func() time.Time
 }
 
-func newOrder(db *mysql.Client, mysql database.Order) database.Order {
+func NewOrder(db *mysql.Client, mysql database.Order) database.Order {
 	return &order{
 		Order: mysql,
 		db:    db,

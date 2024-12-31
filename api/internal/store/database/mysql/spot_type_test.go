@@ -14,7 +14,7 @@ import (
 )
 
 func TestSpotType(t *testing.T) {
-	require.NotNil(t, newSpotType(nil))
+	assert.NotNil(t, NewSpotType(nil))
 }
 
 func TestSpotType_List(t *testing.T) {

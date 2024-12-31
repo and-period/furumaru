@@ -18,10 +18,10 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 		Address:          client.Address,
 		Admin:            client.Admin,
 		Administrator:    client.Administrator,
-		Coordinator:      newCoordinator(db, client.Coordinator),
+		Coordinator:      NewCoordinator(db, client.Coordinator),
 		Guest:            client.Guest,
 		Member:           client.Member,
-		Producer:         newProducer(db, client.Producer),
+		Producer:         NewProducer(db, client.Producer),
 		User:             client.User,
 		UserNotification: client.UserNotification,
 	}

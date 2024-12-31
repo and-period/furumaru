@@ -14,7 +14,7 @@ import (
 )
 
 func TestNotification(t *testing.T) {
-	assert.NotNil(t, newNotification(nil))
+	assert.NotNil(t, NewNotification(nil))
 }
 
 func TestNotification_List(t *testing.T) {

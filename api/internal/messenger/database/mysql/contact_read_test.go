@@ -14,7 +14,7 @@ import (
 )
 
 func TestContactRead(t *testing.T) {
-	assert.NotNil(t, newContactRead(nil))
+	assert.NotNil(t, NewContactRead(nil))
 }
 
 func TestContactRead_GetByContactIDAndUserID(t *testing.T) {

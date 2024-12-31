@@ -93,7 +93,7 @@ func deleteAll(ctx context.Context) error {
 func delete(ctx context.Context, tables ...string) error {
 	for _, table := range tables {
 		sql := fmt.Sprintf("DELETE FROM %s", table)
-		if err := dbClient.DB.Exec(sql).Error; err != nil {
+		if err := dbClient.DB.WithContext(ctx).Exec(sql).Error; err != nil {
 			return err
 		}
 	}

@@ -18,7 +18,7 @@ type spotType struct {
 	now func() time.Time
 }
 
-func newSpotType(db *mysql.Client) database.SpotType {
+func NewSpotType(db *mysql.Client) database.SpotType {
 	return &spotType{
 		db:  db,
 		now: jst.Now,

@@ -17,7 +17,7 @@ type experienceReviewReaction struct {
 	now func() time.Time
 }
 
-func newExperienceReviewReaction(db *mysql.Client) database.ExperienceReviewReaction {
+func NewExperienceReviewReaction(db *mysql.Client) database.ExperienceReviewReaction {
 	return &experienceReviewReaction{
 		db:  db,
 		now: time.Now,

@@ -14,7 +14,7 @@ import (
 )
 
 func TestThread(t *testing.T) {
-	assert.NotNil(t, newThread(nil))
+	assert.NotNil(t, NewThread(nil))
 }
 
 func TestThread_ListByContactID(t *testing.T) {

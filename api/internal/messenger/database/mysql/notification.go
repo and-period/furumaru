@@ -19,7 +19,7 @@ type notification struct {
 	now func() time.Time
 }
 
-func newNotification(db *mysql.Client) database.Notification {
+func NewNotification(db *mysql.Client) database.Notification {
 	return &notification{
 		db:  db,
 		now: jst.Now,

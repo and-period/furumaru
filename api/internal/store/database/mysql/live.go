@@ -19,7 +19,7 @@ type live struct {
 	now func() time.Time
 }
 
-func newLive(db *mysql.Client) database.Live {
+func NewLive(db *mysql.Client) database.Live {
 	return &live{
 		db:  db,
 		now: jst.Now,

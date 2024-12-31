@@ -23,7 +23,7 @@ type experience struct {
 	now func() time.Time
 }
 
-func newExperience(db *mysql.Client) database.Experience {
+func NewExperience(db *mysql.Client) database.Experience {
 	return &experience{
 		db:  db,
 		now: jst.Now,

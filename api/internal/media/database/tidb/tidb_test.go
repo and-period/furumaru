@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/media/database"
-	gmysql "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
@@ -39,12 +39,12 @@ func TestDBError(t *testing.T) {
 		},
 		{
 			name:   "mysql already exists",
-			err:    &gmysql.MySQLError{Number: 1062},
+			err:    &mysql.MySQLError{Number: 1062},
 			expect: database.ErrAlreadyExists,
 		},
 		{
 			name:   "other mysql error",
-			err:    &gmysql.MySQLError{},
+			err:    &mysql.MySQLError{},
 			expect: database.ErrInternal,
 		},
 		{

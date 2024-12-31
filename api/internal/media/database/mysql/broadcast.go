@@ -19,7 +19,7 @@ type broadcast struct {
 	now func() time.Time
 }
 
-func newBroadcast(db *mysql.Client) database.Broadcast {
+func NewBroadcast(db *mysql.Client) database.Broadcast {
 	return &broadcast{
 		db:  db,
 		now: jst.Now,

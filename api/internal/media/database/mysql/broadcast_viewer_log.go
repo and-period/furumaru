@@ -18,7 +18,7 @@ type broadcastViewerLog struct {
 	now func() time.Time
 }
 
-func newBroadcastViewerLog(db *mysql.Client) database.BroadcastViewerLog {
+func NewBroadcastViewerLog(db *mysql.Client) database.BroadcastViewerLog {
 	return &broadcastViewerLog{
 		db:  db,
 		now: jst.Now,

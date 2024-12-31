@@ -18,7 +18,7 @@ type contact struct {
 	now func() time.Time
 }
 
-func newContact(db *mysql.Client) database.Contact {
+func NewContact(db *mysql.Client) database.Contact {
 	return &contact{
 		db:  db,
 		now: jst.Now,

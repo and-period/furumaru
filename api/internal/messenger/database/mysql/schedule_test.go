@@ -14,7 +14,7 @@ import (
 )
 
 func TestSchedule(t *testing.T) {
-	assert.NotNil(t, newSchedule(nil))
+	assert.NotNil(t, NewSchedule(nil))
 }
 
 func TestSchedule_List(t *testing.T) {

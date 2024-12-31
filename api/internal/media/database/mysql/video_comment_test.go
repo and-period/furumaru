@@ -15,7 +15,7 @@ import (
 )
 
 func TestVideoComment(t *testing.T) {
-	assert.NotNil(t, newVideoComment(nil))
+	assert.NotNil(t, NewVideoComment(nil))
 }
 
 func TestVideoComment_List(t *testing.T) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestUser(t *testing.T) {
-	assert.NotNil(t, newUser(nil))
+	assert.NotNil(t, NewUser(nil))
 }
 
 func TestUser_List(t *testing.T) {

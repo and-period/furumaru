@@ -14,7 +14,7 @@ import (
 )
 
 func TestSpot(t *testing.T) {
-	assert.NotNil(t, newSpot(nil))
+	assert.NotNil(t, NewSpot(nil))
 }
 
 func TestSpot_List(t *testing.T) {

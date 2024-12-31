@@ -18,7 +18,7 @@ type contactRead struct {
 	now func() time.Time
 }
 
-func newContactRead(db *mysql.Client) database.ContactRead {
+func NewContactRead(db *mysql.Client) database.ContactRead {
 	return &contactRead{
 		db:  db,
 		now: jst.Now,

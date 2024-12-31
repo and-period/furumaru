@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessageTemplate(t *testing.T) {
-	assert.NotNil(t, newMessageTemplate(nil))
+	assert.NotNil(t, NewMessageTemplate(nil))
 }
 
 func TestMessageTemplate_Get(t *testing.T) {

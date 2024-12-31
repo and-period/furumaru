@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	gmysql "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -74,16 +73,11 @@ func deleteAll(ctx context.Context) error {
 func delete(ctx context.Context, tables ...string) error {
 	for _, table := range tables {
 		sql := fmt.Sprintf("DELETE FROM %s", table)
-		if err := dbClient.DB.Exec(sql).Error; err != nil {
+		if err := dbClient.DB.WithContext(ctx).Exec(sql).Error; err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func TestDatabase(t *testing.T) {
-	t.Parallel()
-	require.NotNil(t, NewDatabase(nil))
 }
 
 func TestDBError(t *testing.T) {

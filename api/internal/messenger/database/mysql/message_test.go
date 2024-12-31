@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessage(t *testing.T) {
-	assert.NotNil(t, newMessage(nil))
+	assert.NotNil(t, NewMessage(nil))
 }
 
 func TestMessage_List(t *testing.T) {

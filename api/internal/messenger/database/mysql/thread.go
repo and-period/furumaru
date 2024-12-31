@@ -18,7 +18,7 @@ type thread struct {
 	now func() time.Time
 }
 
-func newThread(db *mysql.Client) database.Thread {
+func NewThread(db *mysql.Client) database.Thread {
 	return &thread{
 		db:  db,
 		now: jst.Now,

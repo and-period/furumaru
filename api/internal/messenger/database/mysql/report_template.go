@@ -17,7 +17,7 @@ type reportTemplate struct {
 	now func() time.Time
 }
 
-func newReportTemplate(db *mysql.Client) database.ReportTemplate {
+func NewReportTemplate(db *mysql.Client) database.ReportTemplate {
 	return &reportTemplate{
 		db:  db,
 		now: jst.Now,

@@ -18,7 +18,7 @@ type administrator struct {
 	now func() time.Time
 }
 
-func newAdministrator(db *mysql.Client) database.Administrator {
+func NewAdministrator(db *mysql.Client) database.Administrator {
 	return &administrator{
 		db:  db,
 		now: jst.Now,

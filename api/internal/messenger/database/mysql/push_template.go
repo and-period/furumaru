@@ -17,7 +17,7 @@ type pushTemplate struct {
 	now func() time.Time
 }
 
-func newPushTemplate(db *mysql.Client) database.PushTemplate {
+func NewPushTemplate(db *mysql.Client) database.PushTemplate {
 	return &pushTemplate{
 		db:  db,
 		now: jst.Now,

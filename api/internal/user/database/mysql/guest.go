@@ -18,7 +18,7 @@ type guest struct {
 	now func() time.Time
 }
 
-func newGuest(db *mysql.Client) database.Guest {
+func NewGuest(db *mysql.Client) database.Guest {
 	return &guest{
 		db:  db,
 		now: jst.Now,

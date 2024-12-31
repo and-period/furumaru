@@ -18,7 +18,7 @@ func NewDatabase(db *apmysql.Client) *database.Database {
 		Broadcast:          client.Broadcast,
 		BroadcastComment:   client.BroadcastComment,
 		BroadcastViewerLog: client.BroadcastViewerLog,
-		Video:              newVideo(db, client.Video),
+		Video:              NewVideo(db, client.Video),
 		VideoComment:       client.VideoComment,
 		VideoViewerLog:     client.VideoViewerLog,
 	}

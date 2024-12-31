@@ -14,7 +14,7 @@ import (
 )
 
 func TestCartActionLog(t *testing.T) {
-	assert.NotNil(t, newCartActionLog(nil))
+	assert.NotNil(t, NewCartActionLog(nil))
 }
 
 func TestCartActionLog_Create(t *testing.T) {

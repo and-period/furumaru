@@ -22,7 +22,7 @@ type shipping struct {
 	now func() time.Time
 }
 
-func newShipping(db *mysql.Client) database.Shipping {
+func NewShipping(db *mysql.Client) database.Shipping {
 	return &shipping{
 		db:  db,
 		now: jst.Now,

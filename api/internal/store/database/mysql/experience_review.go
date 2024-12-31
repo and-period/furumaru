@@ -19,7 +19,7 @@ type experienceReview struct {
 	now func() time.Time
 }
 
-func newExperienceReview(db *mysql.Client) database.ExperienceReview {
+func NewExperienceReview(db *mysql.Client) database.ExperienceReview {
 	return &experienceReview{
 		db:  db,
 		now: time.Now,

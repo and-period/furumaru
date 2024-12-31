@@ -14,7 +14,7 @@ import (
 )
 
 func TestPromotion(t *testing.T) {
-	assert.NotNil(t, newPromotion(nil))
+	assert.NotNil(t, NewPromotion(nil))
 }
 
 func TestPromotion_List(t *testing.T) {

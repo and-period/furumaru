@@ -15,7 +15,7 @@ import (
 )
 
 func TestExperienceReview(t *testing.T) {
-	assert.NotNil(t, newExperienceReview(nil))
+	assert.NotNil(t, NewExperienceReview(nil))
 }
 
 func TestExperienceReview_List(t *testing.T) {

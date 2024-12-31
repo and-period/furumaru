@@ -18,7 +18,7 @@ type videoComment struct {
 	now func() time.Time
 }
 
-func newVideoComment(db *mysql.Client) database.VideoComment {
+func NewVideoComment(db *mysql.Client) database.VideoComment {
 	return &videoComment{
 		db:  db,
 		now: time.Now,

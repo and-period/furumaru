@@ -14,7 +14,7 @@ import (
 )
 
 func TestBroadcast(t *testing.T) {
-	assert.NotNil(t, newBroadcast(nil))
+	assert.NotNil(t, NewBroadcast(nil))
 }
 
 func TestBroadcast_List(t *testing.T) {

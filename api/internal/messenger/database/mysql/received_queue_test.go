@@ -14,7 +14,7 @@ import (
 )
 
 func TestReceivedQueue(t *testing.T) {
-	assert.NotNil(t, newReceivedQueue(nil))
+	assert.NotNil(t, NewReceivedQueue(nil))
 }
 
 func TestReceivedQueue_Get(t *testing.T) {

@@ -19,7 +19,7 @@ type producer struct {
 	now func() time.Time
 }
 
-func newProducer(db *mysql.Client, mysql database.Producer) database.Producer {
+func NewProducer(db *mysql.Client, mysql database.Producer) database.Producer {
 	return &producer{
 		Producer: mysql,
 		db:       db,

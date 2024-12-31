@@ -15,7 +15,7 @@ import (
 )
 
 func TestOrder(t *testing.T) {
-	assert.NotNil(t, newOrder(nil))
+	assert.NotNil(t, NewOrder(nil))
 }
 
 func TestOrder_List(t *testing.T) {
@@ -43,8 +43,8 @@ func TestOrder_List(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -152,8 +152,8 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -289,8 +289,8 @@ func TestOrder_Count(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -400,8 +400,8 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -511,8 +511,8 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -625,8 +625,8 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -738,8 +738,8 @@ func TestOrder_Create(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -865,8 +865,8 @@ func TestOrder_UpdatePayment(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1057,8 +1057,8 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1224,8 +1224,8 @@ func TestOrder_UpdateRefund(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1384,8 +1384,8 @@ func TestOrder_Draft(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1491,8 +1491,8 @@ func TestOrder_Complete(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1599,8 +1599,8 @@ func TestOrder_Aggregate(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1718,8 +1718,8 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -1827,12 +1827,13 @@ func testOrder(id, userID, promotionID, coordinatorID string, typ entity.OrderTy
 	}
 }
 
-func testOrderPayment(orderID string, addressID int64, transactionID, paymentMethodID string, now time.Time) *entity.OrderPayment {
+func testOrderPayment(orderID string, addressID int64, transactionID, paymentID string, now time.Time) *entity.OrderPayment {
 	return &entity.OrderPayment{
 		OrderID:           orderID,
 		AddressRevisionID: addressID,
 		Status:            entity.PaymentStatusCaptured,
 		TransactionID:     transactionID,
+		PaymentID:         paymentID,
 		MethodType:        entity.PaymentMethodTypeCreditCard,
 		Subtotal:          1800,
 		Discount:          0,

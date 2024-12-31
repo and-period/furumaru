@@ -19,7 +19,7 @@ type category struct {
 	now func() time.Time
 }
 
-func newCategory(db *mysql.Client) database.Category {
+func NewCategory(db *mysql.Client) database.Category {
 	return &category{
 		db:  db,
 		now: jst.Now,

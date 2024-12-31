@@ -19,7 +19,7 @@ type member struct {
 	now func() time.Time
 }
 
-func newMember(db *mysql.Client) database.Member {
+func NewMember(db *mysql.Client) database.Member {
 	return &member{
 		db:  db,
 		now: jst.Now,

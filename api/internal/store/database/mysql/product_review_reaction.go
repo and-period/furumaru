@@ -17,7 +17,7 @@ type productReviewReaction struct {
 	now func() time.Time
 }
 
-func newProductReviewReaction(db *mysql.Client) database.ProductReviewReaction {
+func NewProductReviewReaction(db *mysql.Client) database.ProductReviewReaction {
 	return &productReviewReaction{
 		db:  db,
 		now: time.Now,
