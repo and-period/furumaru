@@ -19,7 +19,7 @@ type message struct {
 	now func() time.Time
 }
 
-func newMessage(db *mysql.Client) database.Message {
+func NewMessage(db *mysql.Client) database.Message {
 	return &message{
 		db:  db,
 		now: jst.Now,

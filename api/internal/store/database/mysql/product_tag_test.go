@@ -14,7 +14,7 @@ import (
 )
 
 func TestProductTag(t *testing.T) {
-	assert.NotNil(t, newProductTag(nil))
+	assert.NotNil(t, NewProductTag(nil))
 }
 
 func TestProductTag_List(t *testing.T) {

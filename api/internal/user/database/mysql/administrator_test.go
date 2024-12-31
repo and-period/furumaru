@@ -14,7 +14,7 @@ import (
 )
 
 func TestAdministrator(t *testing.T) {
-	assert.NotNil(t, newAdministrator(nil))
+	assert.NotNil(t, NewAdministrator(nil))
 }
 
 func TestAdministrator_List(t *testing.T) {

@@ -17,7 +17,7 @@ type paymentSystem struct {
 	now func() time.Time
 }
 
-func newPaymentSystem(db *mysql.Client) database.PaymentSystem {
+func NewPaymentSystem(db *mysql.Client) database.PaymentSystem {
 	return &paymentSystem{
 		db:  db,
 		now: jst.Now,

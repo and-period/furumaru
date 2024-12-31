@@ -15,7 +15,7 @@ import (
 
 func TestExperienceType(t *testing.T) {
 	t.Parallel()
-	require.NotNil(t, newExperienceType(nil))
+	assert.NotNil(t, NewExperienceType(nil))
 }
 
 func TestExperienceType_List(t *testing.T) {

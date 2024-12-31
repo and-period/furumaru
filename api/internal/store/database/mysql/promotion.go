@@ -19,7 +19,7 @@ type promotion struct {
 	now func() time.Time
 }
 
-func newPromotion(db *mysql.Client) database.Promotion {
+func NewPromotion(db *mysql.Client) database.Promotion {
 	return &promotion{
 		db:  db,
 		now: jst.Now,

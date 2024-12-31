@@ -17,7 +17,7 @@ type messageTemplate struct {
 	now func() time.Time
 }
 
-func newMessageTemplate(db *mysql.Client) database.MessageTemplate {
+func NewMessageTemplate(db *mysql.Client) database.MessageTemplate {
 	return &messageTemplate{
 		db:  db,
 		now: jst.Now,

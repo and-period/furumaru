@@ -18,7 +18,7 @@ type experienceType struct {
 	now func() time.Time
 }
 
-func newExperienceType(db *mysql.Client) database.ExperienceType {
+func NewExperienceType(db *mysql.Client) database.ExperienceType {
 	return &experienceType{
 		db:  db,
 		now: jst.Now,

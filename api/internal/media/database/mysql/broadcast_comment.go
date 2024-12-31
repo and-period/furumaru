@@ -19,7 +19,7 @@ type broadcastComment struct {
 	now func() time.Time
 }
 
-func newBroadcastComment(db *mysql.Client) database.BroadcastComment {
+func NewBroadcastComment(db *mysql.Client) database.BroadcastComment {
 	return &broadcastComment{
 		db:  db,
 		now: jst.Now,

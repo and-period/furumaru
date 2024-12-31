@@ -13,7 +13,7 @@ import (
 )
 
 func TestProductReviewReaction(t *testing.T) {
-	assert.NotNil(t, newProductReviewReaction(nil))
+	assert.NotNil(t, NewProductReviewReaction(nil))
 }
 
 func TestProductReviewReaction_Upsert(t *testing.T) {
@@ -39,7 +39,7 @@ func TestProductReviewReaction_Upsert(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ProductRevision).Error
@@ -127,7 +127,7 @@ func TestProductReviewReaction_Delete(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ProductRevision).Error
@@ -207,7 +207,7 @@ func TestProductReviewReaction_GetUserReactions(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ProductRevision).Error

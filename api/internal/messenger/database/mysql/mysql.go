@@ -13,16 +13,16 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Contact:         newContact(db),
-		ContactCategory: newContactCategory(db),
-		ContactRead:     newContactRead(db),
-		Message:         newMessage(db),
-		MessageTemplate: newMessageTemplate(db),
-		Notification:    newNotification(db),
-		PushTemplate:    newPushTemplate(db),
-		ReceivedQueue:   newReceivedQueue(db),
-		ReportTemplate:  newReportTemplate(db),
-		Schedule:        newSchedule(db),
+		Contact:         NewContact(db),
+		ContactCategory: NewContactCategory(db),
+		ContactRead:     NewContactRead(db),
+		Message:         NewMessage(db),
+		MessageTemplate: NewMessageTemplate(db),
+		Notification:    NewNotification(db),
+		PushTemplate:    NewPushTemplate(db),
+		ReceivedQueue:   NewReceivedQueue(db),
+		ReportTemplate:  NewReportTemplate(db),
+		Schedule:        NewSchedule(db),
 	}
 }
 

@@ -16,7 +16,7 @@ import (
 )
 
 func TestShipping(t *testing.T) {
-	assert.NotNil(t, newShipping(nil))
+	assert.NotNil(t, NewShipping(nil))
 }
 
 func TestShipping_ListByCoordinatorIDs(t *testing.T) {

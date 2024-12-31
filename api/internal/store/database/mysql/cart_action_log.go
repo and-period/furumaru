@@ -17,7 +17,7 @@ type cartActionLog struct {
 	now func() time.Time
 }
 
-func newCartActionLog(db *mysql.Client) database.CartActionLog {
+func NewCartActionLog(db *mysql.Client) database.CartActionLog {
 	return &cartActionLog{
 		db:  db,
 		now: jst.Now,

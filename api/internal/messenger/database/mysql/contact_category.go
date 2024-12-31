@@ -18,7 +18,7 @@ type contactCategory struct {
 	now func() time.Time
 }
 
-func newContactCategory(db *mysql.Client) database.ContactCategory {
+func NewContactCategory(db *mysql.Client) database.ContactCategory {
 	return &contactCategory{
 		db:  db,
 		now: jst.Now,

@@ -21,7 +21,7 @@ type schedule struct {
 	now func() time.Time
 }
 
-func newSchedule(db *mysql.Client) database.Schedule {
+func NewSchedule(db *mysql.Client) database.Schedule {
 	return &schedule{
 		db:  db,
 		now: jst.Now,

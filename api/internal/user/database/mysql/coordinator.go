@@ -19,7 +19,7 @@ type coordinator struct {
 	now func() time.Time
 }
 
-func newCoordinator(db *mysql.Client) database.Coordinator {
+func NewCoordinator(db *mysql.Client) database.Coordinator {
 	return &coordinator{
 		db:  db,
 		now: jst.Now,

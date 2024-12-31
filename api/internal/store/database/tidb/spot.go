@@ -20,7 +20,7 @@ type spot struct {
 	now func() time.Time
 }
 
-func newSpot(db *mysql.Client, mysql database.Spot) database.Spot {
+func NewSpot(db *mysql.Client, mysql database.Spot) database.Spot {
 	return &spot{
 		Spot: mysql,
 		db:   db,

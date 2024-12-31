@@ -13,7 +13,7 @@ import (
 )
 
 func TestExperienceReviewReaction(t *testing.T) {
-	assert.NotNil(t, newExperienceReviewReaction(nil))
+	assert.NotNil(t, NewExperienceReviewReaction(nil))
 }
 
 func TestExperienceReviewReaction_Upsert(t *testing.T) {

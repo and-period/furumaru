@@ -15,7 +15,7 @@ import (
 )
 
 func TestBroadcastViewerLog(t *testing.T) {
-	assert.NotNil(t, newBroadcastViewerLog(nil))
+	assert.NotNil(t, NewBroadcastViewerLog(nil))
 }
 
 func TestBroadcastViewerLog_Create(t *testing.T) {

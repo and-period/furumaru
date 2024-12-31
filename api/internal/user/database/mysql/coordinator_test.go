@@ -18,7 +18,7 @@ import (
 )
 
 func TestCoordinator(t *testing.T) {
-	assert.NotNil(t, newCoordinator(nil))
+	assert.NotNil(t, NewCoordinator(nil))
 }
 
 func TestCoordinator_List(t *testing.T) {

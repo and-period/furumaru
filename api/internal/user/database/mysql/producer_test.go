@@ -15,7 +15,7 @@ import (
 )
 
 func TestProducer(t *testing.T) {
-	assert.NotNil(t, newProducer(nil))
+	assert.NotNil(t, NewProducer(nil))
 }
 
 func TestProducer_List(t *testing.T) {

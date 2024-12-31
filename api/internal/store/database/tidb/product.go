@@ -23,7 +23,7 @@ type product struct {
 	now func() time.Time
 }
 
-func newProduct(db *mysql.Client, mysql database.Product) database.Product {
+func NewProduct(db *mysql.Client, mysql database.Product) database.Product {
 	return &product{
 		Product: mysql,
 		db:      db,

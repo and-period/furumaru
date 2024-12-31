@@ -15,7 +15,7 @@ import (
 )
 
 func TestVideoViewerLog(t *testing.T) {
-	assert.NotNil(t, newVideoViewerLog(nil))
+	assert.NotNil(t, NewVideoViewerLog(nil))
 }
 
 func TestVideoViewerLog_Create(t *testing.T) {

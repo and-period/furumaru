@@ -15,7 +15,7 @@ import (
 
 func TestExperience(t *testing.T) {
 	t.Parallel()
-	require.NotNil(t, newExperience(nil))
+	assert.NotNil(t, NewExperience(nil))
 }
 
 func TestExperience_List(t *testing.T) {
@@ -781,7 +781,7 @@ func testExperienceRevision(revisionID int64, experienceID string, now time.Time
 	}
 }
 
-func fillIgnoreExperienceFields(e *entity.Experience, now time.Time) {
+func fillIgnoreExperienceFields(e *entity.Experience, _ time.Time) {
 	if e == nil {
 		return
 	}

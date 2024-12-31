@@ -22,7 +22,7 @@ type address struct {
 	now func() time.Time
 }
 
-func newAddress(db *mysql.Client) database.Address {
+func NewAddress(db *mysql.Client) database.Address {
 	return &address{
 		db:  db,
 		now: jst.Now,

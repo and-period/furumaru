@@ -14,7 +14,7 @@ import (
 )
 
 func TestReportTemplate(t *testing.T) {
-	assert.NotNil(t, newReportTemplate(nil))
+	assert.NotNil(t, NewReportTemplate(nil))
 }
 
 func TestReportTemplate_Get(t *testing.T) {

@@ -13,7 +13,7 @@ import (
 )
 
 func TestPaymentSystem(t *testing.T) {
-	assert.NotNil(t, newPaymentSystem(nil))
+	assert.NotNil(t, NewPaymentSystem(nil))
 }
 
 func TestPaymentSystem_MultiGet(t *testing.T) {

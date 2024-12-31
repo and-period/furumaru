@@ -13,7 +13,7 @@ import (
 )
 
 func TestUserNotification(t *testing.T) {
-	assert.NotNil(t, newUserNotification(nil))
+	assert.NotNil(t, NewUserNotification(nil))
 }
 
 func TestUserNotification_MultiGet(t *testing.T) {

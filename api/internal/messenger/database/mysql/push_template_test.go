@@ -14,7 +14,7 @@ import (
 )
 
 func TestPushTemplate(t *testing.T) {
-	assert.NotNil(t, newPushTemplate(nil))
+	assert.NotNil(t, NewPushTemplate(nil))
 }
 
 func TestPushTemplate_Get(t *testing.T) {

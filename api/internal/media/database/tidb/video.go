@@ -23,7 +23,7 @@ type video struct {
 	now func() time.Time
 }
 
-func newVideo(db *mysql.Client, mysql database.Video) database.Video {
+func NewVideo(db *mysql.Client, mysql database.Video) database.Video {
 	return &video{
 		Video: mysql,
 		db:    db,

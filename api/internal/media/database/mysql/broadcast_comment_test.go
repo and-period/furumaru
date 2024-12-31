@@ -15,7 +15,7 @@ import (
 )
 
 func TestBroadcastComment(t *testing.T) {
-	assert.NotNil(t, newBroadcastComment(nil))
+	assert.NotNil(t, NewBroadcastComment(nil))
 }
 
 func TestBroadcastComment_List(t *testing.T) {

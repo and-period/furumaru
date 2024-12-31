@@ -18,7 +18,7 @@ type videoViewerLog struct {
 	now func() time.Time
 }
 
-func newVideoViewerLog(db *mysql.Client) database.VideoViewerLog {
+func NewVideoViewerLog(db *mysql.Client) database.VideoViewerLog {
 	return &videoViewerLog{
 		db:  db,
 		now: jst.Now,
