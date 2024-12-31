@@ -8,7 +8,7 @@ on:
     - '.github/workflows/_build_and_push.yaml'
     - '.github/workflows/_deploy_batch.yaml'
     - '.github/workflows/cd-batch-for-stg.yaml'
-    - 'api/internal/hack/**'
+    - 'api/hack/**'
     - 'api/pkg/**'
     - 'api/go.mod'
     - 'infra/docker/api/**'
