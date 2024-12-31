@@ -1,5 +1,36 @@
 # Changelog
 
+## [v3.4.0](https://github.com/and-period/furumaru/compare/v3.3.0...v3.4.0) - 2024-12-31
+- feat(gateway): コーディネータ取得APIに体験情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2582
+- refactor(api): インターフェース定義の並び順を整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2584
+- 体験詳細ページの実装 by @hamachans in https://github.com/and-period/furumaru/pull/2572
+- feat(gateway): 座標ベースで体験一覧取得ができるように by @taba2424 in https://github.com/and-period/furumaru/pull/2588
+- build(deps): bump the dependencies group in /api with 31 updates by @dependabot in https://github.com/and-period/furumaru/pull/2586
+- build(deps): bump the dependencies group across 1 directory with 175 updates by @dependabot in https://github.com/and-period/furumaru/pull/2587
+- fix(gateway): 体験一覧取得APIのレスポンス修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2590
+- feat(hack): 字幕付与用のコマンド実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2589
+- feat(workflow): AWS Batchのジョブ定義デプロイ用ワークフローを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2591
+- fix(infra): コンテナイメージのディレクトリ名修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2592
+- fix(infra): 字幕追加ジョブのDockerfileを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2593
+- fix(workflow): キャッシュの持ち方を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2594
+- fix(workflow): ワークフローの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2595
+- fix(workflow): ワークフローの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2596
+- fix(workflow): ワークフローの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2597
+- fix(workflow): ワークフローの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2598
+- feat(media): 字幕付与処理を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2599
+- fix(media): 起動時引数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2600
+- feat(workflow): APIのコンテナイメージ作成フローを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2601
+- fix(batch): リクエストパラメータの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2602
+- fix(workflow): ワークフローの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2603
+- fix(workflow): ファイルコピー周りの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2604
+- fix(batch): コンテナ名が必須のため追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2605
+- fix(storage): keyの整形 by @taba2424 in https://github.com/and-period/furumaru/pull/2606
+- fix(hack): アーカイブURLの変換 by @taba2424 in https://github.com/and-period/furumaru/pull/2607
+- fix(infra): バッチ処理用のコンテナのベースイメージを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2608
+- fix(infra): バッチ処理の実行用コンテナの設定を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2609
+- fix(infra): バッチ処理の実行用コンテナの設定を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2610
+- fix(infra): ffmpegコマンド実行前にローカルへファイルを保存するように by @taba2424 in https://github.com/and-period/furumaru/pull/2611
+
 ## [v3.3.0](https://github.com/and-period/furumaru/compare/v3.2.8...v3.3.0) - 2024-12-23
 - feat(store): 商品レビュー機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2566
 - feat(store): 商品レビューの集計ロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2568
