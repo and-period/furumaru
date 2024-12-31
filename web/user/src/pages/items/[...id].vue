@@ -6,6 +6,7 @@ import { useShoppingCartStore } from '~/store/shopping'
 import { ProductStatus } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
+import { useProductReviewStore } from '~/store/productReview'
 
 const i18n = useI18n()
 
@@ -18,6 +19,10 @@ const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
+
+const productReviewStore = useProductReviewStore()
+const { fetchReviews } = productReviewStore
+const { reviews } = storeToRefs(productReviewStore)
 
 const { emit } = useEventBus('add-to-cart')
 
@@ -127,6 +132,10 @@ const handleClickMediaItem = (index: number) => {
 
 useAsyncData(`product-${id.value}`, () => {
   return fetchProduct(id.value)
+})
+
+useAsyncData(`reviews-${id.value}`, () => {
+  return fetchReviews(id.value)
 })
 
 useSeoMeta({
@@ -254,6 +263,31 @@ useSeoMeta({
             </div>
             <div class="text-[12px] tracking-[1.4px] md:text-[14px]">
               {{ product.originPrefecture }} {{ product.originCity }}
+            </div>
+          </div>
+
+          <!-- 評価情報 -->
+          <div>
+            <div class="flex items-center">
+              <svg
+                class="w-4 h-4 text-yellow-300 me-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <p class="ms-2 text-sm font-bold text-main">
+                {{ product.rate.average }}
+              </p>
+              <span class="w-1 h-1 mx-1.5 bg-main rounded-full" />
+              <a
+                href="#reviews"
+                class="text-sm font-medium text-main underline hover:no-underline "
+              >
+                {{ product.rate.count }} {{ dt('reviewCountLabel') }}
+              </a>
             </div>
           </div>
 
@@ -462,6 +496,59 @@ useSeoMeta({
       </div>
     </div>
   </template>
+
+  <div
+    id="reviews"
+    class="w-full"
+  >
+    <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
+      <div
+        class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+      >
+        <p
+          class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+        >
+          {{ dt("reviewLabel") }}
+        </p>
+
+        <div class="mt-[32px] flex flex-col divide-y">
+          <div
+            v-for="review in reviews"
+            :key="review.id"
+            class="flex flex-col gap-2 py-4"
+          >
+            <div class="flex gap-2">
+              <div v-if="review.thumbnailUrl">
+                <nuxt-img
+                  provider="cloudFront"
+                  sizes="48px"
+                  fit="cover"
+                  :src="review.thumbnailUrl"
+                  :alt="`${review.username}`"
+                  class="block aspect-square w-[48px] rounded-full object-cover"
+                />
+              </div>
+              <div v-else>
+                <the-account-icon />
+              </div>
+              {{ review.username }}
+            </div>
+            <div>
+              <div class="flex gap-2 items-center">
+                <the-rate-star :rate="review.rate" />
+                <div class="font-semibold">
+                  {{ review.title }}
+                </div>
+              </div>
+              <div>
+                {{ review.comment }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
