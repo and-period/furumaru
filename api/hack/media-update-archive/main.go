@@ -391,6 +391,14 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 }
 
 func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcast, japaneseTextKey, englishTextKey string) (string, error) {
+	u, err := url.Parse(broadcast.ArchiveURL)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse archive url: %w", err)
+	}
+	archiveURL, err := a.s3.GenerateObjectURL(u.Path)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate object url from archive: %w", err)
+	}
 	japaneseTextURL, err := a.s3.GenerateObjectURL(japaneseTextKey)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate object url from japanese text key: %w", err)
@@ -401,7 +409,7 @@ func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcas
 	}
 
 	args := []string{
-		"-i", broadcast.ArchiveURL,
+		"-i", archiveURL,
 		"-i", japaneseTextURL,
 		"-i", englishTextURL,
 		"-map", "0:v",
