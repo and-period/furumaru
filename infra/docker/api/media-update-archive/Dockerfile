@@ -8,7 +8,7 @@ ARG SERVICE
 
 WORKDIR /go/src/github.com/and-period/furumaru/api
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     make \
     tzdata \
     wget \
@@ -40,6 +40,10 @@ ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 
 WORKDIR /var/api
+
+RUN apt update && apt install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /dist/app ./app
 COPY --from=builder /usr/bin/ffmpeg /usr/bin/ffmpeg
