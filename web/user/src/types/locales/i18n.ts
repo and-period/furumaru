@@ -349,6 +349,24 @@ export interface I18n {
       storageTypeFrozen: string
       producerInformationTitle: string
     }
+    experiences: {
+      producerLabel: string
+      highlightsLabel: string
+      adult: string
+      itemPriceTaxIncludedText: string
+      quantityLabel: string
+      juniorHighSchoolStudents: string
+      elementarySchoolStudents: string
+      preschoolers: string
+      senior: string
+      addToCartText: string
+      estimatedTime: string
+      businessHours: string
+      locationPostalcode: string
+      locationAddress: string
+      producerInformationTitle: string
+      accessMethod: string
+    }
   }
 
   lives: {

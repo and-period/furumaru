@@ -31,7 +31,7 @@ const { data, status } = await useAsyncData('spot', () => {
 
 const snackbarItems = ref<Snackbar[]>([])
 
-const selectedMediaIndex = ref<number>(-1)
+const selectedMediaIndex = ref<number>(0)
 
 const selectMediaSrcUrl = computed<string>(() => {
   if (!data.value || !data.value.experience) {
@@ -104,6 +104,20 @@ useSeoMeta({
         v-model:is-show="snackbarItem.isShow"
         :text="snackbarItem.text"
       />
+    </template>
+
+    <template v-if="status === 'pending'">
+      <div
+        class="animate-pulse bg-white px-[112px] pb-6 pt-[40px] text-main md:grid md:grid-cols-2"
+      >
+        <div class="w-full">
+          <div class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100" />
+        </div>
+        <div class="flex w-full flex-col gap-4">
+          <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
+          <div class="h-[24px] w-[60%] rounded-md bg-slate-100" />
+        </div>
+      </div>
     </template>
 
     <!-- Experience Section -->
@@ -236,12 +250,12 @@ useSeoMeta({
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -279,12 +293,12 @@ useSeoMeta({
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -322,12 +336,12 @@ useSeoMeta({
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -365,12 +379,12 @@ useSeoMeta({
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -408,12 +422,12 @@ useSeoMeta({
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
