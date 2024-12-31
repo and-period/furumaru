@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Snackbar } from '~/types/props'
 import { ExperienceStatus } from '~/types/api'
+import type { I18n } from '~/types/locales'
+import { useExperienceStore } from '~/store/experience'
 
 const i18n = useI18n()
 
@@ -8,14 +10,37 @@ const dt = (str: keyof I18n['items']['experiences']) => {
   return i18n.t(`items.experiences.${str}`)
 }
 
+const route = useRoute()
+
+const experienceId = computed<string>(() => {
+  const ids = route.params.id
+  if (Array.isArray(ids)) {
+    return ids[0]
+  }
+  else {
+    return route.params.id as string
+  }
+})
+
+const experienceStore = useExperienceStore()
+const { fetchExperience } = experienceStore
+
+const { data, status } = await useAsyncData('spot', () => {
+  return fetchExperience(experienceId.value)
+})
+
 const snackbarItems = ref<Snackbar[]>([])
 
-const selectedMediaIndex = ref<number>(-1)
+const selectedMediaIndex = ref<number>(0)
 
 const selectMediaSrcUrl = computed<string>(() => {
+  if (!data.value || !data.value.experience) {
+    return ''
+  }
+
   return selectedMediaIndex.value === -1
-    ? items.experience.promotionVideoUrl
-    : items.experience.media[selectedMediaIndex.value].url
+    ? data.value.experience.promotionVideoUrl
+    : data.value.experience.media[selectedMediaIndex.value].url
 })
 
 const handleClickMediaItem = (index: number) => {
@@ -23,20 +48,23 @@ const handleClickMediaItem = (index: number) => {
 }
 
 const itemThumbnailAlt = computed<string>(() => {
+  if (!data.value || !data.value.experience) {
+    return ''
+  }
+
   return i18n.t('items.list.itemThumbnailAlt', {
-    itemName: items.experience.title,
+    itemName: data.value.experience.title,
   })
 })
 
 const canAddCart = computed<boolean>(() => {
-  if (items.experience) {
-    return (
-      items.experience.status === ExperienceStatus.ACCEPTING
-    )
-  }
-  else {
+  if (!data.value || !data.value.experience) {
     return false
   }
+
+  return (
+    data.value.experience.status === ExperienceStatus.ACCEPTING
+  )
 })
 
 const priceString = (price: number) => {
@@ -60,75 +88,9 @@ const convertToTimeString = (time: string): string => {
   throw new Error('Invalid input format. Expected a 4-digit string.')
 }
 
-const items = {
-  experience: {
-    id: 'kSByoE6FetnPs5Byk3a9Zx',
-    title: '農業体験',
-    description: '農業体験の説明 \n explanations of agriculture of experience',
-    status: 1,
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
-    producerId: 'kSByoE6FetnPs5Byk3a9Zx',
-    experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx',
-    thumbnailUrl: 'https://example.com/image.jpg',
-    media: [
-      { url: 'https://as2.ftcdn.net/v2/jpg/02/31/56/61/1000_F_231566167_DcxyiS11UCKdIoFpPdkXFpAzeVhh6qFA.jpg', isThumbnail: true },
-      { url: 'https://as2.ftcdn.net/v2/jpg/02/31/56/61/1000_F_231566167_DcxyiS11UCKdIoFpPdkXFpAzeVhh6qFA.jpg', isThumbnail: false },
-    ],
-    priceAdult: 1000,
-    priceJuniorHighSchool: 800,
-    priceElementarySchool: 600,
-    pricePreschool: 400,
-    priceSenior: 800,
-    recommendedPoint1: 'おすすめポイント1',
-    recommendedPoint2: 'おすすめポイント2',
-    recommendedPoint3: 'おすすめポイント3',
-    promotionVideoUrl: 'https://example.com/promotion.mp4',
-    duration: 60,
-    direction: '新宿駅から徒歩10分',
-    businessOpenTime: '1000',
-    businessCloseTime: '1700',
-    hostPostalCode: '123-4567',
-    hostPrefecture: '東京都',
-    hostCity: '千代田区',
-    hostAddressLine1: '千代田1-1-1',
-    hostAddressLine2: '千代田ビル1F',
-    hostLongitude: 139.767052,
-    hostLatitude: 35.681167,
-    startAt: 1614556800,
-    endAt: 1614643199,
-  },
-  coordinator: {
-    id: 'kSByoE6FetnPs5Byk3a9Zx',
-    storeName: '&.農園',
-    profile: '紹介文です。',
-    productTypes: ['kSByoE6FetnPs5Byk3a9Zx'],
-    businessDays: [1, 2, 3, 4, 5],
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png',
-    headerUrl: 'https://and-period.jp/header.png',
-    promotionVideoUrl: 'https://and-period.jp/promotion.mp4',
-    instagramId: 'instagram-id',
-    facebookId: 'facebook-id',
-    prefecture: '東京都',
-    city: '千代田区',
-  },
-  producer: {
-    id: 'kSByoE6FetnPs5Byk3a9Zx',
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx',
-    username: '&.農園',
-    profile: '紹介文です。',
-    thumbnailUrl: 'https://and-period.jp/thumbnail.png',
-    headerUrl: 'https://and-period.jp/header.png',
-    promotionVideoUrl: 'https://and-period.jp/promotion.mp4',
-    instagramId: 'instagram-id',
-    facebookId: 'facebook-id',
-    prefecture: '東京都',
-    city: '千代田区',
-  },
-  experienceType: {
-    id: 'kSByoE6FetnPs5Byk3a9Zx',
-    name: '農業体験',
-  },
-}
+useSeoMeta({
+  title: data.value?.experience?.title || '',
+})
 </script>
 
 <template>
@@ -144,16 +106,30 @@ const items = {
       />
     </template>
 
+    <template v-if="status === 'pending'">
+      <div
+        class="animate-pulse bg-white px-[112px] pb-6 pt-[40px] text-main md:grid md:grid-cols-2"
+      >
+        <div class="w-full">
+          <div class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100" />
+        </div>
+        <div class="flex w-full flex-col gap-4">
+          <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
+          <div class="h-[24px] w-[60%] rounded-md bg-slate-100" />
+        </div>
+      </div>
+    </template>
+
     <!-- Experience Section -->
-    <template v-if="items.experience">
+    <template v-if="data?.experience">
       <div class="bg-white w-full">
         <div
           class="gap-10 px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 lg:px-[112px] w-full max-w-[1440px] mx-auto"
         >
           <div class="mx-auto w-full max-w-[100%]">
             <div class="flex aspect-square h-full w-full justify-center">
-              <template v-if="items.experience.promotionVideoUrl">
-                <the-item-video-player :src="items.experience.promotionVideoUrl" />
+              <template v-if="data.experience.promotionVideoUrl">
+                <the-item-video-player :src="data.experience.promotionVideoUrl" />
               </template>
               <template v-else>
                 <nuxt-img
@@ -169,7 +145,7 @@ const items = {
               class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
             >
               <template
-                v-for="(m, i) in items.experience.media"
+                v-for="(m, i) in data.experience.media"
                 :key="i"
               >
                 <nuxt-img
@@ -189,11 +165,11 @@ const items = {
             <div
               class="break-words text-[16px] tracking-[1.6px] md:text-[24px] md:tracking-[2.4px]"
             >
-              {{ items.experience.title }}
+              {{ data.experience.title }}
             </div>
 
             <div
-              v-if="items.producer"
+              v-if="data.producer"
               class="flex flex-col leading-[32px] md:mt-4"
             >
               <div
@@ -204,16 +180,16 @@ const items = {
                   href="#"
                   class="font-bold underline"
                 >
-                  {{ items.producer.username }}
+                  {{ data.producer.username }}
                 </a>
               </div>
               <div class="text-[12px] tracking-[1.4px] md:text-[14px]">
-                {{ items.producer.prefecture }} {{ items.producer.city }}
+                {{ data.producer.prefecture }} {{ data.producer.city }}
               </div>
             </div>
 
             <div
-              v-if="items.experience && items.experience.recommendedPoint1"
+              v-if="data.experience && data.experience.recommendedPoint1"
               class="w-full rounded-2xl bg-base px-[20px] py-[28px] text-main md:mt-8"
             >
               <p
@@ -225,22 +201,22 @@ const items = {
                 class="recommend-list flex flex-col divide-y divide-dashed divide-main px-[4px] pl-[24px]"
               >
                 <li
-                  v-if="items.experience.recommendedPoint1"
+                  v-if="data.experience.recommendedPoint1"
                   class="py-3 text-[14px] font-medium md:text-[16px]"
                 >
-                  {{ items.experience.recommendedPoint1 }}
+                  {{ data.experience.recommendedPoint1 }}
                 </li>
                 <li
-                  v-if="items.experience.recommendedPoint2"
+                  v-if="data.experience.recommendedPoint2"
                   class="py-3 text-[14px] font-medium md:text-[16px]"
                 >
-                  {{ items.experience.recommendedPoint2 }}
+                  {{ data.experience.recommendedPoint2 }}
                 </li>
                 <li
-                  v-if="items.experience.recommendedPoint3"
+                  v-if="data.experience.recommendedPoint3"
                   class="py-3 text-[14px] font-medium md:text-[16px]"
                 >
-                  {{ items.experience.recommendedPoint3 }}
+                  {{ data.experience.recommendedPoint3 }}
                 </li>
               </ol>
             </div>
@@ -254,7 +230,7 @@ const items = {
               >
                 <div class="flex">
                   <p class="text-[16px] font-medium">
-                    {{ priceString(items.experience.priceAdult) }}
+                    {{ priceString(data.experience.priceAdult) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
@@ -263,7 +239,7 @@ const items = {
               </div>
               <div class="col-span-3 md:col-span-2">
                 <div
-                  v-if="items.experience"
+                  v-if="data.experience"
                   class="flex justify-end items-center"
                 >
                   <label class="mr-2 hidden md:block text-[14px]">
@@ -274,12 +250,12 @@ const items = {
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -297,7 +273,7 @@ const items = {
               >
                 <div class="flex">
                   <p class="text-[16px] font-medium">
-                    {{ priceString(items.experience.priceJuniorHighSchool) }}
+                    {{ priceString(data.experience.priceJuniorHighSchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
@@ -306,7 +282,7 @@ const items = {
               </div>
               <div class="col-span-3 md:col-span-2">
                 <div
-                  v-if="items.experience"
+                  v-if="data.experience"
                   class="flex justify-end items-center"
                 >
                   <label class="mr-2 hidden md:block text-[14px]">
@@ -317,12 +293,12 @@ const items = {
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -340,7 +316,7 @@ const items = {
               >
                 <div class="flex">
                   <p class="text-[16px] font-medium">
-                    {{ priceString(items.experience.priceElementarySchool) }}
+                    {{ priceString(data.experience.priceElementarySchool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
@@ -349,7 +325,7 @@ const items = {
               </div>
               <div class="col-span-3 md:col-span-2">
                 <div
-                  v-if="items.experience"
+                  v-if="data.experience"
                   class="flex justify-end items-center"
                 >
                   <label class="mr-2 hidden md:block text-[14px]">
@@ -360,12 +336,12 @@ const items = {
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -383,7 +359,7 @@ const items = {
               >
                 <div class="flex">
                   <p class="text-[16px] font-medium">
-                    {{ priceString(items.experience.pricePreschool) }}
+                    {{ priceString(data.experience.pricePreschool) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
@@ -392,7 +368,7 @@ const items = {
               </div>
               <div class="col-span-3 md:col-span-2">
                 <div
-                  v-if="items.experience"
+                  v-if="data.experience"
                   class="flex justify-end items-center"
                 >
                   <label class="mr-2 hidden md:block text-[14px]">
@@ -403,12 +379,12 @@ const items = {
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -426,7 +402,7 @@ const items = {
               >
                 <div class="flex">
                   <p class="text-[16px] font-medium">
-                    {{ priceString(items.experience.priceSenior) }}
+                    {{ priceString(data.experience.priceSenior) }}
                   </p>
                   <p class="pl-2 text-[12px] md:text-[14px] mt-auto">
                     {{ dt("itemPriceTaxIncludedText") }}
@@ -435,7 +411,7 @@ const items = {
               </div>
               <div class="col-span-3 md:col-span-2">
                 <div
-                  v-if="items.experience"
+                  v-if="data.experience"
                   class="flex justify-end items-center"
                 >
                   <label class="mr-2 hidden md:block text-[14px]">
@@ -446,12 +422,12 @@ const items = {
                   >
                     <option
                       v-for="(_, i) in Array.from({
-                        length: 10,
+                        length: 11,
                       })"
-                      :key="i + 1"
-                      :value="i + 1"
+                      :key="i"
+                      :value="i"
                     >
-                      {{ i + 1 }}
+                      {{ i }}
                     </option>
                   </select>
                 </div>
@@ -469,14 +445,14 @@ const items = {
               <span
                 class="rounded-2xl border border-main px-4 py-1 text-[14px] md:text-[16px]"
               >
-                {{ items.experienceType?.name }}
+                {{ data.experienceType?.name }}
               </span>
             </div>
           </div>
           <div class="col-span-2 mt-[40px] pb-10 md:mt-[80px] md:pb-16">
             <article
               class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px] whitespace-pre-wrap"
-              v-text="items.experience.description"
+              v-text="data.experience.description"
             />
           </div>
           <div
@@ -487,7 +463,7 @@ const items = {
                 {{ dt("estimatedTime") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ items.experience.duration }}分
+                {{ data.experience.duration }}分
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
@@ -495,7 +471,7 @@ const items = {
                 {{ dt("businessHours") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ convertToTimeString(items.experience.businessOpenTime) }}~{{ convertToTimeString(items.experience.businessCloseTime) }}
+                {{ convertToTimeString(data.experience.businessOpenTime) }}~{{ convertToTimeString(data.experience.businessCloseTime) }}
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
@@ -503,7 +479,7 @@ const items = {
                 {{ dt("locationPostalcode") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ items.experience.hostPostalCode }}
+                {{ data.experience.hostPostalCode }}
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
@@ -511,7 +487,7 @@ const items = {
                 {{ dt("locationAddress") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}{{ items.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
           </div>
@@ -520,7 +496,7 @@ const items = {
     </template>
 
     <!-- Producer Section -->
-    <template v-if="items.producer">
+    <template v-if="data?.producer">
       <div class="w-full">
         <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
           <div
@@ -538,13 +514,13 @@ const items = {
               <div
                 class="flex min-w-max flex-col items-center justify-center gap-4 md:flex-row"
               >
-                <template v-if="items.producer.thumbnailUrl">
+                <template v-if="data.producer.thumbnailUrl">
                   <nuxt-img
                     provider="cloudFront"
                     sizes="96px md:120px"
                     fit="cover"
-                    :src="items.producer.thumbnailUrl"
-                    :alt="`${items.producer.username}`"
+                    :src="data.producer.thumbnailUrl"
+                    :alt="`${data.producer.username}`"
                     class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
                   />
                 </template>
@@ -558,7 +534,7 @@ const items = {
                   class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
                 >
                   <p class="text-sm font-[500] tracking-[1.4px]">
-                    {{ `${items.producer.prefecture} ${items.producer.city}` }}
+                    {{ `${data.producer.prefecture} ${data.producer.city}` }}
                   </p>
                   <div
                     class="flex flex-row items-baseline grow text-[16px] tracking-[1.4px] md:text-[24px]"
@@ -566,14 +542,14 @@ const items = {
                     <p class="mr-1 text-[14px] font-medium">
                       {{ dt("producerLabel") }}
                     </p>
-                    <p>{{ items.producer.username }}</p>
+                    <p>{{ data.producer.username }}</p>
                   </div>
                 </div>
               </div>
               <div
                 class="pt-2 text-[14px] tracking-[1.4px] md:pt-0 md:text-[16px] md:tracking-[1.6px]"
               >
-                {{ items.producer.profile }}
+                {{ data.producer.profile }}
               </div>
             </div>
           </div>
@@ -581,7 +557,7 @@ const items = {
       </div>
     </template>
 
-    <template v-if="items.experience">
+    <template v-if="data?.experience">
       <div class="w-full">
         <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
           <div
@@ -595,7 +571,7 @@ const items = {
             <div class="mt-8 text-[14px] md:text-[16px] flex">
               <p>〒</p>
               <p class="ml-3 md:ml-4">
-                {{ items.experience.hostPostalCode }}
+                {{ data.experience.hostPostalCode }}
               </p>
             </div>
             <div
@@ -606,13 +582,13 @@ const items = {
                 class="w-[16px] h-[21px] md:w-[20px] md:h-[42px]"
               >
               <p class="ml-3">
-                {{ items.experience.hostPrefecture }}{{ items.experience.hostCity }}{{ items.experience.hostAddressLine1 }}{{ items.experience.hostAddressLine2 }}
+                {{ data.experience.hostPrefecture }}{{ data.experience.hostCity }}{{ data.experience.hostAddressLine1 }}{{ data.experience.hostAddressLine2 }}
               </p>
             </div>
             <div
               class="pt-4 text-[14px] tracking-[1.4px] md:pt-8 md:text-[16px] md:tracking-[1.6px]"
             >
-              {{ items.experience.direction }}
+              {{ data.experience.direction }}
             </div>
             <!-- 緯度経度をもとにgoogle mapを表示する -->
           </div>
