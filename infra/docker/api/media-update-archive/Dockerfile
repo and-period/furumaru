@@ -1,5 +1,5 @@
 # ビルド用コンテナ
-FROM golang:1.23.3-alpine as builder
+FROM golang:1.23.3-bookworm as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
@@ -8,13 +8,12 @@ ARG SERVICE
 
 WORKDIR /go/src/github.com/and-period/furumaru/api
 
-RUN apk add --update --no-cache \
-      git \
-      make \
-      tar \
-      tzdata \
-      wget \
-      xz
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
+    tzdata \
+    wget \
+    xz-utils \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV FFMPEG_VERSION=7.0.2
 ENV FFMPEG_ARCH=arm64
@@ -35,7 +34,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     make build-hack SERVICE=${SERVICE} BUILD_DIR=/dist
 
 # 実行用コンテナ
-FROM alpine
+FROM debian:bookworm-slim
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
