@@ -50,6 +50,8 @@ type Bucket interface {
 	Download(ctx context.Context, url string) (io.Reader, error)
 	// S3 Bucketからオブジェクトを取得とByte型へ変換
 	DownloadAndReadAll(ctx context.Context, url string) ([]byte, error)
+	// S3 Bucketからオブジェクトを取得と書き込み
+	DownloadAndWrite(ctx context.Context, url string, w io.Writer) error
 	// S3 Bucketへオブジェクトをアップロード
 	Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error)
 	// S3 Bucketへ他バケットからオブジェクトをコピーする
@@ -230,6 +232,27 @@ func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, er
 		return nil, err
 	}
 	return io.ReadAll(out.Body)
+}
+
+func (b *bucket) DownloadAndWrite(ctx context.Context, url string, w io.Writer) error {
+	key, err := b.generateKeyFromObjectURL(url)
+	if err != nil {
+		return err
+	}
+	in := &s3.GetObjectInput{
+		Bucket: b.name,
+		Key:    key,
+	}
+	out, err := b.s3.GetObject(ctx, in)
+	var bne *types.NotFound
+	if errors.As(err, &bne) {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(w, out.Body)
+	return err
 }
 
 func (b *bucket) Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error) {
