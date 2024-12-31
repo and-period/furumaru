@@ -391,19 +391,45 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 }
 
 func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcast, japaneseTextKey, englishTextKey string) (string, error) {
-	japaneseTextURL, err := a.s3.GenerateObjectURL(japaneseTextKey)
+	afile, err := os.CreateTemp("", "input-*.mp4")
 	if err != nil {
-		return "", fmt.Errorf("failed to generate object url from japanese text key: %w", err)
+		return "", fmt.Errorf("failed to create temp file for archive mp4: %w", err)
 	}
-	englishTextURL, err := a.s3.GenerateObjectURL(englishTextKey)
+	jfile, err := os.CreateTemp("", "input-ja-*.srt")
 	if err != nil {
-		return "", fmt.Errorf("failed to generate object url from english text key: %w", err)
+		return "", fmt.Errorf("failed to create temp file for japanese text: %w", err)
+	}
+	efile, err := os.CreateTemp("", "input-en-*.srt")
+	if err != nil {
+		return "", fmt.Errorf("failed to create temp file for english text: %w", err)
+	}
+	defer func() {
+		os.Remove(afile.Name())
+		os.Remove(jfile.Name())
+		os.Remove(efile.Name())
+	}()
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		err = a.s3.DownloadAndWrite(ectx, broadcast.ArchiveURL, afile)
+		return
+	})
+	eg.Go(func() (err error) {
+		err = a.s3.DownloadAndWrite(ectx, japaneseTextKey, jfile)
+		return
+	})
+	eg.Go(func() (err error) {
+		err = a.s3.DownloadAndWrite(ectx, englishTextKey, efile)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return "", fmt.Errorf("failed to download files: %w", err)
 	}
 
 	args := []string{
-		"-i", broadcast.ArchiveURL,
-		"-i", japaneseTextURL,
-		"-i", englishTextURL,
+		"-i", afile.Name(),
+		"-i", jfile.Name(),
+		"-i", efile.Name(),
 		"-map", "0:v",
 		"-map", "0:a",
 		"-map", "1",

@@ -40,7 +40,7 @@ jobs:
     secrets: inherit
 
   build_and_push_media_update_archive:
-    name: build and push for media update archive
+    name: build and push media update archive
     needs:
     - set_output
     - get_image_tag
@@ -55,7 +55,7 @@ jobs:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
 
   deploy_media_update_archive:
-    name: deploy admin
+    name: deploy media update archive
     needs:
     - set_output
     - get_image_tag

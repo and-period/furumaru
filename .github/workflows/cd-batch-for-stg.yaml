@@ -8,7 +8,7 @@ on:
     - '.github/workflows/_build_and_push.yaml'
     - '.github/workflows/_deploy_batch.yaml'
     - '.github/workflows/cd-batch-for-stg.yaml'
-    - 'api/internal/hack/**'
+    - 'api/hack/**'
     - 'api/pkg/**'
     - 'api/go.mod'
     - 'infra/docker/api/**'
@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v4
 
   build_and_push_media_update_archive:
-    name: build and push for media update archive
+    name: build and push media update archive
     needs:
     - set_output
     uses: ./.github/workflows/_build_and_push.yaml
@@ -48,7 +48,7 @@ jobs:
       image-tag: latest
 
   deploy_media_update_archive:
-    name: deploy admin
+    name: deploy media update archive
     needs:
     - set_output
     - build_and_push_media_update_archive

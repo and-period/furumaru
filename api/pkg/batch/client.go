@@ -85,6 +85,7 @@ func (c *client) SubmitJob(ctx context.Context, params *SubmitJobParams) error {
 				{
 					Containers: []types.TaskContainerOverrides{
 						{
+							Name:    aws.String("default"),
 							Command: params.Command,
 						},
 					},
