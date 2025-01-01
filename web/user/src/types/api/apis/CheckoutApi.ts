@@ -24,6 +24,8 @@ import type {
   GuestCheckoutProductRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
+  GuestPreCheckoutExperienceResponse,
+  PreCheckoutExperienceResponse,
 } from '../models/index';
 import {
     CheckoutExperienceRequestFromJSON,
@@ -44,10 +46,24 @@ import {
     GuestCheckoutResponseToJSON,
     GuestCheckoutStateResponseFromJSON,
     GuestCheckoutStateResponseToJSON,
+    GuestPreCheckoutExperienceResponseFromJSON,
+    GuestPreCheckoutExperienceResponseToJSON,
+    PreCheckoutExperienceResponseFromJSON,
+    PreCheckoutExperienceResponseToJSON,
 } from '../models/index';
 
 export interface V1CheckoutProductRequest {
     body: CheckoutProductRequest;
+}
+
+export interface V1CheckoutsExperiencesExperienceIdGetRequest {
+    experienceId: string;
+    promotion?: string;
+    adult?: number;
+    juniorHighSchool?: number;
+    elementarySchool?: number;
+    preschool?: number;
+    senior?: number;
 }
 
 export interface V1CheckoutsExperiencesExperienceIdPostRequest {
@@ -70,6 +86,16 @@ export interface V1GuestCheckoutExperienceRequest {
 
 export interface V1GuestCheckoutProductRequest {
     body: GuestCheckoutProductRequest;
+}
+
+export interface V1GuestsCheckoutsExperiencesExperienceIdGetRequest {
+    experienceId: string;
+    promotion?: string;
+    adult?: number;
+    juniorHighSchool?: number;
+    elementarySchool?: number;
+    preschool?: number;
+    senior?: number;
 }
 
 /**
@@ -118,6 +144,71 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1CheckoutProduct(requestParameters: V1CheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.v1CheckoutProductRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 体験購入前確認
+     */
+    async v1CheckoutsExperiencesExperienceIdGetRaw(requestParameters: V1CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PreCheckoutExperienceResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1CheckoutsExperiencesExperienceIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['promotion'] != null) {
+            queryParameters['promotion'] = requestParameters['promotion'];
+        }
+
+        if (requestParameters['adult'] != null) {
+            queryParameters['adult'] = requestParameters['adult'];
+        }
+
+        if (requestParameters['juniorHighSchool'] != null) {
+            queryParameters['juniorHighSchool'] = requestParameters['juniorHighSchool'];
+        }
+
+        if (requestParameters['elementarySchool'] != null) {
+            queryParameters['elementarySchool'] = requestParameters['elementarySchool'];
+        }
+
+        if (requestParameters['preschool'] != null) {
+            queryParameters['preschool'] = requestParameters['preschool'];
+        }
+
+        if (requestParameters['senior'] != null) {
+            queryParameters['senior'] = requestParameters['senior'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PreCheckoutExperienceResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 体験購入前確認
+     */
+    async v1CheckoutsExperiencesExperienceIdGet(requestParameters: V1CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PreCheckoutExperienceResponse> {
+        const response = await this.v1CheckoutsExperiencesExperienceIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -322,6 +413,71 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1GuestCheckoutProduct(requestParameters: V1GuestCheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
         const response = await this.v1GuestCheckoutProductRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 体験購入前確認
+     */
+    async v1GuestsCheckoutsExperiencesExperienceIdGetRaw(requestParameters: V1GuestsCheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestPreCheckoutExperienceResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1GuestsCheckoutsExperiencesExperienceIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['promotion'] != null) {
+            queryParameters['promotion'] = requestParameters['promotion'];
+        }
+
+        if (requestParameters['adult'] != null) {
+            queryParameters['adult'] = requestParameters['adult'];
+        }
+
+        if (requestParameters['juniorHighSchool'] != null) {
+            queryParameters['juniorHighSchool'] = requestParameters['juniorHighSchool'];
+        }
+
+        if (requestParameters['elementarySchool'] != null) {
+            queryParameters['elementarySchool'] = requestParameters['elementarySchool'];
+        }
+
+        if (requestParameters['preschool'] != null) {
+            queryParameters['preschool'] = requestParameters['preschool'];
+        }
+
+        if (requestParameters['senior'] != null) {
+            queryParameters['senior'] = requestParameters['senior'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/guests/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GuestPreCheckoutExperienceResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 体験購入前確認
+     */
+    async v1GuestsCheckoutsExperiencesExperienceIdGet(requestParameters: V1GuestsCheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestPreCheckoutExperienceResponse> {
+        const response = await this.v1GuestsCheckoutsExperiencesExperienceIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
