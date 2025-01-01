@@ -19,7 +19,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutProductRequest'
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutExperienceRequest'
   responses:
     200:
       description: 成功
