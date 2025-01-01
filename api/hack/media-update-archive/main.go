@@ -357,15 +357,9 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	dir := fmt.Sprintf(entity.BroadcastArchiveTextPath, broadcast.ScheduleID)
 	filename := strings.Split(filepath.Base(archiveKey), ".")[0]
 
-	japaneseTextKey, err := entity.BroadcastArchiveTextRegulation.GetObjectKey("text/vtt", dir, filename+"-ja")
-	if err != nil {
-		return "", fmt.Errorf("failed to generate japanese text key: %w", err)
-	}
-	englishTextKey, err := entity.BroadcastArchiveTextRegulation.GetObjectKey("text/vtt", dir, filename+"-en")
-	if err != nil {
-		return "", fmt.Errorf("failed to generate english text key: %w", err)
-	}
-	outputURL := a.generateAssetURL(englishTextKey)
+	japaneseTextKey := fmt.Sprintf("%s/%s-ja", dir, filename)
+	englishTextKey := fmt.Sprintf("%s/%s-en", dir, filename)
+	outputURL := a.generateAssetURL(fmt.Sprintf("%s.vtt", englishTextKey))
 
 	current, err := a.s3.GetMetadata(ctx, englishTextKey)
 	if err == nil && current.ContentType == "vtt" {
