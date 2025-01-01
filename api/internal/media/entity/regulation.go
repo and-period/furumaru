@@ -81,6 +81,12 @@ var (
 		CacheTTL: defaultCacheTTL,
 		dir:      BroadcastLiveMP4Path,
 	}
+	BroadcastArchiveTextRegulation = &Regulation{
+		MaxSize:  10 << 20, // 10MB
+		Formats:  set.New("text/vtt"),
+		CacheTTL: defaultCacheTTL,
+		dir:      BroadcastArchiveTextPath,
+	}
 	// コーディネータ関連
 	CoordinatorThumbnailRegulation = &Regulation{
 		MaxSize:  10 << 20, // 10MB
@@ -268,6 +274,8 @@ func (r *Regulation) GetFileExtension(contentType string) (string, error) {
 		return "png", nil
 	case "video/mp4":
 		return "mp4", nil
+	case "text/vtt":
+		return "vtt", nil
 	default:
 		return "", ErrUnknownContentType
 	}

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -24,7 +23,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awstranscribe "github.com/aws/aws-sdk-go-v2/service/transcribe"
@@ -32,6 +30,11 @@ import (
 	awstranslate "github.com/aws/aws-sdk-go-v2/service/translate"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
+)
+
+const (
+	videoFormat = "video/mp4"
+	textFormat  = "text/vtt"
 )
 
 var (
@@ -215,40 +218,37 @@ func (a *app) run(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to get metadata for archive: %w", err)
 	}
-	if metadata.ContentType != "video/mp4" {
+	if metadata.ContentType != videoFormat {
 		return fmt.Errorf("invalid content type: %s", metadata.ContentType)
 	}
 
 	a.logger.Info("start execute transcibe", zap.String("broadcastId", broadcastID))
 
-	japaneseTextKey, err := a.executeTranscribe(ctx, broadcast)
+	japaneseTextURL, err := a.executeTranscribe(ctx, broadcast)
 	if err != nil {
 		return fmt.Errorf("failed to execute transcribe: %w", err)
 	}
 
-	a.logger.Info("finished execute transcribe", zap.String("broadcastId", broadcastID), zap.String("japaneseTextKey", japaneseTextKey))
+	a.logger.Info("finished execute transcribe", zap.String("broadcastId", broadcastID), zap.String("japaneseTextUrl", japaneseTextURL))
 	a.logger.Info("start execute translate", zap.String("broadcastId", broadcastID))
 
-	englishTextKey, err := a.executeTranslate(ctx, broadcast)
+	englishTextURL, err := a.executeTranslate(ctx, broadcast)
 	if err != nil {
 		return fmt.Errorf("failed to execute translate: %w", err)
 	}
 
-	a.logger.Info("finished execute translate", zap.String("broadcastId", broadcastID), zap.String("englishTextKey", englishTextKey))
-	a.logger.Info("start upload fixed archive", zap.String("broadcastId", broadcastID))
-
-	archiveKey, err := a.uploadFixedArchive(ctx, broadcast, japaneseTextKey, englishTextKey)
-	if err != nil {
-		return fmt.Errorf("failed to convert archive: %w", err)
-	}
-
-	a.logger.Info("finished upload fixed archive", zap.String("broadcastId", broadcastID))
+	a.logger.Info("finished execute translate", zap.String("broadcastId", broadcastID), zap.String("englishTextUrl", englishTextURL))
 	a.logger.Info("start update archive", zap.String("broadcastId", broadcastID))
 
 	params := &database.UpdateBroadcastParams{
-		UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-			ArchiveURL:   fmt.Sprintf("https://%s/%s", assetsDomain, archiveKey),
-			ArchiveFixed: true,
+		UpdateBroadcastArchiveParams: &database.UpdateBroadcastArchiveParams{
+			ArchiveURL: broadcast.ArchiveURL,
+			ArchiveMetadata: &entity.BroadcastArchiveMetadata{
+				Subtitles: map[string]string{
+					"ja": japaneseTextURL,
+					"en": englishTextURL,
+				},
+			},
 		},
 	}
 	if err := a.db.Broadcast.Update(ctx, broadcastID, params); err != nil {
@@ -272,7 +272,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 	filename := strings.Split(filepath.Base(inputKey), ".")[0]
 	outputDir := fmt.Sprintf(entity.BroadcastArchiveTextPath, broadcast.ScheduleID)
 	outputKey := fmt.Sprintf("%s/%s-ja", outputDir, filename)
-	outputFilename := fmt.Sprintf("%s/%s-ja.srt", outputDir, filename)
+	outputURL := a.generateAssetURL(fmt.Sprintf("%s.vtt", outputKey))
 
 	jobName := fmt.Sprintf("%s-%s-%s", environment, broadcast.ScheduleID, filename)
 
@@ -282,7 +282,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 	current, err := a.transcribe.GetTranscriptionJob(ctx, currentIn)
 	if err == nil && current.TranscriptionJob.TranscriptionJobStatus == transcribetype.TranscriptionJobStatusCompleted {
 		a.logger.Info("transcription job already completed", zap.String("broadcastId", broadcast.ID))
-		return outputFilename, nil
+		return outputURL, nil
 	}
 
 	in := &awstranscribe.StartTranscriptionJobInput{
@@ -296,7 +296,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 		OutputKey:            aws.String(outputKey),
 		Subtitles: &transcribetype.Subtitles{
 			Formats: []transcribetype.SubtitleFormat{
-				transcribetype.SubtitleFormatSrt,
+				transcribetype.SubtitleFormatVtt,
 			},
 			OutputStartIndex: aws.Int32(0),
 		},
@@ -328,7 +328,14 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 
 			switch out.TranscriptionJob.TranscriptionJobStatus {
 			case transcribetype.TranscriptionJobStatusCompleted:
-				return outputFilename, nil
+				metadata := map[string]string{
+					"Content-Type":  "text/vtt",
+					"Cache-Control": "s-maxage=" + entity.BroadcastArchiveTextRegulation.CacheTTL.String(),
+				}
+				if _, err := a.s3.Copy(ctx, a.s3.GetBucketName(), outputKey, outputKey, metadata); err != nil {
+					return "", fmt.Errorf("failed to copy object: %w", err)
+				}
+				return outputURL, nil
 			case transcribetype.TranscriptionJobStatusFailed:
 				return "", fmt.Errorf("transcription job failed: reason=%s", aws.ToString(out.TranscriptionJob.FailureReason))
 			}
@@ -350,13 +357,20 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	dir := fmt.Sprintf(entity.BroadcastArchiveTextPath, broadcast.ScheduleID)
 	filename := strings.Split(filepath.Base(archiveKey), ".")[0]
 
-	japaneseTextKey := fmt.Sprintf("%s/%s-ja.srt", dir, filename)
-	englishTextKey := fmt.Sprintf("%s/%s-en.srt", dir, filename)
+	japaneseTextKey, err := entity.BroadcastArchiveTextRegulation.GetObjectKey("text/vtt", dir, filename+"-ja")
+	if err != nil {
+		return "", fmt.Errorf("failed to generate japanese text key: %w", err)
+	}
+	englishTextKey, err := entity.BroadcastArchiveTextRegulation.GetObjectKey("text/vtt", dir, filename+"-en")
+	if err != nil {
+		return "", fmt.Errorf("failed to generate english text key: %w", err)
+	}
+	outputURL := a.generateAssetURL(englishTextKey)
 
 	current, err := a.s3.GetMetadata(ctx, englishTextKey)
-	if err == nil && current.ContentType == "srt" {
+	if err == nil && current.ContentType == "vtt" {
 		a.logger.Info("text translation already completed", zap.String("broadcastId", broadcast.ID))
-		return englishTextKey, nil
+		return outputURL, nil
 	}
 
 	japanese, err := a.s3.DownloadAndReadAll(ctx, japaneseTextKey)
@@ -381,91 +395,16 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	}
 
 	metadata := map[string]string{
-		"Content-Type": "text/plain",
+		"Content-Type":  "text/vtt",
+		"Cache-Control": "s-maxage=" + entity.BroadcastArchiveTextRegulation.CacheTTL.String(),
 	}
 	if _, err := a.s3.Upload(ctx, englishTextKey, buf, metadata); err != nil {
 		return "", fmt.Errorf("failed to put translated object: %w", err)
 	}
 
-	return englishTextKey, nil
+	return outputURL, nil
 }
 
-func (a *app) uploadFixedArchive(ctx context.Context, broadcast *entity.Broadcast, japaneseTextKey, englishTextKey string) (string, error) {
-	afile, err := os.CreateTemp("", "input-*.mp4")
-	if err != nil {
-		return "", fmt.Errorf("failed to create temp file for archive mp4: %w", err)
-	}
-	jfile, err := os.CreateTemp("", "input-ja-*.srt")
-	if err != nil {
-		return "", fmt.Errorf("failed to create temp file for japanese text: %w", err)
-	}
-	efile, err := os.CreateTemp("", "input-en-*.srt")
-	if err != nil {
-		return "", fmt.Errorf("failed to create temp file for english text: %w", err)
-	}
-	defer func() {
-		os.Remove(afile.Name())
-		os.Remove(jfile.Name())
-		os.Remove(efile.Name())
-	}()
-
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		err = a.s3.DownloadAndWrite(ectx, broadcast.ArchiveURL, afile)
-		return
-	})
-	eg.Go(func() (err error) {
-		err = a.s3.DownloadAndWrite(ectx, japaneseTextKey, jfile)
-		return
-	})
-	eg.Go(func() (err error) {
-		err = a.s3.DownloadAndWrite(ectx, englishTextKey, efile)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		return "", fmt.Errorf("failed to download files: %w", err)
-	}
-
-	args := []string{
-		"-i", afile.Name(),
-		"-i", jfile.Name(),
-		"-i", efile.Name(),
-		"-map", "0:v",
-		"-map", "0:a",
-		"-map", "1",
-		"-map", "2",
-		"-metadata:s:s:0", "language=jpn",
-		"-metadata:s:s:1", "language=eng",
-		"-c:v", "copy",
-		"-c:a", "copy",
-		"-c:s", "mov_text",
-		"/tmp/output.mp4",
-	}
-
-	buf := &bytes.Buffer{}
-	cmd := exec.Command("ffmpeg", args...)
-	cmd.Stderr = buf
-
-	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("failed to execute command. err=%s: %w", buf.String(), err)
-	}
-	a.logger.Info("finished execute ffmpeg", zap.String("broadcastId", broadcast.ID))
-
-	f, err := os.Open("/tmp/output.mp4")
-	if err != nil {
-		return "", fmt.Errorf("failed to open file: %w", err)
-	}
-	defer f.Close()
-
-	dir := fmt.Sprintf(entity.BroadcastArchiveMP4Path, broadcast.ScheduleID)
-	key := fmt.Sprintf("%s/%s.mp4", dir, uuid.Base58Encode(uuid.New()))
-
-	metadata := map[string]string{
-		"Content-Type":  "video/mp4",
-		"Cache-Control": "s-maxage=" + entity.BroadcastArchiveRegulation.CacheTTL.String(),
-	}
-	if _, err := a.s3.Upload(ctx, key, f, metadata); err != nil {
-		return "", fmt.Errorf("failed to put fixed archive video: %w", err)
-	}
-	return key, nil
+func (a *app) generateAssetURL(key string) string {
+	return fmt.Sprintf("https://%s/%s", assetsDomain, key)
 }
