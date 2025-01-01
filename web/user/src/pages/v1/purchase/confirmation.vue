@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
 import { useAddressStore } from '~/store/address'
-import { useCheckoutStore } from '~/store/checkout'
+import { useProductCheckoutStore } from '~/store/productCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { CheckoutProductRequest } from '~/types/api'
 import type { I18n } from '~/types/locales'
@@ -22,7 +22,7 @@ const {
   verifyPromotionCode,
 } = shoppingCartStore
 
-const checkoutStore = useCheckoutStore()
+const checkoutStore = useProductCheckoutStore()
 const { checkout } = checkoutStore
 
 const route = useRoute()
