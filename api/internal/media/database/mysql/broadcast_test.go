@@ -491,7 +491,7 @@ func TestBroadcast_Update(t *testing.T) {
 					Status: entity.BroadcastStatusActive,
 					UpdateBroadcastArchiveParams: &database.UpdateBroadcastArchiveParams{
 						ArchiveMetadata: &entity.BroadcastArchiveMetadata{
-							Text: map[string]string{
+							Subtitles: map[string]string{
 								"jpn": "http://example.com/translate-jpn.vtt",
 								"eng": "http://example.com/translate-eng.vtt",
 							},
@@ -613,7 +613,7 @@ func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time)
 		OutputURL:           "http://example.com/index.m3u8",
 		ArchiveURL:          "",
 		ArchiveMetadata:     &entity.BroadcastArchiveMetadata{},
-		ArchiveMetadataJSON: []byte(`{"text": null}`),
+		ArchiveMetadataJSON: []byte(`{"subtitles": null}`),
 		CreatedAt:           now,
 		UpdatedAt:           now,
 	}

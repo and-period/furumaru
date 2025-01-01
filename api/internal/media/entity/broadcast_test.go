@@ -55,7 +55,7 @@ func TestBroadcast_FillJSON(t *testing.T) {
 				Type:          BroadcastTypeNormal,
 				Status:        BroadcastStatusDisabled,
 				ArchiveMetadata: &BroadcastArchiveMetadata{
-					Text: map[string]string{
+					Subtitles: map[string]string{
 						"jpn": "http://example.com/translate-jpn.vtt",
 						"eng": "http://example.com/translate-eng.vtt",
 					},
@@ -68,12 +68,12 @@ func TestBroadcast_FillJSON(t *testing.T) {
 				Type:          BroadcastTypeNormal,
 				Status:        BroadcastStatusDisabled,
 				ArchiveMetadata: &BroadcastArchiveMetadata{
-					Text: map[string]string{
+					Subtitles: map[string]string{
 						"jpn": "http://example.com/translate-jpn.vtt",
 						"eng": "http://example.com/translate-eng.vtt",
 					},
 				},
-				ArchiveMetadataJSON: []byte(`{"text":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
+				ArchiveMetadataJSON: []byte(`{"subtitles":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
 			},
 		},
 	}
@@ -132,7 +132,7 @@ func TestBroadcasts_Fill(t *testing.T) {
 					Type:                BroadcastTypeNormal,
 					Status:              BroadcastStatusDisabled,
 					ArchiveMetadata:     nil,
-					ArchiveMetadataJSON: []byte(`{"text":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
+					ArchiveMetadataJSON: []byte(`{"subtitles":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
 				},
 			},
 			expect: Broadcasts{
@@ -143,12 +143,12 @@ func TestBroadcasts_Fill(t *testing.T) {
 					Type:          BroadcastTypeNormal,
 					Status:        BroadcastStatusDisabled,
 					ArchiveMetadata: &BroadcastArchiveMetadata{
-						Text: map[string]string{
+						Subtitles: map[string]string{
 							"jpn": "http://example.com/translate-jpn.vtt",
 							"eng": "http://example.com/translate-eng.vtt",
 						},
 					},
-					ArchiveMetadataJSON: []byte(`{"text":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
+					ArchiveMetadataJSON: []byte(`{"subtitles":{"eng":"http://example.com/translate-eng.vtt","jpn":"http://example.com/translate-jpn.vtt"}}`),
 				},
 			},
 			hasErr: false,

@@ -63,7 +63,7 @@ type Broadcast struct {
 type Broadcasts []*Broadcast
 
 type BroadcastArchiveMetadata struct {
-	Text map[string]string `json:"text"` // 字幕テキスト（key：言語コード,value：ファイル参照先URL）
+	Subtitles map[string]string `json:"subtitles"` // 字幕テキスト（key：言語コード,value：ファイル参照先URL）
 }
 
 type NewBroadcastParams struct {
