@@ -62,6 +62,7 @@ type UpdateBroadcastParams struct {
 	Status entity.BroadcastStatus
 	*InitializeBroadcastParams
 	*UploadBroadcastArchiveParams
+	*UpdateBroadcastArchiveParams
 	*UpsertYoutubeBroadcastParams
 }
 
@@ -81,6 +82,11 @@ type InitializeBroadcastParams struct {
 type UploadBroadcastArchiveParams struct {
 	ArchiveURL   string
 	ArchiveFixed bool
+}
+
+type UpdateBroadcastArchiveParams struct {
+	ArchiveURL      string
+	ArchiveMetadata *entity.BroadcastArchiveMetadata
 }
 
 type UpsertYoutubeBroadcastParams struct {

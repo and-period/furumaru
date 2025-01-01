@@ -458,7 +458,7 @@ func TestBroadcast_Update(t *testing.T) {
 			},
 		},
 		{
-			name: "success archive",
+			name: "success upload archive",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&broadcast).Error
@@ -471,6 +471,31 @@ func TestBroadcast_Update(t *testing.T) {
 					UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
 						ArchiveURL:   "http://example.com/master.mp4",
 						ArchiveFixed: true,
+					},
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "success update archive",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+				err = db.DB.Create(&broadcast).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				broadcastID: "broadcast-id",
+				params: &database.UpdateBroadcastParams{
+					Status: entity.BroadcastStatusActive,
+					UpdateBroadcastArchiveParams: &database.UpdateBroadcastArchiveParams{
+						ArchiveMetadata: &entity.BroadcastArchiveMetadata{
+							Text: map[string]string{
+								"jpn": "http://example.com/translate-jpn.vtt",
+								"eng": "http://example.com/translate-eng.vtt",
+							},
+						},
 					},
 				},
 			},
@@ -578,15 +603,19 @@ func TestBroadcast_Update(t *testing.T) {
 }
 
 func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time) *entity.Broadcast {
-	return &entity.Broadcast{
-		ID:            broadcastID,
-		ScheduleID:    scheduleID,
-		CoordinatorID: coordinatorID,
-		Type:          entity.BroadcastTypeNormal,
-		Status:        entity.BroadcastStatusIdle,
-		InputURL:      "rtmp://127.0.0.1/1935/app/instance",
-		OutputURL:     "http://example.com/index.m3u8",
-		CreatedAt:     now,
-		UpdatedAt:     now,
+	broadcast := &entity.Broadcast{
+		ID:              broadcastID,
+		ScheduleID:      scheduleID,
+		CoordinatorID:   coordinatorID,
+		Type:            entity.BroadcastTypeNormal,
+		Status:          entity.BroadcastStatusIdle,
+		InputURL:        "rtmp://127.0.0.1/1935/app/instance",
+		OutputURL:       "http://example.com/index.m3u8",
+		ArchiveURL:      "",
+		ArchiveMetadata: &entity.BroadcastArchiveMetadata{},
+		CreatedAt:       now,
+		UpdatedAt:       now,
 	}
+	_ = broadcast.FillJSON()
+	return broadcast
 }
