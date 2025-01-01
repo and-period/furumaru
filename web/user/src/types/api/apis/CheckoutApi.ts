@@ -20,6 +20,7 @@ import type {
   CheckoutResponse,
   CheckoutStateResponse,
   ErrorResponse,
+  GuestCheckoutExperienceRequest,
   GuestCheckoutProductRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
@@ -35,6 +36,8 @@ import {
     CheckoutStateResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    GuestCheckoutExperienceRequestFromJSON,
+    GuestCheckoutExperienceRequestToJSON,
     GuestCheckoutProductRequestFromJSON,
     GuestCheckoutProductRequestToJSON,
     GuestCheckoutResponseFromJSON,
@@ -62,7 +65,7 @@ export interface V1GetGuestCheckoutStateRequest {
 
 export interface V1GuestCheckoutExperienceRequest {
     experienceId: string;
-    body: GuestCheckoutProductRequest;
+    body: GuestCheckoutExperienceRequest;
 }
 
 export interface V1GuestCheckoutProductRequest {

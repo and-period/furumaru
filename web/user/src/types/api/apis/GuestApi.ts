@@ -18,6 +18,7 @@ import type {
   CreateGuestLiveCommentRequest,
   CreateGuestVideoCommentRequest,
   ErrorResponse,
+  GuestCheckoutExperienceRequest,
   GuestCheckoutProductRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
@@ -29,6 +30,8 @@ import {
     CreateGuestVideoCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    GuestCheckoutExperienceRequestFromJSON,
+    GuestCheckoutExperienceRequestToJSON,
     GuestCheckoutProductRequestFromJSON,
     GuestCheckoutProductRequestToJSON,
     GuestCheckoutResponseFromJSON,
@@ -53,7 +56,7 @@ export interface V1GetGuestCheckoutStateRequest {
 
 export interface V1GuestCheckoutExperienceRequest {
     experienceId: string;
-    body: GuestCheckoutProductRequest;
+    body: GuestCheckoutExperienceRequest;
 }
 
 export interface V1GuestCheckoutProductRequest {
