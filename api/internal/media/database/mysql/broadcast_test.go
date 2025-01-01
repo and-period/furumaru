@@ -603,19 +603,18 @@ func TestBroadcast_Update(t *testing.T) {
 }
 
 func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time) *entity.Broadcast {
-	broadcast := &entity.Broadcast{
-		ID:              broadcastID,
-		ScheduleID:      scheduleID,
-		CoordinatorID:   coordinatorID,
-		Type:            entity.BroadcastTypeNormal,
-		Status:          entity.BroadcastStatusIdle,
-		InputURL:        "rtmp://127.0.0.1/1935/app/instance",
-		OutputURL:       "http://example.com/index.m3u8",
-		ArchiveURL:      "",
-		ArchiveMetadata: &entity.BroadcastArchiveMetadata{},
-		CreatedAt:       now,
-		UpdatedAt:       now,
+	return &entity.Broadcast{
+		ID:                  broadcastID,
+		ScheduleID:          scheduleID,
+		CoordinatorID:       coordinatorID,
+		Type:                entity.BroadcastTypeNormal,
+		Status:              entity.BroadcastStatusIdle,
+		InputURL:            "rtmp://127.0.0.1/1935/app/instance",
+		OutputURL:           "http://example.com/index.m3u8",
+		ArchiveURL:          "",
+		ArchiveMetadata:     &entity.BroadcastArchiveMetadata{},
+		ArchiveMetadataJSON: []byte(`{"text": null}`),
+		CreatedAt:           now,
+		UpdatedAt:           now,
 	}
-	_ = broadcast.FillJSON()
-	return broadcast
 }
