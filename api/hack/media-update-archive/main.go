@@ -329,7 +329,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 			switch out.TranscriptionJob.TranscriptionJobStatus {
 			case transcribetype.TranscriptionJobStatusCompleted:
 				metadata := map[string]string{
-					"Content-Type":  "text/vtt",
+					"Content-Type":  textFormat,
 					"Cache-Control": "s-maxage=" + entity.BroadcastArchiveTextRegulation.CacheTTL.String(),
 				}
 				if _, err := a.s3.Copy(ctx, a.s3.GetBucketName(), outputKey, outputKey, metadata); err != nil {
@@ -358,11 +358,11 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	filename := strings.Split(filepath.Base(archiveKey), ".")[0]
 
 	japaneseTextKey := fmt.Sprintf("%s/%s-ja", dir, filename)
-	englishTextKey := fmt.Sprintf("%s/%s-en", dir, filename)
-	outputURL := a.generateAssetURL(fmt.Sprintf("%s.vtt", englishTextKey))
+	englishTextKey := fmt.Sprintf("%s/%s-en.vtt", dir, filename)
+	outputURL := a.generateAssetURL(englishTextKey)
 
 	current, err := a.s3.GetMetadata(ctx, englishTextKey)
-	if err == nil && current.ContentType == "vtt" {
+	if err == nil && current.ContentType == textFormat {
 		a.logger.Info("text translation already completed", zap.String("broadcastId", broadcast.ID))
 		return outputURL, nil
 	}
@@ -389,7 +389,7 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 	}
 
 	metadata := map[string]string{
-		"Content-Type":  "text/vtt",
+		"Content-Type":  textFormat,
 		"Cache-Control": "s-maxage=" + entity.BroadcastArchiveTextRegulation.CacheTTL.String(),
 	}
 	if _, err := a.s3.Upload(ctx, englishTextKey, buf, metadata); err != nil {
