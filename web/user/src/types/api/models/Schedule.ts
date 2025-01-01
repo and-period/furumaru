@@ -13,6 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ScheduleDistributionMetadata } from './ScheduleDistributionMetadata';
+import {
+    ScheduleDistributionMetadataFromJSON,
+    ScheduleDistributionMetadataFromJSONTyped,
+    ScheduleDistributionMetadataToJSON,
+} from './ScheduleDistributionMetadata';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
@@ -69,6 +75,12 @@ export interface Schedule {
      */
     distributionUrl: string;
     /**
+     * 
+     * @type {ScheduleDistributionMetadata}
+     * @memberof Schedule
+     */
+    distributionMetadata: ScheduleDistributionMetadata;
+    /**
      * ライブ開始日時 (unixtime)
      * @type {number}
      * @memberof Schedule
@@ -95,6 +107,7 @@ export function instanceOfSchedule(value: object): value is Schedule {
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
     if (!('distributionUrl' in value) || value['distributionUrl'] === undefined) return false;
+    if (!('distributionMetadata' in value) || value['distributionMetadata'] === undefined) return false;
     if (!('startAt' in value) || value['startAt'] === undefined) return false;
     if (!('endAt' in value) || value['endAt'] === undefined) return false;
     return true;
@@ -117,6 +130,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'description': json['description'],
         'thumbnailUrl': json['thumbnailUrl'],
         'distributionUrl': json['distributionUrl'],
+        'distributionMetadata': ScheduleDistributionMetadataFromJSON(json['distributionMetadata']),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
     };
@@ -135,6 +149,7 @@ export function ScheduleToJSON(value?: Schedule | null): any {
         'description': value['description'],
         'thumbnailUrl': value['thumbnailUrl'],
         'distributionUrl': value['distributionUrl'],
+        'distributionMetadata': ScheduleDistributionMetadataToJSON(value['distributionMetadata']),
         'startAt': value['startAt'],
         'endAt': value['endAt'],
     };

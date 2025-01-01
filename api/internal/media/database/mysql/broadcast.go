@@ -69,8 +69,13 @@ func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsPar
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	err := stmt.Find(&broadcasts).Error
-	return broadcasts, dbError(err)
+	if err := stmt.Find(&broadcasts).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := broadcasts.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return broadcasts, nil
 }
 
 func (b *broadcast) Count(ctx context.Context, params *database.ListBroadcastsParams) (int64, error) {
@@ -89,6 +94,9 @@ func (b *broadcast) Get(ctx context.Context, broadcastID string, fields ...strin
 	if err := stmt.First(&broadcast).Error; err != nil {
 		return nil, dbError(err)
 	}
+	if err := broadcast.Fill(); err != nil {
+		return nil, dbError(err)
+	}
 	return broadcast, nil
 }
 
@@ -103,12 +111,19 @@ func (b *broadcast) GetByScheduleID(
 	if err := stmt.First(&broadcast).Error; err != nil {
 		return nil, dbError(err)
 	}
+	if err := broadcast.Fill(); err != nil {
+		return nil, dbError(err)
+	}
 	return broadcast, nil
 }
 
 func (b *broadcast) Create(ctx context.Context, broadcast *entity.Broadcast) error {
 	now := b.now()
 	broadcast.CreatedAt, broadcast.UpdatedAt = now, now
+
+	if err := broadcast.FillJSON(); err != nil {
+		return dbError(err)
+	}
 
 	err := b.db.DB.WithContext(ctx).Table(broadcastTable).Create(&broadcast).Error
 	return dbError(err)
@@ -135,8 +150,16 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 		updates["media_store_container_arn"] = params.MediaStoreContainerArn
 	}
 	if params.UploadBroadcastArchiveParams != nil {
-		updates["archive_url"] = params.ArchiveURL
+		updates["archive_url"] = params.UploadBroadcastArchiveParams.ArchiveURL
 		updates["archive_fixed"] = params.ArchiveFixed
+	}
+	if params.UpdateBroadcastArchiveParams != nil {
+		metadata, err := entity.BroadcastMarshalArchiveMetadata(params.ArchiveMetadata)
+		if err != nil {
+			return dbError(err)
+		}
+		updates["archive_url"] = params.UpdateBroadcastArchiveParams.ArchiveURL
+		updates["archive_metadata"] = metadata
 	}
 	if params.UpsertYoutubeBroadcastParams != nil {
 		updates["youtube_account"] = params.YoutubeAccount

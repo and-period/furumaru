@@ -2,15 +2,20 @@ package response
 
 // Schedule - マルシェ開催情報
 type Schedule struct {
-	ID              string `json:"id"`              // スケジュールID
-	CoordinatorID   string `json:"coordinatorId"`   // コーディネータID
-	Status          int32  `json:"status"`          // 開催状況
-	Title           string `json:"title"`           // タイトル
-	Description     string `json:"description"`     // 説明
-	ThumbnailURL    string `json:"thumbnailUrl"`    // サムネイルURL
-	DistributionURL string `json:"distributionUrl"` // 映像配信URL
-	StartAt         int64  `json:"startAt"`         // 配信開始日時
-	EndAt           int64  `json:"endAt"`           // 配信終了日時
+	ID                   string                        `json:"id"`                   // スケジュールID
+	CoordinatorID        string                        `json:"coordinatorId"`        // コーディネータID
+	Status               int32                         `json:"status"`               // 開催状況
+	Title                string                        `json:"title"`                // タイトル
+	Description          string                        `json:"description"`          // 説明
+	ThumbnailURL         string                        `json:"thumbnailUrl"`         // サムネイルURL
+	DistributionURL      string                        `json:"distributionUrl"`      // 映像配信URL
+	DistributionMetadata *ScheduleDistributionMetadata `json:"distributionMedatada"` // 映像メタデータ
+	StartAt              int64                         `json:"startAt"`              // 配信開始日時
+	EndAt                int64                         `json:"endAt"`                // 配信終了日時
+}
+
+type ScheduleDistributionMetadata struct {
+	Subtitles map[string]string `json:"subtitles"` // 字幕情報
 }
 
 type ScheduleResponse struct {

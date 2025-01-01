@@ -102,6 +102,7 @@ export * from './PromotionStatus';
 export * from './RefreshAuthTokenRequest';
 export * from './ResetAuthPasswordRequest';
 export * from './Schedule';
+export * from './ScheduleDistributionMetadata';
 export * from './ScheduleResponse';
 export * from './ScheduleStatus';
 export * from './ShippingCarrier';

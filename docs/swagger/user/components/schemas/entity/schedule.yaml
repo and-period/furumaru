@@ -22,6 +22,8 @@ schedule:
     distributionUrl:
       type: string
       description: 映像配信URL
+    distributionMetadata:
+      $ref: '#/scheduleDistributionMetadata'
     startAt:
       type: integer
       format: int64
@@ -38,6 +40,7 @@ schedule:
   - description
   - thumbnailUrl
   - distributionUrl
+  - distributionMetadata
   - startAt
   - endAt
   example:
@@ -47,6 +50,27 @@ schedule:
     title: 'マルシェ開催スケジュールタイトル'
     description: 'マルシェ開催スケジュールの説明'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    imageUrl: 'https://and-period.jp/video.mp4'
+    distributionUrl: 'https://and-period.jp/distribution.m3u8'
+    distributionMetadata:
+      subtitles:
+        ja:
+          src: 'https://and-period.jp/subtitles.ja.vtt'
+        en:
+          src: 'https://and-period.jp/subtitles.en.vtt'
     startAt: 1640962800
     endAt: 1640962800
+scheduleDistributionMetadata:
+  properties:
+    subtitles:
+      type: object
+      additionalProperties:
+        type: string
+      description: 字幕ファイル（キー：言語(srclang)、値：参照先URL(src)）
+  required:
+  - subtitles
+  example:
+    subtitles:
+      ja:
+        src: 'https://and-period.jp/subtitles.ja.vtt'
+      en:
+        src: 'https://and-period.jp/subtitles.en.vtt'

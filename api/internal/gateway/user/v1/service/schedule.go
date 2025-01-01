@@ -44,35 +44,39 @@ type Schedule struct {
 type Schedules []*Schedule
 
 func NewSchedule(schedule *sentity.Schedule, broadcast *mentity.Broadcast) *Schedule {
-	distributionURL, archived := newBroadcastDetail(broadcast)
+	distributionURL, archived, metadata := newBroadcastDetail(broadcast)
 	return &Schedule{
 		Schedule: response.Schedule{
-			ID:              schedule.ID,
-			CoordinatorID:   schedule.CoordinatorID,
-			Status:          NewScheduleStatus(schedule.Status, archived).Response(),
-			Title:           schedule.Title,
-			Description:     schedule.Description,
-			ThumbnailURL:    schedule.ThumbnailURL,
-			DistributionURL: distributionURL,
-			StartAt:         schedule.StartAt.Unix(),
-			EndAt:           schedule.EndAt.Unix(),
+			ID:                   schedule.ID,
+			CoordinatorID:        schedule.CoordinatorID,
+			Status:               NewScheduleStatus(schedule.Status, archived).Response(),
+			Title:                schedule.Title,
+			Description:          schedule.Description,
+			ThumbnailURL:         schedule.ThumbnailURL,
+			DistributionURL:      distributionURL,
+			DistributionMetadata: metadata,
+			StartAt:              schedule.StartAt.Unix(),
+			EndAt:                schedule.EndAt.Unix(),
 		},
 	}
 }
 
-func newBroadcastDetail(broadcast *mentity.Broadcast) (distributionURL string, archived bool) {
+func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.ScheduleDistributionMetadata) {
+	metadata := &response.ScheduleDistributionMetadata{
+		Subtitles: map[string]string{},
+	}
 	if broadcast == nil {
-		return
+		return "", false, metadata
 	}
 	switch {
 	case broadcast.ArchiveURL != "":
-		archived = true
-		distributionURL = broadcast.ArchiveURL
+		metadata.Subtitles = broadcast.ArchiveMetadata.Subtitles
+		return broadcast.ArchiveURL, true, metadata
 	case broadcast.Status == mentity.BroadcastStatusActive:
-		archived = false
-		distributionURL = broadcast.OutputURL
+		return broadcast.OutputURL, false, metadata
+	default:
+		return "", false, metadata
 	}
-	return
 }
 
 func (s *Schedule) Response() *response.Schedule {
