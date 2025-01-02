@@ -102,7 +102,7 @@ func (s *service) CreateCoordinator(
 	password := random.NewStrings(size)
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
-		Role:          entity.AdminRoleCoordinator,
+		Type:          entity.AdminTypeCoordinator,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,

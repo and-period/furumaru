@@ -56,7 +56,7 @@ type Admins []*Admin
 
 type NewAdminParams struct {
 	CognitoID     string
-	Role          LegacyAdminRole
+	Type          AdminType
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -85,8 +85,8 @@ func NewAdmin(params *NewAdminParams) *Admin {
 	return &Admin{
 		ID:            uuid.Base58Encode(uuid.New()),
 		CognitoID:     strings.ToLower(params.CognitoID), // Cognitoでは大文字小文字の区別がされず管理されているため
-		Role:          params.Role,
-		Type:          AdminType(params.Role),
+		Role:          LegacyAdminRole(params.Type),
+		Type:          params.Type,
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,

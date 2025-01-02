@@ -87,7 +87,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	}
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     "", // 生産者は認証機能を持たせない
-		Role:          entity.AdminRoleProducer,
+		Type:          entity.AdminTypeProducer,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,

@@ -95,7 +95,7 @@ func TestAdmin(t *testing.T) {
 			name: "success",
 			params: &NewAdminParams{
 				CognitoID:     "cognito-id",
-				Role:          AdminRoleAdministrator,
+				Type:          AdminTypeAdministrator,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
