@@ -1,8 +1,6 @@
 package response
 
 // Admin - 管理者情報
-//
-//nolint:staticcheck
 type Admin struct {
 	ID            string `json:"id"`            // 管理者ID
 	Type          int32  `json:"role"`          // 管理者種別
