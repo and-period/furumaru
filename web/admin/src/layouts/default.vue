@@ -143,7 +143,7 @@ const getGeneralDrawers = (): NavigationDrawerItem[] => {
 
 const getSettingDrawers = (): NavigationDrawerItem[] => {
   return settingDrawers.filter((drawer: NavigationDrawerItem): boolean => {
-    return drawer.adminTypes?.includes(adminTypes.value) || false
+    return drawer.adminTypes?.includes(adminType.value) || false
   })
 }
 
