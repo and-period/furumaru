@@ -13,7 +13,7 @@ func TestAdminRole(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name                string
-		role                entity.AdminRole
+		role                entity.LegacyAdminRole
 		expect              AdminRole
 		expectString        string
 		expectIsCoordinator bool

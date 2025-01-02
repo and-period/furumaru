@@ -6,11 +6,11 @@ import (
 
 // AdminAuth - 管理者認証情報
 type AdminAuth struct {
-	AdminID      string    // 管理者ID
-	Role         AdminRole // 権限
-	AccessToken  string    // アクセストークン
-	RefreshToken string    // 更新トークン
-	ExpiresIn    int32     // 有効期限
+	AdminID      string          // 管理者ID
+	Role         LegacyAdminRole // 権限
+	AccessToken  string          // アクセストークン
+	RefreshToken string          // 更新トークン
+	ExpiresIn    int32           // 有効期限
 }
 
 func NewAdminAuth(admin *Admin, rs *cognito.AuthResult) *AdminAuth {

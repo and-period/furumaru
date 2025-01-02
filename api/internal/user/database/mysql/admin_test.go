@@ -424,6 +424,7 @@ func testAdmin(adminID, cognitoID, email string, now time.Time) *entity.Admin {
 		ID:            adminID,
 		CognitoID:     cognitoID,
 		Role:          entity.AdminRoleAdministrator,
+		Type:          entity.AdminTypeAdministrator,
 		Status:        entity.AdminStatusActivated,
 		Lastname:      "&.",
 		Firstname:     "スタッフ",

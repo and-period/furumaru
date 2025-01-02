@@ -12,14 +12,14 @@ import (
 
 var errInvalidAdminRole = errors.New("entity: invalid admin role")
 
-// AdminRole - 管理者権限
-type AdminRole int32
+// Deprecated: LegacyAdminRole - 管理者権限
+type LegacyAdminRole int32
 
 const (
-	AdminRoleUnknown       AdminRole = 0
-	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
-	AdminRoleProducer      AdminRole = 3 // 生産者
+	AdminRoleUnknown       LegacyAdminRole = 0
+	AdminRoleAdministrator LegacyAdminRole = 1 // 管理者
+	AdminRoleCoordinator   LegacyAdminRole = 2 // コーディネータ
+	AdminRoleProducer      LegacyAdminRole = 3 // 生産者
 )
 
 // AdminStatus - 管理者ステータス
@@ -34,28 +34,29 @@ const (
 
 // Admin - 管理者共通情報
 type Admin struct {
-	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
-	CognitoID     string         `gorm:"default:null"`         // 管理者ID (Cognito用)
-	Role          AdminRole      `gorm:"<-:create"`            // 管理者権限
-	Status        AdminStatus    `gorm:"-"`                    // 管理者ステータス
-	Lastname      string         `gorm:"default:null"`         // 姓
-	Firstname     string         `gorm:"default:null"`         // 名
-	LastnameKana  string         `gorm:"default:null"`         // 姓(かな)
-	FirstnameKana string         `gorm:"default:null"`         // 名(かな)
-	Email         string         `gorm:"default:null"`         // メールアドレス
-	Device        string         `gorm:"default:null"`         // デバイストークン(Push通知用)
-	FirstSignInAt time.Time      `gorm:"default:null"`         // 初回ログイン日時
-	LastSignInAt  time.Time      `gorm:"default:null"`         // 最終ログイン日時
-	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
-	UpdatedAt     time.Time      `gorm:""`                     // 更新日時
-	DeletedAt     gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	ID            string          `gorm:"primaryKey;<-:create"` // 管理者ID
+	CognitoID     string          `gorm:"default:null"`         // 管理者ID (Cognito用)
+	Role          LegacyAdminRole `gorm:"<-:create"`            // Deprecated: 管理者権限
+	Type          AdminType       `gorm:"<-:create"`            // 管理者種別
+	Status        AdminStatus     `gorm:"-"`                    // 管理者ステータス
+	Lastname      string          `gorm:"default:null"`         // 姓
+	Firstname     string          `gorm:"default:null"`         // 名
+	LastnameKana  string          `gorm:"default:null"`         // 姓(かな)
+	FirstnameKana string          `gorm:"default:null"`         // 名(かな)
+	Email         string          `gorm:"default:null"`         // メールアドレス
+	Device        string          `gorm:"default:null"`         // デバイストークン(Push通知用)
+	FirstSignInAt time.Time       `gorm:"default:null"`         // 初回ログイン日時
+	LastSignInAt  time.Time       `gorm:"default:null"`         // 最終ログイン日時
+	CreatedAt     time.Time       `gorm:"<-:create"`            // 登録日時
+	UpdatedAt     time.Time       `gorm:""`                     // 更新日時
+	DeletedAt     gorm.DeletedAt  `gorm:"default:null"`         // 削除日時
 }
 
 type Admins []*Admin
 
 type NewAdminParams struct {
 	CognitoID     string
-	Role          AdminRole
+	Type          AdminType
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -63,15 +64,15 @@ type NewAdminParams struct {
 	Email         string
 }
 
-func NewAdminRole(role int32) (AdminRole, error) {
-	res := AdminRole(role)
+func NewAdminRole(role int32) (LegacyAdminRole, error) {
+	res := LegacyAdminRole(role)
 	if err := res.Validate(); err != nil {
 		return AdminRoleUnknown, err
 	}
 	return res, nil
 }
 
-func (r AdminRole) Validate() error {
+func (r LegacyAdminRole) Validate() error {
 	switch r {
 	case AdminRoleAdministrator, AdminRoleCoordinator, AdminRoleProducer:
 		return nil
@@ -84,7 +85,8 @@ func NewAdmin(params *NewAdminParams) *Admin {
 	return &Admin{
 		ID:            uuid.Base58Encode(uuid.New()),
 		CognitoID:     strings.ToLower(params.CognitoID), // Cognitoでは大文字小文字の区別がされず管理されているため
-		Role:          params.Role,
+		Role:          LegacyAdminRole(params.Type),
+		Type:          params.Type,
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,
@@ -121,9 +123,9 @@ func (as Admins) Map() map[string]*Admin {
 	return res
 }
 
-func (as Admins) GroupByRole() map[AdminRole]Admins {
+func (as Admins) GroupByRole() map[LegacyAdminRole]Admins {
 	const maxRoles = 4
-	res := make(map[AdminRole]Admins, maxRoles)
+	res := make(map[LegacyAdminRole]Admins, maxRoles)
 	for _, a := range as {
 		if _, ok := res[a.Role]; !ok {
 			res[a.Role] = make(Admins, 0, len(as))
