@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.4.2](https://github.com/and-period/furumaru/compare/v3.4.1...v3.4.2) - 2025-01-02
+- refactor(user): 管理者種別のフィールド名を置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2622
+
 ## [v3.4.1](https://github.com/and-period/furumaru/compare/v3.4.0...v3.4.1) - 2025-01-02
 - マップから体験を選択する部分の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2585
 - refactor(api): DB層のコンストラクタ定義を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2613
