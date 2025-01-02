@@ -33,6 +33,7 @@ type Admin struct {
 
 type Admins []*Admin
 
+//nolint:staticcheck
 func NewAdminRole(role entity.LegacyAdminRole) AdminRole {
 	switch role {
 	case entity.AdminRoleAdministrator:
