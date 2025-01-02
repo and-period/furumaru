@@ -31,9 +31,9 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "admin-id", service.AdminRoleAdministrator)
+	setAuth(ctx, "admin-id", service.AdminTypeAdministrator)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
-	assert.Equal(t, service.AdminRoleAdministrator, getRole(ctx))
+	assert.Equal(t, service.AdminTypeAdministrator, getAdminType(ctx))
 	assert.True(t, currentAdmin(ctx, "admin-id"))
 	assert.False(t, currentAdmin(ctx, "other-id"))
 }
@@ -43,19 +43,19 @@ func TestFilterAccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	tests := []struct {
 		name   string
-		role   service.AdminRole
+		role   service.AdminType
 		params *filterAccessParams
 		expect error
 	}{
 		{
 			name:   "success administrator",
-			role:   service.AdminRoleAdministrator,
+			role:   service.AdminTypeAdministrator,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "success coordinator",
-			role: service.AdminRoleCoordinator,
+			role: service.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return true, nil
@@ -65,13 +65,13 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "success coordinator for no filter",
-			role:   service.AdminRoleCoordinator,
+			role:   service.AdminTypeCoordinator,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "failed coordinator for failed to execute function",
-			role: service.AdminRoleCoordinator,
+			role: service.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return false, assert.AnError
@@ -81,7 +81,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "failed coordinator for invalid coordinator",
-			role: service.AdminRoleCoordinator,
+			role: service.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return false, nil
@@ -91,7 +91,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "success producer",
-			role: service.AdminRoleProducer,
+			role: service.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return true, nil
@@ -101,13 +101,13 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "success producer for no filter",
-			role:   service.AdminRoleProducer,
+			role:   service.AdminTypeProducer,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "failed producer for failed to execute function",
-			role: service.AdminRoleProducer,
+			role: service.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return false, assert.AnError
@@ -117,7 +117,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "failed producer for invalid producer",
-			role: service.AdminRoleProducer,
+			role: service.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return false, nil
@@ -127,7 +127,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "failed unknown admin role",
-			role:   service.AdminRoleUnknown,
+			role:   service.AdminTypeUnknown,
 			params: &filterAccessParams{},
 			expect: exception.ErrForbidden,
 		},

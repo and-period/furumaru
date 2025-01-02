@@ -131,10 +131,10 @@ export interface Admin {
     'id': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof Admin
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * 姓
      * @type {string}
@@ -181,34 +181,6 @@ export interface Admin {
 
 
 /**
- * 管理者権限
- * @export
- * @enum {string}
- */
-
-export const AdminRole = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 管理者
-    */
-    ADMINISTRATOR: 1,
-    /**
-    * コーディネータ
-    */
-    COORDINATOR: 2,
-    /**
-    * 生産者
-    */
-    PRODUCER: 3
-} as const;
-
-export type AdminRole = typeof AdminRole[keyof typeof AdminRole];
-
-
-/**
  * 管理者の状態
  * @export
  * @enum {string}
@@ -234,6 +206,34 @@ export const AdminStatus = {
 } as const;
 
 export type AdminStatus = typeof AdminStatus[keyof typeof AdminStatus];
+
+
+/**
+ * 管理者種別
+ * @export
+ * @enum {string}
+ */
+
+export const AdminType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 管理者
+    */
+    ADMINISTRATOR: 1,
+    /**
+    * コーディネータ
+    */
+    COORDINATOR: 2,
+    /**
+    * 生産者
+    */
+    PRODUCER: 3
+} as const;
+
+export type AdminType = typeof AdminType[keyof typeof AdminType];
 
 
 /**
@@ -415,10 +415,10 @@ export interface AuthResponse {
     'adminId': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof AuthResponse
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * アクセストークン
      * @type {string}
@@ -460,10 +460,10 @@ export interface AuthUserResponse {
     'id': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof AuthUserResponse
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * 表示名
      * @type {string}

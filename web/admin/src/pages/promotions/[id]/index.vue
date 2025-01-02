@@ -15,7 +15,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const promotionId = route.params.id as string
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { promotion } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
@@ -84,7 +84,7 @@ catch (err) {
   <templates-promotion-edit
     v-model:form-data="formData"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

@@ -161,7 +161,7 @@ func (cs Coordinators) Fill(admins map[string]*Admin) error {
 	for _, c := range cs {
 		admin, ok := admins[c.AdminID]
 		if !ok {
-			admin = &Admin{ID: c.AdminID, Role: AdminRoleCoordinator}
+			admin = &Admin{ID: c.AdminID, Type: AdminTypeCoordinator}
 		}
 		if err := c.Fill(admin); err != nil {
 			return err

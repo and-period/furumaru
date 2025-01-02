@@ -16,7 +16,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const notificationId = route.params.id as string
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { admin } = storeToRefs(adminStore)
 const { notification } = storeToRefs(notificationStore)
 const { promotion } = storeToRefs(promotionStore)
@@ -83,7 +83,7 @@ catch (err) {
   <templates-notification-edit
     v-model:form-data="formData"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

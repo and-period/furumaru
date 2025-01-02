@@ -21,7 +21,7 @@ const productTypeStore = useProductTypeStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { products, totalItems } = storeToRefs(productStore)
@@ -108,7 +108,7 @@ catch (err) {
     v-model:delete-dialog="deleteDialog"
     v-model:selected-item-id="selectedItemId"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

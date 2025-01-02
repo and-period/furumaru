@@ -25,7 +25,6 @@ func TestListProducers(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleProducer,
 				Type:          entity.AdminTypeProducer,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
@@ -132,7 +131,6 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleProducer,
 				Type:          entity.AdminTypeProducer,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
@@ -241,7 +239,6 @@ func TestGetProducer(t *testing.T) {
 	producer := &entity.Producer{
 		Admin: entity.Admin{
 			ID:            "admin-id",
-			Role:          entity.AdminRoleProducer,
 			Type:          entity.AdminTypeProducer,
 			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
@@ -347,7 +344,6 @@ func TestCreateProducer(t *testing.T) {
 	coordinator := &entity.Coordinator{
 		Admin: entity.Admin{
 			ID:            "admin-id",
-			Role:          entity.AdminRoleCoordinator,
 			Type:          entity.AdminTypeProducer,
 			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
@@ -384,7 +380,6 @@ func TestCreateProducer(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectProducer := &entity.Producer{
 					Admin: entity.Admin{
-						Role:          entity.AdminRoleProducer,
 						Type:          entity.AdminTypeProducer,
 						Lastname:      "&.",
 						Firstname:     "スタッフ",

@@ -49,7 +49,7 @@ func (c *Coordinator) AuthUser() *AuthUser {
 	return &AuthUser{
 		AuthUser: response.AuthUser{
 			AdminID:      c.ID,
-			Role:         AdminRoleCoordinator.Response(),
+			Type:         AdminTypeCoordinator.Response(),
 			Username:     c.Username,
 			Email:        c.Email,
 			ThumbnailURL: c.ThumbnailURL,

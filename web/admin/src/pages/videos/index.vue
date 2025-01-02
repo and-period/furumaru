@@ -4,7 +4,7 @@ import { unix } from 'dayjs'
 import { usePagination } from '~/lib/hooks'
 import { useAuthStore, useVideoStore } from '~/store'
 import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
-import { AdminRole } from '~/types/api'
+import { AdminType } from '~/types/api'
 
 const videoStore = useVideoStore()
 const { videoResponse } = storeToRefs(videoStore)
@@ -13,7 +13,7 @@ const pagination = usePagination()
 const router = useRouter()
 
 const authStore = useAuthStore()
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 
 const headers: VDataTable['headers'] = [
   {
@@ -72,7 +72,7 @@ const { status } = useAsyncData(async () => {
     <v-card-title>動画管理</v-card-title>
 
     <v-card-text
-      v-if="role === AdminRole.COORDINATOR"
+      v-if="adminType === AdminType.COORDINATOR"
       class="text-right"
     >
       <v-btn

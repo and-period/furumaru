@@ -66,12 +66,12 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 		auth authUser
 		err  error
 	)
-	switch getRole(ctx) {
-	case service.AdminRoleAdministrator:
+	switch getAdminType(ctx) {
+	case service.AdminTypeAdministrator:
 		auth, err = h.getAdministrator(ctx, adminID)
-	case service.AdminRoleCoordinator:
+	case service.AdminTypeCoordinator:
 		auth, err = h.getCoordinator(ctx, adminID)
-	case service.AdminRoleProducer:
+	case service.AdminTypeProducer:
 		auth, err = h.getProducer(ctx, adminID)
 	default:
 		h.forbidden(ctx, errors.New("handler: unknown admin role"))
@@ -283,7 +283,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 }
 
 func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
-	if getRole(ctx) != service.AdminRoleCoordinator {
+	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -310,7 +310,7 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 }
 
 func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
-	if getRole(ctx) != service.AdminRoleCoordinator {
+	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -363,7 +363,7 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 }
 
 func (h *handler) GetAuthShipping(ctx *gin.Context) {
-	if getRole(ctx) != service.AdminRoleCoordinator {
+	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -388,7 +388,7 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 }
 
 func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
-	if getRole(ctx) != service.AdminRoleCoordinator {
+	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}

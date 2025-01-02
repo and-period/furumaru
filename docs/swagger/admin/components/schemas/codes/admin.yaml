@@ -1,7 +1,7 @@
-adminRole:
+adminType:
   type: integer
   format: int32
-  description: 管理者権限
+  description: 管理者種別
   nullable: false
   enum:
   - 0

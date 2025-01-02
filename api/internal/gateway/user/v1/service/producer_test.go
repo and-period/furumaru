@@ -21,7 +21,7 @@ func TestProducer(t *testing.T) {
 			producer: &entity.Producer{
 				Admin: entity.Admin{
 					ID:            "producer-id",
-					Role:          entity.AdminRoleProducer,
+					Type:          entity.AdminTypeProducer,
 					Status:        entity.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -117,7 +117,7 @@ func TestProducers(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "producer-id01",
-						Role:          entity.AdminRoleProducer,
+						Type:          entity.AdminTypeProducer,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -141,7 +141,7 @@ func TestProducers(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "producer-id02",
-						Role:          entity.AdminRoleProducer,
+						Type:          entity.AdminTypeProducer,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",

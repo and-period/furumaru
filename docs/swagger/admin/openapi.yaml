@@ -336,8 +336,8 @@ components:
       name: session_id
   schemas:
     # Common
-    adminRole:
-      $ref: './components/schemas/codes/admin.yaml#/adminRole'
+    adminType:
+      $ref: './components/schemas/codes/admin.yaml#/adminType'
     adminStatus:
       $ref: './components/schemas/codes/admin.yaml#/adminStatus'
     broadcastStatus:

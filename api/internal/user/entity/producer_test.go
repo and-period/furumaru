@@ -354,7 +354,7 @@ func TestProducers_Fill(t *testing.T) {
 				"admin-id01": {
 					ID:        "admin-id01",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleProducer,
+					Type:      AdminTypeProducer,
 				},
 			},
 			expect: Producers{
@@ -365,7 +365,7 @@ func TestProducers_Fill(t *testing.T) {
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleProducer,
+						Type:      AdminTypeProducer,
 					},
 				},
 				{
@@ -374,7 +374,7 @@ func TestProducers_Fill(t *testing.T) {
 					PrefectureCode: 13,
 					Admin: Admin{
 						ID:   "admin-id02",
-						Role: AdminRoleProducer,
+						Type: AdminTypeProducer,
 					},
 				},
 			},

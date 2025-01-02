@@ -136,13 +136,13 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 		return nil, internalError(err)
 	}
 	var userType entity.SpotUserType
-	switch admin.Role {
-	case uentity.AdminRoleCoordinator:
+	switch admin.Type {
+	case uentity.AdminTypeCoordinator:
 		userType = entity.SpotUserTypeCoordinator
-	case uentity.AdminRoleProducer:
+	case uentity.AdminTypeProducer:
 		userType = entity.SpotUserTypeProducer
 	default:
-		return nil, fmt.Errorf("service: unsupported role: %w", exception.ErrFailedPrecondition)
+		return nil, fmt.Errorf("service: unsupported admin type: %w", exception.ErrFailedPrecondition)
 	}
 	addressIn := &geolocation.GetAddressInput{
 		Longitude: in.Longitude,

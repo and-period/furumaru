@@ -70,7 +70,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	videos, total, err := h.media.ListVideos(ctx, in)
@@ -202,7 +202,7 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 		return
 	}
 
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		if !currentAdmin(ctx, req.CoordinatorID) {
 			h.httpError(ctx, exception.ErrForbidden)
 			return

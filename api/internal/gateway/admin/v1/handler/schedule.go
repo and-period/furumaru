@@ -67,7 +67,7 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	schedules, total, err := h.store.ListSchedules(ctx, in)
@@ -125,7 +125,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	if getRole(ctx).IsCoordinator() {
+	if getAdminType(ctx).IsCoordinator() {
 		if !currentAdmin(ctx, req.CoordinatorID) {
 			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return

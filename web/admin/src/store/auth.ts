@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie'
 import { messaging } from '~/plugins/firebase'
 import { apiClient } from '~/plugins/api-client'
 import {
-  AdminRole,
+  AdminType,
   type AuthResponse,
   type AuthUserResponse,
   type Coordinator,
@@ -40,8 +40,8 @@ export const useAuthStore = defineStore('auth', {
     accessToken(state): string | undefined {
       return state.auth?.accessToken
     },
-    role(state): AdminRole {
-      return state.auth?.role || AdminRole.UNKNOWN
+    adminType(state): AdminType {
+      return state.auth?.type || AdminType.UNKNOWN
     },
   },
 
