@@ -15,7 +15,7 @@ func TestAdminRole(t *testing.T) {
 	tests := []struct {
 		name      string
 		role      int32
-		expect    AdminRole
+		expect    LegacyAdminRole
 		expectErr error
 	}{
 		{
@@ -48,7 +48,7 @@ func TestAdminRole_Validate(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		role   AdminRole
+		role   LegacyAdminRole
 		expect error
 	}{
 		{
@@ -105,6 +105,7 @@ func TestAdmin(t *testing.T) {
 			expect: &Admin{
 				CognitoID:     "cognito-id",
 				Role:          AdminRoleAdministrator,
+				Type:          AdminTypeAdministrator,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -257,7 +258,7 @@ func TestAdmins_GroupByRole(t *testing.T) {
 	tests := []struct {
 		name   string
 		admins Admins
-		expect map[AdminRole]Admins
+		expect map[LegacyAdminRole]Admins
 	}{
 		{
 			name: "success",
@@ -268,7 +269,7 @@ func TestAdmins_GroupByRole(t *testing.T) {
 					Role:      AdminRoleAdministrator,
 				},
 			},
-			expect: map[AdminRole]Admins{
+			expect: map[LegacyAdminRole]Admins{
 				AdminRoleAdministrator: {
 					{
 						ID:        "admin-id",

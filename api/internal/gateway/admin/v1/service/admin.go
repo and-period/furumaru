@@ -33,7 +33,7 @@ type Admin struct {
 
 type Admins []*Admin
 
-func NewAdminRole(role entity.AdminRole) AdminRole {
+func NewAdminRole(role entity.LegacyAdminRole) AdminRole {
 	switch role {
 	case entity.AdminRoleAdministrator:
 		return AdminRoleAdministrator

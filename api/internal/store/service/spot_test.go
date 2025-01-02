@@ -464,7 +464,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 	adminIn := &user.GetAdminInput{
 		AdminID: "admin-id",
 	}
-	admin := func(role uentity.AdminRole) *uentity.Admin {
+	admin := func(role uentity.LegacyAdminRole) *uentity.Admin {
 		return &uentity.Admin{
 			ID:   "admin-id",
 			Role: role,
