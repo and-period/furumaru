@@ -13,7 +13,7 @@ const categoryPagination = usePagination()
 const productTypePagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { categories, total: categoryTotal } = storeToRefs(categoryStore)
 const { productTypes, totalItems: productTypeTotal } = storeToRefs(productTypeStore)
 
@@ -396,7 +396,7 @@ catch (err) {
     v-model:create-product-type-form-data="createProductTypeFormData"
     v-model:update-product-type-form-data="updateProductTypeFormData"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

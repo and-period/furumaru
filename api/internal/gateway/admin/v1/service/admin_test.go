@@ -9,44 +9,44 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdminRole(t *testing.T) {
+func TestAdminType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name                string
-		role                entity.LegacyAdminRole
-		expect              AdminRole
+		Type                entity.AdminType
+		expect              AdminType
 		expectString        string
 		expectIsCoordinator bool
 		expectResponse      int32
 	}{
 		{
 			name:                "administrator",
-			role:                entity.AdminRoleAdministrator,
-			expect:              AdminRoleAdministrator,
+			Type:                entity.AdminTypeAdministrator,
+			expect:              AdminTypeAdministrator,
 			expectString:        "administrator",
 			expectIsCoordinator: false,
 			expectResponse:      1,
 		},
 		{
 			name:                "coordinator",
-			role:                entity.AdminRoleCoordinator,
-			expect:              AdminRoleCoordinator,
+			Type:                entity.AdminTypeCoordinator,
+			expect:              AdminTypeCoordinator,
 			expectString:        "coordinator",
 			expectIsCoordinator: true,
 			expectResponse:      2,
 		},
 		{
 			name:                "producer",
-			role:                entity.AdminRoleProducer,
-			expect:              AdminRoleProducer,
+			Type:                entity.AdminTypeProducer,
+			expect:              AdminTypeProducer,
 			expectString:        "producer",
 			expectIsCoordinator: false,
 			expectResponse:      3,
 		},
 		{
 			name:                "unknown",
-			role:                entity.AdminRoleUnknown,
-			expect:              AdminRoleUnknown,
+			Type:                entity.AdminTypeUnknown,
+			expect:              AdminTypeUnknown,
 			expectString:        "unknown",
 			expectIsCoordinator: false,
 			expectResponse:      0,
@@ -56,7 +56,7 @@ func TestAdminRole(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminRole(tt.role)
+			actual := NewAdminType(tt.Type)
 			assert.Equal(t, tt.expect, actual)
 			assert.Equal(t, tt.expectString, actual.String())
 			assert.Equal(t, tt.expectIsCoordinator, actual.IsCoordinator())
@@ -69,31 +69,31 @@ func TestAdminStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name           string
-		role           entity.AdminStatus
+		Type           entity.AdminStatus
 		expect         AdminStatus
 		expectResponse int32
 	}{
 		{
 			name:           "invited",
-			role:           entity.AdminStatusInvited,
+			Type:           entity.AdminStatusInvited,
 			expect:         AdminStatusInvited,
 			expectResponse: 1,
 		},
 		{
 			name:           "activated",
-			role:           entity.AdminStatusActivated,
+			Type:           entity.AdminStatusActivated,
 			expect:         AdminStatusActivated,
 			expectResponse: 2,
 		},
 		{
 			name:           "deactivated",
-			role:           entity.AdminStatusDeactivated,
+			Type:           entity.AdminStatusDeactivated,
 			expect:         AdminStatusDeactivated,
 			expectResponse: 3,
 		},
 		{
 			name:           "unknown",
-			role:           entity.AdminStatusUnknown,
+			Type:           entity.AdminStatusUnknown,
 			expect:         AdminStatusUnknown,
 			expectResponse: 0,
 		},
@@ -102,7 +102,7 @@ func TestAdminStatus(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAdminStatus(tt.role)
+			actual := NewAdminStatus(tt.Type)
 			assert.Equal(t, tt.expect, actual)
 			assert.Equal(t, tt.expectResponse, actual.Response())
 		})
@@ -120,7 +120,7 @@ func TestAdmin(t *testing.T) {
 			name: "success",
 			admin: &entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleAdministrator,
+				Type:          entity.AdminTypeAdministrator,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどぴりおど",
@@ -132,7 +132,7 @@ func TestAdmin(t *testing.T) {
 			expect: &Admin{
 				Admin: response.Admin{
 					ID:            "admin-id",
-					Role:          entity.AdminRoleAdministrator,
+					Type:          int32(AdminTypeAdministrator),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -212,7 +212,7 @@ func TestAdmin_Response(t *testing.T) {
 			admin: &Admin{
 				Admin: response.Admin{
 					ID:            "admin-id",
-					Role:          entity.AdminRoleAdministrator,
+					Type:          int32(AdminTypeAdministrator),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -224,7 +224,7 @@ func TestAdmin_Response(t *testing.T) {
 			},
 			expect: &response.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleAdministrator,
+				Type:          int32(AdminTypeAdministrator),
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどぴりおど",
@@ -256,7 +256,7 @@ func TestAdmins(t *testing.T) {
 			admins: entity.Admins{
 				{
 					ID:            "admin-id01",
-					Role:          entity.AdminRoleAdministrator,
+					Type:          entity.AdminTypeAdministrator,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -267,7 +267,7 @@ func TestAdmins(t *testing.T) {
 				},
 				{
 					ID:            "admin-id02",
-					Role:          entity.AdminRoleCoordinator,
+					Type:          entity.AdminTypeCoordinator,
 					Lastname:      "&.",
 					Firstname:     "コーディネータ",
 					LastnameKana:  "あんどぴりおど",
@@ -281,7 +281,7 @@ func TestAdmins(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id01",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -294,7 +294,7 @@ func TestAdmins(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id02",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -329,7 +329,7 @@ func TestAdmins_Map(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id01",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -342,7 +342,7 @@ func TestAdmins_Map(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id02",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -357,7 +357,7 @@ func TestAdmins_Map(t *testing.T) {
 				"admin-id01": {
 					Admin: response.Admin{
 						ID:            "admin-id01",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -370,7 +370,7 @@ func TestAdmins_Map(t *testing.T) {
 				"admin-id02": {
 					Admin: response.Admin{
 						ID:            "admin-id02",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -405,7 +405,7 @@ func TestAdmins_Response(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id01",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -418,7 +418,7 @@ func TestAdmins_Response(t *testing.T) {
 				{
 					Admin: response.Admin{
 						ID:            "admin-id02",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -432,7 +432,7 @@ func TestAdmins_Response(t *testing.T) {
 			expect: []*response.Admin{
 				{
 					ID:            "admin-id01",
-					Role:          entity.AdminRoleAdministrator,
+					Type:          int32(AdminTypeAdministrator),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -443,7 +443,7 @@ func TestAdmins_Response(t *testing.T) {
 				},
 				{
 					ID:            "admin-id02",
-					Role:          entity.AdminRoleCoordinator,
+					Type:          int32(AdminTypeCoordinator),
 					Lastname:      "&.",
 					Firstname:     "コーディネータ",
 					LastnameKana:  "あんどぴりおど",

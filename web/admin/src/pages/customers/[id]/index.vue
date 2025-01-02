@@ -14,7 +14,7 @@ const { isShow, alertText, alertType, show } = useAlert('error')
 
 const customerId = route.params.id as string
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { address } = storeToRefs(addressStore)
 const {
   customer,
@@ -95,7 +95,7 @@ catch (err) {
   <templates-customer-show
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

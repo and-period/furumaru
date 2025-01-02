@@ -12,7 +12,7 @@ import {
   type ExperiencesResponse,
   type Producer,
   ExperienceStatus,
-  AdminRole,
+  AdminType,
 } from '~/types/api'
 
 const props = defineProps({
@@ -24,9 +24,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
@@ -162,12 +162,12 @@ const getExperienceType = (experienceTypeId: string): string => {
 }
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.COORDINATOR
+  return props.adminType === AdminType.COORDINATOR
 }
 
 const isDeletable = (): boolean => {
-  const targets: AdminRole[] = [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  return targets.includes(props.role)
+  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  return targets.includes(props.adminType)
 }
 
 const toggleDeleteDialog = (experience?: Experience): void => {

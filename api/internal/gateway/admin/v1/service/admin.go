@@ -7,14 +7,14 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-// AdminRole - 管理者ロール
-type AdminRole int32
+// AdminType - 管理者ロール
+type AdminType int32
 
 const (
-	AdminRoleUnknown       AdminRole = 0
-	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
-	AdminRoleProducer      AdminRole = 3 // 生産者
+	AdminTypeUnknown       AdminType = 0
+	AdminTypeAdministrator AdminType = 1 // 管理者
+	AdminTypeCoordinator   AdminType = 2 // コーディネータ
+	AdminTypeProducer      AdminType = 3 // 生産者
 )
 
 // AdminStatus - 管理者ステータス
@@ -34,37 +34,37 @@ type Admin struct {
 type Admins []*Admin
 
 //nolint:staticcheck
-func NewAdminRole(role entity.LegacyAdminRole) AdminRole {
+func NewAdminType(role entity.AdminType) AdminType {
 	switch role {
-	case entity.AdminRoleAdministrator:
-		return AdminRoleAdministrator
-	case entity.AdminRoleCoordinator:
-		return AdminRoleCoordinator
-	case entity.AdminRoleProducer:
-		return AdminRoleProducer
+	case entity.AdminTypeAdministrator:
+		return AdminTypeAdministrator
+	case entity.AdminTypeCoordinator:
+		return AdminTypeCoordinator
+	case entity.AdminTypeProducer:
+		return AdminTypeProducer
 	default:
-		return AdminRoleUnknown
+		return AdminTypeUnknown
 	}
 }
 
-func (r AdminRole) String() string {
+func (r AdminType) String() string {
 	switch r {
-	case AdminRoleAdministrator:
+	case AdminTypeAdministrator:
 		return "administrator"
-	case AdminRoleCoordinator:
+	case AdminTypeCoordinator:
 		return "coordinator"
-	case AdminRoleProducer:
+	case AdminTypeProducer:
 		return "producer"
 	default:
 		return "unknown"
 	}
 }
 
-func (r AdminRole) IsCoordinator() bool {
-	return r == AdminRoleCoordinator
+func (r AdminType) IsCoordinator() bool {
+	return r == AdminTypeCoordinator
 }
 
-func (r AdminRole) Response() int32 {
+func (r AdminType) Response() int32 {
 	return int32(r)
 }
 
@@ -89,7 +89,7 @@ func NewAdmin(admin *entity.Admin) *Admin {
 	return &Admin{
 		Admin: response.Admin{
 			ID:            admin.ID,
-			Role:          admin.Role,
+			Type:          NewAdminType(admin.Type).Response(),
 			Lastname:      admin.Lastname,
 			Firstname:     admin.Firstname,
 			LastnameKana:  admin.LastnameKana,

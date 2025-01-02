@@ -294,7 +294,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 	coordinator := &uentity.Coordinator{
 		Admin: uentity.Admin{
 			ID:            "coordinator-id",
-			Role:          uentity.AdminRoleCoordinator,
+			Type:          uentity.AdminTypeCoordinator,
 			Status:        uentity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "コーディネータ",
@@ -1119,7 +1119,7 @@ func TestNotifyNotification(t *testing.T) {
 	}
 	admin := &uentity.Admin{
 		ID:            "admin-id",
-		Role:          uentity.AdminRoleAdministrator,
+		Type:          uentity.AdminTypeAdministrator,
 		Status:        uentity.AdminStatusActivated,
 		Lastname:      "&.",
 		Firstname:     "管理者",

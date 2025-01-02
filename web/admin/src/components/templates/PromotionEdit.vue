@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminRole, DiscountType, PromotionStatus, type Promotion, type UpdatePromotionRequest } from '~/types/api'
+import { AdminType, DiscountType, PromotionStatus, type Promotion, type UpdatePromotionRequest } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types/validations'
 
@@ -13,9 +13,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
@@ -109,7 +109,7 @@ const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDat
 const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
 
 const isEditable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const onChangeStartAt = (): void => {

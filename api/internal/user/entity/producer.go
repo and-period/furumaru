@@ -118,7 +118,7 @@ func (ps Producers) Fill(admins map[string]*Admin) error {
 	for _, p := range ps {
 		admin, ok := admins[p.AdminID]
 		if !ok {
-			admin = &Admin{ID: p.AdminID, Role: AdminRoleProducer}
+			admin = &Admin{ID: p.AdminID, Type: AdminTypeProducer}
 		}
 		if err := p.Fill(admin); err != nil {
 			return err

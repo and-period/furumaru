@@ -5,8 +5,8 @@ admin:
     id:
       type: string
       description: 管理者ID
-    role:
-      $ref: './../../../openapi.yaml#/components/schemas/adminRole'
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/adminType'
     lastname:
       type: string
       description: 姓
@@ -32,7 +32,7 @@ admin:
       description: 更新日時 (unixtime)
   required:
   - id
-  - role
+  - type
   - lastname
   - firstname
   - lastnameKana
@@ -42,7 +42,7 @@ admin:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    role: 2
+    type: 2
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'

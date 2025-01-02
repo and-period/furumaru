@@ -17,13 +17,13 @@ import {
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
 import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
-import { AdminRole } from '~/types/api'
+import { AdminType } from '~/types/api'
 
 interface NavigationDrawerItem {
   to: string
   icon: string
   title: string
-  roles?: AdminRole[]
+  adminTypes?: AdminType[]
 }
 
 const drawer = ref<boolean>(true)
@@ -32,7 +32,7 @@ const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const messageStore = useMessageStore()
 
-const { user, role } = storeToRefs(authStore)
+const { user, adminType } = storeToRefs(authStore)
 
 const snackbars = computed(() => {
   return commonStore.snackbars.filter(item => item.isOpen)
@@ -50,61 +50,61 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/products',
     icon: mdiCart,
     title: '商品管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/experiences',
     icon: mdiFootPrint,
     title: '体験管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/videos',
     icon: mdiVideo,
     title: '動画管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
     title: '注文管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/customers',
     icon: mdiAccountDetails,
     title: '顧客管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   // {
   //   to: '/contacts',
   //   icon: mdiForum,
   //   title: 'お問い合わせ',
-  //   roles: [AdminRole.ADMINISTRATOR]
+  //   adminTypes: [AdminType.ADMINISTRATOR]
   // },
   {
     to: '/notifications',
     icon: mdiBellRing,
     title: 'お知らせ情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/promotions',
     icon: mdiCash100,
     title: 'セール情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
 ]
 const settingDrawers: NavigationDrawerItem[] = [
@@ -112,19 +112,19 @@ const settingDrawers: NavigationDrawerItem[] = [
     to: '/accounts',
     icon: mdiAccount,
     title: 'マイページ',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/system',
     icon: mdiCog,
     title: 'システム設定',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
   {
     to: '/version',
     icon: mdiCog,
     title: 'バージョン情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
   },
 ]
 
@@ -137,13 +137,13 @@ const getImages = (): string => {
 
 const getGeneralDrawers = (): NavigationDrawerItem[] => {
   return generalDrawers.filter((drawer: NavigationDrawerItem): boolean => {
-    return drawer.roles?.includes(role.value) || false
+    return drawer.adminTypes?.includes(adminType.value) || false
   })
 }
 
 const getSettingDrawers = (): NavigationDrawerItem[] => {
   return settingDrawers.filter((drawer: NavigationDrawerItem): boolean => {
-    return drawer.roles?.includes(role.value) || false
+    return drawer.adminTypes?.includes(adminTypes.value) || false
   })
 }
 

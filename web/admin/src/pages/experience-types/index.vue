@@ -8,7 +8,7 @@ const experienceTypeStore = useExperienceTypeStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { experienceTypes, total } = storeToRefs(experienceTypeStore)
 
 const loading = ref<boolean>(false)
@@ -149,7 +149,7 @@ catch (err) {
     v-model:delete-dialog="deleteDialog"
     v-model:sort-by="sortBy"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

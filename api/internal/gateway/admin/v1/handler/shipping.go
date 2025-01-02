@@ -112,7 +112,7 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		return
 	}
 	coordinatorID := util.GetParam(ctx, "coordinatorId")
-	if getRole(ctx).IsCoordinator() && getAdminID(ctx) != coordinatorID {
+	if getAdminType(ctx).IsCoordinator() && getAdminID(ctx) != coordinatorID {
 		h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 		return
 	}

@@ -140,7 +140,7 @@ func TestAdministrators_Fill(t *testing.T) {
 				"admin-id01": {
 					ID:        "admin-id01",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
 			expect: Administrators{
@@ -149,14 +149,14 @@ func TestAdministrators_Fill(t *testing.T) {
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleAdministrator,
+						Type:      AdminTypeAdministrator,
 					},
 				},
 				{
 					AdminID: "admin-id02",
 					Admin: Admin{
 						ID:   "admin-id02",
-						Role: AdminRoleAdministrator,
+						Type: AdminTypeAdministrator,
 					},
 				},
 			},

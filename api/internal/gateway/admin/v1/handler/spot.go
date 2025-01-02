@@ -190,15 +190,15 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	adminID := getAdminID(ctx)
 
 	res := &response.SpotResponse{}
-	switch getRole(ctx) {
-	case service.AdminRoleCoordinator:
+	switch getAdminType(ctx) {
+	case service.AdminTypeCoordinator:
 		coordinator, err := h.getCoordinator(ctx, adminID)
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
 		res.Coordinator = coordinator.Response()
-	case service.AdminRoleProducer:
+	case service.AdminTypeProducer:
 		producer, err := h.getProducer(ctx, adminID)
 		if err != nil {
 			h.httpError(ctx, err)

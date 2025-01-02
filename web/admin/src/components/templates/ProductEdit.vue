@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, AdminRole } from '~/types/api'
+import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, AdminType } from '~/types/api'
 import { getErrorMessage } from '~/lib/validations'
 import { prefecturesList, cityList, type PrefecturesListItem, type CityListItem } from '~/constants'
 import type { DateTimeInput } from '~/types/props'
@@ -27,9 +27,9 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   formData: {
     type: Object as PropType<UpdateProductRequest>,
@@ -243,11 +243,11 @@ const isUpdatable = (): boolean => {
   if (props.product.status === ProductStatus.ARCHIVED) {
     return false
   }
-  const targets: AdminRole[] = [
-    AdminRole.ADMINISTRATOR,
-    AdminRole.COORDINATOR,
+  const targets: AdminType[] = [
+    AdminType.ADMINISTRATOR,
+    AdminType.COORDINATOR,
   ]
-  return targets.includes(props.role)
+  return targets.includes(props.adminType)
 }
 
 const onChangeStartAt = (): void => {

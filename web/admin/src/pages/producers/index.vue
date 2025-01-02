@@ -12,7 +12,7 @@ const producerStore = useProducerStore()
 const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { coordinators } = storeToRefs(coordinatorStore)
 const { producers, totalItems } = storeToRefs(producerStore)
 
@@ -90,7 +90,7 @@ catch (err) {
   <templates-producer-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
