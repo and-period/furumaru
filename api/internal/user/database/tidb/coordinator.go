@@ -88,6 +88,9 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-	admins.Fill()
+	// TODO: 管理者グループID一覧を取得する処理を追加
+	if err := admins.Fill(nil); err != nil {
+		return err
+	}
 	return entity.Coordinators(coordinators).Fill(admins.Map())
 }

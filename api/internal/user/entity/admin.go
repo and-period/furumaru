@@ -27,6 +27,7 @@ type Admin struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
 	CognitoID     string         `gorm:"default:null"`         // 管理者ID (Cognito用)
 	Type          AdminType      `gorm:"<-:create"`            // 管理者種別
+	GroupIDs      []string       `gorm:"-"`                    // 管理者グループID一覧
 	Status        AdminStatus    `gorm:"-"`                    // 管理者ステータス
 	Lastname      string         `gorm:"default:null"`         // 姓
 	Firstname     string         `gorm:"default:null"`         // 名
@@ -87,13 +88,17 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func (a *Admin) Fill() {
-	if a.Type == AdminTypeProducer {
+func (a *Admin) Fill(groups RelatedAdminGroups) (err error) {
+	a.SetStatus()
+	a.GroupIDs = groups.GroupIDs()
+	return
+}
+
+func (a *Admin) SetStatus() {
+	switch {
+	case a.Type == AdminTypeProducer:
 		// 生産者は認証機能を持たないため、一律無効状態にする
 		a.Status = AdminStatusDeactivated
-		return
-	}
-	switch {
 	case !a.DeletedAt.Time.IsZero():
 		a.Status = AdminStatusDeactivated
 	case a.FirstSignInAt.IsZero():
@@ -142,8 +147,11 @@ func (as Admins) Devices() []string {
 	return set.Slice()
 }
 
-func (as Admins) Fill() {
-	for i := range as {
-		as[i].Fill()
+func (as Admins) Fill(groups map[string]RelatedAdminGroups) error {
+	for _, a := range as {
+		if err := a.Fill(groups[a.ID]); err != nil {
+			return err
+		}
 	}
+	return nil
 }
