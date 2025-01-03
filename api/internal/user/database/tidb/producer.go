@@ -90,6 +90,9 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-	admins.Fill()
+	// TODO: 管理者グループID一覧を取得する処理を追加
+	if err := admins.Fill(nil); err != nil {
+		return err
+	}
 	return entity.Producers(producers).Fill(admins.Map())
 }

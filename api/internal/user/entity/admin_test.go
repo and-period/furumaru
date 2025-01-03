@@ -164,16 +164,25 @@ func TestAdmin_Fill(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
-		name         string
-		admin        *Admin
-		expectStatus AdminStatus
+		name           string
+		admin          *Admin
+		groups         RelatedAdminGroups
+		expectGroupIDs []string
+		expectStatus   AdminStatus
 	}{
 		{
 			name: "producer",
 			admin: &Admin{
 				Type: AdminTypeProducer,
 			},
-			expectStatus: AdminStatusDeactivated,
+			groups: RelatedAdminGroups{
+				{
+					AdminID: "admin-id",
+					GroupID: "group-id",
+				},
+			},
+			expectGroupIDs: []string{"group-id"},
+			expectStatus:   AdminStatusDeactivated,
 		},
 		{
 			name: "invited",
@@ -181,7 +190,14 @@ func TestAdmin_Fill(t *testing.T) {
 				Type:          AdminTypeCoordinator,
 				FirstSignInAt: time.Time{},
 			},
-			expectStatus: AdminStatusInvited,
+			groups: RelatedAdminGroups{
+				{
+					AdminID: "admin-id",
+					GroupID: "group-id",
+				},
+			},
+			expectGroupIDs: []string{"group-id"},
+			expectStatus:   AdminStatusInvited,
 		},
 		{
 			name: "activated",
@@ -189,7 +205,14 @@ func TestAdmin_Fill(t *testing.T) {
 				Type:          AdminTypeCoordinator,
 				FirstSignInAt: now,
 			},
-			expectStatus: AdminStatusActivated,
+			groups: RelatedAdminGroups{
+				{
+					AdminID: "admin-id",
+					GroupID: "group-id",
+				},
+			},
+			expectGroupIDs: []string{"group-id"},
+			expectStatus:   AdminStatusActivated,
 		},
 		{
 			name: "deactivated",
@@ -201,14 +224,16 @@ func TestAdmin_Fill(t *testing.T) {
 					Valid: true,
 				},
 			},
-			expectStatus: AdminStatusDeactivated,
+			groups:         nil,
+			expectGroupIDs: []string{},
+			expectStatus:   AdminStatusDeactivated,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.admin.Fill()
+			tt.admin.Fill(tt.groups)
 			assert.Equal(t, tt.expectStatus, tt.admin.Status)
 		})
 	}
