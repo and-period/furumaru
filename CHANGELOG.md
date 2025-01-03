@@ -1,5 +1,8 @@
 # Changelog
 
+## [v3.4.3](https://github.com/and-period/furumaru/compare/v3.4.2...v3.4.3) - 2025-01-03
+- feat(user): 管理面ロール用のエンティティ定義を更新 by @taba2424 in https://github.com/and-period/furumaru/pull/2624
+
 ## [v3.4.2](https://github.com/and-period/furumaru/compare/v3.4.1...v3.4.2) - 2025-01-02
 - refactor(user): 管理者種別のフィールド名を置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2622
 
