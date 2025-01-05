@@ -156,6 +156,9 @@ func TestDBError(t *testing.T) {
 }
 
 func setEnv() {
+	if os.Getenv("DB_DRIVER") == "" {
+		os.Setenv("DB_DRIVER", "mysql")
+	}
 	if os.Getenv("DB_HOST") == "" {
 		os.Setenv("DB_HOST", "127.0.0.1")
 	}
