@@ -35,8 +35,7 @@ func (p listLivesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
 	}
-	stmt = stmt.Order("start_at ASC, end_at ASC")
-	return stmt
+	return stmt.Order("start_at ASC, end_at ASC")
 }
 
 func (p listLivesParams) pagination(stmt *gorm.DB) *gorm.DB {

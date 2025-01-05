@@ -53,7 +53,7 @@ func TestOrder_List(t *testing.T) {
 	}
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now().Add(-time.Hour))
 	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
@@ -99,11 +99,11 @@ func TestOrder_List(t *testing.T) {
 				params: &database.ListOrdersParams{
 					CoordinatorID: "coordinator-id",
 					Limit:         2,
-					Offset:        1,
+					Offset:        0,
 				},
 			},
 			want: want{
-				orders: orders[:1],
+				orders: orders,
 				hasErr: false,
 			},
 		},

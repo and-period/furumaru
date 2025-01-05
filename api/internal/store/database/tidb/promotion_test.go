@@ -33,6 +33,7 @@ func TestPromotion_List(t *testing.T) {
 
 	promotions := make(entity.Promotions, 3)
 	promotions[0] = testPromotion("promotion-id01", "code0001", now().Add(-time.Hour))
+	promotions[0].Status = entity.PromotionStatusFinished
 	promotions[1] = testPromotion("promotion-id02", "code0002", now())
 	promotions[2] = testPromotion("promotion-id03", "code0003", now().Add(time.Hour))
 	err = db.DB.Create(&promotions).Error

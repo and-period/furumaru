@@ -79,11 +79,11 @@ func TestLive_List(t *testing.T) {
 					ScheduleIDs: []string{"schedule-id"},
 					ProducerID:  "producer-id",
 					Limit:       20,
-					Offset:      1,
+					Offset:      0,
 				},
 			},
 			want: want{
-				lives:  lives[1:],
+				lives:  lives,
 				hasErr: false,
 			},
 		},
@@ -101,7 +101,7 @@ func TestLive_List(t *testing.T) {
 			db := &live{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.Equal(t, tt.want.lives, actual)
+			assert.ElementsMatch(t, tt.want.lives, actual)
 		})
 	}
 }

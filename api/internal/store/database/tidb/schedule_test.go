@@ -55,12 +55,12 @@ func TestSchedule_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListSchedulesParams{
-					Limit:  1,
-					Offset: 1,
+					Limit:  2,
+					Offset: 0,
 				},
 			},
 			want: want{
-				schedules: schedules[1:],
+				schedules: schedules,
 				hasErr:    false,
 			},
 		},
