@@ -48,7 +48,7 @@ func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.Statuses) > 0 {
 		stmt = stmt.Where("status IN (?)", p.Statuses)
 	}
-	return stmt.Order("created_at DESC")
+	return stmt
 }
 
 func (p listOrdersParams) pagination(stmt *gorm.DB) *gorm.DB {

@@ -79,7 +79,7 @@ func TestProduct_List(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					ProducerID:    "producer-id",
 					ProducerIDs:   []string{"producer-id"},
-					Limit:         2,
+					Limit:         3,
 					Offset:        0,
 				},
 			},
