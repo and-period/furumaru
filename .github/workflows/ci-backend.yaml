@@ -14,7 +14,7 @@ env:
   DB_HOST: 127.0.0.1
   DB_PORT: 3306
   DB_USERNAME: root
-  DB_PASSWORD: 12345678
+  DB_PASSWORD: password
 
 jobs:
   setup:
@@ -119,7 +119,7 @@ jobs:
         ports:
         - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
         options: --health-cmd "mysqladmin ping -h 127.0.0.1"
 
     steps:
@@ -131,23 +131,33 @@ jobs:
         working-directory: ./api
         service: ${{ env.SERVICE }}
 
-    - name: Database Migration
-      run: |
-        go run ./hack/database-migrate-tidb/main.go \
-          -db-driver='mysql' \
-          -db-host='127.0.0.1' \
-          -db-port=3306 \
-          -db-username=root \
-          -db-password=password
-
     - name: Setup
       run: make setup
 
     - name: Create Mock
       run: make mockgen
 
+    - name: Database Migration
+      run: |
+        go run ./hack/database-migrate-tidb/main.go \
+          -db-driver='mysql' \
+          -db-host=${DB_HOST} \
+          -db-port=${DB_PORT} \
+          -db-username=${DB_USERNAME} \
+          -db-password=${DB_PASSWORD}
+      env:
+        DB_HOST: ${{ env.DB_HOST }}
+        DB_PORT: ${{ env.DB_PORT }}
+        DB_USERNAME: ${{ env.DB_USERNAME }}
+        DB_PASSWORD: ${{ env.DB_PASSWORD }}
+
     - name: Test
       run: make test
+      env:
+        DB_HOST: ${{ env.DB_HOST }}
+        DB_PORT: ${{ env.DB_PORT }}
+        DB_USERNAME: ${{ env.DB_USERNAME }}
+        DB_PASSWORD: ${{ env.DB_PASSWORD }}
 
     - uses: codecov/codecov-action@v5
       with:
