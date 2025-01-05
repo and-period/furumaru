@@ -3,7 +3,7 @@ FROM debian:bookworm-slim
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 
-RUN apt update -&& apt install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     curl \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
