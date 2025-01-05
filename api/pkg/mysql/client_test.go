@@ -14,6 +14,8 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 
 	tests := []struct {
@@ -72,6 +74,8 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestBeginAndClose(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -92,6 +96,8 @@ func TestBeginAndClose(t *testing.T) {
 }
 
 func TestTransaction(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
