@@ -37,7 +37,7 @@ func TestCoordinator_List(t *testing.T) {
 
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now().Add(time.Hour))
 	err = db.DB.Debug().Create(&admins).Error
 	coordinators := make(entity.Coordinators, 2)
 	coordinators[0] = testCoordinator("admin-id01", now())
@@ -71,7 +71,7 @@ func TestCoordinator_List(t *testing.T) {
 				},
 			},
 			want: want{
-				coordinators: coordinators[1:],
+				coordinators: coordinators[:1],
 				hasErr:       false,
 			},
 		},

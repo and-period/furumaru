@@ -33,7 +33,7 @@ func TestUser_List(t *testing.T) {
 
 	users := make(entity.Users, 2)
 	users[0] = testUser("user-id01", "test-user01@and-period.jp", "+810000000001", now())
-	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now())
+	users[1] = testUser("user-id02", "test-user02@and-period.jp", "+810000000002", now().Add(time.Hour))
 	err = db.DB.Create(&users).Error
 	for i := range users {
 		err = db.DB.Create(&users[i].Member).Error
@@ -63,7 +63,7 @@ func TestUser_List(t *testing.T) {
 				},
 			},
 			want: want{
-				users:  users[1:],
+				users:  users[:1],
 				hasErr: false,
 			},
 		},

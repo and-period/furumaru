@@ -32,9 +32,9 @@ func TestPromotion_List(t *testing.T) {
 	require.NoError(t, err)
 
 	promotions := make(entity.Promotions, 3)
-	promotions[0] = testPromotion("promotion-id01", "code0001", now())
+	promotions[0] = testPromotion("promotion-id01", "code0001", now().Add(-time.Hour))
 	promotions[1] = testPromotion("promotion-id02", "code0002", now())
-	promotions[2] = testPromotion("promotion-id03", "code0003", now())
+	promotions[2] = testPromotion("promotion-id03", "code0003", now().Add(time.Hour))
 	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
@@ -57,12 +57,12 @@ func TestPromotion_List(t *testing.T) {
 			args: args{
 				params: &database.ListPromotionsParams{
 					Title:  "夏の採れたて野菜",
-					Limit:  2,
+					Limit:  1,
 					Offset: 1,
 				},
 			},
 			want: want{
-				promotions: promotions[1:],
+				promotions: promotions[1:2],
 				hasErr:     false,
 			},
 		},

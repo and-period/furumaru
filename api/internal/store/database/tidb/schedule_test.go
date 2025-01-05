@@ -33,7 +33,7 @@ func TestSchedule_List(t *testing.T) {
 
 	schedules := make(entity.Schedules, 2)
 	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now().Add(time.Hour))
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
