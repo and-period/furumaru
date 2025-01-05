@@ -27,6 +27,6 @@ runs:
           echo 'TiDB emulator failed to start'
           exit 1
         fi
-        count=$((expr count + 1))
+        count=$((expr $count + 1))
       done
       echo 'TiDB emulator is ready'
