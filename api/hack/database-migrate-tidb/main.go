@@ -157,6 +157,7 @@ func (a *app) run(ctx context.Context) error {
  */
 func (a *app) setup(database string) (*mysql.Client, error) {
 	params := &mysql.Params{
+		Socket:   "tcp",
 		Host:     host,
 		Port:     port,
 		Username: username,
