@@ -10,4 +10,5 @@ RUN apk add --update \
   openjdk11-jre-headless \
   && rm -rf /var/cache/apk/*
 
-RUN yarn global add @openapitools/openapi-generator-cli@v2.13.4
+RUN --mount=type=bind,source=./docs/swagger/Makefile,target=Makefile \
+  make setup

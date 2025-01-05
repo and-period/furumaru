@@ -52,7 +52,7 @@ start-web: ## フロントエンド関連の起動
 	docker compose up user_web admin_web
 
 start-api: ## バックエンド関連の起動
-	docker compose up user_gateway admin_gateway mysql mysql_test
+	docker compose up user_gateway admin_gateway mysql
 
 start-swagger: ## API仕様書用システムの起動
 	docker compose up swagger_generator swagger_user swagger_admin
@@ -68,9 +68,7 @@ swagger: ## API仕様書の生成
 	cd ./web/user && yarn format
 
 migrate: ## データベースにDDLを適用
-	docker compose up -d mysql mysql_test
+	docker compose up -d mysql
 	docker compose exec mysql bash -c "until mysqladmin ping -u root -p12345678 2> /dev/null; do echo 'waiting for ping response..'; sleep 3; done; echo 'mysql_test is ready!'"
-	docker compose exec mysql_test bash -c "until mysqladmin ping -u root -p12345678 2> /dev/null; do echo 'waiting for ping response..'; sleep 3; done; echo 'mysql_test is ready!'"
 	docker compose run --rm executor sh -c "cd ./hack/database-migrate-mysql; go run ./main.go -db-host=mysql -db-port=3306"
-	docker compose run --rm executor sh -c "cd ./hack/database-migrate-mysql; go run ./main.go -db-host=mysql_test -db-port=3306"
-	docker compose stop mysql mysql_test
+	docker compose stop mysql
