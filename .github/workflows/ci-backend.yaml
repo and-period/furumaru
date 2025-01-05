@@ -2,7 +2,7 @@ name: '[Backend] Build and Test'
 on:
   push:
     paths:
-    - '.github/actions/setup-go/**'
+    - '.github/actions/**'
     - '.github/workflows/ci-backend.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
