@@ -44,7 +44,14 @@ func newTestDBClient() (*mysql.Client, error) {
 		Password: os.Getenv("DB_PASSWORD"),
 	}
 	logger, _ := zap.NewDevelopment()
-	return mysql.NewClient(params, mysql.WithLogger(logger))
+	switch os.Getenv("DB_DRIVER") {
+	case "mysql":
+		return mysql.NewClient(params, mysql.WithLogger(logger))
+	case "tidb":
+		return mysql.NewTiDBClient(params, mysql.WithLogger(logger))
+	default:
+		return nil, fmt.Errorf("unsupported driver: %s", os.Getenv("DB_DRIVER"))
+	}
 }
 
 func deleteAll(ctx context.Context) error {

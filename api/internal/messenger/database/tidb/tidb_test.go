@@ -12,6 +12,7 @@ import (
 	gmysql "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -43,7 +44,15 @@ func newTestDBClient() (*mysql.Client, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
-	return mysql.NewClient(params)
+	logger, _ := zap.NewDevelopment()
+	switch os.Getenv("DB_DRIVER") {
+	case "mysql":
+		return mysql.NewClient(params, mysql.WithLogger(logger))
+	case "tidb":
+		return mysql.NewTiDBClient(params, mysql.WithLogger(logger))
+	default:
+		return nil, fmt.Errorf("unsupported driver: %s", os.Getenv("DB_DRIVER"))
+	}
 }
 
 func deleteAll(ctx context.Context) error {
