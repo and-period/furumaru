@@ -189,7 +189,10 @@ func testService(
 }
 
 func TestMain(m *testing.M) {
-	goleak.VerifyTestMain(m)
+	opts := []goleak.Option{
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
+	}
+	goleak.VerifyTestMain(m, opts...)
 }
 
 func TestService(t *testing.T) {
