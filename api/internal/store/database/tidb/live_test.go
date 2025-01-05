@@ -48,9 +48,9 @@ func TestLive_List(t *testing.T) {
 
 	productIDs := []string{"product-id01"}
 	lives := make(entity.Lives, 3)
-	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
+	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now().Add(-time.Hour))
 	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
-	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now())
+	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now().Add(time.Hour))
 	err = db.DB.Create(&lives).Error
 	require.NoError(t, err)
 	for _, live := range lives {
