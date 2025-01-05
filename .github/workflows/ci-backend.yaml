@@ -127,7 +127,7 @@ jobs:
     - name: Setup TiDB Emulator
       run: |
         curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-        echo "/home/runner/.tiup/bin/tiup" >> $GITHUB_PATH
+        source /home/runner/.profile
         tiup playground &
 
     - name: Database Migration
