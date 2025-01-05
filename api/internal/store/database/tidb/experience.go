@@ -377,9 +377,6 @@ func newInternalExperience(experience *entity.Experience) (*internalExperience, 
 }
 
 func (e *internalExperience) entity() (*entity.Experience, error) {
-	if e == nil {
-		return nil, nil
-	}
 	if err := e.unmarshalMedia(); err != nil {
 		return nil, err
 	}
