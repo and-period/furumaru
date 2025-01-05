@@ -18,7 +18,7 @@ runs:
     shell: bash
     run: |
       #!/bin/bash
-      retry=30
+      retry=60
       count=1
       until mysqladmin ping --host 127.0.0.1 --port 4000 -u root; do
         echo 'TiDB emulator is unavailable - sleeping'
