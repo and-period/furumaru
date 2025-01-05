@@ -4,11 +4,6 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-// 事前に以下DDLを実行すること
-//
-// CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
-//
-
 //nolint:gocritic,forbidigo,lll
 package main
 
@@ -32,7 +27,8 @@ import (
 const (
 	migrateDB      = "migrations"
 	schemaTable    = "schemas"
-	schemaTableDDL = "CREATE TABLE IF NOT EXISTS `schemas` (`database` varchar(256) NOT NULL, `version` varchar(10) NOT NULL, `filename` varchar(256) NOT NULL, `created_at` int NOT NULL, `updated_at` int NOT NULL, PRIMARY KEY (`database`, `version`));"
+	createDBDDL    = "CREATE SCHEMA IF NOT EXISTS `%s`;"
+	schemaTableDDL = "CREATE TABLE IF NOT EXISTS `migrations`.`schemas` (`database` varchar(256) NOT NULL, `version` varchar(10) NOT NULL, `filename` varchar(256) NOT NULL, `created_at` int NOT NULL, `updated_at` int NOT NULL, PRIMARY KEY (`database`, `version`));"
 )
 
 var (
@@ -123,13 +119,23 @@ type schema struct {
 }
 
 func (a *app) precheck(ctx context.Context) error {
-	// DDLの管理用テーブルの作成
-	client, err := a.setup(migrateDB)
+	client, err := a.setup("")
 	if err != nil {
 		return fmt.Errorf("failed to connect database: %w", err)
 	}
+	// DDLの管理用DBの作成
+	if err := client.DB.WithContext(ctx).Exec(fmt.Sprintf(createDBDDL, migrateDB)).Error; err != nil {
+		return fmt.Errorf("failed to create migrate database: %w", err)
+	}
+	// DDLの管理用テーブルの作成
 	if err := client.DB.WithContext(ctx).Exec(schemaTableDDL).Error; err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
+		return fmt.Errorf("failed to create schemas table: %w", err)
+	}
+	// 各種DBの作成
+	for _, database := range databases {
+		if err := client.DB.WithContext(ctx).Exec(fmt.Sprintf(createDBDDL, database)).Error; err != nil {
+			return fmt.Errorf("failed to create database. database=%s: %w", database, err)
+		}
 	}
 	return nil
 }
