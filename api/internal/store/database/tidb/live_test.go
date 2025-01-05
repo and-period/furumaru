@@ -77,6 +77,7 @@ func TestLive_List(t *testing.T) {
 			args: args{
 				params: &database.ListLivesParams{
 					ScheduleIDs: []string{"schedule-id"},
+					ProducerID:  "producer-id",
 					Limit:       20,
 					Offset:      1,
 				},
@@ -100,7 +101,7 @@ func TestLive_List(t *testing.T) {
 			db := &live{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.want.lives, actual)
+			assert.Equal(t, tt.want.lives, actual)
 		})
 	}
 }
