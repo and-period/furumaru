@@ -12,6 +12,7 @@ on:
 env:
   SERVICE: api
   TZ: 'Asia/Tokyo'
+  DB_DRIVER: mysql
   DB_HOST: 127.0.0.1
   DB_PORT: 4000
   DB_USERNAME: root
@@ -135,7 +136,7 @@ jobs:
     - name: Database Migration
       run: |
         go run ./hack/database-migrate-tidb/main.go \
-          -db-driver='tidb' \
+          -db-driver=${DB_DRIVER} \
           -db-host=${DB_HOST} \
           -db-port=${DB_PORT} \
           -db-username=${DB_USERNAME} \
