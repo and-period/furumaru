@@ -132,9 +132,8 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: Database Migration
-      run: go run ./hack/database-migrate-mysql/main.go \
-          -db-socket=tcp \
-          -db-host=127.0.0.1 \
+      run: go run ./hack/database-migrate-tidb/main.go \
+          -db-host=mysql \
           -db-port=3306 \
           -db-username=root \
           -db-password=password
