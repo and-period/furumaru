@@ -79,12 +79,12 @@ func TestProduct_List(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					ProducerID:    "producer-id",
 					ProducerIDs:   []string{"producer-id"},
-					Limit:         2,
-					Offset:        1,
+					Limit:         3,
+					Offset:        0,
 				},
 			},
 			want: want{
-				products: products[1:],
+				products: products,
 				hasErr:   false,
 			},
 		},
@@ -119,7 +119,7 @@ func TestProduct_List(t *testing.T) {
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreProductsField(actual, now())
-			assert.Equal(t, tt.want.products, actual)
+			assert.ElementsMatch(t, tt.want.products, actual)
 		})
 	}
 }

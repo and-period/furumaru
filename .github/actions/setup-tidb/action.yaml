@@ -1,0 +1,36 @@
+name: setup tidb
+description: 'TiDB Emulatorのセットアップ'
+
+runs:
+  using: composite
+  steps:
+  - name: Install TiUP
+    shell: bash
+    run: |
+      curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+      echo "/home/runner/.tiup/bin" >> $GITHUB_PATH
+
+  - name: Install TiDB components
+    shell: bash
+    run: tiup install playground tidb tikv pd
+
+  - name: Start TiDB emulator
+    shell: bash
+    run: tiup playground &
+
+  - name: Wait for start TiDB emulator
+    shell: bash
+    run: |
+      #!/bin/bash
+      retry=60
+      count=1
+      until mysqladmin ping --host 127.0.0.1 --port 4000 -u root; do
+        echo 'TiDB emulator is unavailable - sleeping'
+        sleep 3
+        if [ $(expr $retry - $count) -le 0 ]; then
+          echo 'TiDB emulator failed to start'
+          exit 1
+        fi
+        count=$(expr $count + 1)
+      done
+      echo 'TiDB emulator is ready'
