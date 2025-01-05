@@ -124,11 +124,13 @@ jobs:
         working-directory: ./api
         service: ${{ env.SERVICE }}
 
-    - name: Setup TiDB Emulator
-      run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-        source /home/runner/.profile
-        tiup playground &
+    - uses: ./.github/actions/setup-tidb
+
+    - name: Setup
+      run: make setup
+
+    - name: Create Mock
+      run: make mockgen
 
     - name: Database Migration
       run: |
@@ -138,12 +140,6 @@ jobs:
           -db-port=${DB_PORT} \
           -db-username=${DB_USERNAME} \
           -db-password=${DB_PASSWORD}
-
-    - name: Setup
-      run: make setup
-
-    - name: Create Mock
-      run: make mockgen
 
     - name: Test
       run: make test
