@@ -47,8 +47,8 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		users service.Users
 		total int64
 	)
-	switch getRole(ctx) {
-	case service.AdminRoleAdministrator:
+	switch getAdminType(ctx) {
+	case service.AdminTypeAdministrator:
 		// 管理者の場合、すべての購入者情報を取得する
 		usersIn := &user.ListUsersInput{
 			Limit:       limit,
@@ -73,7 +73,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 			return
 		}
 		users = service.NewUsers(us, addresses.MapByUserID())
-	case service.AdminRoleCoordinator:
+	case service.AdminTypeCoordinator:
 		// コーディネータの場合、注文した購入者のみを取得する
 		in := &store.ListOrderUserIDsInput{
 			CoordinatorID: getAdminID(ctx),
@@ -109,7 +109,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	in := &store.AggregateOrdersInput{
 		UserIDs: users.IDs(),
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	orders, err := h.store.AggregateOrders(ctx, in)
@@ -183,7 +183,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 			Limit:  limit,
 			Offset: offset,
 		}
-		if getRole(ctx) == service.AdminRoleCoordinator {
+		if getAdminType(ctx) == service.AdminTypeCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
 		orders, total, err = h.store.ListOrders(ectx, in)
@@ -193,7 +193,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		in := &store.AggregateOrdersInput{
 			UserIDs: []string{userID},
 		}
-		if getRole(ctx) == service.AdminRoleCoordinator {
+		if getAdminType(ctx) == service.AdminTypeCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
 		aggregate, err := h.store.AggregateOrders(ectx, in)

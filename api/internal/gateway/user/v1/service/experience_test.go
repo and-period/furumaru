@@ -102,6 +102,325 @@ func TestExperienceStatus_Response(t *testing.T) {
 	}
 }
 
+func TestExperience_Calc(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name           string
+		experience     *Experience
+		params         *CalcExperienceParams
+		expectSubTotal int64
+		expectDiscount int64
+	}{
+		{
+			name: "success when part of amount",
+			experience: &Experience{
+				Experience: response.Experience{
+					ID:               "experience-id",
+					CoordinatorID:    "coordinator-id",
+					ProducerID:       "producer-id",
+					ExperienceTypeID: "experience-type-id",
+					Title:            "じゃがいも収穫",
+					Description:      "じゃがいもを収穫する体験です。",
+					Status:           int32(ExperienceStatusAccepting),
+					ThumbnailURL:     "http://example.com/thumbnail.png",
+					Media: []*response.ExperienceMedia{
+						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+					},
+					PriceAdult:            1000,
+					PriceJuniorHighSchool: 800,
+					PriceElementarySchool: 600,
+					PricePreschool:        400,
+					PriceSenior:           700,
+					RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+					RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+					RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					Rate: &response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					StartAt: now.AddDate(0, 0, -1).Unix(),
+					EndAt:   now.AddDate(0, 0, 1).Unix(),
+				},
+				revisionID: 1,
+			},
+			params: &CalcExperienceParams{
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           1,
+				Promotion: &Promotion{
+					Promotion: response.Promotion{
+						ID:           "promotion-id",
+						Title:        "夏の採れたて野菜マルシェを開催!!",
+						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Status:       int32(PromotionStatusEnabled),
+						DiscountType: DiscountTypeAmount.Response(),
+						DiscountRate: 200,
+						Code:         "code0001",
+						StartAt:      1640962800,
+						EndAt:        1643641200,
+					},
+				},
+			},
+			expectSubTotal: 3500,
+			expectDiscount: 200,
+		},
+		{
+			name: "success when full amount",
+			experience: &Experience{
+				Experience: response.Experience{
+					ID:               "experience-id",
+					CoordinatorID:    "coordinator-id",
+					ProducerID:       "producer-id",
+					ExperienceTypeID: "experience-type-id",
+					Title:            "じゃがいも収穫",
+					Description:      "じゃがいもを収穫する体験です。",
+					Status:           int32(ExperienceStatusAccepting),
+					ThumbnailURL:     "http://example.com/thumbnail.png",
+					Media: []*response.ExperienceMedia{
+						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+					},
+					PriceAdult:            1000,
+					PriceJuniorHighSchool: 800,
+					PriceElementarySchool: 600,
+					PricePreschool:        400,
+					PriceSenior:           700,
+					RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+					RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+					RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					Rate: &response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					StartAt: now.AddDate(0, 0, -1).Unix(),
+					EndAt:   now.AddDate(0, 0, 1).Unix(),
+				},
+				revisionID: 1,
+			},
+			params: &CalcExperienceParams{
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           1,
+				Promotion: &Promotion{
+					Promotion: response.Promotion{
+						ID:           "promotion-id",
+						Title:        "夏の採れたて野菜マルシェを開催!!",
+						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Status:       int32(PromotionStatusEnabled),
+						DiscountType: DiscountTypeAmount.Response(),
+						DiscountRate: 4000,
+						Code:         "code0001",
+						StartAt:      1640962800,
+						EndAt:        1643641200,
+					},
+				},
+			},
+			expectSubTotal: 3500,
+			expectDiscount: 3500,
+		},
+		{
+			name: "success when rate",
+			experience: &Experience{
+				Experience: response.Experience{
+					ID:               "experience-id",
+					CoordinatorID:    "coordinator-id",
+					ProducerID:       "producer-id",
+					ExperienceTypeID: "experience-type-id",
+					Title:            "じゃがいも収穫",
+					Description:      "じゃがいもを収穫する体験です。",
+					Status:           int32(ExperienceStatusAccepting),
+					ThumbnailURL:     "http://example.com/thumbnail.png",
+					Media: []*response.ExperienceMedia{
+						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+					},
+					PriceAdult:            1000,
+					PriceJuniorHighSchool: 800,
+					PriceElementarySchool: 600,
+					PricePreschool:        400,
+					PriceSenior:           700,
+					RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+					RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+					RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					Rate: &response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					StartAt: now.AddDate(0, 0, -1).Unix(),
+					EndAt:   now.AddDate(0, 0, 1).Unix(),
+				},
+				revisionID: 1,
+			},
+			params: &CalcExperienceParams{
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           1,
+				Promotion: &Promotion{
+					Promotion: response.Promotion{
+						ID:           "promotion-id",
+						Title:        "夏の採れたて野菜マルシェを開催!!",
+						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Status:       int32(PromotionStatusEnabled),
+						DiscountType: DiscountTypeRate.Response(),
+						DiscountRate: 50,
+						Code:         "code0001",
+						StartAt:      1640962800,
+						EndAt:        1643641200,
+					},
+				},
+			},
+			expectSubTotal: 3500,
+			expectDiscount: 1750,
+		},
+		{
+			name:           "empty",
+			experience:     nil,
+			params:         nil,
+			expectSubTotal: 0,
+			expectDiscount: 0,
+		},
+		{
+			name: "promotion none",
+			experience: &Experience{
+				Experience: response.Experience{
+					ID:               "experience-id",
+					CoordinatorID:    "coordinator-id",
+					ProducerID:       "producer-id",
+					ExperienceTypeID: "experience-type-id",
+					Title:            "じゃがいも収穫",
+					Description:      "じゃがいもを収穫する体験です。",
+					Status:           int32(ExperienceStatusAccepting),
+					ThumbnailURL:     "http://example.com/thumbnail.png",
+					Media: []*response.ExperienceMedia{
+						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+					},
+					PriceAdult:            1000,
+					PriceJuniorHighSchool: 800,
+					PriceElementarySchool: 600,
+					PricePreschool:        400,
+					PriceSenior:           700,
+					RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
+					RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
+					RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					Duration:              60,
+					Direction:             "彦根駅から徒歩10分",
+					BusinessOpenTime:      "1000",
+					BusinessCloseTime:     "1800",
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					Rate: &response.ExperienceRate{
+						Count:   4,
+						Average: 2.5,
+						Detail: map[int64]int64{
+							1: 2,
+							2: 0,
+							3: 1,
+							4: 0,
+							5: 1,
+						},
+					},
+					StartAt: now.AddDate(0, 0, -1).Unix(),
+					EndAt:   now.AddDate(0, 0, 1).Unix(),
+				},
+				revisionID: 1,
+			},
+			params: &CalcExperienceParams{
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           1,
+				Promotion:             nil,
+			},
+			expectSubTotal: 3500,
+			expectDiscount: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			subtotal, discount := tt.experience.Calc(tt.params)
+			assert.Equal(t, tt.expectSubTotal, subtotal)
+			assert.Equal(t, tt.expectDiscount, discount)
+		})
+	}
+}
+
 func TestExperiences(t *testing.T) {
 	t.Parallel()
 

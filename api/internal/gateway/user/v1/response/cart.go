@@ -23,6 +23,7 @@ type CartResponse struct {
 }
 
 type CalcCartResponse struct {
+	RequestID   string       `json:"requestId"`   // 支払い時にAPIへ送信するキー(重複判定用)
 	Carts       []*Cart      `json:"carts"`       // カート一覧
 	Items       []*CartItem  `json:"items"`       // カート内の商品一覧(集計結果)
 	Products    []*Product   `json:"products"`    // 商品一覧
@@ -32,5 +33,4 @@ type CalcCartResponse struct {
 	Discount    int64        `json:"discount"`    // 割引金額(税込)
 	ShippingFee int64        `json:"shippingFee"` // 配送手数料(税込)
 	Total       int64        `json:"total"`       // 合計金額(税込)
-	RequestID   string       `json:"requestId"`   // 支払い時にAPIへ送信するキー(重複判定用)
 }

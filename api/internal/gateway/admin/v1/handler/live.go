@@ -150,7 +150,7 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 		return
 	}
 
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		if !currentAdmin(ctx, producer.CoordinatorID) {
 			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return

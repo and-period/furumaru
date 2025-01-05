@@ -211,7 +211,7 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 		sentry.WithUser(&sentry.User{
 			ID:        getAdminID(ctx),
 			IPAddress: ctx.ClientIP(),
-			Data:      map[string]string{"role": string(getRole(ctx))},
+			Data:      map[string]string{"adminType": string(getAdminType(ctx))},
 		}),
 		sentry.WithTags(map[string]string{
 			"app_name":   h.appName,
@@ -249,9 +249,9 @@ func (h *handler) authentication(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	role := service.NewAdminRole(auth.Role)
+	adminType := service.NewAdminType(auth.Type)
 
-	setAuth(ctx, auth.AdminID, role)
+	setAuth(ctx, auth.AdminID, adminType)
 
 	// 認可情報の検証
 	if h.enforcer == nil {
@@ -259,7 +259,7 @@ func (h *handler) authentication(ctx *gin.Context) {
 		return
 	}
 
-	enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
+	enforce, err := h.enforcer.Enforce(adminType.String(), ctx.Request.URL.Path, ctx.Request.Method)
 	if err != nil {
 		h.httpError(ctx, status.Error(codes.Internal, err.Error()))
 		return
@@ -272,10 +272,10 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func setAuth(ctx *gin.Context, adminID string, role service.AdminRole) {
+func setAuth(ctx *gin.Context, adminID string, role service.AdminType) {
 	if adminID != "" {
 		ctx.Request.Header.Set("adminId", adminID)
-		ctx.Request.Header.Set("role", strconv.FormatInt(int64(role), 10))
+		ctx.Request.Header.Set("adminType", strconv.FormatInt(int64(role), 10))
 	}
 }
 
@@ -283,9 +283,9 @@ func getAdminID(ctx *gin.Context) string {
 	return ctx.GetHeader("adminId")
 }
 
-func getRole(ctx *gin.Context) service.AdminRole {
-	role, _ := strconv.ParseInt(ctx.GetHeader("role"), 10, 64)
-	return service.AdminRole(role)
+func getAdminType(ctx *gin.Context) service.AdminType {
+	role, _ := strconv.ParseInt(ctx.GetHeader("adminType"), 10, 64)
+	return service.AdminType(role)
 }
 
 func currentAdmin(ctx *gin.Context, adminID string) bool {
@@ -311,10 +311,10 @@ type filterAccessParams struct {
 }
 
 func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
-	switch getRole(ctx) {
-	case service.AdminRoleAdministrator:
+	switch getAdminType(ctx) {
+	case service.AdminTypeAdministrator:
 		return nil
-	case service.AdminRoleCoordinator:
+	case service.AdminTypeCoordinator:
 		if params == nil || params.coordinator == nil {
 			return nil
 		}
@@ -322,7 +322,7 @@ func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
 			return err
 		}
 		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)
-	case service.AdminRoleProducer:
+	case service.AdminTypeProducer:
 		if params == nil || params.producer == nil {
 			return nil
 		}

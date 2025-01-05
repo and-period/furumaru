@@ -18,7 +18,7 @@ func NewAuth(auth *entity.AdminAuth) *Auth {
 	return &Auth{
 		Auth: response.Auth{
 			AdminID:      auth.AdminID,
-			Role:         NewAdminRole(auth.Role).Response(),
+			Type:         NewAdminType(auth.Type).Response(),
 			AccessToken:  auth.AccessToken,
 			RefreshToken: auth.RefreshToken,
 			ExpiresIn:    auth.ExpiresIn,

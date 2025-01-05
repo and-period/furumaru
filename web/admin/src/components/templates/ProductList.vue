@@ -12,7 +12,7 @@ import {
   type ProductTag,
   type ProductType,
   type Producer,
-  AdminRole,
+  AdminType,
 } from '~/types/api'
 
 const props = defineProps({
@@ -24,9 +24,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
@@ -151,12 +151,12 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.COORDINATOR
+  return props.adminType === AdminType.COORDINATOR
 }
 
 const isDeletable = (): boolean => {
-  const targets: AdminRole[] = [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  return targets.includes(props.role)
+  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  return targets.includes(props.adminType)
 }
 
 const getCategoryName = (categoryId: string): string => {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
@@ -11,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -19,6 +21,7 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/checkouts", h.authentication)
 
 	r.POST("/products", h.CheckoutProduct)
+	r.GET("/experiences/:experienceId", h.PreCheckoutExperience)
 	r.POST("/experiences/:experienceId", h.CheckoutExperience)
 	r.GET("/:transactionId", h.GetCheckoutState)
 }
@@ -54,6 +57,79 @@ func (h *handler) CheckoutProduct(ctx *gin.Context) {
 		creditCard: req.CreditCard,
 	}
 	h.checkout(ctx, params)
+}
+
+func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
+	adultCount, err := util.GetQueryInt64(ctx, "adult", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	juniorHighSchoolCount, err := util.GetQueryInt64(ctx, "juniorHighSchool", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	elementarySchoolCount, err := util.GetQueryInt64(ctx, "elementarySchool", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	preschoolCount, err := util.GetQueryInt64(ctx, "preschool", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	seniorCount, err := util.GetQueryInt64(ctx, "senior", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	promotionCode := util.GetQuery(ctx, "promotion", "")
+
+	var (
+		experience *service.Experience
+		promotion  *service.Promotion
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		experience, err = h.getExperience(ectx, ctx.Param("experienceId"))
+		return
+	})
+	eg.Go(func() (err error) {
+		if promotionCode == "" {
+			return
+		}
+		promotion, err = h.getEnabledPromotion(ectx, promotionCode)
+		if errors.Is(err, exception.ErrNotFound) {
+			err = nil // エラーは返さず、プロモーション未適用状態で返す
+		}
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	params := &service.CalcExperienceParams{
+		AdultCount:            adultCount,
+		JuniorHighSchoolCount: juniorHighSchoolCount,
+		ElementarySchoolCount: elementarySchoolCount,
+		PreschoolCount:        preschoolCount,
+		SeniorCount:           seniorCount,
+		Promotion:             promotion,
+	}
+	subtotal, discount := experience.Calc(params)
+
+	res := &response.PreCheckoutExperienceResponse{
+		RequestID:  h.generateID(),
+		Experience: experience.Response(),
+		Promotion:  promotion.Response(),
+		SubTotal:   subtotal,
+		Discount:   discount,
+		Total:      subtotal - discount,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) CheckoutExperience(ctx *gin.Context) {

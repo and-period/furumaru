@@ -22,7 +22,7 @@ func TestSignInAdmin(t *testing.T) {
 	}
 	admin := &entity.Admin{
 		ID:   "admin-id",
-		Role: entity.AdminRoleAdministrator,
+		Type: entity.AdminTypeAdministrator,
 	}
 
 	tests := []struct {
@@ -46,7 +46,7 @@ func TestSignInAdmin(t *testing.T) {
 			},
 			expect: &entity.AdminAuth{
 				AdminID:      "admin-id",
-				Role:         entity.AdminRoleAdministrator,
+				Type:         entity.AdminTypeAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
@@ -179,7 +179,7 @@ func TestGetAdminAuth(t *testing.T) {
 
 	admin := &entity.Admin{
 		ID:     "admin-id",
-		Role:   entity.AdminRoleAdministrator,
+		Type:   entity.AdminTypeAdministrator,
 		Status: entity.AdminStatusActivated,
 	}
 
@@ -201,7 +201,7 @@ func TestGetAdminAuth(t *testing.T) {
 			},
 			expect: &entity.AdminAuth{
 				AdminID:      "admin-id",
-				Role:         entity.AdminRoleAdministrator,
+				Type:         entity.AdminTypeAdministrator,
 				AccessToken:  "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				RefreshToken: "",
 				ExpiresIn:    0,
@@ -263,7 +263,7 @@ func TestRefreshAdminToken(t *testing.T) {
 	}
 	admin := &entity.Admin{
 		ID:   "admin-id",
-		Role: entity.AdminRoleAdministrator,
+		Type: entity.AdminTypeAdministrator,
 	}
 
 	tests := []struct {
@@ -286,7 +286,7 @@ func TestRefreshAdminToken(t *testing.T) {
 			},
 			expect: &entity.AdminAuth{
 				AdminID:      "admin-id",
-				Role:         entity.AdminRoleAdministrator,
+				Type:         entity.AdminTypeAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "",
 				ExpiresIn:    3600,
@@ -514,7 +514,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 
 	admin := &entity.Admin{
 		ID:   "admin-id",
-		Role: entity.AdminRoleAdministrator,
+		Type: entity.AdminTypeAdministrator,
 	}
 	params := &cognito.ConfirmChangeEmailParams{
 		AccessToken: "access-token",

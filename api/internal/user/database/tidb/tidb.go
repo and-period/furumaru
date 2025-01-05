@@ -6,24 +6,22 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
-	"github.com/and-period/furumaru/api/internal/user/database/mysql"
-	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	gmysql "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
-func NewDatabase(db *apmysql.Client) *database.Database {
-	client := mysql.NewDatabase(db)
+func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Address:          client.Address,
-		Admin:            client.Admin,
-		Administrator:    client.Administrator,
-		Coordinator:      NewCoordinator(db, client.Coordinator),
-		Guest:            client.Guest,
-		Member:           client.Member,
-		Producer:         NewProducer(db, client.Producer),
-		User:             client.User,
-		UserNotification: client.UserNotification,
+		Address:          NewAddress(db),
+		Admin:            NewAdmin(db),
+		Administrator:    NewAdministrator(db),
+		Coordinator:      NewCoordinator(db),
+		Guest:            NewGuest(db),
+		Member:           NewMember(db),
+		Producer:         NewProducer(db),
+		User:             NewUser(db),
+		UserNotification: NewUserNotification(db),
 	}
 }
 

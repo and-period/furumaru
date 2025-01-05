@@ -12,16 +12,6 @@ import (
 
 var errInvalidAdminRole = errors.New("entity: invalid admin role")
 
-// AdminRole - 管理者権限
-type AdminRole int32
-
-const (
-	AdminRoleUnknown       AdminRole = 0
-	AdminRoleAdministrator AdminRole = 1 // 管理者
-	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
-	AdminRoleProducer      AdminRole = 3 // 生産者
-)
-
 // AdminStatus - 管理者ステータス
 type AdminStatus int32
 
@@ -36,7 +26,8 @@ const (
 type Admin struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
 	CognitoID     string         `gorm:"default:null"`         // 管理者ID (Cognito用)
-	Role          AdminRole      `gorm:"<-:create"`            // 管理者権限
+	Type          AdminType      `gorm:"<-:create"`            // 管理者種別
+	GroupIDs      []string       `gorm:"-"`                    // 管理者グループID一覧
 	Status        AdminStatus    `gorm:"-"`                    // 管理者ステータス
 	Lastname      string         `gorm:"default:null"`         // 姓
 	Firstname     string         `gorm:"default:null"`         // 名
@@ -55,7 +46,7 @@ type Admins []*Admin
 
 type NewAdminParams struct {
 	CognitoID     string
-	Role          AdminRole
+	Type          AdminType
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -63,17 +54,17 @@ type NewAdminParams struct {
 	Email         string
 }
 
-func NewAdminRole(role int32) (AdminRole, error) {
-	res := AdminRole(role)
+func NewAdminType(typ int32) (AdminType, error) {
+	res := AdminType(typ)
 	if err := res.Validate(); err != nil {
-		return AdminRoleUnknown, err
+		return AdminTypeUnknown, err
 	}
 	return res, nil
 }
 
-func (r AdminRole) Validate() error {
+func (r AdminType) Validate() error {
 	switch r {
-	case AdminRoleAdministrator, AdminRoleCoordinator, AdminRoleProducer:
+	case AdminTypeAdministrator, AdminTypeCoordinator, AdminTypeProducer:
 		return nil
 	default:
 		return errInvalidAdminRole
@@ -84,7 +75,7 @@ func NewAdmin(params *NewAdminParams) *Admin {
 	return &Admin{
 		ID:            uuid.Base58Encode(uuid.New()),
 		CognitoID:     strings.ToLower(params.CognitoID), // Cognitoでは大文字小文字の区別がされず管理されているため
-		Role:          params.Role,
+		Type:          params.Type,
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,
@@ -97,13 +88,17 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func (a *Admin) Fill() {
-	if a.Role == AdminRoleProducer {
+func (a *Admin) Fill(groups RelatedAdminGroups) (err error) {
+	a.SetStatus()
+	a.GroupIDs = groups.GroupIDs()
+	return
+}
+
+func (a *Admin) SetStatus() {
+	switch {
+	case a.Type == AdminTypeProducer:
 		// 生産者は認証機能を持たないため、一律無効状態にする
 		a.Status = AdminStatusDeactivated
-		return
-	}
-	switch {
 	case !a.DeletedAt.Time.IsZero():
 		a.Status = AdminStatusDeactivated
 	case a.FirstSignInAt.IsZero():
@@ -121,14 +116,14 @@ func (as Admins) Map() map[string]*Admin {
 	return res
 }
 
-func (as Admins) GroupByRole() map[AdminRole]Admins {
+func (as Admins) GroupByType() map[AdminType]Admins {
 	const maxRoles = 4
-	res := make(map[AdminRole]Admins, maxRoles)
+	res := make(map[AdminType]Admins, maxRoles)
 	for _, a := range as {
-		if _, ok := res[a.Role]; !ok {
-			res[a.Role] = make(Admins, 0, len(as))
+		if _, ok := res[a.Type]; !ok {
+			res[a.Type] = make(Admins, 0, len(as))
 		}
-		res[a.Role] = append(res[a.Role], a)
+		res[a.Type] = append(res[a.Type], a)
 	}
 	return res
 }
@@ -152,8 +147,11 @@ func (as Admins) Devices() []string {
 	return set.Slice()
 }
 
-func (as Admins) Fill() {
-	for i := range as {
-		as[i].Fill()
+func (as Admins) Fill(groups map[string]RelatedAdminGroups) error {
+	for _, a := range as {
+		if err := a.Fill(groups[a.ID]); err != nil {
+			return err
+		}
 	}
+	return nil
 }

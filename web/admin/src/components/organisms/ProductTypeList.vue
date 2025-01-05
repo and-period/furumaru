@@ -3,7 +3,7 @@ import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { AdminRole, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
+import { AdminType, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { getResizedImages } from '~/lib/helpers'
@@ -14,9 +14,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   createDialog: {
     type: Boolean,
@@ -163,11 +163,11 @@ const createFormDataValidate = useVuelidate(CreateProductTypeValidationRules, cr
 const updateFormDataValidate = useVuelidate(UpdateProductTypeValidationRules, updateFormDataValue)
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const isEditable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const getCategoryName = (categoryId: string): string => {

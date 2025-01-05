@@ -1,8 +1,8 @@
-import type { AdminRole } from '../api'
+import type { AdminType } from '../api'
 
 export interface SettingMenu {
   text: string
   color?: string
   action: () => void
-  roles: AdminRole[]
+  adminTypes: AdminType[]
 }

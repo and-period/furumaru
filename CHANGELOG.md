@@ -1,5 +1,20 @@
 # Changelog
 
+## [v3.4.2](https://github.com/and-period/furumaru/compare/v3.4.1...v3.4.2) - 2025-01-02
+- refactor(user): 管理者種別のフィールド名を置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2622
+
+## [v3.4.1](https://github.com/and-period/furumaru/compare/v3.4.0...v3.4.1) - 2025-01-02
+- マップから体験を選択する部分の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2585
+- refactor(api): DB層のコンストラクタ定義を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2613
+- feat(media): アーカイブ配信のメタデータ追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2614
+- fix(hack): S3オブジェクトキーの生成処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2615
+- fix(hack): S3オブジェクトキーの形式を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2616
+- fix(docs): ゲスト購入APIのapi docsを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2617
+- feat(gateway): 体験購入前確認用のAPIを実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2620
+- build(deps): bump the dependencies group in /api with 3 updates by @dependabot in https://github.com/and-period/furumaru/pull/2618
+- build(deps): bump the dependencies group in /web/admin with 40 updates by @dependabot in https://github.com/and-period/furumaru/pull/2619
+- feat(user): 管理者エンティティにフィールド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2621
+
 ## [v3.4.0](https://github.com/and-period/furumaru/compare/v3.3.0...v3.4.0) - 2024-12-31
 - feat(gateway): コーディネータ取得APIに体験情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2582
 - refactor(api): インターフェース定義の並び順を整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2584

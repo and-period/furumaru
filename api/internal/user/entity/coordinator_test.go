@@ -295,7 +295,7 @@ func TestCoordinators_Fill(t *testing.T) {
 				"admin-id01": {
 					ID:        "admin-id01",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleCoordinator,
+					Type:      AdminTypeCoordinator,
 				},
 			},
 			expect: Coordinators{
@@ -312,7 +312,7 @@ func TestCoordinators_Fill(t *testing.T) {
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleCoordinator,
+						Type:      AdminTypeCoordinator,
 					},
 				},
 				{
@@ -327,7 +327,7 @@ func TestCoordinators_Fill(t *testing.T) {
 					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
 					Admin: Admin{
 						ID:   "admin-id02",
-						Role: AdminRoleCoordinator,
+						Type: AdminTypeCoordinator,
 					},
 				},
 			},

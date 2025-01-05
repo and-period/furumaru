@@ -80,7 +80,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		Statuses: statuses,
 		Types:    types,
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	orders, total, err := h.store.ListOrders(ctx, in)
@@ -341,7 +341,7 @@ func (h *handler) ExportOrders(ctx *gin.Context) {
 		ShippingCarrier: sentity.ShippingCarrier(req.ShippingCarrier),
 		EncodingType:    codes.CharacterEncodingType(req.CharacterEncodingType),
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	value, err := h.store.ExportOrders(ctx, in)

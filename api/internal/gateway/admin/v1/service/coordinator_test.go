@@ -23,7 +23,7 @@ func TestCoordinator(t *testing.T) {
 			coordinator: &entity.Coordinator{
 				Admin: entity.Admin{
 					ID:            "coordinator-id",
-					Role:          entity.AdminRoleCoordinator,
+					Type:          entity.AdminTypeCoordinator,
 					Status:        entity.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -176,7 +176,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "coordinator-id01",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          entity.AdminTypeCoordinator,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -206,7 +206,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "coordinator-id02",
-						Role:          entity.AdminRoleCoordinator,
+						Type:          entity.AdminTypeCoordinator,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",

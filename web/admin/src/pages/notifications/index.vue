@@ -12,7 +12,7 @@ const notificationStore = useNotificationStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { admins } = storeToRefs(adminStore)
 const { notifications, totalItems } = storeToRefs(notificationStore)
 
@@ -93,7 +93,7 @@ catch (err) {
   <templates-notification-list
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
-    :role="role"
+    :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

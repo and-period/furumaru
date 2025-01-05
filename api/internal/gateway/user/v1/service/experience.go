@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/shopspring/decimal"
 )
 
 // ExperienceStatus - 体験受付状況
@@ -43,6 +44,15 @@ type Experience struct {
 }
 
 type Experiences []*Experience
+
+type CalcExperienceParams struct {
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
+	Promotion             *Promotion
+}
 
 func NewExperience(experience *entity.Experience, rate *ExperienceRate) *Experience {
 	var point1, point2, point3 string
@@ -92,6 +102,42 @@ func NewExperience(experience *entity.Experience, rate *ExperienceRate) *Experie
 		},
 		revisionID: experience.ExperienceRevision.ID,
 	}
+}
+
+//nolint:nakedret
+func (e *Experience) Calc(params *CalcExperienceParams) (subtotal int64, discount int64) {
+	if e == nil || params == nil {
+		return
+	}
+
+	dsub := decimal.Zero
+	dsub = dsub.Add(decimal.NewFromInt(e.PriceAdult).Mul(decimal.NewFromInt(params.AdultCount)))
+	dsub = dsub.Add(decimal.NewFromInt(e.PriceJuniorHighSchool).Mul(decimal.NewFromInt(params.JuniorHighSchoolCount)))
+	dsub = dsub.Add(decimal.NewFromInt(e.PriceElementarySchool).Mul(decimal.NewFromInt(params.ElementarySchoolCount)))
+	dsub = dsub.Add(decimal.NewFromInt(e.PricePreschool).Mul(decimal.NewFromInt(params.PreschoolCount)))
+	dsub = dsub.Add(decimal.NewFromInt(e.PriceSenior).Mul(decimal.NewFromInt(params.SeniorCount)))
+	subtotal = dsub.IntPart()
+
+	if params.Promotion == nil {
+		return
+	}
+
+	switch DiscountType(params.Promotion.DiscountType) {
+	case DiscountTypeAmount:
+		if subtotal < params.Promotion.DiscountRate {
+			discount = subtotal
+		} else {
+			discount = params.Promotion.DiscountRate
+		}
+	case DiscountTypeRate:
+		if params.Promotion.DiscountRate <= 0 {
+			return
+		}
+		rate := decimal.NewFromInt(params.Promotion.DiscountRate).Div(decimal.NewFromInt(100))
+		discount = dsub.Mul(rate).IntPart()
+	}
+
+	return
 }
 
 func (e *Experience) Response() *response.Experience {

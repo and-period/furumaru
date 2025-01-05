@@ -4,8 +4,8 @@ authResponse:
     adminId:
       type: string
       description: 管理者ID
-    role:
-      $ref: './../../../openapi.yaml#/components/schemas/adminRole'
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/adminType'
     accessToken:
       type: string
       description: アクセストークン
@@ -21,14 +21,14 @@ authResponse:
       description: トークン種別
   required:
   - adminId
-  - role
+  - type
   - accessToken
   - refreshToken
   - expiresIn
   - tokenType
   example:
     adminId: 'kSByoE6FetnPs5Byk3a9Zx'
-    role: 1
+    type: 1
     accessToken: 'xxxxxxxxxx'
     refreshToken: 'xxxxxxxxxx'
     expiresIn: 3600
@@ -39,8 +39,8 @@ authUserResponse:
     id:
       type: string
       description: 管理者ID
-    role:
-      $ref: './../../../openapi.yaml#/components/schemas/adminRole'
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/adminType'
     username:
       type: string
       description: 表示名
@@ -52,13 +52,13 @@ authUserResponse:
       description: サムネイルURL
   required:
   - id
-  - role
+  - type
   - username
   - email
   - thumbnailUrl
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    role: 1
+    type: 1
     username: '&. 管理者'
     email: 'test-user@and-period.jp'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'

@@ -26,7 +26,7 @@ func TestListAdministrators(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleAdministrator,
+				Type:          entity.AdminTypeAdministrator,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
@@ -120,7 +120,7 @@ func TestMultiGetAdministrators(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleAdministrator,
+				Type:          entity.AdminTypeAdministrator,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
@@ -192,7 +192,7 @@ func TestGetAdministrator(t *testing.T) {
 	administrator := &entity.Administrator{
 		Admin: entity.Admin{
 			ID:            "admin-id",
-			Role:          entity.AdminRoleAdministrator,
+			Type:          entity.AdminTypeAdministrator,
 			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
@@ -268,7 +268,7 @@ func TestCreateAdministrator(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectAdministrator := &entity.Administrator{
 					Admin: entity.Admin{
-						Role:          entity.AdminRoleAdministrator,
+						Type:          entity.AdminTypeAdministrator,
 						Lastname:      "&.",
 						Firstname:     "スタッフ",
 						LastnameKana:  "あんどぴりおど",
@@ -418,7 +418,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleAdministrator,
+			Type:          entity.AdminTypeAdministrator,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -515,7 +515,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleAdministrator,
+			Type:          entity.AdminTypeAdministrator,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
