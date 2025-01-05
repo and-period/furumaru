@@ -9,7 +9,7 @@
 // CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
 //
 
-//nolint:gocritic,forbidigo
+//nolint:gocritic,forbidigo,lll
 package main
 
 import (
@@ -32,14 +32,7 @@ import (
 const (
 	migrateDB      = "migrations"
 	schemaTable    = "schemas"
-	schemaTableDDL = `CREATE TABLE IF NOT EXISTS schemas (
-  database varchar(256) NOT NULL,
-  version varchar(10) NOT NULL,
-  filename varchar(256) NOT NULL,
-  created_at int NOT NULL,
-  updated_at int NOT NULL,
-  PRIMARY KEY (database, version)
-);`
+	schemaTableDDL = "CREATE TABLE IF NOT EXISTS `schemas` (`database` varchar(256) NOT NULL, `version` varchar(10) NOT NULL, `filename` varchar(256) NOT NULL, `created_at` int NOT NULL, `updated_at` int NOT NULL, PRIMARY KEY (`database`, `version`));"
 )
 
 var (
