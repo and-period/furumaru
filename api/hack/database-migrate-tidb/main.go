@@ -5,10 +5,11 @@
 //	 -db-username='root' -db-password='12345678'
 //
 // 事前に以下DDLを実行すること
+//
+// CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
+//
 
-/**
- * CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
- */
+//nolint:gocritic,forbidigo
 package main
 
 import (
@@ -42,6 +43,7 @@ const (
 )
 
 var (
+	driver   string
 	host     string
 	port     string
 	username string
@@ -92,6 +94,7 @@ func main() {
 }
 
 func setup(_ context.Context) (*app, error) {
+	flag.StringVar(&driver, "db-driver", "mysql", "target mysql driver")
 	flag.StringVar(&host, "db-host", "mysql", "target mysql host")
 	flag.StringVar(&port, "db-port", "3306", "target mysql port")
 	flag.StringVar(&username, "db-username", "root", "target mysql username")
@@ -160,7 +163,14 @@ func (a *app) setup(database string) (*mysql.Client, error) {
 		Password: password,
 		Database: database,
 	}
-	return mysql.NewTiDBClient(params, mysql.WithLogger(a.logger))
+	switch driver {
+	case "mysql":
+		return mysql.NewClient(params, mysql.WithLogger(a.logger))
+	case "tidb":
+		return mysql.NewTiDBClient(params, mysql.WithLogger(a.logger))
+	default:
+		return nil, fmt.Errorf("unsupported driver: %s", driver)
+	}
 }
 
 func (a *app) begin(ctx context.Context, db *mysql.Client) (*sql.Tx, error) {

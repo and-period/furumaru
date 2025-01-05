@@ -134,6 +134,7 @@ jobs:
 
     - name: Database Migration
       run: go run ./hack/database-migrate-tidb/main.go \
+          -db-driver='mysql' \
           -db-host=127.0.0.1 \
           -db-port=3306 \
           -db-username=root \
