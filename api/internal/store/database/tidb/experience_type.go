@@ -14,16 +14,14 @@ import (
 const experienceTypeTable = "experience_types"
 
 type experienceType struct {
-	database.ExperienceType
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewExperienceType(db *mysql.Client, mysql database.ExperienceType) database.ExperienceType {
+func NewExperienceType(db *mysql.Client) database.ExperienceType {
 	return &experienceType{
-		ExperienceType: mysql,
-		db:             db,
-		now:            jst.Now,
+		db:  db,
+		now: jst.Now,
 	}
 }
 
@@ -67,4 +65,55 @@ func (t *experienceType) Count(ctx context.Context, params *database.ListExperie
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ExperienceType{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (t *experienceType) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.ExperienceTypes, error) {
+	var types entity.ExperienceTypes
+
+	stmt := t.db.Statement(ctx, t.db.DB, experienceTypeTable, fields...).
+		Where("id IN (?)", experienceIDs)
+
+	err := stmt.Find(&types).Error
+	return types, dbError(err)
+}
+
+func (t *experienceType) Get(ctx context.Context, experienceID string, fields ...string) (*entity.ExperienceType, error) {
+	experienceType, err := t.get(ctx, t.db.DB, experienceID, fields...)
+	return experienceType, dbError(err)
+}
+
+func (t *experienceType) Create(ctx context.Context, experience *entity.ExperienceType) error {
+	now := t.now()
+	experience.CreatedAt, experience.UpdatedAt = now, now
+
+	err := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Create(experience).Error
+	return dbError(err)
+}
+
+func (t *experienceType) Update(ctx context.Context, experienceID string, params *database.UpdateExperienceTypeParams) error {
+	updates := map[string]interface{}{
+		"name":       params.Name,
+		"updated_at": t.now(),
+	}
+	stmt := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Where("id = ?", experienceID)
+	err := stmt.Updates(updates).Error
+	return dbError(err)
+}
+
+func (t *experienceType) Delete(ctx context.Context, experienceID string) error {
+	stmt := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Where("id = ?", experienceID)
+	err := stmt.Delete(&entity.ExperienceType{}).Error
+	return dbError(err)
+}
+
+func (t *experienceType) get(ctx context.Context, db *gorm.DB, experienceID string, fields ...string) (*entity.ExperienceType, error) {
+	var experience *entity.ExperienceType
+
+	stmt := t.db.Statement(ctx, db, experienceTypeTable, fields...).
+		Where("id = ?", experienceID)
+
+	if err := stmt.First(&experience).Error; err != nil {
+		return nil, err
+	}
+	return experience, nil
 }

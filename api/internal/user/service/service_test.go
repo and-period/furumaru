@@ -17,6 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
@@ -135,6 +136,10 @@ func testService(
 		testFunc(ctx, t, srv)
 		srv.waitGroup.Wait()
 	}
+}
+
+func TestMain(m *testing.M) {
+	goleak.VerifyTestMain(m)
 }
 
 func TestService(t *testing.T) {

@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -29,39 +28,37 @@ const (
 
 // Experience - 体験情報
 type Experience struct {
-	ExperienceRevision    `gorm:"-"`
-	ID                    string               `gorm:"primaryKey;<-:create"`                   // 体験ID
-	CoordinatorID         string               `gorm:""`                                       // コーディネータID
-	ProducerID            string               `gorm:""`                                       // 生産者ID
-	TypeID                string               `gorm:"column:experience_type_id"`              // 体験種別ID
-	Title                 string               `gorm:""`                                       // タイトル
-	Description           string               `gorm:""`                                       // 説明
-	Public                bool                 `gorm:""`                                       // 公開フラグ
-	SoldOut               bool                 `gorm:""`                                       // 定員オーバーフラグ
-	Status                ExperienceStatus     `gorm:"-"`                                      // 販売状況
-	ThumbnailURL          string               `gorm:"-"`                                      // サムネイルURL
-	Media                 MultiExperienceMedia `gorm:"-"`                                      // メディア一覧
-	MediaJSON             datatypes.JSON       `gorm:"default:null;column:media"`              // メディア一覧(JSON)
-	RecommendedPoints     []string             `gorm:"-"`                                      // おすすめポイント一覧
-	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
-	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
-	Duration              int64                `gorm:""`                                       // 体験時間(分)
-	Direction             string               `gorm:""`                                       // アクセス方法
-	BusinessOpenTime      string               `gorm:""`                                       // 営業開始時間
-	BusinessCloseTime     string               `gorm:""`                                       // 営業終了時間
-	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
-	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
-	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
-	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
-	HostAddressLine1      string               `gorm:""`                                       // 開催場所(町名・番地)
-	HostAddressLine2      string               `gorm:""`                                       // 開催場所(ビル名・号室など)
-	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度) FIXME: MySQLに存在しないカラム
-	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度) FIXME: MySQLに存在しないカラム
-	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
-	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
-	CreatedAt             time.Time            `gorm:"<-:create"`                              // 登録日時
-	UpdatedAt             time.Time            `gorm:""`                                       // 更新日時
-	DeletedAt             gorm.DeletedAt       `gorm:"default:null"`                           // 削除日時
+	ExperienceRevision `gorm:"-"`
+	ID                 string               `gorm:"primaryKey;<-:create"`      // 体験ID
+	CoordinatorID      string               `gorm:""`                          // コーディネータID
+	ProducerID         string               `gorm:""`                          // 生産者ID
+	TypeID             string               `gorm:"column:experience_type_id"` // 体験種別ID
+	Title              string               `gorm:""`                          // タイトル
+	Description        string               `gorm:""`                          // 説明
+	Public             bool                 `gorm:""`                          // 公開フラグ
+	SoldOut            bool                 `gorm:""`                          // 定員オーバーフラグ
+	Status             ExperienceStatus     `gorm:"-"`                         // 販売状況
+	ThumbnailURL       string               `gorm:"-"`                         // サムネイルURL
+	Media              MultiExperienceMedia `gorm:"-"`                         // メディア一覧
+	RecommendedPoints  []string             `gorm:"-"`                         // おすすめポイント一覧
+	PromotionVideoURL  string               `gorm:""`                          // 紹介動画URL
+	Duration           int64                `gorm:""`                          // 体験時間(分)
+	Direction          string               `gorm:""`                          // アクセス方法
+	BusinessOpenTime   string               `gorm:""`                          // 営業開始時間
+	BusinessCloseTime  string               `gorm:""`                          // 営業終了時間
+	HostPostalCode     string               `gorm:""`                          // 開催場所(郵便番号)
+	HostPrefecture     string               `gorm:"-"`                         // 開催場所(都道府県)
+	HostPrefectureCode int32                `gorm:"column:host_prefecture"`    // 開催場所(都道府県コード)
+	HostCity           string               `gorm:""`                          // 開催場所(市区町村)
+	HostAddressLine1   string               `gorm:""`                          // 開催場所(町名・番地)
+	HostAddressLine2   string               `gorm:""`                          // 開催場所(ビル名・号室など)
+	HostLongitude      float64              `gorm:""`                          // 開催場所(座標情報:経度)
+	HostLatitude       float64              `gorm:""`                          // 開催場所(座標情報:緯度)
+	StartAt            time.Time            `gorm:""`                          // 募集開始日時
+	EndAt              time.Time            `gorm:""`                          // 募集終了日時
+	CreatedAt          time.Time            `gorm:"<-:create"`                 // 登録日時
+	UpdatedAt          time.Time            `gorm:""`                          // 更新日時
+	DeletedAt          gorm.DeletedAt       `gorm:"default:null"`              // 削除日時
 }
 
 type Experiences []*Experience
@@ -179,14 +176,6 @@ func (e *Experience) Validate() error {
 }
 
 func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err error) {
-	e.Media, err = e.unmarshalMedia()
-	if err != nil {
-		return
-	}
-	e.RecommendedPoints, err = e.unmarshalRecommendedPoints()
-	if err != nil {
-		return
-	}
 	e.SetStatus(now)
 	e.SetThumbnail()
 	e.ExperienceRevision = *revision
@@ -218,40 +207,6 @@ func (e *Experience) SetThumbnail() {
 		}
 		e.ThumbnailURL = media.URL
 	}
-}
-
-func (e *Experience) unmarshalMedia() (MultiExperienceMedia, error) {
-	if e.MediaJSON == nil {
-		return MultiExperienceMedia{}, nil
-	}
-	var media MultiExperienceMedia
-	return media, json.Unmarshal(e.MediaJSON, &media)
-}
-
-func (e *Experience) unmarshalRecommendedPoints() ([]string, error) {
-	if e.RecommendedPointsJSON == nil {
-		return []string{}, nil
-	}
-	var points []string
-	return points, json.Unmarshal(e.RecommendedPointsJSON, &points)
-}
-
-func (e *Experience) FillJSON() error {
-	media, err := e.Media.Marshal()
-	if err != nil {
-		return err
-	}
-	points, err := ExperienceMarshalRecommendedPoints(e.RecommendedPoints)
-	if err != nil {
-		return err
-	}
-	e.MediaJSON = media
-	e.RecommendedPointsJSON = points
-	return nil
-}
-
-func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
-	return json.Marshal(points)
 }
 
 func (es Experiences) Fill(revisions map[string]*ExperienceRevision, now time.Time) error {

@@ -15,16 +15,14 @@ import (
 const productTypeTable = "product_types"
 
 type productType struct {
-	database.ProductType
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewProductType(db *mysql.Client, mysql database.ProductType) database.ProductType {
+func NewProductType(db *mysql.Client) database.ProductType {
 	return &productType{
-		ProductType: mysql,
-		db:          db,
-		now:         jst.Now,
+		db:  db,
+		now: jst.Now,
 	}
 }
 
@@ -84,4 +82,68 @@ func (t *productType) Count(ctx context.Context, params *database.ListProductTyp
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ProductType{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (t *productType) MultiGet(
+	ctx context.Context, productTypeIDs []string, fields ...string,
+) (entity.ProductTypes, error) {
+	var productTypes entity.ProductTypes
+
+	stmt := t.db.Statement(ctx, t.db.DB, productTypeTable, fields...).
+		Where("id IN (?)", productTypeIDs)
+
+	if err := stmt.Find(&productTypes).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return productTypes, nil
+}
+
+func (t *productType) Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error) {
+	productType, err := t.get(ctx, t.db.DB, productTypeID, fields...)
+	return productType, dbError(err)
+}
+
+func (t *productType) Create(ctx context.Context, productType *entity.ProductType) error {
+	now := t.now()
+	productType.CreatedAt, productType.UpdatedAt = now, now
+
+	err := t.db.DB.WithContext(ctx).Table(productTypeTable).Create(&productType).Error
+	return dbError(err)
+}
+
+func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL string) error {
+	params := map[string]interface{}{
+		"name":       name,
+		"icon_url":   iconURL,
+		"updated_at": t.now(),
+	}
+	stmt := t.db.DB.WithContext(ctx).
+		Table(productTypeTable).
+		Where("id = ?", productTypeID)
+
+	err := stmt.Updates(params).Error
+	return dbError(err)
+}
+
+func (t *productType) Delete(ctx context.Context, productTypeID string) error {
+	stmt := t.db.DB.WithContext(ctx).
+		Table(productTypeTable).
+		Where("id = ?", productTypeID)
+
+	err := stmt.Delete(&entity.ProductType{}).Error
+	return dbError(err)
+}
+
+func (t *productType) get(
+	ctx context.Context, tx *gorm.DB, productTypeID string, fields ...string,
+) (*entity.ProductType, error) {
+	var productType *entity.ProductType
+
+	stmt := t.db.Statement(ctx, tx, productTypeTable, fields...).
+		Where("id = ?", productTypeID)
+
+	if err := stmt.First(&productType).Error; err != nil {
+		return nil, err
+	}
+	return productType, nil
 }
