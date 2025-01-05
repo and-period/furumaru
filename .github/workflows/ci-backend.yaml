@@ -120,7 +120,6 @@ jobs:
         - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: migrations
         options: --health-cmd "mysqladmin ping -h 127.0.0.1"
 
     steps:
