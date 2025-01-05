@@ -95,7 +95,7 @@ func main() {
 
 func setup(_ context.Context) (*app, error) {
 	flag.StringVar(&driver, "db-driver", "tidb", "target mysql driver")
-	flag.StringVar(&host, "db-host", "mysql", "target mysql host")
+	flag.StringVar(&host, "db-host", "127.0.0.1", "target mysql host")
 	flag.StringVar(&port, "db-port", "3306", "target mysql port")
 	flag.StringVar(&username, "db-username", "root", "target mysql username")
 	flag.StringVar(&password, "db-password", "12345678", "target mysql password")
