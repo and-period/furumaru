@@ -1,1 +1,0 @@
-ALTER TABLE `users`.`admins` ADD COLUMN `type` INT NOT NULL DEFAULT 0;

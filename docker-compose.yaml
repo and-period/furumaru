@@ -121,22 +121,6 @@ services:
     ports:
       - 3316:3306
 
-  mysql_test:
-    container_name: mysql_test
-    platform: linux/x86_64
-    build:
-      context: ./infra/docker/infra/mysql
-      dockerfile: Dockerfile
-    volumes:
-      - ./infra/mysql/test.cnf:/etc/mysql/conf.d/my.cnf
-      - ./infra/mysql/schema:/docker-entrypoint-initdb.d
-      - ./tmp/logs/mysql_test:/var/log/mysql:delegated
-      - ./tmp/data/mysql_test:/var/lib/mysql:delegated
-    environment:
-      - MYSQL_ROOT_PASSWORD=12345678
-    ports:
-      - 3326:3306
-
   executor:
     container_name: executor
     build:
@@ -164,8 +148,8 @@ services:
   swagger_generator:
     container_name: swagger_generator
     build:
-      context: ./infra/docker/docs/swagger/generator
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./infra/docker/docs/swagger/generator/Dockerfile
     working_dir: /var/swagger
     volumes:
       - ./docs/swagger:/var/swagger:cached
