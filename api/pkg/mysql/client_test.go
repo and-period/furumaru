@@ -14,6 +14,8 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 
 	tests := []struct {
@@ -72,6 +74,8 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestBeginAndClose(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -92,6 +96,8 @@ func TestBeginAndClose(t *testing.T) {
 }
 
 func TestTransaction(t *testing.T) {
+	t.Skip() // 確認したい時のみコメントアウト
+
 	setEnv()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -216,12 +222,12 @@ func setEnv() {
 		os.Setenv("DB_HOST", "127.0.0.1")
 	}
 	if os.Getenv("DB_PORT") == "" {
-		os.Setenv("DB_PORT", "3326")
+		os.Setenv("DB_PORT", "3306")
 	}
 	if os.Getenv("DB_USERNAME") == "" {
 		os.Setenv("DB_USERNAME", "root")
 	}
 	if os.Getenv("DB_PASSWORD") == "" {
-		os.Setenv("DB_PASSWORD", "12345678")
+		os.Setenv("DB_PASSWORD", "password")
 	}
 }

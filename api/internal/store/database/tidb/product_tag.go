@@ -15,16 +15,14 @@ import (
 const productTagTable = "product_tags"
 
 type productTag struct {
-	database.ProductTag
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewProductTag(db *mysql.Client, mysql database.ProductTag) database.ProductTag {
+func NewProductTag(db *mysql.Client) database.ProductTag {
 	return &productTag{
-		ProductTag: mysql,
-		db:         db,
-		now:        jst.Now,
+		db:  db,
+		now: jst.Now,
 	}
 }
 
@@ -79,4 +77,64 @@ func (t *productTag) Count(ctx context.Context, params *database.ListProductTags
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ProductTag{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (t *productTag) MultiGet(
+	ctx context.Context, productTagIDs []string, fields ...string,
+) (entity.ProductTags, error) {
+	var tags entity.ProductTags
+
+	err := t.db.Statement(ctx, t.db.DB, productTagTable, fields...).
+		Where("id IN (?)", productTagIDs).
+		Find(&tags).Error
+	return tags, dbError(err)
+}
+
+func (t *productTag) Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error) {
+	tag, err := t.get(ctx, t.db.DB, productTagID, fields...)
+	return tag, dbError(err)
+}
+
+func (t *productTag) Create(ctx context.Context, tag *entity.ProductTag) error {
+	now := t.now()
+	tag.CreatedAt, tag.UpdatedAt = now, now
+
+	err := t.db.DB.WithContext(ctx).Table(productTagTable).Create(&tag).Error
+	return dbError(err)
+}
+
+func (t *productTag) Update(ctx context.Context, productTagID, name string) error {
+	params := map[string]interface{}{
+		"name":       name,
+		"updated_at": t.now(),
+	}
+	stmt := t.db.DB.WithContext(ctx).
+		Table(productTagTable).
+		Where("id = ?", productTagID)
+
+	err := stmt.Updates(params).Error
+	return dbError(err)
+}
+
+func (t *productTag) Delete(ctx context.Context, productTagID string) error {
+	stmt := t.db.DB.WithContext(ctx).
+		Table(productTagTable).
+		Where("id = ?", productTagID)
+
+	err := stmt.Delete(&entity.ProductTag{}).Error
+	return dbError(err)
+}
+
+func (t *productTag) get(
+	ctx context.Context, tx *gorm.DB, productTagID string, fields ...string,
+) (*entity.ProductTag, error) {
+	var tag *entity.ProductTag
+
+	stmt := t.db.Statement(ctx, tx, productTagTable, fields...).
+		Where("id = ?", productTagID)
+
+	if err := stmt.First(&tag).Error; err != nil {
+		return nil, err
+	}
+	return tag, nil
 }

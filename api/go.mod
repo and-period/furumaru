@@ -51,6 +51,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
 	github.com/stripe/stripe-go/v73 v73.16.0
+	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.10.0
@@ -65,8 +66,6 @@ require (
 	gorm.io/gorm v1.25.12
 	moul.io/zapgorm2 v1.3.0
 )
-
-require github.com/envoyproxy/go-control-plane/envoy v1.32.2 // indirect
 
 require (
 	cel.dev/expr v0.19.1 // indirect
@@ -112,6 +111,7 @@ require (
 	github.com/cncf/xds/go v0.0.0-20241213214725-57cfbe6fad57 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/envoyproxy/go-control-plane v0.13.2 // indirect
+	github.com/envoyproxy/go-control-plane/envoy v1.32.2 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.7 // indirect

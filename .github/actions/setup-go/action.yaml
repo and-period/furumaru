@@ -26,6 +26,7 @@ runs:
     uses: actions/setup-go@v5
     with:
       go-version: ${{ steps.set-version.outputs.go-version }}
+      cache: false
 
   - name: Cache go modules
     id: modules-cache

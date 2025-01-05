@@ -17,6 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
@@ -135,6 +136,13 @@ func testService(
 		testFunc(ctx, t, srv)
 		srv.waitGroup.Wait()
 	}
+}
+
+func TestMain(m *testing.M) {
+	opts := []goleak.Option{
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
+	}
+	goleak.VerifyTestMain(m, opts...)
 }
 
 func TestService(t *testing.T) {

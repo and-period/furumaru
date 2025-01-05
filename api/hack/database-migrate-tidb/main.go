@@ -4,20 +4,7 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-// 事前に以下DDLを実行すること
-
-/**
- * CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
- *
- * CREATE TABLE IF NOT EXISTS `migrations`.`schemas` (
- *   `database` varchar(256) NOT NULL,
- *   `version` varchar(10) NOT NULL,
- *   `filename` varchar(256) NOT NULL,
- *   `created_at` int NOT NULL,
- *   `updated_at` int NOT NULL,
- *   PRIMARY KEY (`database`, `version`)
- * );
- */
+//nolint:gocritic,forbidigo,lll
 package main
 
 import (
@@ -38,11 +25,14 @@ import (
 )
 
 const (
-	migrateDB   = "migrations"
-	schemaTable = "schemas"
+	migrateDB      = "migrations"
+	schemaTable    = "schemas"
+	createDBDDL    = "CREATE SCHEMA IF NOT EXISTS `%s`;"
+	schemaTableDDL = "CREATE TABLE IF NOT EXISTS `migrations`.`schemas` (`database` varchar(256) NOT NULL, `version` varchar(10) NOT NULL, `filename` varchar(256) NOT NULL, `created_at` int NOT NULL, `updated_at` int NOT NULL, PRIMARY KEY (`database`, `version`));"
 )
 
 var (
+	driver   string
 	host     string
 	port     string
 	username string
@@ -78,6 +68,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err := app.precheck(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to precheck: %v\n", err)
+		os.Exit(1)
+	}
+
 	if err := app.run(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run: %v\n", err)
 		os.Exit(1)
@@ -93,7 +88,8 @@ func main() {
 }
 
 func setup(_ context.Context) (*app, error) {
-	flag.StringVar(&host, "db-host", "mysql", "target mysql host")
+	flag.StringVar(&driver, "db-driver", "tidb", "target mysql driver")
+	flag.StringVar(&host, "db-host", "127.0.0.1", "target mysql host")
 	flag.StringVar(&port, "db-port", "3306", "target mysql port")
 	flag.StringVar(&username, "db-username", "root", "target mysql username")
 	flag.StringVar(&password, "db-password", "12345678", "target mysql password")
@@ -120,6 +116,28 @@ type schema struct {
 	database string
 	filename string
 	path     string
+}
+
+func (a *app) precheck(ctx context.Context) error {
+	client, err := a.setup("")
+	if err != nil {
+		return fmt.Errorf("failed to connect database: %w", err)
+	}
+	// DDLの管理用DBの作成
+	if err := client.DB.WithContext(ctx).Exec(fmt.Sprintf(createDBDDL, migrateDB)).Error; err != nil {
+		return fmt.Errorf("failed to create migrate database: %w", err)
+	}
+	// DDLの管理用テーブルの作成
+	if err := client.DB.WithContext(ctx).Exec(schemaTableDDL).Error; err != nil {
+		return fmt.Errorf("failed to create schemas table: %w", err)
+	}
+	// 各種DBの作成
+	for _, database := range databases {
+		if err := client.DB.WithContext(ctx).Exec(fmt.Sprintf(createDBDDL, database)).Error; err != nil {
+			return fmt.Errorf("failed to create database. database=%s: %w", database, err)
+		}
+	}
+	return nil
 }
 
 func (a *app) run(ctx context.Context) error {
@@ -151,13 +169,21 @@ func (a *app) run(ctx context.Context) error {
  */
 func (a *app) setup(database string) (*mysql.Client, error) {
 	params := &mysql.Params{
+		Socket:   "tcp",
 		Host:     host,
 		Port:     port,
 		Username: username,
 		Password: password,
 		Database: database,
 	}
-	return mysql.NewTiDBClient(params, mysql.WithLogger(a.logger))
+	switch driver {
+	case "mysql":
+		return mysql.NewClient(params, mysql.WithLogger(a.logger))
+	case "tidb":
+		return mysql.NewTiDBClient(params, mysql.WithLogger(a.logger))
+	default:
+		return nil, fmt.Errorf("unsupported driver: %s", driver)
+	}
 }
 
 func (a *app) begin(ctx context.Context, db *mysql.Client) (*sql.Tx, error) {

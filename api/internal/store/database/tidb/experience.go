@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -80,7 +82,10 @@ func (e *experience) List(ctx context.Context, params *database.ListExperiencesP
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	experiences := internal.entities()
+	experiences, err := internal.entities()
+	if err != nil {
+		return nil, dbError(err)
+	}
 
 	if err := e.fill(ctx, e.db.DB, experiences...); err != nil {
 		return nil, dbError(err)
@@ -125,7 +130,10 @@ func (e *experience) ListByGeolocation(
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	experiences := internal.entities()
+	experiences, err := internal.entities()
+	if err != nil {
+		return nil, dbError(err)
+	}
 
 	if err := e.fill(ctx, e.db.DB, experiences...); err != nil {
 		return nil, dbError(err)
@@ -180,16 +188,15 @@ func (e *experience) Get(ctx context.Context, experienceID string, fields ...str
 
 func (e *experience) Create(ctx context.Context, experience *entity.Experience) error {
 	err := e.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if err := experience.FillJSON(); err != nil {
-			return err
-		}
-
 		now := e.now()
 
 		experience.CreatedAt, experience.UpdatedAt = now, now
 		experience.ExperienceRevision.CreatedAt, experience.ExperienceRevision.UpdatedAt = now, now
 
-		internal := newInternalExperience(experience)
+		internal, err := newInternalExperience(experience)
+		if err != nil {
+			return err
+		}
 
 		if err := tx.WithContext(ctx).Table(experienceTable).Create(&internal).Error; err != nil {
 			return err
@@ -216,7 +223,7 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
-		points, err := entity.ExperienceMarshalRecommendedPoints(params.RecommendedPoints)
+		points, err := json.Marshal(params.RecommendedPoints)
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
@@ -289,7 +296,10 @@ func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, err
 	}
-	experiences := internal.entities()
+	experiences, err := internal.entities()
+	if err != nil {
+		return nil, err
+	}
 
 	if err := e.fill(ctx, tx, experiences...); err != nil {
 		return nil, err
@@ -306,7 +316,10 @@ func (e *experience) get(ctx context.Context, tx *gorm.DB, experienceID string, 
 	if err := stmt.First(&internal).Error; err != nil {
 		return nil, err
 	}
-	experience := internal.entity()
+	experience, err := internal.entity()
+	if err != nil {
+		return nil, err
+	}
 
 	if err := e.fill(ctx, tx, experience); err != nil {
 		return nil, err
@@ -339,34 +352,72 @@ func (e *experience) fill(ctx context.Context, tx *gorm.DB, experiences ...*enti
 }
 
 type internalExperience struct {
-	entity.Experience `gorm:"embedded"`
-	HostLongitude     float64 `gorm:""` // 開催場所(座標情報:経度)
-	HostLatitude      float64 `gorm:""` // 開催場所(座標情報:緯度)
+	entity.Experience     `gorm:"embedded"`
+	MediaJSON             datatypes.JSON `gorm:"default:null;column:media"`              // メディア一覧(JSON)
+	RecommendedPointsJSON datatypes.JSON `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 }
 
 type internalExperiences []*internalExperience
 
-func newInternalExperience(experience *entity.Experience) *internalExperience {
-	return &internalExperience{
-		Experience:    *experience,
-		HostLongitude: experience.HostLongitude,
-		HostLatitude:  experience.HostLatitude,
+func newInternalExperience(experience *entity.Experience) (*internalExperience, error) {
+	media, err := experience.Media.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("database: failed to marshal media: %w", err)
 	}
+	points, err := json.Marshal(experience.RecommendedPoints)
+	if err != nil {
+		return nil, fmt.Errorf("database: failed to marshal recommended points: %w", err)
+	}
+	internal := &internalExperience{
+		Experience:            *experience,
+		MediaJSON:             media,
+		RecommendedPointsJSON: points,
+	}
+	return internal, nil
 }
 
-func (e *internalExperience) entity() *entity.Experience {
-	if e == nil {
+func (e *internalExperience) entity() (*entity.Experience, error) {
+	if err := e.unmarshalMedia(); err != nil {
+		return nil, err
+	}
+	if err := e.unmarshalRecommendedPoints(); err != nil {
+		return nil, err
+	}
+	return &e.Experience, nil
+}
+
+func (e *internalExperience) unmarshalMedia() error {
+	if e.MediaJSON == nil {
 		return nil
 	}
-	e.Experience.HostLongitude = e.HostLongitude
-	e.Experience.HostLatitude = e.HostLatitude
-	return &e.Experience
+	var media entity.MultiExperienceMedia
+	if err := json.Unmarshal(e.MediaJSON, &media); err != nil {
+		return fmt.Errorf("database: failed to unmarshal media: %w", err)
+	}
+	e.Experience.Media = media
+	return nil
 }
 
-func (es internalExperiences) entities() entity.Experiences {
+func (e *internalExperience) unmarshalRecommendedPoints() error {
+	if e.RecommendedPointsJSON == nil {
+		return nil
+	}
+	var points []string
+	if err := json.Unmarshal(e.RecommendedPointsJSON, &points); err != nil {
+		return fmt.Errorf("database: failed to unmarshal recommended points: %w", err)
+	}
+	e.Experience.RecommendedPoints = points
+	return nil
+}
+
+func (es internalExperiences) entities() (entity.Experiences, error) {
 	res := make(entity.Experiences, len(es))
 	for i := range es {
-		res[i] = es[i].entity()
+		e, err := es[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = e
 	}
-	return res
+	return res, nil
 }
