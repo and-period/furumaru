@@ -79,6 +79,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err := app.precheck(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to precheck: %v\n", err)
+		os.Exit(1)
+	}
+
 	if err := app.run(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run: %v\n", err)
 		os.Exit(1)
@@ -124,11 +129,19 @@ type schema struct {
 	path     string
 }
 
-func (a *app) run(ctx context.Context) error {
-	if err := a.precheck(ctx); err != nil {
-		return fmt.Errorf("failed to precheck: %w", err)
+func (a *app) precheck(ctx context.Context) error {
+	// DDLの管理用テーブルの作成
+	client, err := a.setup(migrateDB)
+	if err != nil {
+		return fmt.Errorf("failed to connect database: %w", err)
 	}
+	if err := client.DB.WithContext(ctx).Exec(schemaTableDDL).Error; err != nil {
+		return fmt.Errorf("failed to create table: %w", err)
+	}
+	return nil
+}
 
+func (a *app) run(ctx context.Context) error {
 	// DDLの管理用DBの接続
 	migrate, err := a.setup(migrateDB)
 	if err != nil {
@@ -197,18 +210,6 @@ func (a *app) close(tx *sql.Tx) func() {
 
 func (a *app) rollback(tx *sql.Tx, err error) error {
 	return fmt.Errorf("%w: %s", err, tx.Rollback().Error())
-}
-
-func (a *app) precheck(ctx context.Context) error {
-	// DDLの管理用テーブルの作成
-	client, err := a.setup(migrateDB)
-	if err != nil {
-		return fmt.Errorf("failed to connect database: %w", err)
-	}
-	if err := client.DB.WithContext(ctx).Exec(schemaTableDDL).Error; err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
-	}
-	return nil
 }
 
 func (a *app) execute(ctx context.Context, migrate *mysql.Client, database string) error {
