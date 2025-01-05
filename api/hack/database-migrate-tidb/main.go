@@ -3,6 +3,12 @@
 //	usage: go run ./database-migrate-tidb/main.go \
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
+//
+// 事前に以下DDLを実行すること
+
+/**
+ * CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;
+ */
 package main
 
 import (
@@ -23,8 +29,16 @@ import (
 )
 
 const (
-	migrateDB   = "migrations"
-	schemaTable = "schemas"
+	migrateDB      = "migrations"
+	schemaTable    = "schemas"
+	schemaTableDDL = `CREATE TABLE IF NOT EXISTS schemas (
+  database varchar(256) NOT NULL,
+  version varchar(10) NOT NULL,
+  filename varchar(256) NOT NULL,
+  created_at int NOT NULL,
+  updated_at int NOT NULL,
+  PRIMARY KEY (database, version)
+);`
 )
 
 var (
@@ -174,22 +188,13 @@ func (a *app) rollback(tx *sql.Tx, err error) error {
 	return fmt.Errorf("%w: %s", err, tx.Rollback().Error())
 }
 
-//nolint:lll
 func (a *app) precheck(ctx context.Context) error {
-	const (
-		dbDDL    = "CREATE SCHEMA IF NOT EXISTS `migrations` DEFAULT CHARACTER SET utf8mb4;"
-		tableDDL = "CREATE TABLE IF NOT EXISTS `migrations`.`schemas` (`database` varchar(256) NOT NULL,`version` varchar(10) NOT NULL,`filename` varchar(256) NOT NULL,`created_at` int NOT NULL,`updated_at` int NOT NULL,PRIMARY KEY (`database`, `version`));"
-	)
-
 	// DDLの管理用テーブルの作成
-	client, err := a.setup("")
+	client, err := a.setup(migrateDB)
 	if err != nil {
 		return fmt.Errorf("failed to connect database: %w", err)
 	}
-	if err := client.DB.WithContext(ctx).Exec(dbDDL).Error; err != nil {
-		return fmt.Errorf("failed to create schema: %w", err)
-	}
-	if err := client.DB.WithContext(ctx).Exec(tableDDL).Error; err != nil {
+	if err := client.DB.WithContext(ctx).Exec(schemaTableDDL).Error; err != nil {
 		return fmt.Errorf("failed to create table: %w", err)
 	}
 	return nil
