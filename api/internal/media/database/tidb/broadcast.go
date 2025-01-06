@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -61,7 +63,7 @@ func (p listBroadcastsParams) pagination(stmt *gorm.DB) *gorm.DB {
 }
 
 func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsParams, fields ...string) (entity.Broadcasts, error) {
-	var broadcasts entity.Broadcasts
+	var internal internalBroadcasts
 
 	p := listBroadcastsParams(*params)
 
@@ -69,10 +71,11 @@ func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsPar
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	if err := stmt.Find(&broadcasts).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := broadcasts.Fill(); err != nil {
+	broadcasts, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	return broadcasts, nil
@@ -86,15 +89,16 @@ func (b *broadcast) Count(ctx context.Context, params *database.ListBroadcastsPa
 }
 
 func (b *broadcast) Get(ctx context.Context, broadcastID string, fields ...string) (*entity.Broadcast, error) {
-	var broadcast *entity.Broadcast
+	var internal *internalBroadcast
 
 	stmt := b.db.Statement(ctx, b.db.DB, broadcastTable, fields...).
 		Where("id = ?", broadcastID)
 
-	if err := stmt.First(&broadcast).Error; err != nil {
+	if err := stmt.First(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := broadcast.Fill(); err != nil {
+	broadcast, err := internal.entity()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	return broadcast, nil
@@ -103,15 +107,16 @@ func (b *broadcast) Get(ctx context.Context, broadcastID string, fields ...strin
 func (b *broadcast) GetByScheduleID(
 	ctx context.Context, scheduleID string, fields ...string,
 ) (*entity.Broadcast, error) {
-	var broadcast *entity.Broadcast
+	var internal *internalBroadcast
 
 	stmt := b.db.Statement(ctx, b.db.DB, broadcastTable, fields...).
 		Where("schedule_id = ?", scheduleID)
 
-	if err := stmt.First(&broadcast).Error; err != nil {
+	if err := stmt.First(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := broadcast.Fill(); err != nil {
+	broadcast, err := internal.entity()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	return broadcast, nil
@@ -121,11 +126,12 @@ func (b *broadcast) Create(ctx context.Context, broadcast *entity.Broadcast) err
 	now := b.now()
 	broadcast.CreatedAt, broadcast.UpdatedAt = now, now
 
-	if err := broadcast.FillJSON(); err != nil {
+	internal, err := newInternalBroadcast(broadcast)
+	if err != nil {
 		return dbError(err)
 	}
 
-	err := b.db.DB.WithContext(ctx).Table(broadcastTable).Create(&broadcast).Error
+	err = b.db.DB.WithContext(ctx).Table(broadcastTable).Create(&internal).Error
 	return dbError(err)
 }
 
@@ -154,7 +160,7 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 		updates["archive_fixed"] = params.ArchiveFixed
 	}
 	if params.UpdateBroadcastArchiveParams != nil {
-		metadata, err := entity.BroadcastMarshalArchiveMetadata(params.ArchiveMetadata)
+		metadata, err := json.Marshal(params.ArchiveMetadata)
 		if err != nil {
 			return dbError(err)
 		}
@@ -179,4 +185,54 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 
 	err := stmt.Updates(updates).Error
 	return dbError(err)
+}
+
+type internalBroadcast struct {
+	entity.Broadcast    `gorm:"embedded"`
+	ArchiveMetadataJSON datatypes.JSON `gorm:"default:null;column:archive_metadata"` // アーカイブメタデータ(JSON)
+}
+
+type internalBroadcasts []*internalBroadcast
+
+func newInternalBroadcast(broadcast *entity.Broadcast) (*internalBroadcast, error) {
+	metadata, err := json.Marshal(broadcast.ArchiveMetadata)
+	if err != nil {
+		return nil, fmt.Errorf("database: failed to marshal archive metadata: %w", err)
+	}
+	internal := &internalBroadcast{
+		Broadcast:           *broadcast,
+		ArchiveMetadataJSON: metadata,
+	}
+	return internal, nil
+}
+
+func (b *internalBroadcast) entity() (*entity.Broadcast, error) {
+	if err := b.unmarshalArchiveMetadata(); err != nil {
+		return nil, err
+	}
+	return &b.Broadcast, nil
+}
+
+func (b *internalBroadcast) unmarshalArchiveMetadata() error {
+	if b.ArchiveMetadataJSON == nil {
+		return nil
+	}
+	metadata := &entity.BroadcastArchiveMetadata{}
+	if err := json.Unmarshal(b.ArchiveMetadataJSON, &metadata); err != nil {
+		return fmt.Errorf("database: failed to unmarshal archive metadata: %w", err)
+	}
+	b.Broadcast.ArchiveMetadata = metadata
+	return nil
+}
+
+func (es internalBroadcasts) entities() (entity.Broadcasts, error) {
+	res := make(entity.Broadcasts, len(es))
+	for i := range es {
+		b, err := es[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = b
+	}
+	return res, nil
 }
