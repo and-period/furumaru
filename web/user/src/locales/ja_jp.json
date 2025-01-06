@@ -382,6 +382,8 @@
   },
   "experiences": {
     "purchase": {
+      "title": "ご購入手続き",
+      "customerInformationTitle": "お客様情報",
       "adult": "大人（高校生以上）",
       "juniorHighSchool": "中学生",
       "elementarySchool": "小学生",
@@ -389,7 +391,8 @@
       "senior": "シニア（65歳～）",
       "quantityLabel": "数量",
       "subTotalPriceLabel": "小計（税込み）",
-      "totalPriceLabel": "合計（税込み）"
+      "totalPriceLabel": "合計（税込み）",
+      "submitButtonText": "購入する"
     }
   }
 }

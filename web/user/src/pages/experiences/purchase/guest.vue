@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { useAddressForm } from '~/hooks'
 import { useExperienceStore } from '~/store/experience'
+import { useExperienceCheckoutStore } from '~/store/experienceCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
-import { ProductResponseFromJSON, type GuestCheckoutExperienceRequest, PaymentMethodType } from '~/types/api'
+import {
+  type GuestCheckoutExperienceRequest,
+  PaymentMethodType,
+} from '~/types/api'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
 
-const dt = (str: keyof I18n['items']['experiences']) => {
-  return i18n.t(`items.experiences.${str}`)
+const dt = (str: keyof I18n['experiences']['purchase']) => {
+  return i18n.t(`experiences.purchase.${str}`)
 }
 
 const route = useRoute()
@@ -16,36 +21,99 @@ const experienceStore = useExperienceStore()
 const { fetchExperience } = experienceStore
 
 const shoppingCartStore = useShoppingCartStore()
-const { calcCartResponseItem, availablePaymentSystem }
-  = storeToRefs(shoppingCartStore)
+const { availablePaymentSystem } = storeToRefs(shoppingCartStore)
 const { fetchAvailablePaymentOptions } = shoppingCartStore
 
-const experienceId = computed<string>(() => {
-  const ids = route.query.id
-  if (Array.isArray(ids)) {
-    return ids[0]
+const { checkoutByGuest } = useExperienceCheckoutStore()
+
+const { data } = useAsyncData('experience', async () => {
+  if (experienceId.value) {
+    return await fetchExperience(experienceId.value)
   }
-  else if (typeof ids === 'string') {
-    return ids
+})
+
+/**
+ * 体験ID（クエリパラメータから算出）
+ */
+const experienceId = computed<string>(() => {
+  const id = route.query.id
+  if (id) {
+    return String(id)
   }
   return ''
 })
 
+/**
+ * 大人の人数（クエリパラメータから算出）
+ */
+const adultCount = computed<number>(() => {
+  return route.query.adultCount ? Number(route.query.adultCount) : 0
+})
+
+/**
+ * 中学生の人数（クエリパラメータから算出）
+ */
+const juniorHighSchoolCount = computed<number>(() => {
+  return route.query.juniorHighSchoolCount ? Number(route.query.juniorHighSchoolCount) : 0
+})
+
+/**
+ * 小学生の人数（クエリパラメータから算出）
+ */
+const elementarySchoolCount = computed<number>(() => {
+  return route.query.elementarySchoolCount ? Number(route.query.elementarySchoolCount) : 0
+})
+
+/**
+ * 幼児の人数（クエリパラメータから算出）
+ */
+const preschoolCount = computed<number>(() => {
+  return route.query.preschoolCount ? Number(route.query.preschoolCount) : 0
+})
+
+/**
+ * シニアの人数（クエリパラメータから算出）
+ */
+const seniorCount = computed<number>(() => {
+  return route.query.seniorCount ? Number(route.query.seniorCount) : 0
+})
+
+const totalPrice = computed<number>(() => {
+  if (data.value?.experience) {
+    return (
+      data.value.experience.priceAdult
+      * adultCount.value
+      + data.value.experience.priceJuniorHighSchool
+      * juniorHighSchoolCount.value
+      + data.value.experience.priceElementarySchool
+      * elementarySchoolCount.value
+      + data.value.experience.pricePreschool
+      * preschoolCount.value
+      + data.value.experience.priceSenior
+      * seniorCount.value
+    )
+  }
+  return 0
+})
+
+/**
+ * フォームデータ
+ */
 const formData = ref<GuestCheckoutExperienceRequest>({
   requestId: '',
   billingAddressId: '',
   promotionCode: '',
-  adultCount: route.query.adultCount ? Number(route.query.adultCount) : 0,
-  juniorHighSchoolCount: route.query.juniorHighSchoolCount ? Number(route.query.juniorHighSchoolCount) : 0,
-  elementarySchoolCount: route.query.elementarySchoolCount ? Number(route.query.elementarySchoolCount) : 0,
-  preschoolCount: route.query.preschoolCount ? Number(route.query.preschoolCount) : 0,
-  seniorCount: route.query.seniorCount ? Number(route.query.seniorCount) : 0,
+  adultCount: adultCount.value,
+  juniorHighSchoolCount: juniorHighSchoolCount.value,
+  elementarySchoolCount: elementarySchoolCount.value,
+  preschoolCount: preschoolCount.value,
+  seniorCount: seniorCount.value,
   transportation: '',
   requestedDate: '',
   requestedTime: '',
   paymentMethod: 0,
   callbackUrl: '',
-  total: 0,
+  total: totalPrice.value,
   email: '',
   billingAddress: {
     lastname: '',
@@ -68,27 +136,79 @@ const formData = ref<GuestCheckoutExperienceRequest>({
   },
 })
 
-const { data, status } = useAsyncData('experience', async () => {
-  if (experienceId.value) {
-    return await fetchExperience(experienceId.value)
+const isValidQueryParams = computed<boolean>(() => {
+  // 必須パラメータが揃っているか
+  // 体験IDがあるか
+  if (!experienceId.value) {
+    return false
   }
+
+  // 大人などの人数が全て0の場合はエラー
+  if (
+    adultCount.value === 0
+    && juniorHighSchoolCount.value === 0
+    && elementarySchoolCount.value === 0
+    && preschoolCount.value === 0
+    && seniorCount.value === 0
+  ) {
+    return false
+  }
+
+  // 大人などの人数で10人以上の場合はエラー
+  if (
+    adultCount.value > 10
+    || juniorHighSchoolCount.value > 10
+    || elementarySchoolCount.value > 10
+    || preschoolCount.value > 10
+    || seniorCount.value > 10
+  ) {
+    return false
+  }
+
+  // 大人などの人数で0人以下のパラメータがある場合はエラー
+  if (
+    adultCount.value < 0
+    || juniorHighSchoolCount.value < 0
+    || elementarySchoolCount.value < 0
+    || preschoolCount.value < 0
+    || seniorCount.value < 0
+  ) {
+    return false
+  }
+
+  return true
 })
 
-const postalCodeErrorMessage = computed(() => {
-  if (formData.value.billingAddress.postalCode.includes('-')) {
-    return 'ハイフンを含めずに入力してください'
-  }
-  else {
-    return ''
-  }
-})
+const addressFormData = computed(() => formData.value.billingAddress)
+const emailFormData = computed(() => formData.value.email)
+
+const {
+  // hasError,
+  nameErrorMessage,
+  nameKanaErrorMessage,
+  postalCodeErrorMessage,
+  phoneErrorMessage,
+  cityErrorMessage,
+  addressErrorMessage,
+  emailErrorMessage, validate } = useAddressForm(addressFormData, emailFormData)
 
 fetchAvailablePaymentOptions().then(() => {
   if (availablePaymentSystem.value.length > 0) {
-    formData.value.paymentMethod
-        = availablePaymentSystem.value[0].methodType
+    formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
   }
 })
+
+const handleSubmit = async () => {
+  if (validate()) {
+    return
+  }
+
+  const url = await checkoutByGuest(experienceId.value, formData.value)
+  window.location.href = url
+
+  // console.log('submit')
+  // router.push('/experiences/purchase/complete')
+}
 </script>
 
 <template>
@@ -97,19 +217,51 @@ fetchAvailablePaymentOptions().then(() => {
     <div
       class="my-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      ご購入手続き
+      {{ dt("title") }}
     </div>
-    <div class="bg-white py-10 md:px-20 flex flex-col gap-8 px-4">
-      <div class="md:grid grid-cols-2 gap-x-20 auto-rows-auto flex flex-col gap-y-4">
+
+    <!-- エラー -->
+    <div
+      v-if="!isValidQueryParams"
+      class="px-4 md:px-20"
+    >
+      <the-alert
+        class="bg-white"
+        type="error"
+      >
+        不正なパラメータが含まれています
+      </the-alert>
+    </div>
+
+    <div
+      v-else
+      class="bg-white py-10 md:px-20 flex flex-col gap-8 px-4"
+    >
+      <div
+        class="md:grid grid-cols-2 gap-x-20 auto-rows-auto flex flex-col gap-y-4"
+      >
         <!-- 顧客情報入力フォーム -->
         <form
           id="checkout-form"
           class="order-2 md:order-1"
+          @submit.prevent="handleSubmit"
         >
+          <div
+            class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+          >
+            {{ dt("customerInformationTitle") }}
+          </div>
           <the-guest-address-form
             v-model:form-data="formData.billingAddress"
+            v-model:email="formData.email"
             form-id=""
+            :name-error-message="nameErrorMessage"
+            :name-kana-error-message="nameKanaErrorMessage"
             :postal-code-error-message="postalCodeErrorMessage"
+            :phone-error-message="phoneErrorMessage"
+            :city-error-message="cityErrorMessage"
+            :address-error-message="addressErrorMessage"
+            :email-error-message="emailErrorMessage"
           />
           <div class="flex flex-col gap-3 my-4">
             <div
@@ -145,7 +297,7 @@ fetchAvailablePaymentOptions().then(() => {
         <!-- 購入内容確認 -->
         <template v-if="data?.experience">
           <the-experience-summary
-            class=" max-h-max order-1 md:order-2"
+            class="max-h-max order-1 md:order-2"
             :experience="data.experience"
             :adult-count="formData.adultCount"
             :junior-high-school-count="formData.juniorHighSchoolCount"
@@ -162,7 +314,7 @@ fetchAvailablePaymentOptions().then(() => {
           type="submit"
           form="checkout-form"
         >
-          購入する
+          {{ dt("submitButtonText") }}
         </button>
       </div>
     </div>

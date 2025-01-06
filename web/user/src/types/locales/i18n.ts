@@ -394,6 +394,8 @@ export interface I18n {
 
   experiences: {
     purchase: {
+      title: string
+      customerInformationTitle: string
       adult: string
       juniorHighSchool: string
       elementarySchool: string
@@ -402,6 +404,7 @@ export interface I18n {
       quantityLabel: string
       subTotalPriceLabel: string
       totalPriceLabel: string
+      submitButtonText: string
     }
   }
 }
