@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -60,7 +62,7 @@ func (p listNotificationsParams) pagination(stmt *gorm.DB) *gorm.DB {
 func (n *notification) List(
 	ctx context.Context, params *database.ListNotificationsParams, fields ...string,
 ) (entity.Notifications, error) {
-	var notifications entity.Notifications
+	var internal internalNotifications
 
 	p := listNotificationsParams(*params)
 
@@ -68,12 +70,15 @@ func (n *notification) List(
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	if err := stmt.Find(&notifications).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := notifications.Fill(n.now()); err != nil {
+	notifications, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
+
+	notifications.Fill(n.now())
 	return notifications, nil
 }
 
@@ -94,11 +99,13 @@ func (n *notification) Get(
 func (n *notification) Create(ctx context.Context, notification *entity.Notification) error {
 	now := n.now()
 	notification.CreatedAt, notification.UpdatedAt = now, now
-	err := notification.FillJSON()
+
+	internal, err := newInternalNotification(notification)
 	if err != nil {
-		return err
+		return dbError(err)
 	}
-	err = n.db.DB.WithContext(ctx).Table(notificationTable).Create(&notification).Error
+
+	err = n.db.DB.WithContext(ctx).Table(notificationTable).Create(&internal).Error
 	return dbError(err)
 }
 
@@ -121,11 +128,11 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 			"updated_at":   n.now(),
 		}
 		if len(params.Targets) > 0 {
-			target, err := entity.NotificationMarshalTarget(params.Targets)
+			targets, err := json.Marshal(params.Targets)
 			if err != nil {
 				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 			}
-			updates["targets"] = target
+			updates["targets"] = targets
 		}
 		err = tx.WithContext(ctx).
 			Table(notificationTable).
@@ -151,16 +158,69 @@ func (n *notification) Delete(ctx context.Context, notificationID string) error 
 func (n *notification) get(
 	ctx context.Context, tx *gorm.DB, notificationID string, fields ...string,
 ) (*entity.Notification, error) {
-	var notification *entity.Notification
+	var internal *internalNotification
 
-	err := n.db.Statement(ctx, tx, notificationTable, fields...).
-		Where("id = ?", notificationID).
-		First(&notification).Error
+	stmt := n.db.Statement(ctx, tx, notificationTable, fields...).
+		Where("id = ?", notificationID)
+
+	if err := stmt.First(&internal).Error; err != nil {
+		return nil, err
+	}
+	notification, err := internal.entity()
 	if err != nil {
 		return nil, err
 	}
-	if err := notification.Fill(n.now()); err != nil {
+
+	notification.Fill(n.now())
+	return notification, nil
+}
+
+type internalNotification struct {
+	entity.Notification `gorm:"embedded"`
+	TargetsJSON         datatypes.JSON `gorm:"default:null;column:targets"` // お知らせ通知先一覧(JSON)
+}
+
+type internalNotifications []*internalNotification
+
+func newInternalNotification(notification *entity.Notification) (*internalNotification, error) {
+	targets, err := json.Marshal(notification.Targets)
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal notification targets: %w", err)
+	}
+	internal := &internalNotification{
+		Notification: *notification,
+		TargetsJSON:  targets,
+	}
+	return internal, nil
+}
+
+func (n *internalNotification) entity() (*entity.Notification, error) {
+	if err := n.unmarshalTargets(); err != nil {
 		return nil, err
 	}
-	return notification, nil
+	return &n.Notification, nil
+}
+
+func (n *internalNotification) unmarshalTargets() error {
+	if n.TargetsJSON == nil {
+		return nil
+	}
+	var targets []entity.NotificationTarget
+	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal notification targets: %w", err)
+	}
+	n.Notification.Targets = targets
+	return nil
+}
+
+func (ns internalNotifications) entities() (entity.Notifications, error) {
+	res := make(entity.Notifications, len(ns))
+	for i := range ns {
+		n, err := ns[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = n
+	}
+	return res, nil
 }

@@ -1,13 +1,11 @@
 package entity
 
 import (
-	"encoding/json"
 	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -62,21 +60,20 @@ var targetAdmins = []int32{
 
 // Notification - お知らせ情報
 type Notification struct {
-	ID          string               `gorm:"primaryKey;<-:create"`        // お知らせID
-	Type        NotificationType     `gorm:""`                            // お知らせ種別
-	Status      NotificationStatus   `gorm:"-"`                           // お知らせ状態
-	Title       string               `gorm:""`                            // タイトル
-	Body        string               `gorm:""`                            // 本文
-	Note        string               `gorm:""`                            // 備考
-	Targets     []NotificationTarget `gorm:"-"`                           // お知らせ通知先一覧
-	TargetsJSON datatypes.JSON       `gorm:"default:null;column:targets"` // お知らせ通知先一覧(JSON)
-	PublishedAt time.Time            `gorm:""`                            // 掲載開始日時
-	PromotionID string               `gorm:"default:null"`                // プロモーションID
-	CreatedBy   string               `gorm:"<-:create"`                   // 登録者ID
-	UpdatedBy   string               `gorm:""`                            // 更新者ID
-	CreatedAt   time.Time            `gorm:"<-:create"`                   // 作成日時
-	UpdatedAt   time.Time            `gorm:""`                            // 更新日時
-	DeletedAt   gorm.DeletedAt       `gorm:"default:null"`                // 削除日時
+	ID          string               `gorm:"primaryKey;<-:create"` // お知らせID
+	Type        NotificationType     `gorm:""`                     // お知らせ種別
+	Status      NotificationStatus   `gorm:"-"`                    // お知らせ状態
+	Title       string               `gorm:""`                     // タイトル
+	Body        string               `gorm:""`                     // 本文
+	Note        string               `gorm:""`                     // 備考
+	Targets     []NotificationTarget `gorm:"-"`                    // お知らせ通知先一覧
+	PublishedAt time.Time            `gorm:""`                     // 掲載開始日時
+	PromotionID string               `gorm:"default:null"`         // プロモーションID
+	CreatedBy   string               `gorm:"<-:create"`            // 登録者ID
+	UpdatedBy   string               `gorm:""`                     // 更新者ID
+	CreatedAt   time.Time            `gorm:"<-:create"`            // 作成日時
+	UpdatedAt   time.Time            `gorm:""`                     // 更新日時
+	DeletedAt   gorm.DeletedAt       `gorm:"default:null"`         // 削除日時
 }
 
 type Notifications []*Notification
@@ -191,39 +188,16 @@ func (n *Notification) Validate(now time.Time) error {
 	return nil
 }
 
-func (n *Notification) Fill(now time.Time) error {
-	targets, err := n.unmarshalTarget()
-	if err != nil {
-		return err
-	}
-	n.Targets = targets
-	n.FillStatus(now)
-	return nil
+func (n *Notification) Fill(now time.Time) {
+	n.SetStatus(now)
 }
 
-func (n *Notification) FillStatus(now time.Time) {
+func (n *Notification) SetStatus(now time.Time) {
 	if now.After(n.PublishedAt) {
 		n.Status = NotificationStatusNotified
 	} else {
 		n.Status = NotificationStatusWaiting
 	}
-}
-
-func (n *Notification) unmarshalTarget() ([]NotificationTarget, error) {
-	if n.TargetsJSON == nil {
-		return []NotificationTarget{}, nil
-	}
-	var targets []NotificationTarget
-	return targets, json.Unmarshal(n.TargetsJSON, &targets)
-}
-
-func (n *Notification) FillJSON() error {
-	v, err := NotificationMarshalTarget(n.Targets)
-	if err != nil {
-		return err
-	}
-	n.TargetsJSON = datatypes.JSON(v)
-	return nil
 }
 
 func (ns Notifications) PromotionIDs() []string {
@@ -245,18 +219,8 @@ func (ns Notifications) AdminIDs() []string {
 	return set.Slice()
 }
 
-func (ns Notifications) Fill(now time.Time) error {
+func (ns Notifications) Fill(now time.Time) {
 	for i := range ns {
-		if err := ns[i].Fill(now); err != nil {
-			return err
-		}
+		ns[i].Fill(now)
 	}
-	return nil
-}
-
-func NotificationMarshalTarget(t []NotificationTarget) ([]byte, error) {
-	if len(t) == 0 {
-		return []byte{}, nil
-	}
-	return json.Marshal(t)
 }
