@@ -347,7 +347,7 @@
       "elementarySchoolStudents": "小学生",
       "preschoolers": "未就学児 (3歳〜)",
       "senior": "シニア (65歳〜)",
-      "addToCartText": "カゴに入れる",
+      "applyButtonText": "申し込む",
       "estimatedTime": "・所用時間",
       "businessHours": "・営業時間",
       "locationPostalcode": "・所在地 (郵便番号)",
@@ -378,6 +378,18 @@
       "guestNameLabel": "ゲスト",
       "linkCopy": "リンクをコピー",
       "linkCopied": "リンクをコピーしました"
+    }
+  },
+  "experiences": {
+    "purchase": {
+      "adult": "大人（高校生以上）",
+      "juniorHighSchool": "中学生",
+      "elementarySchool": "小学生",
+      "preschool": "未就学児（3歳～）",
+      "senior": "シニア（65歳～）",
+      "quantityLabel": "数量",
+      "subTotalPriceLabel": "小計（税込み）",
+      "totalPriceLabel": "合計（税込み）"
     }
   }
 }

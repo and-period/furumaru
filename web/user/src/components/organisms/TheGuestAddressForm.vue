@@ -36,7 +36,7 @@ const formDataValue = computed({
   set: (val: GuestCheckoutAddress) => emits('update:formData', val),
 })
 
-const email = defineModel<string>('email')
+const email = defineModel<string>('email', { required: true })
 
 const handleClickSearchAddressButton = () => {
   emits('click:searchAddressButton', props.formData.postalCode)
@@ -48,7 +48,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form
+  <component
+    :is="formId ? 'form' : 'div'"
     :id="formId"
     class="flex w-full flex-col gap-4"
     @submit.prevent="handleSubmit"
@@ -170,5 +171,5 @@ const handleSubmit = () => {
       name="address-line3"
       type="text"
     />
-  </form>
+  </component>
 </template>

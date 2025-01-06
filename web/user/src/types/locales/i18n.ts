@@ -359,7 +359,7 @@ export interface I18n {
       elementarySchoolStudents: string
       preschoolers: string
       senior: string
-      addToCartText: string
+      applyButtonText: string
       estimatedTime: string
       businessHours: string
       locationPostalcode: string
@@ -389,6 +389,19 @@ export interface I18n {
       guestCommentNote: string
       noCommentsText: string
       guestNameLabel: string
+    }
+  }
+
+  experiences: {
+    purchase: {
+      adult: string
+      juniorHighSchool: string
+      elementarySchool: string
+      preschool: string
+      senior: string
+      quantityLabel: string
+      subTotalPriceLabel: string
+      totalPriceLabel: string
     }
   }
 }
