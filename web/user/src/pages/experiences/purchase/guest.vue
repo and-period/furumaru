@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAddressForm } from '~/hooks'
+import { useAddressStore } from '~/store/address'
 import { useExperienceStore } from '~/store/experience'
 import { useExperienceCheckoutStore } from '~/store/experienceCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -15,6 +16,10 @@ const dt = (str: keyof I18n['experiences']['purchase']) => {
   return i18n.t(`experiences.purchase.${str}`)
 }
 
+const gt = (str: keyof I18n['purchase']['guest']) => {
+  return i18n.t(`purchase.guest.${str}`)
+}
+
 const route = useRoute()
 
 const experienceStore = useExperienceStore()
@@ -24,13 +29,10 @@ const shoppingCartStore = useShoppingCartStore()
 const { availablePaymentSystem } = storeToRefs(shoppingCartStore)
 const { fetchAvailablePaymentOptions } = shoppingCartStore
 
-const { checkoutByGuest } = useExperienceCheckoutStore()
+const addressStore = useAddressStore()
+const { searchAddressByPostalCode } = addressStore
 
-const { data } = useAsyncData('experience', async () => {
-  if (experienceId.value) {
-    return await fetchExperience(experienceId.value)
-  }
-})
+const { checkoutByGuest } = useExperienceCheckoutStore()
 
 /**
  * 体験ID（クエリパラメータから算出）
@@ -78,6 +80,18 @@ const seniorCount = computed<number>(() => {
   return route.query.seniorCount ? Number(route.query.seniorCount) : 0
 })
 
+/**
+ * 体験情報取得処理
+ */
+const { data, status, error } = useAsyncData('experience', async () => {
+  if (experienceId.value) {
+    return await fetchExperience(experienceId.value)
+  }
+})
+
+/**
+ * 合計金額
+ */
 const totalPrice = computed<number>(() => {
   if (data.value?.experience) {
     return (
@@ -190,7 +204,24 @@ const {
   phoneErrorMessage,
   cityErrorMessage,
   addressErrorMessage,
-  emailErrorMessage, validate } = useAddressForm(addressFormData, emailFormData)
+  emailErrorMessage,
+  validate,
+} = useAddressForm(addressFormData, emailFormData)
+
+/**
+ * 住所検索ボタンクリック時の処理
+ */
+const handleClickSearchAddressButton = async () => {
+  try {
+    const res = await searchAddressByPostalCode(formData.value.billingAddress.postalCode)
+    formData.value.billingAddress.prefectureCode = res.prefectureCode
+    formData.value.billingAddress.city = res.city
+    formData.value.billingAddress.addressLine1 = res.town
+  }
+  catch (_) {
+    postalCodeErrorMessage.value = gt('addressNotFoundErrorMessage')
+  }
+}
 
 fetchAvailablePaymentOptions().then(() => {
   if (availablePaymentSystem.value.length > 0) {
@@ -198,6 +229,9 @@ fetchAvailablePaymentOptions().then(() => {
   }
 })
 
+/**
+ * 体験購入フォーム送信時の処理
+ */
 const handleSubmit = async () => {
   if (validate()) {
     return
@@ -222,14 +256,23 @@ const handleSubmit = async () => {
 
     <!-- エラー -->
     <div
-      v-if="!isValidQueryParams"
+      v-if="!isValidQueryParams || status == 'error'"
       class="px-4 md:px-20"
     >
       <the-alert
+        v-if="!isValidQueryParams"
         class="bg-white"
         type="error"
       >
         不正なパラメータが含まれています
+      </the-alert>
+
+      <the-alert
+        v-if="status == 'error'"
+        class="bg-white"
+        type="error"
+      >
+        {{ error?.message }}
       </the-alert>
     </div>
 
@@ -262,6 +305,7 @@ const handleSubmit = async () => {
             :city-error-message="cityErrorMessage"
             :address-error-message="addressErrorMessage"
             :email-error-message="emailErrorMessage"
+            @click:search-address-button="handleClickSearchAddressButton"
           />
           <div class="flex flex-col gap-3 my-4">
             <div
