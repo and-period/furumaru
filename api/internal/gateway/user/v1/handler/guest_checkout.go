@@ -20,7 +20,7 @@ func (h *handler) guestCheckoutRoutes(rg *gin.RouterGroup) {
 
 	r.POST("/products", h.GuestCheckoutProduct)
 	r.GET("/experiences/:experienceId", h.PreCheckoutExperience)
-	r.POST("/experiences/:experienceId", h.GuestCheckoutProduct)
+	r.POST("/experiences/:experienceId", h.GuestCheckoutExperience)
 	r.GET("/:transactionId", h.GetGuestCheckoutState)
 }
 
