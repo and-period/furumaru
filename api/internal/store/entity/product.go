@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -58,42 +57,39 @@ const (
 
 // Product - 商品情報
 type Product struct {
-	ProductRevision       `gorm:"-"`
-	ID                    string            `gorm:"primaryKey;<-:create"`                   // 商品ID
-	CoordinatorID         string            `gorm:""`                                       // コーディネータID
-	ProducerID            string            `gorm:""`                                       // 生産者ID
-	TypeID                string            `gorm:"column:product_type_id"`                 // 品目ID
-	TagIDs                []string          `gorm:"-"`                                      // 商品タグID一覧
-	TagIDsJSON            datatypes.JSON    `gorm:"default:null;column:product_tag_ids"`    // 商品タグID一覧(JSON)
-	Name                  string            `gorm:""`                                       // 商品名
-	Description           string            `gorm:""`                                       // 商品説明
-	Public                bool              `gorm:""`                                       // 公開フラグ
-	Status                ProductStatus     `gorm:"-"`                                      // 販売状況
-	Inventory             int64             `gorm:""`                                       // 在庫数
-	Weight                int64             `gorm:""`                                       // 重量
-	WeightUnit            WeightUnit        `gorm:""`                                       // 重量単位
-	Item                  int64             `gorm:""`                                       // 数量
-	ItemUnit              string            `gorm:""`                                       // 数量単位
-	ItemDescription       string            `gorm:""`                                       // 数量単位説明
-	ThumbnailURL          string            `gorm:"-"`                                      // サムネイルURL
-	Media                 MultiProductMedia `gorm:"-"`                                      // メディア一覧
-	MediaJSON             datatypes.JSON    `gorm:"default:null;column:media"`              // メディア一覧(JSON)
-	ExpirationDate        int64             `gorm:""`                                       // 賞味期限(単位:日)
-	RecommendedPoints     []string          `gorm:"-"`                                      // おすすめポイント一覧
-	RecommendedPointsJSON datatypes.JSON    `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
-	StorageMethodType     StorageMethodType `gorm:""`                                       // 保存方法
-	DeliveryType          DeliveryType      `gorm:""`                                       // 配送方法
-	Box60Rate             int64             `gorm:""`                                       // 箱の占有率(サイズ:60)
-	Box80Rate             int64             `gorm:""`                                       // 箱の占有率(サイズ:80)
-	Box100Rate            int64             `gorm:""`                                       // 箱の占有率(サイズ:100)
-	OriginPrefecture      string            `gorm:"-"`                                      // 原産地(都道府県)
-	OriginPrefectureCode  int32             `gorm:"column:origin_prefecture"`               // 原産地(都道府県コード)
-	OriginCity            string            `gorm:""`                                       // 原産地(市区町村)
-	StartAt               time.Time         `gorm:""`                                       // 販売開始日時
-	EndAt                 time.Time         `gorm:""`                                       // 販売終了日時
-	CreatedAt             time.Time         `gorm:"<-:create"`                              // 登録日時
-	UpdatedAt             time.Time         `gorm:""`                                       // 更新日時
-	DeletedAt             gorm.DeletedAt    `gorm:"default:null"`                           // 削除日時
+	ProductRevision      `gorm:"-"`
+	ID                   string            `gorm:"primaryKey;<-:create"`     // 商品ID
+	CoordinatorID        string            `gorm:""`                         // コーディネータID
+	ProducerID           string            `gorm:""`                         // 生産者ID
+	TypeID               string            `gorm:"column:product_type_id"`   // 品目ID
+	TagIDs               []string          `gorm:"-"`                        // 商品タグID一覧
+	Name                 string            `gorm:""`                         // 商品名
+	Description          string            `gorm:""`                         // 商品説明
+	Public               bool              `gorm:""`                         // 公開フラグ
+	Status               ProductStatus     `gorm:"-"`                        // 販売状況
+	Inventory            int64             `gorm:""`                         // 在庫数
+	Weight               int64             `gorm:""`                         // 重量
+	WeightUnit           WeightUnit        `gorm:""`                         // 重量単位
+	Item                 int64             `gorm:""`                         // 数量
+	ItemUnit             string            `gorm:""`                         // 数量単位
+	ItemDescription      string            `gorm:""`                         // 数量単位説明
+	ThumbnailURL         string            `gorm:"-"`                        // サムネイルURL
+	Media                MultiProductMedia `gorm:"-"`                        // メディア一覧
+	ExpirationDate       int64             `gorm:""`                         // 賞味期限(単位:日)
+	RecommendedPoints    []string          `gorm:"-"`                        // おすすめポイント一覧
+	StorageMethodType    StorageMethodType `gorm:""`                         // 保存方法
+	DeliveryType         DeliveryType      `gorm:""`                         // 配送方法
+	Box60Rate            int64             `gorm:""`                         // 箱の占有率(サイズ:60)
+	Box80Rate            int64             `gorm:""`                         // 箱の占有率(サイズ:80)
+	Box100Rate           int64             `gorm:""`                         // 箱の占有率(サイズ:100)
+	OriginPrefecture     string            `gorm:"-"`                        // 原産地(都道府県)
+	OriginPrefectureCode int32             `gorm:"column:origin_prefecture"` // 原産地(都道府県コード)
+	OriginCity           string            `gorm:""`                         // 原産地(市区町村)
+	StartAt              time.Time         `gorm:""`                         // 販売開始日時
+	EndAt                time.Time         `gorm:""`                         // 販売終了日時
+	CreatedAt            time.Time         `gorm:"<-:create"`                // 登録日時
+	UpdatedAt            time.Time         `gorm:""`                         // 更新日時
+	DeletedAt            gorm.DeletedAt    `gorm:"default:null"`             // 削除日時
 }
 
 type Products []*Product
@@ -198,19 +194,7 @@ func (p *Product) Validate() error {
 	return p.Media.Validate()
 }
 
-func (p *Product) Fill(revision *ProductRevision, now time.Time) (err error) {
-	p.TagIDs, err = p.unmarshalTagIDs()
-	if err != nil {
-		return
-	}
-	p.Media, err = p.unmarshalMedia()
-	if err != nil {
-		return
-	}
-	p.RecommendedPoints, err = p.unmarshalRecommendedPoints()
-	if err != nil {
-		return
-	}
+func (p *Product) Fill(revision *ProductRevision, now time.Time) {
 	p.SetStatus(now)
 	p.SetThumbnail()
 	p.ProductRevision = *revision
@@ -249,72 +233,14 @@ func (p *Product) WeightGram() int64 {
 	return p.Weight * 1e3
 }
 
-func (p *Product) unmarshalTagIDs() ([]string, error) {
-	if p.TagIDsJSON == nil {
-		return []string{}, nil
-	}
-	var ids []string
-	return ids, json.Unmarshal(p.TagIDsJSON, &ids)
-}
-
-func (p *Product) unmarshalMedia() (MultiProductMedia, error) {
-	if p.MediaJSON == nil {
-		return MultiProductMedia{}, nil
-	}
-	var media MultiProductMedia
-	return media, json.Unmarshal(p.MediaJSON, &media)
-}
-
-func (p *Product) unmarshalRecommendedPoints() ([]string, error) {
-	if p.RecommendedPointsJSON == nil {
-		return []string{}, nil
-	}
-	var points []string
-	return points, json.Unmarshal(p.RecommendedPointsJSON, &points)
-}
-
-func (p *Product) FillJSON() error {
-	media, err := p.Media.Marshal()
-	if err != nil {
-		return err
-	}
-	tagIDs, err := ProductMarshalTagIDs(p.TagIDs)
-	if err != nil {
-		return err
-	}
-	points, err := ProductMarshalRecommendedPoints(p.RecommendedPoints)
-	if err != nil {
-		return err
-	}
-	p.MediaJSON = datatypes.JSON(media)
-	p.TagIDsJSON = datatypes.JSON(tagIDs)
-	p.RecommendedPointsJSON = datatypes.JSON(points)
-	return nil
-}
-
-func ProductMarshalTagIDs(tagIDs []string) ([]byte, error) {
-	return json.Marshal(tagIDs)
-}
-
-func ProductMarshalRecommendedPoints(points []string) ([]byte, error) {
-	return json.Marshal(points)
-}
-
-func ProductMarshalBusinessDays(days []time.Weekday) ([]byte, error) {
-	return json.Marshal(days)
-}
-
-func (ps Products) Fill(revisions map[string]*ProductRevision, now time.Time) error {
+func (ps Products) Fill(revisions map[string]*ProductRevision, now time.Time) {
 	for _, p := range ps {
 		revision, ok := revisions[p.ID]
 		if !ok {
 			revision = &ProductRevision{ProductID: p.ID}
 		}
-		if err := p.Fill(revision, now); err != nil {
-			return err
-		}
+		p.Fill(revision, now)
 	}
-	return nil
 }
 
 func (ps Products) Box60Rate() int64 {

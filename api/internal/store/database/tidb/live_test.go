@@ -33,9 +33,9 @@ func TestLive_List(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 1)
+	products := make(internalProducts, 1)
 	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	err = db.DB.Create(&products).Error
+	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
 		err = db.DB.Create(&products[i].ProductRevision).Error
@@ -126,9 +126,9 @@ func TestLive_Count(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 1)
+	products := make(internalProducts, 1)
 	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	err = db.DB.Create(&products).Error
+	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
 		err = db.DB.Create(&products[i].ProductRevision).Error
@@ -218,12 +218,12 @@ func TestLive_Get(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 1)
-	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	err = db.DB.Create(&products).Error
+	internal := make(internalProducts, 1)
+	internal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err = db.DB.Create(&products[i].ProductRevision).Error
+	for i := range internal {
+		err = db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
 
@@ -313,14 +313,14 @@ func TestLive_Update(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	products[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
-	err = db.DB.Create(&products).Error
+	pinternal := make(internalProducts, 3)
+	pinternal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err = db.DB.Create(&products[i].ProductRevision).Error
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
 
@@ -401,14 +401,14 @@ func TestLive_Delete(t *testing.T) {
 	productType := testProductType("type-id", "category-id", "野菜", now())
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	products[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	products[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
-	err = db.DB.Create(&products).Error
+	pinternal := make(internalProducts, 3)
+	pinternal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err = db.DB.Create(&products[i].ProductRevision).Error
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
 

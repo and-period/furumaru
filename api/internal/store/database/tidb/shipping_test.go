@@ -39,7 +39,9 @@ func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
+		require.NoError(t, err)
+		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
 
@@ -82,7 +84,6 @@ func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 			db := &shipping{db: db, now: now}
 			actual, err := db.ListByCoordinatorIDs(ctx, tt.args.coordinatorIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreShippingsField(actual, now())
 			assert.Equal(t, tt.want.shippings, actual)
 		})
 	}
@@ -108,7 +109,9 @@ func TestShipping_MultiGet(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
+		require.NoError(t, err)
+		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
 
@@ -151,7 +154,6 @@ func TestShipping_MultiGet(t *testing.T) {
 			db := &shipping{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.shippingIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreShippingsField(actual, now())
 			assert.Equal(t, tt.want.shippings, actual)
 		})
 	}
@@ -177,7 +179,9 @@ func TestShipping_MultiGetByRevision(t *testing.T) {
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
-		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
+		require.NoError(t, err)
+		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 		require.NoError(t, err)
 	}
 
@@ -220,7 +224,6 @@ func TestShipping_MultiGetByRevision(t *testing.T) {
 			db := &shipping{db: db, now: now}
 			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreShippingsField(actual, now())
 			assert.Equal(t, tt.want.shippings, actual)
 		})
 	}
@@ -243,7 +246,9 @@ func TestShipping_GetDefault(t *testing.T) {
 	s := testShipping(entity.DefaultShippingID, "", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&s.ShippingRevision).Error
+	internal, err := newInternalShippingRevision(&s.ShippingRevision)
+	require.NoError(t, err)
+	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
 	type args struct{}
@@ -281,7 +286,6 @@ func TestShipping_GetDefault(t *testing.T) {
 			db := &shipping{db: db, now: now}
 			actual, err := db.GetDefault(ctx)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreShippingField(actual, now())
 			assert.Equal(t, tt.want.shipping, actual)
 		})
 	}
@@ -304,7 +308,9 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 	s := testShipping("shipping-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&s.ShippingRevision).Error
+	internal, err := newInternalShippingRevision(&s.ShippingRevision)
+	require.NoError(t, err)
+	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -357,7 +363,6 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 			db := &shipping{db: db, now: now}
 			actual, err := db.GetByCoordinatorID(ctx, tt.args.coordinatorID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreShippingField(actual, now())
 			assert.Equal(t, tt.want.shipping, actual)
 		})
 	}
@@ -406,7 +411,9 @@ func TestShipping_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&s.ShippingRevision).Error
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -469,7 +476,9 @@ func TestShipping_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&s.ShippingRevision).Error
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -521,16 +530,18 @@ func TestShipping_Update(t *testing.T) {
 }
 
 func testShipping(shippingID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
+	internal := testShippingRevision(revisionID, shippingID, now)
+	revision, _ := internal.entity()
 	return &entity.Shipping{
 		ID:               shippingID,
 		CoordinatorID:    coordinatorID,
-		ShippingRevision: *testShippingRevision(revisionID, shippingID, now),
+		ShippingRevision: *revision,
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
 }
 
-func testShippingRevision(revisionID int64, shippingID string, now time.Time) *entity.ShippingRevision {
+func testShippingRevision(revisionID int64, shippingID string, now time.Time) *internalShippingRevision {
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
@@ -563,19 +574,6 @@ func testShippingRevision(revisionID int64, shippingID string, now time.Time) *e
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
-	_ = revision.FillJSON()
-	return revision
-}
-
-func fillIgnoreShippingField(s *entity.Shipping, _ time.Time) {
-	if s == nil {
-		return
-	}
-	_ = s.FillJSON()
-}
-
-func fillIgnoreShippingsField(ss entity.Shippings, now time.Time) {
-	for i := range ss {
-		fillIgnoreShippingField(ss[i], now)
-	}
+	internal, _ := newInternalShippingRevision(revision)
+	return internal
 }

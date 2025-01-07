@@ -17,6 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -188,6 +189,35 @@ func (a *app) executeProductTypes(ctx context.Context) error {
 	})
 }
 
+type internalShippingRevision struct {
+	entity.ShippingRevision `gorm:"embedded"`
+	Box60RatesJSON          datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
+	Box80RatesJSON          datatypes.JSON `gorm:"default:null;column:box80_rates"`  // 箱サイズ80の通常便配送料一覧(JSON)
+	Box100RatesJSON         datatypes.JSON `gorm:"default:null;column:box100_rates"` // 箱サイズ100の通常便配送料一覧(JSON)
+}
+
+func newInternalShippingRevision(revision *entity.ShippingRevision) (*internalShippingRevision, error) {
+	box60Rates, err := revision.Box60Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box60 rates: %w", err)
+	}
+	box80Rates, err := revision.Box80Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box80 rates: %w", err)
+	}
+	box100Rates, err := revision.Box100Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box100 rates: %w", err)
+	}
+	internal := &internalShippingRevision{
+		ShippingRevision: *revision,
+		Box60RatesJSON:   box60Rates,
+		Box80RatesJSON:   box80Rates,
+		Box100RatesJSON:  box100Rates,
+	}
+	return internal, nil
+}
+
 func (a *app) executeShipping(ctx context.Context) error {
 	return a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := a.now()
@@ -204,12 +234,13 @@ func (a *app) executeShipping(ctx context.Context) error {
 			return err
 		}
 
-		revision := master.DefaultShippingRevision
-		revision.CreatedAt = now
-		revision.UpdatedAt = now
-		if err := revision.FillJSON(); err != nil {
+		revision, err := newInternalShippingRevision(master.DefaultShippingRevision)
+		if err != nil {
 			return err
 		}
+
+		revision.CreatedAt = now
+		revision.UpdatedAt = now
 
 		stmt = tx.WithContext(ctx).Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "id"}},
