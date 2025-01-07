@@ -498,8 +498,11 @@ func TestCoordinator_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	admin := *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+	err = db.DB.Create(&admin).Error
+	require.NoError(t, err)
 	internal := testCoordinator("admin-id", now())
-	internal.Admin = *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+	internal.Admin = admin
 	err = db.DB.Table(coordinatorTable).Create(&internal).Error
 	require.NoError(t, err)
 	c, err := internal.entity()

@@ -33,7 +33,7 @@ func TestBroadcastComment_List(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	err = db.DB.Table(broadcastTable).Create(&broadcast).Error
 	require.NoError(t, err)
 
 	comments := make(entity.BroadcastComments, 2)
@@ -129,7 +129,7 @@ func TestBroadcastComment_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	err = db.DB.Table(broadcastTable).Create(&broadcast).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -203,7 +203,7 @@ func TestBroadcastComment_Update(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	err = db.DB.Table(broadcastTable).Create(&broadcast).Error
 	require.NoError(t, err)
 
 	type args struct {

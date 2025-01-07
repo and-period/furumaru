@@ -482,6 +482,7 @@ func newInternalOrderExperience(experience *entity.OrderExperience) (*internalOr
 	}
 	return internal, nil
 }
+
 func (e *internalOrderExperience) entity() (*entity.OrderExperience, error) {
 	if err := e.unmarshalRemarks(); err != nil {
 		return nil, err

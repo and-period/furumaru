@@ -39,10 +39,10 @@ func TestProductReviewReaction_Upsert(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-	err = db.DB.Create(&p).Error
+	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&p.ProductRevision).Error
+	err = db.DB.Create(&pinternal.ProductRevision).Error
 	require.NoError(t, err)
 
 	review := testProductReview("review-id", "product-id", "user-id", now())
@@ -127,10 +127,10 @@ func TestProductReviewReaction_Delete(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-	err = db.DB.Create(&p).Error
+	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&p.ProductRevision).Error
+	err = db.DB.Create(&pinternal.ProductRevision).Error
 	require.NoError(t, err)
 
 	review := testProductReview("review-id", "product-id", "user-id", now())
@@ -207,10 +207,10 @@ func TestProductReviewReaction_GetUserReactions(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-	err = db.DB.Create(&p).Error
+	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&p.ProductRevision).Error
+	err = db.DB.Create(&pinternal.ProductRevision).Error
 	require.NoError(t, err)
 
 	review := testProductReview("review-id", "product-id", "user-id", now())

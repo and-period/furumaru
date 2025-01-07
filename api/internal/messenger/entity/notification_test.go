@@ -239,7 +239,6 @@ func TestNotification_Fill(t *testing.T) {
 				Title:       "title",
 				Body:        "<html>本文<html>",
 				Status:      NotificationStatusWaiting,
-				Targets:     []NotificationTarget{},
 				PublishedAt: now.AddDate(0, 0, 1),
 			},
 		},

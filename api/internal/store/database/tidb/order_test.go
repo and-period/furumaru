@@ -293,7 +293,7 @@ func TestOrder_Count(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -515,7 +515,7 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -629,7 +629,7 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -742,7 +742,7 @@ func TestOrder_Create(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -872,7 +872,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1064,7 +1064,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1231,7 +1231,7 @@ func TestOrder_UpdateRefund(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1391,7 +1391,7 @@ func TestOrder_Draft(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1498,7 +1498,7 @@ func TestOrder_Complete(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1606,7 +1606,7 @@ func TestOrder_Aggregate(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
@@ -1725,7 +1725,7 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	pinternal := make(internalProducts, 2)
 	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
 	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Create(&pinternal).Error
+	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
 		err = db.DB.Create(&pinternal[i].ProductRevision).Error
