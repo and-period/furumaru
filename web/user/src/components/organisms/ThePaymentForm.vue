@@ -17,6 +17,26 @@ interface Props {
 
 defineProps<Props>()
 
+const creditCardMonthValue = computed({
+  get: () => {
+    if (checkoutFormData.value.month === 0) {
+      return '0'
+    }
+    if (checkoutFormData.value.month < 10) {
+      return `0${checkoutFormData.value.month}`
+    }
+    else {
+      return String(checkoutFormData.value.month)
+    }
+  },
+  set: (val: string) => {
+    const month = Number(val)
+    if (!isNaN(month)) {
+      checkoutFormData.value.month = month
+    }
+  },
+})
+
 const handleSubmitCreditCardForm = () => {}
 </script>
 
@@ -73,7 +93,7 @@ const handleSubmitCreditCardForm = () => {}
     />
     <div class="mt-2 flex gap-4">
       <select
-        v-model="checkoutFormData.month"
+        v-model="creditCardMonthValue"
         class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
       >
         <option
