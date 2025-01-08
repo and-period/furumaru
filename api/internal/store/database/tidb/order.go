@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"golang.org/x/sync/errgroup"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -185,10 +187,11 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 			}
 		case entity.OrderTypeExperience:
 			order.OrderExperience.CreatedAt, order.OrderExperience.UpdatedAt = now, now
-			if err := order.OrderExperience.FillJSON(); err != nil {
-				return fmt.Errorf("mysql: failed to fill order experience: %s: %w", err, database.ErrInvalidArgument)
+			internal, err := newInternalOrderExperience(&order.OrderExperience)
+			if err != nil {
+				return err
 			}
-			if err := tx.WithContext(ctx).Table(orderExperienceTable).Create(&order.OrderExperience).Error; err != nil {
+			if err := tx.WithContext(ctx).Table(orderExperienceTable).Create(&internal).Error; err != nil {
 				return err
 			}
 		}
@@ -433,15 +436,14 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&items).Error
 	})
-	eg.Go(func() error {
+	eg.Go(func() (err error) {
+		var internal internalOrderExperiences
 		stmt := o.db.Statement(ectx, tx, orderExperienceTable).Where("order_id IN (?)", ids)
-		if err := stmt.Find(&experiences).Error; err != nil {
+		if err := stmt.Find(&internal).Error; err != nil {
 			return err
 		}
-		if err := experiences.Fill(); err != nil {
-			return fmt.Errorf("mysql: failed to unmarshal order experiences: %w", err)
-		}
-		return nil
+		experiences, err = internal.entities()
+		return err
 	})
 	if err := eg.Wait(); err != nil {
 		return err
@@ -460,4 +462,54 @@ func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string, s
 		Table(orderTable).
 		Where("id = ?", orderID)
 	return stmt.Updates(updates).Error
+}
+
+type internalOrderExperience struct {
+	entity.OrderExperience `gorm:"embedded"`
+	RemarksJSON            datatypes.JSON `gorm:"default:null;column:remarks"` // 備考(JSON)
+}
+
+type internalOrderExperiences []*internalOrderExperience
+
+func newInternalOrderExperience(experience *entity.OrderExperience) (*internalOrderExperience, error) {
+	remarks, err := experience.Remarks.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal order experience remarks: %w", err)
+	}
+	internal := &internalOrderExperience{
+		OrderExperience: *experience,
+		RemarksJSON:     remarks,
+	}
+	return internal, nil
+}
+
+func (e *internalOrderExperience) entity() (*entity.OrderExperience, error) {
+	if err := e.unmarshalRemarks(); err != nil {
+		return nil, err
+	}
+	return &e.OrderExperience, nil
+}
+
+func (e *internalOrderExperience) unmarshalRemarks() error {
+	if e.RemarksJSON == nil {
+		return nil
+	}
+	var remarks *entity.OrderExperienceRemarks
+	if err := json.Unmarshal(e.RemarksJSON, &remarks); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal order experience remarks: %w", err)
+	}
+	e.OrderExperience.Remarks = *remarks
+	return nil
+}
+
+func (es internalOrderExperiences) entities() (entity.OrderExperiences, error) {
+	res := make(entity.OrderExperiences, len(es))
+	for i := range es {
+		e, err := es[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = e
+	}
+	return res, nil
 }

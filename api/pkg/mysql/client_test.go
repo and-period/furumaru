@@ -228,6 +228,6 @@ func setEnv() {
 		os.Setenv("DB_USERNAME", "root")
 	}
 	if os.Getenv("DB_PASSWORD") == "" {
-		os.Setenv("DB_PASSWORD", "password")
+		os.Setenv("DB_PASSWORD", "")
 	}
 }

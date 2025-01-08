@@ -32,15 +32,15 @@ func TestProducer_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
-	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now().Add(time.Hour))
 	err = db.DB.Create(&admins).Error
 	producers := make(entity.Producers, 2)
 	require.NoError(t, err)
@@ -76,7 +76,7 @@ func TestProducer_List(t *testing.T) {
 				},
 			},
 			want: want{
-				producers: producers[1:],
+				producers: producers[:1],
 				hasErr:    false,
 			},
 		},
@@ -113,11 +113,11 @@ func TestProducer_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
@@ -190,11 +190,11 @@ func TestProducer_MultiGet(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
@@ -265,11 +265,11 @@ func TestProducer_MultiGetWithDeleted(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
@@ -342,11 +342,11 @@ func TestProducer_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 	err = db.DB.Create(&admin).Error
@@ -424,11 +424,11 @@ func TestProducer_GetWithDeleted(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
@@ -542,11 +542,11 @@ func TestProducer_Create(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -571,12 +571,13 @@ func TestProducer_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry in admin auth",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -595,11 +596,11 @@ func TestProducer_Create(t *testing.T) {
 		{
 			name: "failed to execute external service",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -660,12 +661,13 @@ func TestProducer_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -745,12 +747,13 @@ func TestProducer_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -769,12 +772,13 @@ func TestProducer_Delete(t *testing.T) {
 		{
 			name: "failed to execute external service",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
+				cinternal := testCoordinator("coordinator-id", now())
+				cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+				err = db.DB.Create(&cinternal.Admin).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
+				err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 				require.NoError(t, err)
+
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -824,12 +828,13 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	coordinator := testCoordinator("coordinator-id", now())
-	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-	err = db.DB.Create(&coordinator.Admin).Error
+	cinternal := testCoordinator("coordinator-id", now())
+	cinternal.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&cinternal.Admin).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&coordinator).Error
+	err = db.DB.Table(coordinatorTable).Create(&cinternal).Error
 	require.NoError(t, err)
+
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())

@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -60,18 +62,19 @@ func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ..
 }
 
 func (s *shipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error) {
-	var revisions entity.ShippingRevisions
+	var internal internalShippingRevisions
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingRevisionTable).
 		Where("id IN (?)", revisionIDs)
 
-	if err := stmt.Find(&revisions).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if len(revisions) == 0 {
+	if len(internal) == 0 {
 		return entity.Shippings{}, nil
 	}
-	if err := revisions.Fill(); err != nil {
+	revisions, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
 
@@ -122,18 +125,20 @@ func (s *shipping) GetByCoordinatorID(ctx context.Context, coordinatorID string,
 
 func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if err := shipping.ShippingRevision.FillJSON(); err != nil {
-			return err
-		}
-
 		now := s.now()
 
 		shipping.CreatedAt, shipping.UpdatedAt = now, now
 		shipping.ShippingRevision.CreatedAt, shipping.ShippingRevision.UpdatedAt = now, now
+
+		internal, err := newInternalShippingRevision(&shipping.ShippingRevision)
+		if err != nil {
+			return err
+		}
+
 		if err := tx.WithContext(ctx).Table(shippingTable).Create(&shipping).Error; err != nil {
 			return err
 		}
-		return tx.WithContext(ctx).Table(shippingRevisionTable).Create(&shipping.ShippingRevision).Error
+		return tx.WithContext(ctx).Table(shippingRevisionTable).Create(&internal).Error
 	})
 	return dbError(err)
 }
@@ -151,18 +156,21 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *databa
 		FreeShippingRates: params.FreeShippingRates,
 	}
 	revision := entity.NewShippingRevision(rparams)
-	if err := revision.FillJSON(); err != nil {
-		return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-	}
 
 	now := s.now()
 	revision.CreatedAt, revision.UpdatedAt = now, now
-	err := s.db.DB.WithContext(ctx).Table(shippingRevisionTable).Create(&revision).Error
+
+	internal, err := newInternalShippingRevision(revision)
+	if err != nil {
+		return fmt.Errorf("tidb: %w: %s", database.ErrInvalidArgument, err.Error())
+	}
+
+	err = s.db.DB.WithContext(ctx).Table(shippingRevisionTable).Create(&internal).Error
 	return dbError(err)
 }
 
 func (s *shipping) fill(ctx context.Context, tx *gorm.DB, shippings ...*entity.Shipping) error {
-	var revisions entity.ShippingRevisions
+	var internal internalShippingRevisions
 
 	ids := entity.Shippings(shippings).IDs()
 	if len(ids) == 0 {
@@ -176,16 +184,109 @@ func (s *shipping) fill(ctx context.Context, tx *gorm.DB, shippings ...*entity.S
 	stmt := s.db.Statement(ctx, tx, shippingRevisionTable).
 		Where("id IN (?)", sub)
 
-	if err := stmt.Find(&revisions).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
 		return err
 	}
-	if len(revisions) == 0 {
+	if len(internal) == 0 {
 		return nil
 	}
-	if err := revisions.Fill(); err != nil {
+	revisions, err := internal.entities()
+	if err != nil {
 		return err
 	}
 
 	entity.Shippings(shippings).Fill(revisions.MapByShippingID())
 	return nil
+}
+
+type internalShippingRevision struct {
+	entity.ShippingRevision `gorm:"embedded"`
+	Box60RatesJSON          datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
+	Box80RatesJSON          datatypes.JSON `gorm:"default:null;column:box80_rates"`  // 箱サイズ80の通常便配送料一覧(JSON)
+	Box100RatesJSON         datatypes.JSON `gorm:"default:null;column:box100_rates"` // 箱サイズ100の通常便配送料一覧(JSON)
+}
+
+type internalShippingRevisions []*internalShippingRevision
+
+func newInternalShippingRevision(revision *entity.ShippingRevision) (*internalShippingRevision, error) {
+	box60Rates, err := revision.Box60Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box60 rates: %w", err)
+	}
+	box80Rates, err := revision.Box80Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box80 rates: %w", err)
+	}
+	box100Rates, err := revision.Box100Rates.Marshal()
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal box100 rates: %w", err)
+	}
+	internal := &internalShippingRevision{
+		ShippingRevision: *revision,
+		Box60RatesJSON:   box60Rates,
+		Box80RatesJSON:   box80Rates,
+		Box100RatesJSON:  box100Rates,
+	}
+	return internal, nil
+}
+
+func (r *internalShippingRevision) entity() (*entity.ShippingRevision, error) {
+	if err := r.unmarshalBox60Rates(); err != nil {
+		return nil, err
+	}
+	if err := r.unmarshalBox80Rates(); err != nil {
+		return nil, err
+	}
+	if err := r.unmarshalBox100Rates(); err != nil {
+		return nil, err
+	}
+	return &r.ShippingRevision, nil
+}
+
+func (r *internalShippingRevision) unmarshalBox60Rates() error {
+	if r.Box60RatesJSON == nil {
+		return nil
+	}
+	var rates entity.ShippingRates
+	if err := json.Unmarshal(r.Box60RatesJSON, &rates); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal box60 rates: %w", err)
+	}
+	r.ShippingRevision.Box60Rates = rates
+	return nil
+}
+
+func (r *internalShippingRevision) unmarshalBox80Rates() error {
+	if r.Box80RatesJSON == nil {
+		return nil
+	}
+	var rates entity.ShippingRates
+	if err := json.Unmarshal(r.Box80RatesJSON, &rates); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal box80 rates: %w", err)
+	}
+	r.ShippingRevision.Box80Rates = rates
+	return nil
+}
+
+func (r *internalShippingRevision) unmarshalBox100Rates() error {
+	if r.Box100RatesJSON == nil {
+		return nil
+	}
+	var rates entity.ShippingRates
+	if err := json.Unmarshal(r.Box100RatesJSON, &rates); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal box100 rates: %w", err)
+	}
+	r.ShippingRevision.Box100Rates = rates
+	return nil
+}
+
+func (rs internalShippingRevisions) entities() (entity.ShippingRevisions, error) {
+	res := make(entity.ShippingRevisions, len(rs))
+	for i := range rs {
+		r, err := rs[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = r
+	}
+	return res, nil
 }

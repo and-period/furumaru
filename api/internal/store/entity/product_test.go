@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -241,20 +240,16 @@ func TestProduct_Fill(t *testing.T) {
 		product  *Product
 		revision *ProductRevision
 		expect   *Product
-		hasErr   bool
 	}{
 		{
 			name: "success",
 			product: &Product{
-				ID:                    "product-id",
-				Name:                  "&.農園のみかん",
-				TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-				OriginPrefectureCode:  25,
-				Public:                true,
-				StartAt:               now.AddDate(0, -1, 0),
-				EndAt:                 now.AddDate(0, 1, 0),
+				ID:                   "product-id",
+				Name:                 "&.農園のみかん",
+				OriginPrefectureCode: 25,
+				Public:               true,
+				StartAt:              now.AddDate(0, -1, 0),
+				EndAt:                now.AddDate(0, 1, 0),
 			},
 			revision: &ProductRevision{
 				ID:        1,
@@ -263,32 +258,14 @@ func TestProduct_Fill(t *testing.T) {
 				Cost:      880,
 			},
 			expect: &Product{
-				ID:     "product-id",
-				Name:   "&.農園のみかん",
-				Status: ProductStatusForSale,
-				TagIDs: []string{
-					"tag-id01",
-					"tag-id02",
-				},
-				TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				Media: MultiProductMedia{
-					{
-						URL:         "https://and-period.jp/thumbnail.png",
-						IsThumbnail: true,
-					},
-				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-				RecommendedPoints: []string{
-					"ポイント1",
-					"ポイント2",
-				},
-				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-				OriginPrefecture:      "滋賀県",
-				OriginPrefectureCode:  25,
-				Public:                true,
-				StartAt:               now.AddDate(0, -1, 0),
-				EndAt:                 now.AddDate(0, 1, 0),
+				ID:                   "product-id",
+				Name:                 "&.農園のみかん",
+				Status:               ProductStatusForSale,
+				OriginPrefecture:     "滋賀県",
+				OriginPrefectureCode: 25,
+				Public:               true,
+				StartAt:              now.AddDate(0, -1, 0),
+				EndAt:                now.AddDate(0, 1, 0),
 				ProductRevision: ProductRevision{
 					ID:        1,
 					ProductID: "product-id",
@@ -296,7 +273,6 @@ func TestProduct_Fill(t *testing.T) {
 					Cost:      880,
 				},
 			},
-			hasErr: false,
 		},
 	}
 
@@ -304,8 +280,7 @@ func TestProduct_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.product.Fill(tt.revision, now)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.product.Fill(tt.revision, now)
 			assert.Equal(t, tt.expect, tt.product)
 		})
 	}
@@ -412,71 +387,6 @@ func TestProduct_WeightGram(t *testing.T) {
 	}
 }
 
-func TestProduct_FillJSON(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name    string
-		product *Product
-		expect  *Product
-		hasErr  bool
-	}{
-		{
-			name: "success",
-			product: &Product{
-				ID:   "product-id",
-				Name: "&.農園のみかん",
-				TagIDs: []string{
-					"tag-id01",
-					"tag-id02",
-				},
-				Media: MultiProductMedia{
-					{
-						URL:         "https://and-period.jp/thumbnail.png",
-						IsThumbnail: true,
-					},
-				},
-				RecommendedPoints: []string{
-					"ポイント1",
-					"ポイント2",
-				},
-			},
-			expect: &Product{
-				ID:   "product-id",
-				Name: "&.農園のみかん",
-				TagIDs: []string{
-					"tag-id01",
-					"tag-id02",
-				},
-				TagIDsJSON: datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-				Media: MultiProductMedia{
-					{
-						URL:         "https://and-period.jp/thumbnail.png",
-						IsThumbnail: true,
-					},
-				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-				RecommendedPoints: []string{
-					"ポイント1",
-					"ポイント2",
-				},
-				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-			},
-			hasErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.product.FillJSON()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.product)
-		})
-	}
-}
-
 func TestProducts_Fill(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
@@ -485,28 +395,15 @@ func TestProducts_Fill(t *testing.T) {
 		products  Products
 		revisions map[string]*ProductRevision
 		expect    Products
-		hasErr    bool
 	}{
 		{
 			name: "success",
 			products: Products{
 				{
-					ID:                    "product-id01",
-					Name:                  "&.農園のみかん",
-					Public:                false,
-					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					OriginPrefectureCode:  25,
-				},
-				{
-					ID:                    "product-id02",
-					Name:                  "&.農園のみかん",
-					Public:                false,
-					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					OriginPrefectureCode:  25,
+					ID:                   "product-id01",
+					Name:                 "&.農園のみかん",
+					Public:               false,
+					OriginPrefectureCode: 25,
 				},
 			},
 			revisions: map[string]*ProductRevision{
@@ -519,30 +416,12 @@ func TestProducts_Fill(t *testing.T) {
 			},
 			expect: Products{
 				{
-					ID:     "product-id01",
-					Name:   "&.農園のみかん",
-					Public: false,
-					Status: ProductStatusPrivate,
-					TagIDs: []string{
-						"tag-id01",
-						"tag-id02",
-					},
-					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					Media: MultiProductMedia{
-						{
-							URL:         "https://and-period.jp/thumbnail.png",
-							IsThumbnail: true,
-						},
-					},
-					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-					RecommendedPoints: []string{
-						"ポイント1",
-						"ポイント2",
-					},
-					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					OriginPrefecture:      "滋賀県",
-					OriginPrefectureCode:  25,
+					ID:                   "product-id01",
+					Name:                 "&.農園のみかん",
+					Public:               false,
+					Status:               ProductStatusPrivate,
+					OriginPrefecture:     "滋賀県",
+					OriginPrefectureCode: 25,
 					ProductRevision: ProductRevision{
 						ID:        1,
 						ProductID: "product-id01",
@@ -550,35 +429,7 @@ func TestProducts_Fill(t *testing.T) {
 						Cost:      880,
 					},
 				},
-				{
-					ID:     "product-id02",
-					Name:   "&.農園のみかん",
-					Public: false,
-					Status: ProductStatusPrivate,
-					TagIDs: []string{
-						"tag-id01",
-						"tag-id02",
-					},
-					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					Media: MultiProductMedia{
-						{
-							URL:         "https://and-period.jp/thumbnail.png",
-							IsThumbnail: true,
-						},
-					},
-					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
-					RecommendedPoints: []string{
-						"ポイント1",
-						"ポイント2",
-					},
-					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					OriginPrefecture:      "滋賀県",
-					OriginPrefectureCode:  25,
-					ProductRevision:       ProductRevision{ProductID: "product-id02"},
-				},
 			},
-			hasErr: false,
 		},
 	}
 
@@ -586,8 +437,7 @@ func TestProducts_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.products.Fill(tt.revisions, now)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.products.Fill(tt.revisions, now)
 			assert.Equal(t, tt.expect, tt.products)
 		})
 	}

@@ -36,7 +36,7 @@ func (p listAddressesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("user_id = ?", p.UserID)
 	}
 	// デフォルト設定を優先して表示
-	stmt = stmt.Order("is_default DESC")
+	stmt = stmt.Order("is_default DESC, created_at DESC")
 	return stmt
 }
 

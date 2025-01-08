@@ -70,247 +70,6 @@ func TestShippingRevision(t *testing.T) {
 	}
 }
 
-func TestShippingRevision_Fill(t *testing.T) {
-	t.Parallel()
-	pref1 := []int32{
-		codes.PrefectureValues["tokushima"],
-		codes.PrefectureValues["kagawa"],
-	}
-	pref2 := []int32{
-		codes.PrefectureValues["ehime"],
-		codes.PrefectureValues["kochi"],
-	}
-	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
-	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
-	tests := []struct {
-		name     string
-		revision *ShippingRevision
-		expect   *ShippingRevision
-		hasErr   bool
-	}{
-		{
-			name: "success",
-			revision: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			expect: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        rates,
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80Rates:        rates,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100Rates:       rates,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
-		},
-		{
-			name: "success Box60Rates is nil",
-			revision: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60RatesJSON:    nil,
-				Box60Frozen:       800,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			expect: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        ShippingRates{},
-				Box60RatesJSON:    nil,
-				Box60Frozen:       800,
-				Box80Rates:        rates,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100Rates:       rates,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
-		},
-		{
-			name: "success Box80Rates is nil",
-			revision: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80RatesJSON:    nil,
-				Box80Frozen:       800,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			expect: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        rates,
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80Rates:        ShippingRates{},
-				Box80RatesJSON:    nil,
-				Box80Frozen:       800,
-				Box100Rates:       rates,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
-		},
-		{
-			name: "success Box100Rates is nil",
-			revision: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100RatesJSON:   nil,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			expect: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        rates,
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80Rates:        rates,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100Rates:       ShippingRates{},
-				Box100RatesJSON:   nil,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.revision.Fill()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.revision)
-		})
-	}
-}
-
-func TestShippingRevision_FillJSON(t *testing.T) {
-	t.Parallel()
-	pref1 := []int32{
-		codes.PrefectureValues["tokushima"],
-		codes.PrefectureValues["kagawa"],
-	}
-	pref2 := []int32{
-		codes.PrefectureValues["ehime"],
-		codes.PrefectureValues["kochi"],
-	}
-	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
-	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
-	tests := []struct {
-		name     string
-		revision *ShippingRevision
-		expect   *ShippingRevision
-		hasErr   bool
-	}{
-		{
-			name: "success",
-			revision: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        rates,
-				Box60Frozen:       800,
-				Box80Rates:        rates,
-				Box80Frozen:       800,
-				Box100Rates:       rates,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			expect: &ShippingRevision{
-				ID:                1,
-				ShippingID:        "shipping-id",
-				Box60Rates:        rates,
-				Box60RatesJSON:    buf,
-				Box60Frozen:       800,
-				Box80Rates:        rates,
-				Box80RatesJSON:    buf,
-				Box80Frozen:       800,
-				Box100Rates:       rates,
-				Box100RatesJSON:   buf,
-				Box100Frozen:      800,
-				HasFreeShipping:   true,
-				FreeShippingRates: 3000,
-				CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.revision.FillJSON()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.revision)
-		})
-	}
-}
-
 func TestShippingRevisions_ShippingIDs(t *testing.T) {
 	t.Parallel()
 	pref1 := []int32{
@@ -325,7 +84,6 @@ func TestShippingRevisions_ShippingIDs(t *testing.T) {
 		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
 		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
 		name      string
 		revisions ShippingRevisions
@@ -338,13 +96,10 @@ func TestShippingRevisions_ShippingIDs(t *testing.T) {
 					ID:                1,
 					ShippingID:        "shipping-id",
 					Box60Rates:        rates,
-					Box60RatesJSON:    buf,
 					Box60Frozen:       800,
 					Box80Rates:        rates,
-					Box80RatesJSON:    buf,
 					Box80Frozen:       800,
 					Box100Rates:       rates,
-					Box100RatesJSON:   buf,
 					Box100Frozen:      800,
 					HasFreeShipping:   true,
 					FreeShippingRates: 3000,
@@ -378,7 +133,6 @@ func TestShippingRevisions_MapByShippingID(t *testing.T) {
 		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
 		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
 		name      string
 		revisions ShippingRevisions
@@ -391,13 +145,10 @@ func TestShippingRevisions_MapByShippingID(t *testing.T) {
 					ID:                1,
 					ShippingID:        "shipping-id",
 					Box60Rates:        rates,
-					Box60RatesJSON:    buf,
 					Box60Frozen:       800,
 					Box80Rates:        rates,
-					Box80RatesJSON:    buf,
 					Box80Frozen:       800,
 					Box100Rates:       rates,
-					Box100RatesJSON:   buf,
 					Box100Frozen:      800,
 					HasFreeShipping:   true,
 					FreeShippingRates: 3000,
@@ -410,13 +161,10 @@ func TestShippingRevisions_MapByShippingID(t *testing.T) {
 					ID:                1,
 					ShippingID:        "shipping-id",
 					Box60Rates:        rates,
-					Box60RatesJSON:    buf,
 					Box60Frozen:       800,
 					Box80Rates:        rates,
-					Box80RatesJSON:    buf,
 					Box80Frozen:       800,
 					Box100Rates:       rates,
-					Box100RatesJSON:   buf,
 					Box100Frozen:      800,
 					HasFreeShipping:   true,
 					FreeShippingRates: 3000,
@@ -431,78 +179,6 @@ func TestShippingRevisions_MapByShippingID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.revisions.MapByShippingID())
-		})
-	}
-}
-
-func TestShippingRevisions_Fill(t *testing.T) {
-	t.Parallel()
-	pref1 := []int32{
-		codes.PrefectureValues["tokushima"],
-		codes.PrefectureValues["kagawa"],
-	}
-	pref2 := []int32{
-		codes.PrefectureValues["ehime"],
-		codes.PrefectureValues["kochi"],
-	}
-	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
-	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
-	tests := []struct {
-		name      string
-		revisions ShippingRevisions
-		expect    ShippingRevisions
-		hasErr    bool
-	}{
-		{
-			name: "success",
-			revisions: ShippingRevisions{
-				{
-					ID:                1,
-					ShippingID:        "shipping-id",
-					Box60RatesJSON:    buf,
-					Box60Frozen:       800,
-					Box80RatesJSON:    buf,
-					Box80Frozen:       800,
-					Box100RatesJSON:   buf,
-					Box100Frozen:      800,
-					HasFreeShipping:   true,
-					FreeShippingRates: 3000,
-					CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-					UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				},
-			},
-			expect: ShippingRevisions{
-				{
-					ID:                1,
-					ShippingID:        "shipping-id",
-					Box60Rates:        rates,
-					Box60RatesJSON:    buf,
-					Box60Frozen:       800,
-					Box80Rates:        rates,
-					Box80RatesJSON:    buf,
-					Box80Frozen:       800,
-					Box100Rates:       rates,
-					Box100RatesJSON:   buf,
-					Box100Frozen:      800,
-					HasFreeShipping:   true,
-					FreeShippingRates: 3000,
-					CreatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-					UpdatedAt:         jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				},
-			},
-			hasErr: false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.revisions.Fill()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.revisions)
 		})
 	}
 }

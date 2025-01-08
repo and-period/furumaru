@@ -46,16 +46,18 @@ func TestProduct_List(t *testing.T) {
 	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	products[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
-	err = db.DB.Create(&products).Error
+	internal := make(internalProducts, 3)
+	internal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
+	internal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
+	internal[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err := db.DB.Create(&products[i].ProductRevision).Error
+	for i := range internal {
+		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
+	products, err := internal.entities()
+	require.NoError(t, err)
 
 	type args struct {
 		params *database.ListProductsParams
@@ -79,12 +81,12 @@ func TestProduct_List(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					ProducerID:    "producer-id",
 					ProducerIDs:   []string{"producer-id"},
-					Limit:         2,
-					Offset:        1,
+					Limit:         3,
+					Offset:        0,
 				},
 			},
 			want: want{
-				products: products[1:],
+				products: products,
 				hasErr:   false,
 			},
 		},
@@ -118,8 +120,7 @@ func TestProduct_List(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreProductsField(actual, now())
-			assert.Equal(t, tt.want.products, actual)
+			assert.ElementsMatch(t, tt.want.products, actual)
 		})
 	}
 }
@@ -153,14 +154,14 @@ func TestProduct_Count(t *testing.T) {
 	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	products[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
-	err = db.DB.Create(&products).Error
+	internal := make(internalProducts, 3)
+	internal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
+	internal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
+	internal[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err := db.DB.Create(&products[i].ProductRevision).Error
+	for i := range internal {
+		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
 
@@ -242,16 +243,18 @@ func TestProduct_MultiGet(t *testing.T) {
 	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	products[2] = testProduct("product-id03", "type-id03", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
-	err = db.DB.Create(&products).Error
+	internal := make(internalProducts, 3)
+	internal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
+	internal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
+	internal[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err := db.DB.Create(&products[i].ProductRevision).Error
+	for i := range internal {
+		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
+	products, err := internal.entities()
+	require.NoError(t, err)
 
 	type args struct {
 		productIDs []string
@@ -291,7 +294,6 @@ func TestProduct_MultiGet(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.productIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreProductsField(actual, now())
 			assert.ElementsMatch(t, tt.want.products, actual)
 		})
 	}
@@ -327,16 +329,18 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 	productTags[1] = testProductTag("tag-id02", "有機野菜", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
-	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	products[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	products[2] = testProduct("product-id03", "type-id03", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
-	err = db.DB.Create(&products).Error
+	internal := make(internalProducts, 3)
+	internal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
+	internal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
+	internal[2] = testProduct("product-id03", "type-id02", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	for i := range products {
-		err := db.DB.Create(&products[i].ProductRevision).Error
+	for i := range internal {
+		err := db.DB.Create(&internal[i].ProductRevision).Error
 		require.NoError(t, err)
 	}
+	products, err := internal.entities()
+	require.NoError(t, err)
 
 	type args struct {
 		revisionIDs []int64
@@ -376,7 +380,6 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreProductsField(actual, now())
 			assert.Equal(t, tt.want.products, actual)
 		})
 	}
@@ -405,10 +408,12 @@ func TestProduct_Get(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-	err = db.DB.Create(&p).Error
+	internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&p.ProductRevision).Error
+	err = db.DB.Create(&internal.ProductRevision).Error
+	require.NoError(t, err)
+	p, err := internal.entity()
 	require.NoError(t, err)
 
 	type args struct {
@@ -450,7 +455,6 @@ func TestProduct_Get(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.productID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			fillIgnoreProductField(actual, now())
 			assert.Equal(t, tt.want.product, actual)
 		})
 	}
@@ -480,6 +484,10 @@ func TestProduct_Create(t *testing.T) {
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
 
+	internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	p, err := internal.entity()
+	require.NoError(t, err)
+
 	type args struct {
 		product *entity.Product
 	}
@@ -496,7 +504,7 @@ func TestProduct_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				product: testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now()),
+				product: p,
 			},
 			want: want{
 				hasErr: false,
@@ -505,14 +513,14 @@ func TestProduct_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				err := db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				product: testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now()),
+				product: p,
 			},
 			want: want{
 				hasErr: true,
@@ -578,10 +586,10 @@ func TestProduct_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -679,10 +687,10 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -707,10 +715,11 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "already empty",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal.Product.Inventory = 0
+				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -724,11 +733,11 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "less then 0",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
-				product.Inventory = 1
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal.Product.Inventory = 1
+				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -798,10 +807,10 @@ func TestProduct_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				err = db.DB.Create(&product).Error
+				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
+				err = db.DB.Create(&internal.ProductRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -831,8 +840,8 @@ func TestProduct_Delete(t *testing.T) {
 	}
 }
 
-func testProduct(productID, typeID, coordinatorID, producerID string, tagIDs []string, revisionID int64, now time.Time) *entity.Product {
-	p := &entity.Product{
+func testProduct(productID, typeID, coordinatorID, producerID string, tagIDs []string, revisionID int64, now time.Time) *internalProduct {
+	product := &entity.Product{
 		ID:              productID,
 		TypeID:          typeID,
 		TagIDs:          tagIDs,
@@ -874,8 +883,8 @@ func testProduct(productID, typeID, coordinatorID, producerID string, tagIDs []s
 		CreatedAt:            now,
 		UpdatedAt:            now,
 	}
-	_ = p.FillJSON()
-	return p
+	internal, _ := newInternalProduct(product)
+	return internal
 }
 
 func testProductRevision(revisionID int64, productID string, now time.Time) *entity.ProductRevision {
@@ -886,18 +895,5 @@ func testProductRevision(revisionID int64, productID string, now time.Time) *ent
 		Cost:      300,
 		CreatedAt: now,
 		UpdatedAt: now,
-	}
-}
-
-func fillIgnoreProductField(p *entity.Product, _ time.Time) {
-	if p == nil {
-		return
-	}
-	_ = p.FillJSON()
-}
-
-func fillIgnoreProductsField(ps entity.Products, now time.Time) {
-	for i := range ps {
-		fillIgnoreProductField(ps[i], now)
 	}
 }

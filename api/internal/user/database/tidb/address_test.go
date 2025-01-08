@@ -32,7 +32,9 @@ func TestAddress_List(t *testing.T) {
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
-	addresses[1] = testAddress("address-id02", "user-id", 2, now())
+	addresses[0].IsDefault = true
+	addresses[1] = testAddress("address-id02", "user-id", 2, now().Add(time.Hour))
+	addresses[1].IsDefault = false
 	err = db.DB.Create(&addresses).Error
 	require.NoError(t, err)
 	for i := range addresses {

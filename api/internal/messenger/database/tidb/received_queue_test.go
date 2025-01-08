@@ -31,8 +31,10 @@ func TestReceivedQueue_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
-	err = db.DB.Create(&q).Error
+	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
+	err = db.DB.Table(receivedQueueTable).Create(&internal).Error
+	require.NoError(t, err)
+	q, err := internal.entity()
 	require.NoError(t, err)
 
 	type args struct {
@@ -106,7 +108,9 @@ func TestReceivedQueue_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
+	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
+	q, err := internal.entity()
+	require.NoError(t, err)
 
 	type args struct {
 		queue *entity.ReceivedQueue
@@ -133,7 +137,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err = db.DB.Create(&q).Error
+				err = db.DB.Table(receivedQueueTable).Create(&q).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -176,8 +180,6 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
-
 	type args struct {
 		queueID    string
 		notifyType entity.NotifyType
@@ -195,7 +197,8 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err = db.DB.Create(&q).Error
+				q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
+				err = db.DB.Table(receivedQueueTable).Create(&q).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -225,8 +228,8 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 	}
 }
 
-func testReceivedQueue(id string, typ entity.NotifyType, now time.Time) *entity.ReceivedQueue {
-	q := &entity.ReceivedQueue{
+func testReceivedQueue(id string, typ entity.NotifyType, now time.Time) *internalReceivedQueue {
+	queue := &entity.ReceivedQueue{
 		ID:         id,
 		NotifyType: typ,
 		EventType:  entity.EventTypeUnknown,
@@ -236,6 +239,6 @@ func testReceivedQueue(id string, typ entity.NotifyType, now time.Time) *entity.
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
-	_ = q.FillJSON()
-	return q
+	internal, _ := newInternalReceivedQueue(queue)
+	return internal
 }
