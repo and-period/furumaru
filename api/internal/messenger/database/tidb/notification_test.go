@@ -31,11 +31,13 @@ func TestNotification_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	notifications := make(entity.Notifications, 3)
-	notifications[0] = testNotification("notification-id01", now())
-	notifications[1] = testNotification("notification-id02", now())
-	notifications[2] = testNotification("notification-id03", now())
-	err = db.DB.Create(&notifications).Error
+	internal := make(internalNotifications, 3)
+	internal[0] = testNotification("notification-id01", now())
+	internal[1] = testNotification("notification-id02", now())
+	internal[2] = testNotification("notification-id03", now())
+	err = db.DB.Table(notificationTable).Create(&internal).Error
+	require.NoError(t, err)
+	notifications, err := internal.entities()
 	require.NoError(t, err)
 
 	type args struct {
@@ -115,11 +117,11 @@ func TestNotificaiton_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	notifications := make(entity.Notifications, 3)
-	notifications[0] = testNotification("notification-id01", now())
-	notifications[1] = testNotification("notification-id02", now())
-	notifications[2] = testNotification("notification-id03", now())
-	err = db.DB.Create(&notifications).Error
+	internal := make(internalNotifications, 3)
+	internal[0] = testNotification("notification-id01", now())
+	internal[1] = testNotification("notification-id02", now())
+	internal[2] = testNotification("notification-id03", now())
+	err = db.DB.Table(notificationTable).Create(&internal).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -183,8 +185,10 @@ func TestNotification_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	n := testNotification("notification-id", now())
-	err = db.DB.Create(&n).Error
+	internal := testNotification("notification-id", now())
+	err = db.DB.Table(notificationTable).Create(&internal).Error
+	require.NoError(t, err)
+	n, err := internal.entity()
 	require.NoError(t, err)
 
 	type args struct {
@@ -255,6 +259,10 @@ func TestNotification_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	internal := testNotification("notification-id", now())
+	n, err := internal.entity()
+	require.NoError(t, err)
+
 	type args struct {
 		notification *entity.Notification
 	}
@@ -271,7 +279,7 @@ func TestNotification_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				notification: testNotification("notification-id", now()),
+				notification: n,
 			},
 			want: want{
 				err: nil,
@@ -281,11 +289,11 @@ func TestNotification_Create(t *testing.T) {
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				n := testNotification("notification-id", now())
-				err = db.DB.Create(&n).Error
+				err = db.DB.Table(notificationTable).Create(&n).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				notification: testNotification("notification-id", now()),
+				notification: n,
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -342,7 +350,7 @@ func TestNotification_Update(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				notification := testNotification("notification-id", now().AddDate(0, 0, 1))
-				err = db.DB.Create(&notification).Error
+				err = db.DB.Table(notificationTable).Create(&notification).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -423,7 +431,7 @@ func TestNotificaiton_Delete(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				notification := testNotification("notification-id", now())
-				err = db.DB.Create(&notification).Error
+				err = db.DB.Table(notificationTable).Create(&notification).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -453,8 +461,8 @@ func TestNotificaiton_Delete(t *testing.T) {
 	}
 }
 
-func testNotification(id string, now time.Time) *entity.Notification {
-	n := &entity.Notification{
+func testNotification(id string, now time.Time) *internalNotification {
+	notification := &entity.Notification{
 		ID:          id,
 		Status:      entity.NotificationStatusWaiting,
 		Title:       "お知らせタイトル",
@@ -467,6 +475,6 @@ func testNotification(id string, now time.Time) *entity.Notification {
 		UpdatedAt:   now,
 		PublishedAt: now.AddDate(0, 0, 1),
 	}
-	_ = n.FillJSON()
-	return n
+	internal, _ := newInternalNotification(notification)
+	return internal
 }

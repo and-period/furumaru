@@ -6,7 +6,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/datatypes"
 )
 
 func TestCoordinator(t *testing.T) {
@@ -137,36 +136,26 @@ func TestCoordinator_Fill(t *testing.T) {
 		coordinator *Coordinator
 		admin       *Admin
 		expect      *Coordinator
-		hasErr      bool
 	}{
 		{
 			name: "success",
 			coordinator: &Coordinator{
-				AdminID:            "admin-id",
-				PrefectureCode:     13,
-				ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-				BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
+				AdminID:        "admin-id",
+				PrefectureCode: 13,
 			},
 			admin: &Admin{
 				ID:        "admin-id",
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:            "admin-id",
-				Prefecture:         "東京都",
-				PrefectureCode:     13,
-				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
-				ProductTypeIDs: []string{
-					"product-type-id",
-				},
-				BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-				BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
+				AdminID:        "admin-id",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 				},
 			},
-			hasErr: false,
 		},
 		{
 			name: "success empty",
@@ -178,23 +167,19 @@ func TestCoordinator_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Coordinator{
-				AdminID:        "admin-id",
-				ProductTypeIDs: []string{},
-				BusinessDays:   []time.Weekday{},
+				AdminID: "admin-id",
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 				},
 			},
-			hasErr: false,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.coordinator.Fill(tt.admin)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.coordinator.Fill(tt.admin)
 			assert.Equal(t, tt.expect, tt.coordinator)
 		})
 	}
@@ -273,22 +258,17 @@ func TestCoordinators_Fill(t *testing.T) {
 		coordinators Coordinators
 		admins       map[string]*Admin
 		expect       Coordinators
-		hasErr       bool
 	}{
 		{
 			name: "success",
 			coordinators: Coordinators{
 				{
-					AdminID:            "admin-id01",
-					PrefectureCode:     13,
-					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
+					AdminID:        "admin-id01",
+					PrefectureCode: 13,
 				},
 				{
-					AdminID:            "admin-id02",
-					PrefectureCode:     13,
-					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
+					AdminID:        "admin-id02",
+					PrefectureCode: 13,
 				},
 			},
 			admins: map[string]*Admin{
@@ -300,15 +280,9 @@ func TestCoordinators_Fill(t *testing.T) {
 			},
 			expect: Coordinators{
 				{
-					AdminID:            "admin-id01",
-					Prefecture:         "東京都",
-					PrefectureCode:     13,
-					ProductTypeIDsJSON: []byte(`["product-type-id"]`),
-					ProductTypeIDs: []string{
-						"product-type-id",
-					},
-					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
+					AdminID:        "admin-id01",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
@@ -316,30 +290,22 @@ func TestCoordinators_Fill(t *testing.T) {
 					},
 				},
 				{
-					AdminID:            "admin-id02",
-					Prefecture:         "東京都",
-					PrefectureCode:     13,
-					ProductTypeIDsJSON: []byte(`["product-type-id"]`),
-					ProductTypeIDs: []string{
-						"product-type-id",
-					},
-					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
+					AdminID:        "admin-id02",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
 					Admin: Admin{
 						ID:   "admin-id02",
 						Type: AdminTypeCoordinator,
 					},
 				},
 			},
-			hasErr: false,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.coordinators.Fill(tt.admins)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.coordinators.Fill(tt.admins)
 			assert.Equal(t, tt.expect, tt.coordinators)
 		})
 	}

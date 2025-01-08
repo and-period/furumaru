@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -51,7 +53,7 @@ func (p listCoordinatorsParams) pagination(stmt *gorm.DB) *gorm.DB {
 func (c *coordinator) List(
 	ctx context.Context, params *database.ListCoordinatorsParams, fields ...string,
 ) (entity.Coordinators, error) {
-	var coordinators entity.Coordinators
+	var internal internalCoordinators
 
 	p := listCoordinatorsParams(*params)
 
@@ -59,7 +61,11 @@ func (c *coordinator) List(
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	if err := stmt.Find(&coordinators).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	coordinators, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -78,12 +84,16 @@ func (c *coordinator) Count(ctx context.Context, params *database.ListCoordinato
 func (c *coordinator) MultiGet(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
-	var coordinators entity.Coordinators
+	var internal internalCoordinators
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs)
 
-	if err := stmt.Find(&coordinators).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	coordinators, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -95,13 +105,17 @@ func (c *coordinator) MultiGet(
 func (c *coordinator) MultiGetWithDeleted(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
-	var coordinators entity.Coordinators
+	var internal internalCoordinators
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs).
 		Unscoped()
 
-	if err := stmt.Find(&coordinators).Error; err != nil {
+	if err := stmt.Find(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	coordinators, err := internal.entities()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -126,13 +140,17 @@ func (c *coordinator) Get(
 func (c *coordinator) GetWithDeleted(
 	ctx context.Context, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
-	var coordinator *entity.Coordinator
+	var internal *internalCoordinator
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id = ?", coordinatorID).
 		Unscoped()
 
-	if err := stmt.First(&coordinator).Error; err != nil {
+	if err := stmt.First(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	coordinator, err := internal.entity()
+	if err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {
@@ -145,16 +163,19 @@ func (c *coordinator) Create(
 	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if err := coordinator.FillJSON(); err != nil {
+		now := c.now()
+		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
+		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
+
+		internal, err := newInternalCoordinator(coordinator)
+		if err != nil {
 			return err
 		}
-		now := c.now()
-		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
+
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
 			return err
 		}
-		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
-		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error; err != nil {
+		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&internal).Error; err != nil {
 			return err
 		}
 		return auth(ctx)
@@ -164,11 +185,11 @@ func (c *coordinator) Create(
 
 func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		productTypeIDs, err := entity.CoordinatorMarshalProductTypeIDs(params.ProductTypeIDs)
+		productTypeIDs, err := json.Marshal(params.ProductTypeIDs)
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
-		businessDays, err := entity.CoordinatorMarshalBusinessDays(params.BusinessDays)
+		businessDays, err := json.Marshal(params.BusinessDays)
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
@@ -248,11 +269,19 @@ func (c *coordinator) RemoveProductTypeID(ctx context.Context, productTypeID str
 func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
-	var coordinator *entity.Coordinator
+	var internal *internalCoordinator
 
-	err := c.db.Statement(ctx, tx, coordinatorTable, fields...).
-		Where("admin_id = ?", coordinatorID).
-		First(&coordinator).Error
+	stmt := c.db.Statement(ctx, tx, coordinatorTable, fields...).
+		Where("admin_id = ?", coordinatorID)
+
+	if err := stmt.First(&internal).Error; err != nil {
+		return nil, err
+	}
+	coordinator, err := internal.entity()
+	if err != nil {
+		return nil, err
+	}
+
 	return coordinator, err
 }
 
@@ -272,5 +301,77 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	if err := admins.Fill(nil); err != nil {
 		return err
 	}
-	return entity.Coordinators(coordinators).Fill(admins.Map())
+	entity.Coordinators(coordinators).Fill(admins.Map())
+	return nil
+}
+
+type internalCoordinator struct {
+	entity.Coordinator `gorm:"embedded"`
+	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い品目ID一覧(JSON)
+	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
+}
+
+type internalCoordinators []*internalCoordinator
+
+func newInternalCoordinator(coordinator *entity.Coordinator) (*internalCoordinator, error) {
+	typeIDs, err := json.Marshal(coordinator.ProductTypeIDs)
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal product type IDs: %w", err)
+	}
+	days, err := json.Marshal(coordinator.BusinessDays)
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal business days: %w", err)
+	}
+	internal := &internalCoordinator{
+		Coordinator:        *coordinator,
+		ProductTypeIDsJSON: typeIDs,
+		BusinessDaysJSON:   days,
+	}
+	return internal, nil
+}
+
+func (c *internalCoordinator) entity() (*entity.Coordinator, error) {
+	if err := c.unmarshalProductTypeIDs(); err != nil {
+		return nil, err
+	}
+	if err := c.unmarshalBusinessDays(); err != nil {
+		return nil, err
+	}
+	return &c.Coordinator, nil
+}
+
+func (c *internalCoordinator) unmarshalProductTypeIDs() error {
+	if c.ProductTypeIDsJSON == nil {
+		return nil
+	}
+	var ids []string
+	if err := json.Unmarshal(c.ProductTypeIDsJSON, &ids); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal product type IDs: %w", err)
+	}
+	c.Coordinator.ProductTypeIDs = ids
+	return nil
+}
+
+func (c *internalCoordinator) unmarshalBusinessDays() error {
+	if c.BusinessDaysJSON == nil {
+		return nil
+	}
+	var days []time.Weekday
+	if err := json.Unmarshal(c.BusinessDaysJSON, &days); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal business days: %w", err)
+	}
+	c.Coordinator.BusinessDays = days
+	return nil
+}
+
+func (cs internalCoordinators) entities() (entity.Coordinators, error) {
+	res := make(entity.Coordinators, len(cs))
+	for i := range cs {
+		c, err := cs[i].entity()
+		if err != nil {
+			return nil, err
+		}
+		res[i] = c
+	}
+	return res, nil
 }

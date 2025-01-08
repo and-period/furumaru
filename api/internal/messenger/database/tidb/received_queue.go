@@ -2,12 +2,15 @@ package tidb
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -33,14 +36,15 @@ func (q *receivedQueue) Get(
 }
 
 func (q *receivedQueue) MultiCreate(ctx context.Context, queues ...*entity.ReceivedQueue) error {
-	if err := entity.ReceivedQueues(queues).FillJSON(); err != nil {
-		return dbError(err)
-	}
+	now := q.now()
 	for _, queue := range queues {
-		now := q.now()
 		queue.CreatedAt, queue.UpdatedAt = now, now
 	}
-	err := q.db.DB.WithContext(ctx).Table(receivedQueueTable).Create(&queues).Error
+	internal, err := newInternalReceivedQueues(queues)
+	if err != nil {
+		return dbError(err)
+	}
+	err = q.db.DB.WithContext(ctx).Table(receivedQueueTable).Create(&internal).Error
 	return dbError(err)
 }
 
@@ -61,17 +65,65 @@ func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, typ enti
 func (q *receivedQueue) get(
 	ctx context.Context, tx *gorm.DB, queueID string, typ entity.NotifyType, fields ...string,
 ) (*entity.ReceivedQueue, error) {
-	var queue *entity.ReceivedQueue
+	var internal *internalReceivedQueue
 
 	err := q.db.Statement(ctx, tx, receivedQueueTable, fields...).
 		Where("id = ?", queueID).
 		Where("notify_type = ?", typ).
-		First(&queue).Error
+		First(&internal).Error
 	if err != nil {
 		return nil, err
 	}
-	if err := queue.Fill(); err != nil {
+
+	return internal.entity()
+}
+
+type internalReceivedQueue struct {
+	entity.ReceivedQueue `gorm:"embedded"`
+	UserIDsJSON          datatypes.JSON `gorm:"default:null;column:user_ids"` // 送信先ユーザーID一覧(JSON)
+}
+
+type internalReceivedQueues []*internalReceivedQueue
+
+func newInternalReceivedQueue(queue *entity.ReceivedQueue) (*internalReceivedQueue, error) {
+	userIDs, err := json.Marshal(queue.UserIDs)
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal received queue user ids: %w", err)
+	}
+	internal := &internalReceivedQueue{
+		ReceivedQueue: *queue,
+		UserIDsJSON:   userIDs,
+	}
+	return internal, nil
+}
+
+func (q *internalReceivedQueue) entity() (*entity.ReceivedQueue, error) {
+	if err := q.unmarshalUserIDs(); err != nil {
 		return nil, err
 	}
-	return queue, nil
+	return &q.ReceivedQueue, nil
+}
+
+func (q *internalReceivedQueue) unmarshalUserIDs() error {
+	if q.UserIDsJSON == nil {
+		return nil
+	}
+	var userIDs []string
+	if err := json.Unmarshal(q.UserIDsJSON, &userIDs); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal received queue user ids: %w", err)
+	}
+	q.ReceivedQueue.UserIDs = userIDs
+	return nil
+}
+
+func newInternalReceivedQueues(queues entity.ReceivedQueues) (internalReceivedQueues, error) {
+	res := make(internalReceivedQueues, len(queues))
+	for i := range queues {
+		internal, err := newInternalReceivedQueue(queues[i])
+		if err != nil {
+			return nil, err
+		}
+		res[i] = internal
+	}
+	return res, nil
 }

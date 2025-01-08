@@ -1,12 +1,10 @@
 package entity
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"gorm.io/datatypes"
 )
 
 // BroadcastType - ライブ配信種別
@@ -31,33 +29,32 @@ const (
 
 // Broadcast - ライブ配信情報
 type Broadcast struct {
-	ID                        string                    `gorm:"primaryKey;<-:create"`                 // ライブ配信ID
-	ScheduleID                string                    `gorm:"default:null"`                         // 開催スケジュールID
-	CoordinatorID             string                    `gorm:""`                                     // コーディネータID
-	Type                      BroadcastType             `gorm:""`                                     // ライブ配信種別
-	Status                    BroadcastStatus           `gorm:""`                                     // ライブ配信状況
-	InputURL                  string                    `gorm:""`                                     // ライブ配信URL(入力)
-	OutputURL                 string                    `gorm:""`                                     // ライブ配信URL(出力)
-	ArchiveURL                string                    `gorm:""`                                     // アーカイブ配信URL
-	ArchiveFixed              bool                      `gorm:""`                                     // アーカイブ映像を編集したか
-	ArchiveMetadata           *BroadcastArchiveMetadata `gorm:"-"`                                    // アーカイブメタデータ
-	ArchiveMetadataJSON       datatypes.JSON            `gorm:"default:null;column:archive_metadata"` // アーカイブメタデータ(JSON)
-	CloudFrontDistributionArn string                    `gorm:"default:null"`                         // CloudFrontディストリビューションARN
-	MediaLiveChannelArn       string                    `gorm:"default:null"`                         // MediaLiveチャンネルARN
-	MediaLiveChannelID        string                    `gorm:"default:null"`                         // MediaLiveチャンネルID
-	MediaLiveRTMPInputArn     string                    `gorm:"default:null"`                         // MediaLiveインプットARN(RTMP)
-	MediaLiveRTMPInputName    string                    `gorm:"default:null"`                         // MediaLiveインプット名(RTMP)
-	MediaLiveMP4InputArn      string                    `gorm:"default:null"`                         // MediaLiveインプットARN(MP4)
-	MediaLiveMP4InputName     string                    `gorm:"default:null"`                         // MediaLiveインプット名(MP4)
-	MediaStoreContainerArn    string                    `gorm:"default:null"`                         // MediaStoreコンテナARN
-	YoutubeAccount            string                    `gorm:"default:null"`                         // Youtubeアカウント
-	YoutubeBroadcastID        string                    `gorm:"default:null"`                         // Youtube配信ID
-	YoutubeStreamID           string                    `gorm:"default:null"`                         // YoutubeストリームID
-	YoutubeStreamURL          string                    `gorm:"default:null"`                         // Youtube配信URL
-	YoutubeStreamKey          string                    `gorm:"default:null"`                         // Youtubeストリームキー
-	YoutubeBackupURL          string                    `gorm:"default:null"`                         // YoutubeバックアップURL
-	CreatedAt                 time.Time                 `gorm:"<-:create"`                            // 登録日時
-	UpdatedAt                 time.Time                 `gorm:""`                                     // 更新日時
+	ID                        string                    `gorm:"primaryKey;<-:create"` // ライブ配信ID
+	ScheduleID                string                    `gorm:"default:null"`         // 開催スケジュールID
+	CoordinatorID             string                    `gorm:""`                     // コーディネータID
+	Type                      BroadcastType             `gorm:""`                     // ライブ配信種別
+	Status                    BroadcastStatus           `gorm:""`                     // ライブ配信状況
+	InputURL                  string                    `gorm:""`                     // ライブ配信URL(入力)
+	OutputURL                 string                    `gorm:""`                     // ライブ配信URL(出力)
+	ArchiveURL                string                    `gorm:""`                     // アーカイブ配信URL
+	ArchiveFixed              bool                      `gorm:""`                     // アーカイブ映像を編集したか
+	ArchiveMetadata           *BroadcastArchiveMetadata `gorm:"-"`                    // アーカイブメタデータ
+	CloudFrontDistributionArn string                    `gorm:"default:null"`         // CloudFrontディストリビューションARN
+	MediaLiveChannelArn       string                    `gorm:"default:null"`         // MediaLiveチャンネルARN
+	MediaLiveChannelID        string                    `gorm:"default:null"`         // MediaLiveチャンネルID
+	MediaLiveRTMPInputArn     string                    `gorm:"default:null"`         // MediaLiveインプットARN(RTMP)
+	MediaLiveRTMPInputName    string                    `gorm:"default:null"`         // MediaLiveインプット名(RTMP)
+	MediaLiveMP4InputArn      string                    `gorm:"default:null"`         // MediaLiveインプットARN(MP4)
+	MediaLiveMP4InputName     string                    `gorm:"default:null"`         // MediaLiveインプット名(MP4)
+	MediaStoreContainerArn    string                    `gorm:"default:null"`         // MediaStoreコンテナARN
+	YoutubeAccount            string                    `gorm:"default:null"`         // Youtubeアカウント
+	YoutubeBroadcastID        string                    `gorm:"default:null"`         // Youtube配信ID
+	YoutubeStreamID           string                    `gorm:"default:null"`         // YoutubeストリームID
+	YoutubeStreamURL          string                    `gorm:"default:null"`         // Youtube配信URL
+	YoutubeStreamKey          string                    `gorm:"default:null"`         // Youtubeストリームキー
+	YoutubeBackupURL          string                    `gorm:"default:null"`         // YoutubeバックアップURL
+	CreatedAt                 time.Time                 `gorm:"<-:create"`            // 登録日時
+	UpdatedAt                 time.Time                 `gorm:""`                     // 更新日時
 }
 
 type Broadcasts []*Broadcast
@@ -81,43 +78,8 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 	}
 }
 
-func (b *Broadcast) Fill() (err error) {
-	b.ArchiveMetadata, err = b.unmarshalArchiveMetadata()
-	return
-}
-
-func (b *Broadcast) unmarshalArchiveMetadata() (*BroadcastArchiveMetadata, error) {
-	if b.ArchiveMetadataJSON == nil {
-		return &BroadcastArchiveMetadata{}, nil
-	}
-	metadata := &BroadcastArchiveMetadata{}
-	return metadata, json.Unmarshal(b.ArchiveMetadataJSON, &metadata)
-}
-
-func (b *Broadcast) FillJSON() error {
-	metadata, err := BroadcastMarshalArchiveMetadata(b.ArchiveMetadata)
-	if err != nil {
-		return err
-	}
-	b.ArchiveMetadataJSON = metadata
-	return nil
-}
-
-func BroadcastMarshalArchiveMetadata(metadata *BroadcastArchiveMetadata) (datatypes.JSON, error) {
-	return json.Marshal(metadata)
-}
-
 func (bs Broadcasts) ScheduleIDs() []string {
 	return set.UniqBy(bs, func(b *Broadcast) string {
 		return b.ScheduleID
 	})
-}
-
-func (bs Broadcasts) Fill() error {
-	for _, b := range bs {
-		if err := b.Fill(); err != nil {
-			return err
-		}
-	}
-	return nil
 }

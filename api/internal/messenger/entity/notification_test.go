@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/datatypes"
 )
 
 func TestNotification(t *testing.T) {
@@ -226,7 +225,6 @@ func TestNotification_Fill(t *testing.T) {
 		name         string
 		notification *Notification
 		expect       *Notification
-		hasErr       bool
 	}{
 		{
 			name: "success waiting",
@@ -234,7 +232,6 @@ func TestNotification_Fill(t *testing.T) {
 				ID:          "notification-id",
 				Title:       "title",
 				Body:        "<html>本文<html>",
-				TargetsJSON: datatypes.JSON(nil),
 				PublishedAt: now.AddDate(0, 0, 1),
 			},
 			expect: &Notification{
@@ -242,11 +239,8 @@ func TestNotification_Fill(t *testing.T) {
 				Title:       "title",
 				Body:        "<html>本文<html>",
 				Status:      NotificationStatusWaiting,
-				Targets:     []NotificationTarget{},
-				TargetsJSON: datatypes.JSON(nil),
 				PublishedAt: now.AddDate(0, 0, 1),
 			},
-			hasErr: false,
 		},
 		{
 			name: "success notified",
@@ -254,24 +248,15 @@ func TestNotification_Fill(t *testing.T) {
 				ID:          "notification-id",
 				Title:       "title",
 				Body:        "<html>本文<html>",
-				TargetsJSON: datatypes.JSON([]byte(`[1,2,3,4]`)),
 				PublishedAt: now.AddDate(0, 0, -1),
 			},
 			expect: &Notification{
-				ID:     "notification-id",
-				Title:  "title",
-				Body:   "<html>本文<html>",
-				Status: NotificationStatusNotified,
-				Targets: []NotificationTarget{
-					NotificationTargetUsers,
-					NotificationTargetProducers,
-					NotificationTargetCoordinators,
-					NotificationTargetAdministrators,
-				},
-				TargetsJSON: datatypes.JSON([]byte(`[1,2,3,4]`)),
+				ID:          "notification-id",
+				Title:       "title",
+				Body:        "<html>本文<html>",
+				Status:      NotificationStatusNotified,
 				PublishedAt: now.AddDate(0, 0, -1),
 			},
-			hasErr: false,
 		},
 	}
 
@@ -279,8 +264,7 @@ func TestNotification_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.notification.Fill(now)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.notification.Fill(now)
 			assert.Equal(t, tt.expect, tt.notification)
 		})
 	}
@@ -418,53 +402,6 @@ func TestNotification_HasTarget(t *testing.T) {
 	}
 }
 
-func TestNotification_FillJSON(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name         string
-		notification *Notification
-		expect       *Notification
-		hasErr       bool
-	}{
-		{
-			name: "success",
-			notification: &Notification{
-				ID:    "notification-id",
-				Title: "title",
-				Body:  "<html>本文<html>",
-				Targets: []NotificationTarget{
-					NotificationTargetUsers,
-					NotificationTargetProducers,
-					NotificationTargetCoordinators,
-				},
-			},
-			expect: &Notification{
-				ID:    "notification-id",
-				Title: "title",
-				Body:  "<html>本文<html>",
-				Targets: []NotificationTarget{
-					NotificationTargetUsers,
-					NotificationTargetProducers,
-					NotificationTargetCoordinators,
-				},
-				TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
-			},
-			hasErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.notification.FillJSON()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.notification)
-		})
-	}
-}
-
 func TestNotifications_AdminIDs(t *testing.T) {
 	t.Parallel()
 
@@ -484,7 +421,6 @@ func TestNotifications_AdminIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypeSystem,
 					PromotionID: "invalid-id",
-					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
 					PublishedAt: now.AddDate(0, 0, -1),
 					CreatedBy:   "admin-id01",
 					UpdatedBy:   "admin-id02",
@@ -495,7 +431,6 @@ func TestNotifications_AdminIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypePromotion,
 					PromotionID: "promotion-id",
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 					CreatedBy:   "admin-id02",
 					UpdatedBy:   "admin-id02",
@@ -506,7 +441,6 @@ func TestNotifications_AdminIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypePromotion,
 					PromotionID: "promotion-id",
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 					CreatedBy:   "admin-id03",
 					UpdatedBy:   "admin-id03",
@@ -545,7 +479,6 @@ func TestNotifications_PromotionIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypeSystem,
 					PromotionID: "invalid-id",
-					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
 					PublishedAt: now.AddDate(0, 0, -1),
 				},
 				{
@@ -554,7 +487,6 @@ func TestNotifications_PromotionIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypePromotion,
 					PromotionID: "promotion-id",
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 				},
 				{
@@ -563,7 +495,6 @@ func TestNotifications_PromotionIDs(t *testing.T) {
 					Body:        "<html>本文<html>",
 					Type:        NotificationTypePromotion,
 					PromotionID: "promotion-id",
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 				},
 			},
@@ -589,7 +520,6 @@ func TestNotifications_Fill(t *testing.T) {
 		name          string
 		notifications Notifications
 		expect        Notifications
-		hasErr        bool
 	}{
 		{
 			name: "success",
@@ -598,36 +528,6 @@ func TestNotifications_Fill(t *testing.T) {
 					ID:          "notification-id",
 					Title:       "title",
 					Body:        "<html>本文<html>",
-					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
-					PublishedAt: now.AddDate(0, 0, -1),
-				},
-			},
-			expect: Notifications{
-				{
-					ID:     "notification-id",
-					Title:  "title",
-					Body:   "<html>本文<html>",
-					Status: NotificationStatusNotified,
-					Targets: []NotificationTarget{
-						NotificationTargetUsers,
-						NotificationTargetProducers,
-						NotificationTargetCoordinators,
-					},
-					TargetsJSON: datatypes.JSON([]byte(`[1,2,3]`)),
-					PublishedAt: now.AddDate(0, 0, -1),
-				},
-			},
-			hasErr: false,
-		},
-		{
-			name: "success is empty",
-			notifications: Notifications{
-				{
-					ID:          "notification-id",
-					Title:       "title",
-					Body:        "<html>本文<html>",
-					Status:      NotificationStatusNotified,
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 				},
 			},
@@ -637,12 +537,9 @@ func TestNotifications_Fill(t *testing.T) {
 					Title:       "title",
 					Body:        "<html>本文<html>",
 					Status:      NotificationStatusNotified,
-					Targets:     []NotificationTarget{},
-					TargetsJSON: datatypes.JSON(nil),
 					PublishedAt: now.AddDate(0, 0, -1),
 				},
 			},
-			hasErr: false,
 		},
 	}
 
@@ -650,40 +547,8 @@ func TestNotifications_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.notifications.Fill(now)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.notifications.Fill(now)
 			assert.Equal(t, tt.expect, tt.notifications)
-		})
-	}
-}
-
-func TestNotificationMarshalTarget(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name    string
-		targets []NotificationTarget
-		expect  []byte
-		hasErr  bool
-	}{
-		{
-			name: "success",
-			targets: []NotificationTarget{
-				NotificationTargetProducers,
-				NotificationTargetCoordinators,
-			},
-			expect: []byte(`[2,3]`),
-			hasErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual, err := NotificationMarshalTarget(tt.targets)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
