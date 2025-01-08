@@ -90,4 +90,4 @@ post:
       content:
         application/json:
           schema:
-            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

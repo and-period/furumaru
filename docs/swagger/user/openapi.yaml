@@ -191,6 +191,8 @@ paths:
     $ref: './paths/v1/videos/index.yaml'
   /v1/videos/{videoId}:
     $ref: './paths/v1/videos/_videoId/index.yaml'
+  /v1/videos/{videoId}/comments:
+    $ref: './paths/v1/videos/_videoId/comments/index.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
