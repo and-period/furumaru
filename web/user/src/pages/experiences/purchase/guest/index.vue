@@ -80,7 +80,6 @@ const seniorCount = computed<number>(() => {
  * 体験情報取得処理
  */
 const { data, status, error } = useAsyncData('target-experience', async () => {
-  console.log('---- async data ----', experienceId.value)
   if (experienceId.value) {
     return await fetchCheckoutTarget({
       experienceId: experienceId.value,
@@ -228,7 +227,7 @@ const handleSubmit = async () => {
 }
 
 onMounted(() => {
-  formData.value.callbackUrl = `${window.location.origin}/experiences/guest/complete`
+  formData.value.callbackUrl = `${window.location.origin}/v1/purchase/guest/complete`
 })
 </script>
 
