@@ -127,15 +127,3 @@ func newInternalReceivedQueues(queues entity.ReceivedQueues) (internalReceivedQu
 	}
 	return res, nil
 }
-
-func (qs internalReceivedQueues) entities() (entity.ReceivedQueues, error) {
-	res := make(entity.ReceivedQueues, len(qs))
-	for i := range qs {
-		q, err := qs[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = q
-	}
-	return res, nil
-}

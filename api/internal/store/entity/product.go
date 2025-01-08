@@ -199,7 +199,6 @@ func (p *Product) Fill(revision *ProductRevision, now time.Time) {
 	p.SetThumbnail()
 	p.ProductRevision = *revision
 	p.OriginPrefecture, _ = codes.ToPrefectureJapanese(p.OriginPrefectureCode)
-	return
 }
 
 func (p *Product) SetStatus(now time.Time) {
