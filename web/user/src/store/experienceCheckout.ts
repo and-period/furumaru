@@ -1,5 +1,5 @@
 import { useAuthStore } from './auth'
-import type { CheckoutExperienceRequest, GuestCheckoutExperienceRequest } from '~/types/api'
+import type { CheckoutExperienceRequest, GuestCheckoutExperienceRequest, GuestPreCheckoutExperienceResponse, V1GuestsCheckoutsExperiencesExperienceIdGetRequest } from '~/types/api'
 
 export const useExperienceCheckoutStore = defineStore('experience-checkout', {
   state: () => {
@@ -7,10 +7,35 @@ export const useExperienceCheckoutStore = defineStore('experience-checkout', {
       checkoutState: {
         isLoading: false,
       },
+      checkoutTargetState: {
+        isLoading: false,
+      },
     }
   },
 
   actions: {
+
+    /**
+     * 購入対象の体験情報を取得する関数
+     * @param payload
+     * @returns
+     */
+    async fetchCheckoutTarget(payload: V1GuestsCheckoutsExperiencesExperienceIdGetRequest): Promise<GuestPreCheckoutExperienceResponse> {
+      this.checkoutTargetState.isLoading = true
+      try {
+        const res = await this.checkoutApiClient().v1GuestsCheckoutsExperiencesExperienceIdGet(
+          payload,
+        )
+        return res
+      }
+      catch (error) {
+        return this.errorHandler(error)
+      }
+      finally {
+        this.checkoutTargetState.isLoading = false
+      }
+    },
+
     /**
      * 体験購入（認証済みユーザー）
      * @param id 購入対象の体験ID

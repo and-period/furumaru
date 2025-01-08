@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useAddressForm } from '~/hooks'
 import { useAddressStore } from '~/store/address'
-import { useExperienceStore } from '~/store/experience'
 import { useExperienceCheckoutStore } from '~/store/experienceCheckout'
 import { useShoppingCartStore } from '~/store/shopping'
 import {
@@ -22,9 +21,6 @@ const gt = (str: keyof I18n['purchase']['guest']) => {
 
 const route = useRoute()
 
-const experienceStore = useExperienceStore()
-const { fetchExperience } = experienceStore
-
 const shoppingCartStore = useShoppingCartStore()
 const { availablePaymentSystem } = storeToRefs(shoppingCartStore)
 const { fetchAvailablePaymentOptions } = shoppingCartStore
@@ -32,7 +28,7 @@ const { fetchAvailablePaymentOptions } = shoppingCartStore
 const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
 
-const { checkoutByGuest } = useExperienceCheckoutStore()
+const { fetchCheckoutTarget, checkoutByGuest } = useExperienceCheckoutStore()
 
 /**
  * 体験ID（クエリパラメータから算出）
@@ -83,38 +79,24 @@ const seniorCount = computed<number>(() => {
 /**
  * 体験情報取得処理
  */
-const { data, status, error } = useAsyncData('experience', async () => {
+const { data, status, error } = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
-    return await fetchExperience(experienceId.value)
+    return await fetchCheckoutTarget({
+      experienceId: experienceId.value,
+      adult: adultCount.value,
+      juniorHighSchool: juniorHighSchoolCount.value,
+      elementarySchool: elementarySchoolCount.value,
+      preschool: preschoolCount.value,
+      senior: seniorCount.value,
+    })
   }
-})
-
-/**
- * 合計金額
- */
-const totalPrice = computed<number>(() => {
-  if (data.value?.experience) {
-    return (
-      data.value.experience.priceAdult
-      * adultCount.value
-      + data.value.experience.priceJuniorHighSchool
-      * juniorHighSchoolCount.value
-      + data.value.experience.priceElementarySchool
-      * elementarySchoolCount.value
-      + data.value.experience.pricePreschool
-      * preschoolCount.value
-      + data.value.experience.priceSenior
-      * seniorCount.value
-    )
-  }
-  return 0
 })
 
 /**
  * フォームデータ
  */
 const formData = ref<GuestCheckoutExperienceRequest>({
-  requestId: '',
+  requestId: data.value?.requestId || '',
   billingAddressId: '',
   promotionCode: '',
   adultCount: adultCount.value,
@@ -126,8 +108,8 @@ const formData = ref<GuestCheckoutExperienceRequest>({
   requestedDate: '',
   requestedTime: '',
   paymentMethod: 0,
-  callbackUrl: '',
-  total: totalPrice.value,
+  callbackUrl: `${window.location.origin}/experiences/complete`,
+  total: data.value?.total || 0,
   email: '',
   billingAddress: {
     lastname: '',
