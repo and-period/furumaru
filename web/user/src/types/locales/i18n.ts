@@ -180,6 +180,7 @@ export interface I18n {
       checkoutWithoutAccountButtonText: string
     }
     guest: {
+      seoTitle: string
       checkoutTitle: string
       customerInformationTitle: string
       nameErrorMessage: string
@@ -219,6 +220,9 @@ export interface I18n {
       totalPriceLabel: string
       backToCartButtonText: string
       paymentMethodButtonText: string
+      addressNotFoundErrorMessage: string
+      postalCodeHyphenNotAllowedErrorMessage: string
+      postalCodeInvalidErrorMessage: string
     }
     address: {
       checkoutTitle: string

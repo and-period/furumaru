@@ -221,14 +221,17 @@ const handleSubmit = async () => {
 
   const url = await checkoutByGuest(experienceId.value, formData.value)
   window.location.href = url
-
-  // console.log('submit')
-  // router.push('/experiences/purchase/complete')
 }
 
 onMounted(() => {
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/guest/complete`
 })
+
+useSeoMeta(
+  {
+    title: gt('seoTitle'),
+  },
+)
 </script>
 
 <template>
