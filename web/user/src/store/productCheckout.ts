@@ -1,7 +1,7 @@
 import { useAuthStore } from './auth'
 import type { CheckoutProductRequest, CheckoutStateResponse, GuestCheckoutProductRequest, GuestCheckoutStateResponse } from '~/types/api'
 
-export const useCheckoutStore = defineStore('checkout', {
+export const useProductCheckoutStore = defineStore('product-checkout', {
   state: () => {
     return {
       checkoutState: {
