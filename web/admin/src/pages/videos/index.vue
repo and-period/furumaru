@@ -15,7 +15,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { adminType } = storeToRefs(authStore)
 
-const selectedItem = ref<Video>()
+const selectedItem = ref<Video | null>(null)
 const commonStore = useCommonStore()
 const deleteDialogValue = ref<boolean>(false)
 
@@ -90,7 +90,7 @@ const onClickDelete = async () => {
       await videoStore.deleteVideo(selectedItem.value.id)
       commonStore.addSnackbar({
         color: 'info',
-        message: '生産者を削除しました。',
+        message: '動画を削除しました。',
       })
     }
     fetchVideos()
