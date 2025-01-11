@@ -118,5 +118,20 @@ export const useVideoStore = defineStore('video', {
         return this.errorHandler(error)
       }
     },
+
+    /**
+     * 動画の更新関数
+     * @param id  動画ID
+     * @returns
+     */
+    async deleteVideo(id: string): Promise<void> {
+      try {
+        await apiClient.videoApi().v1DeleteVideo(id)
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
+      }
+    },
   },
 })

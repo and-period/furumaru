@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { useVideoStore, useProductStore, useAuthStore } from '~/store'
 import type { CreateVideoRequest, Product, Experience } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
@@ -208,6 +209,7 @@ const handleSubmit = async () => {
     await videoStore.createVideo({
       ...formData.value,
       coordinatorId: adminId.value,
+      publishedAt: dayjs().unix(),
     })
     router.push('/videos')
   }

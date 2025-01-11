@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
-import { usePagination } from '~/lib/hooks'
-import { useAuthStore, useVideoStore } from '~/store'
+import { useAlert, usePagination } from '~/lib/hooks'
+import { useAuthStore, useCommonStore, useVideoStore } from '~/store'
 import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
-import { AdminType } from '~/types/api'
+import { AdminType, type Video, type VideoResponse } from '~/types/api'
 
 const videoStore = useVideoStore()
 const { videoResponse } = storeToRefs(videoStore)
@@ -14,6 +14,12 @@ const router = useRouter()
 
 const authStore = useAuthStore()
 const { adminType } = storeToRefs(authStore)
+
+const selectedItem = ref<Video>()
+const commonStore = useCommonStore()
+const deleteDialogValue = ref<boolean>(false)
+
+const { isShow, alertText, alertType, show } = useAlert('error')
 
 const headers: VDataTable['headers'] = [
   {
@@ -38,7 +44,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '',
-    key: '',
+    key: 'actions',
     sortable: false,
   },
 ]
@@ -65,10 +71,69 @@ const handleClickRow = (id: string) => {
 const { status } = useAsyncData(async () => {
   await fetchVideos()
 })
+
+const isDeletable = (): boolean => {
+  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  return targets.includes(adminType.value)
+}
+
+const toggleDeleteDialog = (item: Video): void => {
+  if (item) {
+    selectedItem.value = item
+  }
+  deleteDialogValue.value = !deleteDialogValue.value
+}
+
+const onClickDelete = async () => {
+  try {
+    if (selectedItem.value) {
+      await videoStore.deleteVideo(selectedItem.value.id)
+      commonStore.addSnackbar({
+        color: 'info',
+        message: '生産者を削除しました。',
+      })
+    }
+    fetchVideos()
+    deleteDialogValue.value = !deleteDialogValue.value
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
 </script>
 
 <template>
   <v-card>
+    <v-dialog
+      v-model="deleteDialogValue"
+      width="500"
+    >
+      <v-card>
+        <v-card-text class="text-h7">
+          {{ selectedItem?.title }}を本当に削除しますか？
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="error"
+            variant="text"
+            @click="toggleDeleteDialog"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            color="primary"
+            variant="outlined"
+            @click="onClickDelete"
+          >
+            削除
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-card-title>動画管理</v-card-title>
 
     <v-card-text
@@ -109,6 +174,21 @@ const { status } = useAsyncData(async () => {
           <v-chip :color="videoStatusToColor(item.status)">
             {{ videoStatusToString(item.status) }}
           </v-chip>
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn
+            v-show="isDeletable()"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click.stop="toggleDeleteDialog(item)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
+            削除
+          </v-btn>
         </template>
       </v-data-table-server>
     </v-card-text>
