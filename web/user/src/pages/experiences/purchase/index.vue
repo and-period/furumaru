@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuestCheckoutExperienceRequest } from '~/types/api'
 
-const formData = ref<GuestCheckoutExperienceRequest>({
+const _formData = ref<GuestCheckoutExperienceRequest>({
   requestId: '',
   billingAddressId: '',
   promotionCode: '',
@@ -40,7 +40,5 @@ const formData = ref<GuestCheckoutExperienceRequest>({
 </script>
 
 <template>
-  <div>
-    購入画面
-  </div>
+  <div>購入画面</div>
 </template>
