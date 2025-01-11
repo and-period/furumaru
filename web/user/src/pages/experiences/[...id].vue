@@ -117,9 +117,11 @@ const convertToTimeString = (time: string): string => {
 const handleClickApplyButton = () => {
   if (isAuthenticated.value) {
     console.log('authenticated')
-    router.push('/experiences/purchase', {
+    router.push({
+      path: '/experiences/purchase',
       query: {
         id: experienceId.value,
+        ...formData.value,
       },
     })
   }
