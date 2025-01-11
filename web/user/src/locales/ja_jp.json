@@ -395,7 +395,9 @@
       "quantityLabel": "数量",
       "subTotalPriceLabel": "小計（税込み）",
       "totalPriceLabel": "合計（税込み）",
-      "submitButtonText": "購入する"
+      "submitButtonText": "購入する",
+      "useDefaultAddressLabel": "上記の住所を利用する",
+      "useOtherAddressLabel": "その他の住所を入力する"
     }
   }
 }

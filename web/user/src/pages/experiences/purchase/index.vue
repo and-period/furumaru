@@ -24,9 +24,11 @@ const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
 
 const { fetchCheckoutTarget, checkout } = useExperienceCheckoutStore()
+
 const addressStore = useAddressStore()
 const { defaultAddress } = storeToRefs(addressStore)
-const { searchAddressByPostalCode, fetchAddresses } = addressStore
+const { searchAddressByPostalCode, fetchAddresses, registerAddress } = addressStore
+const targetAddress = ref<'default' | 'other'>('default')
 
 const shoppingCartStore = useShoppingCartStore()
 const { availablePaymentSystem } = storeToRefs(shoppingCartStore)
@@ -140,7 +142,7 @@ const { data, status, error } = useAsyncData('target-experience', async () => {
 /**
  * 住所取得処理
  */
-const { status: addressesFetchStatus } = useAsyncData('address', async () => {
+useAsyncData('address', async () => {
   await fetchAddresses()
   // useAsyncDataの戻り値は何か返さないといけないのでtrueを返す
   return true
@@ -228,11 +230,37 @@ const handleClickSearchAddressButton = async () => {
 
 const submitErrorMessage = ref<string>('')
 
+/**
+ * フォーム送信処理
+ */
 const handleSubmit = async () => {
-  if (validate()) {
-    return
+  if (defaultAddress.value && targetAddress.value === 'default') {
+    // デフォルトの住所を使用する場合
+    formData.value.billingAddress = defaultAddress.value
+  }
+  else {
+    if (validate()) {
+      return
+    }
+
+    // 住所登録
+    try {
+      const address = await registerAddress({ ...formData.value.billingAddress, isDefault: true })
+      if (address) {
+        formData.value.billingAddressId = address.id
+      }
+    }
+    catch (e) {
+      if (e instanceof ApiBaseError) {
+        submitErrorMessage.value = e.message
+      }
+      else {
+        submitErrorMessage.value = '不明なエラーが発生しました。'
+      }
+    }
   }
 
+  // チェックアウト処理
   try {
     const url = await checkout(experienceId.value, formData.value)
     window.location.href = url
@@ -246,6 +274,10 @@ const handleSubmit = async () => {
     }
   }
 }
+
+onMounted(() => {
+  formData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
+})
 
 useSeoMeta(
   {
@@ -319,19 +351,71 @@ useSeoMeta(
             >
               {{ dt("customerInformationTitle") }}
             </div>
-            <the-guest-address-form
-              v-model:form-data="formData.billingAddress"
-              v-model:email="formData.email"
-              form-id=""
-              :name-error-message="nameErrorMessage"
-              :name-kana-error-message="nameKanaErrorMessage"
-              :postal-code-error-message="postalCodeErrorMessage"
-              :phone-error-message="phoneErrorMessage"
-              :city-error-message="cityErrorMessage"
-              :address-error-message="addressErrorMessage"
-              :email-error-message="emailErrorMessage"
-              @click:search-address-button="handleClickSearchAddressButton"
-            />
+            <!-- 住所選択 -->
+            <template v-if="defaultAddress">
+              <the-address-info :address="defaultAddress" />
+              <!-- デフォルトの住所を使用するかのセレクタ -->
+              <hr class="my-[20px]">
+              <div class="flex flex-col gap-4 mb-6">
+                <div class="flex items-center gap-2">
+                  <input
+                    id="default-radio"
+                    v-model="targetAddress"
+                    type="radio"
+                    class="h-4 w-4 accent-main"
+                    value="default"
+                  >
+                  <label for="default-radio">
+                    {{ dt("useDefaultAddressLabel") }}
+                  </label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input
+                    id="other-radio"
+                    v-model="targetAddress"
+                    type="radio"
+                    class="h-4 w-4 accent-main"
+                    value="other"
+                  >
+                  <label for="other-radio">
+                    {{ dt("useOtherAddressLabel") }}
+                  </label>
+                </div>
+              </div>
+
+              <template v-if="targetAddress === 'other'">
+                <the-guest-address-form
+                  v-model:form-data="formData.billingAddress"
+                  v-model:email="formData.email"
+                  form-id=""
+                  :name-error-message="nameErrorMessage"
+                  :name-kana-error-message="nameKanaErrorMessage"
+                  :postal-code-error-message="postalCodeErrorMessage"
+                  :phone-error-message="phoneErrorMessage"
+                  :city-error-message="cityErrorMessage"
+                  :address-error-message="addressErrorMessage"
+                  :email-error-message="emailErrorMessage"
+                  @click:search-address-button="handleClickSearchAddressButton"
+                />
+              </template>
+            </template>
+
+            <!-- 住所入力欄 -->
+            <template v-else>
+              <the-guest-address-form
+                v-model:form-data="formData.billingAddress"
+                v-model:email="formData.email"
+                form-id=""
+                :name-error-message="nameErrorMessage"
+                :name-kana-error-message="nameKanaErrorMessage"
+                :postal-code-error-message="postalCodeErrorMessage"
+                :phone-error-message="phoneErrorMessage"
+                :city-error-message="cityErrorMessage"
+                :address-error-message="addressErrorMessage"
+                :email-error-message="emailErrorMessage"
+                @click:search-address-button="handleClickSearchAddressButton"
+              />
+            </template>
 
             <div class="flex flex-col gap-3 my-4">
               <div
@@ -339,16 +423,15 @@ useSeoMeta(
                 :key="p.methodType"
                 class="flex w-full items-center justify-between"
               >
-                <div class="inline-flex items-center">
+                <div class="inline-flex items-center gap-2">
                   <input
                     :id="String(p.methodType)"
                     v-model="formData.paymentMethod"
-                    class="check:before:border-main relative float-left mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-main checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:bg-main checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-main checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                    class="h-4 w-4 accent-main"
                     type="radio"
                     :value="p.methodType"
                   >
                   <label
-                    class="pl-2 text-[14px] text-main"
                     :for="String(p.methodType)"
                   >
                     {{ p.methodName }}

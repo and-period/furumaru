@@ -409,6 +409,8 @@ export interface I18n {
       subTotalPriceLabel: string
       totalPriceLabel: string
       submitButtonText: string
+      useDefaultAddressLabel: string
+      useOtherAddressLabel: string
     }
   }
 }
