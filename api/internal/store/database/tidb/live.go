@@ -156,9 +156,10 @@ func (l *live) fill(ctx context.Context, tx *gorm.DB, lives ...*entity.Live) err
 
 func (l *live) replaceProducts(ctx context.Context, tx *gorm.DB, liveID string, products entity.LiveProducts) error {
 	// 不要なレコードを削除
-	stmt := tx.WithContext(ctx).
-		Where("live_id = ?", liveID).
-		Where("product_id NOT IN (?)", products.ProductIDs())
+	stmt := tx.WithContext(ctx).Where("live_id = ?", liveID)
+	if len(products.ProductIDs()) > 0 {
+		stmt = stmt.Where("product_id NOT IN (?)", products.ProductIDs())
+	}
 	if err := stmt.Delete(&entity.LiveProduct{}).Error; err != nil {
 		return err
 	}

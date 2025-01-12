@@ -236,9 +236,10 @@ func (v *video) fill(ctx context.Context, tx *gorm.DB, videos ...*entity.Video) 
 
 func (v *video) replaceProducts(ctx context.Context, tx *gorm.DB, videoID string, products entity.VideoProducts) error {
 	// 不要なレコードを削除
-	stmt := tx.WithContext(ctx).
-		Where("video_id = ?", videoID).
-		Where("product_id NOT IN (?)", products.ProductIDs())
+	stmt := tx.WithContext(ctx).Where("video_id = ?", videoID)
+	if len(products.ProductIDs()) > 0 {
+		stmt = stmt.Where("product_id NOT IN (?)", products.ProductIDs())
+	}
 	if err := stmt.Delete(&entity.VideoProduct{}).Error; err != nil {
 		return err
 	}
@@ -267,9 +268,10 @@ func (v *video) replaceProducts(ctx context.Context, tx *gorm.DB, videoID string
 
 func (v *video) replaceExperiences(ctx context.Context, tx *gorm.DB, videoID string, experiences entity.VideoExperiences) error {
 	// 不要なレコードを削除
-	stmt := tx.WithContext(ctx).
-		Where("video_id = ?", videoID).
-		Where("experience_id NOT IN (?)", experiences.ExperienceIDs())
+	stmt := tx.WithContext(ctx).Where("video_id = ?", videoID)
+	if len(experiences.ExperienceIDs()) > 0 {
+		stmt = stmt.Where("experience_id NOT IN (?)", experiences.ExperienceIDs())
+	}
 	if err := stmt.Delete(&entity.VideoExperience{}).Error; err != nil {
 		return err
 	}
