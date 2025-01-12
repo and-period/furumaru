@@ -381,6 +381,7 @@ func TestCreateProducer(t *testing.T) {
 				expectProducer := &entity.Producer{
 					Admin: entity.Admin{
 						Type:          entity.AdminTypeProducer,
+						GroupIDs:      []string{"group-id"},
 						Lastname:      "&.",
 						Firstname:     "スタッフ",
 						LastnameKana:  "あんどぴりおど",

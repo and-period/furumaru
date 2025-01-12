@@ -269,6 +269,7 @@ func TestCreateAdministrator(t *testing.T) {
 				expectAdministrator := &entity.Administrator{
 					Admin: entity.Admin{
 						Type:          entity.AdminTypeAdministrator,
+						GroupIDs:      []string{"group-id"},
 						Lastname:      "&.",
 						Firstname:     "スタッフ",
 						LastnameKana:  "あんどぴりおど",

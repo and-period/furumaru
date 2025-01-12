@@ -39,6 +39,27 @@ type AdminGroupUser struct {
 
 type AdminGroupUsers []*AdminGroupUser
 
+type NewAdminGroupUsersParams struct {
+	AdminID        string
+	GroupIDs       []string
+	CreatedAdminID string
+	ExpiredAt      time.Time
+}
+
+func NewAdminGroupUsers(params *NewAdminGroupUsersParams) AdminGroupUsers {
+	res := make(AdminGroupUsers, len(params.GroupIDs))
+	for i, groupID := range params.GroupIDs {
+		res[i] = &AdminGroupUser{
+			GroupID:        groupID,
+			AdminID:        params.AdminID,
+			CreatedAdminID: params.CreatedAdminID,
+			UpdatedAdminID: params.CreatedAdminID,
+			ExpiredAt:      params.ExpiredAt,
+		}
+	}
+	return res
+}
+
 func (us AdminGroupUsers) GroupIDs() []string {
 	res := make([]string, len(us))
 	for i := range us {

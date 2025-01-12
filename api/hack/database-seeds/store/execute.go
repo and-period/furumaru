@@ -246,7 +246,7 @@ func (a *app) executeShipping(ctx context.Context) error {
 			Columns:   []clause.Column{{Name: "id"}},
 			DoNothing: true, // 過去の配送履歴等に影響するため、変更があっても反映しない
 		})
-		return stmt.Create(&revision).Error
+		return stmt.Table("shipping_revisions").Create(&revision).Error
 	})
 }
 

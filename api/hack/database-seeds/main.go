@@ -21,6 +21,7 @@ import (
 )
 
 var (
+	dbdriver   string
 	dbhost     string
 	dbport     string
 	dbusername string
@@ -38,6 +39,7 @@ func main() {
 }
 
 func run() error {
+	flag.StringVar(&dbdriver, "db-driver", "tidb", "target mysql driver")
 	flag.StringVar(&dbhost, "db-host", "mysql", "mysql server host")
 	flag.StringVar(&dbport, "db-port", "3306", "mysql server port")
 	flag.StringVar(&dbusername, "db-username", "root", "mysql auth username")
@@ -56,6 +58,7 @@ func run() error {
 
 	params := &common.Params{
 		Logger:     logger,
+		DBDriver:   dbdriver,
 		DBHost:     dbhost,
 		DBPort:     dbport,
 		DBUsername: dbusername,

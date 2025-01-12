@@ -24,6 +24,7 @@ import (
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -538,14 +539,20 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 	if err != nil {
 		return nil, err
 	}
+	groups := map[uentity.AdminType][]string{
+		uentity.AdminTypeAdministrator: a.DefaultAdministratorGroupIDs,
+		uentity.AdminTypeCoordinator:   a.DefaultCoordinatorGroupIDs,
+		uentity.AdminTypeProducer:      a.DefaultProducerGroupIDs,
+	}
 	params := &usersrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(mysql),
-		AdminAuth: p.adminAuth,
-		UserAuth:  p.userAuth,
-		Store:     store,
-		Messenger: messenger,
-		Media:     media,
+		WaitGroup:          p.waitGroup,
+		Database:           userdb.NewDatabase(mysql),
+		AdminAuth:          p.adminAuth,
+		UserAuth:           p.userAuth,
+		Store:              store,
+		Messenger:          messenger,
+		Media:              media,
+		DefaultAdminGroups: groups,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

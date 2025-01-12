@@ -103,6 +103,7 @@ func (s *service) CreateCoordinator(
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Type:          entity.AdminTypeCoordinator,
+		GroupIDs:      s.defaultAdminGroups[entity.AdminTypeCoordinator],
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,

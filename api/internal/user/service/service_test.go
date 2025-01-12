@@ -8,6 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
@@ -127,6 +128,11 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Store:     mocks.store,
 		Messenger: mocks.messenger,
 		Media:     mocks.media,
+		DefaultAdminGroups: map[entity.AdminType][]string{
+			entity.AdminTypeAdministrator: {"group-id"},
+			entity.AdminTypeCoordinator:   {"group-id"},
+			entity.AdminTypeProducer:      {"group-id"},
+		},
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

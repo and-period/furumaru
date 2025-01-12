@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -163,13 +164,21 @@ func (c *coordinator) Create(
 	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		now := c.now()
-		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
-		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
-
 		internal, err := newInternalCoordinator(coordinator)
 		if err != nil {
 			return err
+		}
+		params := &entity.NewAdminGroupUsersParams{
+			AdminID:  coordinator.AdminID,
+			GroupIDs: coordinator.GroupIDs,
+		}
+		groups := entity.NewAdminGroupUsers(params)
+
+		now := c.now()
+		coordinator.CreatedAt, coordinator.UpdatedAt = now, now
+		coordinator.Admin.CreatedAt, coordinator.Admin.UpdatedAt = now, now
+		for _, group := range groups {
+			group.CreatedAt, group.UpdatedAt = now, now
 		}
 
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
@@ -177,6 +186,11 @@ func (c *coordinator) Create(
 		}
 		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&internal).Error; err != nil {
 			return err
+		}
+		if len(groups) > 0 {
+			if err := tx.WithContext(ctx).Table(adminGroupUserTable).Create(&groups).Error; err != nil {
+				return err
+			}
 		}
 		return auth(ctx)
 	})
@@ -286,22 +300,34 @@ func (c *coordinator) get(
 }
 
 func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*entity.Coordinator) error {
-	var admins entity.Admins
+	var (
+		admins entity.Admins
+		groups entity.AdminGroupUsers
+	)
 
 	ids := entity.Coordinators(coordinators).IDs()
 	if len(ids) == 0 {
 		return nil
 	}
 
-	stmt := c.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
-	if err := stmt.Find(&admins).Error; err != nil {
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		stmt := c.db.Statement(ectx, tx, adminTable).
+			Unscoped().
+			Where("id IN (?)", ids)
+		return stmt.Find(&admins).Error
+	})
+	eg.Go(func() error {
+		stmt := c.db.Statement(ectx, tx, adminGroupUserTable).
+			Where("admin_id IN (?)", ids).
+			Where("expired_at IS NULL OR expired_at > ?", jst.Now())
+		return stmt.Find(&groups).Error
+	})
+	if err := eg.Wait(); err != nil {
 		return err
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admins.Fill(nil); err != nil {
-		return err
-	}
-	entity.Coordinators(coordinators).Fill(admins.Map())
+
+	entity.Coordinators(coordinators).Fill(admins.Map(), groups.GroupByAdminID())
 	return nil
 }
 

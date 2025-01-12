@@ -699,6 +699,15 @@ var AdminPolicies = entity.AdminPolicies{
 		Action:      entity.AdminPolicyActionAllow,
 	},
 	{
+		ID:          "promotion_get",
+		Name:        "プロモーション 詳細取得",
+		Description: "プロモーションの詳細取得権限です。",
+		Priority:    78,
+		Path:        "/v1/promotions/*",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
 		ID:          "promotion_create",
 		Name:        "プロモーション 登録",
 		Description: "プロモーションの登録権限です。",
@@ -1136,7 +1145,6 @@ var AdminRoles = []AdminRole{
 			Description: "ライブ配信の閲覧者ロールです。",
 		},
 		PolicyIDs: []string{
-			"broadcast_list",
 			"broadcast_get",
 		},
 	},

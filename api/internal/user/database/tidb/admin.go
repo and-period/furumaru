@@ -36,9 +36,7 @@ func (a *admin) MultiGet(
 		return nil, dbError(err)
 	}
 	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admins.Fill(nil); err != nil {
-		return nil, dbError(err)
-	}
+	admins.Fill(nil)
 	return admins, nil
 }
 
@@ -61,9 +59,7 @@ func (a *admin) GetByCognitoID(
 		return nil, dbError(err)
 	}
 	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admin.Fill(nil); err != nil {
-		return nil, dbError(err)
-	}
+	admin.Fill(nil)
 	return admin, nil
 }
 
@@ -77,9 +73,7 @@ func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) 
 		return nil, dbError(err)
 	}
 	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admin.Fill(nil); err != nil {
-		return nil, dbError(err)
-	}
+	admin.Fill(nil)
 	return admin, nil
 }
 
@@ -143,8 +137,6 @@ func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...
 		return nil, err
 	}
 	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admin.Fill(nil); err != nil {
-		return nil, dbError(err)
-	}
+	admin.Fill(nil)
 	return admin, nil
 }

@@ -85,7 +85,8 @@ func NewCoordinator(params *NewCoordinatorParams) (*Coordinator, error) {
 	}, nil
 }
 
-func (c *Coordinator) Fill(admin *Admin) {
+func (c *Coordinator) Fill(admin *Admin, groups AdminGroupUsers) {
+	admin.Fill(groups)
 	c.Admin = *admin
 	c.Prefecture, _ = codes.ToPrefectureJapanese(c.PrefectureCode)
 }
@@ -106,12 +107,12 @@ func (cs Coordinators) ProductTypeIDs() []string {
 	return res.Slice()
 }
 
-func (cs Coordinators) Fill(admins map[string]*Admin) {
+func (cs Coordinators) Fill(admins map[string]*Admin, groups map[string]AdminGroupUsers) {
 	for _, c := range cs {
 		admin, ok := admins[c.AdminID]
 		if !ok {
 			admin = &Admin{ID: c.AdminID, Type: AdminTypeCoordinator}
 		}
-		c.Fill(admin)
+		c.Fill(admin, groups[c.AdminID])
 	}
 }

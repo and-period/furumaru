@@ -366,6 +366,7 @@ func TestCreateCoordinator(t *testing.T) {
 				expectCoordinator := &entity.Coordinator{
 					Admin: entity.Admin{
 						Type:          entity.AdminTypeCoordinator,
+						GroupIDs:      []string{"group-id"},
 						Lastname:      "&.",
 						Firstname:     "スタッフ",
 						LastnameKana:  "あんどぴりおど",
