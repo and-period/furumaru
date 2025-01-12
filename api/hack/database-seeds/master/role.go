@@ -1655,7 +1655,10 @@ var AdminGroups = []AdminGroup{
 	},
 	{
 		AdminGroup: entity.AdminGroup{
-			ID: "default-coordinator",
+			ID:          "default-coordinator",
+			Type:        entity.AdminTypeCoordinator,
+			Name:        "デフォルト コーディネータ",
+			Description: "デフォルトのコーディネータグループです。",
 		},
 		RoleIDs: []string{
 			"general",
@@ -1682,7 +1685,10 @@ var AdminGroups = []AdminGroup{
 	},
 	{
 		AdminGroup: entity.AdminGroup{
-			ID: "default-producer",
+			ID:          "default-producer",
+			Type:        entity.AdminTypeProducer,
+			Name:        "デフォルト 生産者",
+			Description: "デフォルトの生産者グループです。",
 		},
 		RoleIDs: []string{
 			"general",

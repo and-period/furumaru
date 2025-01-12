@@ -6,6 +6,7 @@ on:
     paths:
     - '.github/actions/**'
     - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_database_migrate.yaml'
     - '.github/workflows/_deploy_ecs.yaml'
     - '.github/workflows/cd-gateway-for-stg.yaml'
     - 'api/config/gateway/**'
@@ -35,6 +36,14 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+  database_migrate:
+    name: database migrate
+    needs:
+    - set_output
+    uses: ./.github/workflows/_database_migrate.yaml
+    with:
+      environment: stg
 
   build_and_push:
     name: build and push
