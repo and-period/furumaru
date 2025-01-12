@@ -34,6 +34,7 @@ jobs:
       ecs-cluster-name: ${{ vars.ECS_CLUSTER }}
       ecs-task-definition-admin: ${{ vars.ECS_TASK_DEFINITION_ADMIN }}
       ecs-task-definition-user: ${{ vars.ECS_TASK_DEFINITION_USER }}
+      db-secret-name: ${{ vars.DB_SECRET_NAME }}
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
     secrets: inherit
     with:
       environment: prd
+      db-secret-name: ${{ needs.set_output.outputs.db-secret-name }}
 
   get_image_tag:
     name: get image tag
