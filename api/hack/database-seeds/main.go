@@ -15,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/hack/database-seeds/common"
 	"github.com/and-period/furumaru/api/hack/database-seeds/messenger"
 	"github.com/and-period/furumaru/api/hack/database-seeds/store"
+	"github.com/and-period/furumaru/api/hack/database-seeds/user"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"go.uber.org/zap"
 )
@@ -72,12 +73,20 @@ func run() error {
 		logger.Error("Failed to create messenger client", zap.Error(err))
 		return err
 	}
+	user, err := user.NewClient(params)
+	if err != nil {
+		logger.Error("Failed to create user client", zap.Error(err))
+		return err
+	}
 
 	logger.Info("Database seeds will begin")
 	if err := store.Execute(ctx); err != nil {
 		return err
 	}
 	if err := messenger.Execute(ctx); err != nil {
+		return err
+	}
+	if err := user.Execute(ctx); err != nil {
 		return err
 	}
 	logger.Info("Database seeds has completed")

@@ -166,7 +166,7 @@ func TestAdmin_Fill(t *testing.T) {
 	tests := []struct {
 		name           string
 		admin          *Admin
-		groups         RelatedAdminGroups
+		groups         AdminGroupUsers
 		expectGroupIDs []string
 		expectStatus   AdminStatus
 	}{
@@ -175,7 +175,7 @@ func TestAdmin_Fill(t *testing.T) {
 			admin: &Admin{
 				Type: AdminTypeProducer,
 			},
-			groups: RelatedAdminGroups{
+			groups: AdminGroupUsers{
 				{
 					AdminID: "admin-id",
 					GroupID: "group-id",
@@ -190,7 +190,7 @@ func TestAdmin_Fill(t *testing.T) {
 				Type:          AdminTypeCoordinator,
 				FirstSignInAt: time.Time{},
 			},
-			groups: RelatedAdminGroups{
+			groups: AdminGroupUsers{
 				{
 					AdminID: "admin-id",
 					GroupID: "group-id",
@@ -205,7 +205,7 @@ func TestAdmin_Fill(t *testing.T) {
 				Type:          AdminTypeCoordinator,
 				FirstSignInAt: now,
 			},
-			groups: RelatedAdminGroups{
+			groups: AdminGroupUsers{
 				{
 					AdminID: "admin-id",
 					GroupID: "group-id",

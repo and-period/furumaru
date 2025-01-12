@@ -34,6 +34,12 @@ type mocks struct {
 type dbMocks struct {
 	Address          *mock_database.MockAddress
 	Admin            *mock_database.MockAdmin
+	AdminGroup       *mock_database.MockAdminGroup
+	AdminGroupRole   *mock_database.MockAdminGroupRole
+	AdminGroupUser   *mock_database.MockAdminGroupUser
+	AdminPolicy      *mock_database.MockAdminPolicy
+	AdminRole        *mock_database.MockAdminRole
+	AdminRolePolicy  *mock_database.MockAdminRolePolicy
 	Administrator    *mock_database.MockAdministrator
 	Coordinator      *mock_database.MockCoordinator
 	Guest            *mock_database.MockGuest
@@ -74,6 +80,12 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Address:          mock_database.NewMockAddress(ctrl),
 		Admin:            mock_database.NewMockAdmin(ctrl),
+		AdminGroup:       mock_database.NewMockAdminGroup(ctrl),
+		AdminGroupRole:   mock_database.NewMockAdminGroupRole(ctrl),
+		AdminGroupUser:   mock_database.NewMockAdminGroupUser(ctrl),
+		AdminPolicy:      mock_database.NewMockAdminPolicy(ctrl),
+		AdminRole:        mock_database.NewMockAdminRole(ctrl),
+		AdminRolePolicy:  mock_database.NewMockAdminRolePolicy(ctrl),
 		Administrator:    mock_database.NewMockAdministrator(ctrl),
 		Coordinator:      mock_database.NewMockCoordinator(ctrl),
 		Guest:            mock_database.NewMockGuest(ctrl),
@@ -96,6 +108,12 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Database: &database.Database{
 			Address:          mocks.db.Address,
 			Admin:            mocks.db.Admin,
+			AdminGroup:       mocks.db.AdminGroup,
+			AdminGroupRole:   mocks.db.AdminGroupRole,
+			AdminGroupUser:   mocks.db.AdminGroupUser,
+			AdminPolicy:      mocks.db.AdminPolicy,
+			AdminRole:        mocks.db.AdminRole,
+			AdminRolePolicy:  mocks.db.AdminRolePolicy,
 			Administrator:    mocks.db.Administrator,
 			Coordinator:      mocks.db.Coordinator,
 			Guest:            mocks.db.Guest,
