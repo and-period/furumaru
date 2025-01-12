@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `users`.`admin_policies` (
   `action`      VARCHAR(16)  NOT NULL,
   `created_at`  DATETIME(3)  NOT NULL,
   `updated_at`  DATETIME(3)  NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `users`.`admin_roles` (
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `users`.`admin_roles` (
   `description` TEXT         NOT NULL,
   `created_at`  DATETIME(3)  NOT NULL,
   `updated_at`  DATETIME(3)  NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `users`.`admin_role_policies` (
