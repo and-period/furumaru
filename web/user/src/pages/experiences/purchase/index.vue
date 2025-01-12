@@ -126,7 +126,11 @@ const isValidQueryParams = computed<boolean>(() => {
 /**
  * 体験情報取得処理
  */
-const { data, status, error } = useAsyncData('target-experience', async () => {
+const {
+  data: targetExperience,
+  status: targetExperienceFetchStatus,
+  error: targetExperienceFetchError,
+} = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
     return await fetchCheckoutTarget({
       experienceId: experienceId.value,
@@ -161,7 +165,7 @@ useAsyncData('payment-options', async () => {
 })
 
 const formData = ref<GuestCheckoutExperienceRequest>({
-  requestId: data.value?.requestId || '',
+  requestId: targetExperience.value?.requestId || '',
   billingAddressId: '',
   promotionCode: '',
   adultCount: adultCount.value,
@@ -174,7 +178,7 @@ const formData = ref<GuestCheckoutExperienceRequest>({
   requestedTime: '',
   paymentMethod: 0,
   callbackUrl: '',
-  total: data.value?.total || 0,
+  total: targetExperience.value?.total || 0,
   email: user.value?.email || '',
   billingAddress: {
     lastname: user.value?.lastname || '',
@@ -182,10 +186,10 @@ const formData = ref<GuestCheckoutExperienceRequest>({
     lastnameKana: user.value?.lastnameKana || '',
     firstnameKana: user.value?.firstnameKana || '',
     postalCode: '',
-    prefectureCode: defaultAddress.value?.prefectureCode || 0,
-    city: defaultAddress.value?.city || '',
-    addressLine1: defaultAddress.value?.addressLine1 || '',
-    addressLine2: defaultAddress.value?.addressLine2 || '',
+    prefectureCode: 0,
+    city: '',
+    addressLine1: '',
+    addressLine2: '',
     phoneNumber: '',
   },
   creditCard: {
@@ -236,7 +240,7 @@ const submitErrorMessage = ref<string>('')
 const handleSubmit = async () => {
   if (defaultAddress.value && targetAddress.value === 'default') {
     // デフォルトの住所を使用する場合
-    formData.value.billingAddress = defaultAddress.value
+    formData.value.billingAddressId = defaultAddress.value.id
   }
   else {
     if (validate()) {
@@ -277,6 +281,9 @@ const handleSubmit = async () => {
 
 onMounted(() => {
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
+  if (availablePaymentSystem.value.length > 0) {
+    formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
+  }
 })
 
 useSeoMeta(
@@ -295,11 +302,12 @@ useSeoMeta(
       {{ dt("title") }}
     </div>
 
-    <!-- エラー -->
+    <!-- エラー表示 -->
     <div
-      v-if="!isValidQueryParams || status == 'error'"
+      v-if="!isValidQueryParams || targetExperienceFetchStatus == 'error'"
       class="px-4 md:px-20"
     >
+      <!-- クエリパラメータが不正な場合 -->
       <the-alert
         v-if="!isValidQueryParams"
         class="bg-white"
@@ -308,12 +316,13 @@ useSeoMeta(
         不正なパラメータが含まれています
       </the-alert>
 
+      <!-- 購入対象の体験の取得に失敗した場合 -->
       <the-alert
-        v-if="status == 'error'"
+        v-if="targetExperienceFetchStatus == 'error'"
         class="bg-white"
         type="error"
       >
-        {{ error?.message }}
+        {{ targetExperienceFetchError?.message }}
       </the-alert>
     </div>
 
@@ -448,10 +457,10 @@ useSeoMeta(
           </form>
 
           <!-- 購入内容確認 -->
-          <template v-if="data?.experience">
+          <template v-if="targetExperience?.experience">
             <the-experience-summary
               class="max-h-max order-1 lg:order-2"
-              :experience="data.experience"
+              :experience="targetExperience.experience"
               :adult-count="formData.adultCount"
               :junior-high-school-count="formData.juniorHighSchoolCount"
               :elementary-school-count="formData.elementarySchoolCount"

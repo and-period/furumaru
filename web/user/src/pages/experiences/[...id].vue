@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { Snackbar } from '~/types/props'
+import { priceFormatter } from '~/lib/price'
+import { useAuthStore } from '~/store/auth'
+import { useExperienceStore } from '~/store/experience'
 import { ExperienceStatus } from '~/types/api'
 import type { I18n } from '~/types/locales'
-import { useExperienceStore } from '~/store/experience'
-import { useAuthStore } from '~/store/auth'
+import type { Snackbar } from '~/types/props'
 
 const i18n = useI18n()
 
@@ -31,7 +32,7 @@ const { isAuthenticated } = storeToRefs(authStore)
 const experienceStore = useExperienceStore()
 const { fetchExperience } = experienceStore
 
-const { data, status } = await useAsyncData('spot', () => {
+const { data, status, error } = await useAsyncData('experience', () => {
   return fetchExperience(experienceId.value)
 })
 
@@ -95,10 +96,7 @@ const canAddCart = computed<boolean>(() => {
 
 const priceString = (price: number) => {
   if (price) {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-    }).format(price)
+    return priceFormatter(price)
   }
   else {
     return ''
@@ -116,7 +114,6 @@ const convertToTimeString = (time: string): string => {
 
 const handleClickApplyButton = () => {
   if (isAuthenticated.value) {
-    console.log('authenticated')
     router.push({
       path: '/experiences/purchase',
       query: {
@@ -165,6 +162,20 @@ useSeoMeta({
           <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
           <div class="h-[24px] w-[60%] rounded-md bg-slate-100" />
         </div>
+      </div>
+    </template>
+
+    <!-- エラー表示 -->
+    <template v-else-if="status === 'error'">
+      <div
+        class="my-6 px-4"
+      >
+        <the-alert
+          class="bg-white"
+          type="error"
+        >
+          {{ error?.message }}
+        </the-alert>
       </div>
     </template>
 

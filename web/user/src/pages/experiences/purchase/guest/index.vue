@@ -7,6 +7,7 @@ import {
   type GuestCheckoutExperienceRequest,
   PaymentMethodType,
 } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
@@ -79,7 +80,11 @@ const seniorCount = computed<number>(() => {
 /**
  * 体験情報取得処理
  */
-const { data, status, error } = useAsyncData('target-experience', async () => {
+const {
+  data: targetExperience,
+  status: targetExperienceFetchStatus,
+  error: targetExperienceFetchError,
+} = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
     return await fetchCheckoutTarget({
       experienceId: experienceId.value,
@@ -96,7 +101,7 @@ const { data, status, error } = useAsyncData('target-experience', async () => {
  * フォームデータ
  */
 const formData = ref<GuestCheckoutExperienceRequest>({
-  requestId: data.value?.requestId || '',
+  requestId: targetExperience.value?.requestId || '',
   billingAddressId: '',
   promotionCode: '',
   adultCount: adultCount.value,
@@ -109,7 +114,7 @@ const formData = ref<GuestCheckoutExperienceRequest>({
   requestedTime: '',
   paymentMethod: 0,
   callbackUrl: '',
-  total: data.value?.total || 0,
+  total: targetExperience.value?.total || 0,
   email: '',
   billingAddress: {
     lastname: '',
@@ -205,11 +210,19 @@ const handleClickSearchAddressButton = async () => {
   }
 }
 
-fetchAvailablePaymentOptions().then(() => {
+/**
+ * 支払い方法取得処理
+ */
+useAsyncData('payment-options', async () => {
+  await fetchAvailablePaymentOptions()
   if (availablePaymentSystem.value.length > 0) {
     formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
   }
+  // useAsyncDataの戻り値は何か返さないといけないのでtrueを返す
+  return true
 })
+
+const submitErrorMessage = ref<string>('')
 
 /**
  * 体験購入フォーム送信時の処理
@@ -219,12 +232,25 @@ const handleSubmit = async () => {
     return
   }
 
-  const url = await checkoutByGuest(experienceId.value, formData.value)
-  window.location.href = url
+  try {
+    const url = await checkoutByGuest(experienceId.value, formData.value)
+    window.location.href = url
+  }
+  catch (e) {
+    if (e instanceof ApiBaseError) {
+      submitErrorMessage.value = e.message
+    }
+    else {
+      submitErrorMessage.value = '不明なエラーが発生しました。'
+    }
+  }
 }
 
 onMounted(() => {
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/guest/complete`
+  if (availablePaymentSystem.value.length > 0) {
+    formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
+  }
 })
 
 useSeoMeta(
@@ -245,7 +271,7 @@ useSeoMeta(
 
     <!-- エラー -->
     <div
-      v-if="!isValidQueryParams || status == 'error'"
+      v-if="!isValidQueryParams || targetExperienceFetchStatus == 'error'"
       class="px-4 md:px-20"
     >
       <the-alert
@@ -257,99 +283,114 @@ useSeoMeta(
       </the-alert>
 
       <the-alert
-        v-if="status == 'error'"
+        v-if="targetExperienceFetchStatus == 'error'"
         class="bg-white"
         type="error"
       >
-        {{ error?.message }}
+        {{ targetExperienceFetchError?.message }}
       </the-alert>
     </div>
 
-    <div
-      v-else
-      class="bg-white py-10 md:px-20 flex flex-col gap-8 px-4"
-    >
+    <template v-else>
+      <!-- フォーム送信エラー -->
       <div
-        class="md:grid grid-cols-2 gap-x-20 auto-rows-auto flex flex-col gap-y-4"
+        v-if="submitErrorMessage"
+        class="px-4 md:px-20 mb-6"
       >
-        <!-- 顧客情報入力フォーム -->
-        <form
-          id="checkout-form"
-          class="order-2 md:order-1"
-          @submit.prevent="handleSubmit"
+        <the-alert
+          v-if="submitErrorMessage"
+          class="bg-white"
+          type="error"
         >
-          <div
-            class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+          {{ submitErrorMessage }}
+        </the-alert>
+      </div>
+
+      <div
+        class="bg-white py-10 md:px-20 flex flex-col gap-8 px-4"
+      >
+        <div
+          class="lg:grid grid-cols-2 gap-x-20 auto-rows-auto flex flex-col gap-y-4"
+        >
+          <!-- 顧客情報入力フォーム -->
+          <form
+            id="checkout-form"
+            class="order-2 lg:order-1"
+            @submit.prevent="handleSubmit"
           >
-            {{ dt("customerInformationTitle") }}
-          </div>
-          <the-guest-address-form
-            v-model:form-data="formData.billingAddress"
-            v-model:email="formData.email"
-            form-id=""
-            :name-error-message="nameErrorMessage"
-            :name-kana-error-message="nameKanaErrorMessage"
-            :postal-code-error-message="postalCodeErrorMessage"
-            :phone-error-message="phoneErrorMessage"
-            :city-error-message="cityErrorMessage"
-            :address-error-message="addressErrorMessage"
-            :email-error-message="emailErrorMessage"
-            @click:search-address-button="handleClickSearchAddressButton"
-          />
-          <div class="flex flex-col gap-3 my-4">
             <div
-              v-for="p in availablePaymentSystem"
-              :key="p.methodType"
-              class="flex w-full items-center justify-between"
+              class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
             >
-              <div class="inline-flex items-center">
-                <input
-                  :id="String(p.methodType)"
-                  v-model="formData.paymentMethod"
-                  class="check:before:border-main relative float-left mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-main checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:bg-main checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-main checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                  type="radio"
-                  :value="p.methodType"
-                >
-                <label
-                  class="pl-2 text-[14px] text-main"
-                  :for="String(p.methodType)"
-                >
-                  {{ p.methodName }}
-                </label>
+              {{ dt("customerInformationTitle") }}
+            </div>
+            <the-guest-address-form
+              v-model:form-data="formData.billingAddress"
+              v-model:email="formData.email"
+              form-id=""
+              :name-error-message="nameErrorMessage"
+              :name-kana-error-message="nameKanaErrorMessage"
+              :postal-code-error-message="postalCodeErrorMessage"
+              :phone-error-message="phoneErrorMessage"
+              :city-error-message="cityErrorMessage"
+              :address-error-message="addressErrorMessage"
+              :email-error-message="emailErrorMessage"
+              @click:search-address-button="handleClickSearchAddressButton"
+            />
+            <div class="flex flex-col gap-3 my-4">
+              <div
+                v-for="p in availablePaymentSystem"
+                :key="p.methodType"
+                class="flex w-full items-center justify-between"
+              >
+                <div class="inline-flex items-center">
+                  <input
+                    :id="String(p.methodType)"
+                    v-model="formData.paymentMethod"
+                    class="check:before:border-main relative float-left mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-main checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:bg-main checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-main checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                    type="radio"
+                    :value="p.methodType"
+                  >
+                  <label
+                    class="pl-2 text-[14px] text-main"
+                    :for="String(p.methodType)"
+                  >
+                    {{ p.methodName }}
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
 
-          <the-payment-form
-            v-if="formData.paymentMethod === PaymentMethodType.CREDIT_CARD"
-            v-model="formData.creditCard"
-            form-id=""
-          />
-        </form>
+            <the-payment-form
+              v-if="formData.paymentMethod === PaymentMethodType.CREDIT_CARD"
+              v-model="formData.creditCard"
+              form-id=""
+            />
+          </form>
 
-        <!-- 購入内容確認 -->
-        <template v-if="data?.experience">
-          <the-experience-summary
-            class="max-h-max order-1 md:order-2"
-            :experience="data.experience"
-            :adult-count="formData.adultCount"
-            :junior-high-school-count="formData.juniorHighSchoolCount"
-            :elementary-school-count="formData.elementarySchoolCount"
-            :preschool-count="formData.preschoolCount"
-            :senior-count="formData.seniorCount"
-          />
-        </template>
+          <!-- 購入内容確認 -->
+          <template v-if="targetExperience?.experience">
+            <the-experience-summary
+              class="max-h-max order-1 lg:order-2"
+              :experience="targetExperience.experience"
+              :adult-count="formData.adultCount"
+              :junior-high-school-count="formData.juniorHighSchoolCount"
+              :elementary-school-count="formData.elementarySchoolCount"
+              :preschool-count="formData.preschoolCount"
+              :senior-count="formData.seniorCount"
+            />
+          </template>
+        </div>
+
+        <div class="text-center">
+          <button
+            class="bg-main text-white py-2 w-60"
+            type="submit"
+            form="checkout-form"
+          >
+            {{ dt("submitButtonText") }}
+          </button>
+        </div>
       </div>
-
-      <div class="text-center">
-        <button
-          class="bg-main text-white py-2 w-60"
-          type="submit"
-          form="checkout-form"
-        >
-          {{ dt("submitButtonText") }}
-        </button>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
