@@ -233,17 +233,20 @@ const handleClickSearchAddressButton = async () => {
 }
 
 const submitErrorMessage = ref<string>('')
+const isSubmitting = ref<boolean>(false)
 
 /**
  * フォーム送信処理
  */
 const handleSubmit = async () => {
+  isSubmitting.value = true
   if (defaultAddress.value && targetAddress.value === 'default') {
     // デフォルトの住所を使用する場合
     formData.value.billingAddressId = defaultAddress.value.id
   }
   else {
     if (validate()) {
+      isSubmitting.value = false
       return
     }
 
@@ -277,6 +280,7 @@ const handleSubmit = async () => {
       submitErrorMessage.value = '不明なエラーが発生しました。'
     }
   }
+  isSubmitting.value = false
 }
 
 onMounted(() => {
@@ -472,11 +476,19 @@ useSeoMeta(
 
         <div class="text-center">
           <button
-            class="bg-main text-white py-2 w-60"
+            class="bg-main text-white py-2 w-60 disabled:cursor-wait"
             type="submit"
             form="checkout-form"
+            :disabled="isSubmitting"
           >
-            {{ dt("submitButtonText") }}
+            <template v-if="isSubmitting">
+              <div class="w-full flex justify-center items-center">
+                <the-loading-icon />
+              </div>
+            </template>
+            <template v-else>
+              {{ dt("submitButtonText") }}
+            </template>
           </button>
         </div>
       </div>

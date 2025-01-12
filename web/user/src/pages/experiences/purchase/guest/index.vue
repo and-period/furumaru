@@ -223,16 +223,18 @@ useAsyncData('payment-options', async () => {
 })
 
 const submitErrorMessage = ref<string>('')
+const isSubmitting = ref<boolean>(false)
 
 /**
  * 体験購入フォーム送信時の処理
  */
 const handleSubmit = async () => {
-  if (validate()) {
-    return
-  }
-
   try {
+    isSubmitting.value = true
+    if (validate()) {
+      return
+    }
+
     const url = await checkoutByGuest(experienceId.value, formData.value)
     window.location.href = url
   }
@@ -243,6 +245,9 @@ const handleSubmit = async () => {
     else {
       submitErrorMessage.value = '不明なエラーが発生しました。'
     }
+  }
+  finally {
+    isSubmitting.value = false
   }
 }
 
@@ -383,11 +388,19 @@ useSeoMeta(
 
         <div class="text-center">
           <button
-            class="bg-main text-white py-2 w-60"
+            class="bg-main text-white py-2 w-60 disabled:cursor-wait"
             type="submit"
             form="checkout-form"
+            :disabled="isSubmitting"
           >
-            {{ dt("submitButtonText") }}
+            <template v-if="isSubmitting">
+              <div class="w-full flex justify-center items-center">
+                <the-loading-icon />
+              </div>
+            </template>
+            <template v-else>
+              {{ dt("submitButtonText") }}
+            </template>
           </button>
         </div>
       </div>
