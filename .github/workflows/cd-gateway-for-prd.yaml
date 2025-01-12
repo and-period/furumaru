@@ -43,6 +43,7 @@ jobs:
     needs:
     - set_output
     uses: ./.github/workflows/_database_migrate.yaml
+    secrets: inherit
     with:
       environment: prd
 
