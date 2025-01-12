@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -69,8 +70,8 @@ func TestAdminRole_List(t *testing.T) {
 
 			db := &adminRole{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.Equal(t, tt.want.roles, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.roles, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -132,8 +133,8 @@ func TestAdminRole_Count(t *testing.T) {
 
 			db := &adminRole{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.Equal(t, tt.want.total, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -195,8 +196,8 @@ func TestAdminRole_MultiGet(t *testing.T) {
 
 			db := &adminRole{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.roleIDs)
-			require.Equal(t, tt.want.roles, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.roles, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -266,8 +267,8 @@ func TestAdminRole_Get(t *testing.T) {
 
 			db := &adminRole{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.roleID)
-			require.Equal(t, tt.want.role, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.role, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
