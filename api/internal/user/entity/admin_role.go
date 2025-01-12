@@ -26,32 +26,55 @@ const (
 	AdminPolicyActionDeny  AdminPolicyAction = "deny"
 )
 
-// RelatedAdminGroup - 管理者グループと管理者の紐付け情報
-type RelatedAdminGroup struct {
-	AdminID   string    `gorm:"primaryKey;<-:create"` // 管理者ID
-	GroupID   string    `gorm:"primaryKey;<-:create"` // 管理者グループID
-	ExpiredAt time.Time `gorm:"default:null"`         // 有効期限
-	CreatedAt time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt time.Time `gorm:""`                     // 更新日時
+// AdminGroupUser - 管理者グループと管理者の紐付け情報
+type AdminGroupUser struct {
+	GroupID        string    `gorm:"primaryKey;<-:create"` // 管理者グループID
+	AdminID        string    `gorm:"primaryKey;<-:create"` // 管理者ID
+	CreatedAdminID string    `gorm:"default:null"`         // 登録者ID
+	UpdatedAdminID string    `gorm:"default:null"`         // 更新者ID
+	ExpiredAt      time.Time `gorm:"default:null"`         // 有効期限
+	CreatedAt      time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt      time.Time `gorm:""`                     // 更新日時
 }
 
-type RelatedAdminGroups []RelatedAdminGroup
+type AdminGroupUsers []*AdminGroupUser
 
-func (gs RelatedAdminGroups) GroupIDs() []string {
-	res := make([]string, len(gs))
-	for i := range gs {
-		res[i] = gs[i].GroupID
+type NewAdminGroupUsersParams struct {
+	AdminID        string
+	GroupIDs       []string
+	CreatedAdminID string
+	ExpiredAt      time.Time
+}
+
+func NewAdminGroupUsers(params *NewAdminGroupUsersParams) AdminGroupUsers {
+	res := make(AdminGroupUsers, len(params.GroupIDs))
+	for i, groupID := range params.GroupIDs {
+		res[i] = &AdminGroupUser{
+			GroupID:        groupID,
+			AdminID:        params.AdminID,
+			CreatedAdminID: params.CreatedAdminID,
+			UpdatedAdminID: params.CreatedAdminID,
+			ExpiredAt:      params.ExpiredAt,
+		}
 	}
 	return res
 }
 
-func (gs RelatedAdminGroups) GroupByAdminID() map[string]RelatedAdminGroups {
-	res := make(map[string]RelatedAdminGroups, len(gs))
-	for _, g := range gs {
-		if _, ok := res[g.AdminID]; !ok {
-			res[g.AdminID] = make(RelatedAdminGroups, 0)
+func (us AdminGroupUsers) GroupIDs() []string {
+	res := make([]string, len(us))
+	for i := range us {
+		res[i] = us[i].GroupID
+	}
+	return res
+}
+
+func (us AdminGroupUsers) GroupByAdminID() map[string]AdminGroupUsers {
+	res := make(map[string]AdminGroupUsers, len(us))
+	for _, u := range us {
+		if _, ok := res[u.AdminID]; !ok {
+			res[u.AdminID] = make(AdminGroupUsers, 0)
 		}
-		res[g.AdminID] = append(res[g.AdminID], g)
+		res[u.AdminID] = append(res[u.AdminID], u)
 	}
 	return res
 }
@@ -62,33 +85,34 @@ type AdminGroup struct {
 	Type           AdminType      `gorm:"<-:create"`            // 管理者グループ種別
 	Name           string         `gorm:""`                     // 管理者グループ名
 	Description    string         `gorm:""`                     // 説明
-	CreatedAdminID string         `gorm:""`                     // 登録者ID
-	UpdatedAdminID string         `gorm:""`                     // 更新者ID
+	CreatedAdminID string         `gorm:"default:null"`         // 登録者ID
+	UpdatedAdminID string         `gorm:"default:null"`         // 更新者ID
 	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt      time.Time      `gorm:""`                     // 更新日時
 	DeletedAt      gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
+
+type AdminGroups []*AdminGroup
 
 // AdminGroupRole - 管理者グループと管理者権限の紐付け情報
 type AdminGroupRole struct {
-	AdminGroupID   string         `gorm:"primaryKey;<-:create"` // 管理者グループID
+	GroupID        string         `gorm:"primaryKey;<-:create"` // 管理者グループID
 	RoleID         string         `gorm:"primaryKey;<-:create"` // 管理者権限ID
-	CreatedAdminID string         `gorm:""`                     // 登録者ID
-	UpdatedAdminID string         `gorm:""`                     // 更新者ID
-	ExpiredAt      time.Time      `gorm:"default:null"`         // 有効期限
+	CreatedAdminID string         `gorm:"default:null"`         // 登録者ID
+	UpdatedAdminID string         `gorm:"default:null"`         // 更新者ID
 	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt      time.Time      `gorm:""`                     // 更新日時
 	DeletedAt      gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
-type AdminGroupRoles []AdminGroupRole
+type AdminGroupRoles []*AdminGroupRole
 
 func (rs AdminGroupRoles) Write(w *csv.Writer) error {
 	for _, r := range rs {
 		record := []string{
-			"g",            // レコードタイプ
-			r.AdminGroupID, // 管理者グループID
-			r.RoleID,       // 管理者権限ID
+			"g",       // レコードタイプ
+			r.GroupID, // 管理者グループID
+			r.RoleID,  // 管理者権限ID
 		}
 		if err := w.Write(record); err != nil {
 			return err
@@ -99,17 +123,14 @@ func (rs AdminGroupRoles) Write(w *csv.Writer) error {
 
 // AdminRole - 管理者権限情報
 type AdminRole struct {
-	ID             string         `gorm:"primaryKey;<-:create"` // 管理者権限ID
-	Name           string         `gorm:""`                     // 管理者権限名
-	Note           string         `gorm:""`                     // 備考
-	CreatedAdminID string         `gorm:""`                     // 登録者ID
-	UpdatedAdminID string         `gorm:""`                     // 更新者ID
-	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
-	UpdatedAt      time.Time      `gorm:""`                     // 更新日時
-	DeletedAt      gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	ID          string    `gorm:"primaryKey;<-:create"` // 管理者権限ID
+	Name        string    `gorm:""`                     // 管理者権限名
+	Description string    `gorm:""`                     // 備考
+	CreatedAt   time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt   time.Time `gorm:""`                     // 更新日時
 }
 
-type AdminRoles []AdminRole
+type AdminRoles []*AdminRole
 
 // AdminPolicy - 管理者ポリシー情報
 type AdminPolicy struct {
@@ -124,7 +145,7 @@ type AdminPolicy struct {
 	UpdatedAt   time.Time         `gorm:""`                     // 更新日時
 }
 
-type AdminPolicies []AdminPolicy
+type AdminPolicies []*AdminPolicy
 
 func (ps AdminPolicies) SortByPriority() AdminPolicies {
 	sort.SliceStable(ps, func(i, j int) bool {
@@ -151,15 +172,13 @@ func (ps AdminPolicies) Write(w *csv.Writer) error {
 
 // AdminRolePolicy - 管理者ロールと管理者ポリシーの紐付け情報
 type AdminRolePolicy struct {
-	RoleID         string    `gorm:"primaryKey;<-:create"` // 管理者権限ID
-	PolicyID       string    `gorm:"primaryKey;<-:create"` // 管理者ポリシーID
-	CreatedAdminID string    `gorm:""`                     // 登録者ID
-	UpdatedAdminID string    `gorm:""`                     // 更新者ID
-	CreatedAt      time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt      time.Time `gorm:""`                     // 更新日時
+	RoleID    string    `gorm:"primaryKey;<-:create"` // 管理者権限ID
+	PolicyID  string    `gorm:"primaryKey;<-:create"` // 管理者ポリシーID
+	CreatedAt time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt time.Time `gorm:""`                     // 更新日時
 }
 
-type AdminRolePolicies []AdminRolePolicy
+type AdminRolePolicies []*AdminRolePolicy
 
 func (ps AdminRolePolicies) Write(w *csv.Writer) error {
 	for _, p := range ps {

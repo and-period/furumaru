@@ -14,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/codes"
 	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
@@ -23,27 +24,29 @@ import (
 )
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
-	AdminAuth cognito.Client
-	UserAuth  cognito.Client
-	Store     store.Service
-	Messenger messenger.Service
-	Media     media.Service
+	WaitGroup          *sync.WaitGroup
+	Database           *database.Database
+	AdminAuth          cognito.Client
+	UserAuth           cognito.Client
+	Store              store.Service
+	Messenger          messenger.Service
+	Media              media.Service
+	DefaultAdminGroups map[entity.AdminType][]string
 }
 
 type service struct {
-	now         func() time.Time
-	logger      *zap.Logger
-	waitGroup   *sync.WaitGroup
-	sharedGroup *singleflight.Group
-	validator   validator.Validator
-	db          *database.Database
-	adminAuth   cognito.Client
-	userAuth    cognito.Client
-	store       store.Service
-	messenger   messenger.Service
-	media       media.Service
+	now                func() time.Time
+	logger             *zap.Logger
+	waitGroup          *sync.WaitGroup
+	sharedGroup        *singleflight.Group
+	validator          validator.Validator
+	db                 *database.Database
+	adminAuth          cognito.Client
+	userAuth           cognito.Client
+	store              store.Service
+	messenger          messenger.Service
+	media              media.Service
+	defaultAdminGroups map[entity.AdminType][]string
 }
 
 type options struct {
@@ -75,17 +78,18 @@ func NewService(params *Params, opts ...Option) user.Service {
 		validator.WithCustomValidation(codes.RegisterValidations),
 	}
 	return &service{
-		now:         jst.Now,
-		logger:      dopts.logger,
-		waitGroup:   params.WaitGroup,
-		sharedGroup: &singleflight.Group{},
-		validator:   validator.NewValidator(vopts...),
-		db:          params.Database,
-		adminAuth:   params.AdminAuth,
-		userAuth:    params.UserAuth,
-		store:       params.Store,
-		messenger:   params.Messenger,
-		media:       params.Media,
+		now:                jst.Now,
+		logger:             dopts.logger,
+		waitGroup:          params.WaitGroup,
+		sharedGroup:        &singleflight.Group{},
+		validator:          validator.NewValidator(vopts...),
+		db:                 params.Database,
+		adminAuth:          params.AdminAuth,
+		userAuth:           params.UserAuth,
+		store:              params.Store,
+		messenger:          params.Messenger,
+		media:              params.Media,
+		defaultAdminGroups: params.DefaultAdminGroups,
 	}
 }
 

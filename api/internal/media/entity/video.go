@@ -63,9 +63,9 @@ type NewVideoParams struct {
 	PublishedAt       time.Time
 }
 
-func NewVideo(params *NewVideoParams) (*Video, error) {
+func NewVideo(params *NewVideoParams) *Video {
 	videoID := uuid.Base58Encode(uuid.New())
-	video := &Video{
+	return &Video{
 		ID:                videoID,
 		CoordinatorID:     params.CoordinatorID,
 		ProductIDs:        params.ProductIDs,
@@ -82,20 +82,6 @@ func NewVideo(params *NewVideoParams) (*Video, error) {
 		VideoProducts:     NewVideoProducts(videoID, params.ProductIDs),
 		VideoExperiences:  NewVideoExperiences(videoID, params.ExperienceIDs),
 	}
-	if err := video.Validate(); err != nil {
-		return nil, err
-	}
-	return video, nil
-}
-
-func (v *Video) Validate() error {
-	if v.DisplayProduct && len(v.ProductIDs) == 0 {
-		return ErrVideoRequiredProductIDs
-	}
-	if v.DisplayExperience && len(v.ExperienceIDs) == 0 {
-		return ErrVideoRequiredExperienceIDs
-	}
-	return nil
 }
 
 func (v *Video) Fill(products VideoProducts, experiences VideoExperiences, now time.Time) {

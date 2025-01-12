@@ -634,27 +634,6 @@ func TestCreateVideo(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "invalid video validation",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-			},
-			input: &media.CreateVideoInput{
-				Title:             "オンデマンド配信",
-				Description:       "オンデマンド配信の説明",
-				CoordinatorID:     "coordinator-id",
-				ProductIDs:        []string{},
-				ExperienceIDs:     []string{},
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    true,
-				DisplayExperience: true,
-				PublishedAt:       now,
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
 			name: "failed to create video",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
@@ -841,44 +820,6 @@ func TestUpdateVideo(t *testing.T) {
 				PublishedAt:       now,
 			},
 			expectErr: exception.ErrInternal,
-		},
-		{
-			name:  "required product id",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UpdateVideoInput{
-				VideoID:           "video-id",
-				Title:             "オンデマンド配信",
-				Description:       "オンデマンド配信の説明",
-				ProductIDs:        []string{},
-				ExperienceIDs:     []string{},
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    true,
-				DisplayExperience: true,
-				PublishedAt:       now,
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "required experience id",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UpdateVideoInput{
-				VideoID:           "video-id",
-				Title:             "オンデマンド配信",
-				Description:       "オンデマンド配信の説明",
-				ProductIDs:        []string{},
-				ExperienceIDs:     []string{},
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    false,
-				DisplayExperience: true,
-				PublishedAt:       now,
-			},
-			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update video",

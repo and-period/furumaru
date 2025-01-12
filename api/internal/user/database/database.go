@@ -23,6 +23,12 @@ var (
 type Database struct {
 	Address          Address
 	Admin            Admin
+	AdminGroup       AdminGroup
+	AdminGroupRole   AdminGroupRole
+	AdminGroupUser   AdminGroupUser
+	AdminPolicy      AdminPolicy
+	AdminRole        AdminRole
+	AdminRolePolicy  AdminRolePolicy
 	Administrator    Administrator
 	Coordinator      Coordinator
 	Guest            Guest
@@ -76,6 +82,81 @@ type Admin interface {
 	UpdateEmail(ctx context.Context, adminID, email string) error
 	UpdateDevice(ctx context.Context, adminID, device string) error
 	UpdateSignInAt(ctx context.Context, adminID string) error
+}
+
+type AdminGroup interface {
+	List(ctx context.Context, params *ListAdminGroupsParams, fields ...string) (entity.AdminGroups, error)
+	Count(ctx context.Context, params *ListAdminGroupsParams) (int64, error)
+	MultiGet(ctx context.Context, groupIDs []string, fields ...string) (entity.AdminGroups, error)
+	Get(ctx context.Context, groupID string, fields ...string) (*entity.AdminGroup, error)
+	Upsert(ctx context.Context, group *entity.AdminGroup) error
+	Delete(ctx context.Context, groupID string) error
+}
+
+type ListAdminGroupsParams struct {
+	Limit  int
+	Offset int
+}
+
+type AdminGroupRole interface {
+	List(ctx context.Context, params *ListAdminGroupRolesParams, fields ...string) (entity.AdminGroupRoles, error)
+	Count(ctx context.Context, params *ListAdminGroupRolesParams) (int64, error)
+	Get(ctx context.Context, groupID, roleID string, fields ...string) (*entity.AdminGroupRole, error)
+	Upsert(ctx context.Context, role *entity.AdminGroupRole) error
+	Delete(ctx context.Context, groupID, roleID string) error
+}
+
+type ListAdminGroupRolesParams struct {
+	Limit  int
+	Offset int
+}
+
+type AdminGroupUser interface {
+	List(ctx context.Context, params *ListAdminGroupUsersParams, fields ...string) (entity.AdminGroupUsers, error)
+	Count(ctx context.Context, params *ListAdminGroupUsersParams) (int64, error)
+	Get(ctx context.Context, groupID, adminID string, fields ...string) (*entity.AdminGroupUser, error)
+	Upsert(ctx context.Context, user *entity.AdminGroupUser) error
+	Delete(ctx context.Context, groupID, adminID string) error
+}
+
+type ListAdminGroupUsersParams struct {
+	Limit  int
+	Offset int
+}
+
+type AdminPolicy interface {
+	List(ctx context.Context, params *ListAdminPoliciesParams, fields ...string) (entity.AdminPolicies, error)
+	Count(ctx context.Context, params *ListAdminPoliciesParams) (int64, error)
+	MultiGet(ctx context.Context, policyIDs []string, fields ...string) (entity.AdminPolicies, error)
+	Get(ctx context.Context, policyID string, fields ...string) (*entity.AdminPolicy, error)
+}
+
+type ListAdminPoliciesParams struct {
+	Limit  int
+	Offset int
+}
+
+type AdminRole interface {
+	List(ctx context.Context, params *ListAdminRolesParams, fields ...string) (entity.AdminRoles, error)
+	Count(ctx context.Context, params *ListAdminRolesParams) (int64, error)
+	MultiGet(ctx context.Context, roleIDs []string, fields ...string) (entity.AdminRoles, error)
+	Get(ctx context.Context, roleID string, fields ...string) (*entity.AdminRole, error)
+}
+
+type ListAdminRolesParams struct {
+	Limit  int
+	Offset int
+}
+
+type AdminRolePolicy interface {
+	List(ctx context.Context, params *ListAdminRolePoliciesParams, fields ...string) (entity.AdminRolePolicies, error)
+	Count(ctx context.Context, params *ListAdminRolePoliciesParams) (int64, error)
+	Get(ctx context.Context, roleID, policyID string, fields ...string) (*entity.AdminRolePolicy, error)
+}
+
+type ListAdminRolePoliciesParams struct {
+	Limit  int
+	Offset int
 }
 
 type Administrator interface {

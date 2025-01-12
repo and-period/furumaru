@@ -76,6 +76,7 @@ func (s *service) CreateAdministrator(
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     cognitoID,
 		Type:          entity.AdminTypeAdministrator,
+		GroupIDs:      s.defaultAdminGroups[entity.AdminTypeAdministrator],
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
 		LastnameKana:  in.LastnameKana,

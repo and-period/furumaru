@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
@@ -142,14 +143,29 @@ func (p *producer) Create(
 	ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error,
 ) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
+		params := &entity.NewAdminGroupUsersParams{
+			AdminID:  producer.AdminID,
+			GroupIDs: producer.GroupIDs,
+		}
+		groups := entity.NewAdminGroupUsers(params)
+
 		now := p.now()
+		producer.CreatedAt, producer.UpdatedAt = now, now
 		producer.Admin.CreatedAt, producer.Admin.UpdatedAt = now, now
+		for _, group := range groups {
+			group.CreatedAt, group.UpdatedAt = now, now
+		}
+
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&producer.Admin).Error; err != nil {
 			return err
 		}
-		producer.CreatedAt, producer.UpdatedAt = now, now
 		if err := tx.WithContext(ctx).Table(producerTable).Create(&producer).Error; err != nil {
 			return err
+		}
+		if len(groups) > 0 {
+			if err := tx.WithContext(ctx).Table(adminGroupUserTable).Create(&groups).Error; err != nil {
+				return err
+			}
 		}
 		return auth(ctx)
 	})
@@ -275,20 +291,33 @@ func (p *producer) get(
 }
 
 func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.Producer) error {
-	var admins entity.Admins
+	var (
+		admins entity.Admins
+		groups entity.AdminGroupUsers
+	)
 
 	ids := entity.Producers(producers).IDs()
 	if len(ids) == 0 {
 		return nil
 	}
 
-	stmt := p.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
-	if err := stmt.Find(&admins).Error; err != nil {
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		stmt := p.db.Statement(ectx, tx, adminTable).
+			Unscoped().
+			Where("id IN (?)", ids)
+		return stmt.Find(&admins).Error
+	})
+	eg.Go(func() error {
+		stmt := p.db.Statement(ectx, tx, adminGroupUserTable).
+			Where("admin_id IN (?)", ids).
+			Where("expired_at IS NULL OR expired_at > ?", jst.Now())
+		return stmt.Find(&groups).Error
+	})
+	if err := eg.Wait(); err != nil {
 		return err
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	if err := admins.Fill(nil); err != nil {
-		return err
-	}
-	return entity.Producers(producers).Fill(admins.Map())
+
+	entity.Producers(producers).Fill(admins.Map(), groups.GroupByAdminID())
+	return nil
 }

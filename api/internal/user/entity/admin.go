@@ -47,6 +47,7 @@ type Admins []*Admin
 type NewAdminParams struct {
 	CognitoID     string
 	Type          AdminType
+	GroupIDs      []string
 	Lastname      string
 	Firstname     string
 	LastnameKana  string
@@ -76,6 +77,7 @@ func NewAdmin(params *NewAdminParams) *Admin {
 		ID:            uuid.Base58Encode(uuid.New()),
 		CognitoID:     strings.ToLower(params.CognitoID), // Cognitoでは大文字小文字の区別がされず管理されているため
 		Type:          params.Type,
+		GroupIDs:      params.GroupIDs,
 		Lastname:      params.Lastname,
 		Firstname:     params.Firstname,
 		LastnameKana:  params.LastnameKana,
@@ -88,10 +90,9 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func (a *Admin) Fill(groups RelatedAdminGroups) (err error) {
+func (a *Admin) Fill(groups AdminGroupUsers) {
 	a.SetStatus()
 	a.GroupIDs = groups.GroupIDs()
-	return
 }
 
 func (a *Admin) SetStatus() {
@@ -147,11 +148,8 @@ func (as Admins) Devices() []string {
 	return set.Slice()
 }
 
-func (as Admins) Fill(groups map[string]RelatedAdminGroups) error {
+func (as Admins) Fill(groups map[string]AdminGroupUsers) {
 	for _, a := range as {
-		if err := a.Fill(groups[a.ID]); err != nil {
-			return err
-		}
+		a.Fill(groups[a.ID])
 	}
-	return nil
 }

@@ -83,10 +83,10 @@ func NewProducer(params *NewProducerParams) (*Producer, error) {
 	return producer, nil
 }
 
-func (p *Producer) Fill(admin *Admin) (err error) {
+func (p *Producer) Fill(admin *Admin, groups AdminGroupUsers) {
+	admin.Fill(groups)
 	p.Admin = *admin
 	p.Prefecture, _ = codes.ToPrefectureJapanese(p.PrefectureCode)
-	return nil
 }
 
 func (ps Producers) IDs() []string {
@@ -114,15 +114,12 @@ func (ps Producers) Unrelated() Producers {
 	return res
 }
 
-func (ps Producers) Fill(admins map[string]*Admin) error {
+func (ps Producers) Fill(admins map[string]*Admin, groups map[string]AdminGroupUsers) {
 	for _, p := range ps {
 		admin, ok := admins[p.AdminID]
 		if !ok {
 			admin = &Admin{ID: p.AdminID, Type: AdminTypeProducer}
 		}
-		if err := p.Fill(admin); err != nil {
-			return err
-		}
+		p.Fill(admin, groups[p.AdminID])
 	}
-	return nil
 }

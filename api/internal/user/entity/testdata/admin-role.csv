@@ -1,0 +1,13 @@
+p,spot_list,/v1/spots,GET,allow
+p,spot_get,/v1/spots/*,GET,allow
+p,spot_create,/v1/spots,POST,allow
+p,spot_update,/v1/spots/*,PATCH,allow
+p,spot_delete,/v1/spots/*,DELETE,allow
+g,spot_editor,spot_list
+g,spot_editor,spot_get
+g,spot_editor,spot_create
+g,spot_editor,spot_update
+g,spot_viewer,spot_list
+g,spot_viewer,spot_get
+g,administrator,spot_editor
+g,coordinator,spot_viewer

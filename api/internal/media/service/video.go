@@ -137,10 +137,7 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 		DisplayExperience: in.DisplayExperience,
 		PublishedAt:       in.PublishedAt,
 	}
-	video, err := entity.NewVideo(params)
-	if err != nil {
-		return nil, fmt.Errorf("service: video validation failed: %w: %s", exception.ErrInvalidArgument, err.Error())
-	}
+	video := entity.NewVideo(params)
 	if err := s.db.Video.Create(ctx, video); err != nil {
 		return nil, internalError(err)
 	}
@@ -192,12 +189,6 @@ func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) e
 		return internalError(err)
 	}
 
-	if in.DisplayProduct && len(in.ProductIDs) == 0 {
-		return fmt.Errorf("service: product is required: %w", exception.ErrInvalidArgument)
-	}
-	if in.DisplayExperience && len(in.ExperienceIDs) == 0 {
-		return fmt.Errorf("service: experience is required: %w", exception.ErrInvalidArgument)
-	}
 	params := &database.UpdateVideoParams{
 		Title:             in.Title,
 		Description:       in.Description,
