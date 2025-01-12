@@ -281,6 +281,9 @@ const handleSubmit = async () => {
 
 onMounted(() => {
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
+  if (availablePaymentSystem.value.length > 0) {
+    formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
+  }
 })
 
 useSeoMeta(
