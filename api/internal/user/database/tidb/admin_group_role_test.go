@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -84,8 +85,8 @@ func TestAdminGroupRole_List(t *testing.T) {
 
 			db := &adminGroupRole{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.Equal(t, tt.want.groupRoles, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groupRoles, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -162,8 +163,8 @@ func TestAdminGroupRole_Count(t *testing.T) {
 
 			db := &adminGroupRole{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.Equal(t, tt.want.total, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -203,8 +204,8 @@ func TestAdminGroupRole_Get(t *testing.T) {
 		roleID  string
 	}
 	type want struct {
-		group *entity.AdminGroup
-		err   error
+		groupRole *entity.AdminGroupRole
+		err       error
 	}
 	tests := []struct {
 		name  string
@@ -220,8 +221,8 @@ func TestAdminGroupRole_Get(t *testing.T) {
 				roleID:  "role-id",
 			},
 			want: want{
-				group: g,
-				err:   nil,
+				groupRole: gr,
+				err:       nil,
 			},
 		},
 		{
@@ -232,8 +233,8 @@ func TestAdminGroupRole_Get(t *testing.T) {
 				roleID:  "",
 			},
 			want: want{
-				group: nil,
-				err:   database.ErrNotFound,
+				groupRole: nil,
+				err:       database.ErrNotFound,
 			},
 		},
 	}
@@ -248,8 +249,8 @@ func TestAdminGroupRole_Get(t *testing.T) {
 
 			db := &adminGroupRole{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.groupID, tt.args.roleID)
-			require.Equal(t, tt.want.group, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groupRole, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -330,7 +331,7 @@ func TestAdminGroupRole_Upsert(t *testing.T) {
 
 			db := &adminGroupRole{db: db, now: now}
 			err = db.Upsert(ctx, tt.args.groupRole)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -403,7 +404,7 @@ func TestAdminGroupRole_Delete(t *testing.T) {
 
 			db := &adminGroupRole{db: db, now: now}
 			err = db.Delete(ctx, tt.args.groupID, tt.args.roleID)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }

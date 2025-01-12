@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,7 +30,7 @@ func TestAdminPolicy_List(t *testing.T) {
 	policies := make(entity.AdminPolicies, 3)
 	policies[0] = testAdminPolicy("policy-id01", now().Add(-2*time.Hour))
 	policies[1] = testAdminPolicy("policy-id02", now().Add(-time.Hour))
-	policies[0] = testAdminPolicy("policy-id02", now())
+	policies[2] = testAdminPolicy("policy-id03", now())
 	err = db.DB.WithContext(ctx).Table(adminPolicyTable).Create(&policies).Error
 	require.NoError(t, err)
 
@@ -69,8 +70,8 @@ func TestAdminPolicy_List(t *testing.T) {
 
 			db := &adminPolicy{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.ErrorIs(t, err, tt.want.err)
-			require.Equal(t, tt.want.policies, actual)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.policies, actual)
 		})
 	}
 }
@@ -92,7 +93,7 @@ func TestAdminPolicy_Count(t *testing.T) {
 	policies := make(entity.AdminPolicies, 3)
 	policies[0] = testAdminPolicy("policy-id01", now().Add(-2*time.Hour))
 	policies[1] = testAdminPolicy("policy-id02", now().Add(-time.Hour))
-	policies[0] = testAdminPolicy("policy-id02", now())
+	policies[2] = testAdminPolicy("policy-id03", now())
 	err = db.DB.WithContext(ctx).Table(adminPolicyTable).Create(&policies).Error
 	require.NoError(t, err)
 
@@ -132,8 +133,8 @@ func TestAdminPolicy_Count(t *testing.T) {
 
 			db := &adminPolicy{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.ErrorIs(t, err, tt.want.err)
-			require.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.total, actual)
 		})
 	}
 }
@@ -155,7 +156,7 @@ func TestAdminPolicy_MultiGet(t *testing.T) {
 	policies := make(entity.AdminPolicies, 3)
 	policies[0] = testAdminPolicy("policy-id01", now().Add(-2*time.Hour))
 	policies[1] = testAdminPolicy("policy-id02", now().Add(-time.Hour))
-	policies[0] = testAdminPolicy("policy-id02", now())
+	policies[2] = testAdminPolicy("policy-id03", now())
 	err = db.DB.WithContext(ctx).Table(adminPolicyTable).Create(&policies).Error
 	require.NoError(t, err)
 
@@ -195,8 +196,8 @@ func TestAdminPolicy_MultiGet(t *testing.T) {
 
 			db := &adminPolicy{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.policyIDs)
-			require.ErrorIs(t, err, tt.want.err)
-			require.Equal(t, tt.want.policies, actual)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.policies, actual)
 		})
 	}
 }
@@ -266,8 +267,8 @@ func TestAdminPolicy_Get(t *testing.T) {
 
 			db := &adminPolicy{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.policyID)
-			require.ErrorIs(t, err, tt.want.err)
-			require.Equal(t, tt.want.policy, actual)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.policy, actual)
 		})
 	}
 }

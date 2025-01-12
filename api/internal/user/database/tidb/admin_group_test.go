@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,8 +74,8 @@ func TestAdminGroup_List(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.Equal(t, tt.want.groups, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groups, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -140,8 +141,8 @@ func TestAdminGroup_Count(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.Equal(t, tt.want.total, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -207,8 +208,8 @@ func TestAdminGroup_MultiGet(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.groupIDs)
-			require.Equal(t, tt.want.groups, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groups, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -282,8 +283,8 @@ func TestAdminGroup_Get(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.groupID)
-			require.Equal(t, tt.want.group, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.group, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -356,7 +357,7 @@ func TestAdminGroup_Upsert(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			err = db.Upsert(ctx, tt.args.group)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -419,7 +420,7 @@ func TestAdminGroup_Delete(t *testing.T) {
 
 			db := &adminGroup{db: db, now: now}
 			err = db.Delete(ctx, tt.args.groupID)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }

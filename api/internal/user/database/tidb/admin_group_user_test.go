@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -86,8 +87,8 @@ func TestAdminGroupUser_List(t *testing.T) {
 
 			db := &adminGroupUser{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.Equal(t, tt.want.groupUsers, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groupUsers, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -166,8 +167,8 @@ func TestAdminGroupUser_Count(t *testing.T) {
 
 			db := &adminGroupUser{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.Equal(t, tt.want.total, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -256,8 +257,8 @@ func TestAdminGroupUser_Get(t *testing.T) {
 
 			db := &adminGroupUser{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.groupID, tt.args.adminID)
-			require.Equal(t, tt.want.groupUser, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.groupUser, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -334,7 +335,7 @@ func TestAdminGroupUser_Upsert(t *testing.T) {
 
 			db := &adminGroupUser{db: db, now: now}
 			err = db.Upsert(ctx, tt.args.user)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -403,7 +404,7 @@ func TestAdminGroupUser_Delete(t *testing.T) {
 
 			db := &adminGroupUser{db: db, now: now}
 			err = db.Delete(ctx, tt.args.groupID, tt.args.adminID)
-			require.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
