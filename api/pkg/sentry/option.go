@@ -18,12 +18,11 @@ func buildOptions(opts ...ClientOption) *options {
 	dopts := &options{
 		bind: false,
 		opts: sentry.ClientOptions{
-			ServerName:         "",
-			Environment:        "",
-			Debug:              false,
-			EnableTracing:      false,
-			TracesSampleRate:   0.0,
-			ProfilesSampleRate: 0.0,
+			ServerName:       "",
+			Environment:      "",
+			Debug:            false,
+			EnableTracing:    false,
+			TracesSampleRate: 0.0,
 		},
 	}
 	for i := range opts {
@@ -88,12 +87,6 @@ func WithTracesSampleRate(rate float64) ClientOption {
 			o.opts.EnableTracing = true
 		}
 		o.opts.TracesSampleRate = rate
-	}
-}
-
-func WithProfilesSampleRate(rate float64) ClientOption {
-	return func(o *options) {
-		o.opts.ProfilesSampleRate = rate
 	}
 }
 
