@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `users`.`admin_role_policies` (
   `policy_id`  VARCHAR(64) NOT NULL,
   `created_at` DATETIME(3) NOT NULL,
   `updated_at` DATETIME(3) NOT NULL,
-  PRIMARY KEY (`admin_role_id`, `admin_policy_id`),
+  PRIMARY KEY (`role_id`, `policy_id`),
   CONSTRAINT `fk_admin_role_policies_role_id` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_admin_role_policies_policy_id` FOREIGN KEY (`policy_id`) REFERENCES `admin_policies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
