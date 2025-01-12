@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `users`.`admin_group_users` (
   `expired_at`       DATETIME(3) NULL DEFAULT NULL,
   `created_at`       DATETIME(3) NOT NULL,
   `updated_at`       DATETIME(3) NOT NULL,
-  PRIMARY KEY (`group_id`, `user_id`),
+  PRIMARY KEY (`group_id`, `admin_id`),
   CONSTRAINT `fk_admin_group_users_group_id` FOREIGN KEY (`group_id`) REFERENCES `admin_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_admin_group_users_admin_id` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_admin_group_users_created_admin_id` FOREIGN KEY (`created_admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE ON UPDATE SET NULL,
