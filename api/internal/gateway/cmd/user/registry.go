@@ -178,7 +178,6 @@ func (a *app) inject(ctx context.Context) error {
 			sentry.WithDSN(params.sentryDsn),
 			sentry.WithBind(true),
 			sentry.WithTracesSampleRate(a.TraceSampleRate),
-			sentry.WithProfilesSampleRate(a.ProfileSampleRate),
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create sentry client: %w", err)

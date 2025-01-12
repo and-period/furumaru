@@ -38,7 +38,6 @@ type app struct {
 	LogPath                           string  `default:""               envconfig:"LOG_PATH"`
 	LogLevel                          string  `default:"info"           envconfig:"LOG_LEVEL"`
 	TraceSampleRate                   float64 `default:"0.0"            envconfig:"TRACE_SAMPLE_RATE"`
-	ProfileSampleRate                 float64 `default:"0.0"            envconfig:"PROFILE_SAMPLE_RATE"`
 	DBTimeZone                        string  `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
 	TiDBHost                          string  `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
 	TiDBPort                          string  `default:"4000"           envconfig:"TIDB_PORT"`
