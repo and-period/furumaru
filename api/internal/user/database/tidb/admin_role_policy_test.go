@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -79,8 +80,8 @@ func TestAdminRolePolicy_List(t *testing.T) {
 
 			db := &adminRolePolicy{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
-			require.Equal(t, tt.want.rolePolicies, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.rolePolicies, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -152,8 +153,8 @@ func TestAdminRolePolicy_Count(t *testing.T) {
 
 			db := &adminRolePolicy{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
-			require.Equal(t, tt.want.total, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.total, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
@@ -233,8 +234,8 @@ func TestAdminRolePolicy_Get(t *testing.T) {
 
 			db := &adminRolePolicy{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.roleID, tt.args.policyID)
-			require.Equal(t, tt.want.rolePolicy, actual)
-			require.Equal(t, tt.want.err, err)
+			assert.Equal(t, tt.want.rolePolicy, actual)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
