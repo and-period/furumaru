@@ -391,7 +391,7 @@ func (p *internalProduct) entity() (*entity.Product, error) {
 }
 
 func (p *internalProduct) unmarshalTagIDs() error {
-	if p == nil {
+	if p == nil || p.TagIDsJSON == nil {
 		return nil
 	}
 	var tagIDs []string
@@ -403,7 +403,7 @@ func (p *internalProduct) unmarshalTagIDs() error {
 }
 
 func (p *internalProduct) unmarshalMedia() error {
-	if p == nil {
+	if p == nil || p.MediaJSON == nil {
 		return nil
 	}
 	var media entity.MultiProductMedia
@@ -415,7 +415,7 @@ func (p *internalProduct) unmarshalMedia() error {
 }
 
 func (p *internalProduct) unmarshalRecommendedPoints() error {
-	if p == nil {
+	if p == nil || p.RecommendedPointsJSON == nil {
 		return nil
 	}
 	var points []string

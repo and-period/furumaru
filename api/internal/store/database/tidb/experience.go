@@ -399,7 +399,7 @@ func (e *internalExperience) unmarshalMedia() error {
 }
 
 func (e *internalExperience) unmarshalRecommendedPoints() error {
-	if e.RecommendedPointsJSON == nil {
+	if e == nil || e.RecommendedPointsJSON == nil {
 		return nil
 	}
 	var points []string

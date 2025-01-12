@@ -367,7 +367,7 @@ func (c *internalCoordinator) entity() (*entity.Coordinator, error) {
 }
 
 func (c *internalCoordinator) unmarshalProductTypeIDs() error {
-	if c.ProductTypeIDsJSON == nil {
+	if c == nil || c.ProductTypeIDsJSON == nil {
 		return nil
 	}
 	var ids []string
@@ -379,7 +379,7 @@ func (c *internalCoordinator) unmarshalProductTypeIDs() error {
 }
 
 func (c *internalCoordinator) unmarshalBusinessDays() error {
-	if c.BusinessDaysJSON == nil {
+	if c == nil || c.BusinessDaysJSON == nil {
 		return nil
 	}
 	var days []time.Weekday

@@ -105,7 +105,7 @@ func (q *internalReceivedQueue) entity() (*entity.ReceivedQueue, error) {
 }
 
 func (q *internalReceivedQueue) unmarshalUserIDs() error {
-	if q.UserIDsJSON == nil {
+	if q == nil || q.UserIDsJSON == nil {
 		return nil
 	}
 	var userIDs []string

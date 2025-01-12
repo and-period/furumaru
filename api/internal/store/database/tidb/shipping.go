@@ -244,7 +244,7 @@ func (r *internalShippingRevision) entity() (*entity.ShippingRevision, error) {
 }
 
 func (r *internalShippingRevision) unmarshalBox60Rates() error {
-	if r.Box60RatesJSON == nil {
+	if r == nil || r.Box60RatesJSON == nil {
 		return nil
 	}
 	var rates entity.ShippingRates
@@ -256,7 +256,7 @@ func (r *internalShippingRevision) unmarshalBox60Rates() error {
 }
 
 func (r *internalShippingRevision) unmarshalBox80Rates() error {
-	if r.Box80RatesJSON == nil {
+	if r == nil || r.Box80RatesJSON == nil {
 		return nil
 	}
 	var rates entity.ShippingRates
@@ -268,7 +268,7 @@ func (r *internalShippingRevision) unmarshalBox80Rates() error {
 }
 
 func (r *internalShippingRevision) unmarshalBox100Rates() error {
-	if r.Box100RatesJSON == nil {
+	if r == nil || r.Box100RatesJSON == nil {
 		return nil
 	}
 	var rates entity.ShippingRates
