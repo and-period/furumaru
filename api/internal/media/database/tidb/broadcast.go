@@ -214,7 +214,7 @@ func (b *internalBroadcast) entity() (*entity.Broadcast, error) {
 }
 
 func (b *internalBroadcast) unmarshalArchiveMetadata() error {
-	if b.ArchiveMetadataJSON == nil {
+	if b == nil || b.ArchiveMetadataJSON == nil {
 		return nil
 	}
 	metadata := &entity.BroadcastArchiveMetadata{}

@@ -202,7 +202,7 @@ func (n *internalNotification) entity() (*entity.Notification, error) {
 }
 
 func (n *internalNotification) unmarshalTargets() error {
-	if n.TargetsJSON == nil {
+	if n == nil || n.TargetsJSON == nil {
 		return nil
 	}
 	var targets []entity.NotificationTarget

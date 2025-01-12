@@ -491,7 +491,7 @@ func (e *internalOrderExperience) entity() (*entity.OrderExperience, error) {
 }
 
 func (e *internalOrderExperience) unmarshalRemarks() error {
-	if e.RemarksJSON == nil {
+	if e == nil || e.RemarksJSON == nil {
 		return nil
 	}
 	var remarks *entity.OrderExperienceRemarks
