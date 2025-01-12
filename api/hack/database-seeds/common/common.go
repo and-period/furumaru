@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -14,6 +15,7 @@ type Client interface {
 
 type Params struct {
 	Logger     *zap.Logger
+	DBDriver   string
 	DBHost     string
 	DBPort     string
 	DBUsername string
@@ -32,7 +34,13 @@ func NewDBClient(p *Params, database string) (*mysql.Client, error) {
 	}
 	opts := []mysql.Option{
 		mysql.WithLocation(jst.Location()),
-		mysql.WithLogger(p.Logger),
 	}
-	return mysql.NewClient(params, opts...)
+	switch p.DBDriver {
+	case "mysql":
+		return mysql.NewClient(params, opts...)
+	case "tidb":
+		return mysql.NewTiDBClient(params, opts...)
+	default:
+		return nil, fmt.Errorf("unsupported driver: %s", p.DBDriver)
+	}
 }

@@ -129,62 +129,6 @@ func TestCoordinator(t *testing.T) {
 	}
 }
 
-func TestCoordinator_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name        string
-		coordinator *Coordinator
-		admin       *Admin
-		expect      *Coordinator
-	}{
-		{
-			name: "success",
-			coordinator: &Coordinator{
-				AdminID:        "admin-id",
-				PrefectureCode: 13,
-			},
-			admin: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-			},
-			expect: &Coordinator{
-				AdminID:        "admin-id",
-				Prefecture:     "東京都",
-				PrefectureCode: 13,
-				Admin: Admin{
-					ID:        "admin-id",
-					CognitoID: "cognito-id",
-				},
-			},
-		},
-		{
-			name: "success empty",
-			coordinator: &Coordinator{
-				AdminID: "admin-id",
-			},
-			admin: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-			},
-			expect: &Coordinator{
-				AdminID: "admin-id",
-				Admin: Admin{
-					ID:        "admin-id",
-					CognitoID: "cognito-id",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.coordinator.Fill(tt.admin)
-			assert.Equal(t, tt.expect, tt.coordinator)
-		})
-	}
-}
-
 func TestCoordinators_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -257,6 +201,7 @@ func TestCoordinators_Fill(t *testing.T) {
 		name         string
 		coordinators Coordinators
 		admins       map[string]*Admin
+		groups       map[string]AdminGroupUsers
 		expect       Coordinators
 	}{
 		{
@@ -278,6 +223,14 @@ func TestCoordinators_Fill(t *testing.T) {
 					Type:      AdminTypeCoordinator,
 				},
 			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id01": {
+					{
+						GroupID: "group-id",
+						AdminID: "admin-id01",
+					},
+				},
+			},
 			expect: Coordinators{
 				{
 					AdminID:        "admin-id01",
@@ -287,6 +240,8 @@ func TestCoordinators_Fill(t *testing.T) {
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
 						Type:      AdminTypeCoordinator,
+						Status:    AdminStatusInvited,
+						GroupIDs:  []string{"group-id"},
 					},
 				},
 				{
@@ -294,8 +249,10 @@ func TestCoordinators_Fill(t *testing.T) {
 					Prefecture:     "東京都",
 					PrefectureCode: 13,
 					Admin: Admin{
-						ID:   "admin-id02",
-						Type: AdminTypeCoordinator,
+						ID:       "admin-id02",
+						Type:     AdminTypeCoordinator,
+						Status:   AdminStatusInvited,
+						GroupIDs: []string{},
 					},
 				},
 			},
@@ -305,7 +262,7 @@ func TestCoordinators_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.coordinators.Fill(tt.admins)
+			tt.coordinators.Fill(tt.admins, tt.groups)
 			assert.Equal(t, tt.expect, tt.coordinators)
 		})
 	}

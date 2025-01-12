@@ -163,7 +163,7 @@ func (a *app) executeAdminGroups(ctx context.Context) error {
 				Columns:   []clause.Column{{Name: "id"}},
 				DoUpdates: clause.Assignments(updates),
 			})
-			if err := stmt.Create(&group).Error; err != nil {
+			if err := stmt.Create(&group.AdminGroup).Error; err != nil {
 				return fmt.Errorf("failed to create admin group. group=%+v: %w", group, err)
 			}
 
