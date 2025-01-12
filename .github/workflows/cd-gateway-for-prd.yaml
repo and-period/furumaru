@@ -6,6 +6,7 @@ on:
     paths:
     - '.github/actions/**'
     - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_database_migrate.yaml'
     - '.github/workflows/_deploy_ecs.yaml'
     - '.github/workflows/_get_tag_version.yaml'
     - '.github/workflows/cd-gateway-for-prd.yaml'
@@ -36,6 +37,14 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+  database_migrate:
+    name: database migrate
+    needs:
+    - set_output
+    uses: ./.github/workflows/_database_migrate.yaml
+    with:
+      environment: prd
 
   get_image_tag:
     name: get image tag

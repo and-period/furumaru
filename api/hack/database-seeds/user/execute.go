@@ -154,6 +154,7 @@ func (a *app) executeAdminGroups(ctx context.Context) error {
 			group.UpdatedAt = now
 
 			updates := map[string]interface{}{
+				"type":        group.Type,
 				"name":        group.Name,
 				"description": group.Description,
 				"updated_at":  group.UpdatedAt,
