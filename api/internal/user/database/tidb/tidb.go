@@ -15,6 +15,12 @@ func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
 		Address:          NewAddress(db),
 		Admin:            NewAdmin(db),
+		AdminGroup:       NewAdminGroup(db),
+		AdminGroupRole:   NewAdminGroupRole(db),
+		AdminGroupUser:   NewAdminGroupUser(db),
+		AdminPolicy:      NewAdminPolicy(db),
+		AdminRole:        NewAdminRole(db),
+		AdminRolePolicy:  NewAdminRolePolicy(db),
 		Administrator:    NewAdministrator(db),
 		Coordinator:      NewCoordinator(db),
 		Guest:            NewGuest(db),

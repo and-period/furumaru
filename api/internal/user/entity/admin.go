@@ -88,7 +88,7 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func (a *Admin) Fill(groups RelatedAdminGroups) (err error) {
+func (a *Admin) Fill(groups AdminGroupUsers) (err error) {
 	a.SetStatus()
 	a.GroupIDs = groups.GroupIDs()
 	return
@@ -147,7 +147,7 @@ func (as Admins) Devices() []string {
 	return set.Slice()
 }
 
-func (as Admins) Fill(groups map[string]RelatedAdminGroups) error {
+func (as Admins) Fill(groups map[string]AdminGroupUsers) error {
 	for _, a := range as {
 		if err := a.Fill(groups[a.ID]); err != nil {
 			return err
