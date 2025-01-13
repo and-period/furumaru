@@ -35,8 +35,9 @@ func (a *admin) MultiGet(
 	if err := stmt.Find(&admins).Error; err != nil {
 		return nil, dbError(err)
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	admins.Fill(nil)
+	if err := a.fill(ctx, a.db.DB, admins...); err != nil {
+		return nil, dbError(err)
+	}
 	return admins, nil
 }
 
@@ -58,8 +59,9 @@ func (a *admin) GetByCognitoID(
 	if err := stmt.First(&admin).Error; err != nil {
 		return nil, dbError(err)
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	admin.Fill(nil)
+	if err := a.fill(ctx, a.db.DB, admin); err != nil {
+		return nil, dbError(err)
+	}
 	return admin, nil
 }
 
@@ -72,8 +74,9 @@ func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) 
 	if err := stmt.First(&admin).Error; err != nil {
 		return nil, dbError(err)
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	admin.Fill(nil)
+	if err := a.fill(ctx, a.db.DB, admin); err != nil {
+		return nil, dbError(err)
+	}
 	return admin, nil
 }
 
@@ -136,7 +139,28 @@ func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...
 	if err := stmt.First(&admin).Error; err != nil {
 		return nil, err
 	}
-	// TODO: 管理者グループID一覧を取得する処理を追加
-	admin.Fill(nil)
+	if err := a.fill(ctx, tx, admin); err != nil {
+		return nil, err
+	}
 	return admin, nil
+}
+
+func (a *admin) fill(ctx context.Context, tx *gorm.DB, admins ...*entity.Admin) error {
+	var groups entity.AdminGroupUsers
+
+	ids := entity.Admins(admins).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := a.db.Statement(ctx, tx, adminGroupUserTable).
+		Where("admin_id IN (?)", ids).
+		Where("expired_at IS NULL OR expired_at > ?", jst.Now())
+
+	if err := stmt.Find(&groups).Error; err != nil {
+		return err
+	}
+
+	entity.Admins(admins).Fill(groups.GroupByAdminID())
+	return nil
 }
