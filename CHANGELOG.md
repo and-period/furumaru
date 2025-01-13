@@ -1,5 +1,32 @@
 # Changelog
 
+## [v4.0.0](https://github.com/and-period/furumaru/compare/v3.4.2...v4.0.0) - 2025-01-13
+- feat(user): 管理面ロール用のエンティティ定義を更新 by @taba2424 in https://github.com/and-period/furumaru/pull/2624
+- refactor(api): MySQLの詳細実装を削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2626
+- chore(infra): ローカル開発で不要なコンテナの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2627
+- feat(infra): TiDBの実行環境整備 by @taba2424 in https://github.com/and-period/furumaru/pull/2628
+- fix(gateway): 呼ぶメソッドが間違ってる箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2629
+- refactor(api): DB操作時のJSONパース処理をDB層へ寄せる by @taba2424 in https://github.com/and-period/furumaru/pull/2630
+- fix(docs): オンデマンド配信へのコメント投稿APIのドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2631
+- build(deps): bump the dependencies group in /web/admin with 30 updates by @dependabot in https://github.com/and-period/furumaru/pull/2632
+- 体験のゲスト購入の導線の作成 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2634
+- 認証済みユーザーでの体験購入フローの整備 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2636
+- Fix: fixed video function by @hamachans in https://github.com/and-period/furumaru/pull/2635
+- fix(database): 削除件数が0件になる不具合を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2638
+- feat(media): オンデマンド配信のバリデーションを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2639
+- build(deps): bump the dependencies group in /api with 26 updates by @dependabot in https://github.com/and-period/furumaru/pull/2633
+- feat(user): 管理者権限をDBで管理できるようにするためのロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2637
+- feat(user): 管理者登録時に権限付与するロジックを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2640
+- 体験周りのエラーハンドリングの強化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2641
+- fix(store): jsonのunmarshal処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2642
+- feat(workflow): DBのマイグレーション処理を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2644
+- fix(workflow): secretsの内容を継承できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2645
+- feat: フォーム送信中のアニメーションを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2643
+- fix(workflow): GitHub ActionsのVariablesへのアクセス方法を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2646
+- feat(gateway): 認可ロジックの移行 by @taba2424 in https://github.com/and-period/furumaru/pull/2647
+- fix(user): 管理者詳細情報を詰める処理を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2648
+- feat(messenger): SendGridテンプレートの取得処理を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2649
+
 ## [v3.4.2](https://github.com/and-period/furumaru/compare/v3.4.1...v3.4.2) - 2025-01-02
 - refactor(user): 管理者種別のフィールド名を置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2622
 
