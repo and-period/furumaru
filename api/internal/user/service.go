@@ -32,6 +32,8 @@ type Service interface {
 	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)           // 一覧取得(ID指定)
 	MultiGetAdminDevices(ctx context.Context, in *MultiGetAdminDevicesInput) ([]string, error)    // デバイストークン一覧取得
 	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)                       // １件取得
+	// AdminRole - 管理者ロール
+	GenerateAdminRole(ctx context.Context, in *GenerateAdminRoleInput) (string, string, error) // ロール生成
 	// Administrator - システム管理者
 	ListAdministrators(ctx context.Context, in *ListAdministratorsInput) (entity.Administrators, int64, error)  // 一覧取得
 	MultiGetAdministrators(ctx context.Context, in *MultiGetAdministratorsInput) (entity.Administrators, error) // 一覧取得(ID指定)

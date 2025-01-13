@@ -16,6 +16,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/sentry"
@@ -27,8 +29,10 @@ import (
 )
 
 const (
-	sessionKey = "session_id"
-	sessionTTL = 24 * 60 * 60 // 1 day
+	sessionKey            = "session_id"
+	sessionTTL            = 24 * 60 * 60 // 1 day
+	defaultSyncInterval   = 5 * time.Minute
+	defaultSyncMaxRetries = 3
 )
 
 var (
@@ -42,12 +46,13 @@ var (
  * ###############################################
  */
 type Handler interface {
-	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
+	Routes(rg *gin.RouterGroup)      // エンドポイント一覧の定義
+	Setup(ctx context.Context) error // 初期化処理
+	Sync(ctx context.Context) error  // 定期的な同期処理
 }
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
-	Enforcer  rbac.Enforcer
 	User      user.Service
 	Store     store.Service
 	Messenger messenger.Service
@@ -55,25 +60,30 @@ type Params struct {
 }
 
 type handler struct {
-	appName     string
-	env         string
-	now         func() time.Time
-	logger      *zap.Logger
-	sentry      sentry.Client
-	waitGroup   *sync.WaitGroup
-	sharedGroup *singleflight.Group
-	enforcer    rbac.Enforcer
-	user        user.Service
-	store       store.Service
-	messenger   messenger.Service
-	media       media.Service
+	appName        string
+	env            string
+	now            func() time.Time
+	logger         *zap.Logger
+	sentry         sentry.Client
+	waitGroup      *sync.WaitGroup
+	sharedGroup    *singleflight.Group
+	enforcer       rbac.Enforcer
+	user           user.Service
+	store          store.Service
+	messenger      messenger.Service
+	media          media.Service
+	syncMutex      *sync.Mutex
+	syncInterval   time.Duration
+	syncMaxRetries int64
 }
 
 type options struct {
-	appName string
-	env     string
-	logger  *zap.Logger
-	sentry  sentry.Client
+	appName        string
+	env            string
+	logger         *zap.Logger
+	sentry         sentry.Client
+	syncInterval   time.Duration
+	syncMaxRetries int64
 }
 
 type Option func(opts *options)
@@ -102,29 +112,46 @@ func WithSentry(sentry sentry.Client) Option {
 	}
 }
 
+func WithSyncInterval(interval time.Duration) Option {
+	return func(opts *options) {
+		opts.syncInterval = interval
+	}
+}
+
+func WithSyncMaxRetries(retries int64) Option {
+	return func(opts *options) {
+		opts.syncMaxRetries = retries
+	}
+}
+
 func NewHandler(params *Params, opts ...Option) Handler {
 	dopts := &options{
-		appName: "admin-gateway",
-		env:     "",
-		logger:  zap.NewNop(),
-		sentry:  sentry.NewFixedMockClient(),
+		appName:        "admin-gateway",
+		env:            "",
+		logger:         zap.NewNop(),
+		sentry:         sentry.NewFixedMockClient(),
+		syncInterval:   defaultSyncInterval,
+		syncMaxRetries: defaultSyncMaxRetries,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &handler{
-		appName:     dopts.appName,
-		env:         dopts.env,
-		now:         jst.Now,
-		logger:      dopts.logger,
-		sentry:      dopts.sentry,
-		waitGroup:   params.WaitGroup,
-		sharedGroup: &singleflight.Group{},
-		enforcer:    params.Enforcer,
-		user:        params.User,
-		store:       params.Store,
-		messenger:   params.Messenger,
-		media:       params.Media,
+		appName:        dopts.appName,
+		env:            dopts.env,
+		now:            jst.Now,
+		logger:         dopts.logger,
+		sentry:         dopts.sentry,
+		waitGroup:      params.WaitGroup,
+		sharedGroup:    &singleflight.Group{},
+		enforcer:       nil,
+		user:           params.User,
+		store:          params.Store,
+		messenger:      params.Messenger,
+		media:          params.Media,
+		syncMutex:      &sync.Mutex{},
+		syncInterval:   dopts.syncInterval,
+		syncMaxRetries: dopts.syncMaxRetries,
 	}
 }
 
@@ -170,6 +197,54 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 
 	// 認証が不要なエンドポイント
 	h.guestBroadcastRoutes(v1)
+}
+
+/**
+ * ###############################################
+ * sync
+ * ###############################################
+ */
+func (h *handler) Setup(ctx context.Context) error {
+	if err := h.syncEnforcer(ctx); err != nil {
+		return fmt.Errorf("handler: failed to sync enforcer: %w", err)
+	}
+	return nil
+}
+
+func (h *handler) Sync(ctx context.Context) error {
+	ticker := time.NewTicker(h.syncInterval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-ticker.C:
+			if err := h.syncEnforcer(ctx); err != nil {
+				h.logger.Error("Failed to sync enforcer", zap.Error(err))
+			}
+		}
+	}
+}
+
+func (h *handler) syncEnforcer(ctx context.Context) error {
+	var rbacModel, rbacPolicy string
+	retryFn := func() (err error) {
+		rbacModel, rbacPolicy, err = h.user.GenerateAdminRole(ctx, &user.GenerateAdminRoleInput{})
+		return err
+	}
+	retry := backoff.NewExponentialBackoff(h.syncMaxRetries)
+	if err := backoff.Retry(ctx, retry, retryFn, backoff.WithRetryablel(exception.IsRetryable)); err != nil {
+		return fmt.Errorf("handler: failed to generate admin role: %w", err)
+	}
+	enforcer, err := rbac.NewEnforcerFromString(rbacModel, rbacPolicy)
+	if err != nil {
+		return fmt.Errorf("handler: failed to new enforcer: %w", err)
+	}
+	h.syncMutex.Lock()
+	h.enforcer = enforcer
+	h.syncMutex.Unlock()
+	return nil
 }
 
 /**
@@ -254,22 +329,31 @@ func (h *handler) authentication(ctx *gin.Context) {
 	setAuth(ctx, auth.AdminID, adminType)
 
 	// 認可情報の検証
-	if h.enforcer == nil {
-		ctx.Next()
-		return
-	}
-
-	enforce, err := h.enforcer.Enforce(adminType.String(), ctx.Request.URL.Path, ctx.Request.Method)
-	if err != nil {
-		h.httpError(ctx, status.Error(codes.Internal, err.Error()))
-		return
-	}
-	if !enforce {
-		h.forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
+	if err := h.enforce(ctx, auth); err != nil {
+		h.httpError(ctx, err)
 		return
 	}
 
 	ctx.Next()
+}
+
+func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
+	if h.enforcer == nil {
+		return nil
+	}
+
+	for _, groupID := range admin.GroupIDs {
+		h.syncMutex.Lock()
+		enforce, err := h.enforcer.Enforce(groupID, ctx.Request.URL.Path, ctx.Request.Method)
+		h.syncMutex.Unlock()
+		if err != nil {
+			return fmt.Errorf("handler: failed to enforce: %w", err)
+		}
+		if enforce {
+			return nil
+		}
+	}
+	return fmt.Errorf("handler: you don't have the correct permissions: %w", exception.ErrForbidden)
 }
 
 func setAuth(ctx *gin.Context, adminID string, role service.AdminType) {

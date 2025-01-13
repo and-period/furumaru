@@ -76,8 +76,6 @@ type app struct {
 	SlackAPIToken                     string   `default:""               envconfig:"SLACK_API_TOKEN"`
 	SlackChannelID                    string   `default:""               envconfig:"SLACK_CHANNEL_ID"`
 	SlackSecretName                   string   `default:""               envconfig:"SLACK_SECRET_NAME"`
-	RBACPolicyPath                    string   `default:""               envconfig:"RBAC_POLICY_PATH"`
-	RBACModelPath                     string   `default:""               envconfig:"RBAC_MODEL_PATH"`
 	DefaultAdministratorGroupIDs      []string `default:""               envconfig:"DEFAULT_ADMINISTRATOR_GROUPS"`
 	DefaultCoordinatorGroupIDs        []string `default:""               envconfig:"DEFAULT_COORDINATOR_GROUPS"`
 	DefaultProducerGroupIDs           []string `default:""               envconfig:"DEFAULT_PRODUCER_GROUPS"`
@@ -111,6 +109,10 @@ func (a *app) run() error {
 	}
 	defer a.logger.Sync() //nolint:errcheck
 
+	if err := a.v1.Setup(ctx); err != nil {
+		return fmt.Errorf("admin: failed to setup http server: %w", err)
+	}
+
 	// HTTP Serverの設定
 	rt := a.newRouter()
 	hs := http.NewHTTPServer(rt, a.Port)
@@ -129,6 +131,12 @@ func (a *app) run() error {
 	eg.Go(func() (err error) {
 		if err = hs.Serve(); err != nil {
 			a.logger.Warn("Failed to run http server", zap.Error(err))
+		}
+		return
+	})
+	eg.Go(func() (err error) {
+		if err = a.v1.Sync(ectx); err != nil {
+			a.logger.Warn("Failed to sync v1 handler", zap.Error(err))
 		}
 		return
 	})

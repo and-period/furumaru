@@ -35,7 +35,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
-	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/slack"
@@ -53,7 +52,6 @@ import (
 type params struct {
 	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
-	enforcer                 rbac.Enforcer
 	aws                      aws.Config
 	secret                   secret.Client
 	storage                  storage.Bucket
@@ -100,13 +98,6 @@ func (a *app) inject(ctx context.Context) error {
 		waitGroup: &sync.WaitGroup{},
 		debugMode: a.LogLevel == "debug",
 	}
-
-	// Casbinの設定
-	enforcer, err := rbac.NewEnforcer(a.RBACModelPath, a.RBACPolicyPath)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to load rbac: %w", err)
-	}
-	params.enforcer = enforcer
 
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
@@ -310,7 +301,6 @@ func (a *app) inject(ctx context.Context) error {
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
-		Enforcer:  enforcer,
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
