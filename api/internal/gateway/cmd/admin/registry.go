@@ -35,7 +35,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
-	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/slack"
@@ -53,7 +52,6 @@ import (
 type params struct {
 	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
-	enforcer                 rbac.Enforcer
 	aws                      aws.Config
 	secret                   secret.Client
 	storage                  storage.Bucket
