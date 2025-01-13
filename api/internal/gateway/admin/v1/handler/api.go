@@ -16,6 +16,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -328,24 +329,31 @@ func (h *handler) authentication(ctx *gin.Context) {
 	setAuth(ctx, auth.AdminID, adminType)
 
 	// 認可情報の検証
-	if h.enforcer == nil {
-		ctx.Next()
-		return
-	}
-
-	h.syncMutex.Lock()
-	enforce, err := h.enforcer.Enforce(adminType.String(), ctx.Request.URL.Path, ctx.Request.Method)
-	h.syncMutex.Unlock()
-	if err != nil {
-		h.httpError(ctx, status.Error(codes.Internal, err.Error()))
-		return
-	}
-	if !enforce {
-		h.forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
+	if err := h.enforce(ctx, auth); err != nil {
+		h.httpError(ctx, err)
 		return
 	}
 
 	ctx.Next()
+}
+
+func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
+	if h.enforcer == nil {
+		return nil
+	}
+
+	for _, groupID := range admin.GroupIDs {
+		h.syncMutex.Lock()
+		enforce, err := h.enforcer.Enforce(groupID, ctx.Request.URL.Path, ctx.Request.Method)
+		h.syncMutex.Unlock()
+		if err != nil {
+			return fmt.Errorf("handler: failed to enforce: %w", err)
+		}
+		if enforce {
+			return nil
+		}
+	}
+	return fmt.Errorf("handler: you don't have the correct permissions: %w", exception.ErrForbidden)
 }
 
 func setAuth(ctx *gin.Context, adminID string, role service.AdminType) {

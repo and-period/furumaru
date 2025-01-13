@@ -22,6 +22,7 @@ func TestAdminAuth(t *testing.T) {
 				ID:            "admin-id",
 				CognitoID:     "cognito-id",
 				Type:          AdminTypeAdministrator,
+				GroupIDs:      []string{"group-id"},
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどどっと",
@@ -36,6 +37,7 @@ func TestAdminAuth(t *testing.T) {
 			expect: &AdminAuth{
 				AdminID:      "admin-id",
 				Type:         AdminTypeAdministrator,
+				GroupIDs:     []string{"group-id"},
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
