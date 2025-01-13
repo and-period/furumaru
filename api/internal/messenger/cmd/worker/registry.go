@@ -44,6 +44,7 @@ type params struct {
 	tidbPassword             string
 	sentryDsn                string
 	sendGridAPIKey           string
+	sendGridTemplateMap      map[string]string
 	lineToken                string
 	lineSecret               string
 	lineRoomID               string
@@ -89,15 +90,18 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// メールテンプレートの設定
-	f, err := os.Open(a.SendGridTemplatePath)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to open sendgrid template file: %w", err)
-	}
-	defer f.Close()
-	var templateMap map[string]string
-	d := yaml.NewDecoder(f)
-	if err := d.Decode(&templateMap); err != nil {
-		return fmt.Errorf("cmd: failed to decode sendgrid template yaml: %w", err)
+	if params.sendGridTemplateMap == nil {
+		f, err := os.Open(a.SendGridTemplatePath)
+		if err != nil {
+			return fmt.Errorf("cmd: failed to open sendgrid template file: %w", err)
+		}
+		defer f.Close()
+		var templateMap map[string]string
+		d := yaml.NewDecoder(f)
+		if err := d.Decode(&templateMap); err != nil {
+			return fmt.Errorf("cmd: failed to decode sendgrid template yaml: %w", err)
+		}
+		params.sendGridTemplateMap = templateMap
 	}
 
 	// Mailerの設定
@@ -105,7 +109,7 @@ func (a *app) inject(ctx context.Context) error {
 		APIKey:      params.sendGridAPIKey,
 		FromName:    a.MailFromName,
 		FromAddress: a.MailFromAddress,
-		TemplateMap: templateMap,
+		TemplateMap: params.sendGridTemplateMap,
 	}
 	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(params.logger))
 
@@ -205,15 +209,27 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// SendGrid認証情報の取得
-		if a.SendGridSecretName == "" {
+		if a.SendGridAPIKeySecretName == "" {
 			p.sendGridAPIKey = a.SendGridAPIKey
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, a.SendGridSecretName)
+		secrets, err := p.secret.Get(ectx, a.SendGridAPIKeySecretName)
 		if err != nil {
 			return err
 		}
 		p.sendGridAPIKey = secrets["api_key"]
+		return nil
+	})
+	eg.Go(func() error {
+		// SendGridテンプレート情報の取得
+		if a.SendGridTemplateSecretName == "" {
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.SendGridTemplateSecretName)
+		if err != nil {
+			return err
+		}
+		p.sendGridTemplateMap = secrets
 		return nil
 	})
 	eg.Go(func() error {
