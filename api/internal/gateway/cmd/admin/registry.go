@@ -101,13 +101,6 @@ func (a *app) inject(ctx context.Context) error {
 		debugMode: a.LogLevel == "debug",
 	}
 
-	// Casbinの設定
-	enforcer, err := rbac.NewEnforcer(a.RBACModelPath, a.RBACPolicyPath)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to load rbac: %w", err)
-	}
-	params.enforcer = enforcer
-
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
@@ -310,7 +303,6 @@ func (a *app) inject(ctx context.Context) error {
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
-		Enforcer:  enforcer,
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,

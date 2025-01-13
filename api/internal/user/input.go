@@ -136,6 +136,11 @@ type GetAdminInput struct {
 }
 
 /**
+ * AdminRole - 管理者ロール
+ */
+type GenerateAdminRoleInput struct{}
+
+/**
  * Administrator - システム管理者
  */
 type ListAdministratorsInput struct {
