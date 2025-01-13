@@ -244,7 +244,6 @@ func (h *handler) syncEnforcer(ctx context.Context) error {
 	h.syncMutex.Lock()
 	h.enforcer = enforcer
 	h.syncMutex.Unlock()
-	h.logger.Debug("Synced enforcer", zap.String("model", rbacModel), zap.String("policy", rbacPolicy))
 	return nil
 }
 
@@ -354,7 +353,6 @@ func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
 			return nil
 		}
 	}
-	h.logger.Debug("Enforce failed", zap.String("adminId", admin.AdminID), zap.Strings("groupIds", admin.GroupIDs))
 	return fmt.Errorf("handler: you don't have the correct permissions: %w", exception.ErrForbidden)
 }
 
