@@ -33,8 +33,9 @@ type app struct {
 	SentrySecretName             string `default:""                 envconfig:"SENTRY_SECRET_NAME"`
 	AWSRegion                    string `default:"ap-northeast-1"   envconfig:"AWS_REGION"`
 	SendGridAPIKey               string `default:""                 envconfig:"SENDGRID_API_KEY"`
+	SendGridAPIKeySecretName     string `default:""                 envconfig:"SENDGRID_SECRET_NAME"`
 	SendGridTemplatePath         string `default:""                 envconfig:"SENDGRID_TEMPLATE_PATH"`
-	SendGridSecretName           string `default:""                 envconfig:"SENDGRID_SECRET_NAME"`
+	SendGridTemplateSecretName   string `default:""                 envconfig:"SENDGRID_TEMPLATE_SECRET_NAME"`
 	MailFromName                 string `default:""                 envconfig:"MAIL_FROM_NAME"`
 	MailFromAddress              string `default:""                 envconfig:"MAIL_FROM_ADDRESS"`
 	LINEChannelToken             string `default:""                 envconfig:"LINE_CHANNEL_TOKEN"`
