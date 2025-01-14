@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.0.4](https://github.com/and-period/furumaru/compare/v4.0.3...v4.0.4) - 2025-01-14
+- fix(store): 注文履歴一覧の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2656
+
 ## [v4.0.3](https://github.com/and-period/furumaru/compare/v4.0.2...v4.0.3) - 2025-01-14
 - fix(gateway): 配信URLを詰める処理の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2654
 
