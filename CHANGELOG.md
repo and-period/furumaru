@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.0.2](https://github.com/and-period/furumaru/compare/v4.0.1...v4.0.2) - 2025-01-14
+- fix(store): 注文履歴一覧をcreated_atの降順で並び替え by @taba2424 in https://github.com/and-period/furumaru/pull/2652
+
 ## [v4.0.1](https://github.com/and-period/furumaru/compare/v4.0.0...v4.0.1) - 2025-01-14
 - fix(gateway): Broadcastのパース処理でnil pointerになっている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2650
 
