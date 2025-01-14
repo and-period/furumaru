@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.0.1](https://github.com/and-period/furumaru/compare/v4.0.0...v4.0.1) - 2025-01-14
+- fix(gateway): Broadcastのパース処理でnil pointerになっている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2650
+
 ## [v4.0.0](https://github.com/and-period/furumaru/compare/v3.4.2...v4.0.0) - 2025-01-13
 - feat(user): 管理面ロール用のエンティティ定義を更新 by @taba2424 in https://github.com/and-period/furumaru/pull/2624
 - refactor(api): MySQLの詳細実装を削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2626
