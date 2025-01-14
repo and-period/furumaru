@@ -65,12 +65,14 @@ func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.S
 	metadata := &response.ScheduleDistributionMetadata{
 		Subtitles: map[string]string{},
 	}
-	if broadcast == nil || broadcast.ArchiveMetadata == nil {
+	if broadcast == nil {
 		return "", false, metadata
 	}
 	switch {
 	case broadcast.ArchiveURL != "":
-		metadata.Subtitles = broadcast.ArchiveMetadata.Subtitles
+		if broadcast.ArchiveMetadata != nil {
+			metadata.Subtitles = broadcast.ArchiveMetadata.Subtitles
+		}
 		return broadcast.ArchiveURL, true, metadata
 	case broadcast.Status == mentity.BroadcastStatusActive:
 		return broadcast.OutputURL, false, metadata
