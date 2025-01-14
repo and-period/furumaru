@@ -50,7 +50,7 @@ func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.Statuses) > 0 {
 		stmt = stmt.Where("status IN (?)", p.Statuses)
 	}
-	return stmt.Order("created_at DESC")
+	return stmt
 }
 
 func (p listOrdersParams) pagination(stmt *gorm.DB) *gorm.DB {
@@ -71,6 +71,7 @@ func (o *order) List(ctx context.Context, params *database.ListOrdersParams, fie
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...)
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
+	stmt = stmt.Order("created_at DESC")
 
 	if err := stmt.Find(&orders).Error; err != nil {
 		return nil, dbError(err)
