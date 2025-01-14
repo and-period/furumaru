@@ -65,7 +65,7 @@ func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.S
 	metadata := &response.ScheduleDistributionMetadata{
 		Subtitles: map[string]string{},
 	}
-	if broadcast == nil {
+	if broadcast == nil || broadcast.ArchiveMetadata == nil {
 		return "", false, metadata
 	}
 	switch {
