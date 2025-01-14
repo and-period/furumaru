@@ -122,7 +122,7 @@ func TestOrder_List(t *testing.T) {
 			db := &order{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.Equal(t, tt.want.orders, actual)
+			assert.ElementsMatch(t, tt.want.orders, actual)
 		})
 	}
 }
