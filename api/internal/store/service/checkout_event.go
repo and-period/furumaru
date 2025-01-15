@@ -33,10 +33,10 @@ func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPa
 	if in.Status != entity.PaymentStatusCaptured {
 		return nil
 	}
-	notifyIn := &messenger.NotifyOrderAuthorizedInput{
+	notifyIn := &messenger.NotifyOrderCapturedInput{
 		OrderID: in.OrderID,
 	}
-	err = s.messenger.NotifyOrderAuthorized(ctx, notifyIn)
+	err = s.messenger.NotifyOrderCaptured(ctx, notifyIn)
 	return internalError(err)
 }
 

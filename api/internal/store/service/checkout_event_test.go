@@ -21,7 +21,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		PaymentID: "payment-id",
 		IssuedAt:  now,
 	}
-	in := &messenger.NotifyOrderAuthorizedInput{
+	in := &messenger.NotifyOrderCapturedInput{
 		OrderID: "order-id",
 	}
 	tests := []struct {
@@ -34,7 +34,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			name: "success captured",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(nil)
+				mocks.messenger.EXPECT().NotifyOrderCaptured(ctx, in).Return(nil)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
@@ -98,7 +98,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			name: "failed to notify order authorized",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(assert.AnError)
+				mocks.messenger.EXPECT().NotifyOrderCaptured(ctx, in).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",

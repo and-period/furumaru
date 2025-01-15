@@ -35,9 +35,9 @@ type Service interface {
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error           // 登録通知
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error // パスワードリセット通知
 	// NotifyUser - 通知関連(利用者宛)
-	NotifyStartLive(ctx context.Context, in *NotifyStartLiveInput) error             // ライブ配信開始通知
-	NotifyOrderAuthorized(ctx context.Context, in *NotifyOrderAuthorizedInput) error // 支払い完了通知
-	NotifyOrderShipped(ctx context.Context, in *NotifyOrderShippedInput) error       // 発送完了通知
+	NotifyStartLive(ctx context.Context, in *NotifyStartLiveInput) error         // ライブ配信開始通知
+	NotifyOrderCaptured(ctx context.Context, in *NotifyOrderCapturedInput) error // 支払い完了通知
+	NotifyOrderShipped(ctx context.Context, in *NotifyOrderShippedInput) error   // 発送完了通知
 	// ReserveNotification - 通知予約関連
 	ReserveNotification(ctx context.Context, in *ReserveNotificationInput) error // お知らせ通知予約
 	ReserveStartLive(ctx context.Context, in *ReserveStartLiveInput) error       // ライブ配信開始通知予約

@@ -1280,7 +1280,7 @@ func TestCheckoutProduct(t *testing.T) {
 				})
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.db.Product.EXPECT().DecreaseInventory(gomock.Any(), int64(1), int64(2)).Return(nil).AnyTimes()
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().NotifyOrderCaptured(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -2152,7 +2152,7 @@ func TestCheckoutExperience(t *testing.T) {
 					assert.Equal(t, int64(0), in.OrderPayment.Total)
 					return nil
 				})
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().NotifyOrderCaptured(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
