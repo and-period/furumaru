@@ -14,13 +14,13 @@ import (
 type EmailTemplateID string
 
 const (
-	EmailTemplateIDAdminRegister                 EmailTemplateID = "admin-register"                   // 管理者登録
-	EmailTemplateIDAdminResetPassword            EmailTemplateID = "admin-reset-password"             // 管理者パスワードリセット
-	EmailTemplateIDUserReceivedContact           EmailTemplateID = "user-received-contact"            // お問い合わせ受領
-	EmailTemplateIDUserOrderProductAuthorized    EmailTemplateID = "user-order-product-authorized"    // 支払い完了
-	EmailTemplateIDUserOrderExperienceAuthorized EmailTemplateID = "user-order-experience-authorized" // 体験支払い完了
-	EmailTemplateIDUserOrderShipped              EmailTemplateID = "user-order-shipped"               // 発送完了
-	EmailTemplateIDUserStartLive                 EmailTemplateID = "user-start-live"                  // ライブ配信開始
+	EmailTemplateIDAdminRegister               EmailTemplateID = "admin-register"                 // 管理者登録
+	EmailTemplateIDAdminResetPassword          EmailTemplateID = "admin-reset-password"           // 管理者パスワードリセット
+	EmailTemplateIDUserReceivedContact         EmailTemplateID = "user-received-contact"          // お問い合わせ受領
+	EmailTemplateIDUserOrderProductCaptured    EmailTemplateID = "user-order-product-captured"    // 商品支払い完了
+	EmailTemplateIDUserOrderExperienceCaptured EmailTemplateID = "user-order-experience-captured" // 体験支払い完了
+	EmailTemplateIDUserOrderShipped            EmailTemplateID = "user-order-shipped"             // 発送完了
+	EmailTemplateIDUserStartLive               EmailTemplateID = "user-start-live"                // ライブ配信開始
 )
 
 // MailConfig - メール送信設定

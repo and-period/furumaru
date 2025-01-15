@@ -549,10 +549,10 @@ func (s *service) executeFreeOrder(
 	}
 	// 支払い完了通知
 	afterFn := func(ctx context.Context) {
-		in := &messenger.NotifyOrderAuthorizedInput{
+		in := &messenger.NotifyOrderCapturedInput{
 			OrderID: order.ID,
 		}
-		if err := s.messenger.NotifyOrderAuthorized(ctx, in); err != nil {
+		if err := s.messenger.NotifyOrderCaptured(ctx, in); err != nil {
 			s.logger.Error("Failed to notify order authorized", zap.Error(err))
 		}
 	}

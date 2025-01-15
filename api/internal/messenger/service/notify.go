@@ -56,8 +56,8 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 	return internalError(err)
 }
 
-// NotifyOrderAuthorized - 支払い完了
-func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
+// NotifyOrderCaptured - 支払い完了
+func (s *service) NotifyOrderCaptured(ctx context.Context, in *messenger.NotifyOrderCapturedInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -71,9 +71,9 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	var payload *entity.WorkerPayload
 	switch order.Type {
 	case sentity.OrderTypeProduct:
-		payload, err = s.newOrderProductAuthorized(ctx, order)
+		payload, err = s.newOrderProductCaptured(ctx, order)
 	case sentity.OrderTypeExperience:
-		payload, err = s.newOrderExperienceAuthorized(ctx, order)
+		payload, err = s.newOrderExperienceCaptured(ctx, order)
 	default:
 		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
 		return nil
@@ -85,7 +85,7 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	return internalError(err)
 }
 
-func (s *service) newOrderProductAuthorized(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
 	var (
 		coordinator          *uentity.Coordinator
 		products             sentity.Products
@@ -126,12 +126,12 @@ func (s *service) newOrderProductAuthorized(ctx context.Context, order *sentity.
 		OrderFulfillment(order.OrderFulfillments, fulfillmentAddresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
-		TemplateID:    entity.EmailTemplateIDUserOrderProductAuthorized,
+		TemplateID:    entity.EmailTemplateIDUserOrderProductCaptured,
 		Substitutions: builder.Build(),
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		TemplateID: entity.ReportTemplateIDOrderProductAuthorized,
+		TemplateID: entity.ReportTemplateIDOrderProductCaptured,
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
@@ -139,7 +139,7 @@ func (s *service) newOrderProductAuthorized(ctx context.Context, order *sentity.
 	}
 	return &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeOrderAuthorized,
+		EventType: entity.EventTypeOrderCaptured,
 		UserType:  entity.UserTypeUser,
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
@@ -147,7 +147,7 @@ func (s *service) newOrderProductAuthorized(ctx context.Context, order *sentity.
 	}, nil
 }
 
-func (s *service) newOrderExperienceAuthorized(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
 	var (
 		coordinator    *uentity.Coordinator
 		experience     *sentity.Experience
@@ -188,12 +188,12 @@ func (s *service) newOrderExperienceAuthorized(ctx context.Context, order *senti
 		OrderBilling(paymentAddress).
 		OrderExperience(&order.OrderExperience, experience)
 	mail := &entity.MailConfig{
-		TemplateID:    entity.EmailTemplateIDUserOrderExperienceAuthorized,
+		TemplateID:    entity.EmailTemplateIDUserOrderExperienceCaptured,
 		Substitutions: builder.Build(),
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		TemplateID: entity.ReportTemplateIDOrderExperienceAuthorized,
+		TemplateID: entity.ReportTemplateIDOrderExperienceCaptured,
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
@@ -201,7 +201,7 @@ func (s *service) newOrderExperienceAuthorized(ctx context.Context, order *senti
 	}
 	return &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
-		EventType: entity.EventTypeOrderAuthorized,
+		EventType: entity.EventTypeOrderCaptured,
 		UserType:  entity.UserTypeUser,
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
