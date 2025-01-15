@@ -1,5 +1,10 @@
 # Changelog
 
+## [v4.0.5](https://github.com/and-period/furumaru/compare/v4.0.4...v4.0.5) - 2025-01-15
+- refactor(messenger): メソッド名の変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2660
+- build(deps): bump the dependencies group in /api with 39 updates by @dependabot in https://github.com/and-period/furumaru/pull/2658
+- build(deps): bump the dependencies group in /web/admin with 93 updates by @dependabot in https://github.com/and-period/furumaru/pull/2659
+
 ## [v4.0.4](https://github.com/and-period/furumaru/compare/v4.0.3...v4.0.4) - 2025-01-14
 - fix(store): 注文履歴一覧の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2656
 
