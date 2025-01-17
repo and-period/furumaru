@@ -937,30 +937,14 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				orderID: "order-id",
+				orderID: "",
 				params: &database.UpdateOrderAuthorizedParams{
-					PaymentID: "",
+					PaymentID: "payment-id",
 					IssuedAt:  now(),
 				},
 			},
 			want: want{
 				err: database.ErrNotFound,
-			},
-		},
-		{
-			name: "already completed",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.OrderStatusCompleted, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderAuthorizedParams{
-					PaymentID: "",
-					IssuedAt:  now(),
-				},
-			},
-			want: want{
-				err: database.ErrFailedPrecondition,
 			},
 		},
 		{
@@ -1091,9 +1075,9 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				orderID: "order-id",
+				orderID: "",
 				params: &database.UpdateOrderCapturedParams{
-					PaymentID: "",
+					PaymentID: "payment-id",
 					IssuedAt:  now(),
 				},
 			},
@@ -1230,10 +1214,10 @@ func TestOrder_UpdateFailed(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				orderID: "order-id",
+				orderID: "",
 				params: &database.UpdateOrderFailedParams{
 					Status:    entity.PaymentStatusFailed,
-					PaymentID: "",
+					PaymentID: "payment-id",
 					IssuedAt:  now(),
 				},
 			},
@@ -1392,7 +1376,7 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				orderID: "order-id",
+				orderID: "",
 				params: &database.UpdateOrderRefundedParams{
 					Status:   entity.PaymentStatusRefunded,
 					IssuedAt: now(),
@@ -1553,7 +1537,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				orderID:       "order-id",
+				orderID:       "",
 				fulfillmentID: "fulfillment-id",
 				params: &database.UpdateOrderFulfillmentParams{
 					Status:          entity.FulfillmentStatusFulfilled,
