@@ -49,11 +49,21 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	for i, t := range types {
 		orderTypes[i] = sentity.OrderType(t)
 	}
+	orderStatuses := []sentity.OrderStatus{
+		sentity.OrderStatusUnpaid,
+		sentity.OrderStatusWaiting,
+		sentity.OrderStatusPreparing,
+		sentity.OrderStatusShipped,
+		sentity.OrderStatusCompleted,
+		sentity.OrderStatusCanceled,
+		sentity.OrderStatusRefunded,
+	}
 	ordersIn := &store.ListOrdersInput{
-		UserID: h.getUserID(ctx),
-		Limit:  limit,
-		Offset: offset,
-		Types:  orderTypes,
+		UserID:   h.getUserID(ctx),
+		Limit:    limit,
+		Offset:   offset,
+		Types:    orderTypes,
+		Statuses: orderStatuses,
 	}
 	orders, total, err := h.store.ListOrders(ctx, ordersIn)
 	if err != nil {
