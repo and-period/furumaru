@@ -1,5 +1,7 @@
 # Changelog
 
+## [v4.0.7](https://github.com/and-period/furumaru/compare/v4.0.6...v4.0.7) - 2025-01-17
+
 ## [v4.0.6](https://github.com/and-period/furumaru/compare/v4.0.5...v4.0.6) - 2025-01-17
 - fix(gateway): 注文詳細が取得できない不具合の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2663
 
