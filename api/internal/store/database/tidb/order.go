@@ -201,44 +201,122 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	return dbError(err)
 }
 
-func (o *order) UpdatePayment(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
+func (o *order) UpdateAuthorized(ctx context.Context, orderID string, params *database.UpdateOrderAuthorizedParams) error {
+	p := &updateOrderPaymentParams{
+		orderID:  orderID,
+		status:   entity.PaymentStatusAuthorized,
+		issuedAt: params.IssuedAt,
+		validate: func(order *entity.Order) error {
+			if order.Completed() {
+				return fmt.Errorf("tidb: this order is already completed: %w", database.ErrFailedPrecondition)
+			}
+			return nil
+		},
+		updates: map[string]interface{}{
+			"status":     entity.PaymentStatusAuthorized,
+			"paid_at":    params.IssuedAt,
+			"updated_at": o.now(),
+		},
+	}
+	if params.PaymentID != "" {
+		p.updates["payment_id"] = params.PaymentID
+	}
+	return o.updatePayment(ctx, p)
+}
+
+func (o *order) UpdateCaptured(ctx context.Context, orderID string, params *database.UpdateOrderCapturedParams) error {
+	p := &updateOrderPaymentParams{
+		orderID:  orderID,
+		status:   entity.PaymentStatusCaptured,
+		issuedAt: params.IssuedAt,
+		validate: o.noopUpdatePaymentValidate,
+		updates: map[string]interface{}{
+			"status":      entity.PaymentStatusCaptured,
+			"captured_at": params.IssuedAt,
+			"updated_at":  o.now(),
+		},
+	}
+	if params.PaymentID != "" {
+		p.updates["payment_id"] = params.PaymentID
+	}
+	return o.updatePayment(ctx, p)
+}
+
+func (o *order) UpdateFailed(ctx context.Context, orderID string, params *database.UpdateOrderFailedParams) error {
+	p := &updateOrderPaymentParams{
+		orderID:  orderID,
+		status:   params.Status,
+		issuedAt: params.IssuedAt,
+		validate: o.noopUpdatePaymentValidate,
+		updates: map[string]interface{}{
+			"status":     params.Status,
+			"failed_at":  params.IssuedAt,
+			"updated_at": o.now(),
+		},
+	}
+	if params.PaymentID != "" {
+		p.updates["payment_id"] = params.PaymentID
+	}
+	return o.updatePayment(ctx, p)
+}
+
+func (o *order) UpdateRefunded(ctx context.Context, orderID string, params *database.UpdateOrderRefundedParams) error {
+	p := &updateOrderPaymentParams{
+		orderID:  orderID,
+		status:   params.Status,
+		issuedAt: params.IssuedAt,
+		validate: o.noopUpdatePaymentValidate,
+		updates: map[string]interface{}{
+			"status":        params.Status,
+			"refund_type":   params.RefundType,
+			"refund_total":  params.RefundTotal,
+			"refund_reason": params.RefundReason,
+			"updated_at":    o.now(),
+		},
+	}
+	switch params.Status {
+	case entity.PaymentStatusCanceled:
+		p.updates["canceled_at"] = params.IssuedAt
+	case entity.PaymentStatusRefunded:
+		p.updates["refunded_at"] = params.IssuedAt
+	}
+	return o.updatePayment(ctx, p)
+}
+
+type updateOrderPaymentParams struct {
+	orderID  string
+	status   entity.PaymentStatus
+	issuedAt time.Time
+	validate func(order *entity.Order) error
+	updates  map[string]interface{}
+}
+
+func (o *order) noopUpdatePaymentValidate(order *entity.Order) error {
+	return nil
+}
+
+func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentParams) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
-		order, err := o.get(ctx, tx, orderID)
+		order, err := o.get(ctx, tx, params.orderID)
 		if err != nil {
 			return err
 		}
-		if order.Completed() {
-			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
-		}
 		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
-		if updatedAt.After(params.IssuedAt) {
-			return fmt.Errorf("mysql: this event is older than the latest data: %w", database.ErrFailedPrecondition)
+		if updatedAt.After(params.issuedAt) {
+			return fmt.Errorf("tidb: this refunded event is older than the latest data: %w", database.ErrFailedPrecondition)
 		}
-
-		updates := map[string]interface{}{
-			"status":     params.Status,
-			"updated_at": o.now(),
-		}
-		switch params.Status {
-		case entity.PaymentStatusAuthorized:
-			updates["paid_at"] = params.IssuedAt
-		case entity.PaymentStatusCaptured:
-			updates["captured_at"] = params.IssuedAt
-		case entity.PaymentStatusFailed:
-			updates["failed_at"] = params.IssuedAt
-		}
-		if params.PaymentID != "" {
-			updates["payment_id"] = params.PaymentID
+		if err := params.validate(order); err != nil {
+			return nil
 		}
 
 		stmt := tx.WithContext(ctx).
 			Table(orderPaymentTable).
-			Where("order_id = ?", orderID)
-		if err := stmt.Updates(updates).Error; err != nil {
+			Where("order_id = ?", params.orderID)
+		if err := stmt.Updates(params.updates).Error; err != nil {
 			return err
 		}
 
-		order.SetPaymentStatus(params.Status)
+		order.SetPaymentStatus(params.status)
 		return o.updateStatus(ctx, tx, order.ID, order.Status)
 	})
 	return dbError(err)
@@ -277,44 +355,6 @@ func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID st
 		}
 
 		order.SetFulfillmentStatus(fulfillmentID, params.Status)
-		return o.updateStatus(ctx, tx, order.ID, order.Status)
-	})
-	return dbError(err)
-}
-
-func (o *order) UpdateRefund(ctx context.Context, orderID string, params *database.UpdateOrderRefundParams) error {
-	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
-		order, err := o.get(ctx, tx, orderID)
-		if err != nil {
-			return err
-		}
-		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
-		if updatedAt.After(params.IssuedAt) {
-			return fmt.Errorf("mysql: this event is older than the latest data: %w", database.ErrFailedPrecondition)
-		}
-
-		updates := map[string]interface{}{
-			"status":        params.Status,
-			"refund_type":   params.RefundType,
-			"refund_total":  params.RefundTotal,
-			"refund_reason": params.RefundReason,
-			"updated_at":    o.now(),
-		}
-		switch params.Status {
-		case entity.PaymentStatusCanceled:
-			updates["canceled_at"] = params.IssuedAt
-		case entity.PaymentStatusRefunded:
-			updates["refunded_at"] = params.IssuedAt
-		}
-
-		stmt := tx.WithContext(ctx).
-			Table(orderPaymentTable).
-			Where("order_id = ?", orderID)
-		if err := stmt.Updates(updates).Error; err != nil {
-			return err
-		}
-
-		order.SetPaymentStatus(params.Status)
 		return o.updateStatus(ctx, tx, order.ID, order.Status)
 	})
 	return dbError(err)

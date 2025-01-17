@@ -845,7 +845,7 @@ func TestOrder_Create(t *testing.T) {
 	}
 }
 
-func TestOrder_UpdatePayment(t *testing.T) {
+func TestOrder_UpdateAuthorized(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -906,7 +906,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 
 	type args struct {
 		orderID string
-		params  *database.UpdateOrderPaymentParams
+		params  *database.UpdateOrderAuthorizedParams
 	}
 	type want struct {
 		err error
@@ -918,49 +918,14 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		want  want
 	}{
 		{
-			name: "success authorized",
+			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusAuthorized,
+				params: &database.UpdateOrderAuthorizedParams{
 					PaymentID: "payment-id",
-					IssuedAt:  now(),
-				},
-			},
-			want: want{
-				err: nil,
-			},
-		},
-		{
-			name: "success captured",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusCaptured,
-					PaymentID: "payment-id",
-					IssuedAt:  now(),
-				},
-			},
-			want: want{
-				err: nil,
-			},
-		},
-		{
-			name: "success failed",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusFailed,
-					PaymentID: "",
 					IssuedAt:  now(),
 				},
 			},
@@ -973,8 +938,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusAuthorized,
+				params: &database.UpdateOrderAuthorizedParams{
 					PaymentID: "",
 					IssuedAt:  now(),
 				},
@@ -990,8 +954,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 			},
 			args: args{
 				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusAuthorized,
+				params: &database.UpdateOrderAuthorizedParams{
 					PaymentID: "",
 					IssuedAt:  now(),
 				},
@@ -1007,8 +970,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 			},
 			args: args{
 				orderID: "order-id",
-				params: &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusCaptured,
+				params: &database.UpdateOrderAuthorizedParams{
 					PaymentID: "",
 					IssuedAt:  now(),
 				},
@@ -1031,7 +993,446 @@ func TestOrder_UpdatePayment(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
-			err = db.UpdatePayment(ctx, tt.args.orderID, tt.args.params)
+			err = db.UpdateAuthorized(ctx, tt.args.orderID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestOrder_UpdateCaptured(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	pinternal := make(internalProducts, 2)
+	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
+	require.NoError(t, err)
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order.Status = status
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		orderID string
+		params  *database.UpdateOrderCapturedParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderCapturedParams{
+					PaymentID: "payment-id",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderCapturedParams{
+					PaymentID: "",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "not latest data",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, 1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderCapturedParams{
+					PaymentID: "",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.UpdateCaptured(ctx, tt.args.orderID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestOrder_UpdateFailed(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	pinternal := make(internalProducts, 2)
+	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
+	require.NoError(t, err)
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order.Status = status
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		orderID string
+		params  *database.UpdateOrderFailedParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderFailedParams{
+					Status:    entity.PaymentStatusFailed,
+					PaymentID: "",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderFailedParams{
+					Status:    entity.PaymentStatusFailed,
+					PaymentID: "",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "not latest data",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, 1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderFailedParams{
+					Status:    entity.PaymentStatusFailed,
+					PaymentID: "",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.UpdateFailed(ctx, tt.args.orderID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestOrder_UpdateRefunded(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	pinternal := make(internalProducts, 2)
+	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
+	require.NoError(t, err)
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		payment.Status = status
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		orderID string
+		params  *database.UpdateOrderRefundedParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success canceled",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderRefundedParams{
+					Status:       entity.PaymentStatusCanceled,
+					RefundType:   entity.RefundTypeCanceled,
+					RefundTotal:  1980,
+					RefundReason: "テストです。",
+					IssuedAt:     now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "success refunded",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderRefundedParams{
+					Status:       entity.PaymentStatusRefunded,
+					RefundType:   entity.RefundTypeRefunded,
+					RefundTotal:  1980,
+					RefundReason: "テストです。",
+					IssuedAt:     now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderRefundedParams{
+					Status:   entity.PaymentStatusRefunded,
+					IssuedAt: now(),
+				},
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "not latest data",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, 1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderRefundedParams{
+					Status:   entity.PaymentStatusCaptured,
+					IssuedAt: now(),
+				},
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.UpdateRefunded(ctx, tt.args.orderID, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
@@ -1199,166 +1600,6 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 
 			db := &order{db: db, now: now}
 			err = db.UpdateFulfillment(ctx, tt.args.orderID, tt.args.fulfillmentID, tt.args.params)
-			assert.ErrorIs(t, err, tt.want.err)
-		})
-	}
-}
-
-func TestOrder_UpdateRefund(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	categories := make(entity.Categories, 2)
-	categories[0] = testCategory("category-id01", "野菜", now())
-	categories[1] = testCategory("category-id02", "果物", now())
-	err = db.DB.Create(&categories).Error
-	require.NoError(t, err)
-	productTypes := make(entity.ProductTypes, 2)
-	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
-	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
-	err = db.DB.Create(&productTypes).Error
-	require.NoError(t, err)
-	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
-	err = db.DB.Table(productTable).Create(&pinternal).Error
-	require.NoError(t, err)
-	for i := range pinternal {
-		err = db.DB.Create(&pinternal[i].ProductRevision).Error
-		require.NoError(t, err)
-	}
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&schedule).Error
-	require.NoError(t, err)
-
-	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
-		err := db.DB.Create(&order).Error
-		require.NoError(t, err)
-
-		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
-		payment.Status = status
-		err = db.DB.Create(&payment).Error
-		require.NoError(t, err)
-
-		fulfillments := make(entity.OrderFulfillments, 1)
-		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
-		err = db.DB.Create(&fulfillments).Error
-		require.NoError(t, err)
-
-		items := make(entity.OrderItems, 2)
-		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
-		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
-		err = db.DB.Create(&items).Error
-		require.NoError(t, err)
-	}
-
-	type args struct {
-		orderID string
-		params  *database.UpdateOrderRefundParams
-	}
-	type want struct {
-		err error
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success canceled",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderRefundParams{
-					Status:       entity.PaymentStatusCanceled,
-					RefundType:   entity.RefundTypeCanceled,
-					RefundTotal:  1980,
-					RefundReason: "テストです。",
-					IssuedAt:     now(),
-				},
-			},
-			want: want{
-				err: nil,
-			},
-		},
-		{
-			name: "success refunded",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderRefundParams{
-					Status:       entity.PaymentStatusRefunded,
-					RefundType:   entity.RefundTypeRefunded,
-					RefundTotal:  1980,
-					RefundReason: "テストです。",
-					IssuedAt:     now(),
-				},
-			},
-			want: want{
-				err: nil,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderRefundParams{
-					Status:   entity.PaymentStatusRefunded,
-					IssuedAt: now(),
-				},
-			},
-			want: want{
-				err: database.ErrNotFound,
-			},
-		},
-		{
-			name: "not latest data",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, 1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderRefundParams{
-					Status:   entity.PaymentStatusCaptured,
-					IssuedAt: now(),
-				},
-			},
-			want: want{
-				err: database.ErrFailedPrecondition,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &order{db: db, now: now}
-			err = db.UpdateRefund(ctx, tt.args.orderID, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}

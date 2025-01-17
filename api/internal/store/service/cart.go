@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -196,5 +197,10 @@ func (s *service) refreshCart(ctx context.Context, cart *entity.Cart) error {
 	}
 	cart.UpdatedAt = now
 	cart.ExpiredAt = now.Add(s.cartTTL) // 有効期限を延長
-	return s.cache.Insert(ctx, cart)
+	fn := func() error {
+		return s.cache.Insert(ctx, cart)
+	}
+	const maxRetries = 5
+	retry := backoff.NewExponentialBackoff(maxRetries)
+	return backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(dynamodb.IsRetryable))
 }
