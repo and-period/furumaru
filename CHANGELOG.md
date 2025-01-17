@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.0.6](https://github.com/and-period/furumaru/compare/v4.0.5...v4.0.6) - 2025-01-17
+- fix(gateway): 注文詳細が取得できない不具合の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2663
+
 ## [v4.0.5](https://github.com/and-period/furumaru/compare/v4.0.4...v4.0.5) - 2025-01-15
 - refactor(messenger): メソッド名の変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2660
 - build(deps): bump the dependencies group in /api with 39 updates by @dependabot in https://github.com/and-period/furumaru/pull/2658
