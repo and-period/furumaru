@@ -141,6 +141,9 @@ func (e *Experience) Calc(params *CalcExperienceParams) (subtotal int64, discoun
 }
 
 func (e *Experience) Response() *response.Experience {
+	if e == nil {
+		return nil
+	}
 	return &e.Experience
 }
 
