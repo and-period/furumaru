@@ -209,8 +209,13 @@ func TestPaymentStatus(t *testing.T) {
 			expect: PaymentStatusCanceled,
 		},
 		{
-			name:   "expired",
+			name:   "faield",
 			status: entity.PaymentStatusFailed,
+			expect: PaymentStatusFailed,
+		},
+		{
+			name:   "expired",
+			status: entity.PaymentStatusExpired,
 			expect: PaymentStatusFailed,
 		},
 		{

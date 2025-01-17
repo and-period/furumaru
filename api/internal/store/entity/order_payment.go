@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"slices"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
@@ -22,12 +23,14 @@ const (
 	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
 	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル
 	PaymentStatusRefunded   PaymentStatus = 5 // 返金
-	PaymentStatusFailed     PaymentStatus = 6 // 失敗/期限切れ
+	PaymentStatusFailed     PaymentStatus = 6 // 失敗
+	PaymentStatusExpired    PaymentStatus = 7 // 期限切れ
 )
 
 var (
-	PaymentSuccessStatuses = []PaymentStatus{PaymentStatusAuthorized, PaymentStatusCaptured}
-	PaymentFailedStatuses  = []PaymentStatus{PaymentStatusCanceled, PaymentStatusRefunded, PaymentStatusFailed}
+	PaymentSuccessStatuses  = []PaymentStatus{PaymentStatusAuthorized, PaymentStatusCaptured}
+	PaymentFailedStatuses   = []PaymentStatus{PaymentStatusFailed, PaymentStatusExpired}
+	PaymentRefundedStatuses = []PaymentStatus{PaymentStatusCanceled, PaymentStatusRefunded}
 )
 
 // PaymentMethodType - 決済手段
@@ -45,6 +48,28 @@ const (
 	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
 	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
 	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済なし
+)
+
+var (
+	// 即時決済対応の決済手段
+	ImmediatePaymentMethodTypes = []PaymentMethodType{
+		PaymentMethodTypeCreditCard,
+		PaymentMethodTypePayPay,
+		PaymentMethodTypeLinePay,
+		PaymentMethodTypeMerpay,
+		PaymentMethodTypeRakutenPay,
+		PaymentMethodTypeAUPay,
+	}
+	// 後日決済対応の決済手段
+	DeferredPaymentMethodTypes = []PaymentMethodType{
+		PaymentMethodTypeKonbini,
+		PaymentMethodTypeBankTransfer,
+	}
+	// その他の決済手段
+	OtherPaymentMethodTypes = []PaymentMethodType{
+		PaymentMethodTypeCash,
+		PaymentMethodTypeNone,
+	}
 )
 
 // 注文キャンセル種別
@@ -246,11 +271,20 @@ func (p *OrderPayment) IsCompleted() bool {
 	return p.Status == PaymentStatusCaptured ||
 		p.Status == PaymentStatusCanceled ||
 		p.Status == PaymentStatusRefunded ||
-		p.Status == PaymentStatusFailed
+		p.Status == PaymentStatusFailed ||
+		p.Status == PaymentStatusExpired
 }
 
 func (p *OrderPayment) IsCanceled() bool {
 	return p.Status == PaymentStatusCanceled || p.Status == PaymentStatusRefunded
+}
+
+func (p *OrderPayment) IsImmediatePayment() bool {
+	return slices.Contains(ImmediatePaymentMethodTypes, p.MethodType)
+}
+
+func (p *OrderPayment) IsDeferredPayment() bool {
+	return slices.Contains(DeferredPaymentMethodTypes, p.MethodType)
 }
 
 func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {

@@ -13,91 +13,150 @@ import (
 
 func (h *handler) paymentAuthorized(ctx *gin.Context) {
 	h.logger.Debug("Received payment authorized event")
-	h.paymentCompleteEvent(ctx, entity.PaymentStatusAuthorized)
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.NotifyPaymentAuthorizedInput{
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusAuthorized),
+	}
+	if err := h.store.NotifyPaymentAuthorized(ctx, in); err != nil {
+		h.logger.Error("Failed payment authorized event", zap.Any("request", req), zap.Error(err))
+		h.httpError(ctx, err)
+		return
+	}
+	h.logger.Debug("Succeeded payment authorized event", zap.Any("request", req))
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) paymentCaptured(ctx *gin.Context) {
 	h.logger.Debug("Received payment captured event")
-	h.paymentCompleteEvent(ctx, entity.PaymentStatusCaptured)
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.NotifyPaymentCapturedInput{
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusCaptured),
+	}
+	if err := h.store.NotifyPaymentCaptured(ctx, in); err != nil {
+		h.logger.Error("Failed payment captured event", zap.Any("request", req), zap.Error(err))
+		h.httpError(ctx, err)
+		return
+	}
+	h.logger.Debug("Succeeded payment captured event", zap.Any("request", req))
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) paymentFailed(ctx *gin.Context) {
 	h.logger.Debug("Received payment failed event")
-	h.paymentCompleteEvent(ctx, entity.PaymentStatusFailed)
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.NotifyPaymentFailedInput{
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusFailed),
+	}
+	if err := h.store.NotifyPaymentFailed(ctx, in); err != nil {
+		h.logger.Error("Failed payment failed event", zap.Any("request", req), zap.Error(err))
+		h.httpError(ctx, err)
+		return
+	}
+	h.logger.Debug("Succeeded payment failed event", zap.Any("request", req))
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) paymentExpired(ctx *gin.Context) {
 	h.logger.Debug("Received payment expired event")
-	h.paymentCompleteEvent(ctx, entity.PaymentStatusFailed)
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.NotifyPaymentFailedInput{
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusExpired),
+	}
+	if err := h.store.NotifyPaymentFailed(ctx, in); err != nil {
+		h.logger.Error("Failed payment expired event", zap.Any("request", req), zap.Error(err))
+		h.httpError(ctx, err)
+		return
+	}
+	h.logger.Debug("Succeeded payment expired event", zap.Any("request", req))
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) paymentCancelled(ctx *gin.Context) {
 	h.logger.Debug("Received payment cancelled event")
-	h.paymentRefundEvent(ctx, entity.PaymentStatusCanceled)
-}
-
-func (h *handler) paymentRefunded(ctx *gin.Context) {
-	h.logger.Debug("Received payment refunded event")
-	h.paymentRefundEvent(ctx, entity.PaymentStatusRefunded)
-}
-
-func (h *handler) paymentCompleteEvent(ctx *gin.Context, status entity.PaymentStatus) {
-	req := &request.PaymentRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.logger.Warn("Failed to parse request", zap.Error(err))
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
-	in := &store.NotifyPaymentCompletedInput{
-		OrderID:   req.Payload.ExternalOrderNumber,
-		PaymentID: req.Payload.ID,
-		Status:    status,
-		IssuedAt:  req.CreatedAt,
-	}
-	if err := h.store.NotifyPaymentCompleted(ctx, in); err != nil {
-		h.logger.Error("Failed payment complete event", zap.Any("request", req), zap.Error(err))
-		h.httpError(ctx, err)
-		return
-	}
-	h.logger.Debug("Succeeded payment complete event", zap.Any("request", req))
-	ctx.Status(http.StatusNoContent)
-}
-
-func (h *handler) paymentRefundEvent(ctx *gin.Context, status entity.PaymentStatus) {
-	req := &request.PaymentRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.logger.Warn("Failed to parse request", zap.Error(err))
-		h.badRequest(ctx, err)
-		return
-	}
-	var (
-		refundTotal int64
-		refundType  entity.RefundType
-	)
+	var refundTotal int64
 	refundReason := make([]string, 0, len(req.Payload.Refunds))
 	for _, refund := range req.Payload.Refunds {
 		refundTotal += refund.Amount
 		refundReason = append(refundReason, refund.Description)
 	}
-	switch status {
-	case entity.PaymentStatusCanceled:
-		refundType = entity.RefundTypeCanceled
-	case entity.PaymentStatusRefunded:
-		refundType = entity.RefundTypeRefunded
-	}
 	in := &store.NotifyPaymentRefundedInput{
-		OrderID:  req.Payload.ExternalOrderNumber,
-		Status:   status,
-		Type:     refundType,
-		Reason:   strings.Join(refundReason, "\n"),
-		Total:    refundTotal,
-		IssuedAt: req.CreatedAt,
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusCanceled),
+		Type:                 entity.RefundTypeCanceled,
+		Reason:               strings.Join(refundReason, "\n"),
+		Total:                refundTotal,
 	}
 	if err := h.store.NotifyPaymentRefunded(ctx, in); err != nil {
-		h.logger.Error("Failed payment refund event", zap.Any("request", req), zap.Error(err))
+		h.logger.Error("Failed payment cancelled event", zap.Any("request", req), zap.Error(err))
 		h.httpError(ctx, err)
 		return
 	}
-	h.logger.Debug("Succeeded payment refund event", zap.Any("request", req))
+	h.logger.Debug("Succeeded payment cancelled event", zap.Any("request", req))
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) paymentRefunded(ctx *gin.Context) {
+	h.logger.Debug("Received payment refunded event")
+	req, err := h.newPaymentRequest(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	var refundTotal int64
+	refundReason := make([]string, 0, len(req.Payload.Refunds))
+	for _, refund := range req.Payload.Refunds {
+		refundTotal += refund.Amount
+		refundReason = append(refundReason, refund.Description)
+	}
+	in := &store.NotifyPaymentRefundedInput{
+		NotifyPaymentPayload: *h.newNotifyPaymentPayload(req, entity.PaymentStatusRefunded),
+		Type:                 entity.RefundTypeRefunded,
+		Reason:               strings.Join(refundReason, "\n"),
+		Total:                refundTotal,
+	}
+	if err := h.store.NotifyPaymentRefunded(ctx, in); err != nil {
+		h.logger.Error("Failed payment refunded event", zap.Any("request", req), zap.Error(err))
+		h.httpError(ctx, err)
+		return
+	}
+	h.logger.Debug("Succeeded payment refunded event", zap.Any("request", req))
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) newPaymentRequest(ctx *gin.Context) (*request.PaymentRequest, error) {
+	req := &request.PaymentRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.logger.Warn("Failed to parse request", zap.Error(err))
+		return nil, err
+	}
+	return req, nil
+}
+
+func (h *handler) newNotifyPaymentPayload(req *request.PaymentRequest, status entity.PaymentStatus) *store.NotifyPaymentPayload {
+	return &store.NotifyPaymentPayload{
+		OrderID:   req.Payload.ExternalOrderNumber,
+		PaymentID: req.Payload.ID,
+		IssuedAt:  req.CreatedAt,
+		Status:    status,
+	}
 }

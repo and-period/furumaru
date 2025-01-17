@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -372,9 +371,12 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		defer s.waitGroup.Done()
 		afterFn(context.Background())
 	}()
-	// 買い物かごの削除
+	// 買い物かごの削除（即時決済の場合は仮売上通知のタイミングで削除するため、ここでは削除しない）
 	go func() {
 		defer s.waitGroup.Done()
+		if order.OrderPayment.IsImmediatePayment() {
+			return
+		}
 		cart.RemoveBaskets(baskets.BoxNumbers()...)
 		if err := s.refreshCart(context.Background(), cart); err != nil {
 			s.logger.Error("Failed to refresh cart after checkout",
@@ -549,11 +551,8 @@ func (s *service) executeFreeOrder(
 	}
 	// 支払い完了通知
 	afterFn := func(ctx context.Context) {
-		in := &messenger.NotifyOrderCapturedInput{
-			OrderID: order.ID,
-		}
-		if err := s.messenger.NotifyOrderCaptured(ctx, in); err != nil {
-			s.logger.Error("Failed to notify order authorized", zap.Error(err))
+		if err := s.notifyPaymentCompleted(ctx, order); err != nil {
+			s.logger.Error("Failed to notify payment completed", zap.Error(err))
 		}
 	}
 	redirectURL := fmt.Sprintf("%s?session_id=%s", params.payload.CallbackURL, order.ID)

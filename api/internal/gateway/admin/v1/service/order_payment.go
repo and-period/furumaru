@@ -110,7 +110,7 @@ func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
 		return PaymentStatusPaid
 	case entity.PaymentStatusCanceled, entity.PaymentStatusRefunded:
 		return PaymentStatusCanceled
-	case entity.PaymentStatusFailed:
+	case entity.PaymentStatusFailed, entity.PaymentStatusExpired:
 		return PaymentStatusFailed
 	default:
 		return PaymentStatusUnknown

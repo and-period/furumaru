@@ -223,3 +223,16 @@ func (c *client) dbError(err error) error {
 		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())
 	}
 }
+
+func IsRetryable(err error) bool {
+	switch {
+	case errors.Is(err, ErrCanceled),
+		errors.Is(err, ErrTimeout),
+		errors.Is(err, ErrInternal),
+		errors.Is(err, ErrResourceExhausted),
+		errors.Is(err, ErrAborted):
+		return true
+	default:
+		return false
+	}
+}

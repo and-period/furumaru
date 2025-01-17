@@ -227,6 +227,8 @@ func (o *Order) SetPaymentStatus(status PaymentStatus) {
 		o.Status = OrderStatusRefunded
 	case PaymentStatusFailed:
 		o.Status = OrderStatusFailed
+	case PaymentStatusExpired:
+		o.Status = OrderStatusFailed
 	default:
 		o.Status = OrderStatusUnknown
 	}

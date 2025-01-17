@@ -1116,7 +1116,7 @@ func TestCheckoutProduct(t *testing.T) {
 		OrderID:      "order-id",
 		Amount:       1400,
 		CallbackURL:  "http://example.com/callback",
-		PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
+		PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeKonbini},
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    "user-id",
 			Name:  "&. 購入者",
@@ -1148,7 +1148,7 @@ func TestCheckoutProduct(t *testing.T) {
 				AddressRevisionID: 1,
 				Status:            entity.PaymentStatusPending,
 				TransactionID:     "transaction-id",
-				MethodType:        entity.PaymentMethodTypeCreditCard,
+				MethodType:        entity.PaymentMethodTypeKonbini,
 				Subtotal:          1000,
 				Discount:          100,
 				ShippingFee:       500,
@@ -1239,7 +1239,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1298,7 +1298,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            0,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1324,7 +1324,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:           "http://example.com/callback",
 					Total:                 1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1357,7 +1357,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1390,7 +1390,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1426,7 +1426,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1462,7 +1462,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1499,7 +1499,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1535,7 +1535,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1572,7 +1572,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1609,7 +1609,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1646,7 +1646,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1683,7 +1683,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1000,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1721,7 +1721,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1760,7 +1760,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
@@ -1799,7 +1799,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					return nil, &komoju.Error{Status: http.StatusUnprocessableEntity, Code: komoju.ErrCodeUnprocessableEntity}
 				},
@@ -1835,7 +1835,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            1400,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					return nil, assert.AnError
 				},
@@ -1884,7 +1884,7 @@ func TestCheckoutProduct(t *testing.T) {
 					CallbackURL:      "http://example.com/callback",
 					Total:            0,
 				},
-				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				paymentMethodType: entity.PaymentMethodTypeKonbini,
 				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
