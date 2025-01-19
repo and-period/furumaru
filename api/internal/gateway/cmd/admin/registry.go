@@ -557,6 +557,7 @@ func (a *app) newStoreService(
 	params := &storesrv.Params{
 		WaitGroup:   p.waitGroup,
 		Database:    storedb.NewDatabase(mysql),
+		Cache:       p.cache,
 		User:        user,
 		Messenger:   messenger,
 		Media:       media,
