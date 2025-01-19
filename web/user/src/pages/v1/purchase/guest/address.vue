@@ -179,7 +179,7 @@ const validate = () => {
   }
 
   const isValidJapanesePhoneNumber = (phoneNumber: string): boolean => {
-    const regex = /^0\d{1,4}-\d{1,4}-\d{3,4}$/
+    const regex = /^(0{1}\d{9,10})$/
     return regex.test(phoneNumber)
   }
 
