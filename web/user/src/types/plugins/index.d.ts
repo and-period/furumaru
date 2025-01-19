@@ -14,6 +14,7 @@ import type {
   PromotionApi,
   ExperienceApi,
   SpotApi,
+  VideoApi,
 } from '../api'
 import type { CustomErrorMessage } from '~/plugins/api-error-handler'
 
@@ -44,6 +45,7 @@ declare module 'pinia' {
     otherApiClient: (token?: string) => OtherApi
     spotApiClient: (token?: string) => SpotApi
     experienceApiClient: (token?: string) => ExperienceApi
+    videoApiClient: (token?: string) => VideoApi
     i18n: VueI18
   }
 }
