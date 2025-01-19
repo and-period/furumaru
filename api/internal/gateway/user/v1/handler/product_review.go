@@ -270,6 +270,9 @@ func (h *handler) getProductReview(ctx context.Context, reviewID string) (*servi
 }
 
 func (h *handler) aggregateProductRates(ctx context.Context, productIDs ...string) (service.ProductRates, error) {
+	if len(productIDs) == 0 {
+		return service.ProductRates{}, nil
+	}
 	in := &store.AggregateProductReviewsInput{
 		ProductIDs: productIDs,
 	}
