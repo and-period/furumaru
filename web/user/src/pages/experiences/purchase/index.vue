@@ -284,9 +284,20 @@ const handleSubmit = async () => {
 }
 
 onMounted(() => {
+  // フォームデータのセットアップ
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
   if (availablePaymentSystem.value.length > 0) {
     formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
+  }
+
+  // リクエストID
+  if (targetExperience.value && targetExperience.value.requestId) {
+    formData.value.requestId = targetExperience.value.requestId
+  }
+
+  // 合計金額
+  if (targetExperience.value) {
+    formData.value.total = targetExperience.value.total
   }
 })
 
