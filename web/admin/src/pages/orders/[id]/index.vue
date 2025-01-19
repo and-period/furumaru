@@ -33,8 +33,9 @@ const refundFormData = ref<RefundOrderRequest>({
 })
 const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 
-const fetchState = useAsyncData(async (): Promise<void> => {
+const fetchState = useAsyncData('orders', async (): Promise<boolean> => {
   await fetchOrder()
+  return true
 })
 
 const fetchOrder = async (): Promise<void> => {
