@@ -73,11 +73,11 @@ const handleClickLiveItem = (id: string) => {
 }
 
 const handleClickProductVideoItem = (id: string) => {
-  router.push(`/video/product/${id}`)
+  router.push(`/video/${id}`)
 }
 
 const handleClickExperienceVideoItem = (id: string) => {
-  router.push(`/video/experience/${id}`)
+  router.push(`/video/${id}`)
 }
 
 const handleClickLiveMore = () => {

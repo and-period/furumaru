@@ -16,6 +16,7 @@ import {
   OtherApi,
   SpotApi,
   ExperienceApi,
+  VideoApi,
 } from '~/types/api'
 
 function apiClientInjector({ store }: PiniaPluginContext) {
@@ -53,6 +54,10 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const scheduleApiClient = (token?: string): ScheduleApi =>
     apiClientFactory.create(ScheduleApi, token)
 
+  // 動画
+  const videoApiClient = (token?: string): VideoApi =>
+    apiClientFactory.create(VideoApi, token)
+
   // コーディネーター関連のAPIをStoreに定義
   const coordinatorApiClient = (token?: string): CoordinatorApi =>
     apiClientFactory.create(CoordinatorApi, token)
@@ -87,6 +92,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.addressApiClient = addressApiClient
   store.checkoutApiClient = checkoutApiClient
   store.scheduleApiClient = scheduleApiClient
+  store.videoApiClient = videoApiClient
   store.coordinatorApiClient = coordinatorApiClient
   store.statusApiClient = statusApiClient
   store.orderApiClient = orderApiClient

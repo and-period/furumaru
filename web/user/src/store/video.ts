@@ -1,4 +1,6 @@
+import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
+import type { VideoCommentsResponse } from '~/types/api'
 
 export const useVideoStore = defineStore('video', {
   state: () => {
@@ -13,7 +15,7 @@ export const useVideoStore = defineStore('video', {
       return res
     },
 
-    async getComments(id: string) {
+    async getComments(id: string): Promise<VideoCommentsResponse> {
       const res = await this.videoApiClient().v1ListVideoComments({
         videoId: id,
       })
@@ -40,6 +42,6 @@ export const useVideoStore = defineStore('video', {
       catch (e) {
         return this.errorHandler(e)
       }
-    }
+    },
   },
 })
