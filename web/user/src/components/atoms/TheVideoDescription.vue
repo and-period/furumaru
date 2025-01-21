@@ -66,99 +66,106 @@ const handleClickShowDetailButton = () => {
 </script>
 
 <template>
-  <div class="mt-2 px-4">
-    <div
-      v-for="(snackbarItem, i) in snackbarItems"
-      :key="i"
+  <div class="flex justify-between p-2">
+    <div class="mt-2 px-2">
+      <div
+        v-for="(snackbarItem, i) in snackbarItems"
+        :key="i"
+      >
+        <the-snackbar
+          v-model:is-show="snackbarItem.isShow"
+          :text="snackbarItem.text"
+        />
+      </div>
+      <div class="md:text-[14px] text-[12px] tracking-[1.4px]">
+        {{ datetimeformatterFromUnixtime(startAt) }}
+      </div>
+    </div>
+    <the-dropdown-with-icon
+      ref="dropdownRef"
+      class="px-2"
     >
-      <the-snackbar
-        v-model:is-show="snackbarItem.isShow"
-        :text="snackbarItem.text"
-      />
-    </div>
-    <div class="md:text-[14px] text-[12px] tracking-[1.4px] after:content-['〜']">
-      {{ datetimeformatterFromUnixtime(startAt) }}
-    </div>
+      <template #icon>
+        <div class="flex text-[14px] tracking-[1.4px] ">
+          <the-sns-share-icon />
+          <p class="ml-2 md:text-[16px] text-[12px] md:block hidden">
+            SHARE
+          </p>
+        </div>
+      </template>
+      <template #content>
+        <div class="flex flex-col">
+          <button
+            class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
+            @click="handleClickCopyButton"
+          >
+            <the-share-icon class="mr-2" />
+            {{ dt('linkCopy') }}
+          </button>
+          <button
+            class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
+            @click="handleClickXButton"
+          >
+            <the-share-x-icon class="mr-2" />
+            X (Twitter)
+          </button>
+          <button
+            class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
+            @click="handleClickFacebookButton"
+          >
+            <the-share-facebook-icon class="mr-2" />
+            Facebook
+          </button>
+        </div>
+      </template>
+    </the-dropdown-with-icon>
   </div>
-  <the-dropdown-with-icon ref="dropdownRef">
-    <template #icon>
-      <div class="flex text-[14px] tracking-[1.4px] ">
-        <the-sns-share-icon />
-        <p class="ml-2 md:text-[16px] text-[12px] md:block hidden">
-          SHARE
+  <div class="px-4">
+    <p class="mt-2 line-clamp-1 tracking-[1.6px]">
+      {{ title }}
+    </p>
+    <div class="mt-4 flex items-center gap-2">
+      <nuxt-img
+        width="40"
+        height="40"
+        provider="cloudFront"
+        :src="coordinatorImgSrc"
+        class="h-10 w-10 rounded-full hover:cursor-pointer"
+        :alt="coordinatorThumbnailAlt"
+        @click="handleCLickCoordinator"
+      />
+      <div class="text-[12px] tracking-[1.2px]">
+        <p class="mb-1">
+          {{ marcheName }}/{{ coordinatorAddress }}
+        </p>
+        <p>
+          {{ dt('coordinatorLabel') }}:
+          <span
+            class="cursor-pointer hover:underline"
+            @click="handleCLickCoordinator"
+          >{{ coordinatorName }}</span>
         </p>
       </div>
-    </template>
-    <template #content>
-      <div class="flex flex-col">
-        <button
-          class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
-          @click="handleClickCopyButton"
-        >
-          <the-share-icon class="mr-2" />
-          {{ dt('linkCopy') }}
-        </button>
-        <button
-          class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
-          @click="handleClickXButton"
-        >
-          <the-share-x-icon class="mr-2" />
-          X (Twitter)
-        </button>
-        <button
-          class="px-4 py-2 text-left flex hover:bg-gray-200 items-center"
-          @click="handleClickFacebookButton"
-        >
-          <the-share-facebook-icon class="mr-2" />
-          Facebook
-        </button>
-      </div>
-    </template>
-  </the-dropdown-with-icon>
-  <p class="mt-2 line-clamp-1 tracking-[1.6px]">
-    {{ title }}
-  </p>
-  <div class="mt-4 flex items-center gap-2">
-    <nuxt-img
-      width="40"
-      height="40"
-      provider="cloudFront"
-      :src="coordinatorImgSrc"
-      class="h-10 w-10 rounded-full hover:cursor-pointer"
-      :alt="coordinatorThumbnailAlt"
-      @click="handleCLickCoordinator"
-    />
-    <div class="text-[12px] tracking-[1.2px]">
-      <p class="mb-1">
-        {{ marcheName }}/{{ coordinatorAddress }}
-      </p>
-      <p>
-        {{ dt('coordinatorLabel') }}:
-        <span
-          class="cursor-pointer hover:underline"
-          @click="handleCLickCoordinator"
-        >{{ coordinatorName }}</span>
-      </p>
     </div>
-  </div>
 
-  <div>
-    <p
-      v-if="showDetail"
-      class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
-      v-html="description"
-    />
-    <button
-      class="inline-flex w-full items-center justify-center gap-2 text-[12px] tracking-[1.2px]"
-      @click="handleClickShowDetailButton"
-    >
-      <div>
-        {{ showDetail ? dt('hideMarcheDetailsText') : dt('showMarcheDetailsText') }}
-      </div>
-      <div>
-        <the-up-arrow-icon v-if="showDetail" />
-        <the-down-arrow-icon v-if="!showDetail" />
-      </div>
-    </button>
+    <div>
+      <p
+        v-if="showDetail"
+        class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
+        v-html="description"
+      />
+      <button
+        class="inline-flex w-full items-center justify-center gap-2 text-[12px] tracking-[1.2px]"
+        @click="handleClickShowDetailButton"
+      >
+        <div>
+          {{ showDetail ? dt('hideMarcheDetailsText') : dt('showMarcheDetailsText') }}
+        </div>
+        <div>
+          <the-up-arrow-icon v-if="showDetail" />
+          <the-down-arrow-icon v-if="!showDetail" />
+        </div>
+      </button>
+    </div>
   </div>
 </template>
