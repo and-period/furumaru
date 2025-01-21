@@ -1236,14 +1236,14 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 	}
 }
 
-func TestAggregateOrders(t *testing.T) {
+func TestAggregateUserOrders(t *testing.T) {
 	t.Parallel()
 
-	params := &database.AggregateOrdersParams{
+	params := &database.AggregateOrdersByUserParams{
 		CoordinatorID: "coordinator-id",
 		UserIDs:       []string{"user-id"},
 	}
-	orders := entity.AggregatedOrders{
+	orders := entity.AggregatedUserOrders{
 		{
 			UserID:     "user-id",
 			OrderCount: 2,
@@ -1256,16 +1256,16 @@ func TestAggregateOrders(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.AggregateOrdersInput
-		expect    entity.AggregatedOrders
+		input     *store.AggregateOrdersByUserInput
+		expect    entity.AggregatedUserOrders
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(orders, nil)
+				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(orders, nil)
 			},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1275,7 +1275,7 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				UserIDs: []string{""},
 			},
 			expect:    nil,
@@ -1284,9 +1284,9 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(nil, assert.AnError)
 			},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1298,7 +1298,7 @@ func TestAggregateOrders(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrders(ctx, tt.input)
+			actual, err := service.AggregateOrdersByUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

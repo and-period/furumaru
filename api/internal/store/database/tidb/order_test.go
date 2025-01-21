@@ -1869,10 +1869,10 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *database.AggregateOrdersParams
+		params *database.AggregateOrdersByUserParams
 	}
 	type want struct {
-		orders entity.AggregatedOrders
+		orders entity.AggregatedUserOrders
 		hasErr bool
 	}
 	tests := []struct {
@@ -1885,13 +1885,13 @@ func TestOrder_Aggregate(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &database.AggregateOrdersParams{
+				params: &database.AggregateOrdersByUserParams{
 					UserIDs:       []string{"user-id", "other-id"},
 					CoordinatorID: "coordinator-id",
 				},
 			},
 			want: want{
-				orders: entity.AggregatedOrders{
+				orders: entity.AggregatedUserOrders{
 					{
 						UserID:     "user-id",
 						OrderCount: 2,
@@ -1916,7 +1916,7 @@ func TestOrder_Aggregate(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
-			actual, err := db.Aggregate(ctx, tt.args.params)
+			actual, err := db.AggregateByUser(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.orders, actual)
 		})

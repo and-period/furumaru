@@ -473,7 +473,7 @@ type UpdateOrderFulfillmentInput struct {
 	TrackingNumber  string                 `validate:"required"`
 }
 
-type AggregateOrdersInput struct {
+type AggregateOrdersByUserInput struct {
 	CoordinatorID string   `validate:""`
 	UserIDs       []string `validate:"dive,required"`
 }

@@ -206,15 +206,15 @@ func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOr
 	return internalError(err)
 }
 
-func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
+func (s *service) AggregateOrdersByUser(ctx context.Context, in *store.AggregateOrdersByUserInput) (entity.AggregatedUserOrders, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	params := &database.AggregateOrdersParams{
+	params := &database.AggregateOrdersByUserParams{
 		CoordinatorID: in.CoordinatorID,
 		UserIDs:       in.UserIDs,
 	}
-	orders, err := s.db.Order.Aggregate(ctx, params)
+	orders, err := s.db.Order.AggregateByUser(ctx, params)
 	return orders, internalError(err)
 }
 

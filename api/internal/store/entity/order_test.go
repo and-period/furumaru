@@ -1157,16 +1157,16 @@ func TestOrders_Fill(t *testing.T) {
 	}
 }
 
-func TestAggregatedOrders_Map(t *testing.T) {
+func TestAggregatedUserOrders_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		orders AggregatedOrders
-		expect map[string]*AggregatedOrder
+		orders AggregatedUserOrders
+		expect map[string]*AggregatedUserOrder
 	}{
 		{
 			name: "success",
-			orders: AggregatedOrders{
+			orders: AggregatedUserOrders{
 				{
 					UserID:     "user-id",
 					OrderCount: 2,
@@ -1174,7 +1174,7 @@ func TestAggregatedOrders_Map(t *testing.T) {
 					Discount:   0,
 				},
 			},
-			expect: map[string]*AggregatedOrder{
+			expect: map[string]*AggregatedUserOrder{
 				"user-id": {
 					UserID:     "user-id",
 					OrderCount: 2,

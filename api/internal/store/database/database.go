@@ -232,7 +232,7 @@ type Order interface {
 	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
-	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
+	AggregateByUser(ctx context.Context, params *AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error)
 	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
 }
 
@@ -285,7 +285,7 @@ type CompleteOrderParams struct {
 	CompletedAt     time.Time
 }
 
-type AggregateOrdersParams struct {
+type AggregateOrdersByUserParams struct {
 	CoordinatorID string
 	UserIDs       []string
 }

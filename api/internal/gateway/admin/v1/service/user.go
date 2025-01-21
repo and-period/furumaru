@@ -145,9 +145,9 @@ func (us Users) Response() []*response.User {
 	return res
 }
 
-func NewUserToList(user *User, order *sentity.AggregatedOrder) *UserToList {
+func NewUserToList(user *User, order *sentity.AggregatedUserOrder) *UserToList {
 	if order == nil {
-		order = &sentity.AggregatedOrder{}
+		order = &sentity.AggregatedUserOrder{}
 	}
 	return &UserToList{
 		UserToList: response.UserToList{
@@ -168,7 +168,7 @@ func (u *UserToList) Response() *response.UserToList {
 	return &u.UserToList
 }
 
-func NewUsersToList(users Users, orders map[string]*sentity.AggregatedOrder) UsersToList {
+func NewUsersToList(users Users, orders map[string]*sentity.AggregatedUserOrder) UsersToList {
 	res := make(UsersToList, len(users))
 	for i := range users {
 		res[i] = NewUserToList(users[i], orders[users[i].ID])

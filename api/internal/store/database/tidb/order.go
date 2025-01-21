@@ -387,8 +387,8 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	return dbError(err)
 }
 
-func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
-	var orders entity.AggregatedOrders
+func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error) {
+	var orders entity.AggregatedUserOrders
 
 	fields := []string{
 		"orders.user_id AS user_id",

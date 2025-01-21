@@ -55,26 +55,6 @@ type Order struct {
 
 type Orders []*Order
 
-// AggregatedOrder - 注文履歴集計情報
-type AggregatedOrder struct {
-	UserID     string // ユーザーID
-	OrderCount int64  // 注文合計回数
-	Subtotal   int64  // 購入合計金額
-	Discount   int64  // 割引合計金額
-	Total      int64  // 支払合計金額
-}
-
-type AggregatedOrders []*AggregatedOrder
-
-// AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
-type AggregatedOrderPromotion struct {
-	PromotionID   string // プロモーションID
-	OrderCount    int64  // 利用合計回数
-	DiscountTotal int64  // 割引合計金額
-}
-
-type AggregatedOrderPromotions []*AggregatedOrderPromotion
-
 type NewProductOrderParams struct {
 	OrderID           string
 	SessionID         string
@@ -394,13 +374,33 @@ func (os Orders) Fill(
 	}
 }
 
-func (os AggregatedOrders) Map() map[string]*AggregatedOrder {
-	res := make(map[string]*AggregatedOrder, len(os))
+// AggregatedUserOrder - 注文履歴集計情報
+type AggregatedUserOrder struct {
+	UserID     string // ユーザーID
+	OrderCount int64  // 注文合計回数
+	Subtotal   int64  // 購入合計金額
+	Discount   int64  // 割引合計金額
+	Total      int64  // 支払合計金額
+}
+
+type AggregatedUserOrders []*AggregatedUserOrder
+
+func (os AggregatedUserOrders) Map() map[string]*AggregatedUserOrder {
+	res := make(map[string]*AggregatedUserOrder, len(os))
 	for _, o := range os {
 		res[o.UserID] = o
 	}
 	return res
 }
+
+// AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
+type AggregatedOrderPromotion struct {
+	PromotionID   string // プロモーションID
+	OrderCount    int64  // 利用合計回数
+	DiscountTotal int64  // 割引合計金額
+}
+
+type AggregatedOrderPromotions []*AggregatedOrderPromotion
 
 func (os AggregatedOrderPromotions) Map() map[string]*AggregatedOrderPromotion {
 	res := make(map[string]*AggregatedOrderPromotion, len(os))
