@@ -461,20 +461,22 @@ func (o *order) AggregateByPeriod(
 	ctx context.Context,
 	params *database.AggregateOrdersByPeriodParams,
 ) (entity.AggregatedPeriodOrders, error) {
-	var orders entity.AggregatedPeriodOrders
+	var internal internalAggregatedPeriodOrders
 
 	var period string
 	switch params.PeriodType {
 	case entity.AggregateOrderPeriodTypeDay:
-		period = "DATE_FORMAT(orders.created_at, '%Y-%m-%d') AS period" // 日付
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m-%d')" // 日付
 	case entity.AggregateOrderPeriodTypeWeek:
-		period = "SUBDATE(orders.created_at, WEEKDAY(orders.created_at)) AS period" // 週のはじめ
+		period = "DATE_FORMAT(SUBDATE(orders.created_at, WEEKDAY(orders.created_at)), '%Y-%m-%d')" // 週のはじめ
 	case entity.AggregateOrderPeriodTypeMonth:
-		period = "DATE_FORMAT(orders.created_at, '%Y-%m') AS period" // 月のはじめ
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m-01')" // 月のはじめ
+	default:
+		return nil, fmt.Errorf("tidb: invalid period type: %w", database.ErrInvalidArgument)
 	}
 
 	fields := []string{
-		period,
+		fmt.Sprintf("%s AS period", period),
 		"COUNT(DISTINCT(orders.id)) AS order_count",
 		"COUNT(DISTINCT(orders.user_id)) AS user_count",
 		"SUM(order_payments.subtotal) AS sales_total",
@@ -489,8 +491,10 @@ func (o *order) AggregateByPeriod(
 	}
 	stmt = stmt.Group("period").Order("period ASC")
 
-	err := stmt.Scan(&orders).Error
-	return orders, dbError(err)
+	if err := stmt.Scan(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return internal.entities(), nil
 }
 
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
@@ -610,4 +614,33 @@ func (es internalOrderExperiences) entities() (entity.OrderExperiences, error) {
 		res[i] = e
 	}
 	return res, nil
+}
+
+type internalAggregatedPeriodOrder struct {
+	Period        string
+	OrderCount    int64
+	UserCount     int64
+	SalesTotal    int64
+	DiscountTotal int64
+}
+
+type internalAggregatedPeriodOrders []*internalAggregatedPeriodOrder
+
+func (o *internalAggregatedPeriodOrder) entity() *entity.AggregatedPeriodOrder {
+	period, _ := jst.Parse("2006-01-02", o.Period)
+	return &entity.AggregatedPeriodOrder{
+		Period:        period,
+		OrderCount:    o.OrderCount,
+		UserCount:     o.UserCount,
+		SalesTotal:    o.SalesTotal,
+		DiscountTotal: o.DiscountTotal,
+	}
+}
+
+func (o internalAggregatedPeriodOrders) entities() entity.AggregatedPeriodOrders {
+	res := make(entity.AggregatedPeriodOrders, len(o))
+	for i := range o {
+		res[i] = o[i].entity()
+	}
+	return res
 }
