@@ -41,9 +41,11 @@ func (t TopOrderPeriodType) String(period time.Time) string {
 		return period.Format(time.DateOnly)
 	case TopOrderPeriodTypeWeek:
 		days := int(period.Weekday())
-		return period.AddDate(0, 0, -days).Format(time.DateOnly)
+		week := jst.Date(period.Year(), period.Month(), period.Day()-days, 0, 0, 0, 0)
+		return week.Format(time.DateOnly)
 	case TopOrderPeriodTypeMonth:
-		return period.Format(time.DateOnly)
+		month := jst.Date(period.Year(), period.Month(), 1, 0, 0, 0, 0)
+		return month.Format(time.DateOnly)
 	default:
 		return ""
 	}
@@ -176,13 +178,9 @@ func NewTopOrderSalesTrends(
 	startAt, endAt time.Time,
 	aggregated entity.AggregatedPeriodOrders,
 ) TopOrderSalesTrends {
-	// start := jst.Date(startAt.Year(), startAt.Month(), startAt.Day(), 0, 0, 0, 0)
-	// end := jst.Date(endAt.Year(), endAt.Month(), endAt.Day()+1, 0, 0, 0, 0)
-	start := periodType.Truncate(startAt)
 	aggregatedMap := aggregated.MapByPeriod()
-
 	res := make(TopOrderSalesTrends, 0, len(aggregated))
-	for ts := start; ts.Before(endAt); ts = periodType.Add(ts) {
+	for ts := periodType.Truncate(startAt); ts.Before(endAt); ts = periodType.Add(ts) {
 		if aggregate, ok := aggregatedMap[ts]; ok {
 			res = append(res, NewTopOrderSalesTrend(aggregate, periodType))
 			continue
