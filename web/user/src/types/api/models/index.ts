@@ -61,6 +61,7 @@ export * from './GuestCheckoutProductRequest';
 export * from './GuestCheckoutResponse';
 export * from './GuestCheckoutStateResponse';
 export * from './GuestPreCheckoutExperienceResponse';
+export * from './InstagramOEmbed';
 export * from './Live';
 export * from './LiveComment';
 export * from './LiveCommentsResponse';
