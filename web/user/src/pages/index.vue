@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useIntervalFn } from '@vueuse/core'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
+import { useInstagramStore } from '~/store/instagram'
 import type { BannerItem } from '~/types/props'
 import type { I18n } from '~/types/locales'
 
@@ -13,6 +14,10 @@ const router = useRouter()
 const topPageStore = useTopPageStore()
 const { archives, lives, productVideos, experienceVideos } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
+
+const instagramStore = useInstagramStore()
+const { OEmbedHTML } = storeToRefs(instagramStore)
+const { getInstagramOEmbed } = instagramStore
 
 const tt = (str: keyof I18n['base']['top']) => {
   return i18n.t(`base.top.${str}`)
@@ -35,6 +40,10 @@ useAsyncData('home-content', async () => {
   isInItLoading.value = true
   await getHomeContent()
   isInItLoading.value = false
+})
+
+useAsyncData('instagram-oembed', async () => {
+  await getInstagramOEmbed()
 })
 
 onMounted(() => {
