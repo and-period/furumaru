@@ -627,7 +627,7 @@ type internalAggregatedPeriodOrder struct {
 type internalAggregatedPeriodOrders []*internalAggregatedPeriodOrder
 
 func (o *internalAggregatedPeriodOrder) entity() *entity.AggregatedPeriodOrder {
-	period, _ := jst.Parse("2006-01-02", o.Period)
+	period, _ := jst.ParseFromYYYYMMDD(o.Period)
 	return &entity.AggregatedPeriodOrder{
 		Period:        period,
 		OrderCount:    o.OrderCount,

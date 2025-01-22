@@ -2247,7 +2247,7 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 			want: want{
 				orders: entity.AggregatedPeriodOrders{
 					{
-						Period:        jst.Date(now().Year(), now().Month(), 0, 0, 0, 0, 0),
+						Period:        jst.Date(now().Year(), now().Month(), now().Day(), 0, 0, 0, 0),
 						OrderCount:    2,
 						UserCount:     1,
 						SalesTotal:    3600,
