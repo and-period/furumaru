@@ -385,6 +385,26 @@
       "linkCopied": "リンクをコピーしました"
     }
   },
+  "videos": {
+    "details": {
+      "coordinatorThumbnailAlt": "{coordinatorName}のプロフィール画像",
+      "coordinatorLabel": "コーディネーター",
+      "hideMarcheDetailsText": "動画の詳細を隠す",
+      "showMarcheDetailsText": "動画の詳細を見る",
+      "itemsTabLabel": "この動画の商品",
+      "commentsTabLabel": "コメント",
+      "itemPriceTaxIncludedText": "(税込)",
+      "addToCartText": "カゴに入れる",
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました",
+      "commentPlaceholder": "コメントをする…",
+      "submitButtonText": "送信",
+      "guestCommentNote": "※ゲストとしてコメントします",
+      "noCommentsText": "コメントはありません",
+      "guestNameLabel": "ゲスト",
+      "linkCopy": "リンクをコピー",
+      "linkCopied": "リンクをコピーしました"
+    }
+  },
   "experiences": {
     "purchase": {
       "title": "ご購入手続き",

@@ -18,12 +18,12 @@ const i18n = useI18n()
 
 const snackbarItems = ref<Snackbar[]>([])
 
-const dt = (str: keyof I18n['lives']['details']) => {
+const dt = (str: keyof I18n['videos']['details']) => {
   return i18n.t(`lives.details.${str}`)
 }
 
 const coordinatorThumbnailAlt = computed<string>(() => {
-  return i18n.t('lives.details.coordinatorThumbnailAlt', {
+  return i18n.t('videos.details.coordinatorThumbnailAlt', {
     coordinatorName: props.coordinatorName,
   })
 })
@@ -42,7 +42,7 @@ const handleCLickCoordinator = () => {
 
 const handleClickCopyButton = async () => {
   snackbarItems.value.push({
-    text: i18n.t('lives.details.linkCopied'),
+    text: i18n.t('videos.details.linkCopied'),
     isShow: true,
   })
   await navigator.clipboard.writeText(window.location.href)
