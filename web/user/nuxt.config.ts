@@ -142,6 +142,7 @@ export default defineNuxtConfig({
       SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(
         process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0',
       ),
+      INSTAGRAM_APP_ACCESS_TOKEN: process.env.INSTAGRAM_APP_ACCESS_TOKEN || '',
     },
   },
   build: {},

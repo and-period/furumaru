@@ -9,6 +9,7 @@ export * from './ContactApi';
 export * from './CoordinatorApi';
 export * from './ExperienceApi';
 export * from './GuestApi';
+export * from './InstagramApi';
 export * from './OrderApi';
 export * from './OtherApi';
 export * from './ProducerApi';
