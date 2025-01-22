@@ -174,6 +174,26 @@ func (s *service) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInpu
 	return s.checkout(ctx, params)
 }
 
+func (s *service) CheckoutPaidy(ctx context.Context, in *store.CheckoutPaidyInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
+		in := &komoju.OrderPaidyParams{
+			SessionID: sessionID,
+			Email:     params.customer.Email(),
+			Name:      params.customer.Name(),
+		}
+		return s.komoju.Session.OrderPaidy(ctx, in)
+	}
+	params := &checkoutParams{
+		payload:           &in.CheckoutDetail,
+		paymentMethodType: entity.PaymentMethodTypePaidy,
+		payFn:             payFn,
+	}
+	return s.checkout(ctx, params)
+}
+
 func (s *service) CheckoutFree(ctx context.Context, in *store.CheckoutFreeInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)

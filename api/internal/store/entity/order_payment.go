@@ -40,7 +40,7 @@ const (
 	PaymentMethodTypeUnknown      PaymentMethodType = 0
 	PaymentMethodTypeCash         PaymentMethodType = 1  // 代引支払い
 	PaymentMethodTypeCreditCard   PaymentMethodType = 2  // クレジットカード決済
-	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済（セブン-イレブン、ローソン、ファミリーマート、ミニストップ、セイコーマート、デイリーヤマザキ）
 	PaymentMethodTypeBankTransfer PaymentMethodType = 4  // 銀行振込決済
 	PaymentMethodTypePayPay       PaymentMethodType = 5  // QR決済（PayPay）
 	PaymentMethodTypeLinePay      PaymentMethodType = 6  // QR決済（LINE Pay）
@@ -48,6 +48,8 @@ const (
 	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
 	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
 	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済なし
+	PaymentMethodTypePaidy        PaymentMethodType = 11 // ペイディ（Paidy）
+	PaymentMethodTypePayEasy      PaymentMethodType = 12 // ペイジー（Pay-easy）
 )
 
 var (
@@ -59,11 +61,13 @@ var (
 		PaymentMethodTypeMerpay,
 		PaymentMethodTypeRakutenPay,
 		PaymentMethodTypeAUPay,
+		PaymentMethodTypePaidy,
 	}
 	// 後日決済対応の決済手段
 	DeferredPaymentMethodTypes = []PaymentMethodType{
 		PaymentMethodTypeKonbini,
 		PaymentMethodTypeBankTransfer,
+		PaymentMethodTypePayEasy,
 	}
 	// その他の決済手段
 	OtherPaymentMethodTypes = []PaymentMethodType{
@@ -172,6 +176,10 @@ func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 		return []komoju.PaymentType{komoju.PaymentTypeRakutenPay}
 	case PaymentMethodTypeAUPay:
 		return []komoju.PaymentType{komoju.PaymentTypeAUPay}
+	case PaymentMethodTypePaidy:
+		return []komoju.PaymentType{komoju.PaymentTypePaidy}
+	case PaymentMethodTypePayEasy:
+		return []komoju.PaymentType{komoju.PaymentTypePayEasy}
 	default:
 		return []komoju.PaymentType{}
 	}
@@ -197,6 +205,10 @@ func (t PaymentMethodType) String() string {
 		return "QR決済（楽天ペイ）"
 	case PaymentMethodTypeAUPay:
 		return "QR決済（au PAY）"
+	case PaymentMethodTypePaidy:
+		return "ペイディ（Paidy）"
+	case PaymentMethodTypePayEasy:
+		return "ペイジー（Pay-easy）"
 	case PaymentMethodTypeNone:
 		return "決済なし"
 	default:
