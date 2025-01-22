@@ -116,7 +116,7 @@ func TestTopOrderPeriodType_String(t *testing.T) {
 		{
 			name:   "month",
 			period: TopOrderPeriodTypeMonth,
-			expect: "2025-01",
+			expect: "2025-01-01",
 		},
 		{
 			name:   "default",
