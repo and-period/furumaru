@@ -2247,7 +2247,7 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 			want: want{
 				orders: entity.AggregatedPeriodOrders{
 					{
-						Period:        now().Truncate(time.Hour * 24),
+						Period:        jst.Date(now().Year(), now().Month(), 0, 0, 0, 0, 0),
 						OrderCount:    2,
 						UserCount:     1,
 						SalesTotal:    3600,
@@ -2272,9 +2272,6 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 			db := &order{db: db, now: now}
 			actual, err := db.AggregateByPeriod(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
-			for i := range actual {
-				actual[i].Period = actual[i].Period.UTC()
-			}
 			assert.Equal(t, tt.want.orders, actual)
 		})
 	}
