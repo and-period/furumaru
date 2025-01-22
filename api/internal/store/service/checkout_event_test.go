@@ -172,7 +172,24 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 			expect: exception.ErrInternal,
 		},
 		{
-			name: "failed to capture",
+			name: "failed to capture for retryable error",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(nil, &komoju.Error{Code: komoju.ErrCodeBadGateway})
+			},
+			input: &store.NotifyPaymentAuthorizedInput{
+				NotifyPaymentPayload: store.NotifyPaymentPayload{
+					OrderID:   "order-id",
+					PaymentID: "payment-id",
+					IssuedAt:  now,
+					Status:    entity.PaymentStatusAuthorized,
+				},
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "failed to capture for non-retryable error",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
@@ -186,7 +203,7 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 					Status:    entity.PaymentStatusAuthorized,
 				},
 			},
-			expect: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
