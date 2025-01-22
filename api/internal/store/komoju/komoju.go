@@ -76,7 +76,9 @@ type PaymentDetails struct {
 	Store              string    `json:"store,omitempty"`
 	ConfirmationCode   string    `json:"confirmation_code,omitempty"`
 	Receipt            string    `json:"receipt,omitempty"`
+	BankID             string    `json:"bank_id,omitempty"`
 	BankName           string    `json:"bank_name,omitempty"`
+	CustomerID         string    `json:"customer_id,omitempty"`
 	AccountBranchName  string    `json:"account_branch_name,omitempty"`
 	AccountNumber      string    `json:"account_number,omitempty"`
 	AccountType        string    `json:"account_type,omitempty"`
@@ -85,10 +87,13 @@ type PaymentDetails struct {
 	PaymentDeadline    time.Time `json:"payment_deadline,omitempty"`
 	ChargeKey          string    `json:"charge_key,omitempty"`
 	RedirectURL        string    `json:"redirect_url,omitempty"`
+	ConfirmationID     string    `json:"confirmation_id,omitempty"`
 	ExternalPaymentID  string    `json:"external_payment_id,omitempty"`
 	TransactionKey     string    `json:"transaction_key,omitempty"`
+	PaymentURL         string    `json:"payment_url,omitempty"`
 	PaymentURLApp      string    `json:"payment_url_app,omitempty"`
 	PaymentAccessToken string    `json:"payment_access_token,omitempty"`
+	CVSCode            string    `json:"cvs_code,omitempty"`
 }
 
 type Refund struct {
@@ -127,6 +132,8 @@ type Session interface {
 	OrderMerpay(ctx context.Context, params *OrderMerpayParams) (*OrderSessionResponse, error)             // メルペイ決済
 	OrderRakutenPay(ctx context.Context, params *OrderRakutenPayParams) (*OrderSessionResponse, error)     // 楽天ペイ決済
 	OrderAUPay(ctx context.Context, params *OrderAUPayParams) (*OrderSessionResponse, error)               // au PAY決済
+	OrderPaidy(ctx context.Context, params *OrderPaidyParams) (*OrderSessionResponse, error)               // Paidy決済
+	OrderPayEasy(ctx context.Context, params *OrderPayEasyParams) (*OrderSessionResponse, error)           // Pay-easy決済
 }
 
 type CreateSessionParams struct {
@@ -176,8 +183,8 @@ type OrderBankTransferParams struct {
 	PhoneNumber   string // 電話番号
 	Lastname      string // 氏名（姓）
 	Firstname     string // 氏名（名）
-	LastnameKana  string // 氏名（姓：かな）
-	FirstnameKana string // 氏名（名：かな）
+	LastnameKana  string // 氏名（姓：カナ）
+	FirstnameKana string // 氏名（名：カナ）
 }
 
 type OrderKonbiniParams struct {
@@ -204,6 +211,22 @@ type OrderRakutenPayParams struct {
 
 type OrderAUPayParams struct {
 	SessionID string // セッションID
+}
+
+type OrderPaidyParams struct {
+	SessionID string // セッションID
+	Email     string // メールアドレス
+	Name      string // 氏名
+}
+
+type OrderPayEasyParams struct {
+	SessionID     string // セッションID
+	Email         string // メールアドレス
+	PhoneNumber   string // 電話番号
+	Lastname      string // 氏名（姓）
+	Firstname     string // 氏名（名）
+	LastnameKana  string // 氏名（姓：カナ）
+	FirstnameKana string // 氏名（名：カナ）
 }
 
 type SessionResponse struct {

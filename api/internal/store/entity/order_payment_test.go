@@ -122,6 +122,16 @@ func TestKomojuPaymentTypes(t *testing.T) {
 			expect:     []komoju.PaymentType{komoju.PaymentTypeAUPay},
 		},
 		{
+			name:       "paidy",
+			methodType: PaymentMethodTypePaidy,
+			expect:     []komoju.PaymentType{komoju.PaymentTypePaidy},
+		},
+		{
+			name:       "payeasy",
+			methodType: PaymentMethodTypePayEasy,
+			expect:     []komoju.PaymentType{komoju.PaymentTypePayEasy},
+		},
+		{
 			name:       "unknown",
 			methodType: PaymentMethodTypeUnknown,
 			expect:     []komoju.PaymentType{},
@@ -188,6 +198,16 @@ func TestPaymentMethodType_String(t *testing.T) {
 			name:       "au pay",
 			methodType: PaymentMethodTypeAUPay,
 			expect:     "QR決済（au PAY）",
+		},
+		{
+			name:       "paidy",
+			methodType: PaymentMethodTypePaidy,
+			expect:     "ペイディ（Paidy）",
+		},
+		{
+			name:       "payeasy",
+			methodType: PaymentMethodTypePayEasy,
+			expect:     "ペイジー（Pay-easy）",
 		},
 		{
 			name:       "none",

@@ -34,6 +34,8 @@ const (
 	PaymentTypePayPay       PaymentType = "paypay"        // PayPay
 	PaymentTypeRakutenPay   PaymentType = "rakutenpay"    // 楽天ペイ
 	PaymentTypeAUPay        PaymentType = "aupay"         // au PAY
+	PaymentTypePaidy        PaymentType = "paidy"         // Paidy
+	PaymentTypePayEasy      PaymentType = "pay_easy"      // Pay-easy
 )
 
 // KonbiniType コンビニ店舗種別

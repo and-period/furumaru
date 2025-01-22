@@ -236,6 +236,11 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutAUPay(ctx, in)
+	case service.PaymentMethodTypePaidy:
+		in := &store.CheckoutPaidyInput{
+			CheckoutDetail: *params.detail,
+		}
+		redirectURL, err = h.store.CheckoutPaidy(ctx, in)
 	case service.PaymentMethodTypeFree:
 		in := &store.CheckoutFreeInput{
 			CheckoutDetail: *params.detail,

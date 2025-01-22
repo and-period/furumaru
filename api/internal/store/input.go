@@ -120,6 +120,10 @@ type CheckoutAUPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutPaidyInput struct {
+	CheckoutDetail
+}
+
 type CheckoutFreeInput struct {
 	CheckoutDetail
 }
