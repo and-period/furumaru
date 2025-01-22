@@ -190,6 +190,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.spotRoutes(v1)
 	h.spotTypeRoutes(v1)
 	h.threadRoutes(v1)
+	h.topRoutes(v1)
 	h.uploadRoutes(v1)
 	h.userRoutes(v1)
 	h.videoRoutes(v1)

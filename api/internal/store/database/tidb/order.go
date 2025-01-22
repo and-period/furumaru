@@ -387,6 +387,27 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	return dbError(err)
 }
 
+func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (*entity.AggregatedOrder, error) {
+	var orders entity.AggregatedOrder
+
+	fields := []string{
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"COUNT(DISTINCT(orders.user_id)) AS user_count",
+		"SUM(order_payments.subtotal) AS sales_total",
+		"SUM(order_payments.discount) AS discount_total",
+	}
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+
+	err := stmt.Scan(&orders).Error
+	return &orders, dbError(err)
+}
+
 func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error) {
 	var orders entity.AggregatedUserOrders
 
@@ -431,6 +452,42 @@ func (o *order) AggregateByPromotion(
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
 	stmt = stmt.Group("orders.promotion_id")
+
+	err := stmt.Scan(&orders).Error
+	return orders, dbError(err)
+}
+
+func (o *order) AggregateByPeriod(
+	ctx context.Context,
+	params *database.AggregateOrdersByPeriodParams,
+) (entity.AggregatedPeriodOrders, error) {
+	var orders entity.AggregatedPeriodOrders
+
+	var period string
+	switch params.PeriodType {
+	case entity.AggregateOrderPeriodTypeDay:
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m-%d') AS period" // 日付
+	case entity.AggregateOrderPeriodTypeWeek:
+		period = "SUBDATE(orders.created_at, WEEKDAY(orders.created_at)) AS period" // 週のはじめ
+	case entity.AggregateOrderPeriodTypeMonth:
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m') AS period" // 月のはじめ
+	}
+
+	fields := []string{
+		period,
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"COUNT(DISTINCT(orders.user_id)) AS user_count",
+		"SUM(order_payments.subtotal) AS sales_total",
+		"SUM(order_payments.discount) AS discount_total",
+	}
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+	stmt = stmt.Group("period").Order("period ASC")
 
 	err := stmt.Scan(&orders).Error
 	return orders, dbError(err)

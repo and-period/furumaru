@@ -473,6 +473,12 @@ type UpdateOrderFulfillmentInput struct {
 	TrackingNumber  string                 `validate:"required"`
 }
 
+type AggregateOrdersInput struct {
+	CoordinatorID string    `validate:""`
+	CreatedAtGte  time.Time `validate:""`
+	CreatedAtLt   time.Time `validate:""`
+}
+
 type AggregateOrdersByUserInput struct {
 	CoordinatorID string   `validate:""`
 	UserIDs       []string `validate:"dive,required"`
@@ -481,6 +487,13 @@ type AggregateOrdersByUserInput struct {
 type AggregateOrdersByPromotionInput struct {
 	CoordinatorID string   `validate:""`
 	PromotionIDs  []string `validate:"dive,required"`
+}
+
+type AggregateOrdersByPeriodInput struct {
+	CoordinatorID string                          `validate:""`
+	PeriodType    entity.AggregateOrderPeriodType `validate:"required"`
+	CreatedAtGte  time.Time                       `validate:""`
+	CreatedAtLt   time.Time                       `validate:""`
 }
 
 type ExportOrdersInput struct {

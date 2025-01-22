@@ -17,6 +17,15 @@ const (
 	OrderTypeExperience OrderType = 2 // 体験
 )
 
+// AggregateOrderPeriodType - 注文集計期間種別
+type AggregateOrderPeriodType string
+
+const (
+	AggregateOrderPeriodTypeDay   AggregateOrderPeriodType = "day"   // 日
+	AggregateOrderPeriodTypeWeek  AggregateOrderPeriodType = "week"  // 週
+	AggregateOrderPeriodTypeMonth AggregateOrderPeriodType = "month" // 月
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -374,6 +383,14 @@ func (os Orders) Fill(
 	}
 }
 
+// AggregatedOrder - 注文履歴集計情報
+type AggregatedOrder struct {
+	OrderCount    int64 // 注文合計回数
+	UserCount     int64 // 注文ユーザー数
+	SalesTotal    int64 // 購入合計金額
+	DiscountTotal int64 // 割引合計金額
+}
+
 // AggregatedUserOrder - 注文履歴集計情報
 type AggregatedUserOrder struct {
 	UserID     string // ユーザーID
@@ -409,3 +426,14 @@ func (os AggregatedOrderPromotions) Map() map[string]*AggregatedOrderPromotion {
 	}
 	return res
 }
+
+// AggregatedPeriodOrder - 注文履歴集計情報（期間別）
+type AggregatedPeriodOrder struct {
+	Period        time.Time // 期間
+	OrderCount    int64     // 注文合計回数
+	UserCount     int64     // 注文ユーザー数
+	SalesTotal    int64     // 購入合計金額
+	DiscountTotal int64     // 割引合計金額
+}
+
+type AggregatedPeriodOrders []*AggregatedPeriodOrder

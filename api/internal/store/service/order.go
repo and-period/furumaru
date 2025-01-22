@@ -206,6 +206,19 @@ func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOr
 	return internalError(err)
 }
 
+func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (*entity.AggregatedOrder, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateOrdersParams{
+		CoordinatorID: in.CoordinatorID,
+		CreatedAtGte:  in.CreatedAtGte,
+		CreatedAtLt:   in.CreatedAtLt,
+	}
+	order, err := s.db.Order.Aggregate(ctx, params)
+	return order, internalError(err)
+}
+
 func (s *service) AggregateOrdersByUser(ctx context.Context, in *store.AggregateOrdersByUserInput) (entity.AggregatedUserOrders, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
@@ -230,6 +243,23 @@ func (s *service) AggregateOrdersByPromotion(
 		PromotionIDs:  in.PromotionIDs,
 	}
 	orders, err := s.db.Order.AggregateByPromotion(ctx, params)
+	return orders, internalError(err)
+}
+
+func (s *service) AggregateOrdersByPeriod(
+	ctx context.Context,
+	in *store.AggregateOrdersByPeriodInput,
+) (entity.AggregatedPeriodOrders, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateOrdersByPeriodParams{
+		CoordinatorID: in.CoordinatorID,
+		PeriodType:    in.PeriodType,
+		CreatedAtGte:  in.CreatedAtGte,
+		CreatedAtLt:   in.CreatedAtLt,
+	}
+	orders, err := s.db.Order.AggregateByPeriod(ctx, params)
 	return orders, internalError(err)
 }
 

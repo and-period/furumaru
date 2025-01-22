@@ -61,6 +61,8 @@ tags:
   description: スポット種別関連
 - name: Thread
   description: お問い合わせ会話履歴関連
+- name: Top
+  description: トップページ関連
 - name: User
   description: 購入者関連
 - name: Video
@@ -233,6 +235,9 @@ paths:
     $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
   /v1/contacts/{contactId}/threads/{threadId}:
     $ref: './paths/v1/contacts/_contactId/threads/_threadId/index.yaml'
+  # Top
+  /v1/top/orders:
+    $ref: './paths/v1/top/orders.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -398,6 +403,8 @@ components:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     spotUserType:
       $ref: './components/schemas/codes/spot.yaml#/spotUserType'
+    topOrderPeriodType:
+      $ref: './components/schemas/codes/top.yaml#/topOrderPeriodType'
     uploadStatus:
       $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     userStatus:
@@ -465,6 +472,10 @@ components:
       $ref: './components/schemas/entity/spot-type.yaml#/spotType'
     thread:
       $ref: './components/schemas/entity/thread.yaml#/thread'
+    topOrderValue:
+      $ref: './components/schemas/entity/top.yaml#/topOrderValue'
+    topOrderSalesTrend:
+      $ref: './components/schemas/entity/top.yaml#/topOrderSalesTrend'
     user:
       $ref: './components/schemas/entity/user.yaml#/user'
     userToList:
@@ -709,6 +720,8 @@ components:
       $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
     v1ThreadsResponse:
       $ref: './components/schemas/v1/thread.response.yaml#/threadsResponse'
+    v1TopOrdersResponse:
+      $ref: './components/schemas/v1/top.response.yaml#/topOrdersResponse'
     v1UploadUrlResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
     v1UploadStateResponse:
