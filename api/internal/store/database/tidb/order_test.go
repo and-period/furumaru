@@ -1887,6 +1887,8 @@ func TestOrder_Aggregate(t *testing.T) {
 			args: args{
 				params: &database.AggregateOrdersParams{
 					CoordinatorID: "coordinator-id",
+					CreatedAtGte:  now().AddDate(0, 0, -1),
+					CreatedAtLt:   now().AddDate(0, 0, 1),
 				},
 			},
 			want: want{
@@ -2242,6 +2244,8 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 				params: &database.AggregateOrdersByPeriodParams{
 					PeriodType:    entity.AggregateOrderPeriodTypeDay,
 					CoordinatorID: "coordinator-id",
+					CreatedAtGte:  now().AddDate(0, 0, -1),
+					CreatedAtLt:   now().AddDate(0, 0, 1),
 				},
 			},
 			want: want{

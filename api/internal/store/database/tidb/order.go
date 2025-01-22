@@ -399,7 +399,9 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
-		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses).
+		Where("orders.created_at >= ?", params.CreatedAtGte).
+		Where("orders.created_at < ?", params.CreatedAtLt)
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
@@ -485,7 +487,9 @@ func (o *order) AggregateByPeriod(
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
-		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses).
+		Where("orders.created_at >= ?", params.CreatedAtGte).
+		Where("orders.created_at < ?", params.CreatedAtLt)
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}

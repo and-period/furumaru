@@ -61,11 +61,11 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		diff := startAt.Sub(endAt)
+		diff := endAt.Sub(startAt)
 		in := &store.AggregateOrdersInput{
 			CoordinatorID: coordinatorID,
-			CreatedAtGte:  startAt.Add(diff),
-			CreatedAtLt:   endAt.Add(diff),
+			CreatedAtGte:  startAt.Add(-diff),
+			CreatedAtLt:   endAt.Add(-diff),
 		}
 		previous, err = h.store.AggregateOrders(ectx, in)
 		return
@@ -98,7 +98,7 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		Orders:      service.NewTopOrderValue(current.OrderCount, previous.OrderCount).Response(),
 		Users:       service.NewTopOrderValue(current.UserCount, previous.UserCount).Response(),
 		Sales:       service.NewTopOrderValue(current.SalesTotal, previous.SalesTotal).Response(),
-		SalesTrends: service.NewTopOrderSalesTrends(orders, periodType).Response(),
+		SalesTrends: service.NewTopOrderSalesTrends(periodType, startAt, endAt, orders).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
