@@ -1226,3 +1226,41 @@ func TestAggregatedOrderPromotions_Map(t *testing.T) {
 		})
 	}
 }
+
+func TestAggregatedPeriodOrders_MapByPeriod(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		orders AggregatedPeriodOrders
+		expect map[time.Time]*AggregatedPeriodOrder
+	}{
+		{
+			name: "success",
+			orders: AggregatedPeriodOrders{
+				{
+					Period:        now,
+					OrderCount:    3,
+					UserCount:     2,
+					SalesTotal:    3000,
+					DiscountTotal: 0,
+				},
+			},
+			expect: map[time.Time]*AggregatedPeriodOrder{
+				now: {
+					Period:        now,
+					OrderCount:    3,
+					UserCount:     2,
+					SalesTotal:    3000,
+					DiscountTotal: 0,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.orders.MapByPeriod())
+		})
+	}
+}

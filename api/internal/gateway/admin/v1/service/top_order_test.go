@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -239,26 +240,94 @@ func TestTopOrderSalesTrends(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name       string
-		aggregated entity.AggregatedPeriodOrders
 		periodType TopOrderPeriodType
+		startAt    time.Time
+		endAt      time.Time
+		aggregated entity.AggregatedPeriodOrders
 		expect     TopOrderSalesTrends
 	}{
 		{
-			name: "success",
+			name:       "success day",
+			periodType: TopOrderPeriodTypeDay,
+			startAt:    jst.Date(2025, 1, 17, 18, 30, 0, 0),
+			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
 			aggregated: entity.AggregatedPeriodOrders{
 				{
-					Period:        jst.Date(2025, 1, 18, 18, 30, 0, 0),
+					Period:        jst.Date(2025, 1, 18, 0, 0, 0, 0),
 					OrderCount:    2,
 					UserCount:     1,
 					SalesTotal:    100,
 					DiscountTotal: 0,
 				},
 			},
-			periodType: TopOrderPeriodTypeDay,
 			expect: TopOrderSalesTrends{
 				{
 					TopOrderSalesTrend: response.TopOrderSalesTrend{
+						Period:     "2025-01-17",
+						SalesTotal: 0,
+					},
+				},
+				{
+					TopOrderSalesTrend: response.TopOrderSalesTrend{
 						Period:     "2025-01-18",
+						SalesTotal: 100,
+					},
+				},
+			},
+		},
+		{
+			name:       "success week",
+			periodType: TopOrderPeriodTypeWeek,
+			startAt:    jst.Date(2025, 1, 1, 18, 30, 0, 0),
+			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
+			aggregated: entity.AggregatedPeriodOrders{
+				{
+					Period:        jst.Date(2025, 1, 12, 0, 0, 0, 0),
+					OrderCount:    2,
+					UserCount:     1,
+					SalesTotal:    100,
+					DiscountTotal: 0,
+				},
+			},
+			expect: TopOrderSalesTrends{
+				{
+					TopOrderSalesTrend: response.TopOrderSalesTrend{
+						Period:     "2024-12-29",
+						SalesTotal: 0,
+					},
+				},
+				{
+					TopOrderSalesTrend: response.TopOrderSalesTrend{
+						Period:     "2025-01-05",
+						SalesTotal: 0,
+					},
+				},
+				{
+					TopOrderSalesTrend: response.TopOrderSalesTrend{
+						Period:     "2025-01-12",
+						SalesTotal: 100,
+					},
+				},
+			},
+		},
+		{
+			name:       "success month",
+			periodType: TopOrderPeriodTypeMonth,
+			startAt:    jst.Date(2025, 1, 1, 18, 30, 0, 0),
+			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
+			aggregated: entity.AggregatedPeriodOrders{
+				{
+					Period:        jst.Date(2025, 1, 1, 0, 0, 0, 0),
+					OrderCount:    2,
+					UserCount:     1,
+					SalesTotal:    100,
+					DiscountTotal: 0,
+				},
+			},
+			expect: TopOrderSalesTrends{
+				{
+					TopOrderSalesTrend: response.TopOrderSalesTrend{
+						Period:     "2025-01-01",
 						SalesTotal: 100,
 					},
 				},
@@ -268,7 +337,7 @@ func TestTopOrderSalesTrends(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewTopOrderSalesTrends(tt.aggregated, tt.periodType)
+			actual := NewTopOrderSalesTrends(tt.periodType, tt.startAt, tt.endAt, tt.aggregated)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

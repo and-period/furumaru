@@ -437,3 +437,11 @@ type AggregatedPeriodOrder struct {
 }
 
 type AggregatedPeriodOrders []*AggregatedPeriodOrder
+
+func (os AggregatedPeriodOrders) MapByPeriod() map[time.Time]*AggregatedPeriodOrder {
+	res := make(map[time.Time]*AggregatedPeriodOrder, len(os))
+	for _, o := range os {
+		res[o.Period] = o
+	}
+	return res
+}
