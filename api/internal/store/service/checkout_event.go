@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"go.uber.org/zap"
 	"golang.org/x/sync/semaphore"
 )
@@ -34,8 +35,13 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	if err != nil && !errors.Is(err, database.ErrFailedPrecondition) {
 		return internalError(err)
 	}
-	if _, err := s.komoju.Payment.Capture(ctx, in.PaymentID); err != nil {
-		return internalError(err)
+	_, err = s.komoju.Payment.Capture(ctx, in.PaymentID)
+	if err != nil && komoju.IsRetryable(err) {
+		return fmt.Errorf("store: failed to capture payment. err=%s: %w", err.Error(), exception.ErrInternal)
+	}
+	if err != nil {
+		s.logger.Warn("Failed to capture payment", zap.String("paymentID", in.PaymentID), zap.Error(err))
+		return nil // Webhookがリトライしないように成功として返す
 	}
 	// 即時決済の場合、買い物かごからの削除処理も追加で行う
 	s.waitGroup.Add(1)
