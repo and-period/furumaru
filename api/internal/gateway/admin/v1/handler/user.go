@@ -106,13 +106,13 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.AggregateOrdersInput{
+	in := &store.AggregateOrdersByUserInput{
 		UserIDs: users.IDs(),
 	}
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
-	orders, err := h.store.AggregateOrders(ctx, in)
+	orders, err := h.store.AggregateOrdersByUser(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -173,7 +173,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 
 	var (
 		orders          sentity.Orders
-		aggregatedOrder *sentity.AggregatedOrder
+		aggregatedOrder *sentity.AggregatedUserOrder
 		total           int64
 	)
 	eg, ectx := errgroup.WithContext(ctx)
@@ -190,19 +190,19 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() error {
-		in := &store.AggregateOrdersInput{
+		in := &store.AggregateOrdersByUserInput{
 			UserIDs: []string{userID},
 		}
 		if getAdminType(ctx) == service.AdminTypeCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
-		aggregate, err := h.store.AggregateOrders(ectx, in)
+		aggregate, err := h.store.AggregateOrdersByUser(ectx, in)
 		if err != nil {
 			return err
 		}
 		order, ok := aggregate.Map()[userID]
 		if !ok {
-			order = &sentity.AggregatedOrder{}
+			order = &sentity.AggregatedUserOrder{}
 		}
 		aggregatedOrder = order
 		return nil

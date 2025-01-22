@@ -387,8 +387,29 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	return dbError(err)
 }
 
-func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
-	var orders entity.AggregatedOrders
+func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (*entity.AggregatedOrder, error) {
+	var orders entity.AggregatedOrder
+
+	fields := []string{
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"COUNT(DISTINCT(orders.user_id)) AS user_count",
+		"SUM(order_payments.subtotal) AS sales_total",
+		"SUM(order_payments.discount) AS discount_total",
+	}
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+
+	err := stmt.Scan(&orders).Error
+	return &orders, dbError(err)
+}
+
+func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error) {
+	var orders entity.AggregatedUserOrders
 
 	fields := []string{
 		"orders.user_id AS user_id",
@@ -434,6 +455,46 @@ func (o *order) AggregateByPromotion(
 
 	err := stmt.Scan(&orders).Error
 	return orders, dbError(err)
+}
+
+func (o *order) AggregateByPeriod(
+	ctx context.Context,
+	params *database.AggregateOrdersByPeriodParams,
+) (entity.AggregatedPeriodOrders, error) {
+	var internal internalAggregatedPeriodOrders
+
+	var period string
+	switch params.PeriodType {
+	case entity.AggregateOrderPeriodTypeDay:
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m-%d')" // 日付
+	case entity.AggregateOrderPeriodTypeWeek:
+		period = "DATE_FORMAT(SUBDATE(orders.created_at, WEEKDAY(orders.created_at)), '%Y-%m-%d')" // 週のはじめ
+	case entity.AggregateOrderPeriodTypeMonth:
+		period = "DATE_FORMAT(orders.created_at, '%Y-%m-01')" // 月のはじめ
+	default:
+		return nil, fmt.Errorf("tidb: invalid period type: %w", database.ErrInvalidArgument)
+	}
+
+	fields := []string{
+		fmt.Sprintf("%s AS period", period),
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"COUNT(DISTINCT(orders.user_id)) AS user_count",
+		"SUM(order_payments.subtotal) AS sales_total",
+		"SUM(order_payments.discount) AS discount_total",
+	}
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+	stmt = stmt.Group("period").Order("period ASC")
+
+	if err := stmt.Scan(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return internal.entities(), nil
 }
 
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
@@ -553,4 +614,33 @@ func (es internalOrderExperiences) entities() (entity.OrderExperiences, error) {
 		res[i] = e
 	}
 	return res, nil
+}
+
+type internalAggregatedPeriodOrder struct {
+	Period        string
+	OrderCount    int64
+	UserCount     int64
+	SalesTotal    int64
+	DiscountTotal int64
+}
+
+type internalAggregatedPeriodOrders []*internalAggregatedPeriodOrder
+
+func (o *internalAggregatedPeriodOrder) entity() *entity.AggregatedPeriodOrder {
+	period, _ := jst.Parse("2006-01-02", o.Period)
+	return &entity.AggregatedPeriodOrder{
+		Period:        period,
+		OrderCount:    o.OrderCount,
+		UserCount:     o.UserCount,
+		SalesTotal:    o.SalesTotal,
+		DiscountTotal: o.DiscountTotal,
+	}
+}
+
+func (o internalAggregatedPeriodOrders) entities() entity.AggregatedPeriodOrders {
+	res := make(entity.AggregatedPeriodOrders, len(o))
+	for i := range o {
+		res[i] = o[i].entity()
+	}
+	return res
 }

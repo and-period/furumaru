@@ -78,8 +78,10 @@ type Service interface {
 	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                                                   // 注文キャンセル
 	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                                                   // 注文返金依頼
 	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                             // 注文配送情報更新
-	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)                                // 集計結果一覧取得
-	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) // プロモーション利用履歴集計結果一覧取得
+	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (*entity.AggregatedOrder, error)                                // 注文履歴集計結果取得
+	AggregateOrdersByUser(ctx context.Context, in *AggregateOrdersByUserInput) (entity.AggregatedUserOrders, error)                // ユーザーごとの注文履歴集計結果取得
+	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) // プロモーション利用履歴集計結果取得
+	AggregateOrdersByPeriod(ctx context.Context, in *AggregateOrdersByPeriodInput) (entity.AggregatedPeriodOrders, error)          // 期間ごとの注文履歴集計結果取得
 	ExportOrders(ctx context.Context, in *ExportOrdersInput) ([]byte, error)                                                       // 注文履歴一覧CSV出力
 	// PaymentSystem - 決済システム
 	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)

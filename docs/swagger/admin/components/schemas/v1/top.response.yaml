@@ -1,0 +1,51 @@
+topOrdersResponse:
+  type: object
+  properties:
+    startAt:
+      type: integer
+      format: int64
+      description: 取得開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 取得終了日時 (unixtime)
+    periodType:
+      $ref: './../../../openapi.yaml#/components/schemas/topOrderPeriodType'
+    orders:
+      description: 注文数
+      $ref: './../../../openapi.yaml#/components/schemas/topOrderValue'
+    users:
+      description: 注文ユーザー数
+      $ref: './../../../openapi.yaml#/components/schemas/topOrderValue'
+    sales:
+      description: 売上合計
+      $ref: './../../../openapi.yaml#/components/schemas/topOrderValue'
+    salesTrend:
+      description: 売上推移
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/topOrderSalesTrend'
+  required:
+  - startAt
+  - endAt
+  - periodType
+  - orders
+  - users
+  - sales
+  - salesTrend
+  example:
+    startAt: 1640995200
+    endAt: 1641081600
+    periodType: 'day'
+    orders:
+      value: 1
+      comparison: 0.5
+    users:
+      value: 1
+      comparison: 0.5
+    sales:
+      value: 100000
+      comparison: 0.5
+    salesTrend:
+    - period: '2022-01'
+      salesTotal: 100000
