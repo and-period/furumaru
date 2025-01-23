@@ -4330,7 +4330,15 @@ export const PaymentMethodType = {
     /**
     * 決済無し（0円決済）
     */
-    NONE: 10
+    NONE: 10,
+    /**
+    * ペイディ（Paidy）
+    */
+    PAIDY: 11,
+    /**
+    * ペイジー（Pay-easy）
+    */
+    PAY_EASY: 12
 } as const;
 
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];

@@ -18,4 +18,6 @@ export const paymentsList: PaymentListItem[] = [
   { name: 'QR決済（メルペイ）', value: PaymentMethodType.MERPAY },
   { name: 'QR決済（楽天ペイ）', value: PaymentMethodType.RAKUTEN_PAY },
   { name: 'QR決済（au PAY）', value: PaymentMethodType.AU_PAY },
+  { name: 'ペイディ（Paidy）', value: PaymentMethodType.PAIDY },
+  { name: 'ペイジー（Pay-easy）', value: PaymentMethodType.PAY_EASY },
 ]

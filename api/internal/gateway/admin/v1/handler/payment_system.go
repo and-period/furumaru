@@ -24,7 +24,6 @@ func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 		entity.PaymentMethodTypeCreditCard,
 		entity.PaymentMethodTypePayPay,
 		entity.PaymentMethodTypeMerpay,
-		entity.PaymentMethodTypeAUPay,
 		entity.PaymentMethodTypePaidy,
 	}
 	in := &store.MultiGetPaymentSystemsInput{
