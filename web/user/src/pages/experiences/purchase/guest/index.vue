@@ -84,6 +84,7 @@ const {
   data: targetExperience,
   status: targetExperienceFetchStatus,
   error: targetExperienceFetchError,
+  refresh,
 } = useAsyncData('target-experience', async () => {
   if (experienceId.value) {
     return await fetchCheckoutTarget({
@@ -251,11 +252,15 @@ const handleSubmit = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   // フォームデータのセットアップ
   formData.value.callbackUrl = `${window.location.origin}/v1/purchase/guest/complete`
   if (availablePaymentSystem.value.length > 0) {
     formData.value.paymentMethod = availablePaymentSystem.value[0].methodType
+  }
+
+  if (!targetExperience.value) {
+    await refresh()
   }
 
   // リクエストID
