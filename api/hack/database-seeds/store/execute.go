@@ -283,15 +283,10 @@ func (a *app) executePaymentSystems(ctx context.Context) error {
 				CreatedAt:  now,
 				UpdatedAt:  now,
 			}
-			updates := map[string]interface{}{
-				"method_type": system.MethodType,
-				"status":      system.Status,
-				"updated_at":  now,
-			}
 
 			stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
 				Columns:   []clause.Column{{Name: "method_type"}},
-				DoUpdates: clause.Assignments(updates),
+				DoNothing: true, // ステータス以外を変更する場合はfalseにする
 			})
 			if err := stmt.Create(&system).Error; err != nil {
 				return err
