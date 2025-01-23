@@ -164,6 +164,10 @@ const getComparison = (num: number): string => {
   if (num === 0) {
     return '0'
   }
+  let prefix = ''
+  if (num > 0) {
+    prefix = '+'
+  }
   return num.toFixed(2)
 }
 
