@@ -6486,7 +6486,7 @@ export interface TopOrdersResponse {
      * @type {Array<TopOrderSalesTrend>}
      * @memberof TopOrdersResponse
      */
-    'salesTrend': Array<TopOrderSalesTrend>;
+    'salesTrends': Array<TopOrderSalesTrend>;
 }
 
 

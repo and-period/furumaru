@@ -20,7 +20,7 @@ topOrdersResponse:
     sales:
       description: 売上合計
       $ref: './../../../openapi.yaml#/components/schemas/topOrderValue'
-    salesTrend:
+    salesTrends:
       description: 売上推移
       type: array
       items:
@@ -32,7 +32,7 @@ topOrdersResponse:
   - orders
   - users
   - sales
-  - salesTrend
+  - salesTrends
   example:
     startAt: 1640995200
     endAt: 1641081600
@@ -46,6 +46,6 @@ topOrdersResponse:
     sales:
       value: 100000
       comparison: 0.5
-    salesTrend:
+    salesTrends:
     - period: '2022-01'
       salesTotal: 100000
