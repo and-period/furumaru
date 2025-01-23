@@ -22,9 +22,11 @@ func (h *handler) paymentSystemRoutes(rg *gin.RouterGroup) {
 func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 	methodTypes := []entity.PaymentMethodType{
 		entity.PaymentMethodTypeCreditCard,
+		entity.PaymentMethodTypeBankTransfer,
 		entity.PaymentMethodTypePayPay,
 		entity.PaymentMethodTypeMerpay,
 		entity.PaymentMethodTypePaidy,
+		entity.PaymentMethodTypePayEasy,
 	}
 	in := &store.MultiGetPaymentSystemsInput{
 		MethodTypes: methodTypes,
