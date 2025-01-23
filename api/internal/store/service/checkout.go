@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
+	"github.com/and-period/furumaru/api/pkg/japanese"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -194,6 +195,54 @@ func (s *service) CheckoutPaidy(ctx context.Context, in *store.CheckoutPaidyInpu
 	return s.checkout(ctx, params)
 }
 
+func (s *service) CheckoutBankTransfer(ctx context.Context, in *store.CheckoutBankTransferInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
+		in := &komoju.OrderBankTransferParams{
+			SessionID:     sessionID,
+			Email:         params.customer.Email(),
+			PhoneNumber:   params.billingAddress.PhoneNumber,
+			Lastname:      params.billingAddress.Lastname,
+			Firstname:     params.billingAddress.Firstname,
+			LastnameKana:  japanese.HiraganaToKatakana(params.billingAddress.LastnameKana),
+			FirstnameKana: japanese.HiraganaToKatakana(params.billingAddress.FirstnameKana),
+		}
+		return s.komoju.Session.OrderBankTransfer(ctx, in)
+	}
+	params := &checkoutParams{
+		payload:           &in.CheckoutDetail,
+		paymentMethodType: entity.PaymentMethodTypeBankTransfer,
+		payFn:             payFn,
+	}
+	return s.checkout(ctx, params)
+}
+
+func (s *service) CheckoutPayEasy(ctx context.Context, in *store.CheckoutPayEasyInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
+		in := &komoju.OrderPayEasyParams{
+			SessionID:     sessionID,
+			Email:         params.customer.Email(),
+			PhoneNumber:   params.billingAddress.PhoneNumber,
+			Lastname:      params.billingAddress.Lastname,
+			Firstname:     params.billingAddress.Firstname,
+			LastnameKana:  japanese.HiraganaToKatakana(params.billingAddress.LastnameKana),
+			FirstnameKana: japanese.HiraganaToKatakana(params.billingAddress.FirstnameKana),
+		}
+		return s.komoju.Session.OrderPayEasy(ctx, in)
+	}
+	params := &checkoutParams{
+		payload:           &in.CheckoutDetail,
+		paymentMethodType: entity.PaymentMethodTypePayEasy,
+		payFn:             payFn,
+	}
+	return s.checkout(ctx, params)
+}
+
 func (s *service) CheckoutFree(ctx context.Context, in *store.CheckoutFreeInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
@@ -222,7 +271,8 @@ type checkoutParams struct {
 }
 
 type checkoutDetailParams struct {
-	customer *uentity.User
+	customer       *uentity.User
+	billingAddress *uentity.Address
 }
 
 func (s *service) checkout(ctx context.Context, params *checkoutParams) (string, error) {
@@ -548,7 +598,8 @@ func (s *service) executePaymentOrder(
 	}
 	// 決済依頼処理
 	cparams := &checkoutDetailParams{
-		customer: params.customer,
+		customer:       params.customer,
+		billingAddress: params.billingAddress,
 	}
 	pay, err := params.payFn(ctx, session.ID, cparams)
 	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {

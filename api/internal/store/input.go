@@ -124,6 +124,14 @@ type CheckoutPaidyInput struct {
 	CheckoutDetail
 }
 
+type CheckoutBankTransferInput struct {
+	CheckoutDetail
+}
+
+type CheckoutPayEasyInput struct {
+	CheckoutDetail
+}
+
 type CheckoutFreeInput struct {
 	CheckoutDetail
 }

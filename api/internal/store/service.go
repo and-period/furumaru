@@ -30,6 +30,8 @@ type Service interface {
 	CheckoutRakutenPay(ctx context.Context, in *CheckoutRakutenPayInput) (string, error)                   // 支払い申請（楽天ペイ）
 	CheckoutAUPay(ctx context.Context, in *CheckoutAUPayInput) (string, error)                             // 支払い申請（au PAY）
 	CheckoutPaidy(ctx context.Context, in *CheckoutPaidyInput) (string, error)                             // 支払い申請（Paidy）
+	CheckoutBankTransfer(ctx context.Context, in *CheckoutBankTransferInput) (string, error)               // 支払い申請（銀行振込）
+	CheckoutPayEasy(ctx context.Context, in *CheckoutPayEasyInput) (string, error)                         // 支払い申請（Pay-easy）
 	CheckoutFree(ctx context.Context, in *CheckoutFreeInput) (string, error)                               // 支払い申請（無料）
 	NotifyPaymentAuthorized(ctx context.Context, in *NotifyPaymentAuthorizedInput) error                   // 支払い通知（仮売上）
 	NotifyPaymentCaptured(ctx context.Context, in *NotifyPaymentCapturedInput) error                       // 支払い通知（実売上）

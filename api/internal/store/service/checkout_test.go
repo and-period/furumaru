@@ -837,6 +837,190 @@ func TestCheckoutPaidy(t *testing.T) {
 	}
 }
 
+func TestCheckoutBankTransfer(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	params := &komoju.OrderBankTransferParams{
+		SessionID:     "transaction-id",
+		Email:         "test@example.com",
+		PhoneNumber:   "090-1234-1234",
+		Lastname:      "&.",
+		Firstname:     "購入者",
+		LastnameKana:  "アンドドット",
+		FirstnameKana: "コウニュウシャ",
+	}
+	session := &komoju.OrderSessionResponse{
+		RedirectURL: "http://example.com/redirect",
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.CheckoutBankTransferInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeBankTransfer)
+				mocks.komojuSession.EXPECT().OrderBankTransfer(gomock.Any(), params).Return(session, nil)
+			},
+			input: &store.CheckoutBankTransferInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+			},
+			expect:    "http://example.com/redirect",
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.CheckoutBankTransferInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to order bank transfer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeBankTransfer)
+				mocks.komojuSession.EXPECT().OrderBankTransfer(gomock.Any(), params).Return(nil, assert.AnError)
+			},
+			input: &store.CheckoutBankTransferInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.CheckoutBankTransfer(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}, withNow(now)))
+	}
+}
+
+func TestCheckoutPayEasy(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	params := &komoju.OrderPayEasyParams{
+		SessionID:     "transaction-id",
+		Email:         "test@example.com",
+		PhoneNumber:   "090-1234-1234",
+		Lastname:      "&.",
+		Firstname:     "購入者",
+		LastnameKana:  "アンドドット",
+		FirstnameKana: "コウニュウシャ",
+	}
+	session := &komoju.OrderSessionResponse{
+		RedirectURL: "http://example.com/redirect",
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.CheckoutPayEasyInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypePayEasy)
+				mocks.komojuSession.EXPECT().OrderPayEasy(gomock.Any(), params).Return(session, nil)
+			},
+			input: &store.CheckoutPayEasyInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+			},
+			expect:    "http://example.com/redirect",
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.CheckoutPayEasyInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to order pay easy",
+			setup: func(ctx context.Context, mocks *mocks) {
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypePayEasy)
+				mocks.komojuSession.EXPECT().OrderPayEasy(gomock.Any(), params).Return(nil, assert.AnError)
+			},
+			input: &store.CheckoutPayEasyInput{
+				CheckoutDetail: store.CheckoutDetail{
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
+				},
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.CheckoutPayEasy(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}, withNow(now)))
+	}
+}
+
 func checkoutProductMocks(
 	m *mocks,
 	t *testing.T,
@@ -975,6 +1159,8 @@ func checkoutProductMocks(
 				AddressID:      "address-id",
 				Lastname:       "&.",
 				Firstname:      "購入者",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "こうにゅうしゃ",
 				PostalCode:     "1000014",
 				Prefecture:     "東京都",
 				PrefectureCode: 13,
