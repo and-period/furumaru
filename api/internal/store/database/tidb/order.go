@@ -470,7 +470,7 @@ func (o *order) AggregateByPeriod(
 	case entity.AggregateOrderPeriodTypeDay:
 		period = "DATE_FORMAT(orders.created_at, '%Y-%m-%d')" // 日付
 	case entity.AggregateOrderPeriodTypeWeek:
-		period = "DATE_FORMAT(SUBDATE(orders.created_at, WEEKDAY(orders.created_at)), '%Y-%m-%d')" // 週のはじめ
+		period = "DATE_FORMAT(SUBDATE(orders.created_at, WEEKDAY(orders.created_at)+1), '%Y-%m-%d')" // 週のはじめ（日曜日）
 	case entity.AggregateOrderPeriodTypeMonth:
 		period = "DATE_FORMAT(orders.created_at, '%Y-%m-01')" // 月のはじめ
 	default:
