@@ -1,40 +1,296 @@
 <script lang="ts" setup>
-const deliveries = [
-  {
-    title: '受注待ち',
-    value: 'xx',
+import dayjs, { unix } from 'dayjs'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import {
+  TitleComponent,
+  GridComponent,
+  TooltipComponent,
+} from 'echarts/components'
+import { LineChart } from 'echarts/charts'
+import VChart from 'vue-echarts'
+
+import type { AlertType } from '~/lib/hooks'
+import { TopOrderPeriodType, type TopOrderSalesTrend, type TopOrdersResponse } from '~/types/api'
+import type { DateTimeInput } from '~/types/props'
+
+use([
+  GridComponent,
+  CanvasRenderer,
+  LineChart,
+  TitleComponent,
+  TooltipComponent,
+])
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
   },
-  {
-    title: '発送対応中',
-    value: 'yy',
+  isAlert: {
+    type: Boolean,
+    default: false,
   },
-  {
-    title: '発送連絡待ち',
-    value: 'xx',
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined,
   },
+  alertText: {
+    type: String,
+    default: '',
+  },
+  startAt: {
+    type: Number,
+    default: dayjs().add(-7, 'day').unix(),
+  },
+  endAt: {
+    type: Number,
+    default: dayjs().unix(),
+  },
+  periodType: {
+    type: String as PropType<TopOrderPeriodType>,
+    default: TopOrderPeriodType.DAY,
+  },
+  orders: {
+    type: Object as PropType<TopOrdersResponse>,
+    default: (): TopOrdersResponse => ({
+      startAt: 0,
+      endAt: 0,
+      periodType: TopOrderPeriodType.DAY,
+      orders: {
+        value: 0,
+        comparison: 0,
+      },
+      users: {
+        value: 0,
+        comparison: 0,
+      },
+      sales: {
+        value: 0,
+        comparison: 0,
+      },
+      salesTrends: [],
+    }),
+  },
+})
+
+const emit = defineEmits<{
+  (e: 'update:start-at', startAt: number): void
+  (e: 'update:end-at', endAt: number): void
+  (e: 'update:period-type', periodType: TopOrderPeriodType): void
+}>()
+
+const periodTypes = [
+  { title: '日単位', value: TopOrderPeriodType.DAY },
+  { title: '週単位', value: TopOrderPeriodType.WEEK },
+  { title: '月単位', value: TopOrderPeriodType.MONTH },
 ]
+
+const startAtValue = computed<DateTimeInput>({
+  get: (): DateTimeInput => ({
+    date: unix(props.startAt).format('YYYY-MM-DD'),
+    time: unix(props.startAt).format('HH:mm'),
+  }),
+  set: (val: DateTimeInput): void => {
+    const startAt = dayjs(`${val.date} 00:00:00`)
+    emit('update:start-at', startAt.unix())
+  },
+})
+const endAtValue = computed<DateTimeInput>({
+  get: (): DateTimeInput => ({
+    date: unix(props.endAt).format('YYYY-MM-DD'),
+    time: unix(props.endAt).format('HH:mm'),
+  }),
+  set: (val: DateTimeInput): void => {
+    const endAt = dayjs(`${val.date} 00:00:00`).add(1, 'day')
+    emit('update:end-at', endAt.unix())
+  },
+})
+const periodTypeValue = computed<TopOrderPeriodType>({
+  get: (): TopOrderPeriodType => props.periodType,
+  set: (periodType: TopOrderPeriodType): void => emit('update:period-type', periodType),
+})
+
+const orderChartOption = computed(() => {
+  const labels: string[] = []
+  const values: number[] = []
+
+  console.log('debug1', props.orders.salesTrends)
+
+  props.orders.salesTrends.forEach((trend: TopOrderSalesTrend) => {
+    labels.push(trend.period)
+    values.push(trend.salesTotal)
+  })
+
+  console.log('debug2', { labels, values })
+
+  return {
+    title: {
+      show: labels.length === 0,
+      left: 'center',
+      top: 'center',
+      text: 'データがありません',
+      textStyle: {
+        color: '#c0c0c0',
+      },
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    xAxis: {
+      type: 'category',
+      data: labels,
+      axisLabel: {
+        rotate: 20,
+      },
+      name: '時刻',
+    },
+    yAxis: {
+      minInterval: 1,
+      type: 'value',
+      name: '売上総額',
+    },
+    series: [
+      {
+        type: 'line',
+        data: values,
+        smooth: true,
+      },
+    ],
+  }
+})
+
+const getComparison = (num: number): string => {
+  if (num === 0) {
+    return '0'
+  }
+  return num.toFixed(2)
+}
+
+const getComparisonColor = (num: number): string => {
+  if (num === 0) {
+    return 'text-grey'
+  }
+  return num > 0 ? 'text-primary' : 'text-error'
+}
+
+const onChangeStartAt = (): void => {
+  const startAt = dayjs(`${startAtValue.value.date} 00:00:00`)
+  emit('update:start-at', startAt.unix())
+}
+
+const onChangeEndAt = (): void => {
+  const endAt = dayjs(`${endAtValue.value.date} 00:00:00`)
+  emit('update:end-at', endAt.unix())
+}
 </script>
 
 <template>
   <v-container>
     <v-row>
+      <v-col
+        class="d-flex flex-column flex-md-row justify-center"
+        cols="8"
+      >
+        <v-text-field
+          v-model="startAtValue.date"
+          type="date"
+          variant="outlined"
+          density="compact"
+          class="mr-md-2"
+          @change="onChangeStartAt"
+        />
+        <p class="text-subtitle-2 mx-4 pt-md-3 mb-4 pb-md-6">
+          〜
+        </p>
+        <v-text-field
+          v-model="endAtValue.date"
+          type="date"
+          variant="outlined"
+          density="compact"
+          @change="onChangeEndAt"
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-select
+          v-model="periodTypeValue"
+          :items="periodTypes"
+          variant="outlined"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-col cols="4">
         <v-card class="py-2">
           <v-card-title class="mb-2">
-            注文状況
+            注文件数
           </v-card-title>
-          <v-card-text
-            v-for="summary in deliveries"
-            :key="summary.title"
-            class="d-flex py-2"
-          >
-            <div class="me-auto">
-              {{ summary.title }}
+          <v-card-text>
+            <div class="text-h5 mb-2">
+              {{ orders.orders.value.toLocaleString() }} 件
             </div>
-            <div>{{ summary.value }} 件</div>
+            <div :class="getComparisonColor(orders.orders.comparison)">
+              {{ getComparison(orders.orders.comparison) }} &percnt;
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="4">
+        <v-card class="py-2">
+          <v-card-title class="mb-2">
+            売上総額
+          </v-card-title>
+          <v-card-text>
+            <div class="text-h5 mb-2">
+              {{ orders.sales.value.toLocaleString() }} 円
+            </div>
+            <div :class="getComparisonColor(orders.sales.comparison)">
+              {{ getComparison(orders.sales.comparison) }} &percnt;
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="4">
+        <v-card class="py-2">
+          <v-card-title class="mb-2">
+            購入者数
+          </v-card-title>
+          <v-card-text>
+            <div class="text-h5 mb-2">
+              {{ orders.users.value.toLocaleString() }} 人
+            </div>
+            <div :class="getComparisonColor(orders.users.comparison)">
+              {{ getComparison(orders.users.comparison) }} &percnt;
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-card :loading="loading">
+          <v-card-title>
+            売上総額推移
+          </v-card-title>
+          <v-card-text>
+            <v-chart
+              :option="orderChartOption"
+              class="chart"
+              autoresize
+            />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
+<style scoped lang="scss">
+.chart {
+  height: 400px;
+}
+</style>
