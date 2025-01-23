@@ -200,6 +200,7 @@ const {
  * 住所検索ボタンクリック時の処理
  */
 const handleClickSearchAddressButton = async () => {
+  postalCodeErrorMessage.value = ''
   try {
     const res = await searchAddressByPostalCode(formData.value.billingAddress.postalCode)
     formData.value.billingAddress.prefectureCode = res.prefectureCode

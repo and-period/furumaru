@@ -112,6 +112,7 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
+  postalCodeErrorMessage.value = ''
   try {
     const res = await searchAddressByPostalCode(formData.value.postalCode)
     formData.value.prefectureCode = res.prefectureCode
