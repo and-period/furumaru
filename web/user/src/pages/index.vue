@@ -141,7 +141,7 @@ useSeoMeta({
             {{ tt('discoverText') }}
           </nuxt-link>
           <nuxt-link
-            to="/marches"
+            to="/experiences"
             class="flex flex-col sm:flex-row justify-center sm:items-baseline bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
             <div class="flex flex-row items-baseline">

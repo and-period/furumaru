@@ -11,6 +11,7 @@ export interface I18n {
       topLinkText: string
       searchItemLinkText: string
       allItemLinkText: string
+      allExperienceLinkText: string
       allMarcheLinkText: string
       blogLinkText: string
       aboutLinkText: string
