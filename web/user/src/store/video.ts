@@ -1,10 +1,24 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
-import type { VideoCommentsResponse } from '~/types/api'
+import type { Category, Coordinator, Producer, Product, ProductsResponse, ProductTag, ProductType, VideoCommentsResponse, VideoResponse } from '~/types/api'
 
 export const useVideoStore = defineStore('video', {
   state: () => {
-    return {}
+    return {
+      videoResponse: {} as VideoResponse,
+      productsResponse: {
+        total: 0,
+        products: [] as Product[],
+        producers: [] as Producer[],
+        coordinators: [] as Coordinator[],
+        categories: [] as Category[],
+        productTypes: [] as ProductType[],
+        productTags: [] as ProductTag[],
+      },
+      productsFetchState: {
+        isLoading: false,
+      },
+    }
   },
 
   actions: {
@@ -12,6 +26,7 @@ export const useVideoStore = defineStore('video', {
       const res = await this.videoApiClient().v1GetVideo({
         videoId: id,
       })
+      this.videoResponse = res
       return res
     },
 
@@ -42,6 +57,42 @@ export const useVideoStore = defineStore('video', {
       catch (e) {
         return this.errorHandler(e)
       }
+    },
+
+    async fetchProducts(limit = 20, offset = 0): Promise<void> {
+      try {
+        this.productsFetchState.isLoading = true
+        const response: ProductsResponse
+          = await this.productApiClient().v1ListProducts({
+            limit,
+            offset,
+          })
+        this.productsResponse = response
+      }
+      catch (error) {
+        return this.errorHandler(error)
+      }
+      finally {
+        this.productsFetchState.isLoading = false
+      }
+    },
+  },
+
+  getters: {
+    products(state) {
+      const products = Array.isArray(state.videoResponse.products) ? state.videoResponse.products : []
+      return products.map((product) => {
+        const thumbnail = product.media.find(m => m.isThumbnail)
+        return {
+          ...product,
+          // 在庫があるかのフラグ
+          hasStock: product.inventory > 0,
+          // サムネイル画像のマッピング
+          thumbnail,
+          // サムネイルが動画かどうかのフラグ
+          thumbnailIsVideo: thumbnail ? thumbnail.url.endsWith('.mp4') : false,
+        }
+      })
     },
   },
 })
