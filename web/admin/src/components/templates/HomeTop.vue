@@ -88,9 +88,9 @@ const periodTypes = [
 ]
 const paymentHeaders = [
   { title: '支払い方法', key: 'paymentMethod' },
+  { title: '利用率', value: 'orderRate' },
   { title: '注文数', key: 'orderCount' },
   { title: '利用者数', key: 'userCount' },
-  { title: '利用率', value: 'orderRate' },
 ]
 
 const startAtValue = computed<DateTimeInput>({
@@ -168,14 +168,11 @@ const orderChartOption = computed(() => {
 })
 
 const getComparison = (num: number): string => {
-  if (num === 0) {
-    return '0'
-  }
   let prefix = ''
   if (num > 0) {
-    prefix = '+'
+    prefix = '+ '
   }
-  return num.toFixed(2)
+  return `${prefix}${num.toFixed()}`
 }
 
 const getComparisonColor = (num: number): string => {
@@ -215,7 +212,7 @@ const getPaymentMethod = (methodType: PaymentMethodType): string => {
 }
 
 const getOrderRate = (rate: number): string => {
-  return rate.toFixed(2)
+  return rate.toFixed()
 }
 
 const onChangeStartAt = (): void => {
@@ -318,7 +315,7 @@ const onChangeEndAt = (): void => {
       <v-col cols="12">
         <v-card :loading="loading">
           <v-card-title>
-            売上総額推移
+            売上額推移
           </v-card-title>
           <v-card-text>
             <v-chart
@@ -333,7 +330,7 @@ const onChangeEndAt = (): void => {
       <v-col cols="12">
         <v-card :loading="loading">
           <v-card-title>
-            支払い方法別集計
+            利用状況（支払い方法別）
           </v-card-title>
           <v-card-text>
             <v-data-table
