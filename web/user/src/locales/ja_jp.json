@@ -103,7 +103,9 @@
       "viewMoreText": "もっと見る",
       "pastMarcheLinkText": "過去のライブ配信はこちら",
       "productsLinkText": "購入できる商品一覧はこちら",
-      "archiveListSubTitle": "動画一覧",
+      "archiveListSubTitle": "アーカイブ一覧",
+      "productListSubTitle": "商品動画一覧",
+      "experienceListSubTitle": "体験動画一覧",
       "archivedStreamText": "アーカイブ配信",
       "archivesLinkText": "一覧を見る"
     },
@@ -314,6 +316,7 @@
       "itemPriceTaxIncludedText": "(税込)",
       "quantityLabel": "数量",
       "addToCartText": "カゴに入れる",
+      "proceedPurchase": "購入に進む",
       "coordinatorLabel": "取扱元",
       "coordinatorThumbnailAlt": "{coordinatorName}のサムネイル画像",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
@@ -366,6 +369,26 @@
     },
     "details": {
       "archivedStreamText": "アーカイブ",
+      "coordinatorThumbnailAlt": "{coordinatorName}のプロフィール画像",
+      "coordinatorLabel": "コーディネーター",
+      "hideMarcheDetailsText": "動画の詳細を隠す",
+      "showMarcheDetailsText": "動画の詳細を見る",
+      "itemsTabLabel": "この動画の商品",
+      "commentsTabLabel": "コメント",
+      "itemPriceTaxIncludedText": "(税込)",
+      "addToCartText": "カゴに入れる",
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました",
+      "commentPlaceholder": "コメントをする…",
+      "submitButtonText": "送信",
+      "guestCommentNote": "※ゲストとしてコメントします",
+      "noCommentsText": "コメントはありません",
+      "guestNameLabel": "ゲスト",
+      "linkCopy": "リンクをコピー",
+      "linkCopied": "リンクをコピーしました"
+    }
+  },
+  "videos": {
+    "details": {
       "coordinatorThumbnailAlt": "{coordinatorName}のプロフィール画像",
       "coordinatorLabel": "コーディネーター",
       "hideMarcheDetailsText": "動画の詳細を隠す",

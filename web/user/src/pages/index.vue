@@ -10,7 +10,7 @@ const i18n = useI18n()
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
-const { archives, lives } = storeToRefs(topPageStore)
+const { archives, lives, productVideos, experienceVideos } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
 
 const tt = (str: keyof I18n['base']['top']) => {
@@ -70,6 +70,14 @@ const handleClickArchiveRightButton = () => {
 
 const handleClickLiveItem = (id: string) => {
   router.push(`/live/${id}`)
+}
+
+const handleClickProductVideoItem = (id: string) => {
+  router.push(`/video/${id}`)
+}
+
+const handleClickExperienceVideoItem = (id: string) => {
+  router.push(`/video/${id}`)
 }
 
 const handleClickLiveMore = () => {
@@ -181,7 +189,7 @@ useSeoMeta({
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box
-        v-if="true"
+        v-if="false"
         title="live"
         :sub-title="tt('marcheListSubTitle')"
       >
@@ -274,7 +282,7 @@ useSeoMeta({
       </the-content-box>
 
       <the-content-box
-        title="video"
+        title="ARCHIVE"
         :sub-title="tt('archiveListSubTitle')"
       >
         <div class="relative mx-auto flex max-w-[1440px]">
@@ -324,6 +332,85 @@ useSeoMeta({
         </div>
       </the-content-box>
 
+      <the-content-box
+        title="PRODUCT VIDEOS"
+        :sub-title="tt('productListSubTitle')"
+      >
+        <div class="relative mx-auto flex max-w-[1440px]">
+          <div class="absolute left-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveLeftButton"
+            >
+              <the-left-arrow-icon />
+            </the-icon-button>
+          </div>
+          <div
+            ref="archiveRef"
+            class="hidden-scrollbar flex w-full flex-col gap-8 md:flex-row md:overflow-x-scroll"
+          >
+            <the-video-item
+              v-for="product in productVideos"
+              :id="product.id"
+              :key="product.id"
+              :title="product.title"
+              :img-src="product.thumbnailUrl"
+              :width="368"
+              :archived-stream-text="tt('archivedStreamText')"
+              class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
+              @click="handleClickProductVideoItem(product.id)"
+            />
+          </div>
+          <div class="absolute right-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveRightButton"
+            >
+              <the-right-arrow-icon />
+            </the-icon-button>
+          </div>
+        </div>
+      </the-content-box>
+
+      <the-content-box
+        title="EXPERIENCE VIDEO"
+        :sub-title="tt('experienceListSubTitle')"
+      >
+        <div class="relative mx-auto flex max-w-[1440px]">
+          <div class="absolute left-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveLeftButton"
+            >
+              <the-left-arrow-icon />
+            </the-icon-button>
+          </div>
+          <div
+            ref="archiveRef"
+            class="hidden-scrollbar flex w-full flex-col gap-8 md:flex-row md:overflow-x-scroll"
+          >
+            <the-video-item
+              v-for="experience in experienceVideos"
+              :id="experience.id"
+              :key="experience.id"
+              :title="experience.title"
+              :img-src="experience.thumbnailUrl"
+              :width="368"
+              :archived-stream-text="tt('archivedStreamText')"
+              class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
+              @click="handleClickExperienceVideoItem(experience.id)"
+            />
+          </div>
+          <div class="absolute right-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveRightButton"
+            >
+              <the-right-arrow-icon />
+            </the-icon-button>
+          </div>
+        </div>
+      </the-content-box>
       <the-content-box
         v-if="false"
         title="recommend"

@@ -3,6 +3,7 @@ import type {
   TopArchive,
   TopCommonResponse,
   TopLive,
+  VideoSummary,
 } from '~/types/api'
 
 export const useTopPageStore = defineStore('top-page', {
@@ -11,6 +12,8 @@ export const useTopPageStore = defineStore('top-page', {
       _coordinators: [] as Coordinator[],
       _lives: [] as TopLive[],
       archives: [] as TopArchive[],
+      experienceVideos: [] as VideoSummary[],
+      productVideos: [] as VideoSummary[],
     }
   },
 
@@ -22,6 +25,8 @@ export const useTopPageStore = defineStore('top-page', {
       this._coordinators = response.coordinators
       this._lives = response.lives
       this.archives = response.archives
+      this.experienceVideos = response.experienceVideos
+      this.productVideos = response.productVideos
     },
   },
 

@@ -104,6 +104,8 @@
       "viewMoreText": "View More",
       "productsLinkText": "View Products for Sale",
       "archiveListSubTitle": "videos",
+      "productListSubTitle": "product videos",
+      "experienceListSubTitle": "experience videos",
       "archivedStreamText": "archived stream",
       "archivesLinkText": "View List"
     },
@@ -311,6 +313,7 @@
       "itemPriceTaxIncludedText": "(tax included)",
       "quantityLabel": "Quantity",
       "addToCartText": "Add to Cart",
+      "proceedPurchase": "Proceed to Purchase",
       "coordinatorLabel": "Coordinator",
       "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
