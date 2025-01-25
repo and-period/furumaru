@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const videoStore = useVideoStore()
-const { getVideo, postComment, getComments } = videoStore
+const { getVideo, postComment, getComments, products } = videoStore
 
 const shoppingCartStore = useShoppingCartStore()
 const { addCart } = shoppingCartStore
@@ -22,7 +22,7 @@ const snackbarItems = ref<Snackbar[]>([])
 
 const i18n = useI18n()
 
-const dt = (str: keyof I18n['lives']['details']) => {
+const dt = (str: keyof I18n['videos']['details']) => {
   return i18n.t(`videos.details.${str}`)
 }
 
@@ -186,7 +186,25 @@ useSeoMeta({
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
-              xxxx
+              <div class="mx-auto mt-[24px] mx-2 grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5">
+                <template v-if="video.experiences.length > 0">
+                  <the-video-product-list-item
+                    v-for="product in products"
+                    :id="product.id"
+                    :key="product.id"
+                    :status="product.status"
+                    :name="product.name"
+                    :price="product.price"
+                    :inventory="product.inventory"
+                    :has-stock="product.hasStock"
+                    :thumbnail="product.thumbnail"
+                    :origin-city="product.originCity"
+                    :thumbnail-is-video="product.thumbnailIsVideo"
+                    @click:item="handleClickItem"
+                    @click:add-cart="handleClickAddCart"
+                  />
+                </template>
+              </div>
             </template>
             <template v-else>
               <div class="flex flex-col bg-white p-4">
