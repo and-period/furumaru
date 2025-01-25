@@ -23,6 +23,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	if in.Status != entity.PaymentStatusAuthorized {
 		return fmt.Errorf("this status is not authorized. status=%d: %w", in.Status, exception.ErrInvalidArgument)
 	}
+
 	order, err := s.db.Order.Get(ctx, in.OrderID)
 	if err != nil {
 		return internalError(err)
@@ -32,6 +33,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 		s.logger.Info("Order is authorized but deferred payment", zap.String("orderId", in.OrderID))
 		return nil
 	}
+
 	params := &database.UpdateOrderAuthorizedParams{
 		PaymentID: in.PaymentID,
 		IssuedAt:  in.IssuedAt,
@@ -40,14 +42,21 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	if err != nil && !errors.Is(err, database.ErrFailedPrecondition) {
 		return internalError(err)
 	}
-	_, err = s.komoju.Payment.Capture(ctx, in.PaymentID)
-	if err != nil && komoju.IsRetryable(err) {
-		return fmt.Errorf("store: failed to capture payment. err=%s: %w", err.Error(), exception.ErrInternal)
-	}
+
+	payment, err := s.komoju.Payment.Show(ctx, in.PaymentID)
 	if err != nil {
-		s.logger.Warn("Failed to capture payment", zap.String("paymentID", in.PaymentID), zap.Error(err))
-		return nil // Webhookがリトライしないように成功として返す
+		s.logger.Error("Failed to get payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		return internalError(err)
 	}
+	if payment.Status != komoju.PaymentStatusAuthorized {
+		s.logger.Warn("Payment status is not authorized", zap.String("paymentId", in.PaymentID), zap.String("status", string(payment.Status)))
+		return nil
+	}
+	if _, err := s.komoju.Payment.Capture(ctx, in.PaymentID); err != nil {
+		s.logger.Error("Failed to capture payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		return internalError(err)
+	}
+
 	// 即時決済の場合、買い物かごからの削除処理も追加で行う
 	s.waitGroup.Add(1)
 	go func() {
@@ -69,10 +78,12 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	if in.Status != entity.PaymentStatusCaptured {
 		return fmt.Errorf("this status is not captured. status=%d: %w", in.Status, exception.ErrInvalidArgument)
 	}
+
 	order, err := s.db.Order.Get(ctx, in.OrderID)
 	if err != nil {
 		return internalError(err)
 	}
+
 	params := &database.UpdateOrderCapturedParams{
 		PaymentID: in.PaymentID,
 		IssuedAt:  in.IssuedAt,
@@ -85,9 +96,14 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	if err != nil {
 		return internalError(err)
 	}
-	if err := s.notifyPaymentCompleted(ctx, order); err != nil {
-		return internalError(err)
-	}
+
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		if err := s.notifyPaymentCompleted(context.Background(), order); err != nil {
+			s.logger.Error("Failed to notify payment completed", zap.String("orderId", in.OrderID), zap.Error(err))
+		}
+	}()
 	return nil
 }
 
@@ -98,10 +114,12 @@ func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPayme
 	if !slices.Contains(entity.PaymentFailedStatuses, in.Status) {
 		return fmt.Errorf("this status is not failed. status=%d: %w", in.Status, exception.ErrInvalidArgument)
 	}
+
 	order, err := s.db.Order.Get(ctx, in.OrderID)
 	if err != nil {
 		return internalError(err)
 	}
+
 	params := &database.UpdateOrderFailedParams{
 		PaymentID: in.PaymentID,
 		Status:    in.Status,
@@ -115,6 +133,7 @@ func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPayme
 	if err != nil {
 		return internalError(err)
 	}
+
 	s.waitGroup.Add(1)
 	// 確保していた商品在庫の開放
 	go func() {

@@ -7,6 +7,7 @@ import (
 )
 
 type Payment interface {
+	Show(ctx context.Context, paymentID string) (*PaymentResponse, error)                     // 決済情報の照会
 	Capture(ctx context.Context, paymentID string) (*PaymentResponse, error)                  // 売上確定処理
 	Cancel(ctx context.Context, paymentID string) (*PaymentResponse, error)                   // キャンセル
 	Refund(ctx context.Context, params *RefundParams) (*PaymentResponse, error)               // 返金処理

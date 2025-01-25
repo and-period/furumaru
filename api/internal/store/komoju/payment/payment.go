@@ -29,6 +29,21 @@ func NewClient(cli *http.Client, params *Params, opts ...komoju.Option) komoju.P
 	}
 }
 
+func (c *client) Show(ctx context.Context, paymentID string) (*komoju.PaymentResponse, error) {
+	const path = "/api/v1/payments/%s"
+	req := &komoju.APIParams{
+		Host:   c.host,
+		Method: http.MethodGet,
+		Path:   path,
+		Params: []interface{}{paymentID},
+	}
+	res := &komoju.PaymentResponse{}
+	if err := c.client.Do(ctx, req, res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 type captureRequest struct {
 	Amount int64 `json:"amount,omitempty"`
 	Tax    int64 `json:"tax,omitempty"`

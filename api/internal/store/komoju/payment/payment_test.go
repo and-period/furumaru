@@ -81,6 +81,129 @@ func TestClient(t *testing.T) {
 	assert.Equal(t, expect, actual)
 }
 
+func TestSession_Show(t *testing.T) {
+	t.Parallel()
+	now := time.Date(2023, 10, 5, 18, 30, 0, 0, time.UTC)
+	requestFn := func(t *testing.T, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/api/v1/payments/payment-id", r.URL.Path)
+		// request header
+		assert.Equal(t, "application/json", r.Header.Get("Accept"))
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+		assert.Equal(t, "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=", r.Header.Get("Authorization"))
+	}
+	tests := []struct {
+		name      string
+		handler   func(w http.ResponseWriter, r *http.Request)
+		paymentID string
+		expect    *testResponse
+	}{
+		{
+			name: "success",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusOK)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.PaymentResponse{
+					PaymentInfo: &komoju.PaymentInfo{
+						ID:       "payment-id",
+						Resource: "ja",
+						Status:   komoju.PaymentStatusCaptured,
+						Amount:   1000,
+						Tax:      0,
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:        string(komoju.PaymentTypePayPay),
+							Email:       "test@example.com",
+							RedirectURL: "http://example.com/redirect",
+						},
+						PaymentMethodFee:    0,
+						Total:               1000,
+						Currency:            "JPY",
+						CapturedAt:          now,
+						ExternalOrderNumber: "order-id",
+						CreatedAt:           now,
+						AmountRefunded:      0,
+						Locale:              "ja",
+						Session:             "session-id",
+						Refunds:             []*komoju.Refund{},
+						RefundRequests:      []*komoju.RefundRequest{},
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			paymentID: "payment-id",
+			expect: &testResponse{
+				body: &komoju.PaymentResponse{
+					PaymentInfo: &komoju.PaymentInfo{
+						ID:       "payment-id",
+						Resource: "ja",
+						Status:   komoju.PaymentStatusCaptured,
+						Amount:   1000,
+						Tax:      0,
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:        string(komoju.PaymentTypePayPay),
+							Email:       "test@example.com",
+							RedirectURL: "http://example.com/redirect",
+						},
+						PaymentMethodFee:    0,
+						Total:               1000,
+						Currency:            "JPY",
+						CapturedAt:          now,
+						ExternalOrderNumber: "order-id",
+						CreatedAt:           now,
+						AmountRefunded:      0,
+						Locale:              "ja",
+						Session:             "session-id",
+						Refunds:             []*komoju.Refund{},
+						RefundRequests:      []*komoju.RefundRequest{},
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "failed to http request",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusNotFound)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.ErrorResponse{
+					Data: &komoju.ErrorData{
+						Code:    string(komoju.ErrCodeNotFound),
+						Message: "The requested resource could not be found.",
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			paymentID: "payment-id",
+			expect: &testResponse{
+				err: &komoju.Error{
+					Method:  http.MethodGet,
+					Route:   "/api/v1/payments/%s",
+					Status:  http.StatusNotFound,
+					Code:    komoju.ErrCodeNotFound,
+					Message: "The requested resource could not be found.",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			tt := tt
+			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {
+				return client.Show(ctx, tt.paymentID)
+			}))
+		})
+	}
+}
+
 func TestSession_Capture(t *testing.T) {
 	t.Parallel()
 	now := time.Date(2023, 10, 5, 18, 30, 0, 0, time.UTC)
