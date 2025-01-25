@@ -312,6 +312,7 @@
       "itemPriceTaxIncludedText": "(tax included)",
       "quantityLabel": "Quantity",
       "addToCartText": "Add to Cart",
+      "proceedPurchase": "Proceed to Purchase",
       "coordinatorLabel": "Coordinator",
       "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"

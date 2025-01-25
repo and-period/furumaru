@@ -315,6 +315,7 @@
       "itemPriceTaxIncludedText": "(税込)",
       "quantityLabel": "数量",
       "addToCartText": "カゴに入れる",
+      "proceedPurchase": "購入に進む",
       "coordinatorLabel": "取扱元",
       "coordinatorThumbnailAlt": "{coordinatorName}のサムネイル画像",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"

@@ -77,5 +77,18 @@ export const useVideoStore = defineStore('video', {
         }
       })
     },
+    experiences(state) {
+      const experiences = Array.isArray(state.videoResponse.experiences) ? state.videoResponse.experiences : []
+      return experiences.map((experience) => {
+        const thumbnail = experience.media.find(m => m.isThumbnail)
+        return {
+          ...experience,
+          // サムネイル画像のマッピング
+          thumbnail,
+          // サムネイルが動画かどうかのフラグ
+          thumbnailIsVideo: thumbnail ? thumbnail.url.endsWith('.mp4') : false,
+        }
+      })
+    },
   },
 })

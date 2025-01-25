@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const videoStore = useVideoStore()
-const { getVideo, postComment, getComments, products } = videoStore
+const { getVideo, postComment, getComments, products, experiences } = videoStore
 
 const shoppingCartStore = useShoppingCartStore()
 const { addCart } = shoppingCartStore
@@ -80,6 +80,10 @@ const clickTab = (tab: 'product' | 'comment') => {
 
 const handleClickItem = (productId: string) => {
   router.push(`/items/${productId}`)
+}
+
+const handleClickExperienceItem = (experienceId: string) => {
+  router.push(`/experiences/${experienceId}`)
 }
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
@@ -158,7 +162,7 @@ useSeoMeta({
             :coordinator-address="video.coordinator.city"
             @click:coordinator="handleCLickCoordinator"
           />
-          <div class="mt-4 flex w-full flex-col rounded">
+          <div class="mt-4 flex w-full flex-col rounded bg-white">
             <div
               class="grid w-full grid-cols-2 gap-2 text-[12px] font-bold text-main"
             >
@@ -186,8 +190,8 @@ useSeoMeta({
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
-              <div class="mx-auto mt-[24px] mx-2 grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5">
-                <template v-if="video.experiences.length > 0">
+              <div class="mx-2 mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5 mb-4">
+                <template v-if="video.products.length > 0">
                   <the-video-product-list-item
                     v-for="product in products"
                     :id="product.id"
@@ -202,6 +206,18 @@ useSeoMeta({
                     :thumbnail-is-video="product.thumbnailIsVideo"
                     @click:item="handleClickItem"
                     @click:add-cart="handleClickAddCart"
+                  />
+                </template>
+                <template v-if="video.experiences.length > 0">
+                  <the-video-experience-item
+                    v-for="experience in experiences"
+                    :id="experience.id"
+                    :key="experience.id"
+                    :status="experience.status"
+                    :title="experience.title"
+                    :thumbnail="experience.thumbnail"
+                    :thumbnail-is-video="experience.thumbnailIsVideo"
+                    @click:proceed-experience="handleClickExperienceItem"
                   />
                 </template>
               </div>
