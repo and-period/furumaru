@@ -135,7 +135,7 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
-		ReceivedAt: order.PaidAt,
+		ReceivedAt: order.CapturedAt,
 	}
 	return &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
@@ -197,7 +197,7 @@ func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
-		ReceivedAt: order.PaidAt,
+		ReceivedAt: order.CapturedAt,
 	}
 	return &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),

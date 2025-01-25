@@ -241,6 +241,7 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				Tax:               364,
 				Total:             4014,
 				PaidAt:            now,
+				CapturedAt:        now,
 			},
 			OrderFulfillments: sentity.OrderFulfillments{
 				{
