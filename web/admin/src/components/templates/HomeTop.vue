@@ -87,10 +87,10 @@ const periodTypes = [
   { title: '月単位', value: TopOrderPeriodType.MONTH },
 ]
 const paymentHeaders = [
-  { text: '支払い方法', key: 'paymentMethod' },
-  { text: '注文数', key: 'orderCount' },
-  { text: '利用者数', key: 'userCount' },
-  { text: '利用率', value: 'orderRate' },
+  { title: '支払い方法', key: 'paymentMethod' },
+  { title: '注文数', key: 'orderCount' },
+  { title: '利用者数', key: 'userCount' },
+  { title: '利用率', value: 'orderRate' },
 ]
 
 const startAtValue = computed<DateTimeInput>({
@@ -333,7 +333,7 @@ const onChangeEndAt = (): void => {
       <v-col cols="12">
         <v-card :loading="loading">
           <v-card-title>
-            支払い方法別利用率
+            支払い方法別集計
           </v-card-title>
           <v-card-text>
             <v-data-table
@@ -342,16 +342,16 @@ const onChangeEndAt = (): void => {
               :items="orders.payments"
               no-data-text="データがありません"
             >
-              <template #[`item.paymentMethodType`]="{ item }">
+              <template #[`item.paymentMethod`]="{ item }">
                 {{ getPaymentMethod(item.paymentMethodType) }}
               </template>
               <template #[`item.orderCount`]="{ item }">
-                {{ item.orderCount.toLocaleString() }} 円
+                {{ item.orderCount.toLocaleString() }} 件
               </template>
               <template #[`item.userCount`]="{ item }">
                 {{ item.userCount.toLocaleString() }} 人
               </template>
-              <template #[`item.rate`]="{ item }">
+              <template #[`item.orderRate`]="{ item }">
                 {{ getOrderRate(item.rate) }} &percnt;
               </template>
             </v-data-table>
