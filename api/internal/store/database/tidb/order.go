@@ -441,7 +441,7 @@ func (o *order) AggregateByPaymentMethodType(
 	var payments entity.AggregatedOrderPayments
 
 	fields := []string{
-		"order_payments.payment_method_type AS payment_method_type",
+		"order_payments.method_type AS payment_method_type",
 		"COUNT(DISTINCT(orders.id)) AS order_count",
 		"COUNT(DISTINCT(orders.user_id)) AS user_count",
 		"SUM(order_payments.subtotal) AS subtotal",
@@ -460,7 +460,7 @@ func (o *order) AggregateByPaymentMethodType(
 	if !params.CreatedAtLt.IsZero() {
 		stmt = stmt.Where("orders.created_at < ?", params.CreatedAtLt)
 	}
-	stmt = stmt.Group("order_payments.payment_method_type")
+	stmt = stmt.Group("order_payments.method_type")
 
 	err := stmt.Scan(&payments).Error
 	return payments, dbError(err)
