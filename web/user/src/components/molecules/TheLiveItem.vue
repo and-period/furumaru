@@ -64,7 +64,7 @@ const handleClick = () => {
           :src="imgSrc"
           fit="contain"
           :alt="`live-${title}-thumbnail`"
-          class="aspect-video w-full object-cover"
+          class="aspect-video w-full object-contain"
           sizes="320px md:368px"
         />
         <div

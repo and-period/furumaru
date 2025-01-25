@@ -64,7 +64,7 @@ const handleClick = () => {
     <div class="w-full">
       <nuxt-img
         provider="cloudFront"
-        class="h-[208px] w-full object-cover"
+        class="h-[208px] w-full object-contain"
         :src="imgSrc"
         :alt="`archive-${title}-thumbnail`"
         fit="contain"

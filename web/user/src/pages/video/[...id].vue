@@ -146,7 +146,7 @@ useSeoMeta({
     <template v-if="video">
       <div class="col-span-3">
         <the-video-player
-          ref="liveRef"
+          ref="videoRef"
           :video-src="video.video.videoUrl"
           class="fixed z-[20] w-full md:static"
         />
