@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
-import type { Category, Coordinator, Producer, Product, ProductsResponse, ProductTag, ProductType, VideoCommentsResponse, VideoResponse } from '~/types/api'
+import type { Category, Coordinator, Producer, Product, ProductTag, ProductType, VideoCommentsResponse, VideoResponse } from '~/types/api'
 
 export const useVideoStore = defineStore('video', {
   state: () => {
@@ -59,23 +59,6 @@ export const useVideoStore = defineStore('video', {
       }
     },
 
-    async fetchProducts(limit = 20, offset = 0): Promise<void> {
-      try {
-        this.productsFetchState.isLoading = true
-        const response: ProductsResponse
-          = await this.productApiClient().v1ListProducts({
-            limit,
-            offset,
-          })
-        this.productsResponse = response
-      }
-      catch (error) {
-        return this.errorHandler(error)
-      }
-      finally {
-        this.productsFetchState.isLoading = false
-      }
-    },
   },
 
   getters: {
