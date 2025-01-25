@@ -444,7 +444,7 @@ func (o *order) AggregateByPaymentMethodType(
 		"order_payments.method_type AS payment_method_type",
 		"COUNT(DISTINCT(orders.id)) AS order_count",
 		"COUNT(DISTINCT(orders.user_id)) AS user_count",
-		"SUM(order_payments.subtotal) AS subtotal",
+		"SUM(order_payments.subtotal) AS sales_total",
 	}
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
