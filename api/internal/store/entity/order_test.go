@@ -1193,6 +1193,82 @@ func TestAggregatedUserOrders_Map(t *testing.T) {
 	}
 }
 
+func TestAggregatedOrderPayments_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		orders AggregatedOrderPayments
+		expect map[PaymentMethodType]*AggregatedOrderPayment
+	}{
+		{
+			name: "success",
+			orders: AggregatedOrderPayments{
+				{
+					PaymentMethodType: PaymentMethodTypeCreditCard,
+					OrderCount:        2,
+					UserCount:         1,
+					SalesTotal:        6000,
+				},
+			},
+			expect: map[PaymentMethodType]*AggregatedOrderPayment{
+				PaymentMethodTypeCreditCard: {
+					PaymentMethodType: PaymentMethodTypeCreditCard,
+					OrderCount:        2,
+					UserCount:         1,
+					SalesTotal:        6000,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.orders.Map())
+		})
+	}
+}
+
+func TestAggregatedOrderPayments_OrderTotal(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		orders AggregatedOrderPayments
+		expect int64
+	}{
+		{
+			name: "success",
+			orders: AggregatedOrderPayments{
+				{
+					PaymentMethodType: PaymentMethodTypeCreditCard,
+					OrderCount:        2,
+					UserCount:         1,
+					SalesTotal:        6000,
+				},
+				{
+					PaymentMethodType: PaymentMethodTypeBankTransfer,
+					OrderCount:        1,
+					UserCount:         1,
+					SalesTotal:        3000,
+				},
+			},
+			expect: 3,
+		},
+		{
+			name:   "empty",
+			orders: AggregatedOrderPayments{},
+			expect: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.orders.OrderTotal())
+		})
+	}
+}
+
 func TestAggregatedOrderPromotions_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -49,6 +49,7 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		current  *sentity.AggregatedOrder
 		previous *sentity.AggregatedOrder
 		orders   sentity.AggregatedPeriodOrders
+		payments sentity.AggregatedOrderPayments
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -80,6 +81,15 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		orders, err = h.store.AggregateOrdersByPeriod(ectx, in)
 		return
 	})
+	eg.Go(func() (err error) {
+		in := &store.AggregateOrdersByPaymentMethodTypeInput{
+			CoordinatorID: coordinatorID,
+			CreatedAtGte:  startAt,
+			CreatedAtLt:   endAt,
+		}
+		payments, err = h.store.AggregateOrdersByPaymentMethodType(ectx, in)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
@@ -98,6 +108,7 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		Orders:      service.NewTopOrderValue(current.OrderCount, previous.OrderCount).Response(),
 		Users:       service.NewTopOrderValue(current.UserCount, previous.UserCount).Response(),
 		Sales:       service.NewTopOrderValue(current.SalesTotal, previous.SalesTotal).Response(),
+		Payments:    service.NewTopOrderPayments(payments).Response(),
 		SalesTrends: service.NewTopOrderSalesTrends(periodType, startAt, endAt, orders).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

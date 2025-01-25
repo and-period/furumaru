@@ -28,3 +28,34 @@ topOrderSalesTrend:
   example:
     period: '2022-01'
     salesTotal: 100000
+topOrderPayment:
+  properties:
+    paymentMethodType:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
+    orderCount:
+      type: integer
+      format: int64
+      description: 注文数
+    userCount:
+      type: integer
+      format: int64
+      description: ユーザ数
+    salesTotal:
+      type: integer
+      format: int64
+      description: 売上合計
+    rate:
+      type: float
+      description: 割合（支払い方法別注文数 / 注文数）
+  required:
+  - paymentMethodType
+  - orderCount
+  - userCount
+  - salesTotal
+  - rate
+  example:
+    paymentMethodType: 1
+    orderCount: 2
+    userCount: 1
+    salesTotal: 6000
+    rate: 100.0

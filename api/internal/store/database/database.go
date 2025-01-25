@@ -234,6 +234,7 @@ type Order interface {
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (*entity.AggregatedOrder, error)
 	AggregateByUser(ctx context.Context, params *AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error)
+	AggregateByPaymentMethodType(ctx context.Context, params *AggregateOrdersByPaymentMethodTypeParams) (entity.AggregatedOrderPayments, error)
 	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
 	AggregateByPeriod(ctx context.Context, params *AggregateOrdersByPeriodParams) (entity.AggregatedPeriodOrders, error)
 }
@@ -296,6 +297,13 @@ type AggregateOrdersParams struct {
 type AggregateOrdersByUserParams struct {
 	CoordinatorID string
 	UserIDs       []string
+}
+
+type AggregateOrdersByPaymentMethodTypeParams struct {
+	CoordinatorID      string
+	PaymentMethodTypes []entity.PaymentMethodType
+	CreatedAtGte       time.Time
+	CreatedAtLt        time.Time
 }
 
 type AggregateOrdersByPromotionParams struct {

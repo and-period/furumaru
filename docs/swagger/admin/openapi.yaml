@@ -476,6 +476,8 @@ components:
       $ref: './components/schemas/entity/top.yaml#/topOrderValue'
     topOrderSalesTrend:
       $ref: './components/schemas/entity/top.yaml#/topOrderSalesTrend'
+    topOrderPayment:
+      $ref: './components/schemas/entity/top.yaml#/topOrderPayment'
     user:
       $ref: './components/schemas/entity/user.yaml#/user'
     userToList:

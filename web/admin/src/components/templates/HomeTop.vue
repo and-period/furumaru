@@ -11,7 +11,7 @@ import { LineChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
 
 import type { AlertType } from '~/lib/hooks'
-import { TopOrderPeriodType, type TopOrderSalesTrend, type TopOrdersResponse } from '~/types/api'
+import { PaymentMethodType, TopOrderPeriodType, type TopOrderSalesTrend, type TopOrdersResponse } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 
 use([
@@ -69,6 +69,7 @@ const props = defineProps({
         value: 0,
         comparison: 0,
       },
+      payments: [],
       salesTrends: [],
     }),
   },
@@ -84,6 +85,12 @@ const periodTypes = [
   { title: '日単位', value: TopOrderPeriodType.DAY },
   { title: '週単位', value: TopOrderPeriodType.WEEK },
   { title: '月単位', value: TopOrderPeriodType.MONTH },
+]
+const paymentHeaders = [
+  { text: '支払い方法', key: 'paymentMethod' },
+  { text: '注文数', key: 'orderCount' },
+  { text: '利用者数', key: 'userCount' },
+  { text: '利用率', value: 'orderRate' },
 ]
 
 const startAtValue = computed<DateTimeInput>({
@@ -176,6 +183,39 @@ const getComparisonColor = (num: number): string => {
     return 'text-grey'
   }
   return num > 0 ? 'text-primary' : 'text-error'
+}
+
+const getPaymentMethod = (methodType: PaymentMethodType): string => {
+  switch (methodType) {
+    case PaymentMethodType.CASH:
+      return '代引支払い'
+    case PaymentMethodType.CREDIT_CARD:
+      return 'クレジットカード決済'
+    case PaymentMethodType.KONBINI:
+      return 'コンビニ決済'
+    case PaymentMethodType.BANK_TRANSFER:
+      return '銀行振込決済'
+    case PaymentMethodType.PAYPAY:
+      return 'QR決済（PayPay）'
+    case PaymentMethodType.LINE_PAY:
+      return 'QR決済（LINE Pay）'
+    case PaymentMethodType.MERPAY:
+      return 'QR決済（メルペイ）'
+    case PaymentMethodType.RAKUTEN_PAY:
+      return 'QR決済（楽天ペイ）'
+    case PaymentMethodType.AU_PAY:
+      return 'QR決済（au PAY）'
+    case PaymentMethodType.PAIDY:
+      return 'ペイディ（Paidy）'
+    case PaymentMethodType.PAY_EASY:
+      return 'ペイジー（Pay-easy）'
+    default:
+      return '不明'
+  }
+}
+
+const getOrderRate = (rate: number): string => {
+  return rate.toFixed(2)
 }
 
 const onChangeStartAt = (): void => {
@@ -275,7 +315,7 @@ const onChangeEndAt = (): void => {
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-card :loading="loading">
           <v-card-title>
             売上総額推移
@@ -286,6 +326,35 @@ const onChangeEndAt = (): void => {
               class="chart"
               autoresize
             />
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12">
+        <v-card :loading="loading">
+          <v-card-title>
+            支払い方法別利用率
+          </v-card-title>
+          <v-card-text>
+            <v-data-table
+              :loading="loading"
+              :headers="paymentHeaders"
+              :items="orders.payments"
+              no-data-text="データがありません"
+            >
+              <template #[`item.paymentMethodType`]="{ item }">
+                {{ getPaymentMethod(item.paymentMethodType) }}
+              </template>
+              <template #[`item.orderCount`]="{ item }">
+                {{ item.orderCount.toLocaleString() }} 円
+              </template>
+              <template #[`item.userCount`]="{ item }">
+                {{ item.userCount.toLocaleString() }} 人
+              </template>
+              <template #[`item.rate`]="{ item }">
+                {{ getOrderRate(item.rate) }} &percnt;
+              </template>
+            </v-data-table>
           </v-card-text>
         </v-card>
       </v-col>
