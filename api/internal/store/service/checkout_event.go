@@ -27,6 +27,11 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	if err != nil {
 		return internalError(err)
 	}
+	// KOMOJU側の仕様として、即時決済出ないものは支払い待ちステータスでAuthorizedの通知が来るためスキップさせる
+	if order.OrderPayment.IsDeferredPayment() {
+		s.logger.Info("Order is authorized but deferred payment", zap.String("orderId", in.OrderID))
+		return nil
+	}
 	params := &database.UpdateOrderAuthorizedParams{
 		PaymentID: in.PaymentID,
 		IssuedAt:  in.IssuedAt,

@@ -108,8 +108,6 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 			name: "success when not immediate payment",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeKonbini), nil)
-				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(&komoju.PaymentResponse{}, nil)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
