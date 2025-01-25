@@ -189,7 +189,7 @@ useSeoMeta({
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box
-        v-if="true"
+        v-if="false"
         title="live"
         :sub-title="tt('marcheListSubTitle')"
       >
