@@ -410,6 +410,32 @@ func (os AggregatedUserOrders) Map() map[string]*AggregatedUserOrder {
 	return res
 }
 
+// AggregatedOrderPayment - 支払い情報別集計情報
+type AggregatedOrderPayment struct {
+	PaymentMethodType PaymentMethodType // 支払い種別
+	OrderCount        int64             // 注文合計回数
+	UserCount         int64             // 注文ユーザー数
+	SalesTotal        int64             // 購入合計金額
+}
+
+type AggregatedOrderPayments []*AggregatedOrderPayment
+
+func (ps AggregatedOrderPayments) Map() map[PaymentMethodType]*AggregatedOrderPayment {
+	res := make(map[PaymentMethodType]*AggregatedOrderPayment, len(ps))
+	for _, p := range ps {
+		res[p.PaymentMethodType] = p
+	}
+	return res
+}
+
+func (ps AggregatedOrderPayments) OrderTotal() int64 {
+	var total int64
+	for _, p := range ps {
+		total += p.OrderCount
+	}
+	return total
+}
+
 // AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
 type AggregatedOrderPromotion struct {
 	PromotionID   string // プロモーションID

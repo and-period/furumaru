@@ -20,6 +20,11 @@ topOrdersResponse:
     sales:
       description: 売上合計
       $ref: './../../../openapi.yaml#/components/schemas/topOrderValue'
+    payments:
+      description: 支払い方法別注文数
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/topOrderPayment'
     salesTrends:
       description: 売上推移
       type: array
@@ -32,6 +37,7 @@ topOrdersResponse:
   - orders
   - users
   - sales
+  - payments
   - salesTrends
   example:
     startAt: 1640995200
@@ -46,6 +52,12 @@ topOrdersResponse:
     sales:
       value: 100000
       comparison: 0.5
+    payments:
+    - paymentMethodType: 1
+      orderCount: 2
+      userCount: 1
+      salesTotal: 6000
+      rate: 100.0
     salesTrends:
     - period: '2022-01'
       salesTotal: 100000

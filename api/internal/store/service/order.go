@@ -231,6 +231,23 @@ func (s *service) AggregateOrdersByUser(ctx context.Context, in *store.Aggregate
 	return orders, internalError(err)
 }
 
+func (s *service) AggregateOrdersByPaymentMethodType(
+	ctx context.Context,
+	in *store.AggregateOrdersByPaymentMethodTypeInput,
+) (entity.AggregatedOrderPayments, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateOrdersByPaymentMethodTypeParams{
+		CoordinatorID:      in.CoordinatorID,
+		PaymentMethodTypes: entity.AllPaymentMethodTypes,
+		CreatedAtGte:       in.CreatedAtGte,
+		CreatedAtLt:        in.CreatedAtLt,
+	}
+	orders, err := s.db.Order.AggregateByPaymentMethodType(ctx, params)
+	return orders, internalError(err)
+}
+
 func (s *service) AggregateOrdersByPromotion(
 	ctx context.Context,
 	in *store.AggregateOrdersByPromotionInput,

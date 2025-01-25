@@ -376,3 +376,82 @@ func TestTopOrderSalesTrends_Response(t *testing.T) {
 		})
 	}
 }
+
+func TestTopOrderPayments(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		payments entity.AggregatedOrderPayments
+		expect   TopOrderPayments
+	}{
+		{
+			name: "success",
+			payments: entity.AggregatedOrderPayments{
+				{
+					PaymentMethodType: entity.PaymentMethodTypeCreditCard,
+					OrderCount:        2,
+					UserCount:         1,
+					SalesTotal:        6000,
+				},
+			},
+			expect: TopOrderPayments{
+				{
+					TopOrderPayment: response.TopOrderPayment{
+						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+						OrderCount:        2,
+						UserCount:         1,
+						SalesTotal:        6000,
+						Rate:              100.0,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewTopOrderPayments(tt.payments)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestTopOrderPayments_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		payments TopOrderPayments
+		expect   []*response.TopOrderPayment
+	}{
+		{
+			name: "success",
+			payments: TopOrderPayments{
+				{
+					TopOrderPayment: response.TopOrderPayment{
+						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+						OrderCount:        2,
+						UserCount:         1,
+						SalesTotal:        6000,
+						Rate:              1,
+					},
+				},
+			},
+			expect: []*response.TopOrderPayment{
+				{
+					PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+					OrderCount:        2,
+					UserCount:         1,
+					SalesTotal:        6000,
+					Rate:              1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.payments.Response()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}

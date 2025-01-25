@@ -1297,7 +1297,7 @@ func TestAggregateOrders(t *testing.T) {
 	}
 }
 
-func TestAggregateUserOrders(t *testing.T) {
+func TestAggregateOrdersByUser(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByUserParams{
@@ -1360,6 +1360,63 @@ func TestAggregateUserOrders(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.AggregateOrdersByUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
+	t.Parallel()
+
+	params := &database.AggregateOrdersByPaymentMethodTypeParams{
+		CoordinatorID:      "coordinator-id",
+		PaymentMethodTypes: entity.AllPaymentMethodTypes,
+	}
+	orders := entity.AggregatedOrderPayments{
+		{
+			PaymentMethodType: entity.PaymentMethodTypeCreditCard,
+			OrderCount:        2,
+			UserCount:         1,
+			SalesTotal:        6000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersByPaymentMethodTypeInput
+		expect    entity.AggregatedOrderPayments
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(orders, nil)
+			},
+			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expect:    orders,
+			expectErr: nil,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrdersByPaymentMethodType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

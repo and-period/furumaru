@@ -74,6 +74,11 @@ var (
 		PaymentMethodTypeCash,
 		PaymentMethodTypeNone,
 	}
+	AllPaymentMethodTypes = slices.Concat(
+		ImmediatePaymentMethodTypes,
+		DeferredPaymentMethodTypes,
+		[]PaymentMethodType{PaymentMethodTypeCash},
+	)
 )
 
 // 注文キャンセル種別

@@ -2040,6 +2040,124 @@ func TestOrder_AggregateByUser(t *testing.T) {
 	}
 }
 
+func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	pinternal := make(internalProducts, 2)
+	pinternal[0] = testProduct("product-id01", "type-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Table(productTable).Create(&pinternal).Error
+	require.NoError(t, err)
+	for i := range pinternal {
+		err = db.DB.Create(&pinternal[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	orders := make(entity.Orders, 2)
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	err = db.DB.Create(&orders).Error
+	require.NoError(t, err)
+	payments := make(entity.OrderPayments, 2)
+	payments[0] = testOrderPayment("order-id01", 1, "transaction-id01", "payment-id", now())
+	orders[0].OrderPayment = *payments[0]
+	payments[1] = testOrderPayment("order-id02", 1, "transaction-id02", "payment-id", now())
+	orders[1].OrderPayment = *payments[1]
+	err = db.DB.Create(&payments).Error
+	require.NoError(t, err)
+	fulfillments := make(entity.OrderFulfillments, 2)
+	fulfillments[0] = testOrderFulfillment("fulfillment-id01", "order-id01", 1, 1, now())
+	orders[0].OrderFulfillments = entity.OrderFulfillments{fulfillments[0]}
+	fulfillments[1] = testOrderFulfillment("fulfillment-id02", "order-id02", 1, 2, now())
+	orders[1].OrderFulfillments = entity.OrderFulfillments{fulfillments[1]}
+	err = db.DB.Create(&fulfillments).Error
+	require.NoError(t, err)
+	items := make(entity.OrderItems, 2)
+	items[0] = testOrderItem("fulfillment-id01", 1, "order-id01", now())
+	orders[0].OrderItems = []*entity.OrderItem{items[0]}
+	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
+	orders[1].OrderItems = []*entity.OrderItem{items[1]}
+	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.AggregateOrdersByPaymentMethodTypeParams
+	}
+	type want struct {
+		orders entity.AggregatedOrderPayments
+		err    error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.AggregateOrdersByPaymentMethodTypeParams{
+					PaymentMethodTypes: entity.AllPaymentMethodTypes,
+					CoordinatorID:      "coordinator-id",
+				},
+			},
+			want: want{
+				orders: entity.AggregatedOrderPayments{
+					{
+						PaymentMethodType: entity.PaymentMethodTypeCreditCard,
+						OrderCount:        2,
+						UserCount:         1,
+						SalesTotal:        3600,
+					},
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			actual, err := db.AggregateByPaymentMethodType(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.orders, actual)
+		})
+	}
+}
+
 func TestOrder_AggregateByPromotion(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

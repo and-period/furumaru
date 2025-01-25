@@ -496,6 +496,12 @@ type AggregateOrdersByUserInput struct {
 	UserIDs       []string `validate:"dive,required"`
 }
 
+type AggregateOrdersByPaymentMethodTypeInput struct {
+	CoordinatorID string    `validate:""`
+	CreatedAtGte  time.Time `validate:""`
+	CreatedAtLt   time.Time `validate:""`
+}
+
 type AggregateOrdersByPromotionInput struct {
 	CoordinatorID string   `validate:""`
 	PromotionIDs  []string `validate:"dive,required"`

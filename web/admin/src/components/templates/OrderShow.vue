@@ -418,6 +418,10 @@ const getPaymentMethodType = (): string => {
       return 'QR決済（楽天ペイ）'
     case PaymentMethodType.AU_PAY:
       return 'QR決済（au PAY）'
+    case PaymentMethodType.PAIDY:
+      return 'ペイディ（Paidy）'
+    case PaymentMethodType.PAY_EASY:
+      return 'ペイジー（Pay-easy）'
     default:
       return '不明'
   }

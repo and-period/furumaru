@@ -197,3 +197,49 @@ func (t TopOrderSalesTrends) Response() []*response.TopOrderSalesTrend {
 	}
 	return res
 }
+
+type TopOrderPayment struct {
+	response.TopOrderPayment
+}
+
+type TopOrderPayments []*TopOrderPayment
+
+func NewTopOrderPayment(payment *entity.AggregatedOrderPayment, total int64) *TopOrderPayment {
+	var rate float64
+	if total > 0 {
+		dcount := decimal.NewFromInt(payment.OrderCount)
+		dtotal := decimal.NewFromInt(total)
+		rate, _ = dcount.Div(dtotal).Mul(decimal.NewFromInt(100)).Float64()
+	}
+
+	return &TopOrderPayment{
+		TopOrderPayment: response.TopOrderPayment{
+			PaymentMethodType: NewPaymentMethodType(payment.PaymentMethodType).Response(),
+			OrderCount:        payment.OrderCount,
+			UserCount:         payment.UserCount,
+			SalesTotal:        payment.SalesTotal,
+			Rate:              rate,
+		},
+	}
+}
+
+func (p *TopOrderPayment) Response() *response.TopOrderPayment {
+	return &p.TopOrderPayment
+}
+
+func NewTopOrderPayments(payments entity.AggregatedOrderPayments) TopOrderPayments {
+	total := payments.OrderTotal()
+	res := make(TopOrderPayments, len(payments))
+	for i := range payments {
+		res[i] = NewTopOrderPayment(payments[i], total)
+	}
+	return res
+}
+
+func (p TopOrderPayments) Response() []*response.TopOrderPayment {
+	res := make([]*response.TopOrderPayment, len(p))
+	for i := range p {
+		res[i] = p[i].Response()
+	}
+	return res
+}

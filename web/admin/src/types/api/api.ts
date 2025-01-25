@@ -6378,6 +6378,45 @@ export interface ThreadsResponse {
     'total': number;
 }
 /**
+ * 
+ * @export
+ * @interface TopOrderPayment
+ */
+export interface TopOrderPayment {
+    /**
+     * 
+     * @type {PaymentMethodType}
+     * @memberof TopOrderPayment
+     */
+    'paymentMethodType': PaymentMethodType;
+    /**
+     * 注文数
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'orderCount': number;
+    /**
+     * ユーザ数
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'userCount': number;
+    /**
+     * 売上合計
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'salesTotal': number;
+    /**
+     * 割合（支払い方法別注文数 / 注文数）
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'rate': number;
+}
+
+
+/**
  * 注文集計期間
  * @export
  * @enum {string}
@@ -6481,6 +6520,12 @@ export interface TopOrdersResponse {
      * @memberof TopOrdersResponse
      */
     'sales': TopOrderValue;
+    /**
+     * 支払い方法別注文数
+     * @type {Array<TopOrderPayment>}
+     * @memberof TopOrdersResponse
+     */
+    'payments': Array<TopOrderPayment>;
     /**
      * 売上推移
      * @type {Array<TopOrderSalesTrend>}
