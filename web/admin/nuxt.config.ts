@@ -108,7 +108,8 @@ export default defineNuxtConfig({
       sourcemap: true,
     },
     plugins: [
-      sentryVitePlugin({
+      process.env.SENTRY_AUTH_TOKEN
+      && sentryVitePlugin({
         org: process.env.SENTRY_ORGANIZATION,
         project: process.env.SENTRY_PROJECT,
         authToken: process.env.SENTRY_AUTH_TOKEN,
