@@ -1,5 +1,35 @@
 # Changelog
 
+## [v4.1.0](https://github.com/and-period/furumaru/compare/v4.0.7...v4.1.0) - 2025-01-26
+- feat(store): 商品購入のフローを刷新 by @taba2424 in https://github.com/and-period/furumaru/pull/2662
+- fix(gateway): 商品レビューがないときのハンドリング追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2667
+- 体験購入周りセットアップ処理の修正と電話番号フォームの修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2668
+- fix: 注文詳細で請求先情報の部分でエラーになっている部分の対応 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2669
+- fix(gateway): di周りの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2670
+- feat(store): トップページで使用する売上ダッシュボード用のAPI実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2671
+- build(deps): bump the dependencies group in /api with 46 updates by @dependabot in https://github.com/and-period/furumaru/pull/2672
+- build(deps): bump the dependencies group in /web/admin with 25 updates by @dependabot in https://github.com/and-period/furumaru/pull/2673
+- fix(gateway): 売上集計APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2674
+- fix(gateway): テストがエラーになっている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2676
+- fix(store): Webhookが無限にリトライする問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2675
+- feat(store): Paidy決済の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2677
+- fix(admin): 支払い種別の追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2679
+- fix(hack): seedsの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2680
+- fix(gateway): 決済種別を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2681
+- feat(store): 銀行振込決済の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2682
+- fix: 体験情報が取得できていない場合に再取得する処理を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2683
+- fix: 郵便番号のエラーメッセージがリセットされない不具合の修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2684
+- すべての体験へのリンクを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2685
+- feat(admin): トップページに売上情報を表示 by @taba2424 in https://github.com/and-period/furumaru/pull/2686
+- fix(store): 週単位の売上集計処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2687
+- feat(admin): 支払い方法別の集計内容を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2689
+- Feat: added video function in user page by @hamachans in https://github.com/and-period/furumaru/pull/2688
+- feat(user): 決済種別を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2691
+- fix(admin): トップページのUI修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2690
+- fix(store): KOMOJUのステータスに応じて処理を変えるように by @taba2424 in https://github.com/and-period/furumaru/pull/2692
+- fix: sentryの設定を環境変数が設定されている場合のみにロードするように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2693
+- Fix: fixed experience register by @hamachans in https://github.com/and-period/furumaru/pull/2694
+
 ## [v4.0.7](https://github.com/and-period/furumaru/compare/v4.0.6...v4.0.7) - 2025-01-17
 
 ## [v4.0.6](https://github.com/and-period/furumaru/compare/v4.0.5...v4.0.6) - 2025-01-17
