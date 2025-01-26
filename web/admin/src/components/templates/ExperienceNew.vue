@@ -71,8 +71,8 @@ const publicStatus = [
 ]
 
 const soldStatus = [
-  { title: '販売中', value: true },
-  { title: '在庫なし', value: false },
+  { title: '販売中', value: false },
+  { title: '在庫なし', value: true },
 ]
 
 const onChangeStartAt = (): void => {
