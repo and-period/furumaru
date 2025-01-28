@@ -13,7 +13,8 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const videoStore = useVideoStore()
-const { getVideo, postComment, getComments, products, experiences } = videoStore
+const { getVideo, postComment, getComments } = videoStore
+const { products, experiences } = storeToRefs(videoStore)
 
 const shoppingCartStore = useShoppingCartStore()
 const { addCart } = shoppingCartStore
