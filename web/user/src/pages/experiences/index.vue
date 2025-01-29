@@ -123,12 +123,10 @@ onMounted(() => {
 })
 
 const mapTypeControlOptions = computed(() => {
-  if (typeof google !== 'undefined') {
-    return {
-      position: google.maps.ControlPosition.BOTTOM_LEFT,
-    }
+  return {
+    // 地図の種別の選択位置。10にすると左下に表示される
+    position: 10,
   }
-  return undefined
 })
 
 useSeoMeta({
@@ -163,7 +161,7 @@ useSeoMeta({
           <div class="relative">
             <the-spot-search-form
               v-model="searchText"
-              class="absolute top-2.5 w-[300px] rounded-full "
+              class="absolute left-2 top-2.5 w-[300px] rounded-full "
               :results="searchResults"
               @click:result="handleClickSearchResult"
               @clear="handleClearSearchForm"
