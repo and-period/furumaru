@@ -52,9 +52,26 @@ const handleClickSpot = (id: string) => {
   router.push(`/experiences/${id}`)
 }
 
+// 検索のエラーメッセージ管理用
+const searchResultError = ref<string>('')
+
 const handleSubmitSearchForm = async () => {
-  const results = await search(searchText.value)
-  searchResults.value = results
+  searchResultError.value = ''
+  try {
+    const results = await search(searchText.value)
+    searchResults.value = results
+  }
+  catch (error) {
+    console.error(error)
+    if (error instanceof google.maps.MapsRequestError) {
+      // 400系のエラー
+      searchResultError.value = '検索結果が見つかりません'
+    }
+    if (error instanceof google.maps.MapsServerError) {
+      // 500系のエラー
+      errorMessage.value = 'Google Maps API側でエラーが発生しました。'
+    }
+  }
 }
 
 const handleClickSearchResult = (result: GoogleMapSearchResult) => {
@@ -66,13 +83,16 @@ const handleClickSearchResult = (result: GoogleMapSearchResult) => {
   searchResults.value = []
 }
 
+/**
+ * 検索フォームのクリア
+ */
 const handleClearSearchForm = () => {
+  searchResultError.value = ''
   searchResults.value = []
 }
 
 const refetchExperiences = async () => {
   try {
-    // await fetchSpots(center.value.lng, center.value.lat)
     await fetchExperiences(center.value.lng, center.value.lat)
   }
   catch (error) {
@@ -123,12 +143,10 @@ onMounted(() => {
 })
 
 const mapTypeControlOptions = computed(() => {
-  if (typeof google !== 'undefined') {
-    return {
-      position: google.maps.ControlPosition.BOTTOM_LEFT,
-    }
+  return {
+    // 地図の種別の選択位置。10にすると左下に表示される
+    position: 10,
   }
-  return undefined
 })
 
 useSeoMeta({
@@ -163,8 +181,9 @@ useSeoMeta({
           <div class="relative">
             <the-spot-search-form
               v-model="searchText"
-              class="absolute top-2.5 w-[300px] rounded-full "
+              class="absolute left-2 top-2.5 w-[300px] rounded-full "
               :results="searchResults"
+              :error-message="searchResultError"
               @click:result="handleClickSearchResult"
               @clear="handleClearSearchForm"
               @submit="handleSubmitSearchForm"
