@@ -11,6 +11,7 @@ export interface I18n {
       topLinkText: string
       searchItemLinkText: string
       allItemLinkText: string
+      allExperienceLinkText: string
       allMarcheLinkText: string
       blogLinkText: string
       aboutLinkText: string
@@ -180,6 +181,7 @@ export interface I18n {
       checkoutWithoutAccountButtonText: string
     }
     guest: {
+      seoTitle: string
       checkoutTitle: string
       customerInformationTitle: string
       nameErrorMessage: string
@@ -219,6 +221,9 @@ export interface I18n {
       totalPriceLabel: string
       backToCartButtonText: string
       paymentMethodButtonText: string
+      addressNotFoundErrorMessage: string
+      postalCodeHyphenNotAllowedErrorMessage: string
+      postalCodeInvalidErrorMessage: string
     }
     address: {
       checkoutTitle: string
@@ -360,7 +365,7 @@ export interface I18n {
       elementarySchoolStudents: string
       preschoolers: string
       senior: string
-      addToCartText: string
+      applyButtonText: string
       estimatedTime: string
       businessHours: string
       locationPostalcode: string
@@ -390,6 +395,24 @@ export interface I18n {
       guestCommentNote: string
       noCommentsText: string
       guestNameLabel: string
+    }
+  }
+
+  experiences: {
+    purchase: {
+      title: string
+      customerInformationTitle: string
+      adult: string
+      juniorHighSchool: string
+      elementarySchool: string
+      preschool: string
+      senior: string
+      quantityLabel: string
+      subTotalPriceLabel: string
+      totalPriceLabel: string
+      submitButtonText: string
+      useDefaultAddressLabel: string
+      useOtherAddressLabel: string
     }
   }
 }

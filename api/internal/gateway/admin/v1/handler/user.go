@@ -47,8 +47,8 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		users service.Users
 		total int64
 	)
-	switch getRole(ctx) {
-	case service.AdminRoleAdministrator:
+	switch getAdminType(ctx) {
+	case service.AdminTypeAdministrator:
 		// 管理者の場合、すべての購入者情報を取得する
 		usersIn := &user.ListUsersInput{
 			Limit:       limit,
@@ -73,7 +73,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 			return
 		}
 		users = service.NewUsers(us, addresses.MapByUserID())
-	case service.AdminRoleCoordinator:
+	case service.AdminTypeCoordinator:
 		// コーディネータの場合、注文した購入者のみを取得する
 		in := &store.ListOrderUserIDsInput{
 			CoordinatorID: getAdminID(ctx),
@@ -106,13 +106,13 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.AggregateOrdersInput{
+	in := &store.AggregateOrdersByUserInput{
 		UserIDs: users.IDs(),
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
-	orders, err := h.store.AggregateOrders(ctx, in)
+	orders, err := h.store.AggregateOrdersByUser(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -173,7 +173,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 
 	var (
 		orders          sentity.Orders
-		aggregatedOrder *sentity.AggregatedOrder
+		aggregatedOrder *sentity.AggregatedUserOrder
 		total           int64
 	)
 	eg, ectx := errgroup.WithContext(ctx)
@@ -183,26 +183,26 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 			Limit:  limit,
 			Offset: offset,
 		}
-		if getRole(ctx) == service.AdminRoleCoordinator {
+		if getAdminType(ctx) == service.AdminTypeCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
 		orders, total, err = h.store.ListOrders(ectx, in)
 		return
 	})
 	eg.Go(func() error {
-		in := &store.AggregateOrdersInput{
+		in := &store.AggregateOrdersByUserInput{
 			UserIDs: []string{userID},
 		}
-		if getRole(ctx) == service.AdminRoleCoordinator {
+		if getAdminType(ctx) == service.AdminTypeCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
-		aggregate, err := h.store.AggregateOrders(ectx, in)
+		aggregate, err := h.store.AggregateOrdersByUser(ectx, in)
 		if err != nil {
 			return err
 		}
 		order, ok := aggregate.Map()[userID]
 		if !ok {
-			order = &sentity.AggregatedOrder{}
+			order = &sentity.AggregatedUserOrder{}
 		}
 		aggregatedOrder = order
 		return nil

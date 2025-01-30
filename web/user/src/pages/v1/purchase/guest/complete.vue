@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getOperationResultFromOrderStatus } from '~/lib/order'
-import { useCheckoutStore } from '~/store/checkout'
+import { useProductCheckoutStore } from '~/store/productCheckout'
 import type { GuestCheckoutStateResponse } from '~/types/api'
 import type { I18n } from '~/types/locales'
 import { ApiBaseError } from '~/types/exception'
@@ -10,7 +10,7 @@ const config = useRuntimeConfig()
 const router = useRouter()
 const route = useRoute()
 
-const checkoutStore = useCheckoutStore()
+const checkoutStore = useProductCheckoutStore()
 const { guestCheckTransactionStatus } = checkoutStore
 
 const ct = (str: keyof I18n['purchase']['complete']) => {

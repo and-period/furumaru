@@ -68,6 +68,18 @@ func IsSessionFailed(err error) bool {
 	return e.Status == 422
 }
 
+func IsRetryable(err error) bool {
+	var e *Error
+	if !errors.As(err, &e) {
+		return false
+	}
+	switch e.Code {
+	case ErrCodeInternalServerError, ErrCodeBadGateway, ErrCodeGatewayTimeout, ErrCodeServiceunavailable:
+		return true
+	}
+	return false
+}
+
 type Error struct {
 	Method  string
 	Route   string

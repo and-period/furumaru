@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { Snackbar } from '~/types/props'
+import { priceFormatter } from '~/lib/price'
+import { useAuthStore } from '~/store/auth'
+import { useExperienceStore } from '~/store/experience'
 import { ExperienceStatus } from '~/types/api'
 import type { I18n } from '~/types/locales'
-import { useExperienceStore } from '~/store/experience'
+import type { Snackbar } from '~/types/props'
 
 const i18n = useI18n()
 
@@ -11,6 +13,8 @@ const dt = (str: keyof I18n['items']['experiences']) => {
 }
 
 const route = useRoute()
+
+const router = useRouter()
 
 const experienceId = computed<string>(() => {
   const ids = route.params.id
@@ -22,10 +26,13 @@ const experienceId = computed<string>(() => {
   }
 })
 
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
 const experienceStore = useExperienceStore()
 const { fetchExperience } = experienceStore
 
-const { data, status } = await useAsyncData('spot', () => {
+const { data, status, error } = await useAsyncData('experience', () => {
   return fetchExperience(experienceId.value)
 })
 
@@ -57,22 +64,39 @@ const itemThumbnailAlt = computed<string>(() => {
   })
 })
 
+const formData = ref({
+  adultCount: 0,
+  juniorHighSchoolCount: 0,
+  elementarySchoolCount: 0,
+  preschoolCount: 0,
+  seniorCount: 0,
+})
+
 const canAddCart = computed<boolean>(() => {
   if (!data.value || !data.value.experience) {
     return false
   }
 
-  return (
-    data.value.experience.status === ExperienceStatus.ACCEPTING
-  )
+  if (data.value.experience.status !== ExperienceStatus.ACCEPTING) {
+    return false
+  }
+
+  if (
+    formData.value.adultCount === 0
+    && formData.value.juniorHighSchoolCount === 0
+    && formData.value.elementarySchoolCount === 0
+    && formData.value.preschoolCount === 0
+    && formData.value.seniorCount === 0
+  ) {
+    return false
+  }
+
+  return true
 })
 
 const priceString = (price: number) => {
   if (price) {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-    }).format(price)
+    return priceFormatter(price)
   }
   else {
     return ''
@@ -86,6 +110,27 @@ const convertToTimeString = (time: string): string => {
     return `${hour}:${minute}`
   }
   throw new Error('Invalid input format. Expected a 4-digit string.')
+}
+
+const handleClickApplyButton = () => {
+  if (isAuthenticated.value) {
+    router.push({
+      path: '/experiences/purchase',
+      query: {
+        id: experienceId.value,
+        ...formData.value,
+      },
+    })
+  }
+  else {
+    router.push({
+      path: '/experiences/purchase/guest',
+      query: {
+        id: experienceId.value,
+        ...formData.value,
+      },
+    })
+  }
 }
 
 useSeoMeta({
@@ -117,6 +162,20 @@ useSeoMeta({
           <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
           <div class="h-[24px] w-[60%] rounded-md bg-slate-100" />
         </div>
+      </div>
+    </template>
+
+    <!-- エラー表示 -->
+    <template v-else-if="status === 'error'">
+      <div
+        class="my-6 px-4"
+      >
+        <the-alert
+          class="bg-white"
+          type="error"
+        >
+          {{ error?.message }}
+        </the-alert>
       </div>
     </template>
 
@@ -246,6 +305,7 @@ useSeoMeta({
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
+                    v-model="formData.adultCount"
                     class="h-full border-[1px] border-main px-2"
                   >
                     <option
@@ -289,6 +349,7 @@ useSeoMeta({
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
+                    v-model="formData.juniorHighSchoolCount"
                     class="h-full border-[1px] border-main px-2"
                   >
                     <option
@@ -332,6 +393,7 @@ useSeoMeta({
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
+                    v-model="formData.elementarySchoolCount"
                     class="h-full border-[1px] border-main px-2"
                   >
                     <option
@@ -375,6 +437,7 @@ useSeoMeta({
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
+                    v-model="formData.preschoolCount"
                     class="h-full border-[1px] border-main px-2"
                   >
                     <option
@@ -418,6 +481,7 @@ useSeoMeta({
                     {{ dt("quantityLabel") }}
                   </label>
                   <select
+                    v-model="formData.seniorCount"
                     class="h-full border-[1px] border-main px-2"
                   >
                     <option
@@ -437,8 +501,9 @@ useSeoMeta({
             <button
               class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
               :disabled="!canAddCart"
+              @click="handleClickApplyButton"
             >
-              {{ dt("addToCartText") }}
+              {{ dt("applyButtonText") }}
             </button>
 
             <div class="mt-4 inline-flex gap-4">

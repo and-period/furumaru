@@ -6,7 +6,6 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/datatypes"
 )
 
 func TestOrderExperience(t *testing.T) {
@@ -41,25 +40,23 @@ func TestOrderExperience(t *testing.T) {
 							IsThumbnail: true,
 						},
 					},
-					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
 					RecommendedPoints: []string{
 						"ポイント1",
 						"ポイント2",
 					},
-					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					PromotionVideoURL:     "http://example.com/promotion.mp4",
-					Duration:              60,
-					Direction:             "彦根駅から徒歩10分",
-					BusinessOpenTime:      "1000",
-					BusinessCloseTime:     "1800",
-					HostPostalCode:        "5220061",
-					HostPrefecture:        "滋賀県",
-					HostPrefectureCode:    25,
-					HostCity:              "彦根市",
-					HostAddressLine1:      "金亀町１−１",
-					HostAddressLine2:      "",
-					HostLongitude:         136.251739,
-					HostLatitude:          35.276833,
+					PromotionVideoURL:  "http://example.com/promotion.mp4",
+					Duration:           60,
+					Direction:          "彦根駅から徒歩10分",
+					BusinessOpenTime:   "1000",
+					BusinessCloseTime:  "1800",
+					HostPostalCode:     "5220061",
+					HostPrefecture:     "滋賀県",
+					HostPrefectureCode: 25,
+					HostCity:           "彦根市",
+					HostAddressLine1:   "金亀町１−１",
+					HostAddressLine2:   "",
+					HostLongitude:      136.251739,
+					HostLatitude:       35.276833,
 					ExperienceRevision: ExperienceRevision{
 						ID:                    1,
 						ExperienceID:          "experience-id",

@@ -131,10 +131,10 @@ export interface Admin {
     'id': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof Admin
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * 姓
      * @type {string}
@@ -181,34 +181,6 @@ export interface Admin {
 
 
 /**
- * 管理者権限
- * @export
- * @enum {string}
- */
-
-export const AdminRole = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 管理者
-    */
-    ADMINISTRATOR: 1,
-    /**
-    * コーディネータ
-    */
-    COORDINATOR: 2,
-    /**
-    * 生産者
-    */
-    PRODUCER: 3
-} as const;
-
-export type AdminRole = typeof AdminRole[keyof typeof AdminRole];
-
-
-/**
  * 管理者の状態
  * @export
  * @enum {string}
@@ -234,6 +206,34 @@ export const AdminStatus = {
 } as const;
 
 export type AdminStatus = typeof AdminStatus[keyof typeof AdminStatus];
+
+
+/**
+ * 管理者種別
+ * @export
+ * @enum {string}
+ */
+
+export const AdminType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 管理者
+    */
+    ADMINISTRATOR: 1,
+    /**
+    * コーディネータ
+    */
+    COORDINATOR: 2,
+    /**
+    * 生産者
+    */
+    PRODUCER: 3
+} as const;
+
+export type AdminType = typeof AdminType[keyof typeof AdminType];
 
 
 /**
@@ -415,10 +415,10 @@ export interface AuthResponse {
     'adminId': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof AuthResponse
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * アクセストークン
      * @type {string}
@@ -460,10 +460,10 @@ export interface AuthUserResponse {
     'id': string;
     /**
      * 
-     * @type {AdminRole}
+     * @type {AdminType}
      * @memberof AuthUserResponse
      */
-    'role': AdminRole;
+    'type': AdminType;
     /**
      * 表示名
      * @type {string}
@@ -4330,7 +4330,15 @@ export const PaymentMethodType = {
     /**
     * 決済無し（0円決済）
     */
-    NONE: 10
+    NONE: 10,
+    /**
+    * ペイディ（Paidy）
+    */
+    PAIDY: 11,
+    /**
+    * ペイジー（Pay-easy）
+    */
+    PAY_EASY: 12
 } as const;
 
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
@@ -6369,6 +6377,164 @@ export interface ThreadsResponse {
      */
     'total': number;
 }
+/**
+ * 
+ * @export
+ * @interface TopOrderPayment
+ */
+export interface TopOrderPayment {
+    /**
+     * 
+     * @type {PaymentMethodType}
+     * @memberof TopOrderPayment
+     */
+    'paymentMethodType': PaymentMethodType;
+    /**
+     * 注文数
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'orderCount': number;
+    /**
+     * ユーザ数
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'userCount': number;
+    /**
+     * 売上合計
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'salesTotal': number;
+    /**
+     * 割合（支払い方法別注文数 / 注文数）
+     * @type {number}
+     * @memberof TopOrderPayment
+     */
+    'rate': number;
+}
+
+
+/**
+ * 注文集計期間
+ * @export
+ * @enum {string}
+ */
+
+export const TopOrderPeriodType = {
+    /**
+    * 1日単位
+    */
+    DAY: 'day',
+    /**
+    * 1週間単位
+    */
+    WEEK: 'week',
+    /**
+    * 1ヶ月単位
+    */
+    MONTH: 'month'
+} as const;
+
+export type TopOrderPeriodType = typeof TopOrderPeriodType[keyof typeof TopOrderPeriodType];
+
+
+/**
+ * 
+ * @export
+ * @interface TopOrderSalesTrend
+ */
+export interface TopOrderSalesTrend {
+    /**
+     * 期間
+     * @type {string}
+     * @memberof TopOrderSalesTrend
+     */
+    'period': string;
+    /**
+     * 売上合計
+     * @type {number}
+     * @memberof TopOrderSalesTrend
+     */
+    'salesTotal': number;
+}
+/**
+ * 
+ * @export
+ * @interface TopOrderValue
+ */
+export interface TopOrderValue {
+    /**
+     * 値
+     * @type {number}
+     * @memberof TopOrderValue
+     */
+    'value': number;
+    /**
+     * 比較値
+     * @type {number}
+     * @memberof TopOrderValue
+     */
+    'comparison': number;
+}
+/**
+ * 
+ * @export
+ * @interface TopOrdersResponse
+ */
+export interface TopOrdersResponse {
+    /**
+     * 取得開始日時 (unixtime)
+     * @type {number}
+     * @memberof TopOrdersResponse
+     */
+    'startAt': number;
+    /**
+     * 取得終了日時 (unixtime)
+     * @type {number}
+     * @memberof TopOrdersResponse
+     */
+    'endAt': number;
+    /**
+     * 
+     * @type {TopOrderPeriodType}
+     * @memberof TopOrdersResponse
+     */
+    'periodType': TopOrderPeriodType;
+    /**
+     * 
+     * @type {TopOrderValue}
+     * @memberof TopOrdersResponse
+     */
+    'orders': TopOrderValue;
+    /**
+     * 
+     * @type {TopOrderValue}
+     * @memberof TopOrdersResponse
+     */
+    'users': TopOrderValue;
+    /**
+     * 
+     * @type {TopOrderValue}
+     * @memberof TopOrdersResponse
+     */
+    'sales': TopOrderValue;
+    /**
+     * 支払い方法別注文数
+     * @type {Array<TopOrderPayment>}
+     * @memberof TopOrdersResponse
+     */
+    'payments': Array<TopOrderPayment>;
+    /**
+     * 売上推移
+     * @type {Array<TopOrderSalesTrend>}
+     * @memberof TopOrdersResponse
+     */
+    'salesTrends': Array<TopOrderSalesTrend>;
+}
+
+
 /**
  * 
  * @export
@@ -22303,6 +22469,135 @@ export class ThreadApi extends BaseAPI {
      */
     public v1UpdateThread(threadId: string, body: UpdateThreadRequest, options?: RawAxiosRequestConfig) {
         return ThreadApiFp(this.configuration).v1UpdateThread(threadId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TopApi - axios parameter creator
+ * @export
+ */
+export const TopApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 注文集計取得
+         * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
+         * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
+         * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1TopOrders: async (startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/top/orders`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (startAt !== undefined) {
+                localVarQueryParameter['startAt'] = startAt;
+            }
+
+            if (endAt !== undefined) {
+                localVarQueryParameter['endAt'] = endAt;
+            }
+
+            if (periodType !== undefined) {
+                localVarQueryParameter['periodType'] = periodType;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TopApi - functional programming interface
+ * @export
+ */
+export const TopApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TopApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 注文集計取得
+         * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
+         * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
+         * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopOrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1TopOrders(startAt, endAt, periodType, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TopApi.v1TopOrders']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TopApi - factory interface
+ * @export
+ */
+export const TopApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TopApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 注文集計取得
+         * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
+         * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
+         * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig): AxiosPromise<TopOrdersResponse> {
+            return localVarFp.v1TopOrders(startAt, endAt, periodType, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TopApi - object-oriented interface
+ * @export
+ * @class TopApi
+ * @extends {BaseAPI}
+ */
+export class TopApi extends BaseAPI {
+    /**
+     * 
+     * @summary 注文集計取得
+     * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
+     * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
+     * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TopApi
+     */
+    public v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig) {
+        return TopApiFp(this.configuration).v1TopOrders(startAt, endAt, periodType, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -18,3 +18,18 @@ var (
 	ErrOutOfRange         = errors.New("out of range")
 	ErrUnknown            = errors.New("unknown")
 )
+
+func IsRetryable(err error) bool {
+	if err == nil {
+		return false
+	}
+	switch {
+	case errors.Is(err, ErrResourceExhausted),
+		errors.Is(err, ErrUnavailable),
+		errors.Is(err, ErrDeadlineExceeded),
+		errors.Is(err, ErrInternal):
+		return true
+	default:
+		return false
+	}
+}

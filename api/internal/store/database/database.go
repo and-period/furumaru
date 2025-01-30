@@ -225,13 +225,18 @@ type Order interface {
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)
 	GetByTransactionIDWithSessionID(ctx context.Context, sessionID, transactionID string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
-	UpdatePayment(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
+	UpdateAuthorized(ctx context.Context, orderID string, params *UpdateOrderAuthorizedParams) error
+	UpdateCaptured(ctx context.Context, orderID string, params *UpdateOrderCapturedParams) error
+	UpdateFailed(ctx context.Context, orderID string, params *UpdateOrderFailedParams) error
+	UpdateRefunded(ctx context.Context, orderID string, params *UpdateOrderRefundedParams) error
 	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
-	UpdateRefund(ctx context.Context, orderID string, params *UpdateOrderRefundParams) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
-	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
+	Aggregate(ctx context.Context, params *AggregateOrdersParams) (*entity.AggregatedOrder, error)
+	AggregateByUser(ctx context.Context, params *AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error)
+	AggregateByPaymentMethodType(ctx context.Context, params *AggregateOrdersByPaymentMethodTypeParams) (entity.AggregatedOrderPayments, error)
 	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
+	AggregateByPeriod(ctx context.Context, params *AggregateOrdersByPeriodParams) (entity.AggregatedPeriodOrders, error)
 }
 
 type ListOrdersParams struct {
@@ -243,10 +248,28 @@ type ListOrdersParams struct {
 	Offset        int
 }
 
-type UpdateOrderPaymentParams struct {
+type UpdateOrderAuthorizedParams struct {
+	PaymentID string
+	IssuedAt  time.Time
+}
+
+type UpdateOrderCapturedParams struct {
+	PaymentID string
+	IssuedAt  time.Time
+}
+
+type UpdateOrderFailedParams struct {
 	Status    entity.PaymentStatus
 	PaymentID string
 	IssuedAt  time.Time
+}
+
+type UpdateOrderRefundedParams struct {
+	Status       entity.PaymentStatus
+	RefundType   entity.RefundType
+	RefundTotal  int64
+	RefundReason string
+	IssuedAt     time.Time
 }
 
 type UpdateOrderFulfillmentParams struct {
@@ -254,14 +277,6 @@ type UpdateOrderFulfillmentParams struct {
 	ShippingCarrier entity.ShippingCarrier
 	TrackingNumber  string
 	ShippedAt       time.Time
-}
-
-type UpdateOrderRefundParams struct {
-	Status       entity.PaymentStatus
-	RefundType   entity.RefundType
-	RefundTotal  int64
-	RefundReason string
-	IssuedAt     time.Time
 }
 
 type DraftOrderParams struct {
@@ -275,12 +290,32 @@ type CompleteOrderParams struct {
 
 type AggregateOrdersParams struct {
 	CoordinatorID string
+	CreatedAtGte  time.Time
+	CreatedAtLt   time.Time
+}
+
+type AggregateOrdersByUserParams struct {
+	CoordinatorID string
 	UserIDs       []string
+}
+
+type AggregateOrdersByPaymentMethodTypeParams struct {
+	CoordinatorID      string
+	PaymentMethodTypes []entity.PaymentMethodType
+	CreatedAtGte       time.Time
+	CreatedAtLt        time.Time
 }
 
 type AggregateOrdersByPromotionParams struct {
 	CoordinatorID string
 	PromotionIDs  []string
+}
+
+type AggregateOrdersByPeriodParams struct {
+	CoordinatorID string
+	PeriodType    entity.AggregateOrderPeriodType
+	CreatedAtGte  time.Time
+	CreatedAtLt   time.Time
 }
 
 type PaymentSystem interface {

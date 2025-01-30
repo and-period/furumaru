@@ -22,3 +22,81 @@ checkoutStateResponse:
   example:
     orderId: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 5
+preCheckoutExperienceResponse:
+  type: object
+  properties:
+    experience:
+      $ref: './../../../openapi.yaml#/components/schemas/experience'
+    promotion:
+      $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    subtotal:
+      type: integer
+      format: int64
+      description: 小計(税込:商品合計金額)
+    discount:
+      type: integer
+      format: int64
+      description: 割引金額(税込)
+    total:
+      type: integer
+      format: int64
+      description: 合計金額(税込)
+    requestId:
+      type: string
+      description: 支払い時にAPIへ送信するキー(重複判定用)
+  required:
+  - experience
+  - promotion
+  - subtotal
+  - discount
+  - total
+  example:
+    experience:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '農業体験'
+      description: '農業体験の説明'
+      status: 1
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      thumbnailUrl: 'https://example.com/image.jpg'
+      media:
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: false
+      priceAdult: 1000
+      priceJuniorHighSchool: 800
+      priceElementarySchool: 600
+      pricePreschool: 400
+      priceSenior: 800
+      recommendedPoint1: 'おすすめポイント1'
+      recommendedPoint2: 'おすすめポイント2'
+      recommendedPoint3: 'おすすめポイント3'
+      promotionVideoUrl: 'https://example.com/promotion.mp4'
+      duration: 60
+      direction: '新宿駅から徒歩10分'
+      businessOpenTime: '1000'
+      businessCloseTime: '1700'
+      hostPostalCode: '123-4567'
+      hostPrefecture: '東京都'
+      hostCity: '千代田区'
+      hostAddressLine1: '千代田1-1-1'
+      hostAddressLine2: '千代田ビル1F'
+      hostLongitude: 139.767052
+      hostLatitude: 35.681167
+      startAt: 1614556800
+      endAt: 1614643199
+    promotion:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+    subtotal: 1000
+    discount: 200
+    total: 1300
+    requestId: 'kSByoE6FetnPs5Byk3a9Zx'

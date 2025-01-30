@@ -2,19 +2,21 @@ name: '[Backend] Build and Test'
 on:
   push:
     paths:
-    - '.github/actions/setup-go/**'
+    - '.github/actions/**'
     - '.github/workflows/ci-backend.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
-    - 'infra/mysql/**'
+    - 'infra/docker/infra/tidb/**'
+    - 'infra/tidb/**'
 
 env:
   SERVICE: api
   TZ: 'Asia/Tokyo'
+  DB_DRIVER: mysql
   DB_HOST: 127.0.0.1
-  DB_PORT: 3306
+  DB_PORT: 4000
   DB_USERNAME: root
-  DB_PASSWORD: 12345678
+  DB_PASSWORD: ''
 
 jobs:
   setup:
@@ -123,31 +125,22 @@ jobs:
         working-directory: ./api
         service: ${{ env.SERVICE }}
 
-    - name: Start MySQL container
-      working-directory: .
-      run: docker compose --file=docker-compose.ci.yaml up --build --detach mysql
-
-    - name: Wait start MySQL
-      run: |
-        #!/bin/bash
-        retry=60
-        count=1
-        until mysqladmin ping -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD}; do
-          echo 'mysql is unavailable - sleeping'
-          sleep 3
-          if [ $(expr $retry - $count) -le 0 ]; then
-            echo 'mysql is unavailable - throw error for timeout'
-            exit 1
-          fi
-          count=$(expr $count + 1)
-        done
-        echo 'mysql is up - executing command'
+    - uses: ./.github/actions/setup-tidb
 
     - name: Setup
       run: make setup
 
     - name: Create Mock
       run: make mockgen
+
+    - name: Database Migration
+      run: |
+        go run ./hack/database-migrate-tidb/main.go \
+          -db-driver=${DB_DRIVER} \
+          -db-host=${DB_HOST} \
+          -db-port=${DB_PORT} \
+          -db-username=${DB_USERNAME} \
+          -db-password=${DB_PASSWORD}
 
     - name: Test
       run: make test

@@ -21,7 +21,7 @@ func TestAdministrator(t *testing.T) {
 			admin: &entity.Administrator{
 				Admin: entity.Admin{
 					ID:            "admin-id",
-					Role:          entity.AdminRoleAdministrator,
+					Type:          entity.AdminTypeAdministrator,
 					Status:        entity.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -118,7 +118,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "admin-id01",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          entity.AdminTypeAdministrator,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -134,7 +134,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Admin: entity.Admin{
 						ID:            "admin-id02",
-						Role:          entity.AdminRoleAdministrator,
+						Type:          entity.AdminTypeAdministrator,
 						Status:        entity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",

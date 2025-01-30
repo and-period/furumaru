@@ -15,6 +15,8 @@ paymentMethodType:
   - 8
   - 9
   - 10
+  - 11
+  - 12
   x-enum-varnames:
   - UNKNOWN
   - CASH
@@ -27,6 +29,8 @@ paymentMethodType:
   - RAKUTEN_PAY
   - AU_PAY
   - NONE
+  - PAIDY
+  - PAY_EASY
   x-enum-descriptions:
   - 不明
   - 代引支払い
@@ -39,6 +43,8 @@ paymentMethodType:
   - QR決済（楽天ペイ）
   - QR決済（au PAY）
   - 決済無し（0円決済）
+  - ペイディ（Paidy）
+  - ペイジー（Pay-easy）
 paymentStatus:
   type: integer
   format: int32

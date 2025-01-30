@@ -219,8 +219,8 @@ type bankTransferDetails struct {
 	PhoneNumber    string `json:"phone"`                      // 顧客電話番号
 	FamilyName     string `json:"family_name,omitempty"`      // 氏名（姓）
 	GivenName      string `json:"given_name,omitempty"`       // 氏名（名）
-	FamilyNameKana string `json:"family_name_kana,omitempty"` // 氏名（姓：かな）
-	GivenNameKana  string `json:"given_name_kana,omitempty"`  // 氏名（名：かな）
+	FamilyNameKana string `json:"family_name_kana,omitempty"` // 氏名（姓：カナ）
+	GivenNameKana  string `json:"given_name_kana,omitempty"`  // 氏名（名：カナ）
 }
 
 func (c *client) OrderBankTransfer(ctx context.Context, params *komoju.OrderBankTransferParams) (*komoju.OrderSessionResponse, error) {
@@ -431,6 +431,84 @@ func (c *client) OrderAUPay(ctx context.Context, params *komoju.OrderAUPayParams
 		Capture: string(c.captureMode),
 		PaymentDetails: &auPayDetails{
 			Type: string(komoju.PaymentTypeAUPay),
+		},
+	}
+	req := &komoju.APIParams{
+		Host:   c.host,
+		Method: http.MethodPost,
+		Path:   path,
+		Params: []interface{}{params.SessionID},
+		Body:   body,
+	}
+	res := &komoju.OrderSessionResponse{}
+	if err := c.client.Do(ctx, req, res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type orderPaidyRequest struct {
+	Capture        string        `json:"capture"`         // 売上処理
+	PaymentDetails *paidyDetails `json:"payment_details"` // 決済詳細情報
+}
+
+type paidyDetails struct {
+	Type         string `json:"type"`            // 決済種別
+	CustomerName string `json:"customer_name"`   // 氏名
+	Email        string `json:"email,omitempty"` // 顧客メールアドレス
+}
+
+func (c *client) OrderPaidy(ctx context.Context, params *komoju.OrderPaidyParams) (*komoju.OrderSessionResponse, error) {
+	const path = "/api/v1/sessions/%s/pay"
+	body := &orderPaidyRequest{
+		Capture: string(c.captureMode),
+		PaymentDetails: &paidyDetails{
+			Type:         string(komoju.PaymentTypePaidy),
+			CustomerName: params.Name,
+			Email:        params.Email,
+		},
+	}
+	req := &komoju.APIParams{
+		Host:   c.host,
+		Method: http.MethodPost,
+		Path:   path,
+		Params: []interface{}{params.SessionID},
+		Body:   body,
+	}
+	res := &komoju.OrderSessionResponse{}
+	if err := c.client.Do(ctx, req, res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type orderPayEasyRequest struct {
+	Capture        string          `json:"capture"`         // 売上処理
+	PaymentDetails *payEasyDetails `json:"payment_details"` // 決済詳細情報
+}
+
+type payEasyDetails struct {
+	Type           string `json:"type"`                       // 決済種別
+	Email          string `json:"email"`                      // 顧客メールアドレス
+	PhoneNumber    string `json:"phone"`                      // 顧客電話番号
+	FamilyName     string `json:"family_name,omitempty"`      // 氏名（姓）
+	GivenName      string `json:"given_name,omitempty"`       // 氏名（名）
+	FamilyNameKana string `json:"family_name_kana,omitempty"` // 氏名（姓：カナ）
+	GivenNameKana  string `json:"given_name_kana,omitempty"`  // 氏名（名：カナ）
+}
+
+func (c *client) OrderPayEasy(ctx context.Context, params *komoju.OrderPayEasyParams) (*komoju.OrderSessionResponse, error) {
+	const path = "/api/v1/sessions/%s/pay"
+	body := &orderPayEasyRequest{
+		Capture: string(c.captureMode),
+		PaymentDetails: &payEasyDetails{
+			Type:           string(komoju.PaymentTypePayEasy),
+			Email:          params.Email,
+			PhoneNumber:    params.PhoneNumber,
+			GivenName:      params.Firstname,
+			FamilyName:     params.Lastname,
+			GivenNameKana:  params.FirstnameKana,
+			FamilyNameKana: params.LastnameKana,
 		},
 	}
 	req := &komoju.APIParams{

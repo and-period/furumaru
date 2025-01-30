@@ -9,7 +9,7 @@ import {
   type Coordinator,
   ScheduleStatus,
   type Schedule,
-  AdminRole,
+  AdminType,
 } from '~/types/api'
 
 const props = defineProps({
@@ -17,9 +17,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
@@ -111,7 +111,7 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.COORDINATOR
+  return props.adminType === AdminType.COORDINATOR
 }
 
 const getCoordinatorName = (coordinatorId: string): string => {

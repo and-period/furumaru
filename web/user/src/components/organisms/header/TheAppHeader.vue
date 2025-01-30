@@ -24,6 +24,7 @@ interface Props {
   myPageLinkText: string
   allItemLinkText: string
   allMarcheLinkText: string
+  allExperienceLinkText: string
   blogLinkText: string
   aboutLinkText: string
   viewMycartText: string
@@ -97,6 +98,11 @@ const SP_MENU_ITEMS = computed(() => [
     icon: 'fruits',
     text: props.allItemLinkText,
     to: '/items',
+  },
+  {
+    icon: 'fruits',
+    text: props.allExperienceLinkText,
+    to: '/experiences',
   },
   {
     icon: 'flag',

@@ -694,7 +694,7 @@ func TestUserToList(t *testing.T) {
 	tests := []struct {
 		name   string
 		user   *User
-		order  *sentity.AggregatedOrder
+		order  *sentity.AggregatedUserOrder
 		expect *UserToList
 	}{
 		{
@@ -731,7 +731,7 @@ func TestUserToList(t *testing.T) {
 					revisionID: 1,
 				},
 			},
-			order: &sentity.AggregatedOrder{
+			order: &sentity.AggregatedUserOrder{
 				UserID:     "user-id",
 				OrderCount: 2,
 				Subtotal:   3000,
@@ -859,7 +859,7 @@ func TestUsersToList(t *testing.T) {
 	tests := []struct {
 		name   string
 		users  Users
-		orders map[string]*sentity.AggregatedOrder
+		orders map[string]*sentity.AggregatedUserOrder
 		expect UsersToList
 	}{
 		{
@@ -898,7 +898,7 @@ func TestUsersToList(t *testing.T) {
 					},
 				},
 			},
-			orders: map[string]*sentity.AggregatedOrder{
+			orders: map[string]*sentity.AggregatedUserOrder{
 				"user-id": {
 					UserID:     "user-id",
 					OrderCount: 2,

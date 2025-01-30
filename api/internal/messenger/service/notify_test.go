@@ -220,7 +220,7 @@ func TestNotifyStartLive(t *testing.T) {
 	}
 }
 
-func TestNotifyOrderAuthorized(t *testing.T) {
+func TestNotifyOrderCaptured(t *testing.T) {
 	t.Parallel()
 	now := time.Date(2024, 1, 23, 18, 30, 0, 0, time.UTC)
 	orderIn := &store.GetOrderInput{
@@ -241,6 +241,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				Tax:               364,
 				Total:             4014,
 				PaidAt:            now,
+				CapturedAt:        now,
 			},
 			OrderFulfillments: sentity.OrderFulfillments{
 				{
@@ -294,7 +295,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 	coordinator := &uentity.Coordinator{
 		Admin: uentity.Admin{
 			ID:            "coordinator-id",
-			Role:          uentity.AdminRoleCoordinator,
+			Type:          uentity.AdminTypeCoordinator,
 			Status:        uentity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "コーディネータ",
@@ -359,14 +360,14 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *messenger.NotifyOrderAuthorizedInput
+		input     *messenger.NotifyOrderCapturedInput
 		expectErr error
 	}{
 		// Common
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &messenger.NotifyOrderAuthorizedInput{},
+			input:     &messenger.NotifyOrderCapturedInput{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
@@ -374,7 +375,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(nil, assert.AnError)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -384,7 +385,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeUnknown), nil)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: nil,
@@ -404,7 +405,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							{
 								ID:         queues[0].ID, // ignore
 								NotifyType: entity.NotifyTypeEmail,
-								EventType:  entity.EventTypeOrderAuthorized,
+								EventType:  entity.EventTypeOrderCaptured,
 								UserType:   entity.UserTypeUser,
 								UserIDs:    []string{"user-id"},
 								Done:       false,
@@ -412,7 +413,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							{
 								ID:         queues[1].ID, // ignore
 								NotifyType: entity.NotifyTypeReport,
-								EventType:  entity.EventTypeOrderAuthorized,
+								EventType:  entity.EventTypeOrderCaptured,
 								UserType:   entity.UserTypeUser,
 								UserIDs:    []string{"user-id"},
 								Done:       false,
@@ -429,11 +430,11 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 						require.NoError(t, err)
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeOrderAuthorized,
+							EventType: entity.EventTypeOrderCaptured,
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								TemplateID: entity.EmailTemplateIDUserOrderProductAuthorized,
+								TemplateID: entity.EmailTemplateIDUserOrderProductCaptured,
 								Substitutions: map[string]interface{}{
 									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
@@ -463,7 +464,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 								},
 							},
 							Report: &entity.ReportConfig{
-								TemplateID: entity.ReportTemplateIDOrderProductAuthorized,
+								TemplateID: entity.ReportTemplateIDOrderProductCaptured,
 								Overview:   "&. 太郎",
 								Author:     "&. コーディネータ",
 								Link:       "http://admin.example.com/orders/order-id",
@@ -474,7 +475,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 						return "message-id", nil
 					})
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: nil,
@@ -487,7 +488,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -500,7 +501,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -513,7 +514,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError).MinTimes(1)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -527,7 +528,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).Times(2)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -547,7 +548,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							{
 								ID:         queues[0].ID, // ignore
 								NotifyType: entity.NotifyTypeEmail,
-								EventType:  entity.EventTypeOrderAuthorized,
+								EventType:  entity.EventTypeOrderCaptured,
 								UserType:   entity.UserTypeUser,
 								UserIDs:    []string{"user-id"},
 								Done:       false,
@@ -555,7 +556,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							{
 								ID:         queues[1].ID, // ignore
 								NotifyType: entity.NotifyTypeReport,
-								EventType:  entity.EventTypeOrderAuthorized,
+								EventType:  entity.EventTypeOrderCaptured,
 								UserType:   entity.UserTypeUser,
 								UserIDs:    []string{"user-id"},
 								Done:       false,
@@ -572,11 +573,11 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 						require.NoError(t, err)
 						expect := &entity.WorkerPayload{
 							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeOrderAuthorized,
+							EventType: entity.EventTypeOrderCaptured,
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								TemplateID: entity.EmailTemplateIDUserOrderExperienceAuthorized,
+								TemplateID: entity.EmailTemplateIDUserOrderExperienceCaptured,
 								Substitutions: map[string]interface{}{
 									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
@@ -596,7 +597,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 								},
 							},
 							Report: &entity.ReportConfig{
-								TemplateID: entity.ReportTemplateIDOrderExperienceAuthorized,
+								TemplateID: entity.ReportTemplateIDOrderExperienceCaptured,
 								Overview:   "&. 太郎",
 								Author:     "&. コーディネータ",
 								Link:       "http://admin.example.com/orders/order-id",
@@ -607,7 +608,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 						return "message-id", nil
 					})
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: nil,
@@ -620,7 +621,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -633,7 +634,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(nil, assert.AnError)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -646,7 +647,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -660,7 +661,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -675,7 +676,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
-			input: &messenger.NotifyOrderAuthorizedInput{
+			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
 			},
 			expectErr: exception.ErrInternal,
@@ -684,7 +685,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyOrderAuthorized(ctx, tt.input)
+			err := service.NotifyOrderCaptured(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -1119,7 +1120,7 @@ func TestNotifyNotification(t *testing.T) {
 	}
 	admin := &uentity.Admin{
 		ID:            "admin-id",
-		Role:          uentity.AdminRoleAdministrator,
+		Type:          uentity.AdminTypeAdministrator,
 		Status:        uentity.AdminStatusActivated,
 		Lastname:      "&.",
 		Firstname:     "管理者",

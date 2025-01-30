@@ -85,7 +85,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		Offset:         offset,
 		Orders:         orders,
 	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)
@@ -251,7 +251,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	if getRole(ctx).IsCoordinator() {
+	if getAdminType(ctx).IsCoordinator() {
 		if req.CoordinatorID != getAdminID(ctx) {
 			h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 			return

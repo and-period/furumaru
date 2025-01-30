@@ -16,7 +16,6 @@ func TestVideo(t *testing.T) {
 		name   string
 		params *NewVideoParams
 		expect *Video
-		hasErr bool
 	}{
 		{
 			name: "success",
@@ -51,38 +50,13 @@ func TestVideo(t *testing.T) {
 				VideoExperiences:  []*VideoExperience{{ExperienceID: "experience-id", Priority: 1}},
 				PublishedAt:       now.AddDate(0, 0, -1),
 			},
-			hasErr: false,
-		},
-		{
-			name: "validation error",
-			params: &NewVideoParams{
-				CoordinatorID:     "coordinator-id",
-				ProductIDs:        []string{},
-				ExperienceIDs:     []string{"experience-id"},
-				Title:             "じゃがいもの育て方",
-				Description:       "じゃがいもの育て方の動画です。",
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    true,
-				DisplayExperience: true,
-				PublishedAt:       now.AddDate(0, 0, -1),
-			},
-			expect: nil,
-			hasErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := NewVideo(tt.params)
-			if tt.hasErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
+			actual := NewVideo(tt.params)
 			actual.ID = "" // ignore
 			for _, vp := range actual.VideoProducts {
 				vp.VideoID = "" // ignore
@@ -91,89 +65,6 @@ func TestVideo(t *testing.T) {
 				ve.VideoID = "" // ignore
 			}
 			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestVideo_Validate(t *testing.T) {
-	t.Parallel()
-
-	now := time.Now()
-
-	tests := []struct {
-		name   string
-		video  *Video
-		expect error
-	}{
-		{
-			name: "success",
-			video: &Video{
-				CoordinatorID:     "coordinator-id",
-				ProductIDs:        []string{"product-id"},
-				ExperienceIDs:     []string{"experience-id"},
-				Title:             "じゃがいもの育て方",
-				Description:       "じゃがいもの育て方の動画です。",
-				Status:            VideoStatusUnknown,
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    false,
-				DisplayExperience: true,
-				VideoProducts:     []*VideoProduct{{ProductID: "product-id", Priority: 1}},
-				VideoExperiences:  []*VideoExperience{{ExperienceID: "experience-id", Priority: 1}},
-				PublishedAt:       now.AddDate(0, 0, -1),
-			},
-			expect: nil,
-		},
-		{
-			name: "required product ids",
-			video: &Video{
-				CoordinatorID:     "coordinator-id",
-				ProductIDs:        []string{},
-				ExperienceIDs:     []string{"experience-id"},
-				Title:             "じゃがいもの育て方",
-				Description:       "じゃがいもの育て方の動画です。",
-				Status:            VideoStatusUnknown,
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    true,
-				DisplayExperience: true,
-				VideoProducts:     []*VideoProduct{{ProductID: "product-id", Priority: 1}},
-				VideoExperiences:  []*VideoExperience{{ExperienceID: "experience-id", Priority: 1}},
-				PublishedAt:       now.AddDate(0, 0, -1),
-			},
-			expect: ErrVideoRequiredProductIDs,
-		},
-		{
-			name: "success",
-			video: &Video{
-				CoordinatorID:     "coordinator-id",
-				ProductIDs:        []string{"product-id"},
-				ExperienceIDs:     []string{},
-				Title:             "じゃがいもの育て方",
-				Description:       "じゃがいもの育て方の動画です。",
-				Status:            VideoStatusUnknown,
-				ThumbnailURL:      "https://example.com/thumbnail.jpg",
-				VideoURL:          "https://example.com/video.mp4",
-				Public:            true,
-				Limited:           false,
-				DisplayProduct:    true,
-				DisplayExperience: true,
-				VideoProducts:     []*VideoProduct{{ProductID: "product-id", Priority: 1}},
-				VideoExperiences:  []*VideoExperience{{ExperienceID: "experience-id", Priority: 1}},
-				PublishedAt:       now.AddDate(0, 0, -1),
-			},
-			expect: ErrVideoRequiredExperienceIDs,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.video.Validate()
-			assert.ErrorIs(t, err, tt.expect)
 		})
 	}
 }

@@ -1,5 +1,99 @@
 # Changelog
 
+## [v4.1.0](https://github.com/and-period/furumaru/compare/v4.0.7...v4.1.0) - 2025-01-26
+- feat(store): 商品購入のフローを刷新 by @taba2424 in https://github.com/and-period/furumaru/pull/2662
+- fix(gateway): 商品レビューがないときのハンドリング追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2667
+- 体験購入周りセットアップ処理の修正と電話番号フォームの修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2668
+- fix: 注文詳細で請求先情報の部分でエラーになっている部分の対応 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2669
+- fix(gateway): di周りの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2670
+- feat(store): トップページで使用する売上ダッシュボード用のAPI実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2671
+- build(deps): bump the dependencies group in /api with 46 updates by @dependabot in https://github.com/and-period/furumaru/pull/2672
+- build(deps): bump the dependencies group in /web/admin with 25 updates by @dependabot in https://github.com/and-period/furumaru/pull/2673
+- fix(gateway): 売上集計APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2674
+- fix(gateway): テストがエラーになっている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2676
+- fix(store): Webhookが無限にリトライする問題を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2675
+- feat(store): Paidy決済の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2677
+- fix(admin): 支払い種別の追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2679
+- fix(hack): seedsの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2680
+- fix(gateway): 決済種別を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2681
+- feat(store): 銀行振込決済の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2682
+- fix: 体験情報が取得できていない場合に再取得する処理を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2683
+- fix: 郵便番号のエラーメッセージがリセットされない不具合の修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2684
+- すべての体験へのリンクを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2685
+- feat(admin): トップページに売上情報を表示 by @taba2424 in https://github.com/and-period/furumaru/pull/2686
+- fix(store): 週単位の売上集計処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2687
+- feat(admin): 支払い方法別の集計内容を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2689
+- Feat: added video function in user page by @hamachans in https://github.com/and-period/furumaru/pull/2688
+- feat(user): 決済種別を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2691
+- fix(admin): トップページのUI修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2690
+- fix(store): KOMOJUのステータスに応じて処理を変えるように by @taba2424 in https://github.com/and-period/furumaru/pull/2692
+- fix: sentryの設定を環境変数が設定されている場合のみにロードするように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2693
+- Fix: fixed experience register by @hamachans in https://github.com/and-period/furumaru/pull/2694
+
+## [v4.0.7](https://github.com/and-period/furumaru/compare/v4.0.6...v4.0.7) - 2025-01-17
+
+## [v4.0.6](https://github.com/and-period/furumaru/compare/v4.0.5...v4.0.6) - 2025-01-17
+- fix(gateway): 注文詳細が取得できない不具合の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2663
+
+## [v4.0.5](https://github.com/and-period/furumaru/compare/v4.0.4...v4.0.5) - 2025-01-15
+- refactor(messenger): メソッド名の変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2660
+- build(deps): bump the dependencies group in /api with 39 updates by @dependabot in https://github.com/and-period/furumaru/pull/2658
+- build(deps): bump the dependencies group in /web/admin with 93 updates by @dependabot in https://github.com/and-period/furumaru/pull/2659
+
+## [v4.0.4](https://github.com/and-period/furumaru/compare/v4.0.3...v4.0.4) - 2025-01-14
+- fix(store): 注文履歴一覧の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2656
+
+## [v4.0.3](https://github.com/and-period/furumaru/compare/v4.0.2...v4.0.3) - 2025-01-14
+- fix(gateway): 配信URLを詰める処理の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2654
+
+## [v4.0.2](https://github.com/and-period/furumaru/compare/v4.0.1...v4.0.2) - 2025-01-14
+- fix(store): 注文履歴一覧をcreated_atの降順で並び替え by @taba2424 in https://github.com/and-period/furumaru/pull/2652
+
+## [v4.0.1](https://github.com/and-period/furumaru/compare/v4.0.0...v4.0.1) - 2025-01-14
+- fix(gateway): Broadcastのパース処理でnil pointerになっている箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2650
+
+## [v4.0.0](https://github.com/and-period/furumaru/compare/v3.4.2...v4.0.0) - 2025-01-13
+- feat(user): 管理面ロール用のエンティティ定義を更新 by @taba2424 in https://github.com/and-period/furumaru/pull/2624
+- refactor(api): MySQLの詳細実装を削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2626
+- chore(infra): ローカル開発で不要なコンテナの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2627
+- feat(infra): TiDBの実行環境整備 by @taba2424 in https://github.com/and-period/furumaru/pull/2628
+- fix(gateway): 呼ぶメソッドが間違ってる箇所の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2629
+- refactor(api): DB操作時のJSONパース処理をDB層へ寄せる by @taba2424 in https://github.com/and-period/furumaru/pull/2630
+- fix(docs): オンデマンド配信へのコメント投稿APIのドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2631
+- build(deps): bump the dependencies group in /web/admin with 30 updates by @dependabot in https://github.com/and-period/furumaru/pull/2632
+- 体験のゲスト購入の導線の作成 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2634
+- 認証済みユーザーでの体験購入フローの整備 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2636
+- Fix: fixed video function by @hamachans in https://github.com/and-period/furumaru/pull/2635
+- fix(database): 削除件数が0件になる不具合を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2638
+- feat(media): オンデマンド配信のバリデーションを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2639
+- build(deps): bump the dependencies group in /api with 26 updates by @dependabot in https://github.com/and-period/furumaru/pull/2633
+- feat(user): 管理者権限をDBで管理できるようにするためのロジック実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2637
+- feat(user): 管理者登録時に権限付与するロジックを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2640
+- 体験周りのエラーハンドリングの強化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2641
+- fix(store): jsonのunmarshal処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2642
+- feat(workflow): DBのマイグレーション処理を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2644
+- fix(workflow): secretsの内容を継承できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2645
+- feat: フォーム送信中のアニメーションを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2643
+- fix(workflow): GitHub ActionsのVariablesへのアクセス方法を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2646
+- feat(gateway): 認可ロジックの移行 by @taba2424 in https://github.com/and-period/furumaru/pull/2647
+- fix(user): 管理者詳細情報を詰める処理を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2648
+- feat(messenger): SendGridテンプレートの取得処理を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2649
+
+## [v3.4.2](https://github.com/and-period/furumaru/compare/v3.4.1...v3.4.2) - 2025-01-02
+- refactor(user): 管理者種別のフィールド名を置き換え by @taba2424 in https://github.com/and-period/furumaru/pull/2622
+
+## [v3.4.1](https://github.com/and-period/furumaru/compare/v3.4.0...v3.4.1) - 2025-01-02
+- マップから体験を選択する部分の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2585
+- refactor(api): DB層のコンストラクタ定義を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2613
+- feat(media): アーカイブ配信のメタデータ追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2614
+- fix(hack): S3オブジェクトキーの生成処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2615
+- fix(hack): S3オブジェクトキーの形式を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2616
+- fix(docs): ゲスト購入APIのapi docsを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2617
+- feat(gateway): 体験購入前確認用のAPIを実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2620
+- build(deps): bump the dependencies group in /api with 3 updates by @dependabot in https://github.com/and-period/furumaru/pull/2618
+- build(deps): bump the dependencies group in /web/admin with 40 updates by @dependabot in https://github.com/and-period/furumaru/pull/2619
+- feat(user): 管理者エンティティにフィールド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2621
+
 ## [v3.4.0](https://github.com/and-period/furumaru/compare/v3.3.0...v3.4.0) - 2024-12-31
 - feat(gateway): コーディネータ取得APIに体験情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2582
 - refactor(api): インターフェース定義の並び順を整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2584

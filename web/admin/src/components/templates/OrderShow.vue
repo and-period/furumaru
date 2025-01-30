@@ -88,6 +88,25 @@ const props = defineProps({
       createdAt: 0,
       updatedAt: 0,
       completedAt: 0,
+      type: 0,
+      experience: {
+        experienceId: '',
+        adultCount: 0,
+        adultPrice: 0,
+        juniorHighSchoolCount: 0,
+        juniorHighSchoolPrice: 0,
+        elementarySchoolCount: 0,
+        elementarySchoolPrice: 0,
+        preschoolCount: 0,
+        preschoolPrice: 0,
+        seniorCount: 0,
+        seniorPrice: 0,
+        remarks: {
+          transportation: '',
+          requestedDate: '',
+          requestedTime: '',
+        },
+      },
     }),
   },
   coordinator: {
@@ -399,6 +418,10 @@ const getPaymentMethodType = (): string => {
       return 'QR決済（楽天ペイ）'
     case PaymentMethodType.AU_PAY:
       return 'QR決済（au PAY）'
+    case PaymentMethodType.PAIDY:
+      return 'ペイディ（Paidy）'
+    case PaymentMethodType.PAY_EASY:
+      return 'ペイジー（Pay-easy）'
     default:
       return '不明'
   }
@@ -511,7 +534,7 @@ const getShippingAddressName = (): string => {
 }
 
 const getShippingAddressPhoneNumber = (): string => {
-  return props.order ? convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber) : ''
+  return props.order.payment.phoneNumber ? convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber) : ''
 }
 
 const getShippingAddressPrefecture = (): string => {

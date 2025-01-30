@@ -30,7 +30,7 @@ const productTagStore = useProductTagStore()
 const productTypeStore = useProductTypeStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { productTags } = storeToRefs(productTagStore)
@@ -228,7 +228,7 @@ catch (err) {
     :categories="categories"
     :product-types="productTypes"
     :product-tags="productTags"
-    :role="role"
+    :admin-type="adminType"
     @update:files="handleImageUpload"
     @update:search-category="handleSearchCategory"
     @update:search-product-type="handleSearchProductType"

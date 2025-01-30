@@ -1,28 +1,28 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
-import { AdminRole } from '~/types/api'
+import { AdminType } from '~/types/api'
 import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const { role } = storeToRefs(authStore)
+const { adminType } = storeToRefs(authStore)
 
 const menus: SettingMenu[] = [
   {
     text: 'プロフィール変更',
     action: () => router.push('/accounts/coordinator'),
-    roles: [AdminRole.COORDINATOR],
+    adminTypes: [AdminType.COORDINATOR],
   },
   {
     text: 'メールアドレス変更',
     action: () => router.push('/accounts/email'),
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR, AdminRole.PRODUCER],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
   },
   {
     text: 'パスワード変更',
     action: () => router.push('/accounts/password'),
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR, AdminRole.PRODUCER],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
   },
   {
     text: 'サインアウト',
@@ -31,13 +31,13 @@ const menus: SettingMenu[] = [
       authStore.logout()
       router.push('/signin')
     },
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR, AdminRole.PRODUCER],
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
   },
 ]
 
 const getMenus = (): SettingMenu[] => {
   return menus.filter((drawer: SettingMenu): boolean => {
-    return drawer.roles?.includes(role.value) || false
+    return drawer.adminTypes?.includes(adminType.value) || false
   })
 }
 

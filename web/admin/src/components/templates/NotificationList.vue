@@ -5,16 +5,16 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
 import type { Admin, Notification, NotificationTarget } from '~/types/api'
-import { AdminRole, NotificationStatus, NotificationType } from '~/types/api'
+import { AdminType, NotificationStatus, NotificationType } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
@@ -110,11 +110,11 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const isEditable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const getAdminName = (adminId: string): string => {

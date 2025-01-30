@@ -8,6 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
@@ -17,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
@@ -33,6 +35,12 @@ type mocks struct {
 type dbMocks struct {
 	Address          *mock_database.MockAddress
 	Admin            *mock_database.MockAdmin
+	AdminGroup       *mock_database.MockAdminGroup
+	AdminGroupRole   *mock_database.MockAdminGroupRole
+	AdminGroupUser   *mock_database.MockAdminGroupUser
+	AdminPolicy      *mock_database.MockAdminPolicy
+	AdminRole        *mock_database.MockAdminRole
+	AdminRolePolicy  *mock_database.MockAdminRolePolicy
 	Administrator    *mock_database.MockAdministrator
 	Coordinator      *mock_database.MockCoordinator
 	Guest            *mock_database.MockGuest
@@ -73,6 +81,12 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Address:          mock_database.NewMockAddress(ctrl),
 		Admin:            mock_database.NewMockAdmin(ctrl),
+		AdminGroup:       mock_database.NewMockAdminGroup(ctrl),
+		AdminGroupRole:   mock_database.NewMockAdminGroupRole(ctrl),
+		AdminGroupUser:   mock_database.NewMockAdminGroupUser(ctrl),
+		AdminPolicy:      mock_database.NewMockAdminPolicy(ctrl),
+		AdminRole:        mock_database.NewMockAdminRole(ctrl),
+		AdminRolePolicy:  mock_database.NewMockAdminRolePolicy(ctrl),
 		Administrator:    mock_database.NewMockAdministrator(ctrl),
 		Coordinator:      mock_database.NewMockCoordinator(ctrl),
 		Guest:            mock_database.NewMockGuest(ctrl),
@@ -95,6 +109,12 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Database: &database.Database{
 			Address:          mocks.db.Address,
 			Admin:            mocks.db.Admin,
+			AdminGroup:       mocks.db.AdminGroup,
+			AdminGroupRole:   mocks.db.AdminGroupRole,
+			AdminGroupUser:   mocks.db.AdminGroupUser,
+			AdminPolicy:      mocks.db.AdminPolicy,
+			AdminRole:        mocks.db.AdminRole,
+			AdminRolePolicy:  mocks.db.AdminRolePolicy,
 			Administrator:    mocks.db.Administrator,
 			Coordinator:      mocks.db.Coordinator,
 			Guest:            mocks.db.Guest,
@@ -108,6 +128,11 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Store:     mocks.store,
 		Messenger: mocks.messenger,
 		Media:     mocks.media,
+		DefaultAdminGroups: map[entity.AdminType][]string{
+			entity.AdminTypeAdministrator: {"group-id"},
+			entity.AdminTypeCoordinator:   {"group-id"},
+			entity.AdminTypeProducer:      {"group-id"},
+		},
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {
@@ -135,6 +160,13 @@ func testService(
 		testFunc(ctx, t, srv)
 		srv.waitGroup.Wait()
 	}
+}
+
+func TestMain(m *testing.M) {
+	opts := []goleak.Option{
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
+	}
+	goleak.VerifyTestMain(m, opts...)
 }
 
 func TestService(t *testing.T) {

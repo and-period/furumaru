@@ -54,42 +54,6 @@ func TestAdministrator(t *testing.T) {
 	}
 }
 
-func TestAdministrator_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name          string
-		administrator *Administrator
-		admin         *Admin
-		expect        *Administrator
-	}{
-		{
-			name: "success",
-			administrator: &Administrator{
-				AdminID: "admin-id",
-			},
-			admin: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-			},
-			expect: &Administrator{
-				AdminID: "admin-id",
-				Admin: Admin{
-					ID:        "admin-id",
-					CognitoID: "cognito-id",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.administrator.Fill(tt.admin)
-			assert.Equal(t, tt.expect, tt.administrator)
-		})
-	}
-}
-
 func TestAdministrators_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -124,6 +88,7 @@ func TestAdministrators_Fill(t *testing.T) {
 		name           string
 		administrators Administrators
 		admins         map[string]*Admin
+		groups         map[string]AdminGroupUsers
 		expect         Administrators
 	}{
 		{
@@ -140,7 +105,15 @@ func TestAdministrators_Fill(t *testing.T) {
 				"admin-id01": {
 					ID:        "admin-id01",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
+				},
+			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id01": {
+					{
+						GroupID: "group-id",
+						AdminID: "admin-id01",
+					},
 				},
 			},
 			expect: Administrators{
@@ -149,14 +122,18 @@ func TestAdministrators_Fill(t *testing.T) {
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleAdministrator,
+						Type:      AdminTypeAdministrator,
+						Status:    AdminStatusInvited,
+						GroupIDs:  []string{"group-id"},
 					},
 				},
 				{
 					AdminID: "admin-id02",
 					Admin: Admin{
-						ID:   "admin-id02",
-						Role: AdminRoleAdministrator,
+						ID:       "admin-id02",
+						Type:     AdminTypeAdministrator,
+						Status:   AdminStatusInvited,
+						GroupIDs: []string{},
 					},
 				},
 			},
@@ -166,7 +143,7 @@ func TestAdministrators_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.administrators.Fill(tt.admins)
+			tt.administrators.Fill(tt.admins, tt.groups)
 			assert.Equal(t, tt.expect, tt.administrators)
 		})
 	}

@@ -120,6 +120,18 @@ type CheckoutAUPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutPaidyInput struct {
+	CheckoutDetail
+}
+
+type CheckoutBankTransferInput struct {
+	CheckoutDetail
+}
+
+type CheckoutPayEasyInput struct {
+	CheckoutDetail
+}
+
 type CheckoutFreeInput struct {
 	CheckoutDetail
 }
@@ -155,20 +167,30 @@ type CheckoutExperienceDetail struct {
 	RequestedTime         string `validate:"omitempty,time"`
 }
 
-type NotifyPaymentCompletedInput struct {
-	OrderID   string               `validate:"required"`
-	PaymentID string               `validate:"required"`
-	Status    entity.PaymentStatus `validate:"required"`
-	IssuedAt  time.Time            `validate:"required"`
+type NotifyPaymentAuthorizedInput struct {
+	NotifyPaymentPayload
+}
+
+type NotifyPaymentCapturedInput struct {
+	NotifyPaymentPayload
+}
+
+type NotifyPaymentFailedInput struct {
+	NotifyPaymentPayload
 }
 
 type NotifyPaymentRefundedInput struct {
-	OrderID  string               `validate:"required"`
-	Status   entity.PaymentStatus `validate:"required"`
-	Type     entity.RefundType    `validate:"required,oneof=1 2"`
-	Reason   string               `validate:"max=2000"`
-	Total    int64                `validate:"min=0"`
-	IssuedAt time.Time            `validate:"required"`
+	NotifyPaymentPayload
+	Type   entity.RefundType `validate:"required,oneof=1 2"`
+	Reason string            `validate:"max=2000"`
+	Total  int64             `validate:"min=0"`
+}
+
+type NotifyPaymentPayload struct {
+	OrderID   string               `validate:"required"`
+	PaymentID string               `validate:""`
+	IssuedAt  time.Time            `validate:"required"`
+	Status    entity.PaymentStatus `validate:"required"`
 }
 
 /**
@@ -464,13 +486,32 @@ type UpdateOrderFulfillmentInput struct {
 }
 
 type AggregateOrdersInput struct {
+	CoordinatorID string    `validate:""`
+	CreatedAtGte  time.Time `validate:""`
+	CreatedAtLt   time.Time `validate:""`
+}
+
+type AggregateOrdersByUserInput struct {
 	CoordinatorID string   `validate:""`
 	UserIDs       []string `validate:"dive,required"`
+}
+
+type AggregateOrdersByPaymentMethodTypeInput struct {
+	CoordinatorID string    `validate:""`
+	CreatedAtGte  time.Time `validate:""`
+	CreatedAtLt   time.Time `validate:""`
 }
 
 type AggregateOrdersByPromotionInput struct {
 	CoordinatorID string   `validate:""`
 	PromotionIDs  []string `validate:"dive,required"`
+}
+
+type AggregateOrdersByPeriodInput struct {
+	CoordinatorID string                          `validate:""`
+	PeriodType    entity.AggregateOrderPeriodType `validate:"required"`
+	CreatedAtGte  time.Time                       `validate:""`
+	CreatedAtLt   time.Time                       `validate:""`
 }
 
 type ExportOrdersInput struct {

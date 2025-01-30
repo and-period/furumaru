@@ -174,7 +174,7 @@ type NotifyStartLiveInput struct {
 	ScheduleID string `validate:"required"`
 }
 
-type NotifyOrderAuthorizedInput struct {
+type NotifyOrderCapturedInput struct {
 	OrderID string `validate:"required"`
 }
 

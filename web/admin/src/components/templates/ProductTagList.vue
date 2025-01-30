@@ -4,7 +4,7 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import useVuelidate from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminRole, type CreateProductTagRequest, type ProductTag, type UpdateProductTagRequest } from '~/types/api'
+import { AdminType, type CreateProductTagRequest, type ProductTag, type UpdateProductTagRequest } from '~/types/api'
 import { getErrorMessage } from '~/lib/validations'
 import { CreateProductTagValidationRules, UpdateProductTagValidationRules } from '~/types/validations'
 
@@ -13,9 +13,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   newDialog: {
     type: Boolean,
@@ -126,11 +126,11 @@ const newValidate = useVuelidate<CreateProductTagRequest>(CreateProductTagValida
 const editValidate = useVuelidate<UpdateProductTagRequest>(UpdateProductTagValidationRules, editFormDataValue)
 
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const isEditable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const onClickUpdatePage = (page: number): void => {

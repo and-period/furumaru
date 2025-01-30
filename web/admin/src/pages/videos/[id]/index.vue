@@ -43,6 +43,8 @@ const { status } = useAsyncData(async () => {
   formData.value.publishedAt = res.video.publishedAt
   formData.value.description = res.video.description
   formData.value.videoUrl = res.video.videoUrl
+  formData.value.displayProduct = res.video.displayProduct
+  formData.value.displayExperience = res.video.displayExperience
   formData.value.thumbnailUrl = res.video.thumbnailUrl
   formData.value.productIds = res.video.productIds
   formData.value.experienceIds = res.video.experienceIds

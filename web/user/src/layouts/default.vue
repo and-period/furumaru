@@ -65,6 +65,11 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
     active: route.path === localePath('/items'),
   },
   {
+    text: ht('allExperienceLinkText'),
+    to: localePath('/experiences'),
+    active: route.path === localePath('/experiences'),
+  },
+  {
     text: ht('allMarcheLinkText'),
     to: localePath('/marches'),
     active: route.path === localePath('/marches'),
@@ -183,6 +188,7 @@ onUnmounted(() => {
       :my-page-link-text="ht('myPageLinkText')"
       :view-mycart-text="ht('viewMyCartText')"
       :all-item-link-text="ht('allItemLinkText')"
+      :all-experience-link-text="ht('allExperienceLinkText')"
       :all-marche-link-text="ht('allMarcheLinkText')"
       :blog-link-text="ht('blogLinkText')"
       :about-link-text="ht('aboutLinkText')"

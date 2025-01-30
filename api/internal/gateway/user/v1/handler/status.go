@@ -28,6 +28,8 @@ func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 		entity.PaymentMethodTypeMerpay,
 		entity.PaymentMethodTypeRakutenPay,
 		entity.PaymentMethodTypeAUPay,
+		entity.PaymentMethodTypePaidy,
+		entity.PaymentMethodTypePayEasy,
 	}
 	in := &store.MultiGetPaymentSystemsInput{
 		MethodTypes: methodTypes,

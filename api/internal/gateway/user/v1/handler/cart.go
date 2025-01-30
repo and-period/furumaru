@@ -4,14 +4,13 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -118,7 +117,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 			return
 		}
 		promotion, err = h.getEnabledPromotion(ectx, promotionCode)
-		if errors.Is(err, database.ErrNotFound) {
+		if errors.Is(err, exception.ErrNotFound) {
 			err = nil // エラーは返さず、プロモーション未適用状態で返す
 		}
 		return
@@ -136,6 +135,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 	}
 
 	res := &response.CalcCartResponse{
+		RequestID:   h.generateID(),
 		Carts:       service.NewCarts(cart).Response(),
 		Items:       service.NewCartItems(items).Response(),
 		Products:    products.Response(),
@@ -145,7 +145,6 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		Discount:    summary.Discount,
 		ShippingFee: summary.ShippingFee,
 		Total:       summary.Total,
-		RequestID:   uuid.Base58Encode(uuid.New()),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -10,6 +10,7 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "商品をさがす",
       "allItemLinkText": "すべての商品",
+      "allExperienceLinkText": "すべての体験",
       "allMarcheLinkText": "すべてのマルシェ",
       "blogLinkText": "ブログ",
       "aboutLinkText": "ふるマルについて",
@@ -102,7 +103,9 @@
       "viewMoreText": "もっと見る",
       "pastMarcheLinkText": "過去のライブ配信はこちら",
       "productsLinkText": "購入できる商品一覧はこちら",
-      "archiveListSubTitle": "動画一覧",
+      "archiveListSubTitle": "アーカイブ一覧",
+      "productListSubTitle": "商品動画一覧",
+      "experienceListSubTitle": "体験動画一覧",
       "archivedStreamText": "アーカイブ配信",
       "archivesLinkText": "一覧を見る"
     },
@@ -149,6 +152,7 @@
       "utilizationRateLabel": "占有率"
     },
     "guest": {
+      "seoTitle": "体験購入手続き",
       "checkoutTitle": "ご購入手続き",
       "customerInformationTitle": "お客様情報",
       "nameErrorMessage": "氏名を入力してください",
@@ -189,7 +193,9 @@
       "calculateNextPageMessage": "次ページで計算されます",
       "totalPriceLabel": "合計（税込み）",
       "backToCartButtonText": "買い物カゴへ戻る",
-      "paymentMethodButtonText": "お支払い方法の選択へ"
+      "paymentMethodButtonText": "お支払い方法の選択へ",
+      "postalCodeHyphenNotAllowedErrorMessage": "ハイフンを入力しないでください",
+      "postalCodeInvalidErrorMessage": "数字のみで入力してください"
     },
     "auth": {
       "loginRequiredMessage": "ご購入にはログインが必須です。",
@@ -310,6 +316,7 @@
       "itemPriceTaxIncludedText": "(税込)",
       "quantityLabel": "数量",
       "addToCartText": "カゴに入れる",
+      "proceedPurchase": "購入に進む",
       "coordinatorLabel": "取扱元",
       "coordinatorThumbnailAlt": "{coordinatorName}のサムネイル画像",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
@@ -350,7 +357,7 @@
       "elementarySchoolStudents": "小学生",
       "preschoolers": "未就学児 (3歳〜)",
       "senior": "シニア (65歳〜)",
-      "addToCartText": "カゴに入れる",
+      "applyButtonText": "申し込む",
       "estimatedTime": "・所用時間",
       "businessHours": "・営業時間",
       "locationPostalcode": "・所在地 (郵便番号)",
@@ -381,6 +388,43 @@
       "guestNameLabel": "ゲスト",
       "linkCopy": "リンクをコピー",
       "linkCopied": "リンクをコピーしました"
+    }
+  },
+  "videos": {
+    "details": {
+      "coordinatorThumbnailAlt": "{coordinatorName}のプロフィール画像",
+      "coordinatorLabel": "コーディネーター",
+      "hideMarcheDetailsText": "動画の詳細を隠す",
+      "showMarcheDetailsText": "動画の詳細を見る",
+      "itemsTabLabel": "この動画の商品",
+      "commentsTabLabel": "コメント",
+      "itemPriceTaxIncludedText": "(税込)",
+      "addToCartText": "カゴに入れる",
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました",
+      "commentPlaceholder": "コメントをする…",
+      "submitButtonText": "送信",
+      "guestCommentNote": "※ゲストとしてコメントします",
+      "noCommentsText": "コメントはありません",
+      "guestNameLabel": "ゲスト",
+      "linkCopy": "リンクをコピー",
+      "linkCopied": "リンクをコピーしました"
+    }
+  },
+  "experiences": {
+    "purchase": {
+      "title": "ご購入手続き",
+      "customerInformationTitle": "お客様情報",
+      "adult": "大人（高校生以上）",
+      "juniorHighSchool": "中学生",
+      "elementarySchool": "小学生",
+      "preschool": "未就学児（3歳～）",
+      "senior": "シニア（65歳～）",
+      "quantityLabel": "数量",
+      "subTotalPriceLabel": "小計（税込み）",
+      "totalPriceLabel": "合計（税込み）",
+      "submitButtonText": "購入する",
+      "useDefaultAddressLabel": "上記の住所を利用する",
+      "useOtherAddressLabel": "その他の住所を入力する"
     }
   }
 }

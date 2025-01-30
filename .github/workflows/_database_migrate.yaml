@@ -1,0 +1,50 @@
+name: database migrate
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: '環境名'
+        type: string
+        required: true
+      db-secret-name:
+        description: 'DB用のSecret Managerリソース名'
+        type: string
+        required: true
+
+jobs:
+  database_migrate:
+    name: database migrate
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - uses: ./.github/actions/setup-go
+      with:
+        working-directory: ./api
+        service: ${{ env.SERVICE }}
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Database Migrate
+      run: |
+        go run ./hack/database-migrate/main.go -db-secret-name=${DB_SECRET_NAME}
+      env:
+        DB_SECRET_NAME: ${{ inputs.db-secret-name }}
+
+    - name: Database Seeds
+      run: |
+        go run ./hack/database-seeds/main.go -db-secret-name=${DB_SECRET_NAME}
+      env:
+        DB_SECRET_NAME: ${{ inputs.db-secret-name }}

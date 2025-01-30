@@ -14,16 +14,14 @@ import (
 const spotTypeTable = "spot_types"
 
 type spotType struct {
-	database.SpotType
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func newSpotType(db *mysql.Client, mysql database.SpotType) database.SpotType {
+func NewSpotType(db *mysql.Client) database.SpotType {
 	return &spotType{
-		SpotType: mysql,
-		db:       db,
-		now:      jst.Now,
+		db:  db,
+		now: jst.Now,
 	}
 }
 
@@ -64,4 +62,51 @@ func (t *spotType) Count(ctx context.Context, params *database.ListSpotTypesPara
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.SpotType{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (t *spotType) MultiGet(ctx context.Context, spotTypeIDs []string, fields ...string) (entity.SpotTypes, error) {
+	var types entity.SpotTypes
+
+	stmt := t.db.Statement(ctx, t.db.DB, spotTypeTable, fields...)
+	stmt = stmt.Where("id IN (?)", spotTypeIDs)
+
+	err := stmt.Find(&types).Error
+	return types, dbError(err)
+}
+
+func (t *spotType) Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error) {
+	var spotType *entity.SpotType
+
+	stmt := t.db.Statement(ctx, t.db.DB, spotTypeTable, fields...).Where("id = ?", spotTypeID)
+
+	if err := stmt.First(&spotType).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return spotType, nil
+}
+
+func (t *spotType) Create(ctx context.Context, spotType *entity.SpotType) error {
+	now := t.now()
+	spotType.CreatedAt, spotType.UpdatedAt = now, now
+
+	err := t.db.DB.WithContext(ctx).Table(spotTypeTable).Create(spotType).Error
+	return dbError(err)
+}
+
+func (t *spotType) Update(ctx context.Context, spotTypeID string, params *database.UpdateSpotTypeParams) error {
+	updates := map[string]interface{}{
+		"name":       params.Name,
+		"updated_at": t.now(),
+	}
+	stmt := t.db.DB.WithContext(ctx).Table(spotTypeTable).Where("id = ?", spotTypeID)
+
+	err := stmt.Updates(updates).Error
+	return dbError(err)
+}
+
+func (t *spotType) Delete(ctx context.Context, spotTypeID string) error {
+	stmt := t.db.DB.WithContext(ctx).Table(spotTypeTable).Where("id = ?", spotTypeID)
+
+	err := stmt.Delete(&entity.SpotType{}).Error
+	return dbError(err)
 }

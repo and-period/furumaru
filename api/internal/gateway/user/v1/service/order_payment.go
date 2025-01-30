@@ -21,6 +21,8 @@ const (
 	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
 	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
 	PaymentMethodTypeFree         PaymentMethodType = 10 // 決済無し
+	PaymentMethodTypePaidy        PaymentMethodType = 11 // ペイディ（Paidy）
+	PaymentMethodTypePayEasy      PaymentMethodType = 12 // ペイジー（Pay-easy）
 )
 
 // PaymentStatus - 支払い状況
@@ -60,6 +62,10 @@ func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 		return PaymentMethodTypeRakutenPay
 	case entity.PaymentMethodTypeAUPay:
 		return PaymentMethodTypeAUPay
+	case entity.PaymentMethodTypePaidy:
+		return PaymentMethodTypePaidy
+	case entity.PaymentMethodTypePayEasy:
+		return PaymentMethodTypePayEasy
 	case entity.PaymentMethodTypeNone:
 		return PaymentMethodTypeFree
 	default:
@@ -87,6 +93,10 @@ func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
 		return entity.PaymentMethodTypeRakutenPay
 	case PaymentMethodTypeAUPay:
 		return entity.PaymentMethodTypeAUPay
+	case PaymentMethodTypePaidy:
+		return entity.PaymentMethodTypePaidy
+	case PaymentMethodTypePayEasy:
+		return entity.PaymentMethodTypePayEasy
 	case PaymentMethodTypeFree:
 		return entity.PaymentMethodTypeNone
 	default:
@@ -106,7 +116,7 @@ func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
 		return PaymentStatusPaid
 	case entity.PaymentStatusCanceled, entity.PaymentStatusRefunded:
 		return PaymentStatusCanceled
-	case entity.PaymentStatusFailed:
+	case entity.PaymentStatusFailed, entity.PaymentStatusExpired:
 		return PaymentStatusFailed
 	default:
 		return PaymentStatusUnknown

@@ -17,6 +17,15 @@ const (
 	OrderTypeExperience OrderType = 2 // 体験
 )
 
+// AggregateOrderPeriodType - 注文集計期間種別
+type AggregateOrderPeriodType string
+
+const (
+	AggregateOrderPeriodTypeDay   AggregateOrderPeriodType = "day"   // 日
+	AggregateOrderPeriodTypeWeek  AggregateOrderPeriodType = "week"  // 週
+	AggregateOrderPeriodTypeMonth AggregateOrderPeriodType = "month" // 月
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -54,26 +63,6 @@ type Order struct {
 }
 
 type Orders []*Order
-
-// AggregatedOrder - 注文履歴集計情報
-type AggregatedOrder struct {
-	UserID     string // ユーザーID
-	OrderCount int64  // 注文合計回数
-	Subtotal   int64  // 購入合計金額
-	Discount   int64  // 割引合計金額
-	Total      int64  // 支払合計金額
-}
-
-type AggregatedOrders []*AggregatedOrder
-
-// AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
-type AggregatedOrderPromotion struct {
-	PromotionID   string // プロモーションID
-	OrderCount    int64  // 利用合計回数
-	DiscountTotal int64  // 割引合計金額
-}
-
-type AggregatedOrderPromotions []*AggregatedOrderPromotion
 
 type NewProductOrderParams struct {
 	OrderID           string
@@ -226,6 +215,8 @@ func (o *Order) SetPaymentStatus(status PaymentStatus) {
 	case PaymentStatusRefunded:
 		o.Status = OrderStatusRefunded
 	case PaymentStatusFailed:
+		o.Status = OrderStatusFailed
+	case PaymentStatusExpired:
 		o.Status = OrderStatusFailed
 	default:
 		o.Status = OrderStatusUnknown
@@ -392,18 +383,91 @@ func (os Orders) Fill(
 	}
 }
 
-func (os AggregatedOrders) Map() map[string]*AggregatedOrder {
-	res := make(map[string]*AggregatedOrder, len(os))
+// AggregatedOrder - 注文履歴集計情報
+type AggregatedOrder struct {
+	OrderCount    int64 // 注文合計回数
+	UserCount     int64 // 注文ユーザー数
+	SalesTotal    int64 // 購入合計金額
+	DiscountTotal int64 // 割引合計金額
+}
+
+// AggregatedUserOrder - 注文履歴集計情報
+type AggregatedUserOrder struct {
+	UserID     string // ユーザーID
+	OrderCount int64  // 注文合計回数
+	Subtotal   int64  // 購入合計金額
+	Discount   int64  // 割引合計金額
+	Total      int64  // 支払合計金額
+}
+
+type AggregatedUserOrders []*AggregatedUserOrder
+
+func (os AggregatedUserOrders) Map() map[string]*AggregatedUserOrder {
+	res := make(map[string]*AggregatedUserOrder, len(os))
 	for _, o := range os {
 		res[o.UserID] = o
 	}
 	return res
 }
 
+// AggregatedOrderPayment - 支払い情報別集計情報
+type AggregatedOrderPayment struct {
+	PaymentMethodType PaymentMethodType // 支払い種別
+	OrderCount        int64             // 注文合計回数
+	UserCount         int64             // 注文ユーザー数
+	SalesTotal        int64             // 購入合計金額
+}
+
+type AggregatedOrderPayments []*AggregatedOrderPayment
+
+func (ps AggregatedOrderPayments) Map() map[PaymentMethodType]*AggregatedOrderPayment {
+	res := make(map[PaymentMethodType]*AggregatedOrderPayment, len(ps))
+	for _, p := range ps {
+		res[p.PaymentMethodType] = p
+	}
+	return res
+}
+
+func (ps AggregatedOrderPayments) OrderTotal() int64 {
+	var total int64
+	for _, p := range ps {
+		total += p.OrderCount
+	}
+	return total
+}
+
+// AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
+type AggregatedOrderPromotion struct {
+	PromotionID   string // プロモーションID
+	OrderCount    int64  // 利用合計回数
+	DiscountTotal int64  // 割引合計金額
+}
+
+type AggregatedOrderPromotions []*AggregatedOrderPromotion
+
 func (os AggregatedOrderPromotions) Map() map[string]*AggregatedOrderPromotion {
 	res := make(map[string]*AggregatedOrderPromotion, len(os))
 	for _, o := range os {
 		res[o.PromotionID] = o
+	}
+	return res
+}
+
+// AggregatedPeriodOrder - 注文履歴集計情報（期間別）
+type AggregatedPeriodOrder struct {
+	Period        time.Time // 期間
+	OrderCount    int64     // 注文合計回数
+	UserCount     int64     // 注文ユーザー数
+	SalesTotal    int64     // 購入合計金額
+	DiscountTotal int64     // 割引合計金額
+}
+
+type AggregatedPeriodOrders []*AggregatedPeriodOrder
+
+func (os AggregatedPeriodOrders) MapByPeriod() map[time.Time]*AggregatedPeriodOrder {
+	res := make(map[time.Time]*AggregatedPeriodOrder, len(os))
+	for _, o := range os {
+		res[o.Period] = o
 	}
 	return res
 }

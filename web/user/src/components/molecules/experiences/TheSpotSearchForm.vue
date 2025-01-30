@@ -3,6 +3,7 @@ import type { GoogleMapSearchResult } from '~/types/store'
 
 interface Props {
   results: GoogleMapSearchResult[]
+  errorMessage: string
 }
 
 const props = defineProps<Props>()
@@ -36,7 +37,7 @@ const handleSubmit = () => {
   <div>
     <form
       class="w-full rounded-full bg-white h-10 relative z-10 shadow-md"
-      :class="{ 'shadow-none': hasResults }"
+      :class="{ 'shadow-none': hasResults || errorMessage }"
       @submit.prevent="handleSubmit"
     >
       <div
@@ -56,14 +57,20 @@ const handleSubmit = () => {
         </button>
       </div>
       <div
-        v-show="hasResults"
+        v-show="hasResults || errorMessage"
         class="w-full bg-white absolute h-4 bottom-0 z-0"
       />
     </form>
 
     <div
-      v-if="hasResults"
+      v-if="hasResults || errorMessage"
     >
+      <div
+        v-if="errorMessage"
+        class="px-4 p-2 bg-white hover:bg-base"
+      >
+        {{ errorMessage }}
+      </div>
       <div
         v-for="result, i in results"
         :key="i"

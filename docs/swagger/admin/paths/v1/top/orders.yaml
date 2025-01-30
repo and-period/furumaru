@@ -1,0 +1,38 @@
+get:
+  summary: 注文集計取得
+  operationId: v1TopOrders
+  tags:
+  - Top
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: query
+    name: startAt
+    schema:
+      type: integer
+      format: int64
+    description: 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
+    required: false
+    example: 1640962800
+  - in: query
+    name: endAt
+    schema:
+      type: integer
+      format: int64
+    description: 集計終了日時（unixtime,未指定の場合は現在時刻）
+    required: false
+    example: 1640962800
+  - in: query
+    name: periodType
+    schema:
+      $ref: './../../../openapi.yaml#/components/schemas/topOrderPeriodType'
+    description: 集計期間（未指定の場合は日次）
+    required: false
+    example: day
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1TopOrdersResponse'

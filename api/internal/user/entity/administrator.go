@@ -28,7 +28,8 @@ func NewAdministrator(params *NewAdministratorParams) *Administrator {
 	}
 }
 
-func (a *Administrator) Fill(admin *Admin) {
+func (a *Administrator) Fill(admin *Admin, groups AdminGroupUsers) {
+	admin.Fill(groups)
 	a.Admin = *admin
 }
 
@@ -40,12 +41,12 @@ func (as Administrators) IDs() []string {
 	return res
 }
 
-func (as Administrators) Fill(admins map[string]*Admin) {
+func (as Administrators) Fill(admins map[string]*Admin, groups map[string]AdminGroupUsers) {
 	for _, a := range as {
 		admin, ok := admins[a.AdminID]
 		if !ok {
-			admin = &Admin{ID: a.AdminID, Role: AdminRoleAdministrator}
+			admin = &Admin{ID: a.AdminID, Type: AdminTypeAdministrator}
 		}
-		a.Fill(admin)
+		a.Fill(admin, groups[a.AdminID])
 	}
 }

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -1239,11 +1240,71 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 func TestAggregateOrders(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
 	params := &database.AggregateOrdersParams{
+		CoordinatorID: "coordinator-id",
+		CreatedAtGte:  now.AddDate(0, 0, -7),
+		CreatedAtLt:   now,
+	}
+	order := &entity.AggregatedOrder{
+		OrderCount:    2,
+		UserCount:     1,
+		SalesTotal:    6000,
+		DiscountTotal: 1000,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersInput
+		expect    *entity.AggregatedOrder
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(order, nil)
+			},
+			input: &store.AggregateOrdersInput{
+				CoordinatorID: "coordinator-id",
+				CreatedAtGte:  now.AddDate(0, 0, -7),
+				CreatedAtLt:   now,
+			},
+			expect:    order,
+			expectErr: nil,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateOrdersInput{
+				CoordinatorID: "coordinator-id",
+				CreatedAtGte:  now.AddDate(0, 0, -7),
+				CreatedAtLt:   now,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrders(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestAggregateOrdersByUser(t *testing.T) {
+	t.Parallel()
+
+	params := &database.AggregateOrdersByUserParams{
 		CoordinatorID: "coordinator-id",
 		UserIDs:       []string{"user-id"},
 	}
-	orders := entity.AggregatedOrders{
+	orders := entity.AggregatedUserOrders{
 		{
 			UserID:     "user-id",
 			OrderCount: 2,
@@ -1256,16 +1317,16 @@ func TestAggregateOrders(t *testing.T) {
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.AggregateOrdersInput
-		expect    entity.AggregatedOrders
+		input     *store.AggregateOrdersByUserInput
+		expect    entity.AggregatedUserOrders
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(orders, nil)
+				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(orders, nil)
 			},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1275,7 +1336,7 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				UserIDs: []string{""},
 			},
 			expect:    nil,
@@ -1284,9 +1345,9 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(nil, assert.AnError)
 			},
-			input: &store.AggregateOrdersInput{
+			input: &store.AggregateOrdersByUserInput{
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1298,7 +1359,64 @@ func TestAggregateOrders(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrders(ctx, tt.input)
+			actual, err := service.AggregateOrdersByUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
+	t.Parallel()
+
+	params := &database.AggregateOrdersByPaymentMethodTypeParams{
+		CoordinatorID:      "coordinator-id",
+		PaymentMethodTypes: entity.AllPaymentMethodTypes,
+	}
+	orders := entity.AggregatedOrderPayments{
+		{
+			PaymentMethodType: entity.PaymentMethodTypeCreditCard,
+			OrderCount:        2,
+			UserCount:         1,
+			SalesTotal:        6000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersByPaymentMethodTypeInput
+		expect    entity.AggregatedOrderPayments
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(orders, nil)
+			},
+			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expect:    orders,
+			expectErr: nil,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrdersByPaymentMethodType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))
@@ -1366,6 +1484,79 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestAggregateOrdersByPeriod(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	params := &database.AggregateOrdersByPeriodParams{
+		CoordinatorID: "coordinator-id",
+		PeriodType:    entity.AggregateOrderPeriodTypeDay,
+		CreatedAtGte:  now.AddDate(0, 0, -7),
+		CreatedAtLt:   now,
+	}
+	orders := entity.AggregatedPeriodOrders{
+		{
+			Period:        now.Truncate(24 * time.Hour),
+			OrderCount:    2,
+			UserCount:     1,
+			SalesTotal:    6000,
+			DiscountTotal: 1000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersByPeriodInput
+		expect    entity.AggregatedPeriodOrders
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(orders, nil)
+			},
+			input: &store.AggregateOrdersByPeriodInput{
+				CoordinatorID: "coordinator-id",
+				PeriodType:    entity.AggregateOrderPeriodTypeDay,
+				CreatedAtGte:  now.AddDate(0, 0, -7),
+				CreatedAtLt:   now,
+			},
+			expect:    orders,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.AggregateOrdersByPeriodInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateOrdersByPeriodInput{
+				CoordinatorID: "coordinator-id",
+				PeriodType:    entity.AggregateOrderPeriodTypeDay,
+				CreatedAtGte:  now.AddDate(0, 0, -7),
+				CreatedAtLt:   now,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrdersByPeriod(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

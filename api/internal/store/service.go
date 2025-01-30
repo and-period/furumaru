@@ -29,8 +29,13 @@ type Service interface {
 	CheckoutMerpay(ctx context.Context, in *CheckoutMerpayInput) (string, error)                           // 支払い申請（メルペイ）
 	CheckoutRakutenPay(ctx context.Context, in *CheckoutRakutenPayInput) (string, error)                   // 支払い申請（楽天ペイ）
 	CheckoutAUPay(ctx context.Context, in *CheckoutAUPayInput) (string, error)                             // 支払い申請（au PAY）
+	CheckoutPaidy(ctx context.Context, in *CheckoutPaidyInput) (string, error)                             // 支払い申請（Paidy）
+	CheckoutBankTransfer(ctx context.Context, in *CheckoutBankTransferInput) (string, error)               // 支払い申請（銀行振込）
+	CheckoutPayEasy(ctx context.Context, in *CheckoutPayEasyInput) (string, error)                         // 支払い申請（Pay-easy）
 	CheckoutFree(ctx context.Context, in *CheckoutFreeInput) (string, error)                               // 支払い申請（無料）
-	NotifyPaymentCompleted(ctx context.Context, in *NotifyPaymentCompletedInput) error                     // 支払い通知
+	NotifyPaymentAuthorized(ctx context.Context, in *NotifyPaymentAuthorizedInput) error                   // 支払い通知（仮売上）
+	NotifyPaymentCaptured(ctx context.Context, in *NotifyPaymentCapturedInput) error                       // 支払い通知（実売上）
+	NotifyPaymentFailed(ctx context.Context, in *NotifyPaymentFailedInput) error                           // 支払い通知（失敗）
 	NotifyPaymentRefunded(ctx context.Context, in *NotifyPaymentRefundedInput) error                       // 返金通知
 	// Experience - 体験
 	ListExperiences(ctx context.Context, in *ListExperiencesInput) (entity.Experiences, int64, error)                      // 一覧取得
@@ -66,19 +71,22 @@ type Service interface {
 	UpdateLive(ctx context.Context, in *UpdateLiveInput) error                      // 更新
 	DeleteLive(ctx context.Context, in *DeleteLiveInput) error                      // 削除
 	// Order - 注文履歴
-	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)                                             // 一覧取得
-	ListOrderUserIDs(ctx context.Context, in *ListOrderUserIDsInput) ([]string, int64, error)                                      // 注文したユーザーID一覧取得
-	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                                                        // １件取得
-	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error)                          // １件取得(決済トランザクションID指定)
-	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                                                 // 注文確定
-	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                                                     // 注文の下書き保存
-	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                                               // 注文対応完了
-	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                                                   // 注文キャンセル
-	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                                                   // 注文返金依頼
-	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                             // 注文配送情報更新
-	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)                                // 集計結果一覧取得
-	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) // プロモーション利用履歴集計結果一覧取得
-	ExportOrders(ctx context.Context, in *ExportOrdersInput) ([]byte, error)                                                       // 注文履歴一覧CSV出力
+	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)                                                           // 一覧取得
+	ListOrderUserIDs(ctx context.Context, in *ListOrderUserIDsInput) ([]string, int64, error)                                                    // 注文したユーザーID一覧取得
+	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                                                                      // １件取得
+	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error)                                        // １件取得(決済トランザクションID指定)
+	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                                                               // 注文確定
+	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                                                                   // 注文の下書き保存
+	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                                                             // 注文対応完了
+	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                                                                 // 注文キャンセル
+	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                                                                 // 注文返金依頼
+	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                                           // 注文配送情報更新
+	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (*entity.AggregatedOrder, error)                                              // 注文履歴集計結果取得
+	AggregateOrdersByUser(ctx context.Context, in *AggregateOrdersByUserInput) (entity.AggregatedUserOrders, error)                              // ユーザーごとの注文履歴集計結果取得
+	AggregateOrdersByPaymentMethodType(ctx context.Context, in *AggregateOrdersByPaymentMethodTypeInput) (entity.AggregatedOrderPayments, error) // 支払い方法ごとの注文履歴集計結果取得
+	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error)               // プロモーション利用履歴集計結果取得
+	AggregateOrdersByPeriod(ctx context.Context, in *AggregateOrdersByPeriodInput) (entity.AggregatedPeriodOrders, error)                        // 期間ごとの注文履歴集計結果取得
+	ExportOrders(ctx context.Context, in *ExportOrdersInput) ([]byte, error)                                                                     // 注文履歴一覧CSV出力
 	// PaymentSystem - 決済システム
 	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)
 	GetPaymentSystem(ctx context.Context, in *GetPaymentSystemInput) (*entity.PaymentSystem, error)             // １件取得

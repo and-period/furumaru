@@ -1,3 +1,79 @@
+get:
+  summary: 体験購入前確認
+  operation: v1GuestPreCheckoutExperience
+  tags:
+  - Checkout
+  security:
+  - bearerAuth: []
+  - cookieAuth: []
+  parameters:
+  - in: path
+    name: experienceId
+    schema:
+      type: string
+    description: 体験ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: promotion
+    schema:
+      type: string
+    description: プロモーションコード(指定した場合、割引金額を含めて返却する)
+    required: false
+    example: 'code1234'
+  - in: query
+    name: adult
+    schema:
+      type: integer
+      format: int64
+    description: 大人購入数
+    required: false
+    example: 1
+  - in: query
+    name: juniorHighSchool
+    schema:
+      type: integer
+      format: int64
+    description: 中学生購入数
+    required: false
+    example: 1
+  - in: query
+    name: elementarySchool
+    schema:
+      type: integer
+      format: int64
+    description: 小学生購入数
+    required: false
+    example: 1
+  - in: query
+    name: preschool
+    schema:
+      type: integer
+      format: int64
+    description: 幼児購入数
+    required: false
+    example: 1
+  - in: query
+    name: senior
+    schema:
+      type: integer
+      format: int64
+    description: シニア購入数
+    required: false
+    example: 1
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestPreCheckoutExperienceResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
 post:
   summary: ゲスト体験購入
   operationId: v1GuestCheckoutExperience
@@ -19,7 +95,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutProductRequest'
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutExperienceRequest'
   responses:
     200:
       description: 成功

@@ -18,7 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	database "github.com/and-period/furumaru/api/internal/user/database/mysql"
+	database "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/log"

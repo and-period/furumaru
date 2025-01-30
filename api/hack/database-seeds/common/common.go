@@ -32,7 +32,6 @@ func NewDBClient(p *Params, database string) (*mysql.Client, error) {
 	}
 	opts := []mysql.Option{
 		mysql.WithLocation(jst.Location()),
-		mysql.WithLogger(p.Logger),
 	}
-	return mysql.NewClient(params, opts...)
+	return mysql.NewTiDBClient(params, opts...)
 }

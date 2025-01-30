@@ -24,6 +24,7 @@ import (
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/batch"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -34,7 +35,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
-	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/slack"
@@ -52,7 +52,6 @@ import (
 type params struct {
 	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
-	enforcer                 rbac.Enforcer
 	aws                      aws.Config
 	secret                   secret.Client
 	storage                  storage.Bucket
@@ -99,13 +98,6 @@ func (a *app) inject(ctx context.Context) error {
 		waitGroup: &sync.WaitGroup{},
 		debugMode: a.LogLevel == "debug",
 	}
-
-	// Casbinの設定
-	enforcer, err := rbac.NewEnforcer(a.RBACModelPath, a.RBACPolicyPath)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to load rbac: %w", err)
-	}
-	params.enforcer = enforcer
 
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
@@ -213,7 +205,6 @@ func (a *app) inject(ctx context.Context) error {
 			sentry.WithDSN(params.sentryDsn),
 			sentry.WithBind(true),
 			sentry.WithTracesSampleRate(a.TraceSampleRate),
-			sentry.WithProfilesSampleRate(a.ProfileSampleRate),
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create sentry client: %w", err)
@@ -310,7 +301,6 @@ func (a *app) inject(ctx context.Context) error {
 	// Handlerの設定
 	v1Params := &v1.Params{
 		WaitGroup: params.waitGroup,
-		Enforcer:  enforcer,
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
@@ -539,14 +529,20 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 	if err != nil {
 		return nil, err
 	}
+	groups := map[uentity.AdminType][]string{
+		uentity.AdminTypeAdministrator: a.DefaultAdministratorGroupIDs,
+		uentity.AdminTypeCoordinator:   a.DefaultCoordinatorGroupIDs,
+		uentity.AdminTypeProducer:      a.DefaultProducerGroupIDs,
+	}
 	params := &usersrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(mysql),
-		AdminAuth: p.adminAuth,
-		UserAuth:  p.userAuth,
-		Store:     store,
-		Messenger: messenger,
-		Media:     media,
+		WaitGroup:          p.waitGroup,
+		Database:           userdb.NewDatabase(mysql),
+		AdminAuth:          p.adminAuth,
+		UserAuth:           p.userAuth,
+		Store:              store,
+		Messenger:          messenger,
+		Media:              media,
+		DefaultAdminGroups: groups,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
@@ -561,6 +557,7 @@ func (a *app) newStoreService(
 	params := &storesrv.Params{
 		WaitGroup:   p.waitGroup,
 		Database:    storedb.NewDatabase(mysql),
+		Cache:       p.cache,
 		User:        user,
 		Messenger:   messenger,
 		Media:       media,

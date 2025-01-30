@@ -6,34 +6,32 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/database/mysql"
-	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	gmysql "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
-func NewDatabase(db *apmysql.Client) *database.Database {
-	client := mysql.NewDatabase(db)
+func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		CartActionLog:            client.CartActionLog,
-		Category:                 newCategory(db, client.Category),
-		Experience:               newExperience(db),
-		ExperienceReview:         client.ExperienceReview,
-		ExperienceReviewReaction: client.ExperienceReviewReaction,
-		ExperienceType:           newExperienceType(db, client.ExperienceType),
-		Live:                     client.Live,
-		Order:                    newOrder(db, client.Order),
-		PaymentSystem:            client.PaymentSystem,
-		Product:                  newProduct(db, client.Product),
-		ProductReview:            client.ProductReview,
-		ProductReviewReaction:    client.ProductReviewReaction,
-		ProductTag:               newProductTag(db, client.ProductTag),
-		ProductType:              newProductType(db, client.ProductType),
-		Promotion:                newPromotion(db, client.Promotion),
-		Schedule:                 client.Schedule,
-		Shipping:                 client.Shipping,
-		Spot:                     newSpot(db, client.Spot),
-		SpotType:                 newSpotType(db, client.SpotType),
+		CartActionLog:            NewCartActionLog(db),
+		Category:                 NewCategory(db),
+		Experience:               NewExperience(db),
+		ExperienceReview:         NewExperienceReview(db),
+		ExperienceReviewReaction: NewExperienceReviewReaction(db),
+		ExperienceType:           NewExperienceType(db),
+		Live:                     NewLive(db),
+		Order:                    NewOrder(db),
+		PaymentSystem:            NewPaymentSystem(db),
+		Product:                  NewProduct(db),
+		ProductReview:            NewProductReview(db),
+		ProductReviewReaction:    NewProductReviewReaction(db),
+		ProductTag:               NewProductTag(db),
+		ProductType:              NewProductType(db),
+		Promotion:                NewPromotion(db),
+		Schedule:                 NewSchedule(db),
+		Shipping:                 NewShipping(db),
+		Spot:                     NewSpot(db),
+		SpotType:                 NewSpotType(db),
 	}
 }
 

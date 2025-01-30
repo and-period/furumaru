@@ -191,6 +191,8 @@ paths:
     $ref: './paths/v1/videos/index.yaml'
   /v1/videos/{videoId}:
     $ref: './paths/v1/videos/_videoId/index.yaml'
+  /v1/videos/{videoId}/comments:
+    $ref: './paths/v1/videos/_videoId/comments/index.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
@@ -407,6 +409,8 @@ components:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
     v1CheckoutStateResponse:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutStateResponse'
+    v1PreCheckoutExperienceResponse:
+      $ref: './components/schemas/v1/checkout.response.yaml#/preCheckoutExperienceResponse'
     v1CoordinatorResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
@@ -425,6 +429,8 @@ components:
       $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutResponse'
     v1GuestCheckoutStateResponse:
       $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutStateResponse'
+    v1GuestPreCheckoutExperienceResponse:
+      $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestPreCheckoutExperienceResponse'
     v1LiveCommentsResponse:
       $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1OrderResponse:

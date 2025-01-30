@@ -416,6 +416,191 @@ func TestCart_RemoveItem(t *testing.T) {
 	}
 }
 
+func TestCart_DecreaseItem(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		cart      *Cart
+		productID string
+		quantity  int64
+		expect    *Cart
+	}{
+		{
+			name: "success 1つの買い物かごから削除",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+			productID: "product-id",
+			quantity:  1,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 0},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+		},
+		{
+			name: "success 複数の買い物かごから削除",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+			productID: "product-id",
+			quantity:  3,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 0},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 0},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+		},
+		{
+			name: "success 対象の商品が存在しない",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+			productID: "other-id",
+			quantity:  3,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+		},
+		{
+			name: "success 買い物かごが空",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets:   []*CartBasket{},
+			},
+			productID: "product-id",
+			quantity:  1,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets:   []*CartBasket{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.cart.DecreaseItem(tt.productID, tt.quantity)
+			assert.Equal(t, tt.expect, tt.cart)
+		})
+	}
+}
+
 func TestCartBaskets_MergeByProductID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

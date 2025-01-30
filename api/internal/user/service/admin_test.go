@@ -24,7 +24,7 @@ func TestMultiGetAdmins(t *testing.T) {
 	admins := entity.Admins{
 		{
 			ID:            "administrator-id",
-			Role:          entity.AdminRoleAdministrator,
+			Type:          entity.AdminTypeAdministrator,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -35,7 +35,7 @@ func TestMultiGetAdmins(t *testing.T) {
 		},
 		{
 			ID:            "coordinator-id",
-			Role:          entity.AdminRoleCoordinator,
+			Type:          entity.AdminTypeCoordinator,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -46,7 +46,7 @@ func TestMultiGetAdmins(t *testing.T) {
 		},
 		{
 			ID:            "producer-id",
-			Role:          entity.AdminRoleProducer,
+			Type:          entity.AdminTypeProducer,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",
@@ -118,7 +118,7 @@ func TestMultiGetAdminDevices(t *testing.T) {
 		{
 			ID:        "admin-id",
 			CognitoID: "username",
-			Role:      entity.AdminRoleAdministrator,
+			Type:      entity.AdminTypeAdministrator,
 			Device:    "instance-id",
 		},
 	}
@@ -179,7 +179,7 @@ func TestGetAdmin(t *testing.T) {
 	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
 	admin := &entity.Admin{
 		ID:            "admin-id",
-		Role:          entity.AdminRoleAdministrator,
+		Type:          entity.AdminTypeAdministrator,
 		Lastname:      "&.",
 		Firstname:     "スタッフ",
 		LastnameKana:  "あんどぴりおど",
@@ -206,7 +206,7 @@ func TestGetAdmin(t *testing.T) {
 			},
 			expect: func() *entity.Admin {
 				admin := *admin
-				admin.Role = entity.AdminRoleAdministrator
+				admin.Type = entity.AdminTypeAdministrator
 				return &admin
 			}(),
 			expectErr: nil,

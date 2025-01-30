@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { type CreateCategoryRequest, type Category, type ProductType, type CreateProductTypeRequest, AdminRole, type UpdateCategoryRequest, type UpdateProductTypeRequest } from '~/types/api'
+import { type CreateCategoryRequest, type Category, type ProductType, type CreateProductTypeRequest, AdminType, type UpdateCategoryRequest, type UpdateProductTypeRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -9,9 +9,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
@@ -339,7 +339,7 @@ const onSubmitDeleteProductType = (): void => {
           v-model:update-dialog="updateCategoryDialogValue"
           v-model:delete-dialog="deleteCategoryDialogValue"
           :loading="loading"
-          :role="role"
+          :admin-type="adminType"
           :category="category"
           :categories="categories"
           :table-items-per-page="categoryTableItemsPerPage"
@@ -363,7 +363,7 @@ const onSubmitDeleteProductType = (): void => {
           v-model:update-dialog="updateProductTypeDialogValue"
           v-model:delete-dialog="deleteProductTypeDialogValue"
           :loading="loading"
-          :role="role"
+          :admin-type="adminType"
           :product-type="productType"
           :product-types="productTypes"
           :categories="categories"

@@ -9,25 +9,25 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestAdminRole(t *testing.T) {
+func TestAdminType(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name      string
-		role      int32
-		expect    AdminRole
+		adminType int32
+		expect    AdminType
 		expectErr error
 	}{
 		{
 			name:      "success",
-			role:      1,
-			expect:    AdminRoleAdministrator,
+			adminType: 1,
+			expect:    AdminTypeAdministrator,
 			expectErr: nil,
 		},
 		{
 			name:      "invalid role",
-			role:      0,
-			expect:    AdminRoleUnknown,
+			adminType: 0,
+			expect:    AdminTypeUnknown,
 			expectErr: errInvalidAdminRole,
 		},
 	}
@@ -36,40 +36,40 @@ func TestAdminRole(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := NewAdminRole(tt.role)
+			actual, err := NewAdminType(tt.adminType)
 			assert.ErrorIs(t, tt.expectErr, err)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
 
-func TestAdminRole_Validate(t *testing.T) {
+func TestAdminType_Validate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		role   AdminRole
-		expect error
+		name      string
+		adminType AdminType
+		expect    error
 	}{
 		{
-			name:   "administrator",
-			role:   AdminRoleAdministrator,
-			expect: nil,
+			name:      "administrator",
+			adminType: AdminTypeAdministrator,
+			expect:    nil,
 		},
 		{
-			name:   "coordinator",
-			role:   AdminRoleCoordinator,
-			expect: nil,
+			name:      "coordinator",
+			adminType: AdminTypeCoordinator,
+			expect:    nil,
 		},
 		{
-			name:   "producer",
-			role:   AdminRoleProducer,
-			expect: nil,
+			name:      "producer",
+			adminType: AdminTypeProducer,
+			expect:    nil,
 		},
 		{
-			name:   "unknown",
-			role:   AdminRoleUnknown,
-			expect: errInvalidAdminRole,
+			name:      "unknown",
+			adminType: AdminTypeUnknown,
+			expect:    errInvalidAdminRole,
 		},
 	}
 
@@ -77,7 +77,7 @@ func TestAdminRole_Validate(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.role.Validate()
+			err := tt.adminType.Validate()
 			assert.ErrorIs(t, err, tt.expect)
 		})
 	}
@@ -95,7 +95,8 @@ func TestAdmin(t *testing.T) {
 			name: "success",
 			params: &NewAdminParams{
 				CognitoID:     "cognito-id",
-				Role:          AdminRoleAdministrator,
+				Type:          AdminTypeAdministrator,
+				GroupIDs:      []string{"group-id"},
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -104,7 +105,8 @@ func TestAdmin(t *testing.T) {
 			},
 			expect: &Admin{
 				CognitoID:     "cognito-id",
-				Role:          AdminRoleAdministrator,
+				Type:          AdminTypeAdministrator,
+				GroupIDs:      []string{"group-id"},
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -138,7 +140,6 @@ func TestAdmin_Name(t *testing.T) {
 			name: "success",
 			admin: &Admin{
 				ID:            "admin-id",
-				Role:          AdminRoleAdministrator,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
 				LastnameKana:  "あんどぴりおど",
@@ -161,60 +162,6 @@ func TestAdmin_Name(t *testing.T) {
 	}
 }
 
-func TestAdmin_Fill(t *testing.T) {
-	t.Parallel()
-	now := time.Now()
-	tests := []struct {
-		name         string
-		admin        *Admin
-		expectStatus AdminStatus
-	}{
-		{
-			name: "producer",
-			admin: &Admin{
-				Role: AdminRoleProducer,
-			},
-			expectStatus: AdminStatusDeactivated,
-		},
-		{
-			name: "invited",
-			admin: &Admin{
-				Role:          AdminRoleCoordinator,
-				FirstSignInAt: time.Time{},
-			},
-			expectStatus: AdminStatusInvited,
-		},
-		{
-			name: "activated",
-			admin: &Admin{
-				Role:          AdminRoleCoordinator,
-				FirstSignInAt: now,
-			},
-			expectStatus: AdminStatusActivated,
-		},
-		{
-			name: "deactivated",
-			admin: &Admin{
-				Role:          AdminRoleCoordinator,
-				FirstSignInAt: now,
-				DeletedAt: gorm.DeletedAt{
-					Time:  now,
-					Valid: true,
-				},
-			},
-			expectStatus: AdminStatusDeactivated,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.admin.Fill()
-			assert.Equal(t, tt.expectStatus, tt.admin.Status)
-		})
-	}
-}
-
 func TestAdmins_Map(t *testing.T) {
 	t.Parallel()
 
@@ -229,14 +176,14 @@ func TestAdmins_Map(t *testing.T) {
 				{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
 			expect: map[string]*Admin{
 				"admin-id": {
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
 		},
@@ -251,13 +198,13 @@ func TestAdmins_Map(t *testing.T) {
 	}
 }
 
-func TestAdmins_GroupByRole(t *testing.T) {
+func TestAdmins_GroupByType(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name   string
 		admins Admins
-		expect map[AdminRole]Admins
+		expect map[AdminType]Admins
 	}{
 		{
 			name: "success",
@@ -265,15 +212,15 @@ func TestAdmins_GroupByRole(t *testing.T) {
 				{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
-			expect: map[AdminRole]Admins{
-				AdminRoleAdministrator: {
+			expect: map[AdminType]Admins{
+				AdminTypeAdministrator: {
 					{
 						ID:        "admin-id",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleAdministrator,
+						Type:      AdminTypeAdministrator,
 					},
 				},
 			},
@@ -284,7 +231,7 @@ func TestAdmins_GroupByRole(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.admins.GroupByRole())
+			assert.Equal(t, tt.expect, tt.admins.GroupByType())
 		})
 	}
 }
@@ -303,7 +250,7 @@ func TestAdmins_IDs(t *testing.T) {
 				{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
 			expect: []string{"admin-id"},
@@ -334,13 +281,13 @@ func TestAdmins_Devices(t *testing.T) {
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 					Device:    "instance-id",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 				{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
 					Device:    "",
-					Role:      AdminRoleAdministrator,
+					Type:      AdminTypeAdministrator,
 				},
 			},
 			expect: []string{"instance-id"},
@@ -352,6 +299,133 @@ func TestAdmins_Devices(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.s.Devices())
+		})
+	}
+}
+
+func TestAdmins_Fill(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		admins Admins
+		groups map[string]AdminGroupUsers
+		expect Admins
+	}{
+		{
+			name: "producer",
+			admins: Admins{
+				{
+					ID:   "admin-id",
+					Type: AdminTypeProducer,
+				},
+			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id": {
+					{
+						AdminID: "admin-id",
+						GroupID: "group-id",
+					},
+				},
+			},
+			expect: Admins{
+				{
+					ID:       "admin-id",
+					Type:     AdminTypeProducer,
+					GroupIDs: []string{"group-id"},
+					Status:   AdminStatusDeactivated,
+				},
+			},
+		},
+		{
+			name: "invited",
+			admins: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: time.Time{},
+				},
+			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id": {
+					{
+						AdminID: "admin-id",
+						GroupID: "group-id",
+					},
+				},
+			},
+			expect: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: time.Time{},
+					GroupIDs:      []string{"group-id"},
+					Status:        AdminStatusInvited,
+				},
+			},
+		},
+		{
+			name: "activated",
+			admins: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: now,
+				},
+			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id": {
+					{
+						AdminID: "admin-id",
+						GroupID: "group-id",
+					},
+				},
+			},
+			expect: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: now,
+					GroupIDs:      []string{"group-id"},
+					Status:        AdminStatusActivated,
+				},
+			},
+		},
+		{
+			name: "deactivated",
+			admins: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: now,
+					DeletedAt: gorm.DeletedAt{
+						Time:  now,
+						Valid: true,
+					},
+				},
+			},
+			groups: nil,
+			expect: Admins{
+				{
+					ID:            "admin-id",
+					Type:          AdminTypeCoordinator,
+					FirstSignInAt: now,
+					DeletedAt: gorm.DeletedAt{
+						Time:  now,
+						Valid: true,
+					},
+					GroupIDs: []string{},
+					Status:   AdminStatusDeactivated,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.admins.Fill(tt.groups)
+			assert.Equal(t, tt.expect, tt.admins)
 		})
 	}
 }

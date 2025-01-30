@@ -1,40 +1,36 @@
 package entity
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/set"
-	"gorm.io/datatypes"
 )
 
 // Coordinator - コーディネータ情報
 type Coordinator struct {
-	Admin              `gorm:"-"`
-	AdminID            string         `gorm:"primaryKey;<-:create"`                 // 管理者ID
-	PhoneNumber        string         `gorm:""`                                     // 電話番号
-	MarcheName         string         `gorm:""`                                     // マルシェ名
-	Username           string         `gorm:""`                                     // 表示名
-	Profile            string         `gorm:""`                                     // 紹介文
-	ProductTypeIDs     []string       `gorm:"-"`                                    // 取り扱い品目ID一覧
-	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い品目ID一覧(JSON)
-	ThumbnailURL       string         `gorm:""`                                     // サムネイルURL
-	HeaderURL          string         `gorm:""`                                     // ヘッダー画像URL
-	PromotionVideoURL  string         `gorm:""`                                     // 紹介動画URL
-	BonusVideoURL      string         `gorm:""`                                     // 購入特典動画URL
-	InstagramID        string         `gorm:""`                                     // SNS(Instagram)アカウント名
-	FacebookID         string         `gorm:""`                                     // SNS(Facebook)アカウント名
-	PostalCode         string         `gorm:""`                                     // 郵便番号
-	Prefecture         string         `gorm:"-"`                                    // 都道府県
-	PrefectureCode     int32          `gorm:"column:prefecture"`                    // 都道府県コード
-	City               string         `gorm:""`                                     // 市区町村
-	AddressLine1       string         `gorm:""`                                     // 町名・番地
-	AddressLine2       string         `gorm:""`                                     // ビル名・号室など
-	BusinessDays       []time.Weekday `gorm:"-"`                                    // 営業曜日(発送可能日)一覧
-	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
-	CreatedAt          time.Time      `gorm:"<-:create"`                            // 登録日時
-	UpdatedAt          time.Time      `gorm:""`                                     // 更新日時
+	Admin             `gorm:"-"`
+	AdminID           string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	PhoneNumber       string         `gorm:""`                     // 電話番号
+	MarcheName        string         `gorm:""`                     // マルシェ名
+	Username          string         `gorm:""`                     // 表示名
+	Profile           string         `gorm:""`                     // 紹介文
+	ProductTypeIDs    []string       `gorm:"-"`                    // 取り扱い品目ID一覧
+	ThumbnailURL      string         `gorm:""`                     // サムネイルURL
+	HeaderURL         string         `gorm:""`                     // ヘッダー画像URL
+	PromotionVideoURL string         `gorm:""`                     // 紹介動画URL
+	BonusVideoURL     string         `gorm:""`                     // 購入特典動画URL
+	InstagramID       string         `gorm:""`                     // SNS(Instagram)アカウント名
+	FacebookID        string         `gorm:""`                     // SNS(Facebook)アカウント名
+	PostalCode        string         `gorm:""`                     // 郵便番号
+	Prefecture        string         `gorm:"-"`                    // 都道府県
+	PrefectureCode    int32          `gorm:"column:prefecture"`    // 都道府県コード
+	City              string         `gorm:""`                     // 市区町村
+	AddressLine1      string         `gorm:""`                     // 町名・番地
+	AddressLine2      string         `gorm:""`                     // ビル名・号室など
+	BusinessDays      []time.Weekday `gorm:"-"`                    // 営業曜日(発送可能日)一覧
+	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
 }
 
 type Coordinators []*Coordinator
@@ -89,56 +85,10 @@ func NewCoordinator(params *NewCoordinatorParams) (*Coordinator, error) {
 	}, nil
 }
 
-func (c *Coordinator) Fill(admin *Admin) (err error) {
-	c.ProductTypeIDs, err = c.unmarshalProductTypeIDs()
-	if err != nil {
-		return err
-	}
-	c.BusinessDays, err = c.unmarshalBusinessDays()
-	if err != nil {
-		return err
-	}
+func (c *Coordinator) Fill(admin *Admin, groups AdminGroupUsers) {
+	admin.Fill(groups)
 	c.Admin = *admin
 	c.Prefecture, _ = codes.ToPrefectureJapanese(c.PrefectureCode)
-	return nil
-}
-
-func (c *Coordinator) unmarshalProductTypeIDs() ([]string, error) {
-	if c.ProductTypeIDsJSON == nil {
-		return []string{}, nil
-	}
-	var ids []string
-	return ids, json.Unmarshal(c.ProductTypeIDsJSON, &ids)
-}
-
-func (c *Coordinator) unmarshalBusinessDays() ([]time.Weekday, error) {
-	if c.BusinessDaysJSON == nil {
-		return []time.Weekday{}, nil
-	}
-	var days []time.Weekday
-	return days, json.Unmarshal(c.BusinessDaysJSON, &days)
-}
-
-func (c *Coordinator) FillJSON() error {
-	tagsIDs, err := CoordinatorMarshalProductTypeIDs(c.ProductTypeIDs)
-	if err != nil {
-		return err
-	}
-	days, err := CoordinatorMarshalBusinessDays(c.BusinessDays)
-	if err != nil {
-		return err
-	}
-	c.ProductTypeIDsJSON = datatypes.JSON(tagsIDs)
-	c.BusinessDaysJSON = datatypes.JSON(days)
-	return nil
-}
-
-func CoordinatorMarshalProductTypeIDs(types []string) ([]byte, error) {
-	return json.Marshal(types)
-}
-
-func CoordinatorMarshalBusinessDays(days []time.Weekday) ([]byte, error) {
-	return json.Marshal(days)
 }
 
 func (cs Coordinators) IDs() []string {
@@ -157,15 +107,12 @@ func (cs Coordinators) ProductTypeIDs() []string {
 	return res.Slice()
 }
 
-func (cs Coordinators) Fill(admins map[string]*Admin) error {
+func (cs Coordinators) Fill(admins map[string]*Admin, groups map[string]AdminGroupUsers) {
 	for _, c := range cs {
 		admin, ok := admins[c.AdminID]
 		if !ok {
-			admin = &Admin{ID: c.AdminID, Role: AdminRoleCoordinator}
+			admin = &Admin{ID: c.AdminID, Type: AdminTypeCoordinator}
 		}
-		if err := c.Fill(admin); err != nil {
-			return err
-		}
+		c.Fill(admin, groups[c.AdminID])
 	}
-	return nil
 }

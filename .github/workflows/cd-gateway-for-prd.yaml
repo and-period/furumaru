@@ -6,6 +6,7 @@ on:
     paths:
     - '.github/actions/**'
     - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_database_migrate.yaml'
     - '.github/workflows/_deploy_ecs.yaml'
     - '.github/workflows/_get_tag_version.yaml'
     - '.github/workflows/cd-gateway-for-prd.yaml'
@@ -33,9 +34,20 @@ jobs:
       ecs-cluster-name: ${{ vars.ECS_CLUSTER }}
       ecs-task-definition-admin: ${{ vars.ECS_TASK_DEFINITION_ADMIN }}
       ecs-task-definition-user: ${{ vars.ECS_TASK_DEFINITION_USER }}
+      db-secret-name: ${{ vars.DB_SECRET_NAME }}
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+  database_migrate:
+    name: database migrate
+    needs:
+    - set_output
+    uses: ./.github/workflows/_database_migrate.yaml
+    secrets: inherit
+    with:
+      environment: prd
+      db-secret-name: ${{ needs.set_output.outputs.db-secret-name }}
 
   get_image_tag:
     name: get image tag

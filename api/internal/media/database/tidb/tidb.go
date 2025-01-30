@@ -6,21 +6,19 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/media/database"
-	"github.com/and-period/furumaru/api/internal/media/database/mysql"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
 	gmysql "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
 func NewDatabase(db *apmysql.Client) *database.Database {
-	client := mysql.NewDatabase(db)
 	return &database.Database{
-		Broadcast:          client.Broadcast,
-		BroadcastComment:   client.BroadcastComment,
-		BroadcastViewerLog: client.BroadcastViewerLog,
-		Video:              newVideo(db, client.Video),
-		VideoComment:       client.VideoComment,
-		VideoViewerLog:     client.VideoViewerLog,
+		Broadcast:          NewBroadcast(db),
+		BroadcastComment:   NewBroadcastComment(db),
+		BroadcastViewerLog: NewBroadcastViewerLog(db),
+		Video:              NewVideo(db),
+		VideoComment:       NewVideoComment(db),
+		VideoViewerLog:     NewVideoViewerLog(db),
 	}
 }
 

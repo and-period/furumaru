@@ -19,7 +19,7 @@ func TestAuth(t *testing.T) {
 			name: "success",
 			auth: &entity.AdminAuth{
 				AdminID:      "admin-id",
-				Role:         entity.AdminRoleAdministrator,
+				Type:         entity.AdminTypeAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
@@ -27,7 +27,7 @@ func TestAuth(t *testing.T) {
 			expect: &Auth{
 				Auth: response.Auth{
 					AdminID:      "admin-id",
-					Role:         int32(AdminRoleAdministrator),
+					Type:         int32(AdminTypeAdministrator),
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
 					ExpiresIn:    3600,
@@ -57,7 +57,7 @@ func TestAuth_Response(t *testing.T) {
 			auth: &Auth{
 				Auth: response.Auth{
 					AdminID:      "admin-id",
-					Role:         int32(AdminRoleAdministrator),
+					Type:         int32(AdminTypeAdministrator),
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
 					ExpiresIn:    3600,
@@ -66,7 +66,7 @@ func TestAuth_Response(t *testing.T) {
 			},
 			expect: &response.Auth{
 				AdminID:      "admin-id",
-				Role:         int32(AdminRoleAdministrator),
+				Type:         int32(AdminTypeAdministrator),
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,

@@ -1907,3 +1907,323 @@ func TestSession_ExecuteAUPay(t *testing.T) {
 		})
 	}
 }
+
+func TestSession_ExecutePaidy(t *testing.T) {
+	t.Parallel()
+	now := time.Date(2023, 10, 5, 18, 30, 0, 0, time.UTC)
+	requestFn := func(t *testing.T, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/api/v1/sessions/session-id/pay", r.URL.Path)
+		// request header
+		assert.Equal(t, "application/json", r.Header.Get("Accept"))
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+		assert.Equal(t, "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=", r.Header.Get("Authorization"))
+		// request body
+		body := &orderPaidyRequest{}
+		err := json.NewDecoder(r.Body).Decode(&body)
+		require.NoError(t, err)
+		expect := &orderPaidyRequest{
+			Capture: "manual",
+			PaymentDetails: &paidyDetails{
+				Type:         "paidy",
+				CustomerName: "&. 利用者",
+				Email:        "test@example.com",
+			},
+		}
+		assert.Equal(t, expect, body)
+	}
+	tests := []struct {
+		name    string
+		handler func(w http.ResponseWriter, r *http.Request)
+		params  *komoju.OrderPaidyParams
+		expect  *testResponse
+	}{
+		{
+			name: "success",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusOK)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.OrderSessionResponse{
+					RedirectURL: "http://example.com/redirect",
+					Status:      komoju.SessionStatusPending,
+					Payment: &komoju.PaymentInfo{
+						ID:              "payment-id",
+						Resource:        "session",
+						Status:          komoju.PaymentStatusAuthorized,
+						Amount:          1000,
+						Tax:             0,
+						PaymentDeadline: now.AddDate(0, 7, 0),
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:        "paidy",
+							Email:       "test@example.com",
+							RedirectURL: "http://example.com/redirect",
+						},
+						PaymentMethodFee:   0,
+						Total:              1000,
+						Currency:           defaultCurrency,
+						CreatedAt:          now,
+						AmountRefunded:     0,
+						Locale:             defaultLocale,
+						Session:            "session-id",
+						CustomerFamilyName: "&.",
+						CustomerGivenName:  "利用者",
+						Refunds:            []*komoju.Refund{},
+						RefundRequests:     []*komoju.RefundRequest{},
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			params: &komoju.OrderPaidyParams{
+				SessionID: "session-id",
+				Name:      "&. 利用者",
+				Email:     "test@example.com",
+			},
+			expect: &testResponse{
+				body: &komoju.OrderSessionResponse{
+					RedirectURL: "http://example.com/redirect",
+					Status:      komoju.SessionStatusPending,
+					Payment: &komoju.PaymentInfo{
+						ID:              "payment-id",
+						Resource:        "session",
+						Status:          komoju.PaymentStatusAuthorized,
+						Amount:          1000,
+						Tax:             0,
+						PaymentDeadline: now.AddDate(0, 7, 0),
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:        "paidy",
+							Email:       "test@example.com",
+							RedirectURL: "http://example.com/redirect",
+						},
+						PaymentMethodFee:   0,
+						Total:              1000,
+						Currency:           defaultCurrency,
+						CreatedAt:          now,
+						AmountRefunded:     0,
+						Locale:             defaultLocale,
+						Session:            "session-id",
+						CustomerFamilyName: "&.",
+						CustomerGivenName:  "利用者",
+						Refunds:            []*komoju.Refund{},
+						RefundRequests:     []*komoju.RefundRequest{},
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "failed to http request",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusNotFound)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.ErrorResponse{
+					Data: &komoju.ErrorData{
+						Code:    string(komoju.ErrCodeNotFound),
+						Message: "The requested resource could not be found.",
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			params: &komoju.OrderPaidyParams{
+				SessionID: "session-id",
+				Name:      "&. 利用者",
+				Email:     "test@example.com",
+			},
+			expect: &testResponse{
+				err: &komoju.Error{
+					Method:  http.MethodPost,
+					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
+					Code:    komoju.ErrCodeNotFound,
+					Message: "The requested resource could not be found.",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			tt := tt
+			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
+				return client.OrderPaidy(ctx, tt.params)
+			}))
+		})
+	}
+}
+
+func TestSession_ExecutePayEasy(t *testing.T) {
+	t.Parallel()
+	now := time.Date(2023, 10, 5, 18, 30, 0, 0, time.UTC)
+	requestFn := func(t *testing.T, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/api/v1/sessions/session-id/pay", r.URL.Path)
+		// request header
+		assert.Equal(t, "application/json", r.Header.Get("Accept"))
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+		assert.Equal(t, "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=", r.Header.Get("Authorization"))
+		// request body
+		body := &orderPayEasyRequest{}
+		err := json.NewDecoder(r.Body).Decode(&body)
+		require.NoError(t, err)
+		expect := &orderPayEasyRequest{
+			Capture: "manual",
+			PaymentDetails: &payEasyDetails{
+				Type:           "pay_easy",
+				Email:          "test@example.com",
+				PhoneNumber:    "09012341234",
+				FamilyName:     "&.",
+				GivenName:      "利用者",
+				FamilyNameKana: "あんどどっと",
+				GivenNameKana:  "りようしゃ",
+			},
+		}
+		assert.Equal(t, expect, body)
+	}
+	tests := []struct {
+		name    string
+		handler func(w http.ResponseWriter, r *http.Request)
+		params  *komoju.OrderPayEasyParams
+		expect  *testResponse
+	}{
+		{
+			name: "success",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusOK)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.OrderSessionResponse{
+					RedirectURL: "http://example.com/redirect",
+					Status:      komoju.SessionStatusPending,
+					Payment: &komoju.PaymentInfo{
+						ID:              "payment-id",
+						Resource:        "session",
+						Status:          komoju.PaymentStatusAuthorized,
+						Amount:          1000,
+						Tax:             0,
+						PaymentDeadline: now.AddDate(0, 7, 0),
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:            "pay_easy",
+							Email:           "test@example.com",
+							BankID:          "bank-id",
+							CustomerID:      "customer-id",
+							ConfirmationID:  "confirmation-id",
+							InstructionsURL: "http://example.com/instructions",
+							PaymentURL:      "http://example.com",
+						},
+						PaymentMethodFee:   0,
+						Total:              1000,
+						Currency:           defaultCurrency,
+						CreatedAt:          now,
+						AmountRefunded:     0,
+						Locale:             defaultLocale,
+						Session:            "session-id",
+						CustomerFamilyName: "&.",
+						CustomerGivenName:  "利用者",
+						Refunds:            []*komoju.Refund{},
+						RefundRequests:     []*komoju.RefundRequest{},
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			params: &komoju.OrderPayEasyParams{
+				SessionID:     "session-id",
+				Email:         "test@example.com",
+				PhoneNumber:   "09012341234",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+			},
+			expect: &testResponse{
+				body: &komoju.OrderSessionResponse{
+					RedirectURL: "http://example.com/redirect",
+					Status:      komoju.SessionStatusPending,
+					Payment: &komoju.PaymentInfo{
+						ID:              "payment-id",
+						Resource:        "session",
+						Status:          komoju.PaymentStatusAuthorized,
+						Amount:          1000,
+						Tax:             0,
+						PaymentDeadline: now.AddDate(0, 7, 0),
+						PaymentDetails: &komoju.PaymentDetails{
+							Type:            "pay_easy",
+							Email:           "test@example.com",
+							BankID:          "bank-id",
+							CustomerID:      "customer-id",
+							ConfirmationID:  "confirmation-id",
+							InstructionsURL: "http://example.com/instructions",
+							PaymentURL:      "http://example.com",
+						},
+						PaymentMethodFee:   0,
+						Total:              1000,
+						Currency:           defaultCurrency,
+						CreatedAt:          now,
+						AmountRefunded:     0,
+						Locale:             defaultLocale,
+						Session:            "session-id",
+						CustomerFamilyName: "&.",
+						CustomerGivenName:  "利用者",
+						Refunds:            []*komoju.Refund{},
+						RefundRequests:     []*komoju.RefundRequest{},
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "failed to http request",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				requestFn(t, r)
+				// response header
+				w.WriteHeader(http.StatusNotFound)
+				w.Header().Set("Content-Type", "application/json;charset=utf-8")
+				// response body
+				body := &komoju.ErrorResponse{
+					Data: &komoju.ErrorData{
+						Code:    string(komoju.ErrCodeNotFound),
+						Message: "The requested resource could not be found.",
+					},
+				}
+				err := json.NewEncoder(w).Encode(body)
+				assert.NoError(t, err)
+			},
+			params: &komoju.OrderPayEasyParams{
+				SessionID:     "session-id",
+				Email:         "test@example.com",
+				PhoneNumber:   "09012341234",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+			},
+			expect: &testResponse{
+				err: &komoju.Error{
+					Method:  http.MethodPost,
+					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
+					Code:    komoju.ErrCodeNotFound,
+					Message: "The requested resource could not be found.",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			tt := tt
+			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
+				return client.OrderPayEasy(ctx, tt.params)
+			}))
+		})
+	}
+}

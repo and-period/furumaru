@@ -36,7 +36,32 @@ const formDataValue = computed({
   set: (val: GuestCheckoutAddress) => emits('update:formData', val),
 })
 
-const email = defineModel<string>('email')
+const postalCodeErrorMessageValue = computed<string>(() => {
+  // エラーメッセージがあればそれを返す
+  if (props.postalCodeErrorMessage) {
+    return props.postalCodeErrorMessage
+  }
+
+  // 郵便番号が未入力の場合はエラーメッセージを表示しない
+  if (props.formData.postalCode === '') {
+    return ''
+  }
+
+  // ハイフンが含まれている場合はエラーメッセージを表示
+  if (props.formData.postalCode.includes('-')) {
+    return gt('postalCodeHyphenNotAllowedErrorMessage')
+  }
+
+  // 数字以外が含まれている場合はエラーメッセージを表示
+  const postalCodeRegex = /^\d+$/
+  if (!postalCodeRegex.test(props.formData.postalCode)) {
+    return gt('postalCodeInvalidErrorMessage')
+  }
+
+  return ''
+})
+
+const email = defineModel<string>('email', { required: true })
 
 const handleClickSearchAddressButton = () => {
   emits('click:searchAddressButton', props.formData.postalCode)
@@ -48,7 +73,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form
+  <component
+    :is="formId ? 'form' : 'div'"
     :id="formId"
     class="flex w-full flex-col gap-4"
     @submit.prevent="handleSubmit"
@@ -109,7 +135,7 @@ const handleSubmit = () => {
         v-model="formDataValue.postalCode"
         :placeholder="gt('postalCodeLabel')"
         :with-label="false"
-        :error-message="postalCodeErrorMessage"
+        :error-message="postalCodeErrorMessageValue"
         type="text"
         name="postal-code"
         required
@@ -170,5 +196,5 @@ const handleSubmit = () => {
       name="address-line3"
       type="text"
     />
-  </form>
+  </component>
 </template>

@@ -128,6 +128,25 @@ func (c *Cart) RemoveItem(productID string, boxNumber int64) {
 	}
 }
 
+// DecreaseItem - カート内の商品数量を減らす
+func (c *Cart) DecreaseItem(productID string, quantity int64) {
+	for _, basket := range c.Baskets {
+		for _, item := range basket.Items {
+			if item.ProductID != productID {
+				continue
+			}
+			// 今見ているかごの中身の商品で足りる場合は、減算して終了
+			if item.Quantity >= quantity {
+				item.Quantity -= quantity
+				return
+			}
+			// 今見ているかごの中身の商品で足りない場合は、数量を0にして次のかごへ
+			quantity -= item.Quantity
+			item.Quantity = 0
+		}
+	}
+}
+
 // MergeByProductID - 商品IDを基に、買い物かご内の商品を統合
 func (bs CartBaskets) MergeByProductID() CartItems {
 	items := make(map[string]int64, len(bs))

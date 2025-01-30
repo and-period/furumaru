@@ -178,7 +178,6 @@ func (a *app) inject(ctx context.Context) error {
 			sentry.WithDSN(params.sentryDsn),
 			sentry.WithBind(true),
 			sentry.WithTracesSampleRate(a.TraceSampleRate),
-			sentry.WithProfilesSampleRate(a.ProfileSampleRate),
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create sentry client: %w", err)
@@ -196,10 +195,6 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// KOMOJUの設定
-	captureMode := komoju.CaptureModeManual
-	if a.CheckoutAutoCaptured {
-		captureMode = komoju.CaptureModeAuto
-	}
 	kpaymentParams := &kpayment.Params{
 		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
@@ -209,7 +204,7 @@ func (a *app) inject(ctx context.Context) error {
 		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
 		ClientSecret: params.komojuClientPassword,
-		CaptureMode:  captureMode,
+		CaptureMode:  komoju.CaptureModeManual,
 	}
 	komojuOpts := []komoju.Option{
 		komoju.WithLogger(params.logger),

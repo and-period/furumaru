@@ -10,6 +10,7 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "Search Item",
       "allItemLinkText": "All Items",
+      "allExperienceLinkText": "All Experiences",
       "allMarcheLinkText": "All Marché",
       "blogLinkText": "Blog",
       "aboutLinkText": "About",
@@ -103,6 +104,8 @@
       "viewMoreText": "View More",
       "productsLinkText": "View Products for Sale",
       "archiveListSubTitle": "videos",
+      "productListSubTitle": "product videos",
+      "experienceListSubTitle": "experience videos",
       "archivedStreamText": "archived stream",
       "archivesLinkText": "View List"
     },
@@ -310,6 +313,7 @@
       "itemPriceTaxIncludedText": "(tax included)",
       "quantityLabel": "Quantity",
       "addToCartText": "Add to Cart",
+      "proceedPurchase": "Proceed to Purchase",
       "coordinatorLabel": "Coordinator",
       "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
@@ -350,7 +354,7 @@
       "elementarySchoolStudents": "Elementary school students",
       "preschoolers": "Preschoolers (From 3 years old)",
       "senior": "Senior (From 65 years old)",
-      "addToCartText": "Add to Cart",
+      "applyButtonText": "Apply",
       "estimatedTime": "・Estimated time",
       "businessHours": "・Business time",
       "locationPostalcode": "・Location (Postal code)",

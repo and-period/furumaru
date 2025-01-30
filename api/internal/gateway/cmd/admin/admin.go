@@ -30,55 +30,55 @@ type app struct {
 	newRelic                          *newrelic.Application
 	v1                                v1.Handler
 	komoju                            khandler.Handler
-	AppName                           string  `default:"admin-gateway"  envconfig:"APP_NAME"`
-	Environment                       string  `default:"none"           envconfig:"ENV"`
-	Port                              int64   `default:"8080"           envconfig:"PORT"`
-	MetricsPort                       int64   `default:"9090"           envconfig:"METRICS_PORT"`
-	ShutdownDelaySec                  int64   `default:"20"             envconfig:"SHUTDOWN_DELAY_SEC"`
-	LogPath                           string  `default:""               envconfig:"LOG_PATH"`
-	LogLevel                          string  `default:"info"           envconfig:"LOG_LEVEL"`
-	TraceSampleRate                   float64 `default:"0.0"            envconfig:"TRACE_SAMPLE_RATE"`
-	ProfileSampleRate                 float64 `default:"0.0"            envconfig:"PROFILE_SAMPLE_RATE"`
-	DBTimeZone                        string  `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
-	TiDBHost                          string  `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
-	TiDBPort                          string  `default:"4000"           envconfig:"TIDB_PORT"`
-	TiDBUsername                      string  `default:""               envconfig:"TIDB_USERNAME"`
-	TiDBPassword                      string  `default:""               envconfig:"TIDB_PASSWORD"`
-	TiDBSecretName                    string  `default:""               envconfig:"TIDB_SECRET_NAME"`
-	GinMode                           string  `default:"release"        envconfig:"GIN_MODE"`
-	NewRelicLicense                   string  `default:""               envconfig:"NEW_RELIC_LICENSE"`
-	NewRelicSecretName                string  `default:""               envconfig:"NEW_RELIC_SECRET_NAME"`
-	SentryDsn                         string  `default:""               envconfig:"SENTRY_DSN"`
-	SentrySecretName                  string  `default:""               envconfig:"SENTRY_SECRET_NAME"`
-	AWSRegion                         string  `default:"ap-northeast-1" envconfig:"AWS_REGION"`
-	S3Bucket                          string  `default:""               envconfig:"S3_BUCKET"`
-	S3TmpBucket                       string  `default:""               envconfig:"S3_TMP_BUCKET"`
-	CognitoAdminPoolID                string  `default:""               envconfig:"COGNITO_ADMIN_POOL_ID"`
-	CognitoAdminClientID              string  `default:""               envconfig:"COGNITO_ADMIN_CLIENT_ID"`
-	CognitoUserPoolID                 string  `default:""               envconfig:"COGNITO_USER_POOL_ID"`
-	CognitoUserClientID               string  `default:""               envconfig:"COGNITO_USER_CLIENT_ID"`
-	SQSMessengerQueueURL              string  `default:""               envconfig:"SQS_MESSENGER_QUEUE_URL"`
-	SQSMediaQueueURL                  string  `default:""               envconfig:"SQS_MEDIA_QUEUE_URL"`
-	SQSMockEnabled                    bool    `default:"false"          envconfig:"SQS_MOCK_ENABLED"`
-	KomojuHost                        string  `default:""               envconfig:"KOMOJU_HOST"`
-	KomojuClientID                    string  `default:""               envconfig:"KOMOJU_CLIENT_ID"`
-	KomojuClientPassword              string  `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
-	KomojuSecretName                  string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
-	GoogleClientID                    string  `default:""               envconfig:"GOOGLE_CLIENT_ID"`
-	GoogleClientSecret                string  `default:""               envconfig:"GOOGLE_CLIENT_SECRET"`
-	GoogleSecretName                  string  `default:""               envconfig:"GOOGLE_SECRET_NAME"`
-	GoogleMapsPlatformAPIKey          string  `default:""               envconfig:"GOOGLE_MAPS_PLATFORM_API_KEY"`
-	YoutubeAuthCallbackURL            string  `default:""               envconfig:"YOUTUBE_AUTH_CALLBACK_URL"`
-	BatchMediaUpdateArchiveDefinition string  `default:""               envconfig:"BATCH_MEDIA_UPDATE_ARCHIVE_DEFINITION"`
-	BatchMediaUpdateArchiveQueue      string  `default:""               envconfig:"BATCH_MEDIA_UPDATE_ARCHIVE_QUEUE"`
-	AdminWebURL                       string  `default:""               envconfig:"ADMIN_WEB_URL"`
-	UserWebURL                        string  `default:""               envconfig:"USER_WEB_URL"`
-	AssetsURL                         string  `default:""               envconfig:"ASSETS_URL"`
-	SlackAPIToken                     string  `default:""               envconfig:"SLACK_API_TOKEN"`
-	SlackChannelID                    string  `default:""               envconfig:"SLACK_CHANNEL_ID"`
-	SlackSecretName                   string  `default:""               envconfig:"SLACK_SECRET_NAME"`
-	RBACPolicyPath                    string  `default:""               envconfig:"RBAC_POLICY_PATH"`
-	RBACModelPath                     string  `default:""               envconfig:"RBAC_MODEL_PATH"`
+	AppName                           string   `default:"admin-gateway"  envconfig:"APP_NAME"`
+	Environment                       string   `default:"none"           envconfig:"ENV"`
+	Port                              int64    `default:"8080"           envconfig:"PORT"`
+	MetricsPort                       int64    `default:"9090"           envconfig:"METRICS_PORT"`
+	ShutdownDelaySec                  int64    `default:"20"             envconfig:"SHUTDOWN_DELAY_SEC"`
+	LogPath                           string   `default:""               envconfig:"LOG_PATH"`
+	LogLevel                          string   `default:"info"           envconfig:"LOG_LEVEL"`
+	TraceSampleRate                   float64  `default:"0.0"            envconfig:"TRACE_SAMPLE_RATE"`
+	DBTimeZone                        string   `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
+	TiDBHost                          string   `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
+	TiDBPort                          string   `default:"4000"           envconfig:"TIDB_PORT"`
+	TiDBUsername                      string   `default:""               envconfig:"TIDB_USERNAME"`
+	TiDBPassword                      string   `default:""               envconfig:"TIDB_PASSWORD"`
+	TiDBSecretName                    string   `default:""               envconfig:"TIDB_SECRET_NAME"`
+	GinMode                           string   `default:"release"        envconfig:"GIN_MODE"`
+	NewRelicLicense                   string   `default:""               envconfig:"NEW_RELIC_LICENSE"`
+	NewRelicSecretName                string   `default:""               envconfig:"NEW_RELIC_SECRET_NAME"`
+	SentryDsn                         string   `default:""               envconfig:"SENTRY_DSN"`
+	SentrySecretName                  string   `default:""               envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion                         string   `default:"ap-northeast-1" envconfig:"AWS_REGION"`
+	S3Bucket                          string   `default:""               envconfig:"S3_BUCKET"`
+	S3TmpBucket                       string   `default:""               envconfig:"S3_TMP_BUCKET"`
+	CognitoAdminPoolID                string   `default:""               envconfig:"COGNITO_ADMIN_POOL_ID"`
+	CognitoAdminClientID              string   `default:""               envconfig:"COGNITO_ADMIN_CLIENT_ID"`
+	CognitoUserPoolID                 string   `default:""               envconfig:"COGNITO_USER_POOL_ID"`
+	CognitoUserClientID               string   `default:""               envconfig:"COGNITO_USER_CLIENT_ID"`
+	SQSMessengerQueueURL              string   `default:""               envconfig:"SQS_MESSENGER_QUEUE_URL"`
+	SQSMediaQueueURL                  string   `default:""               envconfig:"SQS_MEDIA_QUEUE_URL"`
+	SQSMockEnabled                    bool     `default:"false"          envconfig:"SQS_MOCK_ENABLED"`
+	KomojuHost                        string   `default:""               envconfig:"KOMOJU_HOST"`
+	KomojuClientID                    string   `default:""               envconfig:"KOMOJU_CLIENT_ID"`
+	KomojuClientPassword              string   `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
+	KomojuSecretName                  string   `default:""               envconfig:"KOMOJU_SECRET_NAME"`
+	GoogleClientID                    string   `default:""               envconfig:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret                string   `default:""               envconfig:"GOOGLE_CLIENT_SECRET"`
+	GoogleSecretName                  string   `default:""               envconfig:"GOOGLE_SECRET_NAME"`
+	GoogleMapsPlatformAPIKey          string   `default:""               envconfig:"GOOGLE_MAPS_PLATFORM_API_KEY"`
+	YoutubeAuthCallbackURL            string   `default:""               envconfig:"YOUTUBE_AUTH_CALLBACK_URL"`
+	BatchMediaUpdateArchiveDefinition string   `default:""               envconfig:"BATCH_MEDIA_UPDATE_ARCHIVE_DEFINITION"`
+	BatchMediaUpdateArchiveQueue      string   `default:""               envconfig:"BATCH_MEDIA_UPDATE_ARCHIVE_QUEUE"`
+	AdminWebURL                       string   `default:""               envconfig:"ADMIN_WEB_URL"`
+	UserWebURL                        string   `default:""               envconfig:"USER_WEB_URL"`
+	AssetsURL                         string   `default:""               envconfig:"ASSETS_URL"`
+	SlackAPIToken                     string   `default:""               envconfig:"SLACK_API_TOKEN"`
+	SlackChannelID                    string   `default:""               envconfig:"SLACK_CHANNEL_ID"`
+	SlackSecretName                   string   `default:""               envconfig:"SLACK_SECRET_NAME"`
+	DefaultAdministratorGroupIDs      []string `default:""               envconfig:"DEFAULT_ADMINISTRATOR_GROUPS"`
+	DefaultCoordinatorGroupIDs        []string `default:""               envconfig:"DEFAULT_COORDINATOR_GROUPS"`
+	DefaultProducerGroupIDs           []string `default:""               envconfig:"DEFAULT_PRODUCER_GROUPS"`
 }
 
 //nolint:revive
@@ -109,6 +109,10 @@ func (a *app) run() error {
 	}
 	defer a.logger.Sync() //nolint:errcheck
 
+	if err := a.v1.Setup(ctx); err != nil {
+		return fmt.Errorf("admin: failed to setup http server: %w", err)
+	}
+
 	// HTTP Serverの設定
 	rt := a.newRouter()
 	hs := http.NewHTTPServer(rt, a.Port)
@@ -127,6 +131,12 @@ func (a *app) run() error {
 	eg.Go(func() (err error) {
 		if err = hs.Serve(); err != nil {
 			a.logger.Warn("Failed to run http server", zap.Error(err))
+		}
+		return
+	})
+	eg.Go(func() (err error) {
+		if err = a.v1.Sync(ectx); err != nil {
+			a.logger.Warn("Failed to sync v1 handler", zap.Error(err))
 		}
 		return
 	})

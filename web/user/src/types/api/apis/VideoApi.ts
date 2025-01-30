@@ -16,15 +16,21 @@
 import * as runtime from '../runtime';
 import type {
   CreateGuestVideoCommentRequest,
+  CreateVideoCommentRequest,
   ErrorResponse,
+  VideoCommentsResponse,
   VideoResponse,
   VideosResponse,
 } from '../models/index';
 import {
     CreateGuestVideoCommentRequestFromJSON,
     CreateGuestVideoCommentRequestToJSON,
+    CreateVideoCommentRequestFromJSON,
+    CreateVideoCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    VideoCommentsResponseFromJSON,
+    VideoCommentsResponseToJSON,
     VideoResponseFromJSON,
     VideoResponseToJSON,
     VideosResponseFromJSON,
@@ -36,8 +42,21 @@ export interface V1CreateGuestVideoCommentRequest {
     body: CreateGuestVideoCommentRequest;
 }
 
+export interface V1CreateVideoCommentRequest {
+    videoId: string;
+    body: CreateVideoCommentRequest;
+}
+
 export interface V1GetVideoRequest {
     videoId: string;
+}
+
+export interface V1ListVideoCommentsRequest {
+    videoId: string;
+    limit?: number;
+    next?: string;
+    start?: number;
+    end?: number;
 }
 
 export interface V1VideosRequest {
@@ -95,6 +114,56 @@ export class VideoApi extends runtime.BaseAPI {
     }
 
     /**
+     * オンデマンド配信コメント投稿
+     */
+    async v1CreateVideoCommentRaw(requestParameters: V1CreateVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['videoId'] == null) {
+            throw new runtime.RequiredError(
+                'videoId',
+                'Required parameter "videoId" was null or undefined when calling v1CreateVideoComment().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateVideoComment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/videos/{videoId}/comments`.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * オンデマンド配信コメント投稿
+     */
+    async v1CreateVideoComment(requestParameters: V1CreateVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CreateVideoCommentRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * オンデマンド配信取得
      */
     async v1GetVideoRaw(requestParameters: V1GetVideoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VideoResponse>> {
@@ -124,6 +193,55 @@ export class VideoApi extends runtime.BaseAPI {
      */
     async v1GetVideo(requestParameters: V1GetVideoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VideoResponse> {
         const response = await this.v1GetVideoRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * オンデマンド配信コメント取得
+     */
+    async v1ListVideoCommentsRaw(requestParameters: V1ListVideoCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VideoCommentsResponse>> {
+        if (requestParameters['videoId'] == null) {
+            throw new runtime.RequiredError(
+                'videoId',
+                'Required parameter "videoId" was null or undefined when calling v1ListVideoComments().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['next'] != null) {
+            queryParameters['next'] = requestParameters['next'];
+        }
+
+        if (requestParameters['start'] != null) {
+            queryParameters['start'] = requestParameters['start'];
+        }
+
+        if (requestParameters['end'] != null) {
+            queryParameters['end'] = requestParameters['end'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/videos/{videoId}/comments`.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VideoCommentsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * オンデマンド配信コメント取得
+     */
+    async v1ListVideoComments(requestParameters: V1ListVideoCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VideoCommentsResponse> {
+        const response = await this.v1ListVideoCommentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

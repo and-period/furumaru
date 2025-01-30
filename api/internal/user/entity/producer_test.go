@@ -178,66 +178,6 @@ func TestProducer(t *testing.T) {
 	}
 }
 
-func TestProducer_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name     string
-		producer *Producer
-		admin    *Admin
-		expect   *Producer
-		hasErr   bool
-	}{
-		{
-			name: "success",
-			producer: &Producer{
-				AdminID:        "admin-id",
-				PrefectureCode: 13,
-			},
-			admin: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-			},
-			expect: &Producer{
-				AdminID:        "admin-id",
-				Prefecture:     "東京都",
-				PrefectureCode: 13,
-				Admin: Admin{
-					ID:        "admin-id",
-					CognitoID: "cognito-id",
-				},
-			},
-			hasErr: false,
-		},
-		{
-			name: "success empty",
-			producer: &Producer{
-				AdminID: "admin-id",
-			},
-			admin: &Admin{
-				ID:        "admin-id",
-				CognitoID: "cognito-id",
-			},
-			expect: &Producer{
-				AdminID: "admin-id",
-				Admin: Admin{
-					ID:        "admin-id",
-					CognitoID: "cognito-id",
-				},
-			},
-			hasErr: false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.producer.Fill(tt.admin)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.producer)
-		})
-	}
-}
-
 func TestProducers_IDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -335,8 +275,8 @@ func TestProducers_Fill(t *testing.T) {
 		name      string
 		producers Producers
 		admins    map[string]*Admin
+		groups    map[string]AdminGroupUsers
 		expect    Producers
-		hasErr    bool
 	}{
 		{
 			name: "success",
@@ -354,7 +294,15 @@ func TestProducers_Fill(t *testing.T) {
 				"admin-id01": {
 					ID:        "admin-id01",
 					CognitoID: "cognito-id",
-					Role:      AdminRoleProducer,
+					Type:      AdminTypeProducer,
+				},
+			},
+			groups: map[string]AdminGroupUsers{
+				"admin-id01": {
+					{
+						GroupID: "group-id",
+						AdminID: "admin-id01",
+					},
 				},
 			},
 			expect: Producers{
@@ -365,7 +313,9 @@ func TestProducers_Fill(t *testing.T) {
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
-						Role:      AdminRoleProducer,
+						Type:      AdminTypeProducer,
+						Status:    AdminStatusDeactivated,
+						GroupIDs:  []string{"group-id"},
 					},
 				},
 				{
@@ -373,20 +323,20 @@ func TestProducers_Fill(t *testing.T) {
 					Prefecture:     "東京都",
 					PrefectureCode: 13,
 					Admin: Admin{
-						ID:   "admin-id02",
-						Role: AdminRoleProducer,
+						ID:       "admin-id02",
+						Type:     AdminTypeProducer,
+						Status:   AdminStatusDeactivated,
+						GroupIDs: []string{},
 					},
 				},
 			},
-			hasErr: false,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.producers.Fill(tt.admins)
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.producers.Fill(tt.admins, tt.groups)
 			assert.Equal(t, tt.expect, tt.producers)
 		})
 	}

@@ -5,16 +5,16 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole, type Address, AdminStatus } from '~/types/api'
+import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminType, type Address, AdminStatus } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
   },
-  role: {
-    type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN,
+  adminType: {
+    type: Number as PropType<AdminType>,
+    default: AdminType.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
@@ -157,7 +157,7 @@ const isEditable = (): boolean => {
   if (!props.customer || props.customer.status === AdminStatus.DEACTIVATED) {
     return false
   }
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.adminType === AdminType.ADMINISTRATOR
 }
 
 const getName = (): string => {

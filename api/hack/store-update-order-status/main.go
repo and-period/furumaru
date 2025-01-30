@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/database/mysql"
+	"github.com/and-period/furumaru/api/internal/store/database/tidb"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/log"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
@@ -73,7 +73,7 @@ func run() error {
 
 	app := &app{
 		mysql:  db,
-		db:     mysql.NewDatabase(db),
+		db:     tidb.NewDatabase(db),
 		logger: logger,
 	}
 

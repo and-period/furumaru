@@ -15,16 +15,14 @@ import (
 const categoryTable = "categories"
 
 type category struct {
-	database.Category
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func newCategory(db *mysql.Client, mysql database.Category) database.Category {
+func NewCategory(db *mysql.Client) database.Category {
 	return &category{
-		Category: mysql,
-		db:       db,
-		now:      jst.Now,
+		db:  db,
+		now: jst.Now,
 	}
 }
 
@@ -79,4 +77,62 @@ func (c *category) Count(ctx context.Context, params *database.ListCategoriesPar
 
 	total, err := c.db.Count(ctx, c.db.DB, &entity.Category{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
+	var categories entity.Categories
+
+	err := c.db.Statement(ctx, c.db.DB, categoryTable, fields...).
+		Where("id IN (?)", categoryIDs).
+		Find(&categories).Error
+	return categories, dbError(err)
+}
+
+func (c *category) Get(ctx context.Context, categoryID string, fields ...string) (*entity.Category, error) {
+	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
+	return category, dbError(err)
+}
+
+func (c *category) Create(ctx context.Context, category *entity.Category) error {
+	now := c.now()
+	category.CreatedAt, category.UpdatedAt = now, now
+
+	err := c.db.DB.WithContext(ctx).Table(categoryTable).Create(&category).Error
+	return dbError(err)
+}
+
+func (c *category) Update(ctx context.Context, categoryID, name string) error {
+	params := map[string]interface{}{
+		"name":       name,
+		"updated_at": c.now(),
+	}
+	stmt := c.db.DB.WithContext(ctx).
+		Table(categoryTable).
+		Where("id = ?", categoryID)
+
+	err := stmt.Updates(params).Error
+	return dbError(err)
+}
+
+func (c *category) Delete(ctx context.Context, categoryID string) error {
+	stmt := c.db.DB.WithContext(ctx).
+		Table(categoryTable).
+		Where("id = ?", categoryID)
+
+	err := stmt.Delete(&entity.Category{}).Error
+	return dbError(err)
+}
+
+func (c *category) get(
+	ctx context.Context, tx *gorm.DB, categoryID string, fields ...string,
+) (*entity.Category, error) {
+	var category *entity.Category
+
+	stmt := c.db.Statement(ctx, tx, categoryTable, fields...).
+		Where("id = ?", categoryID)
+
+	if err := stmt.First(&category).Error; err != nil {
+		return nil, err
+	}
+	return category, nil
 }

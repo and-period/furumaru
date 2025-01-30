@@ -464,10 +464,10 @@ func TestCreateSpotByAdmin(t *testing.T) {
 	adminIn := &user.GetAdminInput{
 		AdminID: "admin-id",
 	}
-	admin := func(role uentity.AdminRole) *uentity.Admin {
+	admin := func(role uentity.AdminType) *uentity.Admin {
 		return &uentity.Admin{
 			ID:   "admin-id",
-			Role: role,
+			Type: role,
 		}
 	}
 	addressIn := &geolocation.GetAddressInput{
@@ -494,7 +494,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -609,7 +609,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to unsppoted",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleAdministrator), nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
 			},
 			input: &store.CreateSpotByAdminInput{
 				TypeID:       "type-id",
@@ -626,7 +626,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{
@@ -644,7 +644,7 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminRoleCoordinator), nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},

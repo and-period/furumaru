@@ -29,7 +29,7 @@ func TestListCoordinators(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleCoordinator,
+				Type:          entity.AdminTypeCoordinator,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
@@ -135,7 +135,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			Admin: entity.Admin{
 				ID:            "admin-id",
-				Role:          entity.AdminRoleCoordinator,
+				Type:          entity.AdminTypeCoordinator,
 				Status:        entity.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "スタッフ",
@@ -243,7 +243,7 @@ func TestGetCoordinator(t *testing.T) {
 	coordinator := &entity.Coordinator{
 		Admin: entity.Admin{
 			ID:            "admin-id",
-			Role:          entity.AdminRoleCoordinator,
+			Type:          entity.AdminTypeCoordinator,
 			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
@@ -365,7 +365,8 @@ func TestCreateCoordinator(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectCoordinator := &entity.Coordinator{
 					Admin: entity.Admin{
-						Role:          entity.AdminRoleCoordinator,
+						Type:          entity.AdminTypeCoordinator,
+						GroupIDs:      []string{"group-id"},
 						Lastname:      "&.",
 						Firstname:     "スタッフ",
 						LastnameKana:  "あんどぴりおど",
@@ -793,7 +794,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleCoordinator,
+			Type:          entity.AdminTypeCoordinator,
 			Status:        entity.AdminStatusActivated,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
@@ -902,7 +903,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		Admin: entity.Admin{
 			ID:            "admin-id",
 			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleCoordinator,
+			Type:          entity.AdminTypeCoordinator,
 			Lastname:      "&.",
 			Firstname:     "スタッフ",
 			LastnameKana:  "あんどぴりおど",

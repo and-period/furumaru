@@ -13,12 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { GuestCheckoutAddress1 } from './GuestCheckoutAddress1';
-import {
-    GuestCheckoutAddress1FromJSON,
-    GuestCheckoutAddress1FromJSONTyped,
-    GuestCheckoutAddress1ToJSON,
-} from './GuestCheckoutAddress1';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
@@ -31,6 +25,12 @@ import {
     GuestCheckoutCreditCardFromJSONTyped,
     GuestCheckoutCreditCardToJSON,
 } from './GuestCheckoutCreditCard';
+import type { GuestCheckoutAddress } from './GuestCheckoutAddress';
+import {
+    GuestCheckoutAddressFromJSON,
+    GuestCheckoutAddressFromJSONTyped,
+    GuestCheckoutAddressToJSON,
+} from './GuestCheckoutAddress';
 
 /**
  * 
@@ -130,10 +130,10 @@ export interface GuestCheckoutExperienceRequest {
     email: string;
     /**
      * 
-     * @type {GuestCheckoutAddress1}
+     * @type {GuestCheckoutAddress}
      * @memberof GuestCheckoutExperienceRequest
      */
-    billingAddress: GuestCheckoutAddress1;
+    billingAddress: GuestCheckoutAddress;
     /**
      * 
      * @type {GuestCheckoutCreditCard}
@@ -193,7 +193,7 @@ export function GuestCheckoutExperienceRequestFromJSONTyped(json: any, ignoreDis
         'callbackUrl': json['callbackUrl'],
         'total': json['total'],
         'email': json['email'],
-        'billingAddress': GuestCheckoutAddress1FromJSON(json['billingAddress']),
+        'billingAddress': GuestCheckoutAddressFromJSON(json['billingAddress']),
         'creditCard': GuestCheckoutCreditCardFromJSON(json['creditCard']),
     };
 }
@@ -219,7 +219,7 @@ export function GuestCheckoutExperienceRequestToJSON(value?: GuestCheckoutExperi
         'callbackUrl': value['callbackUrl'],
         'total': value['total'],
         'email': value['email'],
-        'billingAddress': GuestCheckoutAddress1ToJSON(value['billingAddress']),
+        'billingAddress': GuestCheckoutAddressToJSON(value['billingAddress']),
         'creditCard': GuestCheckoutCreditCardToJSON(value['creditCard']),
     };
 }
