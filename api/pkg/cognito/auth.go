@@ -2,6 +2,11 @@ package cognito
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
@@ -19,6 +24,23 @@ type AuthUser struct {
 	Username    string
 	Email       string
 	PhoneNumber string
+}
+
+type GenerateAuthURLParams struct {
+	State       string
+	Nonce       string
+	RedirectURI string
+}
+
+type GetAccessTokenParams struct {
+	Code        string
+	RedirectURI string
+}
+
+type LinkProviderParams struct {
+	Username     string
+	ProviderType ProviderType
+	AccountID    string
 }
 
 func (c *client) SignIn(ctx context.Context, username, password string) (*AuthResult, error) {
@@ -107,4 +129,91 @@ func (c *client) RefreshToken(ctx context.Context, refreshToken string) (*AuthRe
 		ExpiresIn:    aws.ToInt32(&out.AuthenticationResult.ExpiresIn),
 	}
 	return auth, nil
+}
+
+func (c *client) GenerateAuthURL(ctx context.Context, params *GenerateAuthURLParams) (string, error) {
+	const format = "https://%s/oauth2/authorize"
+	authURL, err := url.Parse(fmt.Sprintf(format, c.authDomain))
+	if err != nil {
+		return "", fmt.Errorf("cognito: failed to parse request uri: %w", err)
+	}
+
+	values := url.Values{}
+	values.Add("response_type", "code")                  // 応答形式（固定:code）
+	values.Add("client_id", aws.ToString(c.appClientID)) // クライアントID
+	values.Add("redirect_uri", params.RedirectURI)       // 応答先URI（WTリダイレクト先URL）
+	values.Add("identity_provider", "Google")            // 認証プロバイダー
+	values.Add("state", params.State)                    // セキュア文字列（CSRF/XSRF対策）
+	values.Add("nonce", params.Nonce)                    // セキュア文字列（リプレイアタック対策）
+
+	authURL.RawQuery = values.Encode()
+
+	// スコープIDはスペース(%20)で連結する必要があるため、別途エスケープ処理をして結合する
+	const scope = "openid email aws.cognito.signin.user.admin"
+	return fmt.Sprintf("%s&scope=%s", authURL.String(), url.PathEscape(scope)), nil
+}
+
+type getAccessTokenResponse struct {
+	AccessToken  string `json:"access_token"`  // アクセストークン
+	RefreshToken string `json:"refresh_token"` // リフレッシュトークン
+	IDToken      string `json:"id_token"`      // IDトークン
+	TokenType    string `json:"token_type"`    // トークン形式
+	ExpiresIn    int32  `json:"expires_in"`    // トークン有効期限
+}
+
+func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParams) (*AuthResult, error) {
+	const format = "https://%s/oauth2/token"
+	authURL, err := url.Parse(fmt.Sprintf(format, c.authDomain))
+	if err != nil {
+		return nil, fmt.Errorf("cognito: failed to parse request uri: %w", err)
+	}
+
+	values := &url.Values{}
+	values.Add("grant_type", "authorization_code") // 権限形式
+	values.Add("code", params.Code)                // 認可コード
+	values.Add("redirect_uri", params.RedirectURI) // 応答先URI
+	body := strings.NewReader(values.Encode())
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, authURL.String(), body)
+	if err != nil {
+		return nil, fmt.Errorf("cognito: failed to create request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", c.authAPIKey))
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("cognito: failed to request: %w", err)
+	}
+	defer res.Body.Close()
+
+	out := &getAccessTokenResponse{}
+	if err := json.NewDecoder(res.Body).Decode(out); err != nil {
+		return nil, fmt.Errorf("cognito: failed to decode get access token response: %w", err)
+	}
+
+	auth := &AuthResult{
+		IDToken:      out.IDToken,
+		AccessToken:  out.AccessToken,
+		RefreshToken: out.RefreshToken,
+		ExpiresIn:    out.ExpiresIn,
+	}
+	return auth, nil
+}
+
+func (c *client) LinkProvider(ctx context.Context, params *LinkProviderParams) error {
+	in := &cognito.AdminLinkProviderForUserInput{
+		UserPoolId: c.userPoolID,
+		DestinationUser: &types.ProviderUserIdentifierType{
+			ProviderName:           aws.String(string(ProviderTypeCognito)),
+			ProviderAttributeValue: aws.String(params.Username),
+		},
+		SourceUser: &types.ProviderUserIdentifierType{
+			ProviderName:           aws.String(string(params.ProviderType)),
+			ProviderAttributeName:  aws.String("Cognito_Subject"),
+			ProviderAttributeValue: aws.String(params.AccountID),
+		},
+	}
+	_, err := c.cognito.AdminLinkProviderForUser(ctx, in)
+	return c.authError(err)
 }

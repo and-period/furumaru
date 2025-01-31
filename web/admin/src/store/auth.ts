@@ -1,7 +1,6 @@
 import dayjs, { type Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
-import Cookies from 'universal-cookie'
 
 import { messaging } from '~/plugins/firebase'
 import { apiClient } from '~/plugins/api-client'
@@ -21,6 +20,14 @@ import {
   type VerifyAuthEmailRequest,
 } from '~/types/api'
 import { useProductTypeStore } from '~/store'
+
+interface FetchTokenResponse {
+  access_token: string
+  refresh_token: string
+  id_token: string
+  token_type: string
+  expires_in: number
+}
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -47,6 +54,23 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     /**
+     * トークンの保存
+     */
+    async setAuth(auth: AuthResponse): Promise<string> {
+      this.auth = auth
+      this.isAuthenticated = true
+
+      const refreshToken = useCookie('refreshToken', { secure: true })
+      refreshToken.value = auth.refreshToken
+
+      await this.getUser()
+      this.setExpiredAt(auth)
+      this.acceptPushNotification()
+
+      return this.redirectPath
+    },
+
+    /**
      * サインイン
      * @param payload メールアドレス/パスワード
      * @returns 遷移先Path
@@ -54,35 +78,37 @@ export const useAuthStore = defineStore('auth', {
     async signIn(payload: SignInRequest): Promise<string> {
       try {
         const res = await apiClient.authApi().v1SignIn(payload)
-        this.auth = res.data
-        this.isAuthenticated = true
-
-        this.getUser()
-        this.setExpiredAt(res.data)
-
-        const cookies = new Cookies()
-        cookies.set('refreshToken', this.auth.refreshToken, { secure: true })
-
-        // Push通知の許可設定
-        this.getDeviceToken()
-          .then((deviceToken) => {
-            if (deviceToken === '') {
-              return // Push通知が未有効化状態
-            }
-            const currentToken: string = cookies.get('deviceToken')
-            if (deviceToken === currentToken) {
-              return // API側へ登録済み
-            }
-            return this.registerDeviceToken(deviceToken)
-          })
-          .catch((err) => {
-            console.log('push notifications are disabled.', err)
-          })
-
-        return this.redirectPath
+        return await this.setAuth(res.data)
       }
       catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
+      }
+    },
+
+    /**
+     * サインイン with OAuth
+     * @param code 認証コード
+     * @param redirectUri リダイレクト先URI
+     * @returns 遷移先Path
+     */
+    async signInWithOAuth(code: string, redirectUri: string): Promise<string> {
+      try {
+        const token = await this.fetchOAuthToken(code, redirectUri).catch((err) => {
+          console.error('OAuthトークンの取得に失敗しました。', err)
+          throw new Error('OAuthトークンの取得に失敗しました。')
+        })
+
+        const auth = await apiClient.authApi().v1RefreshAuthToken({
+          refreshToken: token.refresh_token,
+        }).catch((err) => {
+          console.error('OAuth認証に失敗しました。', err)
+          throw new Error('OAuth認証に失敗しました。')
+        })
+
+        return await this.setAuth({ ...auth.data, refreshToken: token.refresh_token })
+      }
+      catch (err) {
+        return this.errorHandler(err, { 401: 'Googleアカウントでのログインに失敗しました。' })
       }
     },
 
@@ -180,8 +206,8 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
 
-        const cookies = new Cookies()
-        cookies.set('deviceToken', deviceToken, { secure: true })
+        const cookie = useCookie('deviceToken', { secure: true })
+        cookie.value = deviceToken
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -206,8 +232,8 @@ export const useAuthStore = defineStore('auth', {
         this.auth.refreshToken = refreshToken
       }
       catch (err) {
-        const cookies = new Cookies()
-        cookies.remove('refreshToken')
+        const cookie = useCookie('refreshToken', { secure: true })
+        cookie.value = undefined
         return this.errorHandler(err, { 401: '認証エラーです。再度ログインをしてください。' })
       }
     },
@@ -298,6 +324,67 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    /**
+     * OAuth認証によるトークン発行
+     * @param code 認証コード
+     * @param redirectUri リダイレクト先URI
+     * @returns
+     */
+    async fetchOAuthToken(code: string, redirectUri: string): Promise<FetchTokenResponse> {
+      if (code === '' || redirectUri === '') {
+        throw new Error('code or redirectUri is empty.')
+      }
+
+      const config = useRuntimeConfig()
+
+      const params = new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: config.public.COGNITO_CLIENT_ID || '',
+        redirect_uri: redirectUri,
+        code,
+      })
+
+      const res = await $fetch<FetchTokenResponse>(
+        `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString(),
+        },
+      )
+
+      return res
+    },
+
+    /**
+     * Push通知の許可設定
+     * @returns
+     */
+    async acceptPushNotification(): Promise<void> {
+      const supported = await isSupported()
+      if (!supported) {
+        console.log('this browser does not support push notificatins.')
+        return // Push通知未対応ブラウザ
+      }
+
+      this.getDeviceToken()
+        .then((deviceToken) => {
+          if (deviceToken === '') {
+            return // Push通知が未有効化状態
+          }
+          const cookie = useCookie('deviceToken', { secure: true })
+          if (cookie.value === deviceToken) {
+            return // API側へ登録済み
+          }
+          return this.registerDeviceToken(deviceToken)
+        })
+        .catch((err) => {
+          console.log('push notifications are disabled.', err)
+        })
+    },
+
     setRedirectPath(payload: string) {
       this.redirectPath = payload
     },
@@ -309,8 +396,10 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         await apiClient.authApi().v1SignOut()
-        const cookies = new Cookies()
-        cookies.remove('refreshToken')
+
+        const cookie = useCookie('refreshToken', { secure: true })
+        cookie.value = undefined
+
         this.$reset()
       }
       catch (error) {

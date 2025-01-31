@@ -12,6 +12,7 @@ import (
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
+	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -25,6 +26,7 @@ import (
 
 type mocks struct {
 	db        *dbMocks
+	cache     *mock_dynamodb.MockClient
 	adminAuth *mock_cognito.MockClient
 	userAuth  *mock_cognito.MockClient
 	store     *mock_store.MockService
@@ -69,6 +71,7 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:        newDBMocks(ctrl),
+		cache:     mock_dynamodb.NewMockClient(ctrl),
 		adminAuth: mock_cognito.NewMockClient(ctrl),
 		userAuth:  mock_cognito.NewMockClient(ctrl),
 		store:     mock_store.NewMockService(ctrl),
@@ -123,6 +126,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			User:             mocks.db.User,
 			UserNotification: mocks.db.UserNotification,
 		},
+		Cache:     mocks.cache,
 		AdminAuth: mocks.adminAuth,
 		UserAuth:  mocks.userAuth,
 		Store:     mocks.store,
@@ -133,6 +137,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			entity.AdminTypeCoordinator:   {"group-id"},
 			entity.AdminTypeProducer:      {"group-id"},
 		},
+		AdminAuthGoogleRedirectURL: "http://example.com/auth/google/callback",
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

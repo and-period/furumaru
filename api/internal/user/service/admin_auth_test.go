@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -248,6 +249,282 @@ func TestGetAdminAuth(t *testing.T) {
 			actual, err := service.GetAdminAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestInitialGoogleAdminAuth(t *testing.T) {
+	t.Parallel()
+
+	params := &cognito.GenerateAuthURLParams{
+		State:       "state",
+		Nonce:       "nonce",
+		RedirectURI: "http://example.com/auth/google/callback",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.InitialGoogleAdminAuthInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().
+					GenerateAuthURL(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, p *cognito.GenerateAuthURLParams) (string, error) {
+						p.Nonce = "nonce"
+						assert.Equal(t, params, p)
+						return "http://example.com/auth/google", nil
+					})
+			},
+			input: &user.InitialGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				State:   "state",
+			},
+			expect:    "http://example.com/auth/google",
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.InitialGoogleAdminAuthInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to insert cache",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &user.InitialGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				State:   "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to generate auth url",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
+				mocks.adminAuth.EXPECT().GenerateAuthURL(ctx, gomock.Any()).Return("", assert.AnError)
+			},
+			input: &user.InitialGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				State:   "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.InitialGoogleAdminAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestConnectGoogleAdminAuth(t *testing.T) {
+	t.Parallel()
+
+	admin := &entity.Admin{
+		ID:        "admin-id",
+		CognitoID: "cognito-id",
+	}
+	tokenParams := &cognito.GetAccessTokenParams{
+		Code:        "code",
+		RedirectURI: "http://example.com/auth/google/callback",
+	}
+	token := &cognito.AuthResult{
+		AccessToken:  "access-token",
+		RefreshToken: "refresh-token",
+		IDToken:      "id-token",
+		ExpiresIn:    3600,
+	}
+	linkParams := &cognito.LinkProviderParams{
+		Username:     "cognito-id",
+		ProviderType: cognito.ProviderTypeGoogle,
+		AccountID:    "username",
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ConnectGoogleAdminAuthInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(nil)
+				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.ConnectGoogleAdminAuthInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					Return(assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "invalid nonce",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "invalid-token"
+						return nil
+					})
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(nil, assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get google access token",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(nil, assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get google user name",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("", assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to delete google user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to link provider",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(nil)
+				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ConnectGoogleAdminAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }

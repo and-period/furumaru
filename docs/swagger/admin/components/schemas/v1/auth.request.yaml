@@ -13,6 +13,21 @@ signInRequest:
   example:
     username: 'test-user@and-period.jp'
     password: '12345678'
+connectGoogleAccountRequest:
+  type: object
+  properties:
+    code:
+      type: string
+      description: 認証コード（認証後に受け取った値）
+    nonce:
+      type: string
+      description: セキュア文字列（リプレイアタック対策：認証後に受け取った値）
+  required:
+  - code
+  - nonce
+  example:
+    code: 'code'
+    nonce: 'nonce'
 refreshAuthTokenRequest:
   type: object
   properties:

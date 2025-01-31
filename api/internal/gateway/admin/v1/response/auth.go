@@ -26,3 +26,7 @@ type AuthResponse struct {
 type AuthUserResponse struct {
 	*AuthUser
 }
+
+type AuthGoogleAccountResponse struct {
+	URL string `json:"url"` // Googleアカウント連携URL
+}
