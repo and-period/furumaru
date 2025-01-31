@@ -5,10 +5,6 @@ type SignInRequest struct {
 	Password string `json:"password,omitempty"` // パスワード
 }
 
-type AuthGoogleAccountRequest struct {
-	State string `json:"state,omitempty"` // セキュア文字列（CSRF/XSRF対策）
-}
-
 type ConnectGoogleAccountRequest struct {
 	Code  string `json:"code,omitempty"`  // 認証コード
 	Nonce string `json:"nonce,omitempty"` // セキュア文字列（リプレイアタック対策）

@@ -113,15 +113,9 @@ func (h *handler) SignIn(ctx *gin.Context) {
 }
 
 func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
-	req := &request.AuthGoogleAccountRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
 	in := &user.InitialGoogleAdminAuthInput{
 		AdminID: getAdminID(ctx),
-		State:   req.State,
+		State:   util.GetQuery(ctx, "state", ""),
 	}
 	authURL, err := h.user.InitialGoogleAdminAuth(ctx, in)
 	if err != nil {
