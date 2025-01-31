@@ -57,7 +57,7 @@ func NewAdminAuthEvent(params *AdminAuthEventParams) *AdminAuthEvent {
 }
 
 func (e *AdminAuthEvent) TableName() string {
-	return "admin_oauth_events"
+	return "admin-auth-events"
 }
 
 func (e *AdminAuthEvent) PrimaryKey() map[string]interface{} {

@@ -80,7 +80,7 @@ func TestAdminAuthEvent(t *testing.T) {
 	})
 	t.Run("table name", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, "admin_oauth_events", event.TableName())
+		assert.Equal(t, "admin-auth-events", event.TableName())
 	})
 	t.Run("primary key", func(t *testing.T) {
 		t.Parallel()
