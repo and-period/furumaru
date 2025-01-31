@@ -51,10 +51,9 @@ func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGo
 	}
 	// TODO: すでに連携済みかの検証
 	eventParams := &entity.AdminAuthEventParams{
-		AdminID:      in.AdminID,
-		ProviderType: string(cognito.ProviderTypeGoogle),
-		Now:          s.now(),
-		TTL:          s.adminAuthTTL,
+		AdminID: in.AdminID,
+		Now:     s.now(),
+		TTL:     s.adminAuthTTL,
 	}
 	event := entity.NewAdminAuthEvent(eventParams)
 	if err := s.cache.Insert(ctx, event); err != nil {
@@ -73,7 +72,7 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	event := &entity.AdminAuthEvent{AdminID: in.AdminID, ProviderType: string(cognito.ProviderTypeGoogle)}
+	event := &entity.AdminAuthEvent{AdminID: in.AdminID}
 	if err := s.cache.Get(ctx, event); err != nil {
 		return internalError(err)
 	}

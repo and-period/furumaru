@@ -30,29 +30,26 @@ func NewAdminAuth(admin *Admin, rs *cognito.AuthResult) *AdminAuth {
 
 // AdminAuthEvent - 管理者OAuthイベント
 type AdminAuthEvent struct {
-	AdminID      string    `dynamodbav:"admin_id"`            // 管理者ID
-	ProviderType string    `dynamodbav:"provider_type"`       // プロバイダー種別
-	Nonce        string    `dynamodbav:"nonce"`               // セキュア文字列（リプレイアタック対策）
-	ExpiredAt    time.Time `dynamodbav:"expired_at,unixtime"` // 有効期限
-	CreatedAt    time.Time `dynamodbav:"created_at"`          // 登録日時
-	UpdatedAt    time.Time `dynamodbav:"updated_at"`          // 更新日時
+	AdminID   string    `dynamodbav:"admin_id"`            // 管理者ID
+	Nonce     string    `dynamodbav:"nonce"`               // セキュア文字列（リプレイアタック対策）
+	ExpiredAt time.Time `dynamodbav:"expired_at,unixtime"` // 有効期限
+	CreatedAt time.Time `dynamodbav:"created_at"`          // 登録日時
+	UpdatedAt time.Time `dynamodbav:"updated_at"`          // 更新日時
 }
 
 type AdminAuthEventParams struct {
-	AdminID      string
-	ProviderType string
-	Now          time.Time
-	TTL          time.Duration
+	AdminID string
+	Now     time.Time
+	TTL     time.Duration
 }
 
 func NewAdminAuthEvent(params *AdminAuthEventParams) *AdminAuthEvent {
 	return &AdminAuthEvent{
-		AdminID:      params.AdminID,
-		ProviderType: params.ProviderType,
-		Nonce:        uuid.Base58Encode(uuid.New()),
-		ExpiredAt:    params.Now.Add(params.TTL),
-		CreatedAt:    params.Now,
-		UpdatedAt:    params.Now,
+		AdminID:   params.AdminID,
+		Nonce:     uuid.Base58Encode(uuid.New()),
+		ExpiredAt: params.Now.Add(params.TTL),
+		CreatedAt: params.Now,
+		UpdatedAt: params.Now,
 	}
 }
 
@@ -62,7 +59,6 @@ func (e *AdminAuthEvent) TableName() string {
 
 func (e *AdminAuthEvent) PrimaryKey() map[string]interface{} {
 	return map[string]interface{}{
-		"admin_id":      e.AdminID,
-		"provider_type": e.ProviderType,
+		"admin_id": e.AdminID,
 	}
 }

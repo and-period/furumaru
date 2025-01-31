@@ -364,7 +364,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
@@ -392,7 +392,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to get event",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					Return(assert.AnError)
 			},
 			input: &user.ConnectGoogleAdminAuthInput{
@@ -406,7 +406,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "invalid nonce",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "invalid-token"
 						return nil
@@ -423,7 +423,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
@@ -441,7 +441,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to get google access token",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
@@ -460,7 +460,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to get google user name",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
@@ -480,7 +480,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to delete google user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
@@ -501,7 +501,7 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 			name: "failed to link provider",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id", ProviderType: string(cognito.ProviderTypeGoogle)}).
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
 					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
 						event.Nonce = "nonce"
 						return nil
