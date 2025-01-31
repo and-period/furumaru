@@ -130,12 +130,14 @@ const handleClickMediaItem = (index: number) => {
   selectedMediaIndex.value = index
 }
 
-useAsyncData(`product-${id.value}`, () => {
-  return fetchProduct(id.value)
+useAsyncData(`product-${id.value}`, async () => {
+  await fetchProduct(id.value)
+  return true
 })
 
-useAsyncData(`reviews-${id.value}`, () => {
-  return fetchReviews(id.value)
+useAsyncData(`reviews-${id.value}`, async () => {
+  await fetchReviews(id.value)
+  return true
 })
 
 useSeoMeta({
