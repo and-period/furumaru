@@ -7,6 +7,7 @@ definePageMeta({
   layout: 'auth',
 })
 
+const config = useRuntimeConfig()
 const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -16,6 +17,21 @@ const formData = reactive<SignInRequest>({
   username: '',
   password: '',
 })
+
+// Google の認証ページにリダイレクト
+const loginWithGoogle = async () => {
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('oauth_state', state)
+
+  const url = `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/authorize`
+    + `?response_type=CODE`
+    + `&client_id=${config.public.COGNITO_CLIENT_ID}`
+    + `&redirect_uri=${config.public.GOOGLE_SIGNIN_REDIRECT_URI}`
+    + `&state=${state}`
+    + `&identity_provider=Google`
+    + `&scope=openid email aws.cognito.signin.user.admin`
+  await navigateTo(url, { external: true })
+}
 
 const handleSubmit = async () => {
   try {
@@ -42,6 +58,7 @@ const handleSubmit = async () => {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    @click:login-with-google="loginWithGoogle"
     @submit="handleSubmit"
   />
 </template>

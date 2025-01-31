@@ -32,6 +32,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: SignInRequest): void
+  (e: 'click:login-with-google'): void
   (e: 'submit'): void
 }>()
 
@@ -44,6 +45,10 @@ const formDataValue = computed({
 
 const onChangePasswordFieldType = (): void => {
   showPassword.value = !showPassword.value
+}
+
+const onClickLoginWithGoogle = (): void => {
+  emit('click:login-with-google')
 }
 
 const onSubmit = (): void => {
@@ -65,9 +70,8 @@ const onSubmit = (): void => {
 
   <v-card>
     <v-card-title>ログイン</v-card-title>
-
-    <v-form @submit.prevent="onSubmit">
-      <v-card-text>
+    <v-card-text>
+      <v-form @submit.prevent="onSubmit">
         <v-text-field
           v-model="formDataValue.username"
           required
@@ -85,19 +89,27 @@ const onSubmit = (): void => {
         <nuxt-link to="/recover">
           パスワードを忘れた場合
         </nuxt-link>
-      </v-card-text>
-      <v-card-actions>
         <v-btn
           :loading="loading"
           type="submit"
           block
           color="primary"
           variant="outlined"
+          class="mt-2"
         >
           ログイン
         </v-btn>
-      </v-card-actions>
-    </v-form>
+      </v-form>
+
+      <v-divider class="my-4" />
+
+      <v-btn
+        block
+        @click="onClickLoginWithGoogle"
+      >
+        Googleでログイン
+      </v-btn>
+    </v-card-text>
   </v-card>
   <v-container class="text-right">
     <v-row>

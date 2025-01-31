@@ -88,6 +88,10 @@ export default defineNuxtConfig({
       SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(
         process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0',
       ),
+      COGNITO_AUTH_DOMAIN: process.env.COGNITO_AUTH_DOMAIN || '',
+      COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID || '',
+      GOOGLE_SIGNIN_REDIRECT_URI: process.env.GOOGLE_SIGNIN_REDIRECT_URI || '',
+      GOOGLE_CONNECT_REDIRECT_URI: process.env.GOOGLE_CONNECT_REDIRECT_URI || '',
     },
   },
 

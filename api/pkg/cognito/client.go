@@ -3,6 +3,7 @@ package cognito
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -28,6 +29,12 @@ type Client interface {
 	GetUsername(ctx context.Context, accessToken string) (string, error)
 	// トークンの更新 (更新トークン使用)
 	RefreshToken(ctx context.Context, refreshToken string) (*AuthResult, error)
+	// OAuth2.0認証用URL生成
+	GenerateAuthURL(ctx context.Context, params *GenerateAuthURLParams) (string, error)
+	// OAuth2.0認証 (コード検証)
+	GetAccessToken(ctx context.Context, params *GetAccessTokenParams) (*AuthResult, error)
+	// OAuth2.0認証の紐づけ
+	LinkProvider(ctx context.Context, params *LinkProviderParams) error
 
 	// #############################################
 	// ユーザー関連
@@ -62,6 +69,13 @@ type Client interface {
 	AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error
 }
 
+type ProviderType string
+
+var (
+	ProviderTypeCognito ProviderType = "Cognito"
+	ProviderTypeGoogle  ProviderType = "Google"
+)
+
 var (
 	emailField               = aws.String("email")
 	emailVerifiedField       = aws.String("email_verified")
@@ -88,6 +102,7 @@ type Params struct {
 	UserPoolID      string
 	AppClientID     string
 	AppClientSecret string
+	AuthDomain      string
 }
 
 type client struct {
@@ -96,6 +111,8 @@ type client struct {
 	userPoolID      *string
 	appClientID     *string
 	appClientSecret *string
+	authDomain      string
+	authAPIKey      string
 }
 
 type options struct {
@@ -139,11 +156,14 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 			o.MaxBackoff = dopts.interval
 		})
 	})
+	key := fmt.Sprintf("%s:%s", params.AppClientID, params.AppClientSecret)
 	return &client{
 		cognito:         cli,
 		userPoolID:      aws.String(params.UserPoolID),
 		appClientID:     aws.String(params.AppClientID),
 		appClientSecret: aws.String(params.AppClientSecret),
+		authDomain:      params.AuthDomain,
+		authAPIKey:      base64.StdEncoding.EncodeToString([]byte(key)),
 		logger:          dopts.logger,
 	}
 }

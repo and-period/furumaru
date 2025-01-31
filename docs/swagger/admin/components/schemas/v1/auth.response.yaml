@@ -62,3 +62,13 @@ authUserResponse:
     username: '&. 管理者'
     email: 'test-user@and-period.jp'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+authGoogleAccountResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: Google認証用のURL
+  required:
+  - url
+  example:
+    url: 'https://accounts.google.com/o/oauth2/auth?client_id=xxxxxxxxxx'

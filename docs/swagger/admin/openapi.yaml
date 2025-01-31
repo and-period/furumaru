@@ -73,6 +73,8 @@ paths:
   # Auth
   /v1/auth:
     $ref: './paths/v1/auth/index.yaml'
+  /v1/auth/google:
+    $ref: './paths/v1/auth/google.yaml'
   /v1/auth/refresh-token:
     $ref: './paths/v1/auth/refresh-token.yaml'
   /v1/auth/device:
@@ -499,6 +501,8 @@ components:
       $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorEmailRequest'
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
+    v1ConnectGoogleAccountRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/connectGoogleAccountRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
     v1RegisterAuthDeviceRequest:
@@ -630,6 +634,8 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AuthUserResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
+    v1AuthGoogleAccountResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authGoogleAccountResponse'
     v1BroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
     v1GuestBroadcastResponse:
