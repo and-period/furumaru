@@ -404,6 +404,19 @@ export interface ApproveSpotRequest {
 /**
  * 
  * @export
+ * @interface AuthGoogleAccountResponse
+ */
+export interface AuthGoogleAccountResponse {
+    /**
+     * Google認証用のURL
+     * @type {string}
+     * @memberof AuthGoogleAccountResponse
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
  * @interface AuthResponse
  */
 export interface AuthResponse {
@@ -791,6 +804,25 @@ export interface CompleteOrderRequest {
      * @memberof CompleteOrderRequest
      */
     'shippingMessage': string;
+}
+/**
+ * 
+ * @export
+ * @interface ConnectGoogleAccountRequest
+ */
+export interface ConnectGoogleAccountRequest {
+    /**
+     * 認証コード（認証後に受け取った値）
+     * @type {string}
+     * @memberof ConnectGoogleAccountRequest
+     */
+    'code': string;
+    /**
+     * セキュア文字列（リプレイアタック対策：認証後に受け取った値）
+     * @type {string}
+     * @memberof ConnectGoogleAccountRequest
+     */
+    'nonce': string;
 }
 /**
  * お問い合わせ情報
@@ -9373,6 +9405,87 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary Google認証用URLの発行
+         * @param {string} state CSRF対策用のstate
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AuthGoogleAccount: async (state: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'state' is not null or undefined
+            assertParamExists('v1AuthGoogleAccount', 'state', state)
+            const localVarPath = `/v1/auth/google`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (state !== undefined) {
+                localVarQueryParameter['state'] = state;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Googleアカウントの連携
+         * @param {ConnectGoogleAccountRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ConnectGoogleAccount: async (body: ConnectGoogleAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ConnectGoogleAccount', 'body', body)
+            const localVarPath = `/v1/auth/google`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary パスワードリセット
          * @param {ForgotAuthPasswordRequest} body 
          * @param {*} [options] Override http request option.
@@ -9945,6 +10058,32 @@ export const AuthApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Google認証用URLの発行
+         * @param {string} state CSRF対策用のstate
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthGoogleAccountResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGoogleAccount(state, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthGoogleAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Googleアカウントの連携
+         * @param {ConnectGoogleAccountRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ConnectGoogleAccount(body: ConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ConnectGoogleAccount(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.v1ConnectGoogleAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary パスワードリセット
          * @param {ForgotAuthPasswordRequest} body 
          * @param {*} [options] Override http request option.
@@ -10145,6 +10284,26 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary Google認証用URLの発行
+         * @param {string} state CSRF対策用のstate
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig): AxiosPromise<AuthGoogleAccountResponse> {
+            return localVarFp.v1AuthGoogleAccount(state, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Googleアカウントの連携
+         * @param {ConnectGoogleAccountRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ConnectGoogleAccount(body: ConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
+            return localVarFp.v1ConnectGoogleAccount(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary パスワードリセット
          * @param {ForgotAuthPasswordRequest} body 
          * @param {*} [options] Override http request option.
@@ -10298,6 +10457,30 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class AuthApi extends BaseAPI {
+    /**
+     * 
+     * @summary Google認証用URLの発行
+     * @param {string} state CSRF対策用のstate
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthGoogleAccount(state, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Googleアカウントの連携
+     * @param {ConnectGoogleAccountRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1ConnectGoogleAccount(body: ConnectGoogleAccountRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1ConnectGoogleAccount(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary パスワードリセット

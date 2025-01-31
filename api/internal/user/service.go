@@ -22,6 +22,8 @@ type Service interface {
 	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)             // サインイン
 	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error                                // サインアウト
 	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)           // 認証情報取得
+	InitialGoogleAdminAuth(ctx context.Context, in *InitialGoogleAdminAuthInput) (string, error)  // Google認証開始
+	ConnectGoogleAdminAuth(ctx context.Context, in *ConnectGoogleAdminAuthInput) error            // Google認証連携
 	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error) // アクセストークンの更新
 	RegisterAdminDevice(ctx context.Context, in *RegisterAdminDeviceInput) error                  // デバイストークンの更新
 	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error                        // メールアドレス更新

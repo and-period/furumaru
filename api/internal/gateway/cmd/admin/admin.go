@@ -54,6 +54,8 @@ type app struct {
 	S3TmpBucket                       string   `default:""               envconfig:"S3_TMP_BUCKET"`
 	CognitoAdminPoolID                string   `default:""               envconfig:"COGNITO_ADMIN_POOL_ID"`
 	CognitoAdminClientID              string   `default:""               envconfig:"COGNITO_ADMIN_CLIENT_ID"`
+	CognitoAdminAuthDomain            string   `default:""               envconfig:"COGNITO_ADMIN_AUTH_DOMAIN"`
+	CognitoGoogleRedirectURL          string   `default:""               envconfig:"COGNITO_GOOGLE_REDIRECT_URL"`
 	CognitoUserPoolID                 string   `default:""               envconfig:"COGNITO_USER_POOL_ID"`
 	CognitoUserClientID               string   `default:""               envconfig:"COGNITO_USER_CLIENT_ID"`
 	SQSMessengerQueueURL              string   `default:""               envconfig:"SQS_MESSENGER_QUEUE_URL"`

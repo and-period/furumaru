@@ -45,6 +45,73 @@ func (s *service) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) 
 	return auth, internalError(err)
 }
 
+func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGoogleAdminAuthInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	// TODO: すでに連携済みかの検証
+	eventParams := &entity.AdminAuthEventParams{
+		AdminID:      in.AdminID,
+		ProviderType: string(cognito.ProviderTypeGoogle),
+		Now:          s.now(),
+		TTL:          s.adminAuthTTL,
+	}
+	event := entity.NewAdminAuthEvent(eventParams)
+	if err := s.cache.Insert(ctx, event); err != nil {
+		return "", internalError(err)
+	}
+	params := &cognito.GenerateAuthURLParams{
+		State:       in.State,
+		Nonce:       event.Nonce,
+		RedirectURI: s.adminAuthGoogleRedirectURL,
+	}
+	authURL, err := s.adminAuth.GenerateAuthURL(ctx, params)
+	return authURL, internalError(err)
+}
+
+func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGoogleAdminAuthInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	event := &entity.AdminAuthEvent{AdminID: in.AdminID, ProviderType: string(cognito.ProviderTypeGoogle)}
+	if err := s.cache.Get(ctx, event); err != nil {
+		return internalError(err)
+	}
+	if event.Nonce != in.Nonce {
+		return fmt.Errorf("service: invalid nonce for google auth: %w", exception.ErrFailedPrecondition)
+	}
+	admin, err := s.db.Admin.Get(ctx, in.AdminID)
+	if err != nil {
+		return internalError(err)
+	}
+	tokenParams := &cognito.GetAccessTokenParams{
+		Code:        in.Code,
+		RedirectURI: s.adminAuthGoogleRedirectURL,
+	}
+	token, err := s.adminAuth.GetAccessToken(ctx, tokenParams)
+	if err != nil {
+		return internalError(err)
+	}
+	username, err := s.adminAuth.GetUsername(ctx, token.AccessToken)
+	if err != nil {
+		return internalError(err)
+	}
+	// Cognitoの仕様で、すでにサインイン済みの場合は連携できないため
+	if err := s.adminAuth.DeleteUser(ctx, username); err != nil {
+		return internalError(err)
+	}
+	linkParams := &cognito.LinkProviderParams{
+		Username:     admin.CognitoID,
+		ProviderType: cognito.ProviderTypeGoogle,
+		AccountID:    username,
+	}
+	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
+		return internalError(err)
+	}
+	// TODO: 連携情報をDBに登録
+	return nil
+}
+
 func (s *service) RefreshAdminToken(
 	ctx context.Context, in *user.RefreshAdminTokenInput,
 ) (*entity.AdminAuth, error) {

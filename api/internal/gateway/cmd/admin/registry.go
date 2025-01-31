@@ -138,6 +138,7 @@ func (a *app) inject(ctx context.Context) error {
 	adminAuthParams := &cognito.Params{
 		UserPoolID:  a.CognitoAdminPoolID,
 		AppClientID: a.CognitoAdminClientID,
+		AuthDomain:  a.CognitoAdminAuthDomain,
 	}
 	params.adminAuth = cognito.NewClient(awscfg, adminAuthParams)
 	userAuthParams := &cognito.Params{
@@ -535,14 +536,16 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		uentity.AdminTypeProducer:      a.DefaultProducerGroupIDs,
 	}
 	params := &usersrv.Params{
-		WaitGroup:          p.waitGroup,
-		Database:           userdb.NewDatabase(mysql),
-		AdminAuth:          p.adminAuth,
-		UserAuth:           p.userAuth,
-		Store:              store,
-		Messenger:          messenger,
-		Media:              media,
-		DefaultAdminGroups: groups,
+		WaitGroup:                  p.waitGroup,
+		Database:                   userdb.NewDatabase(mysql),
+		Cache:                      p.cache,
+		AdminAuth:                  p.adminAuth,
+		UserAuth:                   p.userAuth,
+		Store:                      store,
+		Messenger:                  messenger,
+		Media:                      media,
+		DefaultAdminGroups:         groups,
+		AdminAuthGoogleRedirectURL: a.CognitoGoogleRedirectURL,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

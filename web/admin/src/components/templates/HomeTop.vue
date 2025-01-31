@@ -122,14 +122,10 @@ const orderChartOption = computed(() => {
   const labels: string[] = []
   const values: number[] = []
 
-  console.log('debug1', props.orders.salesTrends)
-
   props.orders.salesTrends.forEach((trend: TopOrderSalesTrend) => {
     labels.push(trend.period)
     values.push(trend.salesTotal)
   })
-
-  console.log('debug2', { labels, values })
 
   return {
     title: {

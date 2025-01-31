@@ -20,6 +20,8 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.GET("", h.GetAuth)
 	r.POST("", h.SignIn)
 	r.DELETE("", h.SignOut)
+	r.GET("/google", h.authentication, h.AuthGoogleAccount)
+	r.POST("/google", h.authentication, h.ConnectGoogleAccount)
 	r.POST("/refresh-token", h.RefreshAuthToken)
 	r.POST("/device", h.authentication, h.RegisterDevice)
 	r.PATCH("/email", h.authentication, h.UpdateAuthEmail)
@@ -108,6 +110,49 @@ func (h *handler) SignIn(ctx *gin.Context) {
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
+	req := &request.AuthGoogleAccountRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &user.InitialGoogleAdminAuthInput{
+		AdminID: getAdminID(ctx),
+		State:   req.State,
+	}
+	authURL, err := h.user.InitialGoogleAdminAuth(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.AuthGoogleAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
+	req := &request.ConnectGoogleAccountRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &user.ConnectGoogleAdminAuthInput{
+		AdminID: getAdminID(ctx),
+		Code:    req.Code,
+		Nonce:   req.Nonce,
+	}
+	if err := h.user.ConnectGoogleAdminAuth(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) SignOut(ctx *gin.Context) {

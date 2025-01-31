@@ -16,6 +16,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	govalidator "github.com/go-playground/validator/v10"
@@ -23,34 +24,42 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
+const defaultAdminAuthTTL = 5 * time.Minute
+
 type Params struct {
-	WaitGroup          *sync.WaitGroup
-	Database           *database.Database
-	AdminAuth          cognito.Client
-	UserAuth           cognito.Client
-	Store              store.Service
-	Messenger          messenger.Service
-	Media              media.Service
-	DefaultAdminGroups map[entity.AdminType][]string
+	WaitGroup                  *sync.WaitGroup
+	Database                   *database.Database
+	Cache                      dynamodb.Client
+	AdminAuth                  cognito.Client
+	UserAuth                   cognito.Client
+	Store                      store.Service
+	Messenger                  messenger.Service
+	Media                      media.Service
+	DefaultAdminGroups         map[entity.AdminType][]string
+	AdminAuthGoogleRedirectURL string
 }
 
 type service struct {
-	now                func() time.Time
-	logger             *zap.Logger
-	waitGroup          *sync.WaitGroup
-	sharedGroup        *singleflight.Group
-	validator          validator.Validator
-	db                 *database.Database
-	adminAuth          cognito.Client
-	userAuth           cognito.Client
-	store              store.Service
-	messenger          messenger.Service
-	media              media.Service
-	defaultAdminGroups map[entity.AdminType][]string
+	now                        func() time.Time
+	logger                     *zap.Logger
+	waitGroup                  *sync.WaitGroup
+	sharedGroup                *singleflight.Group
+	validator                  validator.Validator
+	db                         *database.Database
+	cache                      dynamodb.Client
+	adminAuth                  cognito.Client
+	userAuth                   cognito.Client
+	store                      store.Service
+	messenger                  messenger.Service
+	media                      media.Service
+	defaultAdminGroups         map[entity.AdminType][]string
+	adminAuthTTL               time.Duration
+	adminAuthGoogleRedirectURL string
 }
 
 type options struct {
-	logger *zap.Logger
+	logger       *zap.Logger
+	adminAuthTTL time.Duration
 }
 
 type Option func(*options)
@@ -61,9 +70,16 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithAdminAuthTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.adminAuthTTL = ttl
+	}
+}
+
 func NewService(params *Params, opts ...Option) user.Service {
 	dopts := &options{
-		logger: zap.NewNop(),
+		logger:       zap.NewNop(),
+		adminAuthTTL: defaultAdminAuthTTL,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -78,18 +94,21 @@ func NewService(params *Params, opts ...Option) user.Service {
 		validator.WithCustomValidation(codes.RegisterValidations),
 	}
 	return &service{
-		now:                jst.Now,
-		logger:             dopts.logger,
-		waitGroup:          params.WaitGroup,
-		sharedGroup:        &singleflight.Group{},
-		validator:          validator.NewValidator(vopts...),
-		db:                 params.Database,
-		adminAuth:          params.AdminAuth,
-		userAuth:           params.UserAuth,
-		store:              params.Store,
-		messenger:          params.Messenger,
-		media:              params.Media,
-		defaultAdminGroups: params.DefaultAdminGroups,
+		now:                        jst.Now,
+		logger:                     dopts.logger,
+		waitGroup:                  params.WaitGroup,
+		sharedGroup:                &singleflight.Group{},
+		validator:                  validator.NewValidator(vopts...),
+		db:                         params.Database,
+		cache:                      params.Cache,
+		adminAuth:                  params.AdminAuth,
+		userAuth:                   params.UserAuth,
+		store:                      params.Store,
+		messenger:                  params.Messenger,
+		media:                      params.Media,
+		defaultAdminGroups:         params.DefaultAdminGroups,
+		adminAuthTTL:               dopts.adminAuthTTL,
+		adminAuthGoogleRedirectURL: params.AdminAuthGoogleRedirectURL,
 	}
 }
 
