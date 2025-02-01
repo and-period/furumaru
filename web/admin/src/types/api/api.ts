@@ -823,6 +823,12 @@ export interface ConnectGoogleAccountRequest {
      * @memberof ConnectGoogleAccountRequest
      */
     'nonce': string;
+    /**
+     * 認証後のリダイレクト先（認証URL発行時に指定した場合、同じものを入れる）
+     * @type {string}
+     * @memberof ConnectGoogleAccountRequest
+     */
+    'redirectUri'?: string;
 }
 /**
  * お問い合わせ情報
@@ -9407,10 +9413,11 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
          * 
          * @summary Google認証用URLの発行
          * @param {string} state CSRF対策用のstate
+         * @param {string} [redirectUri] 認証後のリダイレクト先（変更したいときのみ指定）
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGoogleAccount: async (state: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1AuthGoogleAccount: async (state: string, redirectUri?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'state' is not null or undefined
             assertParamExists('v1AuthGoogleAccount', 'state', state)
             const localVarPath = `/v1/auth/google`;
@@ -9431,6 +9438,10 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
 
             if (state !== undefined) {
                 localVarQueryParameter['state'] = state;
+            }
+
+            if (redirectUri !== undefined) {
+                localVarQueryParameter['redirectUri'] = redirectUri;
             }
 
 
@@ -10060,11 +10071,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * 
          * @summary Google認証用URLの発行
          * @param {string} state CSRF対策用のstate
+         * @param {string} [redirectUri] 認証後のリダイレクト先（変更したいときのみ指定）
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthGoogleAccountResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGoogleAccount(state, options);
+        async v1AuthGoogleAccount(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthGoogleAccountResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGoogleAccount(state, redirectUri, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthGoogleAccount']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10286,11 +10298,12 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * 
          * @summary Google認証用URLの発行
          * @param {string} state CSRF対策用のstate
+         * @param {string} [redirectUri] 認証後のリダイレクト先（変更したいときのみ指定）
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig): AxiosPromise<AuthGoogleAccountResponse> {
-            return localVarFp.v1AuthGoogleAccount(state, options).then((request) => request(axios, basePath));
+        v1AuthGoogleAccount(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): AxiosPromise<AuthGoogleAccountResponse> {
+            return localVarFp.v1AuthGoogleAccount(state, redirectUri, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10461,12 +10474,13 @@ export class AuthApi extends BaseAPI {
      * 
      * @summary Google認証用URLの発行
      * @param {string} state CSRF対策用のstate
+     * @param {string} [redirectUri] 認証後のリダイレクト先（変更したいときのみ指定）
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthGoogleAccount(state: string, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthGoogleAccount(state, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthGoogleAccount(state: string, redirectUri?: string, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthGoogleAccount(state, redirectUri, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

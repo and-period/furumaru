@@ -140,7 +140,7 @@ func (a *app) inject(ctx context.Context) error {
 		AppClientID: a.CognitoAdminClientID,
 		AuthDomain:  a.CognitoAdminAuthDomain,
 	}
-	params.adminAuth = cognito.NewClient(awscfg, adminAuthParams)
+	params.adminAuth = cognito.NewClient(awscfg, adminAuthParams, cognito.WithLogger(params.logger))
 	userAuthParams := &cognito.Params{
 		UserPoolID:  a.CognitoUserPoolID,
 		AppClientID: a.CognitoUserClientID,
@@ -545,7 +545,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		Messenger:                  messenger,
 		Media:                      media,
 		DefaultAdminGroups:         groups,
-		AdminAuthGoogleRedirectURL: a.CognitoGoogleRedirectURL,
+		AdminAuthGoogleRedirectURL: a.CognitoAdminGoogleRedirectURL,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

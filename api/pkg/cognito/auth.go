@@ -174,6 +174,7 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 	values.Add("grant_type", "authorization_code") // 権限形式
 	values.Add("code", params.Code)                // 認可コード
 	values.Add("redirect_uri", params.RedirectURI) // 応答先URI
+	values.Add("client_id", aws.ToString(c.appClientID))
 	body := strings.NewReader(values.Encode())
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, authURL.String(), body)
@@ -181,7 +182,6 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 		return nil, fmt.Errorf("cognito: failed to create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", c.authAPIKey))
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {

@@ -25,6 +25,11 @@ const menus: SettingMenu[] = [
     adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
   },
   {
+    text: 'SNSアカウント連携',
+    action: () => router.push('/accounts/sns'),
+    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
+  },
+  {
     text: 'サインアウト',
     color: 'error',
     action: () => {
