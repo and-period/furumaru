@@ -8,6 +8,7 @@ import {
   AdminType,
   type AuthResponse,
   type AuthUserResponse,
+  type ConnectGoogleAccountRequest,
   type Coordinator,
   type ForgotAuthPasswordRequest,
   type ResetAuthPasswordRequest,
@@ -60,7 +61,10 @@ export const useAuthStore = defineStore('auth', {
       this.auth = auth
       this.isAuthenticated = true
 
+      const cookie = useCookie('auth', { secure: true, maxAge: auth.expiresIn })
       const refreshToken = useCookie('refreshToken', { secure: true })
+
+      cookie.value = encodeURIComponent(JSON.stringify(auth))
       refreshToken.value = auth.refreshToken
 
       await this.getUser()
@@ -232,8 +236,10 @@ export const useAuthStore = defineStore('auth', {
         this.auth.refreshToken = refreshToken
       }
       catch (err) {
-        const cookie = useCookie('refreshToken', { secure: true })
-        cookie.value = undefined
+        const auth = useCookie('auth', { secure: true })
+        const refreshToken = useCookie('refreshToken', { secure: true })
+        auth.value = undefined
+        refreshToken.value = undefined
         return this.errorHandler(err, { 401: '認証エラーです。再度ログインをしてください。' })
       }
     },
@@ -385,6 +391,41 @@ export const useAuthStore = defineStore('auth', {
         })
     },
 
+    /**
+     * Google連携 - 認証ページへの遷移URL取得
+     * @returns
+     */
+    async getAuthGoogleUrl(state: string, redirectUri?: string): Promise<string> {
+      try {
+        const res = await apiClient.authApi().v1AuthGoogleAccount(state, redirectUri)
+        return res.data.url
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
+      }
+    },
+
+    /**
+     * Google連携 - アカウントの連携
+     * @param code 認証コード
+     * @param nonce ランダム文字列
+     * @returns
+     */
+    async linkGoogleAccount(code: string, nonce: string, redirectUri?: string): Promise<void> {
+      const req: ConnectGoogleAccountRequest = {
+        code,
+        nonce,
+        redirectUri,
+      }
+
+      try {
+        await apiClient.authApi().v1ConnectGoogleAccount(req)
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
+      }
+    },
+
     setRedirectPath(payload: string) {
       this.redirectPath = payload
     },
@@ -397,8 +438,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1SignOut()
 
-        const cookie = useCookie('refreshToken', { secure: true })
-        cookie.value = undefined
+        const auth = useCookie('auth', { secure: true })
+        const refreshToken = useCookie('refreshToken', { secure: true })
+        auth.value = undefined
+        refreshToken.value = undefined
 
         this.$reset()
       }

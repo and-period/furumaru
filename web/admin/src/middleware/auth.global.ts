@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import Cookies from 'universal-cookie'
 
 import { useAuthStore } from '~/store'
+import type { AuthResponse } from '~/types/api'
 
 const publicPages = [
   '/health',
@@ -28,25 +29,33 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   }
   store.setRedirectPath(to.path)
 
-  // RefreshTokenの有無検証
-  const refreshToken: string = cookies.get('refreshToken')
-  if (!refreshToken) {
-    return navigateTo('/signin')
-  }
-
   try {
-    // AccessTokenの更新
-    await store.getAuthByRefreshToken(refreshToken)
+    const auth = cookies.get('auth')
+    if (auth) {
+      const parsed = JSON.parse(decodeURIComponent(auth)) as AuthResponse
+      await store.setAuth(parsed)
+    }
+    else {
+      // RefreshTokenの有無検証
+      const refreshToken = cookies.get('refreshToken')
+      if (!refreshToken) {
+        console.log('refresh token is not found.')
+        return navigateTo('/signin')
+      }
+
+      // AccessTokenの更新
+      await store.getAuthByRefreshToken(refreshToken.value)
+
+      // ログインユーザーの情報取得
+      store.getUser().catch((err) => {
+        console.log('failed to get user', err)
+      })
+    }
   }
   catch (err) {
     console.log('failed to refresh auth token', err)
     return navigateTo('/signin')
   }
-
-  // ログインユーザーの情報取得
-  store.getUser().catch((err) => {
-    console.log('failed to get user', err)
-  })
 
   // Push通知用のDeviceToken取得/登録
   store

@@ -3,7 +3,6 @@ package cognito
 
 import (
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -112,7 +111,6 @@ type client struct {
 	appClientID     *string
 	appClientSecret *string
 	authDomain      string
-	authAPIKey      string
 }
 
 type options struct {
@@ -156,14 +154,12 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 			o.MaxBackoff = dopts.interval
 		})
 	})
-	key := fmt.Sprintf("%s:%s", params.AppClientID, params.AppClientSecret)
 	return &client{
 		cognito:         cli,
 		userPoolID:      aws.String(params.UserPoolID),
 		appClientID:     aws.String(params.AppClientID),
 		appClientSecret: aws.String(params.AppClientSecret),
 		authDomain:      params.AuthDomain,
-		authAPIKey:      base64.StdEncoding.EncodeToString([]byte(key)),
 		logger:          dopts.logger,
 	}
 }

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -83,10 +84,14 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	if event.Nonce != in.Nonce {
 		return fmt.Errorf("service: invalid nonce for google auth: %w", exception.ErrFailedPrecondition)
 	}
+
+	// Cognitoユーザーの取得
 	admin, err := s.db.Admin.Get(ctx, in.AdminID)
 	if err != nil {
 		return internalError(err)
 	}
+
+	// Googleアカウントの取得
 	redirectURI := s.adminAuthGoogleRedirectURL
 	if in.RedirectURI != "" {
 		redirectURI = in.RedirectURI
@@ -99,18 +104,26 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	if err != nil {
 		return internalError(err)
 	}
+
+	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みのGoogleアカウントを削除
 	username, err := s.adminAuth.GetUsername(ctx, token.AccessToken)
 	if err != nil {
 		return internalError(err)
 	}
-	// Cognitoの仕様で、すでにサインイン済みの場合は連携できないため
 	if err := s.adminAuth.DeleteUser(ctx, username); err != nil {
 		return internalError(err)
+	}
+
+	// GoogleアカウントとCognitoアカウントを連携
+	// Cognitoユーザー名の形式）google_${GoogleアカウントID}
+	strs := strings.Split(username, "_")
+	if len(strs) != 2 {
+		return fmt.Errorf("service: invalid username for google auth: %w", exception.ErrInternal)
 	}
 	linkParams := &cognito.LinkProviderParams{
 		Username:     admin.CognitoID,
 		ProviderType: cognito.ProviderTypeGoogle,
-		AccountID:    username,
+		AccountID:    strs[1],
 	}
 	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
 		return internalError(err)

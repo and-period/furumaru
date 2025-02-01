@@ -371,8 +371,8 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 					})
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
-				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("google_username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(nil)
 				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
 			},
 			input: &user.ConnectGoogleAdminAuthInput{
@@ -487,8 +487,29 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 					})
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("google_username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(assert.AnError)
+			},
+			input: &user.ConnectGoogleAdminAuthInput{
+				AdminID: "admin-id",
+				Code:    "code",
+				Nonce:   "nonce",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to parse username for google",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(assert.AnError)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(nil)
 			},
 			input: &user.ConnectGoogleAdminAuthInput{
 				AdminID: "admin-id",
@@ -508,8 +529,8 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 					})
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
-				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "username").Return(nil)
+				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("google_username", nil)
+				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(nil)
 				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(assert.AnError)
 			},
 			input: &user.ConnectGoogleAdminAuthInput{

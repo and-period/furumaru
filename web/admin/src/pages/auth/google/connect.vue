@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 
-const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
-const { show } = useAlert('error')
 
 try {
   const { code, state } = route.query as { code: string, state: string }
@@ -15,18 +12,28 @@ try {
   }
 
   const oauthState = sessionStorage.getItem('oauth_state')
+  const oauthNonce = sessionStorage.getItem('oauth_nonce') || ''
+
   sessionStorage.removeItem('oauth_state')
+  sessionStorage.removeItem('oauth_nonce')
 
   if (!oauthState || oauthState !== state) {
     throw new Error('state is invalid')
   }
 
-  const redirectUri = config.public.GOOGLE_SIGNIN_REDIRECT_URI
-  const path = await authStore.signInWithOAuth(code, redirectUri)
-  router.push(path)
+  const config = useRuntimeConfig()
+
+  let redirectUri: string | undefined
+  if (config.public.GOOGLE_CONNECT_REDIRECT_URI !== '') {
+    redirectUri = config.public.GOOGLE_CONNECT_REDIRECT_URI
+  }
+
+  await authStore.linkGoogleAccount(code, oauthNonce, redirectUri)
+
+  // TODO: 成功のメッセージを表示するように
+  router.push('/accounts/sns')
 }
 catch (err) {
-  // TODO: エラーメッセージを表示するように
-  router.push('/auth/signin')
+  console.error(err)
 }
 </script>
