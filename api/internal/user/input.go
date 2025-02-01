@@ -87,14 +87,16 @@ type GetAdminAuthInput struct {
 }
 
 type InitialGoogleAdminAuthInput struct {
-	AdminID string `validate:"required"`
-	State   string `validate:"required"`
+	AdminID     string `validate:"required"`
+	State       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
 }
 
 type ConnectGoogleAdminAuthInput struct {
-	AdminID string `validate:"required"`
-	Code    string `validate:"required"`
-	Nonce   string `validate:"required"`
+	AdminID     string `validate:"required"`
+	Code        string `validate:"required"`
+	Nonce       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
 }
 
 type RegisterAdminDeviceInput struct {

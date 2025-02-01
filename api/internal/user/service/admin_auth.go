@@ -59,10 +59,14 @@ func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGo
 	if err := s.cache.Insert(ctx, event); err != nil {
 		return "", internalError(err)
 	}
+	redirectURL := s.adminAuthGoogleRedirectURL
+	if in.RedirectURI != "" {
+		redirectURL = in.RedirectURI
+	}
 	params := &cognito.GenerateAuthURLParams{
 		State:       in.State,
 		Nonce:       event.Nonce,
-		RedirectURI: s.adminAuthGoogleRedirectURL,
+		RedirectURI: redirectURL,
 	}
 	authURL, err := s.adminAuth.GenerateAuthURL(ctx, params)
 	return authURL, internalError(err)
@@ -83,9 +87,13 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	if err != nil {
 		return internalError(err)
 	}
+	redirectURI := s.adminAuthGoogleRedirectURL
+	if in.RedirectURI != "" {
+		redirectURI = in.RedirectURI
+	}
 	tokenParams := &cognito.GetAccessTokenParams{
 		Code:        in.Code,
-		RedirectURI: s.adminAuthGoogleRedirectURL,
+		RedirectURI: redirectURI,
 	}
 	token, err := s.adminAuth.GetAccessToken(ctx, tokenParams)
 	if err != nil {

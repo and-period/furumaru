@@ -114,8 +114,9 @@ func (h *handler) SignIn(ctx *gin.Context) {
 
 func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 	in := &user.InitialGoogleAdminAuthInput{
-		AdminID: getAdminID(ctx),
-		State:   util.GetQuery(ctx, "state", ""),
+		AdminID:     getAdminID(ctx),
+		State:       util.GetQuery(ctx, "state", ""),
+		RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
 	}
 	authURL, err := h.user.InitialGoogleAdminAuth(ctx, in)
 	if err != nil {
@@ -137,9 +138,10 @@ func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 	}
 
 	in := &user.ConnectGoogleAdminAuthInput{
-		AdminID: getAdminID(ctx),
-		Code:    req.Code,
-		Nonce:   req.Nonce,
+		AdminID:     getAdminID(ctx),
+		Code:        req.Code,
+		Nonce:       req.Nonce,
+		RedirectURI: req.RedirectURI,
 	}
 	if err := h.user.ConnectGoogleAdminAuth(ctx, in); err != nil {
 		h.httpError(ctx, err)
