@@ -342,7 +342,10 @@
       "storageTypeCoolAndDark": "冷暗所保存",
       "storageTypeRefrigerated": "冷蔵保存",
       "storageTypeFrozen": "冷凍保存",
-      "producerInformationTitle": "この商品の生産者"
+      "producerInformationTitle": "この商品の生産者",
+      "reviewCountLabel": "件の評価",
+      "reviewLabel": "商品レビュー",
+      "noReviewText": "現在、レビューはありません"
     },
     "experiences": {
       "producerLabel": "生産者",

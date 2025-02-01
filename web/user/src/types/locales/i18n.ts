@@ -330,6 +330,7 @@ export interface I18n {
       coordinatorLabel: string
       coordinatorThumbnailAlt: string
       addCartSnackbarMessage: string
+      reviewCountLabel: string
     }
     details: {
       itemThumbnailAlt: string

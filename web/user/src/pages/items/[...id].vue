@@ -6,6 +6,7 @@ import { useShoppingCartStore } from '~/store/shopping'
 import { ProductStatus } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
+import { useProductReviewStore } from '~/store/productReview'
 
 const i18n = useI18n()
 
@@ -18,6 +19,10 @@ const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
+
+const productReviewStore = useProductReviewStore()
+const { fetchReviews } = productReviewStore
+const { reviews } = storeToRefs(productReviewStore)
 
 const { emit } = useEventBus('add-to-cart')
 
@@ -125,8 +130,14 @@ const handleClickMediaItem = (index: number) => {
   selectedMediaIndex.value = index
 }
 
-useAsyncData(`product-${id.value}`, () => {
-  return fetchProduct(id.value)
+useAsyncData(`product-${id.value}`, async () => {
+  await fetchProduct(id.value)
+  return true
+})
+
+useAsyncData(`reviews-${id.value}`, async () => {
+  await fetchReviews(id.value)
+  return true
 })
 
 useSeoMeta({
@@ -254,6 +265,24 @@ useSeoMeta({
             </div>
             <div class="text-[12px] tracking-[1.4px] md:text-[14px]">
               {{ product.originPrefecture }} {{ product.originCity }}
+            </div>
+          </div>
+
+          <!-- 評価情報 -->
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="inline-flex items-center">
+                <the-rating-star :rate="product.rate.average" />
+                <p class="ms-2 text-sm font-bold text-main">
+                  {{ product.rate.average }}
+                </p>
+              </div>
+              <a
+                href="#reviews"
+                class="text-sm font-medium text-main underline hover:no-underline "
+              >
+                {{ product.rate.count }} {{ dt('reviewCountLabel') }}
+              </a>
             </div>
           </div>
 
@@ -462,6 +491,65 @@ useSeoMeta({
       </div>
     </div>
   </template>
+
+  <div
+    id="reviews"
+    class="w-full"
+  >
+    <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
+      <div
+        class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+      >
+        <p
+          class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+        >
+          {{ dt("reviewLabel") }}
+        </p>
+
+        <div class="mt-[32px] flex flex-col divide-y">
+          <div
+            v-if="reviews.length === 0"
+            class="text-center py-4"
+          >
+            {{ dt("noReviewText") }}
+          </div>
+          <div
+            v-for="review in reviews"
+            :key="review.id"
+            class="flex flex-col gap-2 py-4"
+          >
+            <div class="flex gap-2">
+              <div v-if="review.thumbnailUrl">
+                <nuxt-img
+                  provider="cloudFront"
+                  sizes="48px"
+                  fit="cover"
+                  :src="review.thumbnailUrl"
+                  :alt="`${review.username}`"
+                  class="block aspect-square w-[48px] rounded-full object-cover"
+                />
+              </div>
+              <div v-else>
+                <the-account-icon />
+              </div>
+              {{ review.username }}
+            </div>
+            <div>
+              <div class="flex gap-2 items-center mb-2">
+                <the-rating-star :rate="review.rate" />
+                <div class="font-semibold">
+                  {{ review.title }}
+                </div>
+              </div>
+              <div>
+                {{ review.comment }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
