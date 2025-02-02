@@ -117,7 +117,7 @@ const handleClickRemoveButton = (id: string) => {
       </div>
 
       <button
-        class="w-full bg-main py-1 text-white"
+        class="w-full bg-orange py-1 text-white"
         @click="handleClick"
       >
         {{ ht("viewMyCartText") }}

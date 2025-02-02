@@ -590,7 +590,7 @@ useSeoMeta({
             {{ ct("backToPreviousPageButtonText") }}
           </button>
           <button
-            class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+            class="w-full bg-orange p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
             :type="checkoutFormData.paymentMethod === 2 ? 'submit' : 'button'"
             :form="
               checkoutFormData.paymentMethod === 2 ? 'credit-card-form' : ''

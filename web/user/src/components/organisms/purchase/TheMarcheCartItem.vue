@@ -81,7 +81,7 @@ const handelClickRemoveItemButton = (id: string) => {
       <div>{{ ct("shippingFeeNotice") }}</div>
 
       <button
-        class="mt-8 bg-main p-[14px] text-[16px] text-white"
+        class="mt-8 bg-orange p-[14px] text-[16px] text-white"
         @click="handleBuyButton"
       >
         {{ ct("checkoutButtonText") }}
@@ -281,7 +281,7 @@ const handelClickRemoveItemButton = (id: string) => {
             </div>
 
             <button
-              class="bg-main p-[14px] text-[16px] text-white"
+              class="bg-orange p-[14px] text-[16px] text-white"
               @click="handleCartBuyButton"
             >
               {{ ct("checkoutButtonText") }}

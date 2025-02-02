@@ -91,7 +91,7 @@ defineExpose<Expose>({
           </p>
         </div>
         <button
-          class="w-full bg-main py-1 text-white"
+          class="w-full bg-orange py-1 text-white"
           @click="handleClickBuyButton"
         >
           {{ viewMycartText }}
