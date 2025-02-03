@@ -2,11 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
@@ -44,92 +45,6 @@ func (s *service) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) 
 	rs := &cognito.AuthResult{AccessToken: in.AccessToken}
 	auth, err := s.getAdminAuth(ctx, rs)
 	return auth, internalError(err)
-}
-
-func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGoogleAdminAuthInput) (string, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return "", internalError(err)
-	}
-	// TODO: すでに連携済みかの検証
-	eventParams := &entity.AdminAuthEventParams{
-		AdminID: in.AdminID,
-		Now:     s.now(),
-		TTL:     s.adminAuthTTL,
-	}
-	event := entity.NewAdminAuthEvent(eventParams)
-	if err := s.cache.Insert(ctx, event); err != nil {
-		return "", internalError(err)
-	}
-	redirectURL := s.adminAuthGoogleRedirectURL
-	if in.RedirectURI != "" {
-		redirectURL = in.RedirectURI
-	}
-	params := &cognito.GenerateAuthURLParams{
-		State:       in.State,
-		Nonce:       event.Nonce,
-		RedirectURI: redirectURL,
-	}
-	authURL, err := s.adminAuth.GenerateAuthURL(ctx, params)
-	return authURL, internalError(err)
-}
-
-func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGoogleAdminAuthInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	event := &entity.AdminAuthEvent{AdminID: in.AdminID}
-	if err := s.cache.Get(ctx, event); err != nil {
-		return internalError(err)
-	}
-	if event.Nonce != in.Nonce {
-		return fmt.Errorf("service: invalid nonce for google auth: %w", exception.ErrFailedPrecondition)
-	}
-
-	// Cognitoユーザーの取得
-	admin, err := s.db.Admin.Get(ctx, in.AdminID)
-	if err != nil {
-		return internalError(err)
-	}
-
-	// Googleアカウントの取得
-	redirectURI := s.adminAuthGoogleRedirectURL
-	if in.RedirectURI != "" {
-		redirectURI = in.RedirectURI
-	}
-	tokenParams := &cognito.GetAccessTokenParams{
-		Code:        in.Code,
-		RedirectURI: redirectURI,
-	}
-	token, err := s.adminAuth.GetAccessToken(ctx, tokenParams)
-	if err != nil {
-		return internalError(err)
-	}
-
-	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みのGoogleアカウントを削除
-	username, err := s.adminAuth.GetUsername(ctx, token.AccessToken)
-	if err != nil {
-		return internalError(err)
-	}
-	if err := s.adminAuth.DeleteUser(ctx, username); err != nil {
-		return internalError(err)
-	}
-
-	// GoogleアカウントとCognitoアカウントを連携
-	// Cognitoユーザー名の形式）google_${GoogleアカウントID}
-	strs := strings.Split(username, "_")
-	if len(strs) != 2 {
-		return fmt.Errorf("service: invalid username for google auth: %w", exception.ErrInternal)
-	}
-	linkParams := &cognito.LinkProviderParams{
-		Username:     admin.CognitoID,
-		ProviderType: cognito.ProviderTypeGoogle,
-		AccountID:    strs[1],
-	}
-	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
-		return internalError(err)
-	}
-	// TODO: 連携情報をDBに登録
-	return nil
 }
 
 func (s *service) RefreshAdminToken(
@@ -234,4 +149,135 @@ func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*en
 	}
 	auth := entity.NewAdminAuth(admin, rs)
 	return auth, nil
+}
+
+func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGoogleAdminAuthInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	params := &initialAdminAuthParams{
+		adminID:      in.AdminID,
+		state:        in.State,
+		providerType: entity.AdminAuthProviderTypeGoogle,
+		redirectURI:  s.adminAuthGoogleRedirectURL,
+	}
+	if in.RedirectURI != "" {
+		params.redirectURI = in.RedirectURI
+	}
+	return s.initialAdminAuth(ctx, params)
+}
+
+func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGoogleAdminAuthInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	params := &connectAdminAuthParams{
+		adminID:     in.AdminID,
+		code:        in.Code,
+		nonce:       in.Nonce,
+		redirectURI: s.adminAuthGoogleRedirectURL,
+	}
+	if in.RedirectURI != "" {
+		params.redirectURI = in.RedirectURI
+	}
+	return s.connectAdminAuth(ctx, params)
+}
+
+type initialAdminAuthParams struct {
+	adminID      string
+	state        string
+	providerType entity.AdminAuthProviderType
+	redirectURI  string
+}
+
+func (s *service) initialAdminAuth(ctx context.Context, params *initialAdminAuthParams) (string, error) {
+	provider, err := s.db.AdminAuthProvider.Get(ctx, params.adminID, params.providerType)
+	if err != nil && !errors.Is(err, database.ErrNotFound) {
+		return "", internalError(err)
+	}
+	if provider != nil {
+		return "", fmt.Errorf("this admin has already connected: %w", exception.ErrFailedPrecondition)
+	}
+	eventParams := &entity.AdminAuthEventParams{
+		AdminID:      params.adminID,
+		ProviderType: params.providerType,
+		Now:          s.now(),
+		TTL:          s.adminAuthTTL,
+	}
+	event := entity.NewAdminAuthEvent(eventParams)
+	if err := s.cache.Insert(ctx, event); err != nil {
+		return "", internalError(err)
+	}
+	authParams := &cognito.GenerateAuthURLParams{
+		State:        params.state,
+		Nonce:        event.Nonce,
+		ProviderType: params.providerType.ToCognito(),
+		RedirectURI:  params.redirectURI,
+	}
+	authURL, err := s.adminAuth.GenerateAuthURL(ctx, authParams)
+	return authURL, internalError(err)
+}
+
+type connectAdminAuthParams struct {
+	adminID     string
+	code        string
+	nonce       string
+	redirectURI string
+}
+
+func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuthParams) error {
+	event := &entity.AdminAuthEvent{AdminID: params.adminID}
+	if err := s.cache.Get(ctx, event); err != nil {
+		return internalError(err)
+	}
+	if event.Nonce != params.nonce {
+		return fmt.Errorf("service: invalid nonce: %w", exception.ErrForbidden)
+	}
+
+	// Cognitoユーザーの取得
+	admin, err := s.db.Admin.Get(ctx, params.adminID)
+	if err != nil {
+		return internalError(err)
+	}
+
+	// 外部アカウントの取得
+	tokenParams := &cognito.GetAccessTokenParams{
+		Code:        params.code,
+		RedirectURI: params.redirectURI,
+	}
+	token, err := s.adminAuth.GetAccessToken(ctx, tokenParams)
+	if err != nil {
+		return internalError(err)
+	}
+
+	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みのGoogleアカウントを削除
+	user, err := s.adminAuth.GetUser(ctx, token.AccessToken)
+	if err != nil {
+		return internalError(err)
+	}
+	providerParams := &entity.AdminAuthProviderParams{
+		AdminID:      admin.ID,
+		ProviderType: event.ProviderType,
+		Auth:         user,
+	}
+	provider, err := entity.NewAdminAuthProvider(providerParams)
+	if err != nil {
+		return internalError(err)
+	}
+	if err := s.adminAuth.DeleteUser(ctx, user.Username); err != nil {
+		return internalError(err)
+	}
+
+	// 外部アカウントとCognitoアカウントを連携
+	linkParams := &cognito.LinkProviderParams{
+		Username:     admin.CognitoID,
+		ProviderType: provider.ProviderType.ToCognito(),
+		AccountID:    provider.AccountID,
+	}
+	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
+		return internalError(err)
+	}
+
+	err = s.db.AdminAuthProvider.Upsert(ctx, provider)
+	return internalError(err)
 }

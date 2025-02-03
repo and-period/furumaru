@@ -35,21 +35,22 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Address          *mock_database.MockAddress
-	Admin            *mock_database.MockAdmin
-	AdminGroup       *mock_database.MockAdminGroup
-	AdminGroupRole   *mock_database.MockAdminGroupRole
-	AdminGroupUser   *mock_database.MockAdminGroupUser
-	AdminPolicy      *mock_database.MockAdminPolicy
-	AdminRole        *mock_database.MockAdminRole
-	AdminRolePolicy  *mock_database.MockAdminRolePolicy
-	Administrator    *mock_database.MockAdministrator
-	Coordinator      *mock_database.MockCoordinator
-	Guest            *mock_database.MockGuest
-	Member           *mock_database.MockMember
-	Producer         *mock_database.MockProducer
-	User             *mock_database.MockUser
-	UserNotification *mock_database.MockUserNotification
+	Address           *mock_database.MockAddress
+	Admin             *mock_database.MockAdmin
+	AdminAuthProvider *mock_database.MockAdminAuthProvider
+	AdminGroup        *mock_database.MockAdminGroup
+	AdminGroupRole    *mock_database.MockAdminGroupRole
+	AdminGroupUser    *mock_database.MockAdminGroupUser
+	AdminPolicy       *mock_database.MockAdminPolicy
+	AdminRole         *mock_database.MockAdminRole
+	AdminRolePolicy   *mock_database.MockAdminRolePolicy
+	Administrator     *mock_database.MockAdministrator
+	Coordinator       *mock_database.MockCoordinator
+	Guest             *mock_database.MockGuest
+	Member            *mock_database.MockMember
+	Producer          *mock_database.MockProducer
+	User              *mock_database.MockUser
+	UserNotification  *mock_database.MockUserNotification
 }
 
 type testOptions struct {
@@ -82,21 +83,22 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Address:          mock_database.NewMockAddress(ctrl),
-		Admin:            mock_database.NewMockAdmin(ctrl),
-		AdminGroup:       mock_database.NewMockAdminGroup(ctrl),
-		AdminGroupRole:   mock_database.NewMockAdminGroupRole(ctrl),
-		AdminGroupUser:   mock_database.NewMockAdminGroupUser(ctrl),
-		AdminPolicy:      mock_database.NewMockAdminPolicy(ctrl),
-		AdminRole:        mock_database.NewMockAdminRole(ctrl),
-		AdminRolePolicy:  mock_database.NewMockAdminRolePolicy(ctrl),
-		Administrator:    mock_database.NewMockAdministrator(ctrl),
-		Coordinator:      mock_database.NewMockCoordinator(ctrl),
-		Guest:            mock_database.NewMockGuest(ctrl),
-		Member:           mock_database.NewMockMember(ctrl),
-		Producer:         mock_database.NewMockProducer(ctrl),
-		User:             mock_database.NewMockUser(ctrl),
-		UserNotification: mock_database.NewMockUserNotification(ctrl),
+		Address:           mock_database.NewMockAddress(ctrl),
+		Admin:             mock_database.NewMockAdmin(ctrl),
+		AdminAuthProvider: mock_database.NewMockAdminAuthProvider(ctrl),
+		AdminGroup:        mock_database.NewMockAdminGroup(ctrl),
+		AdminGroupRole:    mock_database.NewMockAdminGroupRole(ctrl),
+		AdminGroupUser:    mock_database.NewMockAdminGroupUser(ctrl),
+		AdminPolicy:       mock_database.NewMockAdminPolicy(ctrl),
+		AdminRole:         mock_database.NewMockAdminRole(ctrl),
+		AdminRolePolicy:   mock_database.NewMockAdminRolePolicy(ctrl),
+		Administrator:     mock_database.NewMockAdministrator(ctrl),
+		Coordinator:       mock_database.NewMockCoordinator(ctrl),
+		Guest:             mock_database.NewMockGuest(ctrl),
+		Member:            mock_database.NewMockMember(ctrl),
+		Producer:          mock_database.NewMockProducer(ctrl),
+		User:              mock_database.NewMockUser(ctrl),
+		UserNotification:  mock_database.NewMockUserNotification(ctrl),
 	}
 }
 
@@ -110,21 +112,22 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			Address:          mocks.db.Address,
-			Admin:            mocks.db.Admin,
-			AdminGroup:       mocks.db.AdminGroup,
-			AdminGroupRole:   mocks.db.AdminGroupRole,
-			AdminGroupUser:   mocks.db.AdminGroupUser,
-			AdminPolicy:      mocks.db.AdminPolicy,
-			AdminRole:        mocks.db.AdminRole,
-			AdminRolePolicy:  mocks.db.AdminRolePolicy,
-			Administrator:    mocks.db.Administrator,
-			Coordinator:      mocks.db.Coordinator,
-			Guest:            mocks.db.Guest,
-			Member:           mocks.db.Member,
-			Producer:         mocks.db.Producer,
-			User:             mocks.db.User,
-			UserNotification: mocks.db.UserNotification,
+			Address:           mocks.db.Address,
+			Admin:             mocks.db.Admin,
+			AdminAuthProvider: mocks.db.AdminAuthProvider,
+			AdminGroup:        mocks.db.AdminGroup,
+			AdminGroupRole:    mocks.db.AdminGroupRole,
+			AdminGroupUser:    mocks.db.AdminGroupUser,
+			AdminPolicy:       mocks.db.AdminPolicy,
+			AdminRole:         mocks.db.AdminRole,
+			AdminRolePolicy:   mocks.db.AdminRolePolicy,
+			Administrator:     mocks.db.Administrator,
+			Coordinator:       mocks.db.Coordinator,
+			Guest:             mocks.db.Guest,
+			Member:            mocks.db.Member,
+			Producer:          mocks.db.Producer,
+			User:              mocks.db.User,
+			UserNotification:  mocks.db.UserNotification,
 		},
 		Cache:     mocks.cache,
 		AdminAuth: mocks.adminAuth,
