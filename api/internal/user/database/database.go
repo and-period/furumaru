@@ -21,21 +21,22 @@ var (
 )
 
 type Database struct {
-	Address          Address
-	Admin            Admin
-	AdminGroup       AdminGroup
-	AdminGroupRole   AdminGroupRole
-	AdminGroupUser   AdminGroupUser
-	AdminPolicy      AdminPolicy
-	AdminRole        AdminRole
-	AdminRolePolicy  AdminRolePolicy
-	Administrator    Administrator
-	Coordinator      Coordinator
-	Guest            Guest
-	Member           Member
-	Producer         Producer
-	User             User
-	UserNotification UserNotification
+	Address           Address
+	Admin             Admin
+	AdminAuthProvider AdminAuthProvider
+	AdminGroup        AdminGroup
+	AdminGroupRole    AdminGroupRole
+	AdminGroupUser    AdminGroupUser
+	AdminPolicy       AdminPolicy
+	AdminRole         AdminRole
+	AdminRolePolicy   AdminRolePolicy
+	Administrator     Administrator
+	Coordinator       Coordinator
+	Guest             Guest
+	Member            Member
+	Producer          Producer
+	User              User
+	UserNotification  UserNotification
 }
 
 /**
@@ -82,6 +83,16 @@ type Admin interface {
 	UpdateEmail(ctx context.Context, adminID, email string) error
 	UpdateDevice(ctx context.Context, adminID, device string) error
 	UpdateSignInAt(ctx context.Context, adminID string) error
+}
+
+type AdminAuthProvider interface {
+	List(ctx context.Context, params *ListAdminAuthProvidersParams, fields ...string) (entity.AdminAuthProviders, error)
+	Get(ctx context.Context, adminID string, providerType entity.AdminAuthProviderType, fields ...string) (*entity.AdminAuthProvider, error)
+	Upsert(ctx context.Context, provider *entity.AdminAuthProvider) error
+}
+
+type ListAdminAuthProvidersParams struct {
+	AdminID string
 }
 
 type AdminGroup interface {

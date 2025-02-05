@@ -13,21 +13,22 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Address:          NewAddress(db),
-		Admin:            NewAdmin(db),
-		AdminGroup:       NewAdminGroup(db),
-		AdminGroupRole:   NewAdminGroupRole(db),
-		AdminGroupUser:   NewAdminGroupUser(db),
-		AdminPolicy:      NewAdminPolicy(db),
-		AdminRole:        NewAdminRole(db),
-		AdminRolePolicy:  NewAdminRolePolicy(db),
-		Administrator:    NewAdministrator(db),
-		Coordinator:      NewCoordinator(db),
-		Guest:            NewGuest(db),
-		Member:           NewMember(db),
-		Producer:         NewProducer(db),
-		User:             NewUser(db),
-		UserNotification: NewUserNotification(db),
+		Address:           NewAddress(db),
+		Admin:             NewAdmin(db),
+		AdminAuthProvider: NewAdminAuthProvider(db),
+		AdminGroup:        NewAdminGroup(db),
+		AdminGroupRole:    NewAdminGroupRole(db),
+		AdminGroupUser:    NewAdminGroupUser(db),
+		AdminPolicy:       NewAdminPolicy(db),
+		AdminRole:         NewAdminRole(db),
+		AdminRolePolicy:   NewAdminRolePolicy(db),
+		Administrator:     NewAdministrator(db),
+		Coordinator:       NewCoordinator(db),
+		Guest:             NewGuest(db),
+		Member:            NewMember(db),
+		Producer:          NewProducer(db),
+		User:              NewUser(db),
+		UserNotification:  NewUserNotification(db),
 	}
 }
 

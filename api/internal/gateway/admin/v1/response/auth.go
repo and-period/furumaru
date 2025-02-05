@@ -19,12 +19,22 @@ type AuthUser struct {
 	ThumbnailURL string `json:"thumbnailUrl"` // サムネイルURL
 }
 
+// AuthProvider - 認証プロバイダ
+type AuthProvider struct {
+	Type        int32 `json:"type"`        // プロバイダ種別
+	ConnectedAt int64 `json:"connectedAt"` // 連携日時
+}
+
 type AuthResponse struct {
 	*Auth
 }
 
 type AuthUserResponse struct {
 	*AuthUser
+}
+
+type AuthProvidersResponse struct {
+	Providers []*AuthProvider `json:"providers"` // プロバイダ一覧
 }
 
 type AuthGoogleAccountResponse struct {

@@ -71,6 +71,7 @@ type Client interface {
 type ProviderType string
 
 var (
+	ProviderTypeUnknown ProviderType = ""
 	ProviderTypeCognito ProviderType = "Cognito"
 	ProviderTypeGoogle  ProviderType = "Google"
 )

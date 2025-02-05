@@ -19,21 +19,22 @@ type Service interface {
 	UpdateAddress(ctx context.Context, in *UpdateAddressInput) error                                                 // 更新
 	DeleteAddress(ctx context.Context, in *DeleteAddressInput) error                                                 // 削除
 	// Admin - 管理者
-	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)             // サインイン
-	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error                                // サインアウト
-	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)           // 認証情報取得
-	InitialGoogleAdminAuth(ctx context.Context, in *InitialGoogleAdminAuthInput) (string, error)  // Google認証開始
-	ConnectGoogleAdminAuth(ctx context.Context, in *ConnectGoogleAdminAuthInput) error            // Google認証連携
-	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error) // アクセストークンの更新
-	RegisterAdminDevice(ctx context.Context, in *RegisterAdminDeviceInput) error                  // デバイストークンの更新
-	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error                        // メールアドレス更新
-	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error                        // メールアドレス更新後の確認
-	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error                  // パスワード更新
-	ForgotAdminPassword(ctx context.Context, in *ForgotAdminPasswordInput) error                  // パスワードリセット (メール送信)
-	VerifyAdminPassword(ctx context.Context, in *VerifyAdminPasswordInput) error                  // パスワードリセット (パスワード更新)
-	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)           // 一覧取得(ID指定)
-	MultiGetAdminDevices(ctx context.Context, in *MultiGetAdminDevicesInput) ([]string, error)    // デバイストークン一覧取得
-	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)                       // １件取得
+	SignInAdmin(ctx context.Context, in *SignInAdminInput) (*entity.AdminAuth, error)                               // サインイン
+	SignOutAdmin(ctx context.Context, in *SignOutAdminInput) error                                                  // サインアウト
+	GetAdminAuth(ctx context.Context, in *GetAdminAuthInput) (*entity.AdminAuth, error)                             // 認証情報取得
+	RefreshAdminToken(ctx context.Context, in *RefreshAdminTokenInput) (*entity.AdminAuth, error)                   // アクセストークンの更新
+	RegisterAdminDevice(ctx context.Context, in *RegisterAdminDeviceInput) error                                    // デバイストークンの更新
+	UpdateAdminEmail(ctx context.Context, in *UpdateAdminEmailInput) error                                          // メールアドレス更新
+	VerifyAdminEmail(ctx context.Context, in *VerifyAdminEmailInput) error                                          // メールアドレス更新後の確認
+	UpdateAdminPassword(ctx context.Context, in *UpdateAdminPasswordInput) error                                    // パスワード更新
+	ForgotAdminPassword(ctx context.Context, in *ForgotAdminPasswordInput) error                                    // パスワードリセット (メール送信)
+	VerifyAdminPassword(ctx context.Context, in *VerifyAdminPasswordInput) error                                    // パスワードリセット (パスワード更新)
+	MultiGetAdmins(ctx context.Context, in *MultiGetAdminsInput) (entity.Admins, error)                             // 一覧取得(ID指定)
+	MultiGetAdminDevices(ctx context.Context, in *MultiGetAdminDevicesInput) ([]string, error)                      // デバイストークン一覧取得
+	GetAdmin(ctx context.Context, in *GetAdminInput) (*entity.Admin, error)                                         // １件取得
+	ListAdminAuthProviders(ctx context.Context, in *ListAdminAuthProvidersInput) (entity.AdminAuthProviders, error) // 認証プロバイダ一覧取得
+	InitialGoogleAdminAuth(ctx context.Context, in *InitialGoogleAdminAuthInput) (string, error)                    // Google認証開始
+	ConnectGoogleAdminAuth(ctx context.Context, in *ConnectGoogleAdminAuthInput) error                              // Google認証連携
 	// AdminRole - 管理者ロール
 	GenerateAdminRole(ctx context.Context, in *GenerateAdminRoleInput) (string, string, error) // ロール生成
 	// Administrator - システム管理者

@@ -1,0 +1,16 @@
+authProvider:
+  type: object
+  description: 認証プロバイダ情報
+  properties:
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/authProviderType'
+    connectedAt:
+      type: integer
+      format: int64
+      description: 連携日時 (unixtime)
+  required:
+  - type
+  - connectedAt
+  example:
+    type: 1
+    connectedAt: 1640962800

@@ -29,9 +29,10 @@ type AuthUser struct {
 }
 
 type GenerateAuthURLParams struct {
-	State       string
-	Nonce       string
-	RedirectURI string
+	State        string
+	Nonce        string
+	ProviderType ProviderType
+	RedirectURI  string
 }
 
 type GetAccessTokenParams struct {
@@ -141,12 +142,12 @@ func (c *client) GenerateAuthURL(ctx context.Context, params *GenerateAuthURLPar
 	}
 
 	values := url.Values{}
-	values.Add("response_type", "code")                  // 応答形式（固定:code）
-	values.Add("client_id", aws.ToString(c.appClientID)) // クライアントID
-	values.Add("redirect_uri", params.RedirectURI)       // 応答先URI（WTリダイレクト先URL）
-	values.Add("identity_provider", "Google")            // 認証プロバイダー
-	values.Add("state", params.State)                    // セキュア文字列（CSRF/XSRF対策）
-	values.Add("nonce", params.Nonce)                    // セキュア文字列（リプレイアタック対策）
+	values.Add("response_type", "code")                          // 応答形式（固定:code）
+	values.Add("client_id", aws.ToString(c.appClientID))         // クライアントID
+	values.Add("redirect_uri", params.RedirectURI)               // 応答先URI（WTリダイレクト先URL）
+	values.Add("identity_provider", string(params.ProviderType)) // 認証プロバイダー
+	values.Add("state", params.State)                            // セキュア文字列（CSRF/XSRF対策）
+	values.Add("nonce", params.Nonce)                            // セキュア文字列（リプレイアタック対策）
 
 	authURL.RawQuery = values.Encode()
 
@@ -210,7 +211,7 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 }
 
 func (c *client) LinkProvider(ctx context.Context, params *LinkProviderParams) error {
-	in := &cognito.AdminLinkProviderForUserInput{
+	linkIn := &cognito.AdminLinkProviderForUserInput{
 		UserPoolId: c.userPoolID,
 		DestinationUser: &types.ProviderUserIdentifierType{
 			ProviderName:           aws.String(string(ProviderTypeCognito)),
@@ -222,6 +223,21 @@ func (c *client) LinkProvider(ctx context.Context, params *LinkProviderParams) e
 			ProviderAttributeValue: aws.String(params.AccountID),
 		},
 	}
-	_, err := c.cognito.AdminLinkProviderForUser(ctx, in)
-	return c.authError(err)
+	if _, err := c.cognito.AdminLinkProviderForUser(ctx, linkIn); err != nil {
+		return c.authError(err)
+	}
+	attrIn := &cognito.AdminUpdateUserAttributesInput{
+		UserPoolId: c.userPoolID,
+		Username:   aws.String(params.Username),
+		UserAttributes: []types.AttributeType{
+			{
+				Name:  emailVerifiedField,
+				Value: aws.String("true"),
+			},
+		},
+	}
+	if _, err := c.cognito.AdminUpdateUserAttributes(ctx, attrIn); err != nil {
+		return c.authError(err)
+	}
+	return nil
 }
