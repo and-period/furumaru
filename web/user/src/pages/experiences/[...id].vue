@@ -499,7 +499,7 @@ useSeoMeta({
             </div>
 
             <button
-              class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
+              class="mt-2 w-full bg-orange py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
               :disabled="!canAddCart"
               @click="handleClickApplyButton"
             >

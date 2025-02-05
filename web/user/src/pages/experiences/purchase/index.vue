@@ -492,7 +492,7 @@ useSeoMeta(
 
         <div class="text-center">
           <button
-            class="bg-main text-white py-2 w-60 disabled:cursor-wait"
+            class="bg-orange text-white py-2 w-60 disabled:cursor-wait"
             type="submit"
             form="checkout-form"
             :disabled="isSubmitting"

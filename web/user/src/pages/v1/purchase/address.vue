@@ -458,7 +458,7 @@ useSeoMeta({
                     >
                   </div>
                   <button
-                    class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
+                    class="whitespace-nowrap bg-orange p-2 text-[14px] text-white md:text-[16px]"
                     @click="handleClickUsePromotionCodeButton"
                   >
                     {{ at("applyButtonText") }}
@@ -521,7 +521,7 @@ useSeoMeta({
           <template v-if="defaultAddress && targetAddress === 'default'">
             <!-- 通常のボタンの場合 -->
             <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+              class="w-full bg-orange p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               @click="handleClickNextStepButton(defaultAddress.id)"
             >
               {{ at("paymentMethodButtonText") }}
@@ -530,7 +530,7 @@ useSeoMeta({
           <template v-else>
             <!-- フォーム要素の場合 -->
             <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+              class="w-full bg-orange p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               type="submit"
               form="new-address-form"
             >
