@@ -74,8 +74,8 @@ func (p *AuthProvider) Response() *response.AuthProvider {
 	return &p.AuthProvider
 }
 
-func NewAuthProviders(providers []*entity.AdminAuthProvider) AuthProviders {
-	res := make(AuthProviders, 0, len(providers))
+func NewAuthProviders(providers entity.AdminAuthProviders) AuthProviders {
+	res := make(AuthProviders, len(providers))
 	for i := range providers {
 		res[i] = NewAuthProvider(providers[i])
 	}

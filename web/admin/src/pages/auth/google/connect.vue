@@ -30,10 +30,12 @@ try {
 
   await authStore.linkGoogleAccount(code, oauthNonce, redirectUri)
 
-  // TODO: 成功のメッセージを表示するように
-  router.push('/accounts/sns')
+  const msg = 'Googleアカウントの連携に成功しました'
+  router.push(`/accounts/providers?success=${msg}`)
 }
 catch (err) {
   console.error(err)
+  const msg = 'Googleアカウントの連携に失敗しました'
+  router.push(`/accounts/providers?error=${msg}`)
 }
 </script>

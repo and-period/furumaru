@@ -76,6 +76,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             error: colors.deepOrange.accent4,
             unknown: colors.grey.darken2,
             success: colors.green.accent3,
+            white: colors.shades.white,
           },
         },
         dark: {
