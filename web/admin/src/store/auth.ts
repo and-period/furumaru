@@ -6,6 +6,7 @@ import { messaging } from '~/plugins/firebase'
 import { apiClient } from '~/plugins/api-client'
 import {
   AdminType,
+  type AuthProvider,
   type AuthResponse,
   type AuthUserResponse,
   type ConnectGoogleAccountRequest,
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     auth: undefined as AuthResponse | undefined,
     user: undefined as AuthUserResponse | undefined,
+    providers: [] as AuthProvider[],
     coordinator: {} as Coordinator,
     shipping: {} as Shipping,
     expiredAt: undefined as Dayjs | undefined,
@@ -389,6 +391,20 @@ export const useAuthStore = defineStore('auth', {
         .catch((err) => {
           console.log('push notifications are disabled.', err)
         })
+    },
+
+    /**
+     * 認証済みプロバイダ一覧取得
+     * @returns
+     */
+    async listAuthProviders(): Promise<void> {
+      try {
+        const res = await apiClient.authApi().v1AuthProviders()
+        this.providers = res.data.providers
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
+      }
     },
 
     /**

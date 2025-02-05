@@ -273,7 +273,8 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	}
 	provider, err := entity.NewAdminAuthProvider(providerParams)
 	if err != nil {
-		return internalError(err)
+		// Cognitoユーザー名の形式が不正 -> 別ユーザーが連携済みと判断
+		return fmt.Errorf("service: this account has already connected: %w", exception.ErrAlreadyExists)
 	}
 	if err := s.adminAuth.DeleteUser(ctx, user.Username); err != nil {
 		return internalError(err)

@@ -449,7 +449,11 @@ export const AuthProviderType = {
     /**
     * Google
     */
-    GOOGLE: 1
+    GOOGLE: 1,
+    /**
+    * LINE
+    */
+    LINE: 2
 } as const;
 
 export type AuthProviderType = typeof AuthProviderType[keyof typeof AuthProviderType];

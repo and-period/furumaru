@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { th } from 'vuetify/locale'
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 import type { SignInRequest } from '~/types/api'
@@ -8,6 +9,7 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -48,6 +50,19 @@ const handleSubmit = async () => {
   finally {
     loading.value = false
   }
+}
+
+try {
+  const { error } = route.query as { error: string }
+  if (error) {
+    throw new Error(error)
+  }
+}
+catch (err) {
+  if (err instanceof Error) {
+    show(err.message)
+  }
+  console.error(err)
 }
 </script>
 

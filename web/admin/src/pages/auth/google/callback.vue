@@ -26,7 +26,7 @@ try {
   router.push(path)
 }
 catch (err) {
-  // TODO: エラーメッセージを表示するように
-  router.push('/auth/signin')
+  const msg = 'Googleアカウントの認証に失敗しました'
+  router.push(`/auth/signin?error=${msg}`)
 }
 </script>
