@@ -86,19 +86,6 @@ type GetAdminAuthInput struct {
 	AccessToken string `validate:"required"`
 }
 
-type InitialGoogleAdminAuthInput struct {
-	AdminID     string `validate:"required"`
-	State       string `validate:"required"`
-	RedirectURI string `validate:"omitempty,url"`
-}
-
-type ConnectGoogleAdminAuthInput struct {
-	AdminID     string `validate:"required"`
-	Code        string `validate:"required"`
-	Nonce       string `validate:"required"`
-	RedirectURI string `validate:"omitempty,url"`
-}
-
 type RegisterAdminDeviceInput struct {
 	AdminID string `validate:"required"`
 	Device  string `validate:"required"`
@@ -146,6 +133,23 @@ type MultiGetAdminDevicesInput struct {
 
 type GetAdminInput struct {
 	AdminID string `validate:"required"`
+}
+
+type ListAdminAuthProvidersInput struct {
+	AdminID string `validate:"required"`
+}
+
+type InitialGoogleAdminAuthInput struct {
+	AdminID     string `validate:"required"`
+	State       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
+}
+
+type ConnectGoogleAdminAuthInput struct {
+	AdminID     string `validate:"required"`
+	Code        string `validate:"required"`
+	Nonce       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
 }
 
 /**

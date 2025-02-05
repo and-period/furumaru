@@ -214,14 +214,16 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
+
+			err := delete(ctx, addressRevisionTable, addressTable)
+			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
 			db := &adminAuthProvider{db: db, now: now}
-			err := db.Upsert(ctx, tt.args.provider)
+			err = db.Upsert(ctx, tt.args.provider)
 			require.ErrorIs(t, err, tt.want.err)
 		})
 	}
@@ -229,8 +231,8 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 
 func testAdminAuthProvider(adminID string, providerType entity.AdminAuthProviderType, now time.Time) *entity.AdminAuthProvider {
 	return &entity.AdminAuthProvider{
-		AdminID:      "admin-id",
-		ProviderType: entity.AdminAuthProviderTypeGoogle,
+		AdminID:      adminID,
+		ProviderType: providerType,
 		AccountID:    "account-id",
 		Email:        "test@example.com",
 		CreatedAt:    now,

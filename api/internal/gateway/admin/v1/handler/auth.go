@@ -20,6 +20,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.GET("", h.GetAuth)
 	r.POST("", h.SignIn)
 	r.DELETE("", h.SignOut)
+	r.GET("/providers", h.authentication, h.ListAuthProviders)
 	r.GET("/google", h.authentication, h.AuthGoogleAccount)
 	r.POST("/google", h.authentication, h.ConnectGoogleAccount)
 	r.POST("/refresh-token", h.RefreshAuthToken)
@@ -108,6 +109,21 @@ func (h *handler) SignIn(ctx *gin.Context) {
 
 	res := &response.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ListAuthProviders(ctx *gin.Context) {
+	in := &user.ListAdminAuthProvidersInput{
+		AdminID: getAdminID(ctx),
+	}
+	providers, err := h.user.ListAdminAuthProviders(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthProvidersResponse{
+		Providers: service.NewAuthProviders(providers).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

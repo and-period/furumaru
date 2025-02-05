@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -651,6 +652,71 @@ func TestUpdateAdminPassword(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAdminPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestListAdminAuthProviders(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	params := &database.ListAdminAuthProvidersParams{
+		AdminID: "admin-id",
+	}
+	providers := entity.AdminAuthProviders{
+		{
+			AdminID:      "admin-id",
+			ProviderType: entity.AdminAuthProviderTypeGoogle,
+			AccountID:    "account-id",
+			Email:        "account-email",
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ListAdminAuthProvidersInput
+		expect    entity.AdminAuthProviders
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuthProvider.EXPECT().List(ctx, params).Return(providers, nil)
+			},
+			input: &user.ListAdminAuthProvidersInput{
+				AdminID: "admin-id",
+			},
+			expect:    providers,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.ListAdminAuthProvidersInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.AdminAuthProvider.EXPECT().List(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &user.ListAdminAuthProvidersInput{
+				AdminID: "admin-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListAdminAuthProviders(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }

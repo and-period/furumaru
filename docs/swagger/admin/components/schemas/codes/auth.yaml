@@ -1,0 +1,14 @@
+authProviderType:
+  type: integer
+  format: int32
+  description: 認証プロバイダ種別
+  nullable: false
+  enum:
+  - 0
+  - 1
+  x-enum-varnames:
+  - UNKNOWN
+  - GOOGLE
+  x-enum-descriptions:
+  - 不明
+  - Google

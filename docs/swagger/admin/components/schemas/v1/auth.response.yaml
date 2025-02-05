@@ -62,6 +62,22 @@ authUserResponse:
     username: '&. 管理者'
     email: 'test-user@and-period.jp'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+authProvidersResponse:
+  type: object
+  properties:
+    providers:
+      type: array
+      description: 認証プロバイダ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/authProvider'
+  required:
+  - providers
+  example:
+    providers:
+    - type: 1
+      connectedAt: 1640962800
+    - type: 2
+      connectedAt: 1640962800
 authGoogleAccountResponse:
   type: object
   properties:

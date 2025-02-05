@@ -415,6 +415,60 @@ export interface AuthGoogleAccountResponse {
     'url': string;
 }
 /**
+ * 認証プロバイダ情報
+ * @export
+ * @interface AuthProvider
+ */
+export interface AuthProvider {
+    /**
+     * 
+     * @type {AuthProviderType}
+     * @memberof AuthProvider
+     */
+    'type': AuthProviderType;
+    /**
+     * 連携日時 (unixtime)
+     * @type {number}
+     * @memberof AuthProvider
+     */
+    'connectedAt': number;
+}
+
+
+/**
+ * 認証プロバイダ種別
+ * @export
+ * @enum {string}
+ */
+
+export const AuthProviderType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * Google
+    */
+    GOOGLE: 1
+} as const;
+
+export type AuthProviderType = typeof AuthProviderType[keyof typeof AuthProviderType];
+
+
+/**
+ * 
+ * @export
+ * @interface AuthProvidersResponse
+ */
+export interface AuthProvidersResponse {
+    /**
+     * 認証プロバイダ一覧
+     * @type {Array<AuthProvider>}
+     * @memberof AuthProvidersResponse
+     */
+    'providers': Array<AuthProvider>;
+}
+/**
  * 
  * @export
  * @interface AuthResponse
@@ -9457,6 +9511,40 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 認証済みプロバイダ一覧の取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AuthProviders: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/providers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Googleアカウントの連携
          * @param {ConnectGoogleAccountRequest} body 
          * @param {*} [options] Override http request option.
@@ -10083,6 +10171,18 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 認証済みプロバイダ一覧の取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1AuthProviders(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthProvidersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthProviders(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthProviders']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Googleアカウントの連携
          * @param {ConnectGoogleAccountRequest} body 
          * @param {*} [options] Override http request option.
@@ -10307,6 +10407,15 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary 認証済みプロバイダ一覧の取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AuthProviders(options?: RawAxiosRequestConfig): AxiosPromise<AuthProvidersResponse> {
+            return localVarFp.v1AuthProviders(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Googleアカウントの連携
          * @param {ConnectGoogleAccountRequest} body 
          * @param {*} [options] Override http request option.
@@ -10481,6 +10590,17 @@ export class AuthApi extends BaseAPI {
      */
     public v1AuthGoogleAccount(state: string, redirectUri?: string, options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1AuthGoogleAccount(state, redirectUri, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 認証済みプロバイダ一覧の取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1AuthProviders(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthProviders(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

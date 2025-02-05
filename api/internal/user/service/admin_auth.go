@@ -151,6 +151,17 @@ func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*en
 	return auth, nil
 }
 
+func (s *service) ListAdminAuthProviders(ctx context.Context, in *user.ListAdminAuthProvidersInput) (entity.AdminAuthProviders, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.ListAdminAuthProvidersParams{
+		AdminID: in.AdminID,
+	}
+	providers, err := s.db.AdminAuthProvider.List(ctx, params)
+	return providers, internalError(err)
+}
+
 func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGoogleAdminAuthInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
