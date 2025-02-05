@@ -217,7 +217,7 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, addressRevisionTable, addressTable)
+			err := delete(ctx, adminAuthProviderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
