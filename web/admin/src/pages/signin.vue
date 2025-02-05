@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { th } from 'vuetify/locale'
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore } from '~/store'
 import type { SignInRequest } from '~/types/api'

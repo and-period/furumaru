@@ -1161,7 +1161,7 @@ func TestConnectAdminAuth(t *testing.T) {
 				nonce:       "nonce",
 				redirectURI: "http://example.com/auth/google/callback",
 			},
-			expectErr: exception.ErrInternal,
+			expectErr: exception.ErrAlreadyExists,
 		},
 		{
 			name: "failed to delete external user",
