@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.1.1](https://github.com/and-period/furumaru/compare/v4.1.0...v4.1.1) - 2025-02-06
+- fix(user): 山田が頑張った by @taba2424 in https://github.com/and-period/furumaru/pull/2697
+- feat: Google Mapの描画を安定化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2700
+- wip: Google認証 by @taba2424 in https://github.com/and-period/furumaru/pull/2695
+- レビュー表示機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2701
+- feat(admin): Google連携機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2702
+- build(deps): bump the dependencies group in /api with 46 updates by @dependabot in https://github.com/and-period/furumaru/pull/2699
+- build(deps): bump the dependencies group in /web/admin with 92 updates by @dependabot in https://github.com/and-period/furumaru/pull/2698
+- Feat/user/implement connect sns account by @taba2424 in https://github.com/and-period/furumaru/pull/2706
+- Fix: fixed button color to proceed purchase by @hamachans in https://github.com/and-period/furumaru/pull/2703
+- feat(admin): 認証プロバイダー一覧画面の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2707
+- build(deps): bump the dependencies group in /api with 39 updates by @dependabot in https://github.com/and-period/furumaru/pull/2704
+- build(deps): bump the dependencies group in /web/admin with 56 updates by @dependabot in https://github.com/and-period/furumaru/pull/2705
+- feat(user): LINEアカウント認証の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2708
+
 ## [v4.1.0](https://github.com/and-period/furumaru/compare/v4.0.7...v4.1.0) - 2025-01-26
 - feat(store): 商品購入のフローを刷新 by @taba2424 in https://github.com/and-period/furumaru/pull/2662
 - fix(gateway): 商品レビューがないときのハンドリング追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2667
