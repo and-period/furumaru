@@ -24,18 +24,18 @@ try {
   const config = useRuntimeConfig()
 
   let redirectUri: string | undefined
-  if (config.public.GOOGLE_CONNECT_REDIRECT_URI !== '') {
-    redirectUri = config.public.GOOGLE_CONNECT_REDIRECT_URI as string
+  if (config.public.LINE_CONNECT_REDIRECT_URI !== '') {
+    redirectUri = config.public.LINE_CONNECT_REDIRECT_URI as string
   }
 
-  await authStore.linkGoogleAccount(code, oauthNonce, redirectUri)
+  await authStore.linkLineAccount(code, oauthNonce, redirectUri)
 
-  const msg = 'Googleアカウントの連携に成功しました'
+  const msg = 'LINEアカウントの連携に成功しました'
   router.push(`/accounts/providers?success=${msg}`)
 }
 catch (err) {
   console.error(err)
-  const msg = 'Googleアカウントの連携に失敗しました'
+  const msg = 'LINEアカウントの連携に失敗しました'
   router.push(`/accounts/providers?error=${msg}`)
 }
 </script>

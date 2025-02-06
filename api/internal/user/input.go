@@ -152,6 +152,19 @@ type ConnectGoogleAdminAuthInput struct {
 	RedirectURI string `validate:"omitempty,url"`
 }
 
+type InitialLINEAdminAuthInput struct {
+	AdminID     string `validate:"required"`
+	State       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
+}
+
+type ConnectLINEAdminAuthInput struct {
+	AdminID     string `validate:"required"`
+	Code        string `validate:"required"`
+	Nonce       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
+}
+
 /**
  * AdminRole - 管理者ロール
  */

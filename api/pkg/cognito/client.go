@@ -74,6 +74,7 @@ var (
 	ProviderTypeUnknown ProviderType = ""
 	ProviderTypeCognito ProviderType = "Cognito"
 	ProviderTypeGoogle  ProviderType = "Google"
+	ProviderTypeLINE    ProviderType = "LINE"
 )
 
 var (
@@ -82,6 +83,7 @@ var (
 	emailRequestedField      = aws.String("custom:requested_email")
 	phoneNumberField         = aws.String("phone_number")
 	phoneNumberVerifiedField = aws.String("phone_number_verified")
+	identitiesField          = aws.String("identities")
 )
 
 var (

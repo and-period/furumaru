@@ -34,6 +34,21 @@ const loginWithGoogle = async () => {
   await navigateTo(url, { external: true })
 }
 
+// LINE の認証ページにリダイレクト
+const loginWithLine = async () => {
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('oauth_state', state)
+
+  const url = `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/authorize`
+    + `?response_type=CODE`
+    + `&client_id=${config.public.COGNITO_CLIENT_ID}`
+    + `&redirect_uri=${config.public.LINE_SIGNIN_REDIRECT_URI}`
+    + `&state=${state}`
+    + `&identity_provider=LINE`
+    + `&scope=openid email profile aws.cognito.signin.user.admin`
+  await navigateTo(url, { external: true })
+}
+
 const handleSubmit = async () => {
   try {
     loading.value = true
@@ -73,6 +88,7 @@ catch (err) {
     :alert-type="alertType"
     :alert-text="alertText"
     @click:login-with-google="loginWithGoogle"
+    @click:login-with-line="loginWithLine"
     @submit="handleSubmit"
   />
 </template>

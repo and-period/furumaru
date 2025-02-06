@@ -37,6 +37,7 @@ type Params struct {
 	Media                      media.Service
 	DefaultAdminGroups         map[entity.AdminType][]string
 	AdminAuthGoogleRedirectURL string
+	AdminAuthLINERedirectURL   string
 }
 
 type service struct {
@@ -55,6 +56,7 @@ type service struct {
 	defaultAdminGroups         map[entity.AdminType][]string
 	adminAuthTTL               time.Duration
 	adminAuthGoogleRedirectURL string
+	adminAuthLINERedirectURL   string
 }
 
 type options struct {
@@ -109,6 +111,7 @@ func NewService(params *Params, opts ...Option) user.Service {
 		defaultAdminGroups:         params.DefaultAdminGroups,
 		adminAuthTTL:               dopts.adminAuthTTL,
 		adminAuthGoogleRedirectURL: params.AdminAuthGoogleRedirectURL,
+		adminAuthLINERedirectURL:   params.AdminAuthLINERedirectURL,
 	}
 }
 

@@ -546,6 +546,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		Media:                      media,
 		DefaultAdminGroups:         groups,
 		AdminAuthGoogleRedirectURL: a.CognitoAdminGoogleRedirectURL,
+		AdminAuthLINERedirectURL:   a.CognitoAdminLINERedirectURL,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"go.uber.org/zap"
 )
 
 func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
@@ -194,6 +195,38 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	return s.connectAdminAuth(ctx, params)
 }
 
+func (s *service) InitialLINEAdminAuth(ctx context.Context, in *user.InitialLINEAdminAuthInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	params := &initialAdminAuthParams{
+		adminID:      in.AdminID,
+		state:        in.State,
+		providerType: entity.AdminAuthProviderTypeLINE,
+		redirectURI:  s.adminAuthLINERedirectURL,
+	}
+	if in.RedirectURI != "" {
+		params.redirectURI = in.RedirectURI
+	}
+	return s.initialAdminAuth(ctx, params)
+}
+
+func (s *service) ConnectLINEAdminAuth(ctx context.Context, in *user.ConnectLINEAdminAuthInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	params := &connectAdminAuthParams{
+		adminID:     in.AdminID,
+		code:        in.Code,
+		nonce:       in.Nonce,
+		redirectURI: s.adminAuthLINERedirectURL,
+	}
+	if in.RedirectURI != "" {
+		params.redirectURI = in.RedirectURI
+	}
+	return s.connectAdminAuth(ctx, params)
+}
+
 type initialAdminAuthParams struct {
 	adminID      string
 	state        string
@@ -260,21 +293,27 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	if err != nil {
 		return internalError(err)
 	}
-
-	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みのGoogleアカウントを削除
 	user, err := s.adminAuth.GetUser(ctx, token.AccessToken)
 	if err != nil {
 		return internalError(err)
 	}
+	s.logger.Debug("Connecting Admin account", zap.Any("user", user))
+
+	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みの外部アカウントを削除
 	providerParams := &entity.AdminAuthProviderParams{
 		AdminID:      admin.ID,
 		ProviderType: event.ProviderType,
 		Auth:         user,
 	}
 	provider, err := entity.NewAdminAuthProvider(providerParams)
+	if errors.Is(err, entity.ErrInvalidAdminAuthUsername) {
+		return fmt.Errorf("service: invalid admin auth provider type: %w", exception.ErrAlreadyExists)
+	}
+	if errors.Is(err, entity.ErrInvalidAdminAuthProviderType) {
+		return fmt.Errorf("service: invalid admin auth username: %w", exception.ErrForbidden)
+	}
 	if err != nil {
-		// Cognitoユーザー名の形式が不正 -> 別ユーザーが連携済みと判断
-		return fmt.Errorf("service: this account has already connected: %w", exception.ErrAlreadyExists)
+		return internalError(err)
 	}
 	if err := s.adminAuth.DeleteUser(ctx, user.Username); err != nil {
 		return internalError(err)

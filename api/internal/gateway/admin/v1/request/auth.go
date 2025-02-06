@@ -11,6 +11,12 @@ type ConnectGoogleAccountRequest struct {
 	RedirectURI string `json:"redirectUri,omitempty"` // リダイレクトURI
 }
 
+type ConnectLINEAccountRequest struct {
+	Code        string `json:"code,omitempty"`        // 認証コード
+	Nonce       string `json:"nonce,omitempty"`       // セキュア文字列（リプレイアタック対策）
+	RedirectURI string `json:"redirectUri,omitempty"` // リダイレクトURI
+}
+
 type RefreshAuthTokenRequest struct {
 	RefreshToken string `json:"refreshToken,omitempty"` // 更新トークン
 }

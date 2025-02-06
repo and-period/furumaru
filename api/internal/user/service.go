@@ -35,6 +35,8 @@ type Service interface {
 	ListAdminAuthProviders(ctx context.Context, in *ListAdminAuthProvidersInput) (entity.AdminAuthProviders, error) // 認証プロバイダ一覧取得
 	InitialGoogleAdminAuth(ctx context.Context, in *InitialGoogleAdminAuthInput) (string, error)                    // Google認証開始
 	ConnectGoogleAdminAuth(ctx context.Context, in *ConnectGoogleAdminAuthInput) error                              // Google認証連携
+	InitialLINEAdminAuth(ctx context.Context, in *InitialLINEAdminAuthInput) (string, error)                        // LINE認証開始
+	ConnectLINEAdminAuth(ctx context.Context, in *ConnectLINEAdminAuthInput) error                                  // LINE認証連携
 	// AdminRole - 管理者ロール
 	GenerateAdminRole(ctx context.Context, in *GenerateAdminRoleInput) (string, string, error) // ロール生成
 	// Administrator - システム管理者

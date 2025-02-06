@@ -11,12 +11,15 @@ type AuthProviderType int32
 const (
 	AuthProviderTypeUnknown AuthProviderType = 0
 	AuthProviderTypeGoogle  AuthProviderType = 1
+	AuthProviderTypeLINE    AuthProviderType = 2
 )
 
 func NewAuthProviderType(t entity.AdminAuthProviderType) AuthProviderType {
 	switch t {
 	case entity.AdminAuthProviderTypeGoogle:
 		return AuthProviderTypeGoogle
+	case entity.AdminAuthProviderTypeLINE:
+		return AuthProviderTypeLINE
 	default:
 		return AuthProviderTypeUnknown
 	}

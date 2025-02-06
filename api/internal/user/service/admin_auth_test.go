@@ -734,14 +734,14 @@ func TestInitialGoogleAdminAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mockInitialAdminAuth(mocks, t)
+				mockInitialAdminAuth(mocks, t, entity.AdminAuthProviderTypeGoogle)
 			},
 			input: &user.InitialGoogleAdminAuthInput{
 				AdminID:     "admin-id",
 				State:       "state",
-				RedirectURI: "http://example.com/auth/google/callback",
+				RedirectURI: "http://example.com/auth/external/callback",
 			},
-			expect:    "http://example.com/auth/google/callback",
+			expect:    "http://example.com/auth/external/callback",
 			expectErr: nil,
 		},
 		{
@@ -774,12 +774,13 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mockConnectAdminAuth(mocks, t)
+				mockConnectAdminAuth(mocks, t, entity.AdminAuthProviderTypeGoogle)
 			},
 			input: &user.ConnectGoogleAdminAuthInput{
-				AdminID: "admin-id",
-				Code:    "code",
-				Nonce:   "nonce",
+				AdminID:     "admin-id",
+				Code:        "code",
+				Nonce:       "nonce",
+				RedirectURI: "http://example.com/auth/external/callback",
 			},
 			expectErr: nil,
 		},
@@ -799,22 +800,101 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 	}
 }
 
-func mockInitialAdminAuth(m *mocks, t *testing.T) {
+func TestInitialLINEAdminAuth(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.InitialLINEAdminAuthInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mockInitialAdminAuth(mocks, t, entity.AdminAuthProviderTypeLINE)
+			},
+			input: &user.InitialLINEAdminAuthInput{
+				AdminID:     "admin-id",
+				State:       "state",
+				RedirectURI: "http://example.com/auth/external/callback",
+			},
+			expect:    "http://example.com/auth/external/callback",
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.InitialLINEAdminAuthInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.InitialLINEAdminAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestConnectLINEAdminAuth(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ConnectLINEAdminAuthInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mockConnectAdminAuth(mocks, t, entity.AdminAuthProviderTypeLINE)
+			},
+			input: &user.ConnectLINEAdminAuthInput{
+				AdminID:     "admin-id",
+				Code:        "code",
+				Nonce:       "nonce",
+				RedirectURI: "http://example.com/auth/external/callback",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.ConnectLINEAdminAuthInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ConnectLINEAdminAuth(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func mockInitialAdminAuth(m *mocks, t *testing.T, providerType entity.AdminAuthProviderType) {
 	params := &cognito.GenerateAuthURLParams{
 		State:        "state",
 		Nonce:        "nonce",
-		ProviderType: cognito.ProviderTypeGoogle,
-		RedirectURI:  "http://example.com/auth/google/callback",
+		ProviderType: providerType.ToCognito(),
+		RedirectURI:  "http://example.com/auth/external/callback",
 	}
 
-	m.db.AdminAuthProvider.EXPECT().Get(gomock.Any(), "admin-id", entity.AdminAuthProviderTypeGoogle).Return(nil, database.ErrNotFound)
+	m.db.AdminAuthProvider.EXPECT().Get(gomock.Any(), "admin-id", providerType).Return(nil, database.ErrNotFound)
 	m.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(nil)
 	m.adminAuth.EXPECT().
 		GenerateAuthURL(gomock.Any(), gomock.Any()).
 		DoAndReturn(func(ctx context.Context, p *cognito.GenerateAuthURLParams) (string, error) {
 			p.Nonce = "nonce"
 			assert.Equal(t, params, p)
-			return "http://example.com/auth/google/callback", nil
+			return "http://example.com/auth/external/callback", nil
 		})
 }
 
@@ -927,14 +1007,14 @@ func TestInitialAdminAuth(t *testing.T) {
 	}
 }
 
-func mockConnectAdminAuth(m *mocks, _ *testing.T) {
+func mockConnectAdminAuth(m *mocks, _ *testing.T, providerType entity.AdminAuthProviderType) {
 	admin := &entity.Admin{
 		ID:        "admin-id",
 		CognitoID: "cognito-id",
 	}
 	tokenParams := &cognito.GetAccessTokenParams{
 		Code:        "code",
-		RedirectURI: "http://example.com/auth/google/callback",
+		RedirectURI: "http://example.com/auth/external/callback",
 	}
 	token := &cognito.AuthResult{
 		AccessToken:  "access-token",
@@ -943,18 +1023,26 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T) {
 		ExpiresIn:    3600,
 	}
 	authUser := &cognito.AuthUser{
-		Username:    "google_username",
+		Username:    "external_username",
 		Email:       "test@example.com",
 		PhoneNumber: "",
+		Identities: []*cognito.AuthUserIdentity{
+			{
+				UserID:       "username",
+				ProviderType: providerType.ToCognito(),
+				Primary:      true,
+				DateCreated:  0,
+			},
+		},
 	}
 	linkParams := &cognito.LinkProviderParams{
 		Username:     "cognito-id",
-		ProviderType: cognito.ProviderTypeGoogle,
+		ProviderType: providerType.ToCognito(),
 		AccountID:    "username",
 	}
 	provider := &entity.AdminAuthProvider{
 		AdminID:      "admin-id",
-		ProviderType: entity.AdminAuthProviderTypeGoogle,
+		ProviderType: providerType,
 		AccountID:    "username",
 		Email:        "test@example.com",
 	}
@@ -962,14 +1050,14 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T) {
 	m.cache.EXPECT().
 		Get(gomock.Any(), &entity.AdminAuthEvent{AdminID: "admin-id"}).
 		DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
-			event.ProviderType = entity.AdminAuthProviderTypeGoogle
+			event.ProviderType = providerType
 			event.Nonce = "nonce"
 			return nil
 		})
 	m.db.Admin.EXPECT().Get(gomock.Any(), "admin-id").Return(admin, nil)
 	m.adminAuth.EXPECT().GetAccessToken(gomock.Any(), tokenParams).Return(token, nil)
 	m.adminAuth.EXPECT().GetUser(gomock.Any(), "access-token").Return(authUser, nil)
-	m.adminAuth.EXPECT().DeleteUser(gomock.Any(), "google_username").Return(nil)
+	m.adminAuth.EXPECT().DeleteUser(gomock.Any(), "external_username").Return(nil)
 	m.adminAuth.EXPECT().LinkProvider(gomock.Any(), linkParams).Return(nil)
 	m.db.AdminAuthProvider.EXPECT().Upsert(gomock.Any(), provider).Return(nil)
 }
@@ -995,6 +1083,14 @@ func TestConnectAdminAuth(t *testing.T) {
 		Username:    "google_username",
 		Email:       "test@example.com",
 		PhoneNumber: "",
+		Identities: []*cognito.AuthUserIdentity{
+			{
+				UserID:       "username",
+				ProviderType: cognito.ProviderTypeGoogle,
+				Primary:      true,
+				DateCreated:  0,
+			},
+		},
 	}
 	linkParams := &cognito.LinkProviderParams{
 		Username:     "cognito-id",
@@ -1162,6 +1258,41 @@ func TestConnectAdminAuth(t *testing.T) {
 				redirectURI: "http://example.com/auth/google/callback",
 			},
 			expectErr: exception.ErrAlreadyExists,
+		},
+		{
+			name: "failed to unmatch provider type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				authUser := &cognito.AuthUser{
+					Username:    "line_username",
+					Email:       "test@example.com",
+					PhoneNumber: "",
+					Identities: []*cognito.AuthUserIdentity{
+						{
+							UserID:       "username",
+							ProviderType: cognito.ProviderTypeLINE,
+							Primary:      true,
+							DateCreated:  0,
+						},
+					},
+				}
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
+					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
+						event.ProviderType = entity.AdminAuthProviderTypeGoogle
+						event.Nonce = "nonce"
+						return nil
+					})
+				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
+				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
+				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
+			},
+			input: &connectAdminAuthParams{
+				adminID:     "admin-id",
+				code:        "code",
+				nonce:       "nonce",
+				redirectURI: "http://example.com/auth/google/callback",
+			},
+			expectErr: exception.ErrForbidden,
 		},
 		{
 			name: "failed to delete external user",

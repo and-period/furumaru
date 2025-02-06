@@ -88,3 +88,13 @@ authGoogleAccountResponse:
   - url
   example:
     url: 'https://accounts.google.com/o/oauth2/auth?client_id=xxxxxxxxxx'
+authLineAccountResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: LINE認証用のURL
+  required:
+  - url
+  example:
+    url: 'https://access.line.me/oauth2/v2.1/authorize?client_id=xxxxxxxxxx'

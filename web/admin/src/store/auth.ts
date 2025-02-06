@@ -10,6 +10,7 @@ import {
   type AuthResponse,
   type AuthUserResponse,
   type ConnectGoogleAccountRequest,
+  type ConnectLineAccountRequest,
   type Coordinator,
   type ForgotAuthPasswordRequest,
   type ResetAuthPasswordRequest,
@@ -409,6 +410,8 @@ export const useAuthStore = defineStore('auth', {
 
     /**
      * Google連携 - 認証ページへの遷移URL取得
+     * @param state ランダム文字列
+     * @param redirectUri リダイレクト先URI
      * @returns
      */
     async getAuthGoogleUrl(state: string, redirectUri?: string): Promise<string> {
@@ -436,6 +439,43 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         await apiClient.authApi().v1ConnectGoogleAccount(req)
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
+      }
+    },
+
+    /**
+     * LINE連携 - 認証ページへの遷移URL取得
+     * @param state ランダム文字列
+     * @param redirectUri リダイレクト先URI
+     * @returns
+     */
+    async getAuthLineUrl(state: string, redirectUri?: string): Promise<string> {
+      try {
+        const res = await apiClient.authApi().v1AuthLineAccount(state, redirectUri)
+        return res.data.url
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
+      }
+    },
+
+    /**
+     * LINE連携 - アカウントの連携
+     * @param code 認証コード
+     * @param nonce ランダム文字列
+     * @returns
+     */
+    async linkLineAccount(code: string, nonce: string, redirectUri?: string): Promise<void> {
+      const req: ConnectLineAccountRequest = {
+        code,
+        nonce,
+        redirectUri,
+      }
+
+      try {
+        await apiClient.authApi().v1ConnectLineAccount(req)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })

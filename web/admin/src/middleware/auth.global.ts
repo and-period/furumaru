@@ -11,6 +11,7 @@ const publicPages = [
   '/privacy',
   '/legal-notice',
   '/auth/google/callback',
+  '/auth/line/callback',
   '/auth/youtube/callback',
   '/auth/youtube/complete',
 ]

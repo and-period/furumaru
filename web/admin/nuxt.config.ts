@@ -92,6 +92,8 @@ export default defineNuxtConfig({
       COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID || '',
       GOOGLE_SIGNIN_REDIRECT_URI: process.env.GOOGLE_SIGNIN_REDIRECT_URI || '',
       GOOGLE_CONNECT_REDIRECT_URI: process.env.GOOGLE_CONNECT_REDIRECT_URI || '',
+      LINE_SIGNIN_REDIRECT_URI: process.env.LINE_SIGNIN_REDIRECT_URI || '',
+      LINE_CONNECT_REDIRECT_URI: process.env.LINE_CONNECT_REDIRECT_URI || '',
     },
   },
 
