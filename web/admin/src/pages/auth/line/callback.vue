@@ -19,12 +19,12 @@ try {
     throw new Error('state is invalid')
   }
 
-  const redirectUri = config.public.GOOGLE_SIGNIN_REDIRECT_URI
+  const redirectUri = config.public.LINE_SIGNIN_REDIRECT_URI
   const path = await authStore.signInWithOAuth(code, redirectUri)
   router.push(path)
 }
 catch (err) {
-  const msg = 'Googleアカウントの認証に失敗しました'
+  const msg = 'LINEアカウントの認証に失敗しました'
   router.push(`/auth/signin?error=${msg}`)
 }
 </script>

@@ -40,3 +40,7 @@ type AuthProvidersResponse struct {
 type AuthGoogleAccountResponse struct {
 	URL string `json:"url"` // Googleアカウント連携URL
 }
+
+type AuthLINEAccountResponse struct {
+	URL string `json:"url"` // LINEアカウント連携URL
+}

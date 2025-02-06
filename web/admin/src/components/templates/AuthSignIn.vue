@@ -33,6 +33,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:form-data', formData: SignInRequest): void
   (e: 'click:login-with-google'): void
+  (e: 'click:login-with-line'): void
   (e: 'submit'): void
 }>()
 
@@ -49,6 +50,10 @@ const onChangePasswordFieldType = (): void => {
 
 const onClickLoginWithGoogle = (): void => {
   emit('click:login-with-google')
+}
+
+const onClickLoginWithLine = (): void => {
+  emit('click:login-with-line')
 }
 
 const onSubmit = (): void => {
@@ -108,6 +113,13 @@ const onSubmit = (): void => {
         @click="onClickLoginWithGoogle"
       >
         Googleでログイン
+      </v-btn>
+      <v-btn
+        block
+        class="mt-2"
+        @click="onClickLoginWithLine"
+      >
+        LINEでログイン
       </v-btn>
     </v-card-text>
   </v-card>

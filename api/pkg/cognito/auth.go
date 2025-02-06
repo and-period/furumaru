@@ -26,6 +26,14 @@ type AuthUser struct {
 	Username    string
 	Email       string
 	PhoneNumber string
+	Identities  []*AuthUserIdentity
+}
+
+type AuthUserIdentity struct {
+	UserID       string       `json:"userId"`
+	ProviderType ProviderType `json:"providerName"`
+	Primary      bool         `json:"primary"`
+	DateCreated  int64        `json:"dateCreated"`
 }
 
 type GenerateAuthURLParams struct {
@@ -84,7 +92,10 @@ func (c *client) GetUser(ctx context.Context, accessToken string) (*AuthUser, er
 	if err != nil {
 		return nil, c.authError(err)
 	}
-	var email, phoneNumber string
+	var (
+		email, phoneNumber string
+		identities         []*AuthUserIdentity
+	)
 	for i := range out.UserAttributes {
 		if aws.ToString(out.UserAttributes[i].Name) == *emailField {
 			email = aws.ToString(out.UserAttributes[i].Value)
@@ -93,11 +104,18 @@ func (c *client) GetUser(ctx context.Context, accessToken string) (*AuthUser, er
 		if aws.ToString(out.UserAttributes[i].Name) == *phoneNumberField {
 			phoneNumber = aws.ToString(out.UserAttributes[i].Value)
 		}
+		if aws.ToString(out.UserAttributes[i].Name) != *identitiesField {
+			continue
+		}
+		if err := json.Unmarshal([]byte(aws.ToString(out.UserAttributes[i].Value)), &identities); err != nil {
+			return nil, fmt.Errorf("cognito: failed to unmarshal identities: %w", err)
+		}
 	}
 	auth := &AuthUser{
 		Username:    aws.ToString(out.Username),
 		Email:       email,
 		PhoneNumber: phoneNumber,
+		Identities:  identities,
 	}
 	return auth, nil
 }

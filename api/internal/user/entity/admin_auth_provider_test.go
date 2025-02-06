@@ -20,6 +20,11 @@ func TestAdminAuthProviderType_ToCognito(t *testing.T) {
 			expect: cognito.ProviderTypeGoogle,
 		},
 		{
+			name:   "line",
+			auth:   AdminAuthProviderTypeLINE,
+			expect: cognito.ProviderTypeLINE,
+		},
+		{
 			name:   "unknown",
 			auth:   AdminAuthProviderTypeUnknown,
 			expect: cognito.ProviderTypeUnknown,
@@ -49,6 +54,14 @@ func TestAdminAuthProvider(t *testing.T) {
 				Auth: &cognito.AuthUser{
 					Username: "google_123",
 					Email:    "test@example.com",
+					Identities: []*cognito.AuthUserIdentity{
+						{
+							UserID:       "123",
+							ProviderType: cognito.ProviderTypeGoogle,
+							Primary:      true,
+							DateCreated:  0,
+						},
+					},
 				},
 			},
 			expect: &AdminAuthProvider{
@@ -67,10 +80,45 @@ func TestAdminAuthProvider(t *testing.T) {
 				Auth: &cognito.AuthUser{
 					Username: "google",
 					Email:    "test@example.com",
+					Identities: []*cognito.AuthUserIdentity{
+						{
+							UserID:       "123",
+							ProviderType: cognito.ProviderTypeGoogle,
+							Primary:      false,
+							DateCreated:  0,
+						},
+						{
+							UserID:       "xxx",
+							ProviderType: cognito.ProviderTypeLINE,
+							Primary:      false,
+							DateCreated:  0,
+						},
+					},
 				},
 			},
 			expect: nil,
-			err:    errInvalidAuthUsername,
+			err:    ErrInvalidAdminAuthUsername,
+		},
+		{
+			name: "invalid provider type",
+			params: &AdminAuthProviderParams{
+				AdminID:      "admin-id",
+				ProviderType: AdminAuthProviderTypeLINE,
+				Auth: &cognito.AuthUser{
+					Username: "google_123",
+					Email:    "test@example.com",
+					Identities: []*cognito.AuthUserIdentity{
+						{
+							UserID:       "123",
+							ProviderType: cognito.ProviderTypeGoogle,
+							Primary:      false,
+							DateCreated:  0,
+						},
+					},
+				},
+			},
+			expect: nil,
+			err:    ErrInvalidAdminAuthProviderType,
 		},
 	}
 	for _, tt := range tests {

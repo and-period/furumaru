@@ -37,7 +37,7 @@ const authGoogleAccount = async (): Promise<void> => {
 
     let redirectUri: string | undefined
     if (config.public.GOOGLE_CONNECT_REDIRECT_URI !== '') {
-      redirectUri = config.public.GOOGLE_CONNECT_REDIRECT_URI
+      redirectUri = config.public.GOOGLE_CONNECT_REDIRECT_URI as string
     }
 
     const state = crypto.randomUUID()
@@ -54,8 +54,27 @@ const authGoogleAccount = async (): Promise<void> => {
   }
 }
 
-const authLineAccount = (): void => {
-  console.log('準備中..')
+const authLineAccount = async (): Promise<void> => {
+  try {
+    const config = useRuntimeConfig()
+
+    let redirectUri: string | undefined
+    if (config.public.LINE_CONNECT_REDIRECT_URI !== '') {
+      redirectUri = config.public.LINE_CONNECT_REDIRECT_URI as string
+    }
+
+    const state = crypto.randomUUID()
+    const authUrl = await authStore.getAuthLineUrl(state, redirectUri)
+    const parsed = new URL(authUrl)
+
+    sessionStorage.setItem('oauth_state', state)
+    sessionStorage.setItem('oauth_nonce', parsed.searchParams.get('nonce') || '')
+
+    await navigateTo(authUrl, { external: true })
+  }
+  catch (err) {
+    console.error(err)
+  }
 }
 
 try {

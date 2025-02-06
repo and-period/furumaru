@@ -31,6 +31,24 @@ connectGoogleAccountRequest:
   example:
     code: 'code'
     nonce: 'nonce'
+connectLineAccountRequest:
+  type: object
+  properties:
+    code:
+      type: string
+      description: 認証コード（認証後に受け取った値）
+    nonce:
+      type: string
+      description: セキュア文字列（リプレイアタック対策：認証後に受け取った値）
+    redirectUri:
+      type: string
+      description: 認証後のリダイレクト先（認証URL発行時に指定した場合、同じものを入れる）
+  required:
+  - code
+  - nonce
+  example:
+    code: 'code'
+    nonce: 'nonce'
 refreshAuthTokenRequest:
   type: object
   properties:

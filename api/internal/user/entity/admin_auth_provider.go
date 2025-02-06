@@ -8,7 +8,10 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
 
-var errInvalidAuthUsername = errors.New("entity: invalid username")
+var (
+	ErrInvalidAdminAuthUsername     = errors.New("entity: invalid admin auth username")
+	ErrInvalidAdminAuthProviderType = errors.New("entity: invalid admin auth provider type")
+)
 
 // AdminAuthProviderType - 管理者認証プロバイダ種別
 type AdminAuthProviderType int32
@@ -16,12 +19,15 @@ type AdminAuthProviderType int32
 const (
 	AdminAuthProviderTypeUnknown AdminAuthProviderType = 0
 	AdminAuthProviderTypeGoogle  AdminAuthProviderType = 1 // Google認証
+	AdminAuthProviderTypeLINE    AdminAuthProviderType = 2 // LINE認証
 )
 
 func (t AdminAuthProviderType) ToCognito() cognito.ProviderType {
 	switch t {
 	case AdminAuthProviderTypeGoogle:
 		return cognito.ProviderTypeGoogle
+	case AdminAuthProviderTypeLINE:
+		return cognito.ProviderTypeLINE
 	default:
 		return cognito.ProviderTypeUnknown
 	}
@@ -46,15 +52,27 @@ type AdminAuthProviderParams struct {
 }
 
 func NewAdminAuthProvider(params *AdminAuthProviderParams) (*AdminAuthProvider, error) {
-	// Cognitoユーザー名の形式）#{Provier名}_${アカウントID}
-	strs := strings.Split(params.Auth.Username, "_")
-	if len(strs) != 2 {
-		return nil, errInvalidAuthUsername
+	if strs := strings.Split(params.Auth.Username, "_"); len(strs) != 2 {
+		return nil, ErrInvalidAdminAuthUsername // CognitoユーザーはAuthProvider作成不要
+	}
+	identity := findAdminAuthIdentity(params.Auth, params.ProviderType)
+	if identity == nil {
+		return nil, ErrInvalidAdminAuthProviderType // 対象のプロバイダについての連携情報が存在しない
 	}
 	return &AdminAuthProvider{
 		AdminID:      params.AdminID,
 		ProviderType: params.ProviderType,
-		AccountID:    strs[1],
+		AccountID:    identity.UserID,
 		Email:        params.Auth.Email,
 	}, nil
+}
+
+func findAdminAuthIdentity(user *cognito.AuthUser, providerType AdminAuthProviderType) *cognito.AuthUserIdentity {
+	target := providerType.ToCognito()
+	for _, identity := range user.Identities {
+		if identity.ProviderType == target {
+			return identity
+		}
+	}
+	return nil
 }

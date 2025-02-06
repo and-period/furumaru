@@ -56,6 +56,7 @@ type app struct {
 	CognitoAdminClientID              string   `default:""               envconfig:"COGNITO_ADMIN_CLIENT_ID"`
 	CognitoAdminAuthDomain            string   `default:""               envconfig:"COGNITO_ADMIN_AUTH_DOMAIN"`
 	CognitoAdminGoogleRedirectURL     string   `default:""               envconfig:"COGNITO_ADMIN_GOOGLE_REDIRECT_URL"`
+	CognitoAdminLINERedirectURL       string   `default:""               envconfig:"COGNITO_ADMIN_LINE_REDIRECT_URL"`
 	CognitoUserPoolID                 string   `default:""               envconfig:"COGNITO_USER_POOL_ID"`
 	CognitoUserClientID               string   `default:""               envconfig:"COGNITO_USER_CLIENT_ID"`
 	SQSMessengerQueueURL              string   `default:""               envconfig:"SQS_MESSENGER_QUEUE_URL"`

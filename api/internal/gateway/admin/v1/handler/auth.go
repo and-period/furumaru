@@ -23,6 +23,8 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.GET("/providers", h.authentication, h.ListAuthProviders)
 	r.GET("/google", h.authentication, h.AuthGoogleAccount)
 	r.POST("/google", h.authentication, h.ConnectGoogleAccount)
+	r.GET("/line", h.authentication, h.AuthLINEAccount)
+	r.POST("/line", h.authentication, h.ConnectLINEAccount)
 	r.POST("/refresh-token", h.RefreshAuthToken)
 	r.POST("/device", h.authentication, h.RegisterDevice)
 	r.PATCH("/email", h.authentication, h.UpdateAuthEmail)
@@ -139,7 +141,6 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-
 	res := &response.AuthGoogleAccountResponse{
 		URL: authURL,
 	}
@@ -152,7 +153,6 @@ func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-
 	in := &user.ConnectGoogleAdminAuthInput{
 		AdminID:     getAdminID(ctx),
 		Code:        req.Code,
@@ -163,7 +163,42 @@ func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	ctx.Status(http.StatusNoContent)
+}
 
+func (h *handler) AuthLINEAccount(ctx *gin.Context) {
+	in := &user.InitialLINEAdminAuthInput{
+		AdminID:     getAdminID(ctx),
+		State:       util.GetQuery(ctx, "state", ""),
+		RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
+	}
+	authURL, err := h.user.InitialLINEAdminAuth(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthLINEAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ConnectLINEAccount(ctx *gin.Context) {
+	req := &request.ConnectLINEAccountRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &user.ConnectLINEAdminAuthInput{
+		AdminID:     getAdminID(ctx),
+		Code:        req.Code,
+		Nonce:       req.Nonce,
+		RedirectURI: req.RedirectURI,
+	}
+	if err := h.user.ConnectLINEAdminAuth(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
