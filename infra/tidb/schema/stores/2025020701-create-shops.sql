@@ -25,3 +25,19 @@ ALTER TABLE `stores`.`orders` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL
 ALTER TABLE `stores`.`products` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL;
 ALTER TABLE `stores`.`schedules` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL;
 ALTER TABLE `stores`.`shippings` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL;
+
+ALTER TABLE `stores`.`experiences` ADD CONSTRAINT `fk_experiences_shop_id`
+  FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `stores`.`orders` ADD CONSTRAINT `fk_orders_shop_id`
+  FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `stores`.`products` ADD CONSTRAINT `fk_products_shop_id`
+  FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `stores`.`schedules` ADD CONSTRAINT `fk_schedules_shop_id`
+  FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `stores`.`shippings` ADD CONSTRAINT `fk_shippings_shop_id`
+  FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
+  ON DELETE SET NULL ON UPDATE CASCADE;
