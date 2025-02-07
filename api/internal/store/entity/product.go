@@ -59,6 +59,7 @@ const (
 type Product struct {
 	ProductRevision      `gorm:"-"`
 	ID                   string            `gorm:"primaryKey;<-:create"`     // 商品ID
+	ShopID               string            `gorm:"default:null"`             // 店舗ID
 	CoordinatorID        string            `gorm:""`                         // コーディネータID
 	ProducerID           string            `gorm:""`                         // 生産者ID
 	TypeID               string            `gorm:"column:product_type_id"`   // 品目ID

@@ -30,6 +30,7 @@ const (
 type Experience struct {
 	ExperienceRevision `gorm:"-"`
 	ID                 string               `gorm:"primaryKey;<-:create"`      // 体験ID
+	ShopID             string               `gorm:"default:null"`              // 店舗ID
 	CoordinatorID      string               `gorm:""`                          // コーディネータID
 	ProducerID         string               `gorm:""`                          // 生産者ID
 	TypeID             string               `gorm:"column:experience_type_id"` // 体験種別ID

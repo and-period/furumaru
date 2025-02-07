@@ -23,6 +23,7 @@ const (
 // Schedule - 開催スケジュール
 type Schedule struct {
 	ID              string         `gorm:"primaryKey;<-:create"` // テンプレートID
+	ShopID          string         `gorm:"default:null"`         // 店舗ID
 	CoordinatorID   string         `gorm:""`                     // コーディネータID
 	Status          ScheduleStatus `gorm:"-"`                    // 開催状況
 	Title           string         `gorm:""`                     // タイトル
