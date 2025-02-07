@@ -29,6 +29,7 @@ const (
 type Shipping struct {
 	ShippingRevision `gorm:"-"`
 	ID               string    `gorm:"primaryKey;<-:create"` // 配送設定ID
+	ShopID           string    `gorm:"default:null"`         // 店舗ID
 	CoordinatorID    string    `gorm:""`                     // コーディネータID
 	CreatedAt        time.Time `gorm:"<-:create"`            // 登録日時
 	UpdatedAt        time.Time `gorm:""`                     // 更新日時

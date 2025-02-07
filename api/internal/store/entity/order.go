@@ -50,6 +50,7 @@ type Order struct {
 	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string         `gorm:""`                     // ユーザーID
 	SessionID         string         `gorm:""`                     // 注文時セッションID
+	ShopID            string         `gorm:"default:null"`         // 店舗ID
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
 	ManagementID      int64          `gorm:""`                     // 管理番号
