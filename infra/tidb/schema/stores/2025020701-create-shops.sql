@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`shop_producers` (
   CONSTRAINT `fk_shop_producers_shop_id`
     FOREIGN KEY (`shop_id`) REFERENCES `stores`.`shops` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
-)
+);
 
 ALTER TABLE `stores`.`experiences` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL;
 ALTER TABLE `stores`.`orders` ADD COLUMN `shop_id` VARCHAR(22) NULL DEFAULT NULL;
