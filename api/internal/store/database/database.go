@@ -38,6 +38,7 @@ type Database struct {
 	Promotion                Promotion
 	Schedule                 Schedule
 	Shipping                 Shipping
+	Shop                     Shop
 	Spot                     Spot
 	SpotType                 SpotType
 }
@@ -591,6 +592,23 @@ type UpdateShippingParams struct {
 	Box100Frozen      int64
 	HasFreeShipping   bool
 	FreeShippingRates int64
+}
+
+type Shop interface {
+	ListByProducerID(ctx context.Context, producerID string, fields ...string) (entity.Shops, error)
+	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
+	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error)
+	Create(ctx context.Context, shop *entity.Shop) error
+	Update(ctx context.Context, shopID string, params *UpdateShopParams) error
+	Delete(ctx context.Context, shopID string) error
+	RemoveProductType(ctx context.Context, productTypeID string) error
+	RelateProducer(ctx context.Context, shopID, producerID string) error
+	UnrelateProducer(ctx context.Context, shopID, producerID string) error
+}
+
+type UpdateShopParams struct {
+	Name           string
+	ProductTypeIDs []string
 }
 
 type Spot interface {

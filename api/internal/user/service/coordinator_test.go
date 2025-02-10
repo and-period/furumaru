@@ -400,6 +400,7 @@ func TestCreateCoordinator(t *testing.T) {
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
+				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
@@ -430,6 +431,7 @@ func TestCreateCoordinator(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
+				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
@@ -614,6 +616,22 @@ func TestUpdateCoordinator(t *testing.T) {
 		AddressLine2:   "",
 		BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 	}
+	getShopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: "coordinator-id",
+	}
+	shop := &sentity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		Name:           "&.株式会社マルシェ",
+		Activated:      true,
+	}
+	updateShopIn := &store.UpdateShopInput{
+		ShopID:         "shop-id",
+		Name:           "&.株式会社マルシェ",
+		ProductTypeIDs: []string{"product-type-id"},
+	}
 
 	tests := []struct {
 		name      string
@@ -627,8 +645,10 @@ func TestUpdateCoordinator(t *testing.T) {
 				params := *params
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				params.HeaderURL = "https://tmp.and-period.jp/header.png"
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", &params).Return(nil)
+				mocks.store.EXPECT().UpdateShop(gomock.Any(), updateShopIn).Return(nil)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:  "coordinator-id",
@@ -688,8 +708,38 @@ func TestUpdateCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(nil, assert.AnError)
+			},
+			input: &user.UpdateCoordinatorInput{
+				CoordinatorID:  "coordinator-id",
+				Lastname:       "&.",
+				Firstname:      "スタッフ",
+				LastnameKana:   "あんどぴりおど",
+				FirstnameKana:  "すたっふ",
+				MarcheName:     "&.株式会社マルシェ",
+				Username:       "&.農園",
+				Profile:        "紹介文です。",
+				ProductTypeIDs: []string{"product-type-id"},
+				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+				HeaderURL:      "https://and-period.jp/header.png",
+				InstagramID:    "instagram-id",
+				FacebookID:     "facebook-id",
+				PhoneNumber:    "+819012345678",
+				PostalCode:     "1000014",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to multi get product types",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(nil, assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
@@ -719,6 +769,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to unmatch product types length",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(sentity.ProductTypes{}, nil)
 			},
 			input: &user.UpdateCoordinatorInput{
@@ -748,6 +799,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to update coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
 			},
@@ -1051,6 +1103,22 @@ func TestRemoveCoordinatorProductType(t *testing.T) {
 
 func TestDeleteCoordinator(t *testing.T) {
 	t.Parallel()
+
+	getShopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: "coordinator-id",
+	}
+	shop := &sentity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		Name:           "&.株式会社マルシェ",
+		Activated:      true,
+	}
+	deleteShopIn := &store.DeleteShopInput{
+		ShopID: "shop-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -1060,7 +1128,9 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(nil)
+				mocks.store.EXPECT().DeleteShop(gomock.Any(), deleteShopIn).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",
@@ -1074,8 +1144,19 @@ func TestDeleteCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(nil, assert.AnError)
+			},
+			input: &user.DeleteCoordinatorInput{
+				CoordinatorID: "coordinator-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
 				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{

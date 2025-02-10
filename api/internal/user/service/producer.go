@@ -7,9 +7,12 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -85,6 +88,13 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, internalError(err)
 	}
+	shopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
+	if err != nil {
+		return nil, internalError(err)
+	}
 	adminParams := &entity.NewAdminParams{
 		CognitoID:     "", // 生産者は認証機能を持たせない
 		Type:          entity.AdminTypeProducer,
@@ -123,6 +133,26 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
 		return nil, internalError(err)
 	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &store.RelateShopProducerInput{
+			ShopID:     shop.ID,
+			ProducerID: producer.ID,
+		}
+		fn := func() error {
+			return s.store.RelateShopProducer(ctx, in)
+		}
+		const maxRetires = 3
+		retry := backoff.NewExponentialBackoff(maxRetires)
+		opts := []backoff.Option{
+			backoff.WithRetryablel(exception.IsRetryable),
+		}
+		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
+			s.logger.Warn("Failed to relate shop producer",
+				zap.String("shopId", shop.ID), zap.String("producerId", producer.ID), zap.Error(err))
+		}
+	}()
 	return producer, nil
 }
 
@@ -166,9 +196,25 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	shopsIn := &store.ListShopsByProducerIDInput{
+		ProducerID: in.ProducerID,
+	}
+	shops, err := s.store.ListShopsByProducerID(ctx, shopsIn)
+	if err != nil {
+		return internalError(err)
+	}
+	for _, shop := range shops {
+		deleteIn := &store.UnrelateShopProducerInput{
+			ShopID:     shop.ID,
+			ProducerID: in.ProducerID,
+		}
+		if err := s.store.UnrelateShopProducer(ctx, deleteIn); err != nil {
+			return internalError(err)
+		}
+	}
 	auth := func(_ context.Context) error {
 		return nil // 生産者は認証機能を持たないため何もしない
 	}
-	err := s.db.Producer.Delete(ctx, in.ProducerID, auth)
+	err = s.db.Producer.Delete(ctx, in.ProducerID, auth)
 	return internalError(err)
 }

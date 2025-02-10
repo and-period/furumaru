@@ -59,6 +59,7 @@ type dbMocks struct {
 	Promotion                *mock_database.MockPromotion
 	Schedule                 *mock_database.MockSchedule
 	Shipping                 *mock_database.MockShipping
+	Shop                     *mock_database.MockShop
 	Spot                     *mock_database.MockSpot
 	SpotType                 *mock_database.MockSpotType
 }
@@ -113,6 +114,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Promotion:                mock_database.NewMockPromotion(ctrl),
 		Schedule:                 mock_database.NewMockSchedule(ctrl),
 		Shipping:                 mock_database.NewMockShipping(ctrl),
+		Shop:                     mock_database.NewMockShop(ctrl),
 		Spot:                     mock_database.NewMockSpot(ctrl),
 		SpotType:                 mock_database.NewMockSpotType(ctrl),
 	}
@@ -145,6 +147,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Promotion:                mocks.db.Promotion,
 			Schedule:                 mocks.db.Schedule,
 			Shipping:                 mocks.db.Shipping,
+			Shop:                     mocks.db.Shop,
 			Spot:                     mocks.db.Spot,
 			SpotType:                 mocks.db.SpotType,
 		},

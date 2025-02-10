@@ -379,6 +379,7 @@ func TestDeleteProductType(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
+				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
 				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(nil)
 				mocks.user.EXPECT().RemoveCoordinatorProductType(gomock.Any(), in).Return(assert.AnError)
 			},
@@ -414,9 +415,21 @@ func TestDeleteProductType(t *testing.T) {
 			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
+			name: "failed to remove from shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
+				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(assert.AnError)
+			},
+			input: &store.DeleteProductTypeInput{
+				ProductTypeID: "product-type-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
+				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
 				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{

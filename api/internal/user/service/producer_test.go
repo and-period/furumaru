@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -368,6 +370,17 @@ func TestCreateProducer(t *testing.T) {
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
+	shopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: "coordinator-id",
+	}
+	shop := &sentity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{},
+		ProductTypeIDs: []string{"product-type-id"},
+		Name:           "&.株式会社マルシェ",
+		Activated:      true,
+	}
 
 	tests := []struct {
 		name      string
@@ -404,6 +417,7 @@ func TestCreateProducer(t *testing.T) {
 					AddressLine2:   "",
 				}
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				mocks.db.Producer.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error {
@@ -412,6 +426,7 @@ func TestCreateProducer(t *testing.T) {
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
+				mocks.store.EXPECT().RelateShopProducer(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -494,9 +509,37 @@ func TestCreateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(nil, assert.AnError)
+			},
+			input: &user.CreateProducerInput{
+				CoordinatorID:  "coordinator-id",
+				Lastname:       "&.",
+				Firstname:      "スタッフ",
+				LastnameKana:   "あんどぴりおど",
+				FirstnameKana:  "すたっふ",
+				Username:       "&.農園",
+				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+				HeaderURL:      "https://and-period.jp/header.png",
+				InstagramID:    "instgram-id",
+				FacebookID:     "facebook-id",
+				Email:          "test-admin@and-period.jp",
+				PhoneNumber:    "+819012345678",
+				PostalCode:     "1000014",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to new admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -523,6 +566,7 @@ func TestCreateProducer(t *testing.T) {
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
+				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
 				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
@@ -683,6 +727,25 @@ func TestUpdateProducer(t *testing.T) {
 
 func TestDeleteProducer(t *testing.T) {
 	t.Parallel()
+
+	shopsIn := &store.ListShopsByProducerIDInput{
+		ProducerID: "producer-id",
+	}
+	shops := sentity.Shops{
+		{
+			ID:             "shop-id",
+			CoordinatorID:  "coordinator-id",
+			ProducerIDs:    []string{"producer-id"},
+			ProductTypeIDs: []string{"product-type-id"},
+			Name:           "&.株式会社マルシェ",
+			Activated:      true,
+		},
+	}
+	deleteIn := &store.UnrelateShopProducerInput{
+		ShopID:     "shop-id",
+		ProducerID: "producer-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -692,6 +755,8 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(nil)
 			},
 			input: &user.DeleteProducerInput{
@@ -706,8 +771,31 @@ func TestDeleteProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to list shops",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(nil, assert.AnError)
+			},
+			input: &user.DeleteProducerInput{
+				ProducerID: "producer-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to unrelate shop producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(assert.AnError)
+			},
+			input: &user.DeleteProducerInput{
+				ProducerID: "producer-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.DeleteProducerInput{
