@@ -31,11 +31,12 @@ func TestShop_ListByProducerID(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
 	s, err := internal.entity()
 	require.NoError(t, err)
+	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
 	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
@@ -99,11 +100,12 @@ func TestShop_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
 	s, err := internal.entity()
 	require.NoError(t, err)
+	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
 	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
@@ -178,11 +180,12 @@ func TestShop_GetByCoordinatorID(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
 	s, err := internal.entity()
 	require.NoError(t, err)
+	s.ProducerIDs = []string{"producer-id01"}
 
 	ps := make(entity.ShopProducers, 1)
 	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
