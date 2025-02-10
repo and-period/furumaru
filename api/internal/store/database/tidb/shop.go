@@ -121,7 +121,7 @@ func (s *shop) Delete(ctx context.Context, shopID string) error {
 }
 
 func (s *shop) RemoveProductType(ctx context.Context, productTypeID string) error {
-	sub := gorm.Expr("JSON_REMOVE(product_type_ids, JSON_UNIQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))", productTypeID)
+	sub := gorm.Expr("JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))", productTypeID)
 
 	stmt := s.db.DB.WithContext(ctx).
 		Table(shopTable).
