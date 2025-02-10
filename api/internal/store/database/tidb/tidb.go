@@ -30,6 +30,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Promotion:                NewPromotion(db),
 		Schedule:                 NewSchedule(db),
 		Shipping:                 NewShipping(db),
+		Shop:                     NewShop(db),
 		Spot:                     NewSpot(db),
 		SpotType:                 NewSpotType(db),
 	}
