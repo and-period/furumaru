@@ -55,7 +55,7 @@ func (s *shop) ListByProducerID(ctx context.Context, producerID string, fields .
 
 func (s *shop) Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error) {
 	shop, err := s.get(ctx, s.db.DB, shopID, fields...)
-	return shop, err
+	return shop, dbError(err)
 }
 
 func (s *shop) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error) {
