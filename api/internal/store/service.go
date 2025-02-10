@@ -150,6 +150,15 @@ type Service interface {
 	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // １件取得(コーディネータID設定)
 	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                     // 登録または更新(デフォルト設定)
 	UpsertShipping(ctx context.Context, in *UpsertShippingInput) error                                                   // 登録または更新(コーディネータごとの設定)
+	// Shop - 店舗
+	ListShopsByProducerID(ctx context.Context, in *ListShopsByProducerIDInput) (entity.Shops, error)   // 一覧取得(生産者ID指定)
+	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)                               // １件取得
+	GetShopByCoordinatorID(ctx context.Context, in *GetShopByCoordinatorIDInput) (*entity.Shop, error) // １件取得(コーディネータID指定)
+	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)                         // 登録
+	UpdateShop(ctx context.Context, in *UpdateShopInput) error                                         // 更新
+	DeleteShop(ctx context.Context, in *DeleteShopInput) error                                         // 削除
+	RelateShopProducer(ctx context.Context, in *RelateShopProducerInput) error                         // 関連付け(生産者)
+	UnrelateShopProducer(ctx context.Context, in *UnrelateShopProducerInput) error                     // 関連付け解除(生産者)
 	// Spot - スポット
 	ListSpots(ctx context.Context, in *ListSpotsInput) (entity.Spots, int64, error)                    // 一覧取得
 	ListSpotsByGeolocation(ctx context.Context, in *ListSpotsByGeolocationInput) (entity.Spots, error) // 一覧取得（座標指定）

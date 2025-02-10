@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/random"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -139,7 +140,27 @@ func (s *service) CreateCoordinator(
 		return nil, "", internalError(err)
 	}
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
-	s.waitGroup.Add(1)
+	s.waitGroup.Add(2)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &store.CreateShopInput{
+			CoordinatorID:  coordinator.ID,
+			Name:           in.MarcheName,
+			ProductTypeIDs: in.ProductTypeIDs,
+		}
+		fn := func() error {
+			_, err := s.store.CreateShop(ctx, in)
+			return err
+		}
+		const maxRetires = 3
+		retry := backoff.NewExponentialBackoff(maxRetires)
+		opts := []backoff.Option{
+			backoff.WithRetryablel(exception.IsRetryable),
+		}
+		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
+			s.logger.Warn("Failed to create shop", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
+		}
+	}()
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
@@ -156,6 +177,13 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	}
 	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
 		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
+	shopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
+	if err != nil {
+		return internalError(err)
 	}
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
@@ -190,6 +218,26 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
 		return internalError(err)
 	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &store.UpdateShopInput{
+			ShopID:         shop.ID,
+			Name:           in.MarcheName,
+			ProductTypeIDs: in.ProductTypeIDs,
+		}
+		fn := func() error {
+			return s.store.UpdateShop(ctx, in)
+		}
+		const maxRetires = 3
+		retry := backoff.NewExponentialBackoff(maxRetires)
+		opts := []backoff.Option{
+			backoff.WithRetryablel(exception.IsRetryable),
+		}
+		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
+			s.logger.Warn("Failed to update shop", zap.String("shopId", shop.ID), zap.Error(err))
+		}
+	}()
 	return nil
 }
 
@@ -258,8 +306,35 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID))
-	return internalError(err)
+	shopIn := &store.GetShopByCoordinatorIDInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
+	if err != nil {
+		return internalError(err)
+	}
+	if err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID)); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &store.DeleteShopInput{
+			ShopID: shop.ID,
+		}
+		fn := func() error {
+			return s.store.DeleteShop(ctx, in)
+		}
+		const maxRetires = 3
+		retry := backoff.NewExponentialBackoff(maxRetires)
+		opts := []backoff.Option{
+			backoff.WithRetryablel(exception.IsRetryable),
+		}
+		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
+			s.logger.Warn("Failed to delete shop", zap.String("shopId", shop.ID), zap.Error(err))
+		}
+	}()
+	return nil
 }
 
 func (s *service) AggregateRealatedProducers(

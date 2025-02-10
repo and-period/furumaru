@@ -995,6 +995,47 @@ type UpdateDefaultShippingRate struct {
 }
 
 /**
+ * Shop - 店舗
+ */
+type ListShopsByProducerIDInput struct {
+	ProducerID string `validate:"required"`
+}
+
+type GetShopInput struct {
+	ShopID string `validate:"required"`
+}
+
+type GetShopByCoordinatorIDInput struct {
+	CoordinatorID string `validate:"required"`
+}
+
+type CreateShopInput struct {
+	CoordinatorID  string   `validate:"required"`
+	Name           string   `validate:"required,max=64"`
+	ProductTypeIDs []string `validate:"dive,required"`
+}
+
+type UpdateShopInput struct {
+	ShopID         string   `validate:"required"`
+	Name           string   `validate:"required,max=64"`
+	ProductTypeIDs []string `validate:"dive,required"`
+}
+
+type DeleteShopInput struct {
+	ShopID string `validate:"required"`
+}
+
+type RelateShopProducerInput struct {
+	ShopID     string `validate:"required"`
+	ProducerID string `validate:"required"`
+}
+
+type UnrelateShopProducerInput struct {
+	ShopID     string `validate:"required"`
+	ProducerID string `validate:"required"`
+}
+
+/**
  * Spot - スポット
  */
 type ListSpotsInput struct {

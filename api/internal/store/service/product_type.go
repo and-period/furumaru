@@ -126,6 +126,9 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 	if total > 0 {
 		return fmt.Errorf("service: associated with product: %w", exception.ErrFailedPrecondition)
 	}
+	if err := s.db.Shop.RemoveProductType(ctx, in.ProductTypeID); err != nil {
+		return internalError(err)
+	}
 	if err := s.db.ProductType.Delete(ctx, in.ProductTypeID); err != nil {
 		return internalError(err)
 	}
