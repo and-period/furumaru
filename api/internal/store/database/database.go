@@ -609,6 +609,7 @@ type Shop interface {
 type UpdateShopParams struct {
 	Name           string
 	ProductTypeIDs []string
+	BusinessDays   []time.Weekday
 }
 
 type Spot interface {

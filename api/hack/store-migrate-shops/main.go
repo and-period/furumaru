@@ -1,3 +1,9 @@
+// コーディネータの情報を元に店舗を作成する
+//
+//	usage: go run ./main.go \
+//	 -tidb-host='localhost' \
+//	 -tidb-username='root' \
+//	 -tidb-password='password'
 package main
 
 import (

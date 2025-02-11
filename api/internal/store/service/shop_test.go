@@ -227,6 +227,7 @@ func TestCreateShop(t *testing.T) {
 							CoordinatorID:  "coordinator-id",
 							Name:           "テスト店舗",
 							ProductTypeIDs: []string{"product-type-id"},
+							BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 							Activated:      true,
 						}
 						assert.Equal(t, expect, shop)
@@ -237,6 +238,7 @@ func TestCreateShop(t *testing.T) {
 				CoordinatorID:  "coordinator-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: nil,
 		},
@@ -255,6 +257,7 @@ func TestCreateShop(t *testing.T) {
 				CoordinatorID:  "coordinator-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -267,6 +270,7 @@ func TestCreateShop(t *testing.T) {
 				CoordinatorID:  "coordinator-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -280,6 +284,7 @@ func TestCreateShop(t *testing.T) {
 				CoordinatorID:  "coordinator-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -306,6 +311,7 @@ func TestUpdateShop(t *testing.T) {
 	params := &database.UpdateShopParams{
 		Name:           "テスト店舗",
 		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 	}
 
 	tests := []struct {
@@ -324,6 +330,7 @@ func TestUpdateShop(t *testing.T) {
 				ShopID:         "shop-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: nil,
 		},
@@ -342,6 +349,7 @@ func TestUpdateShop(t *testing.T) {
 				ShopID:         "shop-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -354,6 +362,7 @@ func TestUpdateShop(t *testing.T) {
 				ShopID:         "shop-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -367,6 +376,7 @@ func TestUpdateShop(t *testing.T) {
 				ShopID:         "shop-id",
 				Name:           "テスト店舗",
 				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expectErr: exception.ErrInternal,
 		},

@@ -96,10 +96,15 @@ func (s *shop) Update(ctx context.Context, shopID string, params *database.Updat
 	if err != nil {
 		return fmt.Errorf("tidb: failed to marshal product type ids: %w", err)
 	}
+	businessDays, err := json.Marshal(params.BusinessDays)
+	if err != nil {
+		return fmt.Errorf("tidb: failed to marshal business days: %w", err)
+	}
 
 	updates := map[string]interface{}{
 		"name":             params.Name,
 		"product_type_ids": productTypeIDs,
+		"business_days":    businessDays,
 		"updated_at":       s.now(),
 	}
 	stmt := s.db.DB.WithContext(ctx).Table(shopTable).Where("id = ?", shopID)
@@ -200,7 +205,8 @@ func (s *shop) fill(ctx context.Context, tx *gorm.DB, shops ...*entity.Shop) err
 
 type internalShop struct {
 	entity.Shop        `gorm:"embedded"`
-	ProductTypeIDsJSON datatypes.JSON `gorm:"column:product_type_ids;type:json"` // 取り扱い商品種別ID一覧
+	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い商品種別ID一覧
+	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
 }
 
 type internalShops []*internalShop
@@ -209,6 +215,10 @@ func newInternalShop(shop *entity.Shop) (*internalShop, error) {
 	productTypeIDs, err := json.Marshal(shop.ProductTypeIDs)
 	if err != nil {
 		return nil, fmt.Errorf("tidb: failed to marshal product type ids: %w", err)
+	}
+	businessDays, err := json.Marshal(shop.BusinessDays)
+	if err != nil {
+		return nil, fmt.Errorf("tidb: failed to marshal business days: %w", err)
 	}
 	internal := &internalShop{
 		Shop: entity.Shop{
@@ -221,12 +231,16 @@ func newInternalShop(shop *entity.Shop) (*internalShop, error) {
 			DeletedAt:     shop.DeletedAt,
 		},
 		ProductTypeIDsJSON: productTypeIDs,
+		BusinessDaysJSON:   businessDays,
 	}
 	return internal, nil
 }
 
 func (s *internalShop) entity() (*entity.Shop, error) {
 	if err := s.unmarshalProductTypeIDs(); err != nil {
+		return nil, err
+	}
+	if err := s.unmarshalBusinessDays(); err != nil {
 		return nil, err
 	}
 	return &s.Shop, nil
@@ -241,6 +255,18 @@ func (s *internalShop) unmarshalProductTypeIDs() error {
 		return fmt.Errorf("tidb: failed to unmarshal product type ids: %w", err)
 	}
 	s.ProductTypeIDs = productTypeIDs
+	return nil
+}
+
+func (s *internalShop) unmarshalBusinessDays() error {
+	if s == nil || s.BusinessDaysJSON == nil {
+		return nil
+	}
+	var businessDays []time.Weekday
+	if err := json.Unmarshal(s.BusinessDaysJSON, &businessDays); err != nil {
+		return fmt.Errorf("tidb: failed to unmarshal business days: %w", err)
+	}
+	s.BusinessDays = businessDays
 	return nil
 }
 

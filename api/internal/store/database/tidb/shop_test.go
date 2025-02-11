@@ -356,7 +356,9 @@ func TestShop_Update(t *testing.T) {
 			args: args{
 				shopID: "shop-id01",
 				params: &database.UpdateShopParams{
-					Name: "テスト店舗",
+					Name:           "テスト店舗",
+					ProductTypeIDs: []string{"product-type-id01"},
+					BusinessDays:   []time.Weekday{time.Monday},
 				},
 			},
 			want: want{
@@ -633,6 +635,7 @@ func testShop(shopID, coordinatorID string, producerIDs, productTypeIDs []string
 		CoordinatorID:  coordinatorID,
 		ProducerIDs:    producerIDs,
 		ProductTypeIDs: productTypeIDs,
+		BusinessDays:   []time.Weekday{time.Monday},
 		Name:           "テスト店舗",
 		Activated:      true,
 		CreatedAt:      now,

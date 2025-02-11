@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -16,13 +17,17 @@ func TestShop(t *testing.T) {
 		{
 			name: "success",
 			params: &ShopParams{
-				CoordinatorID: "coordinator-id",
-				Name:          "test",
+				CoordinatorID:  "coordinator-id",
+				Name:           "test",
+				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
 			},
 			expect: &Shop{
-				CoordinatorID: "coordinator-id",
-				Name:          "test",
-				Activated:     true,
+				CoordinatorID:  "coordinator-id",
+				Name:           "test",
+				ProductTypeIDs: []string{"product-type-id"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Tuesday},
+				Activated:      true,
 			},
 		},
 	}

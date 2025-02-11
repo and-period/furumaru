@@ -14,6 +14,7 @@ type Shop struct {
 	CoordinatorID  string         `gorm:""`                     // コーディネータID
 	ProducerIDs    []string       `gorm:"-"`                    // 生産者ID一覧
 	ProductTypeIDs []string       `gorm:"-"`                    // 取り扱い商品種別ID一覧
+	BusinessDays   []time.Weekday `gorm:"-"`                    // 営業曜日(発送可能日)一覧
 	Name           string         `gorm:""`                     // 店舗名
 	Activated      bool           `gorm:""`                     // 有効フラグ
 	CreatedAt      time.Time      `gorm:"<-:create"`            // 登録日時
@@ -26,6 +27,7 @@ type Shops []*Shop
 type ShopParams struct {
 	CoordinatorID  string
 	ProductTypeIDs []string
+	BusinessDays   []time.Weekday
 	Name           string
 }
 
@@ -34,6 +36,7 @@ func NewShop(params *ShopParams) *Shop {
 		ID:             uuid.Base58Encode(uuid.New()),
 		CoordinatorID:  params.CoordinatorID,
 		ProductTypeIDs: params.ProductTypeIDs,
+		BusinessDays:   params.BusinessDays,
 		Name:           params.Name,
 		Activated:      true,
 	}
