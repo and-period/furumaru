@@ -1,5 +1,10 @@
 # Changelog
 
+## [v4.2.1](https://github.com/and-period/furumaru/compare/v4.2.0...v4.2.1) - 2025-02-11
+- feat(store): 店舗エンティティの定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2709
+- feat(store): 店舗のWrite処理を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2711
+- fix(store): 店舗情報の追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2712
+
 ## [v4.1.1](https://github.com/and-period/furumaru/compare/v4.1.0...v4.1.1) - 2025-02-06
 - fix(user): 山田が頑張った by @taba2424 in https://github.com/and-period/furumaru/pull/2697
 - feat: Google Mapの描画を安定化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2700
