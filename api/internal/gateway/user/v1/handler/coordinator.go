@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -55,14 +56,26 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 
-	productTypes, err := h.multiGetProductTypes(ctx, coordinators.ProductTypeIDs())
+	var (
+		productTypes service.ProductTypes
+		shops        sentity.Shops
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		productTypes, err = h.multiGetProductTypes(ectx, coordinators.ProductTypeIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		shops, err = h.listShopsByCoordinatorIDs(ectx, coordinators.IDs())
+		return
+	})
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.CoordinatorsResponse{
-		Coordinators: service.NewCoordinators(coordinators).Response(),
+		Coordinators: service.NewCoordinators(coordinators, shops.MapByCoordinatorID()).Response(),
 		ProductTypes: productTypes.Response(),
 		Total:        total,
 	}
@@ -157,7 +170,14 @@ func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []str
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinators(coordinators), nil
+	if len(coordinators) == 0 {
+		return service.Coordinators{}, nil
+	}
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinatorIDs)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
 func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {
@@ -172,7 +192,14 @@ func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinat
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinators(coordinators), nil
+	if len(coordinators) == 0 {
+		return service.Coordinators{}, nil
+	}
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinatorIDs)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
 func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
@@ -183,7 +210,11 @@ func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*se
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinator(coordinator), nil
+	shop, err := h.getShopByCoordinatorID(ctx, coordinatorID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinator(coordinator, shop), nil
 }
 
 func (h *handler) getCoordinatorWithDeleted(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
@@ -195,5 +226,9 @@ func (h *handler) getCoordinatorWithDeleted(ctx context.Context, coordinatorID s
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinator(coordinator), nil
+	shop, err := h.getShopByCoordinatorID(ctx, coordinatorID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinator(coordinator, shop), nil
 }

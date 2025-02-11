@@ -4,12 +4,15 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,11 +29,11 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
 	params := &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
+			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
 			if err != nil {
 				return false, err
 			}
-			return currentAdmin(ctx, producer.CoordinatorID), nil
+			return slices.Contains(shop.ProducerIDs, util.GetParam(ctx, "producerId")), nil
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
@@ -57,27 +60,56 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ListProducersInput{
-		Name:   util.GetQuery(ctx, "username", ""),
-		Limit:  limit,
-		Offset: offset,
-	}
+	var (
+		producers service.Producers
+		total     int64
+	)
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
+		in := &store.ListShopProducersInput{
+			CoordinatorID: getAdminID(ctx),
+			Limit:         limit,
+			Offset:        offset,
+		}
+		producerIDs, err := h.store.ListShopProducers(ctx, in)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		producers, err = h.multiGetProducers(ctx, producerIDs)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		total = int64(len(producerIDs))
+	} else {
+		in := &user.ListProducersInput{
+			Name:   util.GetQuery(ctx, "username", ""),
+			Limit:  limit,
+			Offset: offset,
+		}
+		var ps entity.Producers
+		ps, total, err = h.user.ListProducers(ctx, in)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		producers = service.NewProducers(ps)
 	}
-	producers, total, err := h.user.ListProducers(ctx, in)
+
+	shops, err := h.listShopsByProducerIDs(ctx, producers.IDs())
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
+	coordinators, err := h.multiGetCoordinators(ctx, shops.CoordinatorIDs())
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducersResponse{
-		Producers:    service.NewProducers(producers).Response(),
+		Producers:    producers.Response(),
+		Shops:        shops.Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
 	}
@@ -90,16 +122,28 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	shops, err := h.listShopsByProducerIDs(ctx, []string{producer.ID})
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducerResponse{
-		Producer:    producer.Response(),
-		Coordinator: coordinator.Response(),
+		Producer: producer.Response(),
+		Shops:    shops.Response(),
 	}
+	if len(shops) == 0 {
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	coordinators, err := h.multiGetCoordinators(ctx, shops.CoordinatorIDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res.Coordinators = coordinators.Response()
+
 	ctx.JSON(http.StatusOK, res)
 }
 
@@ -143,15 +187,21 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
+	coordinator, err := h.getCoordinator(ctx, req.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.ProducerResponse{
-		Producer:    service.NewProducer(producer).Response(),
-		Coordinator: coordinator.Response(),
+		Producer:     service.NewProducer(producer).Response(),
+		Shops:        []*response.Shop{shop.Response()},
+		Coordinators: []*response.Coordinator{coordinator.Response()},
 	}
 	ctx.JSON(http.StatusOK, res)
 }

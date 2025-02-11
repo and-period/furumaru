@@ -52,6 +52,27 @@ func (ss Shops) IDs() []string {
 	})
 }
 
+func (ss Shops) MapByCoordinatorID() map[string]*Shop {
+	res := make(map[string]*Shop, len(ss))
+	for i := range ss {
+		res[ss[i].CoordinatorID] = ss[i]
+	}
+	return res
+}
+
+func (ss Shops) GroupByProducerID() map[string]Shops {
+	res := make(map[string]Shops, len(ss))
+	for _, s := range ss {
+		for _, producerID := range s.ProducerIDs {
+			if _, ok := res[producerID]; !ok {
+				res[producerID] = make(Shops, 0)
+			}
+			res[producerID] = append(res[producerID], s)
+		}
+	}
+	return res
+}
+
 func (ss Shops) Fill(producers map[string]ShopProducers) {
 	for _, s := range ss {
 		s.Fill(producers[s.ID])

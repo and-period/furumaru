@@ -2,8 +2,9 @@ import { defineStore } from 'pinia'
 
 import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
+import { useShopStore } from './shop'
 import { apiClient } from '~/plugins/api-client'
-import type { Coordinator, CreateCoordinatorRequest, GetUploadUrlRequest, Producer, UpdateCoordinatorRequest } from '~/types/api'
+import type { Coordinator, CreateCoordinatorRequest, GetUploadUrlRequest, Producer, Shop, UpdateCoordinatorRequest } from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
@@ -25,9 +26,11 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const res = await apiClient.coordinatorApi().v1ListCoordinators(limit, offset)
 
         const productTypeStore = useProductTypeStore()
+        const shopStore = useShopStore()
         this.coordinators = res.data.coordinators
         this.totalItems = res.data.total
         productTypeStore.productTypes = res.data.productTypes
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -55,8 +58,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
           }
           coordinators.push(coordinator)
         })
+        const shopStore = useShopStore()
         this.coordinators = coordinators
         this.totalItems = res.data.total
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -72,8 +77,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const res = await apiClient.coordinatorApi().v1GetCoordinator(coordinatorId)
 
         const productTypeStore = useProductTypeStore()
+        const shopStore = useShopStore()
         this.coordinator = res.data.coordinator
         productTypeStore.productTypes = res.data.productTypes
+        shopStore.shop = res.data.shop
       }
       catch (err) {
         return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })

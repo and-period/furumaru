@@ -2,7 +2,7 @@
 import type { VTabs } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday, type UpsertShippingRequest, type Shipping } from '~/types/api'
+import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday, type UpsertShippingRequest, type Shipping, type Shop, type UpdateShopRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -29,7 +29,6 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      marcheName: '',
       username: '',
       phoneNumber: '',
       postalCode: '',
@@ -38,13 +37,19 @@ const props = defineProps({
       addressLine1: '',
       addressLine2: '',
       profile: '',
-      productTypeIds: [],
       thumbnailUrl: '',
       headerUrl: '',
       promotionVideoUrl: '',
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
+    }),
+  },
+  shopFormData: {
+    type: Object as PropType<UpdateShopRequest>,
+    default: (): UpdateShopRequest => ({
+      name: '',
+      productTypeIds: [],
       businessDays: [],
     }),
   },
@@ -88,7 +93,6 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      marcheName: '',
       username: '',
       email: '',
       phoneNumber: '',
@@ -98,18 +102,27 @@ const props = defineProps({
       addressLine1: '',
       addressLine2: '',
       profile: '',
-      productTypeIds: [],
       thumbnailUrl: '',
-      thumbnails: [],
       headerUrl: '',
-      headers: [],
       promotionVideoUrl: '',
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
       createdAt: 0,
       updatedAt: 0,
+    }),
+  },
+  shop: {
+    type: Object as PropType<Shop>,
+    default: (): Shop => ({
+      id: '',
+      name: '',
+      coordinatorId: '',
+      producerIds: [],
+      productTypeIds: [],
       businessDays: [],
+      createdAt: 0,
+      updatedAt: 0,
     }),
   },
   shipping: {
@@ -178,6 +191,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:selected-tab-item', item: string): void
   (e: 'update:coordinator-form-data', formData: UpdateCoordinatorRequest): void
+  (e: 'update:shop-form-data', formData: UpdateShopRequest): void
   (e: 'update:shipping-form-data', formData: UpsertShippingRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
@@ -186,11 +200,13 @@ const emit = defineEmits<{
   (e: 'update:search-product-type', name: string): void
   (e: 'click:search-address'): void
   (e: 'submit:coordinator'): void
+  (e: 'submit:shop'): void
   (e: 'submit:shipping'): void
 }>()
 
 const tabs: VTabs[] = [
   { title: '基本情報', value: 'coordinator' },
+  { title: '店舗情報', value: 'shop' },
   { title: '配送設定', value: 'shipping' },
 ]
 
@@ -201,6 +217,10 @@ const selectedTabItemValue = computed({
 const coordinatorFormDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.coordinatorFormData,
   set: (val: UpdateCoordinatorRequest): void => emit('update:coordinator-form-data', val),
+})
+const shopFormDataValue = computed({
+  get: (): UpdateShopRequest => props.shopFormData,
+  set: (val: UpdateShopRequest): void => emit('update:shop-form-data', val),
 })
 const shippingFormDataValue = computed({
   get: (): UpsertShippingRequest => props.shippingFormData,
@@ -237,6 +257,10 @@ const onChangeBonusVideo = (files?: FileList) => {
 
 const onSubmitCoordinator = (): void => {
   emit('submit:coordinator')
+}
+
+const onSubmitShop = (): void => {
+  emit('submit:shop')
 }
 
 const onSubmitShipping = (): void => {
@@ -285,7 +309,6 @@ const onClickSearchAddress = (): void => {
         v-model:form-data="coordinatorFormDataValue"
         :loading="loading"
         :coordinator="coordinator"
-        :product-types="productTypes"
         :thumbnail-upload-status="thumbnailUploadStatus"
         :header-upload-status="headerUploadStatus"
         :promotion-video-upload-status="promotionVideoUploadStatus"
@@ -296,9 +319,19 @@ const onClickSearchAddress = (): void => {
         @update:header-file="onChangeHeaderFile"
         @update:promotion-video="onChangePromotionVideo"
         @update:bonus-video="onChangeBonusVideo"
-        @update:search-product-type="onChangeSearchProductType"
         @click:search-address="onClickSearchAddress"
         @submit="onSubmitCoordinator"
+      />
+    </v-window-item>
+
+    <v-window-item value="shop">
+      <organisms-coordinator-shop
+        v-model:form-data="shopFormDataValue"
+        :loading="loading"
+        :shop="shop"
+        :product-types="productTypes"
+        @update:search-product-type="onChangeSearchProductType"
+        @submit="onSubmitShop"
       />
     </v-window-item>
 

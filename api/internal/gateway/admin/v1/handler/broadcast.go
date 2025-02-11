@@ -156,13 +156,18 @@ func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	shop, err := h.getShopByCoordinatorID(ctx, schedule.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 	res := &response.GuestBroadcastResponse{
-		Broadcast: service.NewGuestBroadcast(schedule, coordinator).Response(),
+		Broadcast: service.NewGuestBroadcast(schedule, shop, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -209,13 +214,18 @@ func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	shop, err := h.getShopByCoordinatorID(ctx, schedule.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 	res := &response.GuestBroadcastResponse{
-		Broadcast: service.NewGuestBroadcast(schedule, coordinator).Response(),
+		Broadcast: service.NewGuestBroadcast(schedule, shop, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -1058,6 +1058,33 @@ var AdminPolicies = entity.AdminPolicies{
 		Method:      "GET",
 		Action:      entity.AdminPolicyActionAllow,
 	},
+	{
+		ID:          "shop_list",
+		Name:        "店舗 一覧取得",
+		Description: "店舗の一覧取得権限です。",
+		Priority:    118,
+		Path:        "/v1/shops",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
+		ID:          "shop_get",
+		Name:        "店舗 詳細取得",
+		Description: "店舗の詳細取得権限です。",
+		Priority:    119,
+		Path:        "/v1/shops/*",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
+	{
+		ID:          "shop_update",
+		Name:        "店舗 更新",
+		Description: "店舗の更新権限です。",
+		Priority:    120,
+		Path:        "/v1/shops/*",
+		Method:      "PATCH",
+		Action:      entity.AdminPolicyActionAllow,
+	},
 }
 
 type AdminRole struct {
@@ -1518,6 +1545,29 @@ var AdminRoles = []AdminRole{
 	},
 	{
 		AdminRole: entity.AdminRole{
+			ID:          "shop_editor",
+			Name:        "店舗 編集者",
+			Description: "店舗の編集者ロールです。",
+		},
+		PolicyIDs: []string{
+			"shop_list",
+			"shop_get",
+			"shop_update",
+		},
+	},
+	{
+		AdminRole: entity.AdminRole{
+			ID:          "shop_viewer",
+			Name:        "店舗 閲覧者",
+			Description: "店舗の閲覧者ロールです。",
+		},
+		PolicyIDs: []string{
+			"shop_list",
+			"shop_get",
+		},
+	},
+	{
+		AdminRole: entity.AdminRole{
 			ID:          "spot_editor",
 			Name:        "スポット 編集者",
 			Description: "スポットの編集者ロールです。",
@@ -1647,6 +1697,7 @@ var AdminGroups = []AdminGroup{
 			"promotion_editor",
 			"schedule_editor",
 			"shipping_admin",
+			"shop_editor",
 			"spot_editor",
 			"spot_type_editor",
 			"user_editor",
@@ -1677,6 +1728,7 @@ var AdminGroups = []AdminGroup{
 			"promotion_viewer",
 			"schedule_editor",
 			"shipping_editor",
+			"shop_editor",
 			"spot_editor",
 			"spot_type_viewer",
 			"user_viewer",
@@ -1704,6 +1756,7 @@ var AdminGroups = []AdminGroup{
 			"product_tag_viewer",
 			"product_type_viewer",
 			"schedule_viewer",
+			"shop_viewer",
 			"spot_editor",
 			"spot_type_viewer",
 			"video_viewer",

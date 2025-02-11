@@ -997,8 +997,18 @@ type UpdateDefaultShippingRate struct {
 /**
  * Shop - 店舗
  */
-type ListShopsByProducerIDInput struct {
-	ProducerID string `validate:"required"`
+type ListShopsInput struct {
+	CoordinatorIDs []string `validate:""`
+	ProducerIDs    []string `validate:""`
+	Limit          int64    `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset         int64    `validate:"min=0"`
+	NoLimit        bool     `validate:""`
+}
+
+type ListShopProducersInput struct {
+	CoordinatorID string `validate:""`
+	Limit         int64  `validate:"min=0,max=200"`
+	Offset        int64  `validate:"min=0"`
 }
 
 type GetShopInput struct {

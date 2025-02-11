@@ -3,11 +3,20 @@ producerResponse:
   properties:
     producer:
       $ref: './../../../openapi.yaml#/components/schemas/producer'
-    coordinator:
-      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    shops:
+      type: array
+      description: 店舗一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/shop'
+    coordinators:
+      type: array
+      description: 担当コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
   required:
   - producer
-  - coordinator
+  - shops
+  - coordinators
   example:
     producer:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -35,8 +44,17 @@ producerResponse:
       facebookId: 'facebook-id'
       createdAt: 1640962800
       updatedAt: 1640962800
-    coordinator:
-      id: 'kSByoE6FetnPs5Byk3a9Zx'
+    shops:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
       lastname: '&.'
       firstname: '管理者'
@@ -68,6 +86,11 @@ producersResponse:
       description: 生産者一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/producer'
+    shops:
+      type: array
+      description: 店舗一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/shop'
     coordinators:
       type: array
       description: 担当コーディネータ一覧
@@ -79,6 +102,7 @@ producersResponse:
       description: 合計数
   required:
   - producers
+  - shops
   - coordinators
   - total
   example:
@@ -129,6 +153,15 @@ producersResponse:
       headerUrl: 'https://and-period.jp/header.png'
       promotionVideoUrl: ''
       bonusVideoUrl: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    shops:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
       createdAt: 1640962800
       updatedAt: 1640962800
     coordinators:

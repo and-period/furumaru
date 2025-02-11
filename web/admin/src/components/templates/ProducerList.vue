@@ -5,7 +5,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { AdminType, type Coordinator, type Producer } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { Shop, Coordinator, Producer } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -34,6 +35,10 @@ const props = defineProps({
   },
   producers: {
     type: Array<Producer>,
+    default: () => [],
+  },
+  shops: {
+    type: Array<Shop>,
     default: () => [],
   },
   coordinators: {
@@ -103,11 +108,20 @@ const isRegisterable = (): boolean => {
   return props.adminType === AdminType.COORDINATOR
 }
 
-const getCoordinatorName = (coordinatorId: string) => {
-  const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
-    return coordinator.id === coordinatorId
+const getShopName = (producer?: Producer) => {
+  if (!producer) {
+    return ''
+  }
+  const shops = props.shops.filter((shop: Shop): boolean => {
+    return shop.producerIds.includes(producer.id)
   })
-  return coordinator ? coordinator.username : ''
+  if (shops.length === 0) {
+    return ''
+  }
+  const shopNames = shops.map((shop: Shop): string => {
+    return shop.name
+  })
+  return shopNames.join(', ')
 }
 
 const producerName = (producer?: Producer): string => {
@@ -239,7 +253,7 @@ const onClickDelete = (): void => {
           </v-avatar>
         </template>
         <template #[`item.coordinatorName`]="{ item }">
-          {{ getCoordinatorName(item.coordinatorId) }}
+          {{ getShopName(item) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}

@@ -5,7 +5,8 @@ import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { AdminStatus, type Coordinator, type ProductType } from '~/types/api'
+import { AdminStatus } from '~/types/api'
+import type { Shop, Coordinator, ProductType } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -30,6 +31,10 @@ const props = defineProps({
   },
   coordinators: {
     type: Array<Coordinator>,
+    default: () => [],
+  },
+  shops: {
+    type: Array<Shop>,
     default: () => [],
   },
   productTypes: {
@@ -136,6 +141,17 @@ const coordinatorName = (coordinator?: Coordinator): string => {
     return ''
   }
   return `${coordinator.lastname} ${coordinator.firstname}`
+}
+
+const getMarcheName = (coordinator?: Coordinator): string => {
+  if (!coordinator) {
+    return ''
+  }
+  const shop = props.shops.find((shop: Shop) => shop.coordinatorId === coordinator.id)
+  if (!shop) {
+    return ''
+  }
+  return shop.name
 }
 
 const getImages = (coordinator: Coordinator): string => {
@@ -257,6 +273,9 @@ const onClickDelete = (): void => {
               :icon="mdiAccount"
             />
           </v-avatar>
+        </template>
+        <template #[`item.marcheName`]="{ item }">
+          {{ getMarcheName(item) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}

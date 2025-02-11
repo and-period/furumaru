@@ -11,7 +11,7 @@ import (
 type Producer struct {
 	Admin             `gorm:"-"`
 	AdminID           string    `gorm:"primaryKey;<-:create"`           // 管理者ID
-	CoordinatorID     string    `gorm:"default:null"`                   // コーディネータID
+	CoordinatorID     string    `gorm:"default:null"`                   // Deprecated: コーディネータID
 	PhoneNumber       string    `gorm:"default:null"`                   // 電話番号
 	Username          string    `gorm:""`                               // 表示名
 	Profile           string    `gorm:""`                               // 紹介文

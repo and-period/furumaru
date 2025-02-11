@@ -19,9 +19,6 @@ coordinator:
     firstnameKana:
       type: string
       description: 名(かな)
-    marcheName:
-      type: string
-      description: マルシェ名
     username:
       type: string
       description: コーディネータ名
@@ -48,12 +45,6 @@ coordinator:
     profile:
       type: string
       description: プロフィール
-    productTypeIds:
-      type: array
-      description: 取り扱い品目ID一覧
-      items:
-        type: string
-        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -72,11 +63,6 @@ coordinator:
     facebookId:
       type: string
       description: Facebookアカウント
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     createdAt:
       type: integer
       format: int64
@@ -92,7 +78,6 @@ coordinator:
   - firstname
   - lastnameKana
   - firstnameKana
-  - marcheName
   - username
   - email
   - phoneNumber
@@ -102,14 +87,12 @@ coordinator:
   - addressLine1
   - addressLine2
   - profile
-  - productTypeIds
   - promotionVideoUrl
   - bonusVideoUrl
   - thumbnailUrl
   - headerUrl
   - instagramId
   - facebookId
-  - businessDays
   - createdAt
   - updatedAt
   example:
@@ -119,7 +102,7 @@ coordinator:
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    storeName: '&.農園'
+    username: '&.農園'
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
@@ -128,13 +111,11 @@ coordinator:
     addressLine1: '永田町1-7-1'
     addressLine2: ''
     profile: '紹介文です。'
-    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     headerUrl: 'https://and-period.jp/header.png'
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
-    businessDays: [1,2,3,4,5]
     createdAt: 1640962800
     updatedAt: 1640962800

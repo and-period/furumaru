@@ -262,28 +262,25 @@ type CreateCoordinatorInput struct {
 }
 
 type UpdateCoordinatorInput struct {
-	CoordinatorID     string         `validate:"required"`
-	Lastname          string         `validate:"required,max=16"`
-	Firstname         string         `validate:"required,max=16"`
-	LastnameKana      string         `validate:"required,max=32,hiragana"`
-	FirstnameKana     string         `validate:"required,max=32,hiragana"`
-	MarcheName        string         `validate:"required,max=64"`
-	Username          string         `validate:"required,max=64"`
-	Profile           string         `validate:"max=2000"`
-	ProductTypeIDs    []string       `validate:"dive,required"`
-	ThumbnailURL      string         `validate:"omitempty,url"`
-	HeaderURL         string         `validate:"omitempty,url"`
-	PromotionVideoURL string         `validate:"omitempty,url"`
-	BonusVideoURL     string         `validate:"omitempty,url"`
-	InstagramID       string         `validate:"max=30"`
-	FacebookID        string         `validate:"max=50"`
-	PhoneNumber       string         `validate:"required,e164"`
-	PostalCode        string         `validate:"max=16,numeric"`
-	PrefectureCode    int32          `validate:"required"`
-	City              string         `validate:"max=32"`
-	AddressLine1      string         `validate:"max=64"`
-	AddressLine2      string         `validate:"max=64"`
-	BusinessDays      []time.Weekday `validate:"max=7,unique"`
+	CoordinatorID     string `validate:"required"`
+	Lastname          string `validate:"required,max=16"`
+	Firstname         string `validate:"required,max=16"`
+	LastnameKana      string `validate:"required,max=32,hiragana"`
+	FirstnameKana     string `validate:"required,max=32,hiragana"`
+	Username          string `validate:"required,max=64"`
+	Profile           string `validate:"max=2000"`
+	ThumbnailURL      string `validate:"omitempty,url"`
+	HeaderURL         string `validate:"omitempty,url"`
+	PromotionVideoURL string `validate:"omitempty,url"`
+	BonusVideoURL     string `validate:"omitempty,url"`
+	InstagramID       string `validate:"max=30"`
+	FacebookID        string `validate:"max=50"`
+	PhoneNumber       string `validate:"required,e164"`
+	PostalCode        string `validate:"max=16,numeric"`
+	PrefectureCode    int32  `validate:"required"`
+	City              string `validate:"max=32"`
+	AddressLine1      string `validate:"max=64"`
+	AddressLine2      string `validate:"max=64"`
 }
 
 type UpdateCoordinatorEmailInput struct {

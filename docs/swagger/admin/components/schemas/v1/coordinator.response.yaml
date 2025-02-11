@@ -2,6 +2,8 @@ coordinatorResponse:
   properties:
     coordinator:
       $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    shop:
+      $ref: './../../../openapi.yaml#/components/schemas/shop'
     productTypes:
       type: array
       description: 品目一覧
@@ -12,6 +14,7 @@ coordinatorResponse:
       description: パスワード
   required:
   - coordinator
+  - shop
   - productTypes
   - password
   example:
@@ -40,6 +43,15 @@ coordinatorResponse:
       facebookId: 'facebook-id'
       createdAt: 1640962800
       updatedAt: 1640962800
+    shop:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      createdAt: 1640962800
+      updatedAt: 1640962800
     productTypes:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
@@ -57,6 +69,11 @@ coordinatorsResponse:
       description: コーディネータ一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    shops:
+      type: array
+      description: 店舗一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/shop'
     productTypes:
       type: array
       description: 品目一覧
@@ -68,6 +85,7 @@ coordinatorsResponse:
       description: 合計数
   required:
   - coordinators
+  - shops
   - productTypes
   - total
   example:
@@ -122,6 +140,15 @@ coordinatorsResponse:
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
       producerTotal: 10
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    shops:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
       createdAt: 1640962800
       updatedAt: 1640962800
     productTypes:

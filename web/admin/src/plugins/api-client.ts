@@ -25,6 +25,7 @@ import {
   PromotionApi,
   ScheduleApi,
   ShippingApi,
+  ShopApi,
   SpotTypeApi,
   TopApi,
   UserApi,
@@ -126,6 +127,10 @@ export class ApiClient {
 
   shippingApi() {
     return new ShippingApi(this.config, this.basePath, this.instance)
+  }
+
+  shopApi() {
+    return new ShopApi(this.config, this.basePath, this.instance)
   }
 
   spotTypeApi() {

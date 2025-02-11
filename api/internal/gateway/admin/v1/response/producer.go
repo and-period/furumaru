@@ -4,7 +4,6 @@ package response
 type Producer struct {
 	ID                string `json:"id"`                // 生産者ID
 	Status            int32  `json:"status"`            // 生産者の状態
-	CoordinatorID     string `json:"coordinatorId"`     // 担当コーディネータID
 	Lastname          string `json:"lastname"`          // 姓
 	Firstname         string `json:"firstname"`         // 名
 	LastnameKana      string `json:"lastnameKana"`      // 姓(かな)
@@ -29,12 +28,14 @@ type Producer struct {
 }
 
 type ProducerResponse struct {
-	Producer    *Producer    `json:"producer"`    // 生産者情報
-	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+	Producer     *Producer      `json:"producer"`     // 生産者情報
+	Shops        []*Shop        `json:"shops"`        // 店舗情報
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
 }
 
 type ProducersResponse struct {
 	Producers    []*Producer    `json:"producers"`    // 生産者一覧
+	Shops        []*Shop        `json:"shops"`        // 店舗一覧
 	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
 	Total        int64          `json:"total"`        // 合計数
 }

@@ -595,21 +595,36 @@ type UpdateShippingParams struct {
 }
 
 type Shop interface {
-	ListByProducerID(ctx context.Context, producerID string, fields ...string) (entity.Shops, error)
+	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
+	Count(ctx context.Context, params *ListShopsParams) (int64, error)
 	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
 	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error)
 	Create(ctx context.Context, shop *entity.Shop) error
 	Update(ctx context.Context, shopID string, params *UpdateShopParams) error
 	Delete(ctx context.Context, shopID string) error
 	RemoveProductType(ctx context.Context, productTypeID string) error
+	ListProducers(ctx context.Context, params *ListShopProducersParams) ([]string, error)
 	RelateProducer(ctx context.Context, shopID, producerID string) error
 	UnrelateProducer(ctx context.Context, shopID, producerID string) error
+}
+
+type ListShopsParams struct {
+	CoordinatorIDs []string
+	ProducerIDs    []string
+	Limit          int
+	Offset         int
 }
 
 type UpdateShopParams struct {
 	Name           string
 	ProductTypeIDs []string
 	BusinessDays   []time.Weekday
+}
+
+type ListShopProducersParams struct {
+	CoordinatorID string
+	Limit         int
+	Offset        int
 }
 
 type Spot interface {

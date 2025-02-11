@@ -196,10 +196,11 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	shopsIn := &store.ListShopsByProducerIDInput{
-		ProducerID: in.ProducerID,
+	shopsIn := &store.ListShopsInput{
+		ProducerIDs: []string{in.ProducerID},
+		NoLimit:     true,
 	}
-	shops, err := s.store.ListShopsByProducerID(ctx, shopsIn)
+	shops, _, err := s.store.ListShops(ctx, shopsIn)
 	if err != nil {
 		return internalError(err)
 	}

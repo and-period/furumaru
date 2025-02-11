@@ -17,7 +17,7 @@ func TestShop(t *testing.T) {
 	assert.NotNil(t, NewShop(nil))
 }
 
-func TestShop_ListByProducerID(t *testing.T) {
+func TestShop_List(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -44,7 +44,7 @@ func TestShop_ListByProducerID(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		producerID string
+		params *database.ListShopsParams
 	}
 	type want struct {
 		shops entity.Shops
@@ -60,7 +60,10 @@ func TestShop_ListByProducerID(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				producerID: "producer-id01",
+				params: &database.ListShopsParams{
+					CoordinatorIDs: []string{"coordinator-id01"},
+					ProducerIDs:    []string{"producer-id01"},
+				},
 			},
 			want: want{
 				shops: entity.Shops{s},
@@ -79,9 +82,81 @@ func TestShop_ListByProducerID(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &shop{db: db, now: now}
-			shops, err := db.ListByProducerID(ctx, tt.args.producerID)
+			shops, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.shops, shops)
+		})
+	}
+}
+
+func TestShop_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	internal := testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&internal).Error
+	require.NoError(t, err)
+	s, err := internal.entity()
+	require.NoError(t, err)
+	s.ProducerIDs = []string{"producer-id01"}
+
+	ps := make(entity.ShopProducers, 1)
+	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
+	err = db.DB.Table(shopProducerTable).Create(&ps).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.ListShopsParams
+	}
+	type want struct {
+		total int64
+		err   error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListShopsParams{
+					CoordinatorIDs: []string{"coordinator-id01"},
+					ProducerIDs:    []string{"producer-id01"},
+				},
+			},
+			want: want{
+				total: 1,
+				err:   nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shop{db: db, now: now}
+			total, err := db.List(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.total, total)
 		})
 	}
 }
@@ -498,6 +573,77 @@ func TestShop_RemoveProductType(t *testing.T) {
 			db := &shop{db: db, now: now}
 			err = db.RemoveProductType(ctx, tt.args.productTypeID)
 			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestShop_ListProducers(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	internal := testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&internal).Error
+	require.NoError(t, err)
+	s, err := internal.entity()
+	require.NoError(t, err)
+	s.ProducerIDs = []string{"producer-id01"}
+
+	ps := make(entity.ShopProducers, 1)
+	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
+	err = db.DB.Table(shopProducerTable).Create(&ps).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.ListShopProducersParams
+	}
+	type want struct {
+		producerIDs []string
+		err         error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListShopProducersParams{
+					CoordinatorID: "coordinator-id01",
+				},
+			},
+			want: want{
+				producerIDs: []string{"producer-id01"},
+				err:         nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shop{db: db, now: now}
+			producerIDs, err := db.ListProducers(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.producerIDs, producerIDs)
 		})
 	}
 }
