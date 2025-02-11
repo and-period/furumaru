@@ -233,6 +233,7 @@ type GetExperienceInput struct {
 }
 
 type CreateExperienceInput struct {
+	ShopID                string                   `validate:"required"`
 	CoordinatorID         string                   `validate:"required"`
 	ProducerID            string                   `validate:"required"`
 	TypeID                string                   `validate:"required"`
@@ -592,6 +593,7 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
+	ShopID               string                   `validate:"required"`
 	CoordinatorID        string                   `validate:"required"`
 	ProducerID           string                   `validate:"required"`
 	TypeID               string                   `validate:"required"`
@@ -905,6 +907,7 @@ type GetScheduleInput struct {
 }
 
 type CreateScheduleInput struct {
+	ShopID          string    `validate:"required"`
 	CoordinatorID   string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
@@ -960,6 +963,7 @@ type GetShippingByCoordinatorIDInput struct {
 }
 
 type UpsertShippingInput struct {
+	ShopID            string                `validate:"required"`
 	CoordinatorID     string                `validate:"required"`
 	Box60Rates        []*UpsertShippingRate `validate:"required,dive,required"`
 	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`

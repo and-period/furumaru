@@ -42,6 +42,7 @@ func TestOrderProduct(t *testing.T) {
 			params: &NewProductOrderParams{
 				OrderID:       "order-id",
 				SessionID:     "session-id",
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Customer: &entity.User{
 					Member: entity.Member{
@@ -197,6 +198,7 @@ func TestOrderProduct(t *testing.T) {
 				ID:              "order-id",
 				SessionID:       "session-id",
 				UserID:          "user-id",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
 				Type:            OrderTypeProduct,
@@ -242,6 +244,7 @@ func TestNewExperienceOrder(t *testing.T) {
 			params: &NewExperienceOrderParams{
 				OrderID:       "order-id",
 				SessionID:     "session-id",
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Customer: &entity.User{
 					Member: entity.Member{
@@ -346,6 +349,7 @@ func TestNewExperienceOrder(t *testing.T) {
 				ID:              "order-id",
 				SessionID:       "session-id",
 				UserID:          "user-id",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "promotion-id",
 				Type:            OrderTypeExperience,

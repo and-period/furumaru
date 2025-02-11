@@ -22,6 +22,7 @@ func TestExperience(t *testing.T) {
 		{
 			name: "success",
 			params: &NewExperienceParams{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -59,6 +60,7 @@ func TestExperience(t *testing.T) {
 				PriceSenior:           200,
 			},
 			expect: &Experience{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",

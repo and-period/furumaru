@@ -68,6 +68,7 @@ type Orders []*Order
 type NewProductOrderParams struct {
 	OrderID           string
 	SessionID         string
+	ShopID            string
 	CoordinatorID     string
 	Customer          *entity.User
 	BillingAddress    *entity.Address
@@ -82,6 +83,7 @@ type NewProductOrderParams struct {
 type NewExperienceOrderParams struct {
 	OrderID               string
 	SessionID             string
+	ShopID                string
 	CoordinatorID         string
 	Customer              *entity.User
 	BillingAddress        *entity.Address
@@ -133,6 +135,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 		ID:                params.OrderID,
 		SessionID:         params.SessionID,
 		UserID:            params.Customer.ID,
+		ShopID:            params.ShopID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
 		Type:              OrderTypeProduct,
@@ -184,6 +187,7 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 		ID:              params.OrderID,
 		SessionID:       params.SessionID,
 		UserID:          params.Customer.ID,
+		ShopID:          params.ShopID,
 		CoordinatorID:   params.CoordinatorID,
 		PromotionID:     promotionID,
 		Type:            OrderTypeExperience,

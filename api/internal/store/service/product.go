@@ -131,6 +131,10 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
+		_, err = s.db.Shop.Get(ectx, in.ShopID)
+		return
+	})
+	eg.Go(func() (err error) {
 		in := &user.GetCoordinatorInput{
 			CoordinatorID: in.CoordinatorID,
 		}
@@ -145,13 +149,14 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		return
 	})
 	err := eg.Wait()
-	if errors.Is(err, exception.ErrNotFound) {
+	if errors.Is(err, exception.ErrNotFound) || errors.Is(err, database.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
 	}
 	params := &entity.NewProductParams{
+		ShopID:               in.ShopID,
 		CoordinatorID:        in.CoordinatorID,
 		ProducerID:           in.ProducerID,
 		TypeID:               in.TypeID,

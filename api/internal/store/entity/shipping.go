@@ -38,6 +38,7 @@ type Shipping struct {
 type Shippings []*Shipping
 
 type NewShippingParams struct {
+	ShopID            string
 	CoordinatorID     string
 	Box60Rates        ShippingRates
 	Box60Frozen       int64
@@ -75,6 +76,7 @@ func NewShipping(params *NewShippingParams) *Shipping {
 	revision := NewShippingRevision(rparams)
 	return &Shipping{
 		ID:               params.CoordinatorID, // PKはコーディネータと同一にする
+		ShopID:           params.ShopID,
 		CoordinatorID:    params.CoordinatorID,
 		ShippingRevision: *revision,
 	}

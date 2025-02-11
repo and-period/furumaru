@@ -261,12 +261,19 @@ func TestGetSchedule(t *testing.T) {
 func TestCreateSchedule(t *testing.T) {
 	t.Parallel()
 
+	shop := &entity.Shop{
+		ID:            "shop-id",
+		Name:          "じゃがいも農園",
+		CoordinatorID: "coordinator-id",
+		ProducerIDs:   []string{"producer-id"},
+	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 	}
 	coordinator := &uentity.Coordinator{
 		AdminID:  "coordinator-id",
 		Username: "&.コーディネータ",
+		Admin:    uentity.Admin{ID: "coordinator-id"},
 	}
 
 	tests := []struct {
@@ -278,12 +285,14 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, schedule *entity.Schedule) error {
 						expect := &entity.Schedule{
 							ID:              schedule.ID, // ignore
+							ShopID:          "shop-id",
 							CoordinatorID:   "coordinator-id",
 							Title:           "タイトル",
 							Description:     "説明",
@@ -302,6 +311,7 @@ func TestCreateSchedule(t *testing.T) {
 				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Title:           "タイトル",
 				Description:     "説明",
@@ -321,11 +331,51 @@ func TestCreateSchedule(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(nil, assert.AnError)
+			},
+			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
+				CoordinatorID:   "coordinator-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to not found shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(nil, database.ErrNotFound)
+			},
+			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
+				CoordinatorID:   "coordinator-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Title:           "タイトル",
 				Description:     "説明",
@@ -341,9 +391,32 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
+				CoordinatorID:   "coordinator-id",
+				Title:           "タイトル",
+				Description:     "説明",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+				ImageURL:        "https://and-period.jp/image.png",
+				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
+				Public:          true,
+				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
+				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "unmatch coordinator id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &entity.Shop{ID: "shop-id"}
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+			},
+			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Title:           "タイトル",
 				Description:     "説明",
@@ -359,10 +432,12 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Title:           "タイトル",
 				Description:     "説明",

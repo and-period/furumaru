@@ -72,17 +72,28 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+	shop, err := s.db.Shop.Get(ctx, in.ShopID)
+	if errors.Is(err, database.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: in.CoordinatorID,
 	}
-	_, err := s.user.GetCoordinator(ctx, coordinatorIn)
+	coordinator, err := s.user.GetCoordinator(ctx, coordinatorIn)
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
 	}
+	if shop.CoordinatorID != coordinator.ID {
+		return nil, fmt.Errorf("api: invalid request: coordinator does not belong to the shop: %w", exception.ErrInvalidArgument)
+	}
 	sparams := &entity.NewScheduleParams{
+		ShopID:          in.ShopID,
 		CoordinatorID:   in.CoordinatorID,
 		Title:           in.Title,
 		Description:     in.Description,

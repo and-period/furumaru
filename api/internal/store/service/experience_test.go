@@ -623,6 +623,12 @@ func TestCreateExperience(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	shop := &entity.Shop{
+		ID:            "shop-id",
+		Name:          "じゃがいも農園",
+		CoordinatorID: "coordinator-id",
+		ProducerIDs:   []string{"producer-id"},
+	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",
 	}
@@ -658,6 +664,7 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
@@ -666,6 +673,7 @@ func TestCreateExperience(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, experience *entity.Experience) error {
 						expect := &entity.Experience{
 							ID:            experience.ID, // ignore
+							ShopID:        "shop-id",
 							CoordinatorID: "coordinator-id",
 							ProducerID:    "producer-id",
 							TypeID:        "experience-type-id",
@@ -713,6 +721,7 @@ func TestCreateExperience(t *testing.T) {
 					})
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -758,6 +767,7 @@ func TestCreateExperience(t *testing.T) {
 			name:  "invalid experience media",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -794,12 +804,58 @@ func TestCreateExperience(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, database.ErrNotFound)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+			},
+			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				Duration:           60,
+				Direction:          "彦根駅から徒歩10分",
+				BusinessOpenTime:   "1000",
+				BusinessCloseTime:  "1800",
+				HostPostalCode:     "5220061",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -838,10 +894,12 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -880,10 +938,12 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "invalid prefecture validation",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -922,11 +982,13 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get geolocation",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -965,6 +1027,7 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "invalid experience validation",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				location := &geolocation.GetGeolocationOutput{
@@ -974,6 +1037,7 @@ func TestCreateExperience(t *testing.T) {
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",
@@ -1012,12 +1076,14 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to create experience",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
 				TypeID:        "experience-type-id",

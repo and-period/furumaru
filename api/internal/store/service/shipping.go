@@ -102,6 +102,7 @@ func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingIn
 	if errors.Is(err, database.ErrNotFound) {
 		// create
 		params := &entity.NewShippingParams{
+			ShopID:            in.ShopID,
 			CoordinatorID:     in.CoordinatorID,
 			Box60Rates:        box60Rates,
 			Box60Frozen:       in.Box60Frozen,

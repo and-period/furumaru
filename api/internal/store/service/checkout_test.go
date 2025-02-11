@@ -1329,6 +1329,7 @@ func TestCheckoutProduct(t *testing.T) {
 			FreeShippingRates: 3000,
 		},
 		ID:            "coordinator-id",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -1350,6 +1351,7 @@ func TestCheckoutProduct(t *testing.T) {
 		return entity.Products{
 			{
 				ID:        "product-id",
+				ShopID:    "shop-id",
 				Name:      "じゃがいも",
 				Inventory: inventory,
 				Public:    true,
@@ -1453,6 +1455,7 @@ func TestCheckoutProduct(t *testing.T) {
 			ID:              "order-id",
 			SessionID:       "session-id",
 			UserID:          "user-id",
+			ShopID:          "shop-id",
 			CoordinatorID:   "coordinator-id",
 			PromotionID:     "promotion-id",
 			Type:            entity.OrderTypeProduct,
@@ -2240,6 +2243,7 @@ func TestCheckoutExperience(t *testing.T) {
 	}
 	experience := &entity.Experience{
 		ID:            "experience-id",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		ProducerID:    "producer-id",
 		TypeID:        "experience-type-id",
@@ -2340,6 +2344,7 @@ func TestCheckoutExperience(t *testing.T) {
 			ID:            "order-id",
 			SessionID:     "session-id",
 			UserID:        "user-id",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			PromotionID:   "promotion-id",
 			Type:          entity.OrderTypeExperience,

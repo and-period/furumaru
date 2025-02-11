@@ -116,7 +116,13 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 		return
 	}
+	shop, err := h.getShopByCoordinatorID(ctx, coordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	in := &store.UpsertShippingInput{
+		ShopID:            shop.ID,
 		CoordinatorID:     coordinatorID,
 		Box60Rates:        h.newShippingRatesForUpsert(req.Box60Rates),
 		Box60Frozen:       req.Box60Frozen,
