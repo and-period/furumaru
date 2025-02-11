@@ -631,6 +631,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		ShopID:         "shop-id",
 		Name:           "&.株式会社マルシェ",
 		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 	}
 
 	tests := []struct {

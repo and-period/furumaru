@@ -147,6 +147,7 @@ func (s *service) CreateCoordinator(
 			CoordinatorID:  coordinator.ID,
 			Name:           in.MarcheName,
 			ProductTypeIDs: in.ProductTypeIDs,
+			BusinessDays:   in.BusinessDays,
 		}
 		fn := func() error {
 			_, err := s.store.CreateShop(ctx, in)
@@ -225,6 +226,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 			ShopID:         shop.ID,
 			Name:           in.MarcheName,
 			ProductTypeIDs: in.ProductTypeIDs,
+			BusinessDays:   in.BusinessDays,
 		}
 		fn := func() error {
 			return s.store.UpdateShop(ctx, in)

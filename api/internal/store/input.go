@@ -1010,15 +1010,17 @@ type GetShopByCoordinatorIDInput struct {
 }
 
 type CreateShopInput struct {
-	CoordinatorID  string   `validate:"required"`
-	Name           string   `validate:"required,max=64"`
-	ProductTypeIDs []string `validate:"dive,required"`
+	CoordinatorID  string         `validate:"required"`
+	Name           string         `validate:"required,max=64"`
+	ProductTypeIDs []string       `validate:"dive,required"`
+	BusinessDays   []time.Weekday `validate:"max=7,unique"`
 }
 
 type UpdateShopInput struct {
-	ShopID         string   `validate:"required"`
-	Name           string   `validate:"required,max=64"`
-	ProductTypeIDs []string `validate:"dive,required"`
+	ShopID         string         `validate:"required"`
+	Name           string         `validate:"required,max=64"`
+	ProductTypeIDs []string       `validate:"dive,required"`
+	BusinessDays   []time.Weekday `validate:"max=7,unique"`
 }
 
 type DeleteShopInput struct {

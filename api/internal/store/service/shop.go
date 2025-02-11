@@ -49,6 +49,7 @@ func (s *service) CreateShop(ctx context.Context, in *store.CreateShopInput) (*e
 		CoordinatorID:  in.CoordinatorID,
 		Name:           in.Name,
 		ProductTypeIDs: in.ProductTypeIDs,
+		BusinessDays:   in.BusinessDays,
 	}
 	shop := entity.NewShop(params)
 	if err := s.db.Shop.Create(ctx, shop); err != nil {
@@ -71,6 +72,7 @@ func (s *service) UpdateShop(ctx context.Context, in *store.UpdateShopInput) err
 	params := &database.UpdateShopParams{
 		Name:           in.Name,
 		ProductTypeIDs: in.ProductTypeIDs,
+		BusinessDays:   in.BusinessDays,
 	}
 	err = s.db.Shop.Update(ctx, in.ShopID, params)
 	return internalError(err)
