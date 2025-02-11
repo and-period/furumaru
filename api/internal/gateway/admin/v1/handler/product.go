@@ -31,15 +31,11 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 func (h *handler) filterAccessProduct(ctx *gin.Context) {
 	params := &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-			if err != nil {
-				return false, err
-			}
 			product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 			if err != nil {
 				return false, err
 			}
-			return producers.Contains(product.ProducerID), nil
+			return currentAdmin(ctx, product.CoordinatorID), nil
 		},
 		producer: func(ctx *gin.Context) (bool, error) {
 			product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
@@ -278,6 +274,10 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
+		shop, err = h.getShopByCoordinatorID(ectx, req.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
 		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
 		return
 	})
@@ -320,6 +320,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	}
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
+		ShopID:               shop.ID,
 		CoordinatorID:        req.CoordinatorID,
 		ProducerID:           req.ProducerID,
 		TypeID:               req.TypeID,

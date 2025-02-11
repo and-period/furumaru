@@ -397,6 +397,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	oparams := &entity.NewProductOrderParams{
 		OrderID:           params.payload.RequestID,
 		SessionID:         params.payload.SessionID,
+		ShopID:            products[0].ShopID, // すべて同じ店舗IDであることを前提とする
 		CoordinatorID:     params.payload.CoordinatorID,
 		Customer:          params.customer,
 		BillingAddress:    params.billingAddress,
@@ -504,6 +505,7 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	oparams := &entity.NewExperienceOrderParams{
 		OrderID:               params.payload.RequestID,
 		SessionID:             params.payload.SessionID,
+		ShopID:                experience.ShopID,
 		CoordinatorID:         experience.CoordinatorID,
 		Customer:              params.customer,
 		BillingAddress:        params.billingAddress,

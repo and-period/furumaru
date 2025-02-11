@@ -36,7 +36,7 @@ func (h *handler) filterAccessSchedule(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			return schedule.CoordinatorID == getAdminID(ctx), nil
+			return currentAdmin(ctx, schedule.CoordinatorID), nil
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
@@ -141,8 +141,14 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	shop, err := h.getShopByCoordinatorID(ctx, req.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 
 	in := &store.CreateScheduleInput{
+		ShopID:          shop.ID,
 		CoordinatorID:   req.CoordinatorID,
 		Title:           req.Title,
 		Description:     req.Description,

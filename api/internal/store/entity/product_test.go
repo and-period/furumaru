@@ -20,6 +20,7 @@ func TestProduct(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProductParams{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",
@@ -53,6 +54,7 @@ func TestProduct(t *testing.T) {
 			},
 			expect: &Product{
 				ID:              "", // ignore
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",

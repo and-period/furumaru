@@ -69,6 +69,7 @@ func TestShipping(t *testing.T) {
 		{
 			name: "success",
 			params: &NewShippingParams{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -81,6 +82,7 @@ func TestShipping(t *testing.T) {
 			},
 			expect: &Shipping{
 				ID:            "coordinator-id",
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				ShippingRevision: ShippingRevision{
 					ShippingID:        "coordinator-id",

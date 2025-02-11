@@ -73,6 +73,7 @@ type ExperienceMedia struct {
 type MultiExperienceMedia []*ExperienceMedia
 
 type NewExperienceParams struct {
+	ShopID                string
 	CoordinatorID         string
 	ProducerID            string
 	TypeID                string
@@ -120,6 +121,7 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 	revision := NewExperienceRevision(rparams)
 	experience := &Experience{
 		ID:                 experienceID,
+		ShopID:             params.ShopID,
 		CoordinatorID:      params.CoordinatorID,
 		ProducerID:         params.ProducerID,
 		TypeID:             params.TypeID,

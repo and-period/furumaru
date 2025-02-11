@@ -44,6 +44,7 @@ type Schedule struct {
 type Schedules []*Schedule
 
 type NewScheduleParams struct {
+	ShopID          string
 	CoordinatorID   string
 	Title           string
 	Description     string
@@ -58,6 +59,7 @@ type NewScheduleParams struct {
 func NewSchedule(params *NewScheduleParams) *Schedule {
 	return &Schedule{
 		ID:              uuid.Base58Encode(uuid.New()),
+		ShopID:          params.ShopID,
 		CoordinatorID:   params.CoordinatorID,
 		Title:           params.Title,
 		Description:     params.Description,

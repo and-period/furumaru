@@ -29,15 +29,11 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 func (h *handler) filterAccessExperience(ctx *gin.Context) {
 	params := &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-			if err != nil {
-				return false, err
-			}
 			experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
 			if err != nil {
 				return false, err
 			}
-			return producers.Contains(experience.ProducerID), nil
+			return currentAdmin(ctx, experience.CoordinatorID), nil
 		},
 		producer: func(ctx *gin.Context) (bool, error) {
 			experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
@@ -208,11 +204,16 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 	}
 
 	var (
+		shop           *service.Shop
 		coordinator    *service.Coordinator
 		producer       *service.Producer
 		experienceType *service.ExperienceType
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		shop, err = h.getShopByCoordinatorID(ectx, req.CoordinatorID)
+		return
+	})
 	eg.Go(func() (err error) {
 		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
 		return
@@ -243,6 +244,7 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 		}
 	}
 	in := &store.CreateExperienceInput{
+		ShopID:                shop.ID,
 		CoordinatorID:         req.CoordinatorID,
 		ProducerID:            req.ProducerID,
 		TypeID:                req.TypeID,

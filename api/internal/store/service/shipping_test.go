@@ -511,6 +511,7 @@ func TestUpsertShipping(t *testing.T) {
 		}
 		return &entity.Shipping{
 			ID:            "coordinator-id",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			ShippingRevision: entity.ShippingRevision{
 				ShippingID:        "coordinator-id",
@@ -539,6 +540,7 @@ func TestUpsertShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Create(ctx, shipping(0)).Return(nil)
 			},
 			input: &store.UpsertShippingInput{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -558,6 +560,7 @@ func TestUpsertShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Update(ctx, "coordinator-id", params).Return(nil)
 			},
 			input: &store.UpsertShippingInput{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -582,6 +585,7 @@ func TestUpsertShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -601,6 +605,7 @@ func TestUpsertShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Create(ctx, shipping(0)).Return(assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -620,6 +625,7 @@ func TestUpsertShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
+				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,

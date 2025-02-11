@@ -104,6 +104,7 @@ type ProductMedia struct {
 type MultiProductMedia []*ProductMedia
 
 type NewProductParams struct {
+	ShopID               string
 	CoordinatorID        string
 	ProducerID           string
 	TypeID               string
@@ -147,6 +148,7 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 	revision := NewProductRevision(rparams)
 	return &Product{
 		ID:                   productID,
+		ShopID:               params.ShopID,
 		CoordinatorID:        params.CoordinatorID,
 		ProducerID:           params.ProducerID,
 		TypeID:               params.TypeID,
