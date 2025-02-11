@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.2.3](https://github.com/and-period/furumaru/compare/v4.2.2...v4.2.3) - 2025-02-11
+- fix(store): 店舗IDを詰めるように by @taba2424 in https://github.com/and-period/furumaru/pull/2716
+
 ## [v4.2.2](https://github.com/and-period/furumaru/compare/v4.2.1...v4.2.2) - 2025-02-11
 - fix(admin): 店舗関連の取得ロジックを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2713
 - FIX: fixed top page by @hamachans in https://github.com/and-period/furumaru/pull/2715
