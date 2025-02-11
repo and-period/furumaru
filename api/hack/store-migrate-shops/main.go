@@ -130,6 +130,7 @@ func (a *app) run(ctx context.Context) error {
 			params := &sentity.ShopParams{
 				CoordinatorID:  coordinator.ID,
 				ProductTypeIDs: coordinator.ProductTypeIDs,
+				BusinessDays:   coordinator.BusinessDays,
 				Name:           coordinator.MarcheName,
 			}
 			shop = sentity.NewShop(params)
