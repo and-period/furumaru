@@ -47,10 +47,6 @@ const circleItems = computed<CircleItem[]>(() => [
     },
   },
 ])
-
-useSeoMeta({
-  title: 'ふるマルについて',
-})
 </script>
 
 <template>

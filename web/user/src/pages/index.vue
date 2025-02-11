@@ -281,6 +281,14 @@ useSeoMeta({
         </template>
       </the-content-box>
 
+      <div>
+        <the-about />
+      </div>
+
+      <div>
+        <the-item />
+      </div>
+
       <the-content-box
         title="ARCHIVE"
         :sub-title="tt('archiveListSubTitle')"
