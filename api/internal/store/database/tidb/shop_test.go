@@ -154,7 +154,7 @@ func TestShop_Count(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &shop{db: db, now: now}
-			total, err := db.List(ctx, tt.args.params)
+			total, err := db.Count(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.total, total)
 		})
