@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import axios, { type RawAxiosRequestHeaders } from 'axios'
 import { storeToRefs } from 'pinia'
 
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore } from '~/store'
-import { Prefecture, type UpsertShippingRequest, type UpdateCoordinatorRequest } from '~/types/api'
+import { useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
+import { Prefecture } from '~/types/api'
+import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -14,6 +14,7 @@ const coordinatorStore = useCoordinatorStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
 const shippingStore = useShippingStore()
+const shopStore = useShopStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const coordinatorId = route.params.id as string
@@ -21,6 +22,7 @@ const coordinatorId = route.params.id as string
 const { coordinator } = storeToRefs(coordinatorStore)
 const { productTypes } = storeToRefs(productTypeStore)
 const { shipping } = storeToRefs(shippingStore)
+const { shop } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
 const selector = ref<string>('coordinator')
@@ -30,7 +32,6 @@ const coordinatorFormData = ref<UpdateCoordinatorRequest>({
   lastnameKana: '',
   firstname: '',
   firstnameKana: '',
-  marcheName: '',
   username: '',
   phoneNumber: '',
   postalCode: '',
@@ -39,13 +40,16 @@ const coordinatorFormData = ref<UpdateCoordinatorRequest>({
   addressLine1: '',
   addressLine2: '',
   profile: '',
-  productTypeIds: [],
   thumbnailUrl: '',
   headerUrl: '',
   promotionVideoUrl: '',
   bonusVideoUrl: '',
   instagramId: '',
   facebookId: '',
+})
+const shopFormData = ref<UpdateShopRequest>({
+  name: '',
+  productTypeIds: [],
   businessDays: [],
 })
 const shippingFormData = ref<UpsertShippingRequest>({
@@ -103,6 +107,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber),
     }
+    shopFormData.value = { ...shop.value }
     shippingFormData.value = { ...shipping.value }
     if (productTypes.value.length === 0) {
       productTypeStore.fetchProductTypes(20)
@@ -131,6 +136,30 @@ const handleSubmitCoordinator = async (): Promise<void> => {
     commonStore.addSnackbar({
       color: 'info',
       message: 'コーディネーター情報を更新しました。',
+    })
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitShop = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await shopStore.updateShop(shop.value.id, shopFormData.value)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '店舗情報を更新しました。',
     })
   }
   catch (err) {
@@ -250,7 +279,7 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
 const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    await productTypeStore.searchProductTypes(name, '', coordinatorFormData.value.productTypeIds)
+    await productTypeStore.searchProductTypes(name, '', shopFormData.value.productTypeIds)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -293,6 +322,7 @@ catch (err) {
   <templates-coordinator-edit
     v-model:selected-tab-item="selector"
     v-model:coordinator-form-data="coordinatorFormData"
+    v-model:shop-form-data="shopFormData"
     v-model:shipping-form-data="shippingFormData"
     :loading="isLoading()"
     :is-alert="isShow"
@@ -314,6 +344,7 @@ catch (err) {
     @update:promotion-video="handleUpdatePromotionVideo"
     @update:bonus-video="handleUpdateBonusVideo"
     @submit:coordinator="handleSubmitCoordinator"
+    @submit:shop="handleSubmitShop"
     @submit:shipping="handleSubmitShipping"
   />
 </template>

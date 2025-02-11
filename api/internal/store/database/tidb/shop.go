@@ -31,13 +31,36 @@ func NewShop(db *mysql.Client) database.Shop {
 	}
 }
 
-func (s *shop) ListByProducerID(ctx context.Context, producerID string, fields ...string) (entity.Shops, error) {
+type listShopsParams database.ListShopsParams
+
+func (p listShopsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if len(p.CoordinatorIDs) > 0 {
+		stmt = stmt.Where("coordinator_id IN (?)", p.CoordinatorIDs)
+	}
+	if len(p.ProducerIDs) > 0 {
+		stmt = stmt.Where("id IN (SELECT DISTINCT(shop_id) FROM shop_producers WHERE producer_id IN (?))", p.ProducerIDs)
+	}
+	return stmt
+}
+
+func (p listShopsParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
+func (s *shop) List(ctx context.Context, params *database.ListShopsParams, fields ...string) (entity.Shops, error) {
 	var internal internalShops
 
-	stmt := s.db.Statement(ctx, s.db.DB, shopTable, fields...).
-		Joins("JOIN shop_producers ON shop_producers.shop_id = shops.id").
-		Where("shop_producers.producer_id = ?", producerID).
-		Where("shops.deleted_at IS NULL")
+	p := listShopsParams(*params)
+
+	stmt := s.db.Statement(ctx, s.db.DB, shopTable, fields...)
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
 
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, dbError(err)
@@ -51,6 +74,13 @@ func (s *shop) ListByProducerID(ctx context.Context, producerID string, fields .
 		return nil, dbError(err)
 	}
 	return shops, nil
+}
+
+func (s *shop) Count(ctx context.Context, params *database.ListShopsParams) (int64, error) {
+	p := listShopsParams(*params)
+
+	total, err := s.db.Count(ctx, s.db.DB, &entity.Shop{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (s *shop) Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error) {
@@ -134,6 +164,28 @@ func (s *shop) RemoveProductType(ctx context.Context, productTypeID string) erro
 
 	err := stmt.Update("product_type_ids", sub).Error
 	return dbError(err)
+}
+
+func (s *shop) ListProducers(ctx context.Context, params *database.ListShopProducersParams) ([]string, error) {
+	var producerIDs []string
+
+	fields := []string{
+		"DISTINCT(producer_id) AS producer_id",
+	}
+	stmt := s.db.Statement(ctx, s.db.DB, shopProducerTable, fields...).
+		Joins("LEFT OUTER JOIN shops ON shop_producers.shop_id = shops.id").
+		Where("shops.coordinator_id = ?", params.CoordinatorID).
+		Order("producer_id")
+
+	if params.Limit > 0 {
+		stmt = stmt.Limit(params.Limit)
+	}
+	if params.Offset > 0 {
+		stmt = stmt.Offset(params.Offset)
+	}
+
+	err := stmt.Scan(&producerIDs).Error
+	return producerIDs, dbError(err)
 }
 
 func (s *shop) RelateProducer(ctx context.Context, shopID, producerID string) error {

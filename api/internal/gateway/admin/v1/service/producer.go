@@ -18,7 +18,6 @@ func NewProducer(producer *entity.Producer) *Producer {
 		Producer: response.Producer{
 			ID:                producer.ID,
 			Status:            NewAdminStatus(producer.Status).Response(),
-			CoordinatorID:     producer.CoordinatorID,
 			Lastname:          producer.Lastname,
 			Firstname:         producer.Firstname,
 			LastnameKana:      producer.LastnameKana,

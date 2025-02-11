@@ -412,15 +412,6 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	if len(productTypes) != len(req.ProductTypeIDs) {
-		h.badRequest(ctx, errors.New("handler: unmatch product types length"))
-		return
-	}
 
 	in := &user.UpdateCoordinatorInput{
 		CoordinatorID:     getAdminID(ctx),
@@ -428,10 +419,8 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 		Firstname:         req.Firstname,
 		LastnameKana:      req.LastnameKana,
 		FirstnameKana:     req.FirstnameKana,
-		MarcheName:        req.MarcheName,
 		Username:          req.Username,
 		Profile:           req.Profile,
-		ProductTypeIDs:    req.ProductTypeIDs,
 		ThumbnailURL:      req.ThumbnailURL,
 		HeaderURL:         req.HeaderURL,
 		PromotionVideoURL: req.PromotionVideoURL,
@@ -444,7 +433,6 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,
-		BusinessDays:      req.BusinessDays,
 	}
 	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
 		h.httpError(ctx, err)

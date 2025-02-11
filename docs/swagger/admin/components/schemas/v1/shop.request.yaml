@@ -1,0 +1,25 @@
+updateShopRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 店舗名(64文字まで)
+    productTypeIds:
+      type: array
+      description: 取り扱い品目ID一覧
+      items:
+        type: string
+        description: 品目ID
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
+  required:
+  - name
+  - productTypeIds
+  - businessDays
+  example:
+    name: 'テスト店舗'
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+    businessDays: [1,2,3,4,5]

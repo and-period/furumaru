@@ -8,14 +8,49 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListShopsByProducerID(ctx context.Context, in *store.ListShopsByProducerIDInput) (entity.Shops, error) {
+func (s *service) ListShops(ctx context.Context, in *store.ListShopsInput) (entity.Shops, int64, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, 0, internalError(err)
+	}
+	params := &database.ListShopsParams{
+		CoordinatorIDs: in.CoordinatorIDs,
+		ProducerIDs:    in.ProducerIDs,
+		Limit:          int(in.Limit),
+		Offset:         int(in.Offset),
+	}
+	var (
+		shops entity.Shops
+		total int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		shops, err = s.db.Shop.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Shop.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, internalError(err)
+	}
+	return shops, total, nil
+}
+
+func (s *service) ListShopProducers(ctx context.Context, in *store.ListShopProducersInput) ([]string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	shops, err := s.db.Shop.ListByProducerID(ctx, in.ProducerID)
-	return shops, internalError(err)
+	params := &database.ListShopProducersParams{
+		CoordinatorID: in.CoordinatorID,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+	}
+	producerIDs, err := s.db.Shop.ListProducers(ctx, params)
+	return producerIDs, internalError(err)
 }
 
 func (s *service) GetShop(ctx context.Context, in *store.GetShopInput) (*entity.Shop, error) {

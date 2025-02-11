@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -256,14 +257,16 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 			h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 			return
 		}
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-		if err != nil {
-			h.httpError(ctx, err)
-		}
-		if !producers.Contains(req.ProducerID) {
-			h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
-			return
-		}
+	}
+
+	shop, err := h.getShopByCoordinatorID(ctx, req.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if !slices.Contains(shop.ProducerIDs, req.ProducerID) {
+		h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+		return
 	}
 
 	var (
@@ -280,12 +283,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		producer, err = h.getProducer(ectx, req.ProducerID)
-		if err != nil {
-			return
-		}
-		if producer.CoordinatorID != req.CoordinatorID {
-			return fmt.Errorf("handler: unmatch coordinator id: %w", exception.ErrInvalidArgument)
-		}
 		return
 	})
 	eg.Go(func() (err error) {
@@ -300,7 +297,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		productTags, err = h.multiGetProductTags(ectx, req.TagIDs)
 		return
 	})
-	err := eg.Wait()
+	err = eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
 		h.badRequest(ctx, err)
 		return

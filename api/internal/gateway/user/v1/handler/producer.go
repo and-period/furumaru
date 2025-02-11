@@ -46,9 +46,22 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	if len(producers) == 0 {
+		res := &response.ProducersResponse{
+			Producers: []*response.Producer{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	shops, err := h.listShopsByProducerIDs(ctx, producers.IDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 
 	res := &response.ProducersResponse{
-		Producers: service.NewProducers(producers).Response(),
+		Producers: service.NewProducers(producers, shops.GroupByProducerID()).Response(),
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -131,7 +144,19 @@ func (h *handler) listProducersByCoordinatorID(ctx context.Context, coordinatorI
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducers(producers), nil
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	shopsIn := &store.ListShopsInput{
+		CoordinatorIDs: []string{coordinatorID},
+		ProducerIDs:    producers.IDs(),
+		NoLimit:        true,
+	}
+	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, shops.GroupByProducerID()), nil
 }
 
 func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
@@ -148,7 +173,15 @@ func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (
 	if len(producers) == 0 {
 		return service.Producers{}, nil
 	}
-	return service.NewProducers(producers), nil
+	shopsIn := &store.ListShopsInput{
+		ProducerIDs: producerIDs,
+		NoLimit:     true,
+	}
+	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, shops.GroupByProducerID()), nil
 }
 
 func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
@@ -159,5 +192,13 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducer(producer), nil
+	shopsIn := &store.ListShopsInput{
+		ProducerIDs: []string{producerID},
+		NoLimit:     true,
+	}
+	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducer(producer, shops), nil
 }

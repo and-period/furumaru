@@ -13,54 +13,83 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListShopsByProducerID(t *testing.T) {
+func TestListShops(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
+	params := &database.ListShopsParams{
+		CoordinatorIDs: []string{"coordinator-id"},
+		ProducerIDs:    []string{"producer-id"},
+		Limit:          20,
+		Offset:         0,
+	}
 	shops := entity.Shops{
 		{
-			ID:            "shop-id",
-			CoordinatorID: "coordinator-id",
-			ProducerIDs:   []string{"producer-id"},
-			Name:          "テスト店舗",
-			Activated:     true,
-			CreatedAt:     now,
-			UpdatedAt:     now,
+			ID:             "shop-id",
+			Name:           "テスト店舗",
+			CoordinatorID:  "coordinator-id",
+			ProducerIDs:    []string{"producer-id"},
+			ProductTypeIDs: []string{"product-type-id"},
+			Activated:      true,
+			CreatedAt:      now,
+			UpdatedAt:      now,
 		},
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.ListShopsByProducerIDInput
-		expect    entity.Shops
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListShopsInput
+		expect      entity.Shops
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().ListByProducerID(ctx, "producer-id").Return(shops, nil)
+				mocks.db.Shop.EXPECT().List(gomock.Any(), params).Return(shops, nil)
+				mocks.db.Shop.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
-			input: &store.ListShopsByProducerIDInput{
-				ProducerID: "producer-id",
+			input: &store.ListShopsInput{
+				CoordinatorIDs: []string{"coordinator-id"},
+				ProducerIDs:    []string{"producer-id"},
+				Limit:          20,
 			},
-			expect:    shops,
-			expectErr: nil,
+			expect:      shops,
+			expectTotal: 1,
+			expectErr:   nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.ListShopsByProducerIDInput{},
+			input:     &store.ListShopsInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to list shops by producer ID",
+			name: "failed to list shops",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().ListByProducerID(ctx, "producer-id").Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
-			input: &store.ListShopsByProducerIDInput{
-				ProducerID: "producer-id",
+			input: &store.ListShopsInput{
+				CoordinatorIDs: []string{"coordinator-id"},
+				ProducerIDs:    []string{"producer-id"},
+				Limit:          20,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to count shops",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().List(gomock.Any(), params).Return(shops, nil)
+				mocks.db.Shop.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &store.ListShopsInput{
+				CoordinatorIDs: []string{"coordinator-id"},
+				ProducerIDs:    []string{"producer-id"},
+				Limit:          20,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -69,7 +98,68 @@ func TestListShopsByProducerID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListShopsByProducerID(ctx, tt.input)
+			actual, total, err := service.ListShops(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
+		}))
+	}
+}
+
+func TestListShopProducers(t *testing.T) {
+	t.Parallel()
+
+	params := &database.ListShopProducersParams{
+		CoordinatorID: "coordinator-id",
+		Limit:         20,
+		Offset:        0,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.ListShopProducersInput
+		expect    []string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().ListProducers(ctx, params).Return([]string{"producer-id"}, nil)
+			},
+			input: &store.ListShopProducersInput{
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+			},
+			expect:    []string{"producer-id"},
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListShopProducersInput{
+				Limit: -1,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list producers",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().ListProducers(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.ListShopProducersInput{
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListShopProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

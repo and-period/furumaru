@@ -154,6 +154,7 @@ func TestGuestBroadcast(t *testing.T) {
 	tests := []struct {
 		name        string
 		schedule    *Schedule
+		shop        *Shop
 		coordinator *Coordinator
 		expect      *GuestBroadcast
 	}{
@@ -177,6 +178,18 @@ func TestGuestBroadcast(t *testing.T) {
 					UpdatedAt:       1640962800,
 				},
 			},
+			shop: &Shop{
+				Shop: response.Shop{
+					ID:             "shop-id",
+					Name:           "&.マルシェ",
+					CoordinatorID:  "coordinator-id",
+					ProducerIDs:    []string{"producer-id"},
+					ProductTypeIDs: []string{"product-type-id"},
+					BusinessDays:   []time.Weekday{time.Monday},
+					CreatedAt:      1640962800,
+					UpdatedAt:      1640962800,
+				},
+			},
 			coordinator: &Coordinator{
 				Coordinator: response.Coordinator{
 					ID:                "coordinator-id",
@@ -185,10 +198,8 @@ func TestGuestBroadcast(t *testing.T) {
 					Firstname:         "管理者",
 					LastnameKana:      "あんどどっと",
 					FirstnameKana:     "かんりしゃ",
-					MarcheName:        "&.マルシェ",
 					Username:          "&.農園",
 					Profile:           "紹介文です。",
-					ProductTypeIDs:    []string{"product-type-ids"},
 					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 					HeaderURL:         "https://and-period.jp/header.png",
 					PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -200,7 +211,6 @@ func TestGuestBroadcast(t *testing.T) {
 					PostalCode:        "1000014",
 					PrefectureCode:    13,
 					City:              "千代田区",
-					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
@@ -220,7 +230,7 @@ func TestGuestBroadcast(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewGuestBroadcast(tt.schedule, tt.coordinator)
+			actual := NewGuestBroadcast(tt.schedule, tt.shop, tt.coordinator)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

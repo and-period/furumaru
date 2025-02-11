@@ -1247,12 +1247,6 @@ export interface Coordinator {
      */
     'firstnameKana': string;
     /**
-     * マルシェ名
-     * @type {string}
-     * @memberof Coordinator
-     */
-    'marcheName': string;
-    /**
      * コーディネータ名
      * @type {string}
      * @memberof Coordinator
@@ -1307,12 +1301,6 @@ export interface Coordinator {
      */
     'profile': string;
     /**
-     * 取り扱い品目ID一覧
-     * @type {Array<string>}
-     * @memberof Coordinator
-     */
-    'productTypeIds': Array<string>;
-    /**
      * サムネイルURL
      * @type {string}
      * @memberof Coordinator
@@ -1349,12 +1337,6 @@ export interface Coordinator {
      */
     'facebookId': string;
     /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof Coordinator
-     */
-    'businessDays': Array<Weekday>;
-    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Coordinator
@@ -1382,6 +1364,12 @@ export interface CoordinatorResponse {
      */
     'coordinator': Coordinator;
     /**
+     * 
+     * @type {Shop}
+     * @memberof CoordinatorResponse
+     */
+    'shop': Shop;
+    /**
      * 品目一覧
      * @type {Array<ProductType>}
      * @memberof CoordinatorResponse
@@ -1406,6 +1394,12 @@ export interface CoordinatorsResponse {
      * @memberof CoordinatorsResponse
      */
     'coordinators': Array<Coordinator>;
+    /**
+     * 店舗一覧
+     * @type {Array<Shop>}
+     * @memberof CoordinatorsResponse
+     */
+    'shops': Array<Shop>;
     /**
      * 品目一覧
      * @type {Array<ProductType>}
@@ -4993,11 +4987,17 @@ export interface ProducerResponse {
      */
     'producer': Producer;
     /**
-     * 
-     * @type {Coordinator}
+     * 店舗一覧
+     * @type {Array<Shop>}
      * @memberof ProducerResponse
      */
-    'coordinator': Coordinator;
+    'shops': Array<Shop>;
+    /**
+     * 担当コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ProducerResponse
+     */
+    'coordinators': Array<Coordinator>;
 }
 /**
  * 
@@ -5011,6 +5011,12 @@ export interface ProducersResponse {
      * @memberof ProducersResponse
      */
     'producers': Array<Producer>;
+    /**
+     * 店舗一覧
+     * @type {Array<Shop>}
+     * @memberof ProducersResponse
+     */
+    'shops': Array<Shop>;
     /**
      * 担当コーディネータ一覧
      * @type {Array<Coordinator>}
@@ -6117,6 +6123,92 @@ export type ShippingType = typeof ShippingType[keyof typeof ShippingType];
 
 
 /**
+ * 店舗情報
+ * @export
+ * @interface Shop
+ */
+export interface Shop {
+    /**
+     * 店舗ID
+     * @type {string}
+     * @memberof Shop
+     */
+    'id': string;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof Shop
+     */
+    'name': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Shop
+     */
+    'coordinatorId': string;
+    /**
+     * 生産者ID一覧
+     * @type {Array<string>}
+     * @memberof Shop
+     */
+    'producerIds': Array<string>;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof Shop
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof Shop
+     */
+    'businessDays': Array<Weekday>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Shop
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Shop
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ShopResponse
+ */
+export interface ShopResponse {
+    /**
+     * 
+     * @type {Shop}
+     * @memberof ShopResponse
+     */
+    'shop': Shop;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof ShopResponse
+     */
+    'coordinator': Coordinator;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof ShopResponse
+     */
+    'producers': Array<Producer>;
+    /**
+     * 品目一覧
+     * @type {Array<ProductType>}
+     * @memberof ShopResponse
+     */
+    'productTypes': Array<ProductType>;
+}
+/**
  * 
  * @export
  * @interface SignInRequest
@@ -6896,12 +6988,6 @@ export interface UpdateCoordinatorRequest {
      */
     'firstnameKana': string;
     /**
-     * マルシェ名(64文字まで)
-     * @type {string}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'marcheName': string;
-    /**
      * コーディネータ(64文字まで)
      * @type {string}
      * @memberof UpdateCoordinatorRequest
@@ -6950,12 +7036,6 @@ export interface UpdateCoordinatorRequest {
      */
     'profile': string;
     /**
-     * 取り扱い品目ID一覧
-     * @type {Array<string>}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'productTypeIds': Array<string>;
-    /**
      * サムネイル画像URL
      * @type {string}
      * @memberof UpdateCoordinatorRequest
@@ -6991,12 +7071,6 @@ export interface UpdateCoordinatorRequest {
      * @memberof UpdateCoordinatorRequest
      */
     'facebookId': string;
-    /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof UpdateCoordinatorRequest
-     */
-    'businessDays': Array<Weekday>;
 }
 
 
@@ -7794,6 +7868,31 @@ export interface UpdateScheduleRequest {
      * @memberof UpdateScheduleRequest
      */
     'endAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateShopRequest
+ */
+export interface UpdateShopRequest {
+    /**
+     * 店舗名(64文字まで)
+     * @type {string}
+     * @memberof UpdateShopRequest
+     */
+    'name': string;
+    /**
+     * 取り扱い品目ID一覧
+     * @type {Array<string>}
+     * @memberof UpdateShopRequest
+     */
+    'productTypeIds': Array<string>;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof UpdateShopRequest
+     */
+    'businessDays': Array<Weekday>;
 }
 /**
  * 
@@ -21616,6 +21715,200 @@ export class ShippingApi extends BaseAPI {
      */
     public v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: RawAxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1UpsertShipping(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ShopApi - axios parameter creator
+ * @export
+ */
+export const ShopApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 店舗取得
+         * @param {string} shopId 店舗ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetShop: async (shopId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'shopId' is not null or undefined
+            assertParamExists('v1GetShop', 'shopId', shopId)
+            const localVarPath = `/v1/shops/{shopId}`
+                .replace(`{${"shopId"}}`, encodeURIComponent(String(shopId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 店舗更新
+         * @param {string} shopId 店舗ID
+         * @param {UpdateShopRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateShop: async (shopId: string, body: UpdateShopRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'shopId' is not null or undefined
+            assertParamExists('v1UpdateShop', 'shopId', shopId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateShop', 'body', body)
+            const localVarPath = `/v1/shops/{shopId}`
+                .replace(`{${"shopId"}}`, encodeURIComponent(String(shopId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ShopApi - functional programming interface
+ * @export
+ */
+export const ShopApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ShopApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 店舗取得
+         * @param {string} shopId 店舗ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetShop(shopId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShopResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShop(shopId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShopApi.v1GetShop']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 店舗更新
+         * @param {string} shopId 店舗ID
+         * @param {UpdateShopRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateShop(shopId: string, body: UpdateShopRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateShop(shopId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShopApi.v1UpdateShop']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ShopApi - factory interface
+ * @export
+ */
+export const ShopApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ShopApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 店舗取得
+         * @param {string} shopId 店舗ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetShop(shopId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShopResponse> {
+            return localVarFp.v1GetShop(shopId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 店舗更新
+         * @param {string} shopId 店舗ID
+         * @param {UpdateShopRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateShop(shopId: string, body: UpdateShopRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateShop(shopId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ShopApi - object-oriented interface
+ * @export
+ * @class ShopApi
+ * @extends {BaseAPI}
+ */
+export class ShopApi extends BaseAPI {
+    /**
+     * 
+     * @summary 店舗取得
+     * @param {string} shopId 店舗ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShopApi
+     */
+    public v1GetShop(shopId: string, options?: RawAxiosRequestConfig) {
+        return ShopApiFp(this.configuration).v1GetShop(shopId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 店舗更新
+     * @param {string} shopId 店舗ID
+     * @param {UpdateShopRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShopApi
+     */
+    public v1UpdateShop(shopId: string, body: UpdateShopRequest, options?: RawAxiosRequestConfig) {
+        return ShopApiFp(this.configuration).v1UpdateShop(shopId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

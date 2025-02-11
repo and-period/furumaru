@@ -151,7 +151,8 @@ type Service interface {
 	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                     // 登録または更新(デフォルト設定)
 	UpsertShipping(ctx context.Context, in *UpsertShippingInput) error                                                   // 登録または更新(コーディネータごとの設定)
 	// Shop - 店舗
-	ListShopsByProducerID(ctx context.Context, in *ListShopsByProducerIDInput) (entity.Shops, error)   // 一覧取得(生産者ID指定)
+	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, int64, error)                    // 一覧取得
+	ListShopProducers(ctx context.Context, in *ListShopProducersInput) ([]string, error)               // 生産者ID一覧取得
 	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)                               // １件取得
 	GetShopByCoordinatorID(ctx context.Context, in *GetShopByCoordinatorIDInput) (*entity.Shop, error) // １件取得(コーディネータID指定)
 	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)                         // 登録

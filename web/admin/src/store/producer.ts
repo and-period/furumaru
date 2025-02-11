@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
+import { useShopStore } from './shop'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProducerRequest,
@@ -9,6 +10,7 @@ import type {
   ProducerResponse,
   Producer,
   UpdateProducerRequest,
+  Shop,
 } from '~/types/api'
 
 export const useProducerStore = defineStore('producer', {
@@ -29,9 +31,11 @@ export const useProducerStore = defineStore('producer', {
         const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
 
         const coordinatorStore = useCoordinatorStore()
+        const shopStore = useShopStore()
         this.producers = res.data.producers
         this.totalItems = res.data.total
         coordinatorStore.coordinators = res.data.coordinators
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -59,8 +63,10 @@ export const useProducerStore = defineStore('producer', {
           }
           producers.push(producer)
         })
+        const shopStore = useShopStore()
         this.producers = producers
         this.totalItems = res.data.total
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -77,8 +83,10 @@ export const useProducerStore = defineStore('producer', {
         const res = await apiClient.producerApi().v1GetProducer(producerId)
 
         const coordinatorStore = useCoordinatorStore()
+        const shopStore = useShopStore()
         this.producer = res.data.producer
-        coordinatorStore.coordinator = res.data.coordinator
+        coordinatorStore.coordinators = res.data.coordinators
+        shopStore.shops = res.data.shops
         return res.data
       }
       catch (err) {

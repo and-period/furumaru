@@ -179,29 +179,13 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
 		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
-	shopIn := &store.GetShopByCoordinatorIDInput{
-		CoordinatorID: in.CoordinatorID,
-	}
-	shop, err := s.store.GetShopByCoordinatorID(ctx, shopIn)
-	if err != nil {
-		return internalError(err)
-	}
-	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
-	if err != nil {
-		return internalError(err)
-	}
-	if len(productTypes) != len(in.ProductTypeIDs) {
-		return fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
-	}
 	params := &database.UpdateCoordinatorParams{
 		Lastname:          in.Lastname,
 		Firstname:         in.Firstname,
 		LastnameKana:      in.LastnameKana,
 		FirstnameKana:     in.FirstnameKana,
-		MarcheName:        in.MarcheName,
 		Username:          in.Username,
 		Profile:           in.Profile,
-		ProductTypeIDs:    in.ProductTypeIDs,
 		ThumbnailURL:      in.ThumbnailURL,
 		HeaderURL:         in.HeaderURL,
 		PromotionVideoURL: in.PromotionVideoURL,
@@ -214,33 +198,9 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
-		BusinessDays:      in.BusinessDays,
 	}
-	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
-		return internalError(err)
-	}
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		in := &store.UpdateShopInput{
-			ShopID:         shop.ID,
-			Name:           in.MarcheName,
-			ProductTypeIDs: in.ProductTypeIDs,
-			BusinessDays:   in.BusinessDays,
-		}
-		fn := func() error {
-			return s.store.UpdateShop(ctx, in)
-		}
-		const maxRetires = 3
-		retry := backoff.NewExponentialBackoff(maxRetires)
-		opts := []backoff.Option{
-			backoff.WithRetryablel(exception.IsRetryable),
-		}
-		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to update shop", zap.String("shopId", shop.ID), zap.Error(err))
-		}
-	}()
-	return nil
+	err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params)
+	return internalError(err)
 }
 
 func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoordinatorEmailInput) error {

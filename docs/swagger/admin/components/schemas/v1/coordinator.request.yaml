@@ -133,9 +133,6 @@ updateCoordinatorRequest:
     firstnameKana:
       type: string
       description: 名(かな)(ひらがな,32文字まで)
-    marcheName:
-      type: string
-      description: マルシェ名(64文字まで)
     username:
       type: string
       description: コーディネータ(64文字まで)
@@ -159,12 +156,6 @@ updateCoordinatorRequest:
     profile:
       type: string
       description: プロフィール(2000文字まで)
-    productTypeIds:
-      type: array
-      description: 取り扱い品目ID一覧
-      items:
-        type: string
-        description: 品目ID
     thumbnailUrl:
       type: string
       description: サムネイル画像URL
@@ -183,17 +174,11 @@ updateCoordinatorRequest:
     facebookId:
       type: string
       description: Facebookアカウント(50文字まで)
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
   required:
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - marcheName
   - username
   - phoneNumber
   - postalCode
@@ -202,20 +187,17 @@ updateCoordinatorRequest:
   - addressLine1
   - addressLine2
   - profile
-  - productTypeIds
   - thumbnailUrl
   - headerUrl
   - promotionVideoUrl
   - bonusVideoUrl
   - instagramId
   - facebookId
-  - businessDays
   example:
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
-    marcheName: '&.マルシェ'
     username: '&.農園'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
@@ -224,14 +206,12 @@ updateCoordinatorRequest:
     addressLine1: '永田町1-7-1'
     addressLine2: ''
     profile: '紹介文です。'
-    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     headerUrl: 'https://and-period.jp/header.png'
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
-    businessDays: [1,2,3,4,5]
 updateCoordinatorEmailRequest:
   type: object
   properties:

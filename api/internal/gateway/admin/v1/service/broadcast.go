@@ -96,14 +96,14 @@ func (bs Broadcasts) Response() []*response.Broadcast {
 	return res
 }
 
-func NewGuestBroadcast(schedule *Schedule, coordinator *Coordinator) *GuestBroadcast {
+func NewGuestBroadcast(schedule *Schedule, shop *Shop, coordinator *Coordinator) *GuestBroadcast {
 	return &GuestBroadcast{
 		response.GuestBroadcast{
 			Title:             schedule.Title,
 			Description:       schedule.Description,
 			StartAt:           schedule.StartAt,
 			EndAt:             schedule.EndAt,
-			CoordinatorMarche: coordinator.MarcheName,
+			CoordinatorMarche: shop.Name,
 			CoordinatorName:   coordinator.Username,
 		},
 	}

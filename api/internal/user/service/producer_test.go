@@ -728,8 +728,9 @@ func TestUpdateProducer(t *testing.T) {
 func TestDeleteProducer(t *testing.T) {
 	t.Parallel()
 
-	shopsIn := &store.ListShopsByProducerIDInput{
-		ProducerID: "producer-id",
+	shopsIn := &store.ListShopsInput{
+		ProducerIDs: []string{"producer-id"},
+		NoLimit:     true,
 	}
 	shops := sentity.Shops{
 		{
@@ -755,7 +756,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
 				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(nil)
 			},
@@ -773,7 +774,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "failed to list shops",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(nil, int64(0), assert.AnError)
 			},
 			input: &user.DeleteProducerInput{
 				ProducerID: "producer-id",
@@ -783,7 +784,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "failed to unrelate shop producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
 				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(assert.AnError)
 			},
 			input: &user.DeleteProducerInput{
@@ -794,7 +795,7 @@ func TestDeleteProducer(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().ListShopsByProducerID(ctx, shopsIn).Return(shops, nil)
+				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
 				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
 				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(assert.AnError)
 			},

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -34,11 +35,11 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			producer, err := h.getProducer(ctx, live.ProducerID)
+			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
 			if err != nil {
 				return false, err
 			}
-			return currentAdmin(ctx, producer.CoordinatorID), nil
+			return slices.Contains(shop.ProducerIDs, live.ProducerID), nil
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
@@ -151,7 +152,12 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 	}
 
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		if !currentAdmin(ctx, producer.CoordinatorID) {
+		shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		if !slices.Contains(shop.ProducerIDs, producer.ID) {
 			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return
 		}

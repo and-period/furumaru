@@ -67,6 +67,110 @@ func TestShops_IDs(t *testing.T) {
 	}
 }
 
+func TestShops_MapByCoordinatorID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		shops  Shops
+		expect map[string]*Shop
+	}{
+		{
+			name: "success",
+			shops: Shops{
+				{
+					ID:            "shop-id01",
+					CoordinatorID: "coordinator-id01",
+					ProducerIDs:   []string{"producer-id01", "producer-id02"},
+				},
+				{
+					ID:            "shop-id02",
+					CoordinatorID: "coordinator-id02",
+					ProducerIDs:   []string{"producer-id01", "producer-id03"},
+				},
+			},
+			expect: map[string]*Shop{
+				"coordinator-id01": {
+					ID:            "shop-id01",
+					CoordinatorID: "coordinator-id01",
+					ProducerIDs:   []string{"producer-id01", "producer-id02"},
+				},
+				"coordinator-id02": {
+					ID:            "shop-id02",
+					CoordinatorID: "coordinator-id02",
+					ProducerIDs:   []string{"producer-id01", "producer-id03"},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.shops.MapByCoordinatorID()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestShops_GroupByProducerID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		shops  Shops
+		expect map[string]Shops
+	}{
+		{
+			name: "success",
+			shops: Shops{
+				{
+					ID:            "shop-id01",
+					CoordinatorID: "coordinator-id01",
+					ProducerIDs:   []string{"producer-id01", "producer-id02"},
+				},
+				{
+					ID:            "shop-id02",
+					CoordinatorID: "coordinator-id02",
+					ProducerIDs:   []string{"producer-id01", "producer-id03"},
+				},
+			},
+			expect: map[string]Shops{
+				"producer-id01": {
+					{
+						ID:            "shop-id01",
+						CoordinatorID: "coordinator-id01",
+						ProducerIDs:   []string{"producer-id01", "producer-id02"},
+					},
+					{
+						ID:            "shop-id02",
+						CoordinatorID: "coordinator-id02",
+						ProducerIDs:   []string{"producer-id01", "producer-id03"},
+					},
+				},
+				"producer-id02": {
+					{
+						ID:            "shop-id01",
+						CoordinatorID: "coordinator-id01",
+						ProducerIDs:   []string{"producer-id01", "producer-id02"},
+					},
+				},
+				"producer-id03": {
+					{
+						ID:            "shop-id02",
+						CoordinatorID: "coordinator-id02",
+						ProducerIDs:   []string{"producer-id01", "producer-id03"},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.shops.GroupByProducerID()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestShops_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

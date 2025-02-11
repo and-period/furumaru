@@ -56,9 +56,16 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	if len(coordinators) == 0 {
 		res := &response.CoordinatorsResponse{
 			Coordinators: []*response.Coordinator{},
+			Shops:        []*response.Shop{},
 			ProductTypes: []*response.ProductType{},
 		}
 		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinators.IDs())
+	if err != nil {
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -71,11 +78,11 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		aggregateIn := &user.AggregateRealatedProducersInput{
 			CoordinatorIDs: coordinators.IDs(),
 		}
-		producerTotals, err = h.user.AggregateRealatedProducers(ctx, aggregateIn)
+		producerTotals, err = h.user.AggregateRealatedProducers(ectx, aggregateIn)
 		return
 	})
 	eg.Go(func() (err error) {
-		productTypes, err = h.multiGetProductTypes(ectx, coordinators.ProductTypeIDs())
+		productTypes, err = h.multiGetProductTypes(ectx, shops.ProductTypeIDs())
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -88,6 +95,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 
 	res := &response.CoordinatorsResponse{
 		Coordinators: scoordinator.Response(),
+		Shops:        shops.Response(),
 		ProductTypes: productTypes.Response(),
 		Total:        total,
 	}
@@ -103,7 +111,12 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, shop.ProductTypeIDs)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -111,6 +124,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 
 	res := &response.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		Shop:         shop.Response(),
 		ProductTypes: productTypes.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -176,15 +190,6 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	if len(productTypes) != len(req.ProductTypeIDs) {
-		h.badRequest(ctx, errors.New("handler: unmatch product types length"))
-		return
-	}
 
 	in := &user.UpdateCoordinatorInput{
 		CoordinatorID:     util.GetParam(ctx, "coordinatorId"),
@@ -192,10 +197,8 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		Firstname:         req.Firstname,
 		LastnameKana:      req.LastnameKana,
 		FirstnameKana:     req.FirstnameKana,
-		MarcheName:        req.MarcheName,
 		Username:          req.Username,
 		Profile:           req.Profile,
-		ProductTypeIDs:    req.ProductTypeIDs,
 		ThumbnailURL:      req.ThumbnailURL,
 		HeaderURL:         req.HeaderURL,
 		PromotionVideoURL: req.PromotionVideoURL,
@@ -208,7 +211,6 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,
-		BusinessDays:      req.BusinessDays,
 	}
 	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
 		h.httpError(ctx, err)

@@ -2,7 +2,8 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
-	"github.com/and-period/furumaru/api/internal/user/entity"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Producer struct {
@@ -11,11 +12,15 @@ type Producer struct {
 
 type Producers []*Producer
 
-func NewProducer(producer *entity.Producer) *Producer {
+func NewProducer(producer *uentity.Producer, shops sentity.Shops) *Producer {
+	var coordinatorID string
+	if len(shops) > 0 {
+		// クライアント側の実装互換のため、はじめのコーディネータのIDを設定
+		coordinatorID = shops[0].CoordinatorID
+	}
 	return &Producer{
 		Producer: response.Producer{
 			ID:                producer.ID,
-			CoordinatorID:     producer.CoordinatorID,
 			Username:          producer.Username,
 			Profile:           producer.Profile,
 			ThumbnailURL:      producer.ThumbnailURL,
@@ -25,6 +30,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 			FacebookID:        producer.FacebookID,
 			Prefecture:        producer.Prefecture,
 			City:              producer.City,
+			CoordinatorID:     coordinatorID,
 		},
 	}
 }
@@ -33,10 +39,10 @@ func (p *Producer) Response() *response.Producer {
 	return &p.Producer
 }
 
-func NewProducers(producers entity.Producers) Producers {
+func NewProducers(producers uentity.Producers, shops map[string]sentity.Shops) Producers {
 	res := make(Producers, len(producers))
 	for i := range producers {
-		res[i] = NewProducer(producers[i])
+		res[i] = NewProducer(producers[i], shops[producers[i].ID])
 	}
 	return res
 }

@@ -2,14 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 
-import {
-  type UpdateCoordinatorRequest,
-  type ProductType,
-  type Coordinator,
-  AdminStatus,
-  Prefecture,
-  Weekday,
-} from '~/types/api'
+import { type UpdateCoordinatorRequest, type Coordinator, AdminStatus, Prefecture } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { UpdateCoordinatorValidationRules } from '~/types/validations'
@@ -26,7 +19,6 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      marcheName: '',
       username: '',
       phoneNumber: '',
       postalCode: '',
@@ -35,14 +27,12 @@ const props = defineProps({
       addressLine1: '',
       addressLine2: '',
       profile: '',
-      productTypeIds: [],
       thumbnailUrl: '',
       headerUrl: '',
       promotionVideoUrl: '',
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
-      businessDays: [],
     }),
   },
   coordinator: {
@@ -54,7 +44,6 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      marcheName: '',
       username: '',
       email: '',
       phoneNumber: '',
@@ -64,7 +53,6 @@ const props = defineProps({
       addressLine1: '',
       addressLine2: '',
       profile: '',
-      productTypeIds: [],
       thumbnailUrl: '',
       headerUrl: '',
       promotionVideoUrl: '',
@@ -73,12 +61,7 @@ const props = defineProps({
       facebookId: '',
       createdAt: 0,
       updatedAt: 0,
-      businessDays: [],
     }),
-  },
-  productTypes: {
-    type: Array<ProductType>,
-    default: () => [],
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -118,23 +101,12 @@ const props = defineProps({
   },
 })
 
-const weekdays = [
-  { title: '日曜日', value: Weekday.SUNDAY },
-  { title: '月曜日', value: Weekday.MONDAY },
-  { title: '火曜日', value: Weekday.TUESDAY },
-  { title: '水曜日', value: Weekday.WEDNESDAY },
-  { title: '木曜日', value: Weekday.THURSDAY },
-  { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY },
-]
-
 const emit = defineEmits<{
   (e: 'update:form-data', formData: UpdateCoordinatorRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
-  (e: 'update:search-product-type', name: string): void
   (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
@@ -184,10 +156,6 @@ const onSubmit = async (): Promise<void> => {
   emit('submit')
 }
 
-const onChangeSearchProductType = (name: string): void => {
-  emit('update:search-product-type', name)
-}
-
 const onClickSearchAddress = (): void => {
   emit('click:search-address')
 }
@@ -197,65 +165,11 @@ const onClickSearchAddress = (): void => {
   <v-card>
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="validate.marcheName.$model"
-              :error-messages="getErrorMessage(validate.marcheName.$errors)"
-              class="mr-4"
-              label="マルシェ名"
-            />
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="validate.username.$model"
-              :error-messages="getErrorMessage(validate.username.$errors)"
-              class="mr-4"
-              label="コーディネーター名"
-            />
-          </v-col>
-        </v-row>
-        <v-autocomplete
-          v-model="formDataValue.productTypeIds"
-          label="取り扱い品目"
-          :items="productTypes"
-          item-title="name"
-          item-value="id"
-          chips
-          closable-chips
-          multiple
-          density="comfortable"
-          clearable
-          @update:search="onChangeSearchProductType"
-        >
-          <template #chip="{ props: val, item }">
-            <v-chip
-              v-bind="val"
-              :prepend-avatar="item.raw?.iconUrl"
-              :text="item.raw?.name"
-              rounded
-              class="px-4"
-              variant="outlined"
-            />
-          </template>
-          <template #item="{ props: val, item }">
-            <v-list-item
-              v-bind="val"
-              :prepend-avatar="item?.raw?.iconUrl"
-              :title="item?.raw?.name"
-            />
-          </template>
-        </v-autocomplete>
-        <v-select
-          v-model="validate.businessDays.$model"
-          label="営業日(発送可能日)"
-          :error-messages="getErrorMessage(validate.businessDays.$errors)"
-          :items="weekdays"
-          item-title="title"
-          item-value="value"
-          chips
-          closable-chips
-          multiple
+        <v-text-field
+          v-model="validate.username.$model"
+          :error-messages="getErrorMessage(validate.username.$errors)"
+          class="mr-4"
+          label="コーディネーター名"
         />
         <v-row>
           <v-col

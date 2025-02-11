@@ -55,6 +55,8 @@ tags:
   description: マルシェ開催スケジュール関連
 - name: Shipping
   description: 配送設定関連
+- name: Shop
+  description: 店舗関連
 - name: Spot
   description: スポット関連
 - name: SpotType
@@ -224,6 +226,9 @@ paths:
     $ref: './paths/v1/shippings/default.yaml'
   /v1/coordinators/{coordinatorId}/shippings:
     $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
+  # Shop
+  /v1/shops/{shopId}:
+    $ref: './paths/v1/shops/_shopId/index.yaml'
   # Spot
   /v1/spots:
     $ref: './paths/v1/spots/index.yaml'
@@ -476,6 +481,8 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     shipping:
       $ref: './components/schemas/entity/shipping.yaml#/shipping'
+    shop:
+      $ref: './components/schemas/entity/shop.yaml#/shop'
     spot:
       $ref: './components/schemas/entity/spot.yaml#/spot'
     spotType:
@@ -615,6 +622,8 @@ components:
       $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
     v1UpdateDefaultShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/updateDefaultShippingRequest'
+    v1UpdateShopRequest:
+      $ref: './components/schemas/v1/shop.request.yaml#/updateShopRequest'
     v1CreateSpotRequest:
       $ref: './components/schemas/v1/spot.request.yaml#/createSpotRequest'
     v1UpdateSpotRequest:
@@ -730,6 +739,8 @@ components:
       $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ShopResponse:
+      $ref: './components/schemas/v1/shop.response.yaml#/shopResponse'
     v1SpotResponse:
       $ref: './components/schemas/v1/spot.response.yaml#/spotResponse'
     v1SpotsResponse:
