@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.2.2](https://github.com/and-period/furumaru/compare/v4.2.1...v4.2.2) - 2025-02-11
+- fix(admin): 店舗関連の取得ロジックを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2713
+- FIX: fixed top page by @hamachans in https://github.com/and-period/furumaru/pull/2715
+
 ## [v4.2.1](https://github.com/and-period/furumaru/compare/v4.2.0...v4.2.1) - 2025-02-11
 - feat(store): 店舗エンティティの定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2709
 - feat(store): 店舗のWrite処理を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2711
