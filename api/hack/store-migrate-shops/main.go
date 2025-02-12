@@ -22,6 +22,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 var (
@@ -35,6 +36,7 @@ type app struct {
 	logger *zap.Logger
 	store  *sdb.Database
 	user   *udb.Database
+	db     *mysql.Client
 }
 
 func main() {
@@ -103,13 +105,52 @@ func setup(_ context.Context) (*app, error) {
 		logger: logger,
 		store:  stidb.NewDatabase(storedb),
 		user:   utidb.NewDatabase(userdb),
+		db:     storedb,
 	}
 	return app, nil
 }
 
 func (a *app) run(ctx context.Context) error {
-	a.logger.Info("start migration")
+	a.logger.Info("start migrate shops")
+	if err := a.createShops(ctx); err != nil {
+		return fmt.Errorf("failed to create shops: %w", err)
+	}
+	a.logger.Info("finish migrate shops")
 
+	a.logger.Info("start fill experiences")
+	if err := a.fillExperiences(ctx); err != nil {
+		return fmt.Errorf("failed to fill experiences: %w", err)
+	}
+	a.logger.Info("finish fill experiences")
+
+	a.logger.Info("start fill orders")
+	if err := a.fillOrders(ctx); err != nil {
+		return fmt.Errorf("failed to fill orders: %w", err)
+	}
+	a.logger.Info("finish fill orders")
+
+	a.logger.Info("start fill products")
+	if err := a.fillProducts(ctx); err != nil {
+		return fmt.Errorf("failed to fill products: %w", err)
+	}
+	a.logger.Info("finish fill products")
+
+	a.logger.Info("start fill schedules")
+	if err := a.fillSchedules(ctx); err != nil {
+		return fmt.Errorf("failed to fill schedules: %w", err)
+	}
+	a.logger.Info("finish fill schedules")
+
+	a.logger.Info("start fill shippings")
+	if err := a.fillShippings(ctx); err != nil {
+		return fmt.Errorf("failed to fill shippings: %w", err)
+	}
+	a.logger.Info("finish fill shippings")
+
+	return nil
+}
+
+func (a *app) createShops(ctx context.Context) error {
 	cparams := &udb.ListCoordinatorsParams{}
 	coordinators, err := a.user.Coordinator.List(ctx, cparams)
 	if err != nil {
@@ -156,7 +197,223 @@ func (a *app) run(ctx context.Context) error {
 			}
 		}
 	}
+	return nil
+}
 
-	a.logger.Info("end migration")
+func (a *app) fillExperiences(ctx context.Context) error {
+	eparams := &sdb.ListExperiencesParams{}
+	experiences, err := a.store.Experience.List(ctx, eparams)
+	if err != nil {
+		return fmt.Errorf("failed to list experiences: %w", err)
+	}
+	if len(experiences) == 0 {
+		return nil
+	}
+	a.logger.Info("experiences", zap.Int("count", len(experiences)))
+
+	err = a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		sparams := &sdb.ListShopsParams{
+			CoordinatorIDs: experiences.CoordinatorIDs(),
+		}
+		shops, err := a.store.Shop.List(ctx, sparams)
+		if err != nil {
+			return fmt.Errorf("failed to list shops: %w", err)
+		}
+		shopMap := shops.MapByCoordinatorID()
+
+		for _, experience := range experiences {
+			shop, ok := shopMap[experience.CoordinatorID]
+			if !ok {
+				return fmt.Errorf("shop not found: %s", experience.ID)
+			}
+
+			updates := map[string]interface{}{
+				"shop_id":    shop.ID,
+				"updated_at": jst.Now(),
+			}
+			if err := tx.WithContext(ctx).Table("experiences").Where("id = ?", experience.ID).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to update experience: %w", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update experiences: %w", err)
+	}
+	return nil
+}
+
+func (a *app) fillOrders(ctx context.Context) error {
+	oparams := &sdb.ListOrdersParams{}
+	orders, err := a.store.Order.List(ctx, oparams)
+	if err != nil {
+		return fmt.Errorf("failed to list orders: %w", err)
+	}
+	if len(orders) == 0 {
+		return nil
+	}
+	a.logger.Info("orders", zap.Int("count", len(orders)))
+
+	err = a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		sparams := &sdb.ListShopsParams{
+			CoordinatorIDs: orders.CoordinatorIDs(),
+		}
+		shops, err := a.store.Shop.List(ctx, sparams)
+		if err != nil {
+			return fmt.Errorf("failed to list shops: %w", err)
+		}
+		shopMap := shops.MapByCoordinatorID()
+
+		for _, order := range orders {
+			shop, ok := shopMap[order.CoordinatorID]
+			if !ok {
+				return fmt.Errorf("shop not found: %s", order.ID)
+			}
+
+			updates := map[string]interface{}{
+				"shop_id":    shop.ID,
+				"updated_at": jst.Now(),
+			}
+			if err := tx.WithContext(ctx).Table("orders").Where("id = ?", order.ID).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to update order: %w", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update orders: %w", err)
+	}
+	return nil
+}
+
+func (a *app) fillProducts(ctx context.Context) error {
+	pparams := &sdb.ListProductsParams{}
+	products, err := a.store.Product.List(ctx, pparams)
+	if err != nil {
+		return fmt.Errorf("failed to list products: %w", err)
+	}
+	if len(products) == 0 {
+		return nil
+	}
+	a.logger.Info("products", zap.Int("count", len(products)))
+
+	err = a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		sparams := &sdb.ListShopsParams{
+			CoordinatorIDs: products.CoordinatorIDs(),
+		}
+		shops, err := a.store.Shop.List(ctx, sparams)
+		if err != nil {
+			return fmt.Errorf("failed to list shops: %w", err)
+		}
+		shopMap := shops.MapByCoordinatorID()
+
+		for _, product := range products {
+			shop, ok := shopMap[product.CoordinatorID]
+			if !ok {
+				return fmt.Errorf("shop not found: %s", product.ID)
+			}
+
+			updates := map[string]interface{}{
+				"shop_id":    shop.ID,
+				"updated_at": jst.Now(),
+			}
+			if err := tx.WithContext(ctx).Table("products").Where("id = ?", product.ID).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to update product: %w", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update products: %w", err)
+	}
+	return nil
+}
+
+func (a *app) fillSchedules(ctx context.Context) error {
+	sparams := &sdb.ListSchedulesParams{}
+	schedules, err := a.store.Schedule.List(ctx, sparams)
+	if err != nil {
+		return fmt.Errorf("failed to list schedules: %w", err)
+	}
+	if len(schedules) == 0 {
+		return nil
+	}
+	a.logger.Info("schedules", zap.Int("count", len(schedules)))
+
+	err = a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		sparams := &sdb.ListShopsParams{
+			CoordinatorIDs: schedules.CoordinatorIDs(),
+		}
+		shops, err := a.store.Shop.List(ctx, sparams)
+		if err != nil {
+			return fmt.Errorf("failed to list shops: %w", err)
+		}
+		shopMap := shops.MapByCoordinatorID()
+
+		for _, schedule := range schedules {
+			shop, ok := shopMap[schedule.CoordinatorID]
+			if !ok {
+				return fmt.Errorf("shop not found: %s", schedule.ID)
+			}
+
+			updates := map[string]interface{}{
+				"shop_id":    shop.ID,
+				"updated_at": jst.Now(),
+			}
+			if err := tx.WithContext(ctx).Table("schedules").Where("id = ?", schedule.ID).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to update schedule: %w", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update schedules: %w", err)
+	}
+	return nil
+}
+
+func (a *app) fillShippings(ctx context.Context) error {
+	var shippings sentity.Shippings
+	if err := a.db.DB.WithContext(ctx).Table("shippings").Find(&shippings).Error; err != nil {
+		return fmt.Errorf("failed to list shippings: %w", err)
+	}
+	if len(shippings) == 0 {
+		return nil
+	}
+	a.logger.Info("shippings", zap.Int("count", len(shippings)))
+
+	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		sparams := &sdb.ListShopsParams{
+			CoordinatorIDs: shippings.CoordinatorIDs(),
+		}
+		shops, err := a.store.Shop.List(ctx, sparams)
+		if err != nil {
+			return fmt.Errorf("failed to list shops: %w", err)
+		}
+		shopMap := shops.MapByCoordinatorID()
+
+		for _, shipping := range shippings {
+			if shipping.ID == sentity.DefaultShippingID {
+				continue
+			}
+
+			shop, ok := shopMap[shipping.CoordinatorID]
+			if !ok {
+				return fmt.Errorf("shop not found: %s", shipping.ID)
+			}
+
+			updates := map[string]interface{}{
+				"shop_id":    shop.ID,
+				"updated_at": jst.Now(),
+			}
+			if err := tx.WithContext(ctx).Table("shippings").Where("id = ?", shipping.ID).Updates(updates).Error; err != nil {
+				return fmt.Errorf("failed to update shipping: %w", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update shippings: %w", err)
+	}
 	return nil
 }
