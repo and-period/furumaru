@@ -5,24 +5,24 @@ go 1.23
 require (
 	firebase.google.com/go/v4 v4.15.1
 	github.com/aws/aws-lambda-go v1.47.0
-	github.com/aws/aws-sdk-go-v2 v1.36.0
-	github.com/aws/aws-sdk-go-v2/config v1.29.5
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.58
-	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.18.1
-	github.com/aws/aws-sdk-go-v2/service/batch v1.49.11
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.49.3
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.39.9
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.66.2
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.66.3
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.75.3
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.17
-	github.com/aws/aws-sdk-go-v2/service/sfn v1.34.11
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.13
-	github.com/aws/aws-sdk-go-v2/service/transcribe v1.42.6
-	github.com/aws/aws-sdk-go-v2/service/translate v1.28.15
+	github.com/aws/aws-sdk-go-v2 v1.36.1
+	github.com/aws/aws-sdk-go-v2/config v1.29.6
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.59
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.18.4
+	github.com/aws/aws-sdk-go-v2/service/batch v1.49.12
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.49.4
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.40.1
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.67.0
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.66.4
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.76.1
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.18
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.34.12
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.14
+	github.com/aws/aws-sdk-go-v2/service/transcribe v1.43.1
+	github.com/aws/aws-sdk-go-v2/service/translate v1.28.17
 	github.com/casbin/casbin/v2 v2.103.0
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/dlclark/regexp2 v1.11.4
+	github.com/dlclark/regexp2 v1.11.5
 	github.com/getsentry/sentry-go v0.31.1
 	github.com/gin-contrib/gzip v1.2.2
 	github.com/gin-contrib/pprof v1.5.2
@@ -47,7 +47,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.16.0+incompatible
 	github.com/shopspring/decimal v1.4.0
-	github.com/slack-go/slack v0.15.0
+	github.com/slack-go/slack v0.16.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
 	github.com/stripe/stripe-go/v73 v73.16.0
@@ -55,10 +55,10 @@ require (
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.11.0
-	google.golang.org/api v0.219.0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250124145028-65684f501c47
+	google.golang.org/api v0.220.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250127172529-29210b9bc287
 	google.golang.org/grpc v1.70.0
-	google.golang.org/protobuf v1.36.4
+	google.golang.org/protobuf v1.36.5
 	googlemaps.github.io/maps v1.7.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/datatypes v1.2.5
@@ -69,14 +69,14 @@ require (
 
 require (
 	cel.dev/expr v0.19.2 // indirect
-	cloud.google.com/go v0.118.1 // indirect
+	cloud.google.com/go v0.118.2 // indirect
 	cloud.google.com/go/auth v0.14.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	cloud.google.com/go/firestore v1.18.0 // indirect
 	cloud.google.com/go/iam v1.3.1 // indirect
 	cloud.google.com/go/longrunning v0.6.4 // indirect
-	cloud.google.com/go/monitoring v1.23.0 // indirect
+	cloud.google.com/go/monitoring v1.24.0 // indirect
 	cloud.google.com/go/storage v1.50.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.26.0 // indirect
@@ -84,21 +84,21 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.50.0 // indirect
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.8 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.27 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.31 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.31 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.28 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.32 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.32 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.2 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.31 // indirect
-	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.24.19 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.32 // indirect
+	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.24.20 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.5.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.10.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ivs v1.42.9
-	github.com/aws/aws-sdk-go-v2/service/sso v1.24.14 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.13 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.33.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.6.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.10.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ivs v1.42.10
+	github.com/aws/aws-sdk-go-v2/service/sso v1.24.15 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.14 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.33.14 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.8.1 // indirect
@@ -158,8 +158,8 @@ require (
 	go.opentelemetry.io/otel/trace v1.34.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.14.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/oauth2 v0.26.0
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0
