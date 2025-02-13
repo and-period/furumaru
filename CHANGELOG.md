@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.3.0](https://github.com/and-period/furumaru/compare/v4.2.3...v4.3.0) - 2025-02-13
+- build(deps): bump the dependencies group in /web/admin with 34 updates by @dependabot in https://github.com/and-period/furumaru/pull/2719
+- build(deps): bump the dependencies group in /api with 37 updates by @dependabot in https://github.com/and-period/furumaru/pull/2718
+- feat(user): 購入者側のOAuth認証実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2721
+- fix(gateway): 体験一覧取得時、削除済みのものは取得しないように by @taba2424 in https://github.com/and-period/furumaru/pull/2723
+- Fix: fixed form to change business time by @hamachans in https://github.com/and-period/furumaru/pull/2722
+- fix: ユーザーが位置情報の取得を許可している場合に現在地の座標がユーザーの現在地になるように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2724
+- feat(user): 購入者側のOAuth認証実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2725
+
 ## [v4.2.3](https://github.com/and-period/furumaru/compare/v4.2.2...v4.2.3) - 2025-02-11
 - fix(store): 店舗IDを詰めるように by @taba2424 in https://github.com/and-period/furumaru/pull/2716
 
