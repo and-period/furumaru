@@ -126,6 +126,10 @@ export default defineNuxtConfig({
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',
       GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY || '',
+      COGNITO_AUTH_DOMAIN: process.env.COGNITO_AUTH_DOMAIN || '',
+      COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID || '',
+      GOOGLE_SIGNIN_REDIRECT_URI: process.env.GOOGLE_SIGNIN_REDIRECT_URI || '',
+      LINE_SIGNIN_REDIRECT_URI: process.env.LINE_SIGNIN_REDIRECT_URI || '',
       SENTRY_TRACES_SAMPLE_RATE: parseFloat(
         process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5',
       ),

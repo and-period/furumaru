@@ -8,25 +8,43 @@ definePageMeta({
   layout: 'auth',
 })
 
-const { signIn } = useAuthStore()
-
-const i18n = useI18n()
-const localePath = useLocalePath()
-
+const config = useRuntimeConfig()
+const route = useRoute()
 const router = useRouter()
+const i18n = useI18n()
+
+const { signIn } = useAuthStore()
+const localePath = useLocalePath()
 
 const t = (str: keyof I18n['auth']['signIn']): string => {
   return i18n.t(`auth.signIn.${str}`)
 }
 
-const handleClickGoogleSingInButton = () => {
-  console.log('NOT IMPLEMENTED')
+const handleClickGoogleSingInButton = async () => {
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('oauth_state', state)
+
+  const url = `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/authorize`
+    + `?response_type=CODE`
+    + `&client_id=${config.public.COGNITO_CLIENT_ID}`
+    + `&redirect_uri=${config.public.GOOGLE_SIGNIN_REDIRECT_URI}`
+    + `&state=${state}`
+    + `&identity_provider=Google`
+    + `&scope=openid email aws.cognito.signin.user.admin`
+  await navigateTo(url, { external: true })
 }
-const handleClickFacebookSingInButton = () => {
-  console.log('NOT IMPLEMENTED')
-}
-const handleClickLineSingInButton = () => {
-  console.log('NOT IMPLEMENTED')
+const handleClickLineSingInButton = async () => {
+  const state = crypto.randomUUID()
+  sessionStorage.setItem('oauth_state', state)
+
+  const url = `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/authorize`
+    + `?response_type=CODE`
+    + `&client_id=${config.public.COGNITO_CLIENT_ID}`
+    + `&redirect_uri=${config.public.LINE_SIGNIN_REDIRECT_URI}`
+    + `&state=${state}`
+    + `&identity_provider=LINE`
+    + `&scope=openid email profile aws.cognito.signin.user.admin`
+  await navigateTo(url, { external: true })
 }
 
 const formData = reactive<SignInRequest>({
@@ -53,6 +71,17 @@ const handleSubmit = async () => {
 useSeoMeta({
   title: '新規アカウント登録',
 })
+
+try {
+  const { error } = route.query as { error: string }
+  if (error) {
+    throw new Error(error)
+  }
+}
+catch (error) {
+  errorMessage.value = error as string
+  console.error(error)
+}
 </script>
 
 <template>
@@ -82,7 +111,6 @@ useSeoMeta({
     }"
     @submit="handleSubmit"
     @click:google-sing-in-button="handleClickGoogleSingInButton"
-    @click:facebook-sing-in-button="handleClickFacebookSingInButton"
     @click:line-sing-in-button="handleClickLineSingInButton"
   />
 </template>

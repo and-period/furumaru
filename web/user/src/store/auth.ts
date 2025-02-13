@@ -13,6 +13,14 @@ import type {
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
 
+interface FetchTokenResponse {
+  access_token: string
+  refresh_token: string
+  id_token: string
+  token_type: string
+  expires_in: number
+}
+
 /**
  * 認証情報を管理するグローバルステート
  */
@@ -36,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     /**
-     * ログインを実施する非同期関数
+     * メール認証ログインを実施する非同期関数
      * @param payload
      * @returns
      */
@@ -54,6 +62,66 @@ export const useAuthStore = defineStore('auth', {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
         })
       }
+    },
+
+    /**
+     * OAuthログインを実施する非同期関数
+     * @param code OAuth認証コード
+     * @param redirectUri リダイレクト先URI
+     * @returns 遷移先Path
+     */
+    async signInWithOAuth(code: string, redirectUri: string): Promise<void> {
+      try {
+        const token = await this.fetchOAuthToken(code, redirectUri).catch((err) => {
+          console.error('OAuthトークンの取得に失敗しました。', err)
+          throw new Error('OAuthトークンの取得に失敗しました。')
+        })
+
+        this.isAuthenticated = true
+        this.accessToken = token.access_token
+        this.refreshToken = token.refresh_token
+        this.setExpiredAt(token.expires_in)
+        await this.fetchUserInfo()
+      }
+      catch (error) {
+        return this.errorHandler(error, {
+          401: this.i18n.t('auth.signIn.authErrorMessage'),
+        })
+      }
+    },
+
+    /**
+     * OAuth認証によるトークン発行
+     * @param code 認証コード
+     * @param redirectUri リダイレクト先URI
+     * @returns
+     */
+    async fetchOAuthToken(code: string, redirectUri: string): Promise<FetchTokenResponse> {
+      if (code === '' || redirectUri === '') {
+        throw new Error('code or redirectUri is empty.')
+      }
+
+      const config = useRuntimeConfig()
+
+      const params = new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: config.public.COGNITO_CLIENT_ID as string,
+        redirect_uri: redirectUri,
+        code,
+      })
+
+      const res = await $fetch<FetchTokenResponse>(
+        `https://${config.public.COGNITO_AUTH_DOMAIN}/oauth2/token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString(),
+        },
+      )
+
+      return res
     },
 
     async signUp(
