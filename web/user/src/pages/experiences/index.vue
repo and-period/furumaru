@@ -120,6 +120,11 @@ onMounted(() => {
 })
 
 onMounted(() => {
+  // ユーザーが位置情報の取得を許可した場合に中心座標を現在地に変更
+  if (geoLocationError.value === null) {
+    centerPositionType.value = 'geo'
+  }
+
   const svg = window.btoa(`
   <svg fill="#604C3F" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
     <circle cx="120" cy="120" opacity=".8" r="70" />
