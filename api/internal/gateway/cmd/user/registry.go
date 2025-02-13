@@ -127,6 +127,7 @@ func (a *app) inject(ctx context.Context) error {
 	userAuthParams := &cognito.Params{
 		UserPoolID:  a.CognitoUserPoolID,
 		AppClientID: a.CognitoUserClientID,
+		AuthDomain:  a.CognitoUserAuthDomain,
 	}
 	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
@@ -446,11 +447,13 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		return nil, err
 	}
 	params := &usersrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(mysql),
-		UserAuth:  p.userAuth,
-		Messenger: messenger,
-		Media:     media,
+		WaitGroup:                 p.waitGroup,
+		Database:                  userdb.NewDatabase(mysql),
+		UserAuth:                  p.userAuth,
+		Messenger:                 messenger,
+		Media:                     media,
+		UserAuthGoogleRedirectURL: a.CognitoUserGoogleRedirectURL,
+		UserAuthLINERedirectURL:   a.CognitoUserLINERedirectURL,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
