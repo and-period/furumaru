@@ -99,10 +99,14 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
 }
 
 const handleSubmit = async () => {
+  const req = {
+    ...formData.value,
+    businessOpenTime: formData.value.businessOpenTime.replace(':', ''),
+    businessCloseTime: formData.value.businessCloseTime.replace(':', ''),
+  }
   try {
     isLoading.value = true
-    console.log(formData.value)
-    await experienceStore.updateExperience(experienceId.value, formData.value)
+    await experienceStore.updateExperience(experienceId.value, req)
     router.push('/experiences')
   }
   catch (err) {
@@ -116,6 +120,10 @@ const handleSubmit = async () => {
   }
 }
 
+const convertToTimeFormat = (time: string): string => {
+  return time.slice(0, 2) + ':' + time.slice(2)
+}
+
 onMounted(async () => {
   isLoading.value = true
   producerStore.fetchProducers()
@@ -125,6 +133,8 @@ onMounted(async () => {
     ...formData.value,
     ...result.experience,
   }
+  formData.value.businessOpenTime = convertToTimeFormat(formData.value.businessOpenTime)
+  formData.value.businessCloseTime = convertToTimeFormat(formData.value.businessCloseTime)
   isLoading.value = false
 })
 </script>
