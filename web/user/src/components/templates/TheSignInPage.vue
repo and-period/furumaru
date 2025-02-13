@@ -16,7 +16,6 @@ interface Props {
   passwordErrorMessage: string
   dontHaveAccountText: string
   googleButtonText: string
-  facebookButtonText: string
   lineButtonText: string
   forgetPasswordLink: LinkItem
   signUpLink: LinkItem
@@ -26,7 +25,6 @@ interface Emits {
   (e: 'update:modelValue', val: SignInRequest): void
   (e: 'submit'): void
   (e: 'click:googleSingInButton'): void
-  (e: 'click:facebookSingInButton'): void
   (e: 'click:lineSingInButton'): void
 }
 
@@ -44,9 +42,6 @@ const handleSubmit = () => {
 
 const handleClickGoogleSingInButton = () => {
   emits('click:googleSingInButton')
-}
-const handleClickFacebookSingInButton = () => {
-  emits('click:facebookSingInButton')
 }
 const handleClickLineSingInButton = () => {
   emits('click:lineSingInButton')
@@ -91,10 +86,6 @@ const hideV1App = false
             <the-google-auth-button
               :button-text="googleButtonText"
               @click="handleClickGoogleSingInButton"
-            />
-            <the-facebook-auth-button
-              :button-text="facebookButtonText"
-              @click="handleClickFacebookSingInButton"
             />
             <the-line-auth-button
               :button-text="lineButtonText"
