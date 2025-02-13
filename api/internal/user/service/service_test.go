@@ -141,6 +141,9 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			entity.AdminTypeProducer:      {"group-id"},
 		},
 		AdminAuthGoogleRedirectURL: "http://example.com/auth/google/callback",
+		AdminAuthLINERedirectURL:   "http://example.com/auth/line/callback",
+		UserAuthGoogleRedirectURL:  "http://example.com/auth/google/callback",
+		UserAuthLINERedirectURL:    "http://example.com/auth/line/callback",
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {

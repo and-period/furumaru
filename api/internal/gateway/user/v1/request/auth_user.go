@@ -18,7 +18,23 @@ type VerifyAuthUserRequest struct {
 	VerifyCode string `json:"verifyCode,omitempty"` // 検証コード
 }
 
-type CreateAuthUserWithOAuthRequest struct {
+type CreateAuthUserWithGoogleRequest struct {
+	Code          string `json:"code,omitempty"`          // 認証コード
+	Nonce         string `json:"nonce,omitempty"`         // セキュア文字列（リプレイアタック対策）
+	RedirectURI   string `json:"redirectUri,omitempty"`   // リダイレクトURI
+	Username      string `json:"username,omitempty"`      // ユーザー名(表示名)
+	AccountID     string `json:"accountId,omitempty"`     // ユーザーID(検索名)
+	Lastname      string `json:"lastname,omitempty"`      // 姓
+	Firstname     string `json:"firstname,omitempty"`     // 名
+	LastnameKana  string `json:"lastnameKana,omitempty"`  // 姓（かな）
+	FirstnameKana string `json:"firstnameKana,omitempty"` // 名（かな）
+	PhoneNumber   string `json:"phoneNumber,omitempty"`   // 電話番号
+}
+
+type CreateAuthUserWithLINERequest struct {
+	Code          string `json:"code,omitempty"`          // 認証コード
+	Nonce         string `json:"nonce,omitempty"`         // セキュア文字列（リプレイアタック対策）
+	RedirectURI   string `json:"redirectUri,omitempty"`   // リダイレクトURI
 	Username      string `json:"username,omitempty"`      // ユーザー名(表示名)
 	AccountID     string `json:"accountId,omitempty"`     // ユーザーID(検索名)
 	Lastname      string `json:"lastname,omitempty"`      // 姓

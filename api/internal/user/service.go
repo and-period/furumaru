@@ -62,17 +62,20 @@ type Service interface {
 	// Guest - ゲスト
 	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error) // ゲスト登録・更新
 	// Member - 会員
-	CreateMember(ctx context.Context, in *CreateMemberInput) (string, error)                         // 登録 (メールアドレス/SMS認証)
-	VerifyMember(ctx context.Context, in *VerifyMemberInput) error                                   // 登録後の確認 (メールアドレス/SMS認証)
-	CreateMemberWithOAuth(ctx context.Context, in *CreateMemberWithOAuthInput) (*entity.User, error) // 登録 (OAuth認証)
-	UpdateMemberEmail(ctx context.Context, in *UpdateMemberEmailInput) error                         // メールアドレス更新
-	VerifyMemberEmail(ctx context.Context, in *VerifyMemberEmailInput) error                         // メールアドレス更新後の確認
-	UpdateMemberPassword(ctx context.Context, in *UpdateMemberPasswordInput) error                   // パスワード更新
-	ForgotMemberPassword(ctx context.Context, in *ForgotMemberPasswordInput) error                   // パスワードリセット (メール送信)
-	VerifyMemberPassword(ctx context.Context, in *VerifyMemberPasswordInput) error                   // パスワードリセット (パスワード更新)
-	UpdateMemberUsername(ctx context.Context, in *UpdateMemberUsernameInput) error                   // 表示名更新
-	UpdateMemberAccountID(ctx context.Context, in *UpdateMemberAccountIDInput) error                 // 検索名更新
-	UpdateMemberThumbnailURL(ctx context.Context, in *UpdateMemberThumbnailURLInput) error           // サムネイルURL更新
+	CreateMember(ctx context.Context, in *CreateMemberInput) (string, error)                           // 登録 (メールアドレス/SMS認証)
+	VerifyMember(ctx context.Context, in *VerifyMemberInput) error                                     // 登録後の確認 (メールアドレス/SMS認証)
+	UpdateMemberEmail(ctx context.Context, in *UpdateMemberEmailInput) error                           // メールアドレス更新
+	VerifyMemberEmail(ctx context.Context, in *VerifyMemberEmailInput) error                           // メールアドレス更新後の確認
+	UpdateMemberPassword(ctx context.Context, in *UpdateMemberPasswordInput) error                     // パスワード更新
+	ForgotMemberPassword(ctx context.Context, in *ForgotMemberPasswordInput) error                     // パスワードリセット (メール送信)
+	VerifyMemberPassword(ctx context.Context, in *VerifyMemberPasswordInput) error                     // パスワードリセット (パスワード更新)
+	UpdateMemberUsername(ctx context.Context, in *UpdateMemberUsernameInput) error                     // 表示名更新
+	UpdateMemberAccountID(ctx context.Context, in *UpdateMemberAccountIDInput) error                   // 検索名更新
+	UpdateMemberThumbnailURL(ctx context.Context, in *UpdateMemberThumbnailURLInput) error             // サムネイルURL更新
+	AuthMemberWithGoogle(ctx context.Context, in *AuthMemberWithGoogleInput) (string, error)           // 認証開始（Google認証）
+	AuthMemberWithLINE(ctx context.Context, in *AuthMemberWithLINEInput) (string, error)               // 認証開始（LINE認証）
+	CreateMemberWithGoogle(ctx context.Context, in *CreateMemberWithGoogleInput) (*entity.User, error) // 登録（Google認証）
+	CreateMemberWithLINE(ctx context.Context, in *CreateMemberWithLINEInput) (*entity.User, error)     // 登録（LINE認証）
 	// Producer - 生産者
 	ListProducers(ctx context.Context, in *ListProducersInput) (entity.Producers, int64, error)  // 一覧取得
 	MultiGetProducers(ctx context.Context, in *MultiGetProducersInput) (entity.Producers, error) // 一覧取得(ID指定)

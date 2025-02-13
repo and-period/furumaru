@@ -1,0 +1,67 @@
+get:
+  summary: Google認証用URLの発行
+  operationId: v1AuthGoogleAccount
+  tags:
+  - Auth
+  security:
+  - cookieAuth: []
+  parameters:
+  - in: query
+    name: state
+    schema:
+      type: string
+    description: CSRF対策用のstate
+    required: true
+    example: 'xxxxxxxxxx'
+  - in: query
+    name: redirectUri
+    schema:
+      type: string
+    description: 認証後のリダイレクト先（変更したいときのみ指定）
+    required: false
+    example: 'https://example.com'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AuthGoogleAccountResponse'
+    401:
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+post:
+  summary: Googleアカウントの連携
+  operationId: v1CreateAuthUserWithGoogle
+  tags:
+  - Auth
+  security:
+  - cookieAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthUserWithGoogleRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AuthResponse'
+    401:
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: Nonce または プロバイダ種別が不正
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

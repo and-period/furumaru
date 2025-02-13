@@ -18,7 +18,6 @@ import type {
   AuthUserResponse,
   CreateAuthUserRequest,
   CreateAuthUserResponse,
-  CreateAuthUserWithOAuthRequest,
   ErrorResponse,
   GetUploadUrlRequest,
   UpdateAuthUserAccountIdRequest,
@@ -39,8 +38,6 @@ import {
     CreateAuthUserRequestToJSON,
     CreateAuthUserResponseFromJSON,
     CreateAuthUserResponseToJSON,
-    CreateAuthUserWithOAuthRequestFromJSON,
-    CreateAuthUserWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     GetUploadUrlRequestFromJSON,
@@ -69,10 +66,6 @@ import {
 
 export interface V1CreateAuthUserRequest {
     body: CreateAuthUserRequest;
-}
-
-export interface V1CreateAuthUserWithOAuthRequest {
-    body: CreateAuthUserWithOAuthRequest;
 }
 
 export interface V1GetUserThumbnailUploadUrlRequest {
@@ -153,50 +146,6 @@ export class AuthUserApi extends runtime.BaseAPI {
      */
     async v1CreateAuthUser(requestParameters: V1CreateAuthUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateAuthUserResponse> {
         const response = await this.v1CreateAuthUserRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 購入者登録 (SNS認証)
-     */
-    async v1CreateAuthUserWithOAuthRaw(requestParameters: V1CreateAuthUserWithOAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling v1CreateAuthUserWithOAuth().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/users/me/oauth`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters['body'] as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 購入者登録 (SNS認証)
-     */
-    async v1CreateAuthUserWithOAuth(requestParameters: V1CreateAuthUserWithOAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
-        const response = await this.v1CreateAuthUserWithOAuthRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

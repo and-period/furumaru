@@ -24,7 +24,7 @@ func TestMember_Name(t *testing.T) {
 				Firstname:     "利用者",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "りようしゃ",
-				ProviderType:  ProviderTypeEmail,
+				ProviderType:  UserAuthProviderTypeEmail,
 				Email:         "test@and-period.jp",
 				PhoneNumber:   "+819012345678",
 				ThumbnailURL:  "http://example.com/image.png",

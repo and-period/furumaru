@@ -56,7 +56,7 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
 		Joins("INNER JOIN users ON members.user_id = users.id").
 		Where("members.email = ?", email).
-		Where("members.provider_type = ?", entity.ProviderTypeEmail).
+		Where("members.provider_type = ?", entity.UserAuthProviderTypeEmail).
 		Where("users.deleted_at IS NULL")
 
 	if err := stmt.First(&member).Error; err != nil {
@@ -111,7 +111,7 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 		if err != nil {
 			return err
 		}
-		if current.ProviderType != entity.ProviderTypeEmail {
+		if current.ProviderType != entity.UserAuthProviderTypeEmail {
 			return database.ErrFailedPrecondition
 		}
 

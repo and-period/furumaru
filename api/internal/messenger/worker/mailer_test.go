@@ -677,7 +677,7 @@ func TestFetchUsers(t *testing.T) {
 				Firstname:     "利用者",
 				LastnameKana:  "あんどどっと",
 				FirstnameKana: "りようしゃ",
-				ProviderType:  uentity.ProviderTypeEmail,
+				ProviderType:  uentity.UserAuthProviderTypeEmail,
 				Email:         "test-user@and-period.jp",
 				PhoneNumber:   "+810000000000",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",

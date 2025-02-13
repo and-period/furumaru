@@ -43,7 +43,7 @@ type NewUserParams struct {
 	Firstname     string
 	LastnameKana  string
 	FirstnameKana string
-	ProviderType  ProviderType
+	ProviderType  UserAuthProviderType
 	Email         string
 	PhoneNumber   string
 }
