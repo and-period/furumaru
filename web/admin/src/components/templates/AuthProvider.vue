@@ -84,6 +84,11 @@ const getItems = computed(() => {
     <v-card-title>認証用の外部アカウント連携</v-card-title>
 
     <v-card-text>
+      <div class="text-red">
+        <p>※連携完了後、実際にログインで使えるようになるまでは少し時間が時間がかかる場合があります。</p>
+        <p>※外部アカウント連携後、メールアドレス認証が利用できなくなるケースが存在します。</p>
+      </div>
+
       <v-list>
         <v-list-item
           v-for="item in getItems"
