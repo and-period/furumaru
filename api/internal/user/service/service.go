@@ -24,7 +24,10 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
-const defaultAdminAuthTTL = 5 * time.Minute
+const (
+	defaultAdminAuthTTL = 5 * time.Minute
+	defaultUserAuthTTL  = 5 * time.Minute
+)
 
 type Params struct {
 	WaitGroup                  *sync.WaitGroup
@@ -38,6 +41,8 @@ type Params struct {
 	DefaultAdminGroups         map[entity.AdminType][]string
 	AdminAuthGoogleRedirectURL string
 	AdminAuthLINERedirectURL   string
+	UserAuthGoogleRedirectURL  string
+	UserAuthLINERedirectURL    string
 }
 
 type service struct {
@@ -57,11 +62,15 @@ type service struct {
 	adminAuthTTL               time.Duration
 	adminAuthGoogleRedirectURL string
 	adminAuthLINERedirectURL   string
+	userAuthTTL                time.Duration
+	userAuthGoogleRedirectURL  string
+	userAuthLINERedirectURL    string
 }
 
 type options struct {
 	logger       *zap.Logger
 	adminAuthTTL time.Duration
+	userAuthTTL  time.Duration
 }
 
 type Option func(*options)
@@ -78,10 +87,17 @@ func WithAdminAuthTTL(ttl time.Duration) Option {
 	}
 }
 
+func WithUserAuthTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.userAuthTTL = ttl
+	}
+}
+
 func NewService(params *Params, opts ...Option) user.Service {
 	dopts := &options{
 		logger:       zap.NewNop(),
 		adminAuthTTL: defaultAdminAuthTTL,
+		userAuthTTL:  defaultUserAuthTTL,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -112,6 +128,9 @@ func NewService(params *Params, opts ...Option) user.Service {
 		adminAuthTTL:               dopts.adminAuthTTL,
 		adminAuthGoogleRedirectURL: params.AdminAuthGoogleRedirectURL,
 		adminAuthLINERedirectURL:   params.AdminAuthLINERedirectURL,
+		userAuthTTL:                dopts.userAuthTTL,
+		userAuthGoogleRedirectURL:  params.UserAuthGoogleRedirectURL,
+		userAuthLINERedirectURL:    params.UserAuthLINERedirectURL,
 	}
 }
 

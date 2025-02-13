@@ -68,8 +68,10 @@ paths:
     $ref: './paths/v1/users/me/index.yaml'
   /v1/users/me/verified:
     $ref: './paths/v1/users/me/verified.yaml'
-  /v1/users/me/oauth:
-    $ref: './paths/v1/users/me/oauth.yaml'
+  /v1/users/me/google:
+    $ref: './paths/v1/users/me/google.yaml'
+  /v1/users/me/line:
+    $ref: './paths/v1/users/me/line.yaml'
   /v1/users/me/username:
     $ref: './paths/v1/users/me/username.yaml'
   /v1/users/me/account-id:
@@ -338,8 +340,10 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserRequest'
     v1VerifyAuthUserRequest:
       $ref: './components/schemas/v1/auth-user.request.yaml#/verifyAuthUserRequest'
-    v1CreateAuthUserWithOAuthRequest:
-      $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserWithOAuthRequest'
+    v1CreateAuthUserWithGoogleRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserWithGoogleRequest'
+    v1CreateAuthUserWithLineRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserWithLineRequest'
     v1UpdateAuthUserEmailRequest:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserEmailRequest'
     v1VerifyAuthUserEmailRequest:
@@ -397,6 +401,10 @@ components:
       $ref: './components/schemas/v1/auth-user.response.yaml#/authUserResponse'
     v1CreateAuthUserResponse:
       $ref: './components/schemas/v1/auth-user.response.yaml#/createAuthUserResponse'
+    v1AuthGoogleAccountResponse:
+      $ref: './components/schemas/v1/auth-user.response.yaml#/authGoogleAccountResponse'
+    v1AuthLineAccountResponse:
+      $ref: './components/schemas/v1/auth-user.response.yaml#/authLineAccountResponse'
     v1AddressResponse:
       $ref: './components/schemas/v1/address.response.yaml#/addressResponse'
     v1AddressesResponse:

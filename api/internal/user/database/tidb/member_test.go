@@ -505,7 +505,7 @@ func TestUser_UpdateEmail(t *testing.T) {
 			name: "failed to unmatch provider type",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
-				u.ProviderType = entity.ProviderTypeOAuth
+				u.ProviderType = entity.UserAuthProviderTypeGoogle
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&u.Member).Error
@@ -833,7 +833,7 @@ func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 		Firstname:     "利用者",
 		LastnameKana:  "あんどどっと",
 		FirstnameKana: "りようしゃ",
-		ProviderType:  entity.ProviderTypeEmail,
+		ProviderType:  entity.UserAuthProviderTypeEmail,
 		Email:         email,
 		PhoneNumber:   phoneNumber,
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",

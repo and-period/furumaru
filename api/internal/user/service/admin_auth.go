@@ -297,7 +297,7 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	if err != nil {
 		return internalError(err)
 	}
-	s.logger.Debug("Connecting Admin account", zap.Any("user", user))
+	s.logger.Debug("Connecting admin account", zap.Any("user", user))
 
 	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みの外部アカウントを削除
 	providerParams := &entity.AdminAuthProviderParams{

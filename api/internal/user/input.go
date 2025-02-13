@@ -336,8 +336,33 @@ type VerifyMemberInput struct {
 	VerifyCode string `validate:"required"`
 }
 
-type CreateMemberWithOAuthInput struct {
-	AccessToken   string `validate:"required"`
+type AuthMemberWithGoogleInput struct {
+	AuthMemberDetailWithOAuth
+}
+
+type AuthMemberWithLINEInput struct {
+	AuthMemberDetailWithOAuth
+}
+
+type AuthMemberDetailWithOAuth struct {
+	SessionID   string `validate:"required"`
+	State       string `validate:"required"`
+	RedirectURI string `validate:"omitempty,url"`
+}
+
+type CreateMemberWithGoogleInput struct {
+	CreateMemberDetailWithOAuth
+}
+
+type CreateMemberWithLINEInput struct {
+	CreateMemberDetailWithOAuth
+}
+
+type CreateMemberDetailWithOAuth struct {
+	SessionID     string `validate:"required"`
+	Code          string `validate:"required"`
+	Nonce         string `validate:"required"`
+	RedirectURI   string `validate:"omitempty,url"`
 	Username      string `validate:"required,max=32"`
 	AccountID     string `validate:"required,max=32,account_id"`
 	Lastname      string `validate:"required,max=16"`

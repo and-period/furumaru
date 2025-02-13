@@ -61,7 +61,7 @@ func TestLiveComments(t *testing.T) {
 						Firstname:     "利用者",
 						LastnameKana:  "あんどどっと",
 						FirstnameKana: "りようしゃ",
-						ProviderType:  uentity.ProviderTypeEmail,
+						ProviderType:  uentity.UserAuthProviderTypeEmail,
 						Email:         "test@example.com",
 						PhoneNumber:   "+819012345678",
 						ThumbnailURL:  "http://example.com/thumbnail.png",

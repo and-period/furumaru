@@ -17,8 +17,11 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/users/me")
 
 	r.POST("", h.CreateAuthUser)
-	r.POST("/oauth", h.CreateAuthUserWithOAuth)
 	r.POST("/verified", h.VerifyAuthUser)
+	r.GET("/google", h.AuthGoogleAccount)
+	r.POST("/google", h.CreateAuthUserWithGoogle)
+	r.GET("/line", h.AuthLINEAccount)
+	r.POST("/line", h.CreateAuthUserWithLINE)
 
 	auth := r.Group("", h.authentication)
 	auth.GET("", h.GetAuthUser)
@@ -100,28 +103,106 @@ func (h *handler) VerifyAuthUser(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) CreateAuthUserWithOAuth(ctx *gin.Context) {
-	token, err := util.GetAuthToken(ctx)
+func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
+	in := &user.AuthMemberWithGoogleInput{
+		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
+			SessionID:   h.getSessionID(ctx),
+			State:       util.GetQuery(ctx, "state", ""),
+			RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
+		},
+	}
+	authURL, err := h.user.AuthMemberWithGoogle(ctx, in)
 	if err != nil {
-		h.unauthorized(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
-	req := &request.CreateAuthUserWithOAuthRequest{}
+	res := &response.AuthGoogleAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateAuthUserWithGoogle(ctx *gin.Context) {
+	req := &request.CreateAuthUserWithGoogleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
-	userIn := &user.CreateMemberWithOAuthInput{
-		AccessToken:   token,
-		Username:      req.Username,
-		AccountID:     req.AccountID,
-		Lastname:      req.Lastname,
-		Firstname:     req.Firstname,
-		LastnameKana:  req.LastnameKana,
-		FirstnameKana: req.FirstnameKana,
-		PhoneNumber:   req.PhoneNumber,
+	userIn := &user.CreateMemberWithGoogleInput{
+		CreateMemberDetailWithOAuth: user.CreateMemberDetailWithOAuth{
+			SessionID:     h.getSessionID(ctx),
+			Code:          req.Code,
+			Nonce:         req.Nonce,
+			RedirectURI:   req.RedirectURI,
+			Username:      req.Username,
+			AccountID:     req.AccountID,
+			Lastname:      req.Lastname,
+			Firstname:     req.Firstname,
+			LastnameKana:  req.LastnameKana,
+			FirstnameKana: req.FirstnameKana,
+			PhoneNumber:   req.PhoneNumber,
+		},
 	}
-	uuser, err := h.user.CreateMemberWithOAuth(ctx, userIn)
+	uuser, err := h.user.CreateMemberWithGoogle(ctx, userIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	notificationIn := &user.GetUserNotificationInput{
+		UserID: uuser.ID,
+	}
+	notification, err := h.user.GetUserNotification(ctx, notificationIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthUserResponse{
+		AuthUser: service.NewAuthUser(uuser, notification).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) AuthLINEAccount(ctx *gin.Context) {
+	in := &user.AuthMemberWithLINEInput{
+		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
+			SessionID:   h.getSessionID(ctx),
+			State:       util.GetQuery(ctx, "state", ""),
+			RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
+		},
+	}
+	authURL, err := h.user.AuthMemberWithLINE(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthLINEAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateAuthUserWithLINE(ctx *gin.Context) {
+	req := &request.CreateAuthUserWithLINERequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	userIn := &user.CreateMemberWithLINEInput{
+		CreateMemberDetailWithOAuth: user.CreateMemberDetailWithOAuth{
+			SessionID:     h.getSessionID(ctx),
+			Code:          req.Code,
+			Nonce:         req.Nonce,
+			RedirectURI:   req.RedirectURI,
+			Username:      req.Username,
+			AccountID:     req.AccountID,
+			Lastname:      req.Lastname,
+			Firstname:     req.Firstname,
+			LastnameKana:  req.LastnameKana,
+			FirstnameKana: req.FirstnameKana,
+			PhoneNumber:   req.PhoneNumber,
+		},
+	}
+	uuser, err := h.user.CreateMemberWithLINE(ctx, userIn)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
