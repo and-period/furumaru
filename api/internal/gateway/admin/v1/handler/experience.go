@@ -68,11 +68,12 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	}
 
 	in := &store.ListExperiencesInput{
-		Name:       util.GetQuery(ctx, "name", ""),
-		ProducerID: util.GetQuery(ctx, "producerId", ""),
-		Limit:      limit,
-		Offset:     offset,
-		NoLimit:    false,
+		Name:           util.GetQuery(ctx, "name", ""),
+		ProducerID:     util.GetQuery(ctx, "producerId", ""),
+		ExcludeDeleted: true,
+		Limit:          limit,
+		Offset:         offset,
+		NoLimit:        false,
 	}
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
