@@ -56,6 +56,7 @@ export const useExperienceStore = defineStore('experience', {
           {
             longitude,
             latitude,
+            radius: 100000,
           },
         )
         this.experiencesResponse = response
