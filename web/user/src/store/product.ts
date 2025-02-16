@@ -51,13 +51,19 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async fetchProduct(id: string): Promise<void> {
-      this.productFetchState.isLoading = true
-      const response = await this.productApiClient().v1GetProduct({
-        productId: id,
-      })
-      this.productResponse = response
-      this.productFetchState.isLoading = false
+    async fetchProduct(id: string): Promise<ProductResponse> {
+      try {
+        this.productFetchState.isLoading = true
+        const response = await this.productApiClient().v1GetProduct({
+          productId: id,
+        })
+        this.productResponse = response
+        this.productFetchState.isLoading = false
+        return response
+      }
+      catch (error) {
+        return this.errorHandler(error)
+      }
     },
   },
 
