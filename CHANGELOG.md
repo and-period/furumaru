@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.3.1](https://github.com/and-period/furumaru/compare/v4.3.0...v4.3.1) - 2025-02-16
+- fix: radiusを100000に指定する by @wf-yamaday in https://github.com/and-period/furumaru/pull/2726
+- レビュー投稿画面のモックアップの実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2728
+
 ## [v4.3.0](https://github.com/and-period/furumaru/compare/v4.2.3...v4.3.0) - 2025-02-13
 - build(deps): bump the dependencies group in /web/admin with 34 updates by @dependabot in https://github.com/and-period/furumaru/pull/2719
 - build(deps): bump the dependencies group in /api with 37 updates by @dependabot in https://github.com/and-period/furumaru/pull/2718
