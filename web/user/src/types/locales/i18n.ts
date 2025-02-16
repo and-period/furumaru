@@ -415,4 +415,15 @@ export interface I18n {
       useOtherAddressLabel: string
     }
   }
+
+  reviews: {
+    postReviewTitle: string
+    reviewTargetLabel: string
+    ratingLabel: string
+    reviewTitleLabel: string
+    reviewTitlePlaceholder: string
+    reviewCommentLabel: string
+    reviewCommentPlaceholder: string
+    reviewSubmitButtonText: string
+  }
 }
