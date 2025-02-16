@@ -426,5 +426,15 @@
       "useDefaultAddressLabel": "上記の住所を利用する",
       "useOtherAddressLabel": "その他の住所を入力する"
     }
+  },
+  "reviews": {
+    "postReviewTitle": "レビュー投稿",
+    "reviewTargetLabel": "レビュー対象商品",
+    "ratingLabel": "評価",
+    "reviewTitleLabel": "タイトル",
+    "reviewTitlePlaceholder": "最も伝えたいポイントを書いてください",
+    "reviewCommentLabel": "コメント",
+    "reviewCommentPlaceholder": "商品の感想やレビューを書いてください",
+    "reviewSubmitButtonText": "投稿する"
   }
 }

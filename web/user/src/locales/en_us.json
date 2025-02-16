@@ -386,5 +386,15 @@
       "linkCopy": "Link copy",
       "linkCopied": "Link copied"
     }
+  },
+  "reviews": {
+    "postReviewTitle": "Post a Review",
+    "reviewTargetLabel": "Review Target",
+    "ratingLabel": "Rating",
+    "reviewTitleLabel": "Title",
+    "reviewTitlePlaceholder": "Please enter a title",
+    "reviewCommentLabel": "Comment",
+    "reviewCommentPlaceholder": "Please enter a comment",
+    "reviewSubmitButtonText": "Submit"
   }
 }
