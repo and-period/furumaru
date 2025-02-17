@@ -344,10 +344,12 @@ func TestPromotions(t *testing.T) {
 			promotions: entity.Promotions{
 				{
 					ID:           "promotion-id",
+					ShopID:       "shop-id",
 					Status:       entity.PromotionStatusEnabled,
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
+					TargetType:   entity.PromotionTargetTypeSpecificShop,
 					DiscountType: entity.DiscountTypeFreeShipping,
 					DiscountRate: 0,
 					Code:         "code0001",
@@ -369,10 +371,12 @@ func TestPromotions(t *testing.T) {
 				{
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						ShopID:       "shop-id",
 						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
+						TargetType:   PromotionTargetTypeSpecificShop.Response(),
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
