@@ -410,6 +410,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     promotionStatus:
       $ref: './components/schemas/codes/promotion.yaml#/promotionStatus'
+    promotionTargetType:
+      $ref: './components/schemas/codes/promotion.yaml#/promotionTargetType'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:

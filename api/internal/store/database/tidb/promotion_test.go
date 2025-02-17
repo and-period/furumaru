@@ -32,10 +32,10 @@ func TestPromotion_List(t *testing.T) {
 	require.NoError(t, err)
 
 	promotions := make(entity.Promotions, 3)
-	promotions[0] = testPromotion("promotion-id01", "code0001", now().Add(-time.Hour))
+	promotions[0] = testPromotion("promotion-id01", "code0001", "", now().Add(-time.Hour))
 	promotions[0].Status = entity.PromotionStatusFinished
-	promotions[1] = testPromotion("promotion-id02", "code0002", now())
-	promotions[2] = testPromotion("promotion-id03", "code0003", now().Add(time.Hour))
+	promotions[1] = testPromotion("promotion-id02", "code0002", "", now())
+	promotions[2] = testPromotion("promotion-id03", "code0003", "", now().Add(time.Hour))
 	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
@@ -118,9 +118,9 @@ func TestPromotion_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	promotions := make(entity.Promotions, 3)
-	promotions[0] = testPromotion("promotion-id01", "code0001", now())
-	promotions[1] = testPromotion("promotion-id02", "code0002", now())
-	promotions[2] = testPromotion("promotion-id03", "code0003", now())
+	promotions[0] = testPromotion("promotion-id01", "code0001", "", now())
+	promotions[1] = testPromotion("promotion-id02", "code0002", "", now())
+	promotions[2] = testPromotion("promotion-id03", "code0003", "", now())
 	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
@@ -187,9 +187,9 @@ func TestPromotion_MultiGet(t *testing.T) {
 	require.NoError(t, err)
 
 	promotions := make(entity.Promotions, 3)
-	promotions[0] = testPromotion("promotion-id01", "code0001", now())
-	promotions[1] = testPromotion("promotion-id02", "code0002", now())
-	promotions[2] = testPromotion("promotion-id03", "code0003", now())
+	promotions[0] = testPromotion("promotion-id01", "code0001", "", now())
+	promotions[1] = testPromotion("promotion-id02", "code0002", "", now())
+	promotions[2] = testPromotion("promotion-id03", "code0003", "", now())
 	err = db.DB.Create(&promotions).Error
 	require.NoError(t, err)
 
@@ -255,7 +255,7 @@ func TestPromotion_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	p := testPromotion("promotion-id", "code0001", now())
+	p := testPromotion("promotion-id", "code0001", "", now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
@@ -328,7 +328,7 @@ func TestPromotion_GetByCode(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	p := testPromotion("promotion-id", "code0001", now())
+	p := testPromotion("promotion-id", "code0001", "", now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
@@ -417,7 +417,7 @@ func TestPromotion_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				promotion: testPromotion("promotion-id", "code0001", now()),
+				promotion: testPromotion("promotion-id", "code0001", "", now()),
 			},
 			want: want{
 				hasErr: false,
@@ -426,12 +426,12 @@ func TestPromotion_Create(t *testing.T) {
 		{
 			name: "duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				promotion := testPromotion("promotion-id", "code0001", now())
+				promotion := testPromotion("promotion-id", "code0001", "", now())
 				err = db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				promotion: testPromotion("promotion-id", "code0001", now()),
+				promotion: testPromotion("promotion-id", "code0001", "", now()),
 			},
 			want: want{
 				hasErr: true,
@@ -487,7 +487,7 @@ func TestPromotion_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				promotion := testPromotion("promotion-id", "code0001", now())
+				promotion := testPromotion("promotion-id", "code0001", "", now())
 				err := db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
@@ -512,9 +512,9 @@ func TestPromotion_Update(t *testing.T) {
 		{
 			name: "code is unique",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				promotion := testPromotion("promotion-id", "code0001", now())
+				promotion := testPromotion("promotion-id", "code0001", "", now())
 				err := db.DB.Create(&promotion).Error
-				promotion = testPromotion("other-id", "code0002", now())
+				promotion = testPromotion("other-id", "code0002", "", now())
 				err = db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
@@ -575,7 +575,7 @@ func TestPromotion_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				promotion := testPromotion("promotion-id", "code0001", now())
+				promotion := testPromotion("promotion-id", "code0001", "", now())
 				err := db.DB.Create(&promotion).Error
 				require.NoError(t, err)
 			},
@@ -606,13 +606,19 @@ func TestPromotion_Delete(t *testing.T) {
 	}
 }
 
-func testPromotion(id, code string, now time.Time) *entity.Promotion {
+func testPromotion(id, code, shopID string, now time.Time) *entity.Promotion {
+	targetType := entity.PromotionTargetTypeAllShop
+	if shopID != "" {
+		targetType = entity.PromotionTargetTypeSpecificShop
+	}
 	return &entity.Promotion{
 		ID:           id,
+		ShopID:       shopID,
 		Status:       entity.PromotionStatusEnabled,
 		Title:        "夏の採れたて野菜マルシェを開催!!",
 		Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 		Public:       true,
+		TargetType:   targetType,
 		DiscountType: entity.DiscountTypeFreeShipping,
 		DiscountRate: 0,
 		Code:         code,

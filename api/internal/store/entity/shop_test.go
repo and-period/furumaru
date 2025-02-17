@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
 
 func TestShop(t *testing.T) {
@@ -36,6 +37,45 @@ func TestShop(t *testing.T) {
 			t.Parallel()
 			actual := NewShop(tt.params)
 			actual.ID = "" // ignore
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestShop_Enabled(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		shop   *Shop
+		expect bool
+	}{
+		{
+			name: "enabled",
+			shop: &Shop{
+				Activated: true,
+			},
+			expect: true,
+		},
+		{
+			name: "disabled",
+			shop: &Shop{
+				Activated: false,
+			},
+			expect: false,
+		},
+		{
+			name: "deleted",
+			shop: &Shop{
+				Activated: true,
+				DeletedAt: gorm.DeletedAt{Time: time.Now()},
+			},
+			expect: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.shop.Enabled()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

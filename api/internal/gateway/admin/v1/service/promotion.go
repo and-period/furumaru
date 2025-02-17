@@ -26,6 +26,15 @@ const (
 	DiscountTypeFreeShipping DiscountType = 3 // 送料無料
 )
 
+// PromotionTargetType - プロモーションの対象
+type PromotionTargetType int32
+
+const (
+	PromotionTargetTypeUnknown      PromotionTargetType = 0
+	PromotionTargetTypeAllShop      PromotionTargetType = 1 // すべての店舗
+	PromotionTargetTypeSpecificShop PromotionTargetType = 2 // 特定の店舗のみ
+)
+
 type Promotion struct {
 	response.Promotion
 }
@@ -81,6 +90,21 @@ func (t DiscountType) Response() int32 {
 	return int32(t)
 }
 
+func NewPromotionTargetType(typ entity.PromotionTargetType) PromotionTargetType {
+	switch typ {
+	case entity.PromotionTargetTypeAllShop:
+		return PromotionTargetTypeAllShop
+	case entity.PromotionTargetTypeSpecificShop:
+		return PromotionTargetTypeSpecificShop
+	default:
+		return PromotionTargetTypeUnknown
+	}
+}
+
+func (t PromotionTargetType) Response() int32 {
+	return int32(t)
+}
+
 func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrderPromotion) *Promotion {
 	var usedCount, usedAmount int64
 	if aggregate != nil {
@@ -90,10 +114,12 @@ func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrder
 	return &Promotion{
 		Promotion: response.Promotion{
 			ID:           promotion.ID,
+			ShopID:       promotion.ShopID,
 			Title:        promotion.Title,
 			Description:  promotion.Description,
 			Status:       NewPromotionStatus(promotion.Status).Response(),
 			Public:       promotion.Public,
+			TargetType:   NewPromotionTargetType(promotion.TargetType).Response(),
 			DiscountType: NewDiscountType(promotion.DiscountType).Response(),
 			DiscountRate: promotion.DiscountRate,
 			Code:         promotion.Code,

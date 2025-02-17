@@ -827,10 +827,12 @@ const (
 )
 
 type ListPromotionsInput struct {
-	Title  string                 `validate:"max=64"`
-	Limit  int64                  `validate:"required,max=200"`
-	Offset int64                  `validate:"min=0"`
-	Orders []*ListPromotionsOrder `validate:"dive,required"`
+	ShopID        string                 `validate:""`
+	Title         string                 `validate:"max=64"`
+	Limit         int64                  `validate:"required,max=200"`
+	Offset        int64                  `validate:"min=0"`
+	Orders        []*ListPromotionsOrder `validate:"dive,required"`
+	WithAllTarget bool                   `validate:""`
 }
 
 type ListPromotionsOrder struct {
@@ -844,15 +846,18 @@ type MultiGetPromotionsInput struct {
 
 type GetPromotionInput struct {
 	PromotionID string `validate:"required"`
+	ShopID      string `validate:""`
 	OnlyEnabled bool   `validate:""`
 }
 
 type GetPromotionByCodeInput struct {
 	PromotionCode string `validate:"required"`
+	ShopID        string `validate:""`
 	OnlyEnabled   bool   `validate:""`
 }
 
 type CreatePromotionInput struct {
+	AdminID      string                   `validate:"required"`
 	Title        string                   `validate:"required,max=64"`
 	Description  string                   `validate:"required,max=2000"`
 	Public       bool                     `validate:""`
@@ -866,6 +871,7 @@ type CreatePromotionInput struct {
 
 type UpdatePromotionInput struct {
 	PromotionID  string                   `validate:"required"`
+	AdminID      string                   `validate:"required"`
 	Title        string                   `validate:"required,max=64"`
 	Description  string                   `validate:"required,max=2000"`
 	Public       bool                     `validate:""`

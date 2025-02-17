@@ -59,6 +59,12 @@ patch:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 権限エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: プロモーションが存在しない
       content:
@@ -92,6 +98,12 @@ delete:
       content:
         application/json:
           schema: {}
+    403:
+      description: 権限エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     404:
       description: プロモーションが存在しない
       content:

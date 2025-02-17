@@ -32,6 +32,14 @@ func (p listPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Title != "" {
 		stmt = stmt.Where("`title` LIKE ?", fmt.Sprintf("%%%s%%", p.Title))
 	}
+	if p.ShopID != "" {
+		if p.WithAllTarget {
+			stmt = stmt.Where("target_type = ?", entity.PromotionTargetTypeAllShop).
+				Or("target_type = ? AND shop_id = ?", entity.PromotionTargetTypeSpecificShop, p.ShopID)
+		} else {
+			stmt = stmt.Where("target_type = ? AND shop_id = ?", entity.PromotionTargetTypeSpecificShop, p.ShopID)
+		}
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {

@@ -3,11 +3,14 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -356,6 +359,36 @@ func TestCreatePromotion(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 8, 1, 0, 0, 0, 0)
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := func(adminType uentity.AdminType) *uentity.Admin {
+		return &uentity.Admin{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Type:          adminType,
+			Status:        uentity.AdminStatusActivated,
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test@example.com",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		}
+	}
+	shop := &entity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday},
+		Name:           "テスト店舗",
+		Activated:      true,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -364,16 +397,19 @@ func TestCreatePromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success for all",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, promotion *entity.Promotion) error {
 						expect := &entity.Promotion{
 							ID:           promotion.ID, // ignore
+							ShopID:       "",
 							Title:        "プロモーションタイトル",
 							Description:  "プロモーションの詳細です。",
 							Public:       true,
+							TargetType:   entity.PromotionTargetTypeAllShop,
 							DiscountType: entity.DiscountTypeRate,
 							DiscountRate: 10,
 							Code:         "excode01",
@@ -386,6 +422,47 @@ func TestCreatePromotion(t *testing.T) {
 					})
 			},
 			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success for only shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+				mocks.db.Promotion.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, promotion *entity.Promotion) error {
+						expect := &entity.Promotion{
+							ID:           promotion.ID, // ignore
+							ShopID:       "shop-id",
+							Title:        "プロモーションタイトル",
+							Description:  "プロモーションの詳細です。",
+							Public:       true,
+							TargetType:   entity.PromotionTargetTypeSpecificShop,
+							DiscountType: entity.DiscountTypeRate,
+							DiscountRate: 10,
+							Code:         "excode01",
+							CodeType:     entity.PromotionCodeTypeAlways,
+							StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+							EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+						}
+						assert.Equal(t, expect, promotion)
+						return nil
+					})
+			},
+			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
@@ -405,11 +482,71 @@ func TestCreatePromotion(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+			},
+			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "invalid admin type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeProducer), nil)
+			},
+			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrForbidden,
+		},
+		{
 			name: "failed to create promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreatePromotionInput{
+				AdminID:      "admin-id",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
@@ -437,6 +574,57 @@ func TestUpdatePromotion(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 8, 1, 0, 0, 0, 0)
+	promotion := func(shopID string) *entity.Promotion {
+		targetType := entity.PromotionTargetTypeAllShop
+		if shopID != "" {
+			targetType = entity.PromotionTargetTypeSpecificShop
+		}
+		return &entity.Promotion{
+			ID:           "promotion-id",
+			ShopID:       shopID,
+			Title:        "夏の採れたて野菜マルシェを開催!!",
+			Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+			Public:       true,
+			TargetType:   targetType,
+			DiscountType: entity.DiscountTypeFreeShipping,
+			DiscountRate: 0,
+			Code:         "code0001",
+			CodeType:     entity.PromotionCodeTypeOnce,
+			StartAt:      now,
+			EndAt:        now.AddDate(0, 1, 0),
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		}
+	}
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := func(adminType uentity.AdminType) *uentity.Admin {
+		return &uentity.Admin{
+			ID:            "admin-id",
+			CognitoID:     "cognito-id",
+			Type:          adminType,
+			Status:        uentity.AdminStatusActivated,
+			Lastname:      "&.",
+			Firstname:     "管理者",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "かんりしゃ",
+			Email:         "test@example.com",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		}
+	}
+	shop := &entity.Shop{
+		ID:             "shop-id",
+		CoordinatorID:  "coordinator-id",
+		ProducerIDs:    []string{"producer-id"},
+		ProductTypeIDs: []string{"product-type-id"},
+		BusinessDays:   []time.Weekday{time.Monday},
+		Name:           "テスト店舗",
+		Activated:      true,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
 	params := &database.UpdatePromotionParams{
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
@@ -456,11 +644,59 @@ func TestUpdatePromotion(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success for all",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
 			},
 			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success for only shop when administrator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success for only shop when coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
 				PromotionID:  "promotion-id",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
@@ -481,11 +717,142 @@ func TestUpdatePromotion(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(nil, assert.AnError)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "cannot update promotion for all",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrForbidden,
+		},
+		{
+			name: "failed to get shop",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "cannot update other shop promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				shop := &entity.Shop{ID: "invalid-id"}
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrForbidden,
+		},
+		{
+			name: "invalid admin type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeProducer), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+			},
+			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
+				PromotionID:  "promotion-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: entity.DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     entity.PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expectErr: exception.ErrForbidden,
+		},
+		{
 			name: "failed to update promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
+				AdminID:      "admin-id",
 				PromotionID:  "promotion-id",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",

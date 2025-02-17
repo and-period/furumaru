@@ -330,6 +330,14 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 }
 
 func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (string, error) {
+	// 店舗の有効性検証
+	shop, err := s.db.Shop.GetByCoordinatorID(ctx, params.payload.CoordinatorID)
+	if err != nil {
+		return "", internalError(err)
+	}
+	if !shop.Enabled() {
+		return "", fmt.Errorf("service: shop is disabled: %w", exception.ErrForbidden)
+	}
 	var (
 		shipping  *entity.Shipping
 		cart      *entity.Cart
@@ -354,7 +362,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
 		return
 	})
-	err := eg.Wait()
+	err = eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
 		return "", fmt.Errorf("service: not found: %w", exception.ErrInvalidArgument)
 	}
@@ -362,7 +370,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
-	if params.payload.PromotionCode != "" && !promotion.IsEnabled() {
+	if params.payload.PromotionCode != "" && !promotion.IsEnabled(shop.ID) {
 		s.logger.Warn("Failed to disable promotion",
 			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
@@ -397,7 +405,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	oparams := &entity.NewProductOrderParams{
 		OrderID:           params.payload.RequestID,
 		SessionID:         params.payload.SessionID,
-		ShopID:            products[0].ShopID, // すべて同じ店舗IDであることを前提とする
+		ShopID:            shop.ID,
 		CoordinatorID:     params.payload.CoordinatorID,
 		Customer:          params.customer,
 		BillingAddress:    params.billingAddress,
@@ -489,8 +497,16 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	if err != nil {
 		return "", internalError(err)
 	}
+	// 店舗の有効性検証
+	shop, err := s.db.Shop.Get(ctx, experience.ShopID)
+	if err != nil {
+		return "", internalError(err)
+	}
+	if !shop.Enabled() {
+		return "", fmt.Errorf("service: shop is disabled: %w", exception.ErrForbidden)
+	}
 	// プロモーションの有効性検証
-	if params.payload.PromotionCode != "" && !promotion.IsEnabled() {
+	if params.payload.PromotionCode != "" && !promotion.IsEnabled(experience.ShopID) {
 		s.logger.Warn("Failed to disable promotion",
 			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
@@ -505,7 +521,7 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	oparams := &entity.NewExperienceOrderParams{
 		OrderID:               params.payload.RequestID,
 		SessionID:             params.payload.SessionID,
-		ShopID:                experience.ShopID,
+		ShopID:                shop.ID,
 		CoordinatorID:         experience.CoordinatorID,
 		Customer:              params.customer,
 		BillingAddress:        params.billingAddress,

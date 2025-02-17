@@ -5541,6 +5541,12 @@ export interface Promotion {
      */
     'id': string;
     /**
+     * 店舗ID
+     * @type {string}
+     * @memberof Promotion
+     */
+    'shopId': string;
+    /**
      * タイトル
      * @type {string}
      * @memberof Promotion
@@ -5564,6 +5570,12 @@ export interface Promotion {
      * @memberof Promotion
      */
     'public': boolean;
+    /**
+     * 
+     * @type {PromotionTargetType}
+     * @memberof Promotion
+     */
+    'targetType': PromotionTargetType;
     /**
      * 
      * @type {DiscountType}
@@ -5664,6 +5676,30 @@ export const PromotionStatus = {
 } as const;
 
 export type PromotionStatus = typeof PromotionStatus[keyof typeof PromotionStatus];
+
+
+/**
+ * プロモーション対象
+ * @export
+ * @enum {string}
+ */
+
+export const PromotionTargetType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 全店舗
+    */
+    ALL_SHOP: 1,
+    /**
+    * 特定店舗
+    */
+    SPECIFIC_SHOP: 2
+} as const;
+
+export type PromotionTargetType = typeof PromotionTargetType[keyof typeof PromotionTargetType];
 
 
 /**
@@ -19977,11 +20013,13 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [title] タイトル(あいまい検索)(64文字以内)
+         * @param {string} [shopId] 店舗ID
+         * @param {boolean} [withAllTarget] すべての店舗対象のプロモーションを取得するか
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListPromotions: async (limit?: number, offset?: number, title?: string, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListPromotions: async (limit?: number, offset?: number, title?: string, shopId?: string, withAllTarget?: boolean, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/promotions`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20008,6 +20046,14 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
 
             if (title !== undefined) {
                 localVarQueryParameter['title'] = title;
+            }
+
+            if (shopId !== undefined) {
+                localVarQueryParameter['shopId'] = shopId;
+            }
+
+            if (withAllTarget !== undefined) {
+                localVarQueryParameter['withAllTarget'] = withAllTarget;
             }
 
             if (orders !== undefined) {
@@ -20124,12 +20170,14 @@ export const PromotionApiFp = function(configuration?: Configuration) {
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [title] タイトル(あいまい検索)(64文字以内)
+         * @param {string} [shopId] 店舗ID
+         * @param {boolean} [withAllTarget] すべての店舗対象のプロモーションを取得するか
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListPromotions(limit?: number, offset?: number, title?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PromotionsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListPromotions(limit, offset, title, orders, options);
+        async v1ListPromotions(limit?: number, offset?: number, title?: string, shopId?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PromotionsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListPromotions(limit, offset, title, shopId, withAllTarget, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PromotionApi.v1ListPromotions']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -20194,12 +20242,14 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [title] タイトル(あいまい検索)(64文字以内)
+         * @param {string} [shopId] 店舗ID
+         * @param {boolean} [withAllTarget] すべての店舗対象のプロモーションを取得するか
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListPromotions(limit?: number, offset?: number, title?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<PromotionsResponse> {
-            return localVarFp.v1ListPromotions(limit, offset, title, orders, options).then((request) => request(axios, basePath));
+        v1ListPromotions(limit?: number, offset?: number, title?: string, shopId?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<PromotionsResponse> {
+            return localVarFp.v1ListPromotions(limit, offset, title, shopId, withAllTarget, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -20264,13 +20314,15 @@ export class PromotionApi extends BaseAPI {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [title] タイトル(あいまい検索)(64文字以内)
+     * @param {string} [shopId] 店舗ID
+     * @param {boolean} [withAllTarget] すべての店舗対象のプロモーションを取得するか
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:title,public,publishedAt,startAt,endAt,createdAt,updatedAt 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PromotionApi
      */
-    public v1ListPromotions(limit?: number, offset?: number, title?: string, orders?: string, options?: RawAxiosRequestConfig) {
-        return PromotionApiFp(this.configuration).v1ListPromotions(limit, offset, title, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListPromotions(limit?: number, offset?: number, title?: string, shopId?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig) {
+        return PromotionApiFp(this.configuration).v1ListPromotions(limit, offset, title, shopId, withAllTarget, orders, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
