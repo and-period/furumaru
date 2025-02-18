@@ -42,6 +42,10 @@ func NewShop(params *ShopParams) *Shop {
 	}
 }
 
+func (s *Shop) Enabled() bool {
+	return s.Activated && s.DeletedAt.Time.IsZero()
+}
+
 func (s *Shop) Fill(producers ShopProducers) {
 	s.ProducerIDs = producers.ProducerIDs()
 }

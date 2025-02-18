@@ -27,7 +27,7 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	if !promotion.IsEnabled() {
+	if !promotion.IsEnabled(promotion.ShopID) {
 		h.forbidden(ctx, errors.New("handler: this promotion is disabled"))
 		return
 	}

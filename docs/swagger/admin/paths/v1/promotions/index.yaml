@@ -30,6 +30,21 @@ get:
     required: false
     example: 'セール'
   - in: query
+    name: shopId
+    schema:
+      type: string
+    description: 店舗ID
+    reqruied: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: withAllTarget
+    schema:
+      type: boolean
+    description: すべての店舗対象のプロモーションを取得するか
+    required: false
+    default: true
+    example: true
+  - in: query
     name: orders
     schema:
       type: string
@@ -67,6 +82,12 @@ post:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1PromotionResponse'
+    403:
+      description: 権限エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
     400:
       description: バリデーションエラー
       content:

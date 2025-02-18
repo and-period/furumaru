@@ -16,8 +16,9 @@ func TestPromotion(t *testing.T) {
 		expect *Promotion
 	}{
 		{
-			name: "success",
+			name: "success for all",
 			params: &NewPromotionParams{
+				ShopID:       "",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
@@ -29,9 +30,39 @@ func TestPromotion(t *testing.T) {
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
 			expect: &Promotion{
+				ShopID:       "",
 				Title:        "プロモーションタイトル",
 				Description:  "プロモーションの詳細です。",
 				Public:       true,
+				TargetType:   PromotionTargetTypeAllShop,
+				DiscountType: DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+		},
+		{
+			name: "success for shop",
+			params: &NewPromotionParams{
+				ShopID:       "shop-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				DiscountType: DiscountTypeRate,
+				DiscountRate: 10,
+				Code:         "excode01",
+				CodeType:     PromotionCodeTypeAlways,
+				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+			},
+			expect: &Promotion{
+				ShopID:       "shop-id",
+				Title:        "プロモーションタイトル",
+				Description:  "プロモーションの詳細です。",
+				Public:       true,
+				TargetType:   PromotionTargetTypeSpecificShop,
 				DiscountType: DiscountTypeRate,
 				DiscountRate: 10,
 				Code:         "excode01",
@@ -132,13 +163,26 @@ func TestPromotion_IsEnabled(t *testing.T) {
 	tests := []struct {
 		name      string
 		promotion *Promotion
+		shopID    string
 		expect    bool
 	}{
 		{
-			name: "enabled",
+			name: "enabled for all",
 			promotion: &Promotion{
-				Status: PromotionStatusEnabled,
+				Status:     PromotionStatusEnabled,
+				TargetType: PromotionTargetTypeAllShop,
 			},
+			shopID: "shop-id",
+			expect: true,
+		},
+		{
+			name: "enabled specific shop",
+			promotion: &Promotion{
+				Status:     PromotionStatusEnabled,
+				TargetType: PromotionTargetTypeSpecificShop,
+				ShopID:     "shop-id",
+			},
+			shopID: "shop-id",
 			expect: true,
 		},
 		{
@@ -149,16 +193,36 @@ func TestPromotion_IsEnabled(t *testing.T) {
 			expect: false,
 		},
 		{
+			name: "enabled specific shop, but wrong shop id",
+			promotion: &Promotion{
+				Status:     PromotionStatusEnabled,
+				TargetType: PromotionTargetTypeSpecificShop,
+				ShopID:     "other-id",
+			},
+			shopID: "shop-id",
+			expect: false,
+		},
+		{
 			name:      "empty",
 			promotion: nil,
+			shopID:    "shop-id",
 			expect:    false,
+		},
+		{
+			name: "unknown target type",
+			promotion: &Promotion{
+				Status:     PromotionStatusEnabled,
+				TargetType: -1,
+			},
+			shopID: "shop-id",
+			expect: false,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.promotion.IsEnabled())
+			assert.Equal(t, tt.expect, tt.promotion.IsEnabled(tt.shopID))
 		})
 	}
 }

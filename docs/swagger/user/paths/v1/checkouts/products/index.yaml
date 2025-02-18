@@ -26,7 +26,7 @@ post:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
     403:
-      description: 決済システムがメンテナンス中
+      description: 決済システムがメンテナンス中 もしくは 店舗が利用停止中
       content:
         application/json:
           schema:

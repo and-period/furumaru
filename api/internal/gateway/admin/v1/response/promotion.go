@@ -3,10 +3,12 @@ package response
 // Promotion - プロモーション情報
 type Promotion struct {
 	ID           string `json:"id"`           // プロモーションID
+	ShopID       string `json:"shopId"`       // 店舗ID
 	Title        string `json:"title"`        // タイトル
 	Description  string `json:"description"`  // 詳細説明
 	Status       int32  `json:"status"`       // ステータス
 	Public       bool   `json:"public"`       // 公開フラグ
+	TargetType   int32  `json:"targetType"`   // 対象商品
 	DiscountType int32  `json:"discountType"` // 割引計算方法
 	DiscountRate int64  `json:"discountRate"` // 割引額(%/円)
 	Code         string `json:"code"`         // クーポンコード

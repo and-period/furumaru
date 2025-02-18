@@ -512,10 +512,12 @@ const (
 )
 
 type ListPromotionsParams struct {
-	Title  string
-	Limit  int
-	Offset int
-	Orders []*ListPromotionsOrder
+	ShopID        string
+	Title         string
+	Limit         int
+	Offset        int
+	Orders        []*ListPromotionsOrder
+	WithAllTarget bool
 }
 
 type ListPromotionsOrder struct {

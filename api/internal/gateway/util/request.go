@@ -48,6 +48,11 @@ func GetQueryFloat64(ctx *gin.Context, query string, defaultValue float64) (floa
 	return strconv.ParseFloat(ctx.DefaultQuery(query, str), 64)
 }
 
+func GetQueryBool(ctx *gin.Context, query string, defaultValue bool) (bool, error) {
+	str := strconv.FormatBool(defaultValue)
+	return strconv.ParseBool(ctx.DefaultQuery(query, str))
+}
+
 func GetQueryStrings(ctx *gin.Context, query string) []string {
 	str := GetQuery(ctx, query, "")
 	if str == "" {

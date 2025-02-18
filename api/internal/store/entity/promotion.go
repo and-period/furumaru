@@ -41,26 +41,37 @@ const (
 	PromotionCodeTypeAlways  PromotionCodeType = 2 // 期間内回数無制限
 )
 
+// PromotionTargetType - プロモーション対象種別
+type PromotionTargetType int32
+
+const (
+	PromotionTargetTypeAllShop      PromotionTargetType = 0 // 全ての店舗
+	PromotionTargetTypeSpecificShop PromotionTargetType = 1 // 特定の店舗のみ
+)
+
 // Promotion - プロモーション情報
 type Promotion struct {
-	ID           string            `gorm:"primaryKey;<-:create"` // プロモーションID
-	Status       PromotionStatus   `gorm:"-"`                    // 状態
-	Title        string            `gorm:""`                     // タイトル
-	Description  string            `gorm:""`                     // 詳細説明
-	Public       bool              `gorm:""`                     // Deprecated: 公開フラグ
-	DiscountType DiscountType      `gorm:""`                     // 割引計算方法
-	DiscountRate int64             `gorm:""`                     // 割引額(%/円)
-	Code         string            `gorm:"<-:create"`            // クーポンコード
-	CodeType     PromotionCodeType `gorm:"<-:create"`            // クーポンコード種別
-	StartAt      time.Time         `gorm:""`                     // クーポン使用可能日時(開始)
-	EndAt        time.Time         `gorm:""`                     // クーポン使用可能日時(終了)
-	CreatedAt    time.Time         `gorm:"<-:create"`            // 登録日時
-	UpdatedAt    time.Time         `gorm:""`                     // 更新日時
+	ID           string              `gorm:"primaryKey;<-:create"` // プロモーションID
+	ShopID       string              `gorm:"default:null"`         // ショップID
+	Status       PromotionStatus     `gorm:"-"`                    // 状態
+	Title        string              `gorm:""`                     // タイトル
+	Description  string              `gorm:""`                     // 詳細説明
+	Public       bool                `gorm:""`                     // Deprecated: 公開フラグ
+	TargetType   PromotionTargetType `gorm:""`                     // 対象種別
+	DiscountType DiscountType        `gorm:""`                     // 割引計算方法
+	DiscountRate int64               `gorm:""`                     // 割引額(%/円)
+	Code         string              `gorm:"<-:create"`            // クーポンコード
+	CodeType     PromotionCodeType   `gorm:"<-:create"`            // クーポンコード種別
+	StartAt      time.Time           `gorm:""`                     // クーポン使用可能日時(開始)
+	EndAt        time.Time           `gorm:""`                     // クーポン使用可能日時(終了)
+	CreatedAt    time.Time           `gorm:"<-:create"`            // 登録日時
+	UpdatedAt    time.Time           `gorm:""`                     // 更新日時
 }
 
 type Promotions []*Promotion
 
 type NewPromotionParams struct {
+	ShopID       string
 	Title        string
 	Description  string
 	Public       bool
@@ -73,11 +84,17 @@ type NewPromotionParams struct {
 }
 
 func NewPromotion(params *NewPromotionParams) *Promotion {
+	targetType := PromotionTargetTypeAllShop
+	if params.ShopID != "" {
+		targetType = PromotionTargetTypeSpecificShop
+	}
 	return &Promotion{
 		ID:           uuid.Base58Encode(uuid.New()),
+		ShopID:       params.ShopID,
 		Title:        params.Title,
 		Description:  params.Description,
 		Public:       params.Public,
+		TargetType:   targetType,
 		DiscountType: params.DiscountType,
 		DiscountRate: params.DiscountRate,
 		Code:         params.Code,
@@ -111,11 +128,21 @@ func (p *Promotion) CalcDiscount(total int64, shippingFee int64) int64 {
 	}
 }
 
-func (p *Promotion) IsEnabled() bool {
+func (p *Promotion) IsEnabled(shopID string) bool {
 	if p == nil {
 		return false
 	}
-	return p.Status == PromotionStatusEnabled
+	if p.Status != PromotionStatusEnabled {
+		return false
+	}
+	switch p.TargetType {
+	case PromotionTargetTypeAllShop:
+		return true
+	case PromotionTargetTypeSpecificShop:
+		return p.ShopID == shopID
+	default:
+		return false
+	}
 }
 
 func (p *Promotion) Fill(now time.Time) {

@@ -5,6 +5,9 @@ promotion:
     id:
       type: string
       description: プロモーションID
+    shopId:
+      type: string
+      description: 店舗ID
     title:
       type: string
       description: タイトル
@@ -16,6 +19,8 @@ promotion:
     public:
       type: boolean
       description: 公開フラグ
+    targetType:
+      $ref: './../../../openapi.yaml#/components/schemas/promotionTargetType'
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -51,10 +56,12 @@ promotion:
       description: 更新日時 (unixtime)
   required:
   - id
+  - shopId
   - title
   - description
   - status
   - public
+  - targetType
   - discountType
   - discountRate
   - code
@@ -66,10 +73,12 @@ promotion:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    shopId: 'kSByoE6FetnPs5Byk3a9Zx'
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
     status: 3
     public: true
+    targetType: 1
     discountType: 1
     discountRate: 300
     code: 'code1234'

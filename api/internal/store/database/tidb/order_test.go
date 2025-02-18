@@ -2194,7 +2194,7 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
-	promotion := testPromotion("promotion-id", "12345678", now())
+	promotion := testPromotion("promotion-id", "12345678", "", now())
 	err = db.DB.Create(&promotion).Error
 	require.NoError(t, err)
 

@@ -37,6 +37,10 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, internalError(err)
 	}
+	shop, err := s.db.Shop.GetByCoordinatorID(ctx, in.CoordinatorID)
+	if err != nil {
+		return nil, nil, internalError(err)
+	}
 	var (
 		shipping  *entity.Shipping
 		cart      *entity.Cart
@@ -59,7 +63,7 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 			return
 		}
 		promotion, err = s.db.Promotion.GetByCode(ectx, in.PromotionCode)
-		if promotion.IsEnabled() {
+		if promotion.IsEnabled(shop.ID) {
 			return
 		}
 		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("code", in.PromotionCode))

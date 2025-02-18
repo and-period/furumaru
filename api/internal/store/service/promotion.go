@@ -9,6 +9,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -23,10 +25,12 @@ func (s *service) ListPromotions(
 		return nil, 0, fmt.Errorf("service: invalid list promotions orders: err=%s: %w", err, exception.ErrInvalidArgument)
 	}
 	params := &database.ListPromotionsParams{
-		Title:  in.Title,
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
-		Orders: orders,
+		ShopID:        in.ShopID,
+		Title:         in.Title,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+		Orders:        orders,
+		WithAllTarget: in.WithAllTarget,
 	}
 	var (
 		promotions entity.Promotions
@@ -93,7 +97,7 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 	if err != nil {
 		return nil, internalError(err)
 	}
-	if in.OnlyEnabled && !promotion.IsEnabled() {
+	if in.OnlyEnabled && !promotion.IsEnabled(in.ShopID) {
 		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
 	}
 	return promotion, nil
@@ -107,7 +111,7 @@ func (s *service) GetPromotionByCode(ctx context.Context, in *store.GetPromotion
 	if err != nil {
 		return nil, internalError(err)
 	}
-	if in.OnlyEnabled && !promotion.IsEnabled() {
+	if in.OnlyEnabled && !promotion.IsEnabled(in.ShopID) {
 		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
 	}
 	return promotion, nil
@@ -117,7 +121,29 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
+
+	adminIn := &user.GetAdminInput{
+		AdminID: in.AdminID,
+	}
+	admin, err := s.user.GetAdmin(ctx, adminIn)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	var shopID string
+	switch admin.Type {
+	case uentity.AdminTypeAdministrator:
+	case uentity.AdminTypeCoordinator:
+		shop, err := s.db.Shop.GetByCoordinatorID(ctx, admin.ID)
+		if err != nil {
+			return nil, internalError(err)
+		}
+		shopID = shop.ID
+	default:
+		return nil, fmt.Errorf("service: invalid admin type: %w", exception.ErrForbidden)
+	}
+
 	params := &entity.NewPromotionParams{
+		ShopID:       shopID,
 		Title:        in.Title,
 		Description:  in.Description,
 		Public:       in.Public,
@@ -142,6 +168,39 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	adminIn := &user.GetAdminInput{
+		AdminID: in.AdminID,
+	}
+	admin, err := s.user.GetAdmin(ctx, adminIn)
+	if err != nil {
+		return internalError(err)
+	}
+
+	promotion, err := s.db.Promotion.Get(ctx, in.PromotionID)
+	if err != nil {
+		return internalError(err)
+	}
+	switch promotion.TargetType {
+	case entity.PromotionTargetTypeAllShop:
+		if admin.Type != uentity.AdminTypeAdministrator {
+			return fmt.Errorf("service: cannot update promotion for all shops: %w", exception.ErrForbidden)
+		}
+	case entity.PromotionTargetTypeSpecificShop:
+		switch admin.Type {
+		case uentity.AdminTypeAdministrator:
+		case uentity.AdminTypeCoordinator:
+			shop, err := s.db.Shop.GetByCoordinatorID(ctx, admin.ID)
+			if err != nil {
+				return internalError(err)
+			}
+			if promotion.ShopID != shop.ID {
+				return fmt.Errorf("service: this coordinator does not have permission to update promotion: %w", exception.ErrForbidden)
+			}
+		default:
+			return fmt.Errorf("service: cannot update promotion for only shop: %w", exception.ErrForbidden)
+		}
+	}
+
 	params := &database.UpdatePromotionParams{
 		Title:        in.Title,
 		Description:  in.Description,
@@ -153,7 +212,7 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 		StartAt:      in.StartAt,
 		EndAt:        in.EndAt,
 	}
-	err := s.db.Promotion.Update(ctx, in.PromotionID, params)
+	err = s.db.Promotion.Update(ctx, in.PromotionID, params)
 	return internalError(err)
 }
 

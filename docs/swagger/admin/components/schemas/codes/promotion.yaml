@@ -21,6 +21,23 @@ promotionStatus:
   - 利用可能前
   - 利用可能
   - 利用終了
+promotionTargetType:
+  type: integer
+  format: int32
+  description: プロモーション対象
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - ALL_SHOP
+  - SPECIFIC_SHOP
+  x-enum-descriptions:
+  - 不明
+  - 全店舗
+  - 特定店舗
 discountType:
   type: integer
   format: int32

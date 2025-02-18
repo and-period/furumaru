@@ -1725,7 +1725,7 @@ var AdminGroups = []AdminGroup{
 			"product_editor",
 			"product_tag_viewer",
 			"product_type_viewer",
-			"promotion_viewer",
+			"promotion_editor",
 			"schedule_editor",
 			"shipping_editor",
 			"shop_editor",

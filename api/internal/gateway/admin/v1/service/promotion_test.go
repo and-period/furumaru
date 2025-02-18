@@ -170,6 +170,43 @@ func TestDiscountType_Response(t *testing.T) {
 	}
 }
 
+func TestPromotionTargetType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		targetType entity.PromotionTargetType
+		expect     PromotionTargetType
+		response   int32
+	}{
+		{
+			name:       "all shop",
+			targetType: entity.PromotionTargetTypeAllShop,
+			expect:     PromotionTargetTypeAllShop,
+			response:   1,
+		},
+		{
+			name:       "only shop",
+			targetType: entity.PromotionTargetTypeSpecificShop,
+			expect:     PromotionTargetTypeSpecificShop,
+			response:   2,
+		},
+		{
+			name:       "unknown",
+			targetType: -1,
+			expect:     PromotionTargetTypeUnknown,
+			response:   0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewPromotionTargetType(tt.targetType)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
 func TestPromotion(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2022, 1, 1, 0, 0, 0, 0)
@@ -183,10 +220,12 @@ func TestPromotion(t *testing.T) {
 			name: "success",
 			promotion: &entity.Promotion{
 				ID:           "promotion-id",
+				ShopID:       "shop-id",
 				Status:       entity.PromotionStatusEnabled,
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 				Public:       true,
+				TargetType:   entity.PromotionTargetTypeSpecificShop,
 				DiscountType: entity.DiscountTypeFreeShipping,
 				DiscountRate: 0,
 				Code:         "code0001",
@@ -204,10 +243,12 @@ func TestPromotion(t *testing.T) {
 			expect: &Promotion{
 				Promotion: response.Promotion{
 					ID:           "promotion-id",
+					ShopID:       "shop-id",
 					Status:       int32(PromotionStatusEnabled),
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
+					TargetType:   PromotionTargetTypeSpecificShop.Response(),
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
@@ -303,10 +344,12 @@ func TestPromotions(t *testing.T) {
 			promotions: entity.Promotions{
 				{
 					ID:           "promotion-id",
+					ShopID:       "shop-id",
 					Status:       entity.PromotionStatusEnabled,
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
+					TargetType:   entity.PromotionTargetTypeSpecificShop,
 					DiscountType: entity.DiscountTypeFreeShipping,
 					DiscountRate: 0,
 					Code:         "code0001",
@@ -328,10 +371,12 @@ func TestPromotions(t *testing.T) {
 				{
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						ShopID:       "shop-id",
 						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
+						TargetType:   PromotionTargetTypeSpecificShop.Response(),
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",

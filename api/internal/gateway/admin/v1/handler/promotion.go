@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
@@ -20,9 +21,47 @@ func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListPromotions)
 	r.POST("", h.CreatePromotion)
-	r.GET("/:promotionId", h.GetPromotion)
-	r.PATCH("/:promotionId", h.UpdatePromotion)
-	r.DELETE("/:promotionId", h.DeletePromotion)
+	r.GET("/:promotionId", h.filterAccessPromotion, h.GetPromotion)
+	r.PATCH("/:promotionId", h.filterAccessPromotion, h.UpdatePromotion)
+	r.DELETE("/:promotionId", h.filterAccessPromotion, h.DeletePromotion)
+}
+
+func (h *handler) filterAccessPromotion(ctx *gin.Context) {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "promotionId"))
+			if err != nil {
+				return false, err
+			}
+			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+				return true, nil
+			}
+			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+			if err != nil {
+				return false, err
+			}
+			return promotion.ShopID == shop.ID, nil
+		},
+		producer: func(ctx *gin.Context) (bool, error) {
+			promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "promotionId"))
+			if err != nil {
+				return false, err
+			}
+			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+				return true, nil
+			}
+			shop, err := h.getShop(ctx, promotion.ID)
+			if err != nil {
+				return false, err
+			}
+			return slices.Contains(shop.ProducerIDs, getAdminID(ctx)), nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListPromotions(ctx *gin.Context) {
@@ -46,13 +85,31 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	shopID := util.GetQuery(ctx, "shopId", "")
 
 	in := &store.ListPromotionsInput{
+		ShopID: shopID,
 		Title:  util.GetQuery(ctx, "title", ""),
 		Limit:  limit,
 		Offset: offset,
 		Orders: orders,
 	}
+	if getAdminType(ctx) == service.AdminTypeCoordinator {
+		withAllTarget, err := util.GetQueryBool(ctx, "withAllTarget", true)
+		if err != nil {
+			h.badRequest(ctx, err)
+			return
+		}
+		shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+
+		in.ShopID = shop.ID
+		in.WithAllTarget = withAllTarget
+	}
+
 	promotions, total, err := h.store.ListPromotions(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
@@ -122,6 +179,7 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 	}
 
 	in := &store.CreatePromotionInput{
+		AdminID:      getAdminID(ctx),
 		Title:        req.Title,
 		Description:  req.Description,
 		Public:       req.Public,
@@ -154,6 +212,7 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 
 	in := &store.UpdatePromotionInput{
 		PromotionID:  util.GetParam(ctx, "promotionId"),
+		AdminID:      getAdminID(ctx),
 		Title:        req.Title,
 		Description:  req.Description,
 		Public:       req.Public,
