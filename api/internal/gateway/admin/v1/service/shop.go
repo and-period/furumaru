@@ -27,6 +27,13 @@ func NewShop(shop *entity.Shop) *Shop {
 	}
 }
 
+func (s *Shop) GetID() string {
+	if s == nil {
+		return ""
+	}
+	return s.ID
+}
+
 func (s *Shop) Response() *response.Shop {
 	return &s.Shop
 }
@@ -51,6 +58,14 @@ func (ss Shops) ProductTypeIDs() []string {
 		set.Add(shop.ProductTypeIDs...)
 	}
 	return set.Slice()
+}
+
+func (ss Shops) MapByCoordinatorID() map[string]*Shop {
+	res := make(map[string]*Shop, len(ss))
+	for _, s := range ss {
+		res[s.CoordinatorID] = s
+	}
+	return res
 }
 
 func (ss Shops) Response() []*response.Shop {

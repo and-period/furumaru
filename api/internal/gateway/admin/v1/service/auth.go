@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/user/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type AuthProviderType int32
@@ -14,11 +14,11 @@ const (
 	AuthProviderTypeLINE    AuthProviderType = 2
 )
 
-func NewAuthProviderType(t entity.AdminAuthProviderType) AuthProviderType {
+func NewAuthProviderType(t uentity.AdminAuthProviderType) AuthProviderType {
 	switch t {
-	case entity.AdminAuthProviderTypeGoogle:
+	case uentity.AdminAuthProviderTypeGoogle:
 		return AuthProviderTypeGoogle
-	case entity.AdminAuthProviderTypeLINE:
+	case uentity.AdminAuthProviderTypeLINE:
 		return AuthProviderTypeLINE
 	default:
 		return AuthProviderTypeUnknown
@@ -33,11 +33,7 @@ type Auth struct {
 	response.Auth
 }
 
-type AuthUser struct {
-	response.AuthUser
-}
-
-func NewAuth(auth *entity.AdminAuth) *Auth {
+func NewAuth(auth *uentity.AdminAuth) *Auth {
 	return &Auth{
 		Auth: response.Auth{
 			AdminID:      auth.AdminID,
@@ -54,6 +50,10 @@ func (a *Auth) Response() *response.Auth {
 	return &a.Auth
 }
 
+type AuthUser struct {
+	response.AuthUser
+}
+
 func (a *AuthUser) Response() *response.AuthUser {
 	return &a.AuthUser
 }
@@ -64,7 +64,7 @@ type AuthProvider struct {
 
 type AuthProviders []*AuthProvider
 
-func NewAuthProvider(provider *entity.AdminAuthProvider) *AuthProvider {
+func NewAuthProvider(provider *uentity.AdminAuthProvider) *AuthProvider {
 	return &AuthProvider{
 		AuthProvider: response.AuthProvider{
 			Type:        NewAuthProviderType(provider.ProviderType).Response(),
@@ -77,7 +77,7 @@ func (p *AuthProvider) Response() *response.AuthProvider {
 	return &p.AuthProvider
 }
 
-func NewAuthProviders(providers entity.AdminAuthProviders) AuthProviders {
+func NewAuthProviders(providers uentity.AdminAuthProviders) AuthProviders {
 	res := make(AuthProviders, len(providers))
 	for i := range providers {
 		res[i] = NewAuthProvider(providers[i])

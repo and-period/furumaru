@@ -53,6 +53,14 @@ func (s *service) ListShopProducers(ctx context.Context, in *store.ListShopProdu
 	return producerIDs, internalError(err)
 }
 
+func (s *service) MultiGetShops(ctx context.Context, in *store.MultiGetShopsInput) (entity.Shops, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	shops, err := s.db.Shop.MultiGet(ctx, in.ShopIDs)
+	return shops, internalError(err)
+}
+
 func (s *service) GetShop(ctx context.Context, in *store.GetShopInput) (*entity.Shop, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

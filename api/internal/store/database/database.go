@@ -598,6 +598,7 @@ type UpdateShippingParams struct {
 
 type Shop interface {
 	List(ctx context.Context, params *ListShopsParams, fields ...string) (entity.Shops, error)
+	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
 	Count(ctx context.Context, params *ListShopsParams) (int64, error)
 	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
 	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error)

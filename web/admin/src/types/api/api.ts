@@ -543,6 +543,12 @@ export interface AuthUserResponse {
      */
     'id': string;
     /**
+     * 店舗ID一覧
+     * @type {Array<string>}
+     * @memberof AuthUserResponse
+     */
+    'shopIds': Array<string>;
+    /**
      * 
      * @type {AdminType}
      * @memberof AuthUserResponse
@@ -1216,6 +1222,12 @@ export interface Coordinator {
      * @memberof Coordinator
      */
     'id': string;
+    /**
+     * 店舗ID
+     * @type {string}
+     * @memberof Coordinator
+     */
+    'shopId': string;
     /**
      * 
      * @type {AdminStatus}
@@ -5645,6 +5657,12 @@ export interface PromotionResponse {
      * @memberof PromotionResponse
      */
     'promotion': Promotion;
+    /**
+     * 
+     * @type {Shop}
+     * @memberof PromotionResponse
+     */
+    'shop': Shop;
 }
 /**
  * プロモーションステータス
@@ -5714,6 +5732,12 @@ export interface PromotionsResponse {
      * @memberof PromotionsResponse
      */
     'promotions': Array<Promotion>;
+    /**
+     * 店舗一覧
+     * @type {Array<Shop>}
+     * @memberof PromotionsResponse
+     */
+    'shops': Array<Shop>;
     /**
      * 合計数
      * @type {number}

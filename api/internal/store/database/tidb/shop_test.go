@@ -161,6 +161,76 @@ func TestShop_Count(t *testing.T) {
 	}
 }
 
+func TestShop_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	internal := make(internalShops, 1)
+	internal[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&internal).Error
+	require.NoError(t, err)
+	shops, err := internal.entities()
+	require.NoError(t, err)
+	shops[0].ProducerIDs = []string{"producer-id01"}
+
+	ps := make(entity.ShopProducers, 1)
+	ps[0] = testShopProducer("shop-id01", "producer-id01", now())
+	err = db.DB.Table(shopProducerTable).Create(&ps).Error
+	require.NoError(t, err)
+
+	type args struct {
+		shopIDs []string
+	}
+	type want struct {
+		shops entity.Shops
+		err   error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shopIDs: []string{"shop-id01"},
+			},
+			want: want{
+				shops: shops,
+				err:   nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shop{db: db, now: now}
+			shops, err := db.MultiGet(ctx, tt.args.shopIDs)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.ElementsMatch(t, tt.want.shops, shops)
+		})
+	}
+}
+
 func TestShop_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

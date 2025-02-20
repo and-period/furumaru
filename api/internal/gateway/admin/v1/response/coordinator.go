@@ -3,6 +3,7 @@ package response
 // Coordinator - コーディネータ情報
 type Coordinator struct {
 	ID                string `json:"id"`                // コーディネータID
+	ShopID            string `json:"shopId"`            // 店舗ID
 	Status            int32  `json:"status"`            // コーディネータの状態
 	Lastname          string `json:"lastname"`          // 姓
 	Firstname         string `json:"firstname"`         // 名

@@ -400,6 +400,48 @@ func TestPromotions(t *testing.T) {
 	}
 }
 
+func TestPromotions_ShopIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		promotions Promotions
+		expect     []string
+	}{
+		{
+			name: "success",
+			promotions: Promotions{
+				{
+					Promotion: response.Promotion{
+						ID:           "promotion-id",
+						ShopID:       "shop-id",
+						Status:       int32(PromotionStatusEnabled),
+						Title:        "夏の採れたて野菜マルシェを開催!!",
+						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Public:       true,
+						DiscountType: DiscountTypeFreeShipping.Response(),
+						DiscountRate: 0,
+						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
+						StartAt:      1640962800,
+						EndAt:        1643641200,
+						CreatedAt:    1640962800,
+						UpdatedAt:    1640962800,
+					},
+				},
+			},
+			expect: []string{"shop-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.promotions.ShopIDs())
+		})
+	}
+}
+
 func TestPromotions_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

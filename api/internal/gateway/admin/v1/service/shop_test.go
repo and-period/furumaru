@@ -70,3 +70,41 @@ func TestShops(t *testing.T) {
 		})
 	}
 }
+
+func TestShop_GetID(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		shop   *Shop
+		expect string
+	}{
+		{
+			name: "success",
+			shop: &Shop{
+				Shop: response.Shop{
+					ID:             "shop-id",
+					Name:           "テスト店舗",
+					CoordinatorID:  "coordinator-id",
+					ProducerIDs:    []string{"producer-id"},
+					ProductTypeIDs: []string{"product-type-id"},
+					BusinessDays:   []time.Weekday{time.Monday},
+					CreatedAt:      now.Unix(),
+					UpdatedAt:      now.Unix(),
+				},
+			},
+			expect: "shop-id",
+		},
+		{
+			name:   "empty",
+			shop:   nil,
+			expect: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shop.GetID())
+		})
+	}
+}

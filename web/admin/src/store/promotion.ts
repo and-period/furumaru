@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
+import { useShopStore } from './shop'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreatePromotionRequest,
-  PromotionResponse,
   Promotion,
   UpdatePromotionRequest,
 } from '~/types/api'
@@ -24,8 +24,11 @@ export const usePromotionStore = defineStore('promotion', {
     async fetchPromotions(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(limit, offset, orders.join(','))
+
+        const shopStore = useShopStore()
         this.promotions = res.data.promotions
         this.total = res.data.total
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -53,8 +56,11 @@ export const usePromotionStore = defineStore('promotion', {
           }
           promotions.push(promotion)
         })
+
+        const shopStore = useShopStore()
         this.promotions = promotions
         this.total = res.data.total
+        shopStore.shops = res.data.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -66,11 +72,16 @@ export const usePromotionStore = defineStore('promotion', {
      * @param promotionId セールID
      * @returns セールの情報
      */
-    async getPromotion(promotionId: string): Promise<PromotionResponse> {
+    async getPromotion(promotionId: string): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1GetPromotion(promotionId)
         this.promotion = res.data.promotion
-        return res.data
+        if (!res.data.shop) {
+          return
+        }
+
+        const shopStore = useShopStore()
+        shopStore.shop = res.data.shop
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })

@@ -11,10 +11,11 @@ type Coordinator struct {
 
 type Coordinators []*Coordinator
 
-func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
+func NewCoordinator(coordinator *entity.Coordinator, shop *Shop) *Coordinator {
 	return &Coordinator{
 		Coordinator: response.Coordinator{
 			ID:                coordinator.ID,
+			ShopID:            shop.GetID(),
 			Status:            NewAdminStatus(coordinator.Status).Response(),
 			Lastname:          coordinator.Lastname,
 			Firstname:         coordinator.Firstname,
@@ -46,6 +47,7 @@ func (c *Coordinator) AuthUser() *AuthUser {
 	return &AuthUser{
 		AuthUser: response.AuthUser{
 			AdminID:      c.ID,
+			ShopIDs:      []string{c.ShopID},
 			Type:         AdminTypeCoordinator.Response(),
 			Username:     c.Username,
 			Email:        c.Email,
@@ -58,10 +60,10 @@ func (c *Coordinator) Response() *response.Coordinator {
 	return &c.Coordinator
 }
 
-func NewCoordinators(coordinators entity.Coordinators) Coordinators {
+func NewCoordinators(coordinators entity.Coordinators, shops map[string]*Shop) Coordinators {
 	res := make(Coordinators, len(coordinators))
 	for i := range coordinators {
-		res[i] = NewCoordinator(coordinators[i])
+		res[i] = NewCoordinator(coordinators[i], shops[coordinators[i].AdminID])
 	}
 	return res
 }

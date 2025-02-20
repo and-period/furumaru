@@ -5,6 +5,9 @@ coordinator:
     id:
       type: string
       description: コーディネータID
+    shopId:
+      type: string
+      description: 店舗ID
     status:
       $ref: './../../../openapi.yaml#/components/schemas/adminStatus'
     lastname:
@@ -73,6 +76,7 @@ coordinator:
       description: 更新日時 (unixtime)
   required:
   - id
+  - shopId
   - status
   - lastname
   - firstname
@@ -97,6 +101,7 @@ coordinator:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    shopId: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 2
     lastname: '&.'
     firstname: '管理者'

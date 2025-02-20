@@ -1021,6 +1021,10 @@ type ListShopProducersInput struct {
 	Offset        int64  `validate:"min=0"`
 }
 
+type MultiGetShopsInput struct {
+	ShopIDs []string `validate:"dive,required"`
+}
+
 type GetShopInput struct {
 	ShopID string `validate:"required"`
 }

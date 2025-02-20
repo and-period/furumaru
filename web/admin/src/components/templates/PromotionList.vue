@@ -8,13 +8,19 @@ import {
   AdminType,
   DiscountType,
   PromotionStatus,
+  PromotionTargetType,
   type Promotion,
+  type Shop,
 } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  shopIds: {
+    type: Array as PropType<string[]>,
+    default: () => [],
   },
   adminType: {
     type: Number as PropType<AdminType>,
@@ -44,6 +50,10 @@ const props = defineProps({
     type: Array<Promotion>,
     default: () => [],
   },
+  shops: {
+    type: Array as PropType<Shop[]>,
+    default: () => [],
+  },
   tableItemsPerPage: {
     type: Number,
     default: 20,
@@ -68,6 +78,11 @@ const headers: VDataTable['headers'] = [
   {
     title: 'タイトル',
     key: 'title',
+    sortable: false,
+  },
+  {
+    title: '対象マルシェ',
+    key: 'target',
     sortable: false,
   },
   {
@@ -110,11 +125,32 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  const registerable: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  return registerable.includes(props.adminType)
 }
 
-const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+const isEditable = (promotion: Promotion): boolean => {
+  switch (props.adminType) {
+    case AdminType.ADMINISTRATOR:
+      return true
+    case AdminType.COORDINATOR:
+      return props.shopIds.includes(promotion.shopId)
+    default:
+      return false
+  }
+}
+
+const getTarget = (promotion: Promotion): string => {
+  switch (promotion.targetType) {
+    case PromotionTargetType.ALL_SHOP:
+      return '全て'
+    case PromotionTargetType.SPECIFIC_SHOP: {
+      const shop = props.shops.find((shop: Shop): boolean => shop.id === promotion.shopId)
+      return shop?.name || ''
+    }
+    default:
+      return ''
+  }
 }
 
 const getDiscount = (
@@ -282,6 +318,9 @@ const onClickDelete = (): void => {
         <template #[`item.title`]="{ item }">
           {{ item.title }}
         </template>
+        <template #[`item.target`]="{ item }">
+          {{ getTarget(item) }}
+        </template>
         <template #[`item.status`]="{ item }">
           <v-chip
             size="small"
@@ -301,7 +340,7 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
-            v-show="isEditable()"
+            v-show="isEditable(item)"
             color="primary"
             size="small"
             variant="outlined"

@@ -139,6 +139,20 @@ func (h *handler) listShopsByProducerIDs(ctx context.Context, producerIDs []stri
 	return service.NewShops(shops), nil
 }
 
+func (h *handler) multiGetShops(ctx context.Context, shopIDs []string) (service.Shops, error) {
+	if len(shopIDs) == 0 {
+		return service.Shops{}, nil
+	}
+	in := &store.MultiGetShopsInput{
+		ShopIDs: shopIDs,
+	}
+	shops, err := h.store.MultiGetShops(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewShops(shops), nil
+}
+
 func (h *handler) getShop(ctx context.Context, shopID string) (*service.Shop, error) {
 	in := &store.GetShopInput{
 		ShopID: shopID,

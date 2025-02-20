@@ -166,6 +166,70 @@ func TestListShopProducers(t *testing.T) {
 	}
 }
 
+func TestMultiGetShops(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	shops := entity.Shops{
+		{
+			ID:             "shop-id",
+			Name:           "テスト店舗",
+			CoordinatorID:  "coordinator-id",
+			ProducerIDs:    []string{"producer-id"},
+			ProductTypeIDs: []string{"product-type-id"},
+			Activated:      true,
+			CreatedAt:      now,
+			UpdatedAt:      now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetShopsInput
+		expect    entity.Shops
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().MultiGet(ctx, []string{"shop-id"}).Return(shops, nil)
+			},
+			input: &store.MultiGetShopsInput{
+				ShopIDs: []string{"shop-id"},
+			},
+			expect:    shops,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.MultiGetShopsInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get shops",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shop.EXPECT().MultiGet(ctx, []string{"shop-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetShopsInput{
+				ShopIDs: []string{"shop-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetShops(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetShop(t *testing.T) {
 	t.Parallel()
 
