@@ -83,6 +83,25 @@ func (s *shop) Count(ctx context.Context, params *database.ListShopsParams) (int
 	return total, dbError(err)
 }
 
+func (s *shop) MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error) {
+	var internal internalShops
+
+	stmt := s.db.Statement(ctx, s.db.DB, shopTable, fields...).Where("id IN (?)", shopIDs)
+
+	if err := stmt.Find(&internal).Error; err != nil {
+		return nil, dbError(err)
+	}
+	shops, err := internal.entities()
+	if err != nil {
+		return nil, dbError(err)
+	}
+
+	if err := s.fill(ctx, s.db.DB, shops...); err != nil {
+		return nil, dbError(err)
+	}
+	return shops, nil
+}
+
 func (s *shop) Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error) {
 	shop, err := s.get(ctx, s.db.DB, shopID, fields...)
 	return shop, dbError(err)

@@ -3,8 +3,11 @@ promotionResponse:
   properties:
     promotion:
       $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    shop:
+      $ref: './../../../openapi.yaml#/components/schemas/shop'
   required:
   - promotion
+  - shop
   example:
     promotion:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -18,6 +21,15 @@ promotionResponse:
       endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
+    shop:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      createdAt: 1640962800
+      updatedAt: 1640962800
 promotionsResponse:
   type: object
   properties:
@@ -26,12 +38,18 @@ promotionsResponse:
       description: プロモーション一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    shops:
+      type: array
+      description: 店舗一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/shop'
     total:
       type: integer
       format: int64
       description: 合計数
   required:
   - promotions
+  - shops
   - total
   example:
     promotions:
@@ -57,6 +75,15 @@ promotionsResponse:
       startAt: 1640962800
       endAt: 1640962800
       total: 10
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    shops:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'テスト店舗'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminType, DiscountType, PromotionStatus, type Promotion, type UpdatePromotionRequest } from '~/types/api'
+import { AdminType, DiscountType, PromotionStatus, PromotionTargetType, type Promotion, type Shop, type UpdatePromotionRequest } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types/validations'
 
@@ -12,6 +12,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  shopIds: {
+    type: Array as PropType<string[]>,
+    default: () => [],
   },
   adminType: {
     type: Number as PropType<AdminType>,
@@ -46,10 +50,12 @@ const props = defineProps({
     type: Object as PropType<Promotion>,
     default: (): Promotion => ({
       id: '',
+      shopId: '',
       title: '',
       description: '',
       public: false,
       status: PromotionStatus.UNKNOWN,
+      targetType: PromotionTargetType.UNKNOWN,
       discountType: DiscountType.AMOUNT,
       discountRate: 0,
       code: '',
@@ -57,6 +63,19 @@ const props = defineProps({
       usedAmount: 0,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
+      createdAt: 0,
+      updatedAt: 0,
+    }),
+  },
+  shop: {
+    type: Object as PropType<Shop>,
+    default: (): Shop => ({
+      id: '',
+      coordinatorId: '',
+      producerIds: [],
+      productTypeIds: [],
+      name: '',
+      businessDays: [],
       createdAt: 0,
       updatedAt: 0,
     }),
@@ -103,13 +122,33 @@ const promotionValue = computed({
   get: (): Promotion => props.promotion,
   set: (promotion: Promotion): void => emit('update:promotion', promotion),
 })
+const getTarget = computed(() => {
+  if (!props.promotion) {
+    return ''
+  }
+  switch (props.promotion.targetType) {
+    case PromotionTargetType.ALL_SHOP:
+      return '全て'
+    case PromotionTargetType.SPECIFIC_SHOP:
+      return props.shop.name
+    default:
+      return ''
+  }
+})
 
 const formDataValidate = useVuelidate(UpdatePromotionValidationRules, formDataValue)
 const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
 const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  switch (props.adminType) {
+    case AdminType.ADMINISTRATOR:
+      return true
+    case AdminType.COORDINATOR:
+      return props.shopIds.includes(props.promotion.shopId)
+    default:
+      return false
+  }
 }
 
 const onChangeStartAt = (): void => {
@@ -161,6 +200,11 @@ const onSubmit = async (): Promise<void> => {
           v-model="formDataValidate.title.$model"
           :error-messages="getErrorMessage(formDataValidate.title.$errors)"
           label="タイトル"
+        />
+        <v-text-field
+          v-model="getTarget"
+          label="対象マルシェ"
+          readonly
         />
         <v-textarea
           v-model="formDataValidate.description.$model"

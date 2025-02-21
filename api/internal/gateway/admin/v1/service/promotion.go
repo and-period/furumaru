@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // PromotionStatus - プロモーションの状態
@@ -146,6 +147,12 @@ func NewPromotions(promotions entity.Promotions, aggregates map[string]*entity.A
 		res[i] = NewPromotion(promotions[i], aggregates[p.ID])
 	}
 	return res
+}
+
+func (ps Promotions) ShopIDs() []string {
+	return set.UniqBy(ps, func(p *Promotion) string {
+		return p.ShopID
+	})
 }
 
 func (ps Promotions) Map() map[string]*Promotion {

@@ -12,11 +12,12 @@ type Auth struct {
 
 // AuthUser - ログイン中管理者情報
 type AuthUser struct {
-	AdminID      string `json:"id"`           // 管理者ID
-	Type         int32  `json:"type"`         // 管理者種別
-	Username     string `json:"username"`     // 表示名
-	Email        string `json:"email"`        // メールアドレス
-	ThumbnailURL string `json:"thumbnailUrl"` // サムネイルURL
+	AdminID      string   `json:"id"`           // 管理者ID
+	ShopIDs      []string `json:"shopIds"`      // 店舗ID一覧
+	Type         int32    `json:"type"`         // 管理者種別
+	Username     string   `json:"username"`     // 表示名
+	Email        string   `json:"email"`        // メールアドレス
+	ThumbnailURL string   `json:"thumbnailUrl"` // サムネイルURL
 }
 
 // AuthProvider - 認証プロバイダ

@@ -388,14 +388,19 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, shop.ProductTypeIDs)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.CoordinatorResponse{
-		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		ProductTypes: productTypes.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

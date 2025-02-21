@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -90,7 +91,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 
-	scoordinator := service.NewCoordinators(coordinators)
+	scoordinator := service.NewCoordinators(coordinators, shops.MapByCoordinatorID())
 	scoordinator.SetProducerTotal(producerTotals)
 
 	res := &response.CoordinatorsResponse{
@@ -123,7 +124,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	}
 
 	res := &response.CoordinatorResponse{
-		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		Shop:         shop.Response(),
 		ProductTypes: productTypes.Response(),
 	}
@@ -175,9 +176,15 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		// 店舗作成は非同期で行われるため、取得できない場合はレスポンスを返さないだけに留める
+		h.httpError(ctx, err)
+		return
+	}
 
 	res := &response.CoordinatorResponse{
-		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		ProductTypes: productTypes.Response(),
 		Password:     password,
 	}
@@ -274,7 +281,14 @@ func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []str
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinators(coordinators), nil
+	if len(coordinators) == 0 {
+		return service.Coordinators{}, nil
+	}
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinatorIDs)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
 func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {
@@ -289,7 +303,14 @@ func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinat
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinators(coordinators), nil
+	if len(coordinators) == 0 {
+		return service.Coordinators{}, nil
+	}
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinatorIDs)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
 func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
@@ -300,7 +321,11 @@ func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*se
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinator(coordinator), nil
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinator(coordinator, shop), nil
 }
 
 func (h *handler) getCoordinatorWithDeleted(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
@@ -312,5 +337,9 @@ func (h *handler) getCoordinatorWithDeleted(ctx context.Context, coordinatorID s
 	if err != nil {
 		return nil, err
 	}
-	return service.NewCoordinator(coordinator), nil
+	shop, err := h.getShopByCoordinatorID(ctx, coordinator.ID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewCoordinator(coordinator, shop), nil
 }

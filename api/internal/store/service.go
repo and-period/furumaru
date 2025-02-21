@@ -153,6 +153,7 @@ type Service interface {
 	// Shop - 店舗
 	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, int64, error)                    // 一覧取得
 	ListShopProducers(ctx context.Context, in *ListShopProducersInput) ([]string, error)               // 生産者ID一覧取得
+	MultiGetShops(ctx context.Context, in *MultiGetShopsInput) (entity.Shops, error)                   // 一覧取得(ID指定)
 	GetShop(ctx context.Context, in *GetShopInput) (*entity.Shop, error)                               // １件取得
 	GetShopByCoordinatorID(ctx context.Context, in *GetShopByCoordinatorIDInput) (*entity.Shop, error) // １件取得(コーディネータID指定)
 	CreateShop(ctx context.Context, in *CreateShopInput) (*entity.Shop, error)                         // 登録

@@ -48,7 +48,7 @@ func (h *handler) UpdatePaymentSystem(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	methodType, err := util.GetParamInt64(ctx, "methodType")
+	methodType, err := util.GetParamInt32(ctx, "methodType")
 	if err != nil {
 		h.badRequest(ctx, err)
 		return

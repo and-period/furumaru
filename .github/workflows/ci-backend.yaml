@@ -60,7 +60,7 @@ jobs:
         service: ${{ env.SERVICE }}
 
     - name: Setup
-      run: make setup
+      run: make install
 
     - name: Create Mock
       run: make mockgen
@@ -128,7 +128,7 @@ jobs:
     - uses: ./.github/actions/setup-tidb
 
     - name: Setup
-      run: make setup
+      run: make install
 
     - name: Create Mock
       run: make mockgen

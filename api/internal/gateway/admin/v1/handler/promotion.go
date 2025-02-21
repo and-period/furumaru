@@ -14,6 +14,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
@@ -115,14 +116,36 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	aggregates, err := h.aggregateOrdersByPromotion(ctx, promotions.IDs()...)
-	if err != nil {
+	if len(promotions) == 0 {
+		res := &response.PromotionsResponse{
+			Promotions: []*response.Promotion{},
+			Shops:      []*response.Shop{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	var (
+		aggregates map[string]*sentity.AggregatedOrderPromotion
+		shops      service.Shops
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		aggregates, err = h.aggregateOrdersByPromotion(ectx, promotions.IDs()...)
+		return
+	})
+	eg.Go(func() (err error) {
+		shops, err = h.multiGetShops(ectx, promotions.ShopIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.PromotionsResponse{
 		Promotions: service.NewPromotions(promotions, aggregates).Response(),
+		Shops:      shops.Response(),
 		Total:      total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -165,9 +188,21 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+
 	res := &response.PromotionResponse{
 		Promotion: promotion.Response(),
 	}
+	if promotion.ShopID == "" {
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	shop, err := h.getShop(ctx, promotion.ShopID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res.Shop = shop.Response()
 	ctx.JSON(http.StatusOK, res)
 }
 
@@ -200,6 +235,17 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 		// 初回は集計結果が存在しないためnilで渡す
 		Promotion: service.NewPromotion(promotion, nil).Response(),
 	}
+	if promotion.ShopID == "" {
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	shop, err := h.getShop(ctx, promotion.ShopID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res.Shop = shop.Response()
 	ctx.JSON(http.StatusOK, res)
 }
 

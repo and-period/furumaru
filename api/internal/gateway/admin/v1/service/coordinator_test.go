@@ -6,7 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/user/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,18 +15,19 @@ func TestCoordinators(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name         string
-		coordinators entity.Coordinators
+		coordinators uentity.Coordinators
+		shops        map[string]*Shop
 		expect       Coordinators
 		response     []*response.Coordinator
 	}{
 		{
 			name: "success",
-			coordinators: entity.Coordinators{
+			coordinators: uentity.Coordinators{
 				{
-					Admin: entity.Admin{
+					Admin: uentity.Admin{
 						ID:            "coordinator-id01",
-						Type:          entity.AdminTypeCoordinator,
-						Status:        entity.AdminStatusActivated,
+						Type:          uentity.AdminTypeCoordinator,
+						Status:        uentity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -53,10 +54,10 @@ func TestCoordinators(t *testing.T) {
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
-					Admin: entity.Admin{
+					Admin: uentity.Admin{
 						ID:            "coordinator-id02",
-						Type:          entity.AdminTypeCoordinator,
-						Status:        entity.AdminStatusActivated,
+						Type:          uentity.AdminTypeCoordinator,
+						Status:        uentity.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -83,10 +84,37 @@ func TestCoordinators(t *testing.T) {
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
+			shops: map[string]*Shop{
+				"coordinator-id01": {
+					Shop: response.Shop{
+						ID:             "shop-id01",
+						CoordinatorID:  "coordinator-id01",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						Name:           "テスト店舗1",
+						CreatedAt:      1640962800,
+						UpdatedAt:      1640962800,
+					},
+				},
+				"coordinator-id02": {
+					Shop: response.Shop{
+						ID:             "shop-id02",
+						CoordinatorID:  "coordinator-id02",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						Name:           "テスト店舗2",
+						CreatedAt:      1640962800,
+						UpdatedAt:      1640962800,
+					},
+				},
+			},
 			expect: Coordinators{
 				{
 					Coordinator: response.Coordinator{
 						ID:                "coordinator-id01",
+						ShopID:            "shop-id01",
 						Status:            int32(AdminStatusActivated),
 						Lastname:          "&.",
 						Firstname:         "管理者",
@@ -112,6 +140,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					Coordinator: response.Coordinator{
 						ID:                "coordinator-id02",
+						ShopID:            "shop-id02",
 						Status:            int32(AdminStatusActivated),
 						Lastname:          "&.",
 						Firstname:         "管理者",
@@ -138,6 +167,7 @@ func TestCoordinators(t *testing.T) {
 			response: []*response.Coordinator{
 				{
 					ID:                "coordinator-id01",
+					ShopID:            "shop-id01",
 					Status:            int32(AdminStatusActivated),
 					Lastname:          "&.",
 					Firstname:         "管理者",
@@ -161,6 +191,7 @@ func TestCoordinators(t *testing.T) {
 				},
 				{
 					ID:                "coordinator-id02",
+					ShopID:            "shop-id02",
 					Status:            int32(AdminStatusActivated),
 					Lastname:          "&.",
 					Firstname:         "管理者",
@@ -189,7 +220,7 @@ func TestCoordinators(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewCoordinators(tt.coordinators)
+			actual := NewCoordinators(tt.coordinators, tt.shops)
 			assert.Equal(t, tt.expect, actual)
 			assert.Equal(t, tt.response, actual.Response())
 		})

@@ -3,17 +3,19 @@ import { storeToRefs } from 'pinia'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCommonStore, usePromotionStore } from '~/store'
+import { useAuthStore, useCommonStore, usePromotionStore, useShopStore } from '~/store'
 
 const router = useRouter()
 const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
+const shopStore = useShopStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { adminType } = storeToRefs(authStore)
+const { shopIds, adminType } = storeToRefs(authStore)
 const { promotions, total } = storeToRefs(promotionStore)
+const { shops } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
@@ -101,11 +103,13 @@ catch (err) {
     v-model:delete-dialog="deleteDialog"
     v-model:sort-by="sortBy"
     :loading="isLoading()"
+    :shop-ids="shopIds"
     :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :promotions="promotions"
+    :shops="shops"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:row="handleClickRow"

@@ -13,7 +13,6 @@ linters:
   - dupl
   - dupword
   - errcheck
-  - exportloopref
   - forbidigo
   - gci
   - ginkgolinter

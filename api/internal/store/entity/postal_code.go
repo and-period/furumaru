@@ -16,7 +16,7 @@ type PostalCode struct {
 }
 
 func NewPostalCode(p *postalcode.PostalCode) (*PostalCode, error) {
-	code, err := strconv.ParseInt(p.PrefectureCode, 10, 64)
+	code, err := strconv.ParseInt(p.PrefectureCode, 10, 32)
 	if err != nil {
 		return nil, err
 	}

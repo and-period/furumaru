@@ -370,7 +370,7 @@ func getAdminID(ctx *gin.Context) string {
 }
 
 func getAdminType(ctx *gin.Context) service.AdminType {
-	role, _ := strconv.ParseInt(ctx.GetHeader("adminType"), 10, 64)
+	role, _ := strconv.ParseInt(ctx.GetHeader("adminType"), 10, 32)
 	return service.AdminType(role)
 }
 

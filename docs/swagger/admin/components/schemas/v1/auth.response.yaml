@@ -39,6 +39,12 @@ authUserResponse:
     id:
       type: string
       description: 管理者ID
+    shopIds:
+      type: array
+      description: 店舗ID一覧
+      items:
+        type: string
+        description: 店舗ID
     type:
       $ref: './../../../openapi.yaml#/components/schemas/adminType'
     username:
@@ -52,12 +58,14 @@ authUserResponse:
       description: サムネイルURL
   required:
   - id
+  - shopIds
   - type
   - username
   - email
   - thumbnailUrl
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    shopIds: ['kSByoE6FetnPs5Byk3a9Zx']
     type: 1
     username: '&. 管理者'
     email: 'test-user@and-period.jp'

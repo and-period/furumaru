@@ -45,14 +45,17 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    adminId(state): string {
-      return state.auth?.adminId || ''
-    },
     accessToken(state): string | undefined {
       return state.auth?.accessToken
     },
+    adminId(state): string {
+      return state.user?.id || ''
+    },
+    shopIds(state): string[] {
+      return state.user?.shopIds || []
+    },
     adminType(state): AdminType {
-      return state.auth?.type || AdminType.UNKNOWN
+      return state.user?.type || AdminType.UNKNOWN
     },
   },
 

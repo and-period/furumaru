@@ -22,9 +22,11 @@ type Promotion struct {
 
 type PromotionResponse struct {
 	Promotion *Promotion `json:"promotion"` // プロモーション情報
+	Shop      *Shop      `json:"shop"`      // 店舗情報
 }
 
 type PromotionsResponse struct {
 	Promotions []*Promotion `json:"promotions"` // プロモーション情報一覧
+	Shops      []*Shop      `json:"shops"`      // 店舗情報一覧
 	Total      int64        `json:"total"`      // プロモーション合計数
 }

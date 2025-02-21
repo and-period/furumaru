@@ -184,6 +184,12 @@ func (ps Promotions) IDs() []string {
 	})
 }
 
+func (ps Promotions) ShopIDs() []string {
+	return set.UniqBy(ps, func(p *Promotion) string {
+		return p.ShopID
+	})
+}
+
 func (ps Promotions) Fill(now time.Time) {
 	for i := range ps {
 		ps[i].Fill(now)

@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useAuthStore, useCommonStore, usePromotionStore } from '~/store'
+import { useAuthStore, useCommonStore, usePromotionStore, useShopStore } from '~/store'
 import type { UpdatePromotionRequest } from '~/types/api'
 
 const router = useRouter()
@@ -11,12 +11,14 @@ const route = useRoute()
 const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
+const shopStore = useShopStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const promotionId = route.params.id as string
 
-const { adminType } = storeToRefs(authStore)
+const { shopIds, adminType } = storeToRefs(authStore)
 const { promotion } = storeToRefs(promotionStore)
+const { shop } = storeToRefs(shopStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdatePromotionRequest>({
@@ -84,11 +86,13 @@ catch (err) {
   <templates-promotion-edit
     v-model:form-data="formData"
     :loading="isLoading()"
+    :shop-ids="shopIds"
     :admin-type="adminType"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :promotion="promotion"
+    :shop="shop"
     @submit="handleSubmit"
   />
 </template>
