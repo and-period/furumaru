@@ -81,7 +81,7 @@ const circleItems = computed<CircleItem[]>(() => [
               :alt="`about-point-${i + 1}`"
             >
           </div>
-          <p class="mb-6 text-2xl font-bold md:whitespace-pre">
+          <p class="mb-6 text-2xl font-bold whitespace-pre-wrap">
             {{ item.title }}
           </p>
           <p
