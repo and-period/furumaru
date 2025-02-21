@@ -25,10 +25,16 @@ func (h *handler) listShopsByProducerIDs(ctx context.Context, producerIDs []stri
 	return shops, err
 }
 
+func (h *handler) getShop(ctx context.Context, shopID string) (*sentity.Shop, error) {
+	in := &store.GetShopInput{
+		ShopID: shopID,
+	}
+	return h.store.GetShop(ctx, in)
+}
+
 func (h *handler) getShopByCoordinatorID(ctx context.Context, coordinatorID string) (*sentity.Shop, error) {
 	in := &store.GetShopByCoordinatorIDInput{
 		CoordinatorID: coordinatorID,
 	}
-	shop, err := h.store.GetShopByCoordinatorID(ctx, in)
-	return shop, err
+	return h.store.GetShopByCoordinatorID(ctx, in)
 }

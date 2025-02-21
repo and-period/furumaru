@@ -11,6 +11,12 @@ get:
     description: クーポンコード
     required: true
     example: '12345678'
+  - in: query
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネーターID
+    required: false
   responses:
     200:
       description: 成功

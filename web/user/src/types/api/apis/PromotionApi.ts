@@ -27,6 +27,7 @@ import {
 
 export interface V1GetPromotionRequest {
     code: string;
+    coordinatorId?: string;
 }
 
 /**
@@ -46,6 +47,10 @@ export class PromotionApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters['coordinatorId'] != null) {
+            queryParameters['coordinatorId'] = requestParameters['coordinatorId'];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

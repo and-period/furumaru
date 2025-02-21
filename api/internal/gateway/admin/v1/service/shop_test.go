@@ -9,6 +9,44 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestShop_GetID(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		shop   *Shop
+		expect string
+	}{
+		{
+			name: "success",
+			shop: &Shop{
+				Shop: response.Shop{
+					ID:             "shop-id",
+					Name:           "テスト店舗",
+					CoordinatorID:  "coordinator-id",
+					ProducerIDs:    []string{"producer-id"},
+					ProductTypeIDs: []string{"product-type-id"},
+					BusinessDays:   []time.Weekday{time.Monday},
+					CreatedAt:      now.Unix(),
+					UpdatedAt:      now.Unix(),
+				},
+			},
+			expect: "shop-id",
+		},
+		{
+			name:   "empty",
+			shop:   nil,
+			expect: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shop.GetID())
+		})
+	}
+}
+
 func TestShops(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
@@ -71,40 +109,156 @@ func TestShops(t *testing.T) {
 	}
 }
 
-func TestShop_GetID(t *testing.T) {
+func TestShops_CoordinatorIDs(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
 		name   string
-		shop   *Shop
-		expect string
+		shops  Shops
+		expect []string
 	}{
 		{
 			name: "success",
-			shop: &Shop{
-				Shop: response.Shop{
-					ID:             "shop-id",
-					Name:           "テスト店舗",
-					CoordinatorID:  "coordinator-id",
-					ProducerIDs:    []string{"producer-id"},
-					ProductTypeIDs: []string{"product-type-id"},
-					BusinessDays:   []time.Weekday{time.Monday},
-					CreatedAt:      now.Unix(),
-					UpdatedAt:      now.Unix(),
+			shops: Shops{
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
 				},
 			},
-			expect: "shop-id",
-		},
-		{
-			name:   "empty",
-			shop:   nil,
-			expect: "",
+			expect: []string{"coordinator-id"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.shop.GetID())
+			assert.Equal(t, tt.expect, tt.shops.CoordinatorIDs())
+		})
+	}
+}
+
+func TestShops_ProductTypeIDs(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		shops  Shops
+		expect []string
+	}{
+		{
+			name: "success",
+			shops: Shops{
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+			},
+			expect: []string{"product-type-id"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shops.ProductTypeIDs())
+		})
+	}
+}
+
+func TestShops_MapByCoordinatorID(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		shops  Shops
+		expect map[string]*Shop
+	}{
+		{
+			name: "success",
+			shops: Shops{
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+				{
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+			},
+			expect: map[string]*Shop{
+				"coordinator-id": {
+					Shop: response.Shop{
+						ID:             "shop-id",
+						Name:           "テスト店舗",
+						CoordinatorID:  "coordinator-id",
+						ProducerIDs:    []string{"producer-id"},
+						ProductTypeIDs: []string{"product-type-id"},
+						BusinessDays:   []time.Weekday{time.Monday},
+						CreatedAt:      now.Unix(),
+						UpdatedAt:      now.Unix(),
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shops.MapByCoordinatorID())
 		})
 	}
 }
