@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.1](https://github.com/and-period/furumaru/compare/v4.4.0...v4.4.1) - 2025-02-21
+- Fix: fixed top page by @hamachans in https://github.com/and-period/furumaru/pull/2733
+
 ## [v4.4.0](https://github.com/and-period/furumaru/compare/v4.3.1...v4.4.0) - 2025-02-21
 - feat(store): 店舗ごとのプロモーションを発行できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2729
 - feat(admin): 店舗ごとのプロモーション発行機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2731
