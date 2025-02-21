@@ -34,6 +34,19 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 	res := &response.PromotionResponse{
 		Promotion: service.NewPromotion(promotion).Response(),
 	}
+	if promotion.ShopID == "" {
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+	shop, err := h.getShop(ctx, promotion.ShopID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if shop.CoordinatorID != util.GetQuery(ctx, "coordinatorId", "") {
+		h.forbidden(ctx, errors.New("handler: this promotion can only be used at certain shop"))
+		return
+	}
 	ctx.JSON(http.StatusOK, res)
 }
 
