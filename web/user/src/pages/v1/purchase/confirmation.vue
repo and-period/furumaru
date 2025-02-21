@@ -188,7 +188,7 @@ onMounted(async () => {
 
   // プロモーションコードの有効性を確認
   if (promotionCode.value) {
-    const result = await verifyPromotionCode(promotionCode.value)
+    const result = await verifyPromotionCode(promotionCode.value, coordinatorId.value)
     if (result) {
       validPromotionCode.value = result
     }

@@ -247,7 +247,7 @@ const handleClickNextStepButton = () => {
  * クーポンコードを適用するボタンをクリックしたときの処理
  */
 const handleClickUsePromotionCodeButton = async () => {
-  const result = await verifyGuestPromotionCode(promotionCodeFormValue.value)
+  const result = await verifyGuestPromotionCode(promotionCodeFormValue.value, coordinatorId.value)
   if (result) {
     invalidPromotion.value = false
     validPromotion.value = true

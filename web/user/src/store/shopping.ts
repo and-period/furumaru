@@ -226,10 +226,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     /**
      * 有効なプロモーションコードかを検証する(ゲスト用)
      */
-    async verifyGuestPromotionCode(promotionCode: string): Promise<boolean> {
+    async verifyGuestPromotionCode(promotionCode: string, coordinatorId?: string): Promise<boolean> {
       try {
         await this.promotionApiClient().v1GetPromotion({
           code: promotionCode,
+          coordinatorId,
         })
         return true
       }
