@@ -13,7 +13,7 @@ type Auth struct {
 // AuthUser - ログイン中管理者情報
 type AuthUser struct {
 	AdminID      string   `json:"id"`           // 管理者ID
-	ShopIDs      []string `json:"shopId"`       // 店舗ID一覧
+	ShopIDs      []string `json:"shopIds"`      // 店舗ID一覧
 	Type         int32    `json:"type"`         // 管理者種別
 	Username     string   `json:"username"`     // 表示名
 	Email        string   `json:"email"`        // メールアドレス

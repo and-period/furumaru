@@ -131,7 +131,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		aggregates, err = h.aggregateOrdersByPromotion(ctx, promotions.IDs()...)
+		aggregates, err = h.aggregateOrdersByPromotion(ectx, promotions.IDs()...)
 		return
 	})
 	eg.Go(func() (err error) {
