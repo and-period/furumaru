@@ -41,7 +41,6 @@ onMounted(() => {
     archiveRef.value.addEventListener('scroll', updateScrollLeft)
   }
 
-  // 5秒後にタイトルを切り替え
   setTimeout(() => {
     titleVisible.value = false
     title4Visible.value = true
@@ -136,10 +135,18 @@ const title4Visible = ref<boolean>(false)
         <div
           class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
         >
-          <p v-if="titleVisible">{{ tt('title1') }}</p>
-          <p v-if="titleVisible">{{ tt('title2') }}</p>
-          <p v-if="titleVisible">{{ tt('title3') }}</p>
-          <p v-if="title4Visible">{{ tt('title4') }}</p>
+          <p v-if="titleVisible">
+            {{ tt('title1') }}
+          </p>
+          <p v-if="titleVisible">
+            {{ tt('title2') }}
+          </p>
+          <p v-if="titleVisible">
+            {{ tt('title3') }}
+          </p>
+          <p v-if="title4Visible">
+            {{ tt('title4') }}
+          </p>
         </div>
 
         <div
