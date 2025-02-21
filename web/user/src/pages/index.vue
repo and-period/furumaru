@@ -40,6 +40,11 @@ onMounted(() => {
   if (archiveRef.value) {
     archiveRef.value.addEventListener('scroll', updateScrollLeft)
   }
+
+  setTimeout(() => {
+    titleVisible.value = false
+    title4Visible.value = true
+  }, 3000)
 })
 
 onUnmounted(() => {
@@ -114,6 +119,9 @@ const handleClickAllItem = () => {
 useSeoMeta({
   title: 'トップページ',
 })
+
+const titleVisible = ref<boolean>(true)
+const title4Visible = ref<boolean>(false)
 </script>
 
 <template>
@@ -127,8 +135,18 @@ useSeoMeta({
         <div
           class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
         >
-          <p>&#035;{{ tt('deepJapanText') }}</p>
-          <p>{{ tt('localVideoMediaText') }}</p>
+          <p v-if="titleVisible">
+            {{ tt('title1') }}
+          </p>
+          <p v-if="titleVisible">
+            {{ tt('title2') }}
+          </p>
+          <p v-if="titleVisible">
+            {{ tt('title3') }}
+          </p>
+          <p v-if="title4Visible">
+            {{ tt('title4') }}
+          </p>
         </div>
 
         <div
