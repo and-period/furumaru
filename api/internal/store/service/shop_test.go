@@ -202,9 +202,11 @@ func TestMultiGetShops(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.MultiGetShopsInput{},
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetShopsInput{
+				ShopIDs: []string{""},
+			},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
 		},
