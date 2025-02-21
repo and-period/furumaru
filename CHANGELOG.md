@@ -1,5 +1,10 @@
 # Changelog
 
+## [v4.4.0](https://github.com/and-period/furumaru/compare/v4.3.1...v4.4.0) - 2025-02-21
+- feat(store): 店舗ごとのプロモーションを発行できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2729
+- feat(admin): 店舗ごとのプロモーション発行機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2731
+- fix(user): プロモーションコードの検証時、対象の店舗かを判定できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2732
+
 ## [v4.3.1](https://github.com/and-period/furumaru/compare/v4.3.0...v4.3.1) - 2025-02-16
 - fix: radiusを100000に指定する by @wf-yamaday in https://github.com/and-period/furumaru/pull/2726
 - レビュー投稿画面のモックアップの実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2728
