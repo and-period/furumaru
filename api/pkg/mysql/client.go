@@ -146,7 +146,7 @@ func NewClient(params *Params, opts ...Option) (*Client, error) {
 
 	c := &Client{
 		DB:         db,
-		maxRetries: uint64(dopts.maxRetries),
+		maxRetries: uint64(dopts.maxRetries), //nolint:gosec
 	}
 	return c, nil
 }

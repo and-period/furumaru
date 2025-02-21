@@ -380,7 +380,7 @@ func parseCartBasketKey(key string) (string, ShippingType, error) {
 	if len(strs) != 2 {
 		return "", ShippingTypeUnknown, errors.New("invalid cart basket key format")
 	}
-	typ, err := strconv.ParseInt(strs[1], 10, 64)
+	typ, err := strconv.ParseInt(strs[1], 10, 32)
 	if err != nil {
 		return "", ShippingTypeUnknown, err
 	}

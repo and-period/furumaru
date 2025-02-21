@@ -46,6 +46,55 @@ func TestGetParam(t *testing.T) {
 	}
 }
 
+func TestGetParamInt32(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx *gin.Context)
+		param  string
+		expect int32
+		hasErr bool
+	}{
+		{
+			name: "success",
+			setup: func(ctx *gin.Context) {
+				ctx.Params = gin.Params{{Key: "id", Value: "1"}}
+			},
+			param:  "id",
+			expect: 1,
+			hasErr: false,
+		},
+		{
+			name:   "empty",
+			setup:  func(ctx *gin.Context) {},
+			param:  "id",
+			expect: 0,
+			hasErr: true,
+		},
+		{
+			name: "invalid param",
+			setup: func(ctx *gin.Context) {
+				ctx.Params = gin.Params{{Key: "id", Value: "hoge"}}
+			},
+			param:  "id",
+			expect: 0,
+			hasErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			gin.SetMode(gin.TestMode)
+			w := httptest.NewRecorder()
+			ctx, _ := gin.CreateTestContext(w)
+			tt.setup(ctx)
+			actual, err := GetParamInt32(ctx, tt.param)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestGetParamInt64(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/api/googleapi"
 	gauth "google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
-	"google.golang.org/api/youtube/v3"
+	youtube "google.golang.org/api/youtube/v3"
 )
 
 type auth struct {

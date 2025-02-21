@@ -3,6 +3,8 @@
 //	usage: go run ./database-migrate-mysql/main.go \
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
+//
+//nolint:typecheck
 package main
 
 import (

@@ -24,6 +24,11 @@ func GetParam(ctx *gin.Context, param string) string {
 	return ctx.Param(param)
 }
 
+func GetParamInt32(ctx *gin.Context, param string) (int32, error) {
+	num, err := strconv.ParseInt(ctx.Param(param), 10, 32)
+	return int32(num), err
+}
+
 func GetParamInt64(ctx *gin.Context, param string) (int64, error) {
 	return strconv.ParseInt(ctx.Param(param), 10, 64)
 }

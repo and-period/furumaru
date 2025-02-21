@@ -74,7 +74,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 	)
 	req.Header.Set("Content-Type", "application/json")
 	for retries := 0; retries < c.maxRetries; retries++ {
-		res, err = c.client.Do(req) //nolint:bodyclose
+		res, err = c.client.Do(req)
 		if err != nil || !c.retryable(res.StatusCode) {
 			break
 		}
