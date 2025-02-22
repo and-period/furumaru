@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useIntervalFn, useTimeoutPoll } from '@vueuse/core'
+import { useIntervalFn } from '@vueuse/core'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 import type { BannerItem } from '~/types/props'
