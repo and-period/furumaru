@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
+import { useIntervalFn, useTimeoutPoll } from '@vueuse/core'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 import type { BannerItem } from '~/types/props'
@@ -40,11 +41,6 @@ onMounted(() => {
   if (archiveRef.value) {
     archiveRef.value.addEventListener('scroll', updateScrollLeft)
   }
-
-  setTimeout(() => {
-    titleVisible.value = false
-    title4Visible.value = true
-  }, 3000)
 })
 
 onUnmounted(() => {
@@ -116,12 +112,20 @@ const handleClickAllItem = () => {
   router.push(`/items`)
 }
 
+const titleVisible = ref<boolean>(true)
+
+/**
+ * 3秒ごとにタイトルの表示を切り替える
+ */
+useIntervalFn(
+  () => {
+    titleVisible.value = !titleVisible.value
+  }, 3000,
+)
+
 useSeoMeta({
   title: 'トップページ',
 })
-
-const titleVisible = ref<boolean>(true)
-const title4Visible = ref<boolean>(false)
 </script>
 
 <template>
@@ -133,18 +137,26 @@ const title4Visible = ref<boolean>(false)
         class="absolute w-full h-full z-10 flex flex-col md:gap-40 justify-center"
       >
         <div
-          class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
+          class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-widest md:grow-0 grow flex flex-col justify-center md:min-h-[216px]"
         >
-          <p v-if="titleVisible">
-            {{ tt('title1') }}
-          </p>
-          <p v-if="titleVisible">
-            {{ tt('title2') }}
-          </p>
-          <p v-if="titleVisible">
-            {{ tt('title3') }}
-          </p>
-          <p v-if="title4Visible">
+          <div
+            v-if="titleVisible"
+            class="animate-tracking-in-expand"
+          >
+            <p>
+              {{ tt('title1') }}
+            </p>
+            <p>
+              {{ tt('title2') }}
+            </p>
+            <p>
+              {{ tt('title3') }}
+            </p>
+          </div>
+          <p
+            v-else
+            class="animate-tracking-in-expand"
+          >
             {{ tt('title4') }}
           </p>
         </div>
@@ -161,7 +173,9 @@ const title4Visible = ref<boolean>(false)
               <span
                 v-if="isEnglish"
                 class="sm:mr-1"
-              >{{ tt('discoverConjunctionText') }}</span>
+              >
+                {{ tt('discoverConjunctionText') }}
+              </span>
               <span v-else>{{ tt('discoverConjunctionText') }}</span>
             </div>
             {{ tt('discoverText') }}
