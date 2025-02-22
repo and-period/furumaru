@@ -101,11 +101,13 @@ const handleSubmit = () => {
         </div>
       </div>
     </div>
-    <button
-      type="submit"
-      class="bg-main text-white py-1"
-    >
-      {{ lt('reviewSubmitButtonText') }}
-    </button>
+    <div class="text-center">
+      <button
+        type="submit"
+        class="bg-main text-white py-2 md:w-[400px] w-full"
+      >
+        {{ lt('reviewSubmitButtonText') }}
+      </button>
+    </div>
   </form>
 </template>
