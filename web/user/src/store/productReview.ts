@@ -1,3 +1,4 @@
+import { useAuthStore } from './auth'
 import type { CreateProductReviewRequest, ProductReview } from '~/types/api'
 
 export const useProductReviewStore = defineStore('product-review', {
@@ -47,8 +48,10 @@ export const useProductReviewStore = defineStore('product-review', {
      * @returns
      */
     async postReview(productId: string, payload: CreateProductReviewRequest): Promise<void> {
+      const authStore = useAuthStore()
+      const { accessToken } = authStore
       try {
-        await this.productApiClient().v1CreateProductReview({
+        await this.productApiClient(accessToken).v1CreateProductReview({
           productId: productId,
           body: payload,
         })
