@@ -28,6 +28,9 @@ const formData = ref<CreateProductReviewRequest>({
   comment: '',
 })
 
+/**
+ * レビュー対象の商品情報取得
+ */
 const { data: product, status, error } = useAsyncData('target-product', () => {
   return fetchProduct(productId.value)
 })
