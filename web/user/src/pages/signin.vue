@@ -20,6 +20,13 @@ const t = (str: keyof I18n['auth']['signIn']): string => {
   return i18n.t(`auth.signIn.${str}`)
 }
 
+/**
+ * レビュー投稿画面
+ */
+const reviewTargetId = computed(() => {
+  return route.query.review_target_id || '' as string | undefined
+})
+
 const handleClickGoogleSingInButton = async () => {
   const state = crypto.randomUUID()
   sessionStorage.setItem('oauth_state', state)
@@ -58,7 +65,13 @@ const errorMessage = ref<string>('')
 const handleSubmit = async () => {
   try {
     await signIn(formData)
-    router.push(localePath('/'))
+
+    if (reviewTargetId.value) {
+      router.push(localePath(`/reviews/products/${reviewTargetId.value}`))
+    }
+    else {
+      router.push(localePath('/'))
+    }
   }
   catch (error) {
     hasError.value = true

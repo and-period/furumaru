@@ -69,7 +69,7 @@ useSeoMeta({
 
           <div class="text-center">
             <nuxt-link
-              to="/signin"
+              :to="`/signin?review_target_id=${productId}`"
               class=" bg-main text-white py-2 md:w-[400px] inline-block w-full"
             >
               {{ lt('loginButtonText') }}
