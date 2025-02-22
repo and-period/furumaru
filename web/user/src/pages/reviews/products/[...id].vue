@@ -1,18 +1,29 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/store/auth'
 import { useProductStore } from '~/store/product'
+import { useProductReviewStore } from '~/store/productReview'
 import type { CreateProductReviewRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
 
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
 const productStore = useProductStore()
 const { fetchProduct } = productStore
+
+const productReviewStore = useProductReviewStore()
+const { postReview } = productReviewStore
 
 const lt = (str: keyof I18n['reviews']) => {
   return i18n.t(`reviews.${str}`)
 }
 
 const route = useRoute()
+const router = useRouter()
+const localePath = useLocalePath()
 
 const productId = computed<string>(() => {
   const id = route.params.id
@@ -28,13 +39,34 @@ const formData = ref<CreateProductReviewRequest>({
   comment: '',
 })
 
+/**
+ * レビュー対象の商品情報取得
+ */
 const { data: product, status, error } = useAsyncData('target-product', () => {
   return fetchProduct(productId.value)
 })
 
-const handleSubmit = () => {
-  // TODO: レビューを投稿する処理を実装する
-  console.log('submit')
+const submitting = ref<boolean>(false)
+const submitErrorMessage = ref<string>('')
+
+const handleSubmit = async () => {
+  submitting.value = true
+  submitErrorMessage.value = ''
+  try {
+    await postReview(productId.value, formData.value)
+    router.push(localePath('/reviews/complete'))
+  }
+  catch (error) {
+    if (error instanceof ApiBaseError) {
+      submitErrorMessage.value = error.message
+    }
+    else {
+      submitErrorMessage.value = ''
+    }
+  }
+  finally {
+    submitting.value = false
+  }
 }
 
 useSeoMeta({
@@ -54,25 +86,54 @@ useSeoMeta({
       </p>
       <hr class="my-[40px]">
 
-      <!-- エラー表示 -->
-      <template v-if="status === 'error'">
-        <the-alert>
-          {{ error }}
-        </the-alert>
+      <template v-if="!isAuthenticated">
+        <div class="flex flex-col md:gap-8 gap-4">
+          <the-alert>
+            {{ lt('requiredAuthMessage') }}
+          </the-alert>
+
+          <div class="text-center">
+            <nuxt-link
+              :to="`/signin?review_target_id=${productId}`"
+              class=" bg-main text-white py-2 md:w-[400px] inline-block w-full"
+            >
+              {{ lt('loginButtonText') }}
+            </nuxt-link>
+          </div>
+        </div>
       </template>
 
-      <template v-if="status === 'success'">
-        <div class="flex flex-col gap-4">
-          <template v-if="product">
-            <the-review-target-product
-              :product="product?.product"
+      <template v-if="isAuthenticated">
+        <!-- エラー表示 -->
+        <template v-if="status === 'error'">
+          <the-alert>
+            {{ error }}
+          </the-alert>
+        </template>
+
+        <template v-if="submitErrorMessage">
+          <the-alert class="mb-4">
+            <div class=" font-semibold">
+              {{ lt('reviewSubmitErrorMessage') }}
+            </div>
+            {{ submitErrorMessage }}
+          </the-alert>
+        </template>
+
+        <template v-if="status === 'success'">
+          <div class="flex flex-col gap-4">
+            <template v-if="product">
+              <the-review-target-product
+                :product="product?.product"
+              />
+            </template>
+            <the-review-form
+              v-model="formData"
+              :submitting="submitting"
+              @submit="handleSubmit"
             />
-          </template>
-          <the-review-form
-            v-model="formData"
-            @submit="handleSubmit"
-          />
-        </div>
+          </div>
+        </template>
       </template>
     </div>
   </div>

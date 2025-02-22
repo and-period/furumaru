@@ -2,6 +2,12 @@
 import type { CreateProductReviewRequest } from '~/types/api'
 import type { I18n } from '~/types/locales'
 
+interface Props {
+  submitting: boolean
+}
+
+const props = defineProps<Props>()
+
 interface Emits {
   (e: 'submit'): void
 }
@@ -22,6 +28,10 @@ const lt = (str: keyof I18n['reviews']) => {
 const ratingError = ref<string>('')
 
 const handleSubmit = () => {
+  if (props.submitting) {
+    return
+  }
+
   ratingError.value = ''
 
   // rateが1,2,3,4,5以外の場合はエラー
@@ -101,11 +111,21 @@ const handleSubmit = () => {
         </div>
       </div>
     </div>
-    <button
-      type="submit"
-      class="bg-main text-white py-1"
-    >
-      {{ lt('reviewSubmitButtonText') }}
-    </button>
+    <div class="text-center">
+      <button
+        :disabled="submitting"
+        type="submit"
+        class="bg-main text-white py-2 md:w-[400px] w-full disabled:cursor-wait"
+      >
+        <template v-if="submitting">
+          <div class="flex items-center justify-center">
+            <the-loading-icon />
+          </div>
+        </template>
+        <template v-else>
+          {{ lt('reviewSubmitButtonText') }}
+        </template>
+      </button>
+    </div>
   </form>
 </template>

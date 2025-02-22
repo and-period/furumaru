@@ -425,5 +425,11 @@ export interface I18n {
     reviewCommentLabel: string
     reviewCommentPlaceholder: string
     reviewSubmitButtonText: string
+    requiredAuthMessage: string
+    loginButtonText: string
+    reviewSubmitErrorMessage: string
+    reviewSubmitSuccessPageTitle: string
+    reviewSubmitSuccessMessage: string
+    topPageLinkText: string
   }
 }
