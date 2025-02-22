@@ -400,6 +400,9 @@
     "reviewSubmitButtonText": "Submit",
     "requiredAuthMessage": "Required to log in to post a review.",
     "loginButtonText": "Log in",
-    "reviewSubmitErrorMessage": "Failed to post a review."
+    "reviewSubmitErrorMessage": "Failed to post a review.",
+    "reviewSubmitSuccessPageTitle": "Review Submitted",
+    "reviewSubmitSuccessMessage": "Thank you for your review.",
+    "topPageLinkText": "Back to the Top Page"
   }
 }

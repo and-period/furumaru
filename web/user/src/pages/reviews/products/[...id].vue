@@ -22,6 +22,8 @@ const lt = (str: keyof I18n['reviews']) => {
 }
 
 const route = useRoute()
+const router = useRouter()
+const localePath = useLocalePath()
 
 const productId = computed<string>(() => {
   const id = route.params.id
@@ -52,6 +54,7 @@ const handleSubmit = async () => {
   submitErrorMessage.value = ''
   try {
     await postReview(productId.value, formData.value)
+    router.push(localePath('/reviews/complete'))
   }
   catch (error) {
     if (error instanceof ApiBaseError) {

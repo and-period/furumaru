@@ -428,5 +428,8 @@ export interface I18n {
     requiredAuthMessage: string
     loginButtonText: string
     reviewSubmitErrorMessage: string
+    reviewSubmitSuccessPageTitle: string
+    reviewSubmitSuccessMessage: string
+    topPageLinkText: string
   }
 }
