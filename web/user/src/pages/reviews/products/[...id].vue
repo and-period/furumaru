@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/store/auth'
 import { useProductStore } from '~/store/product'
 import type { CreateProductReviewRequest } from '~/types/api'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
+
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
 const productStore = useProductStore()
 const { fetchProduct } = productStore
@@ -57,25 +61,44 @@ useSeoMeta({
       </p>
       <hr class="my-[40px]">
 
-      <!-- エラー表示 -->
-      <template v-if="status === 'error'">
-        <the-alert>
-          {{ error }}
-        </the-alert>
+      <template v-if="!isAuthenticated">
+        <div class="flex flex-col md:gap-8 gap-4">
+          <the-alert>
+            {{ lt('requiredAuthMessage') }}
+          </the-alert>
+
+          <div class="text-center">
+            <nuxt-link
+              to="/signin"
+              class=" bg-main text-white py-2 md:w-[400px] inline-block w-full"
+            >
+              {{ lt('loginButtonText') }}
+            </nuxt-link>
+          </div>
+        </div>
       </template>
 
-      <template v-if="status === 'success'">
-        <div class="flex flex-col gap-4">
-          <template v-if="product">
-            <the-review-target-product
-              :product="product?.product"
+      <template v-if="isAuthenticated">
+        <!-- エラー表示 -->
+        <template v-if="status === 'error'">
+          <the-alert>
+            {{ error }}
+          </the-alert>
+        </template>
+
+        <template v-if="status === 'success'">
+          <div class="flex flex-col gap-4">
+            <template v-if="product">
+              <the-review-target-product
+                :product="product?.product"
+              />
+            </template>
+            <the-review-form
+              v-model="formData"
+              @submit="handleSubmit"
             />
-          </template>
-          <the-review-form
-            v-model="formData"
-            @submit="handleSubmit"
-          />
-        </div>
+          </div>
+        </template>
       </template>
     </div>
   </div>

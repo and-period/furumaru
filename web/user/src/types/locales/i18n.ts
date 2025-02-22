@@ -425,5 +425,7 @@ export interface I18n {
     reviewCommentLabel: string
     reviewCommentPlaceholder: string
     reviewSubmitButtonText: string
+    requiredAuthMessage: string
+    loginButtonText: string
   }
 }

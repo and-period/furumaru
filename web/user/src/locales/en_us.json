@@ -397,6 +397,8 @@
     "reviewTitlePlaceholder": "Please enter a title",
     "reviewCommentLabel": "Comment",
     "reviewCommentPlaceholder": "Please enter a comment",
-    "reviewSubmitButtonText": "Submit"
+    "reviewSubmitButtonText": "Submit",
+    "requiredAuthMessage": "Required to log in to post a review.",
+    "loginButtonText": "Log in"
   }
 }
