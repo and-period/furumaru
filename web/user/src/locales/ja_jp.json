@@ -439,6 +439,7 @@
     "reviewCommentPlaceholder": "商品の感想やレビューを書いてください",
     "reviewSubmitButtonText": "投稿する",
     "requiredAuthMessage": "レビュー投稿にはログインが必要です。",
-    "loginButtonText": "ログイン画面へ"
+    "loginButtonText": "ログイン画面へ",
+    "reviewSubmitErrorMessage": "レビューの投稿に失敗しました。"
   }
 }

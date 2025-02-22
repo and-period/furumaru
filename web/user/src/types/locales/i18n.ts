@@ -427,5 +427,6 @@ export interface I18n {
     reviewSubmitButtonText: string
     requiredAuthMessage: string
     loginButtonText: string
+    reviewSubmitErrorMessage: string
   }
 }

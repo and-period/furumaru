@@ -399,6 +399,7 @@
     "reviewCommentPlaceholder": "Please enter a comment",
     "reviewSubmitButtonText": "Submit",
     "requiredAuthMessage": "Required to log in to post a review.",
-    "loginButtonText": "Log in"
+    "loginButtonText": "Log in",
+    "reviewSubmitErrorMessage": "Failed to post a review."
   }
 }

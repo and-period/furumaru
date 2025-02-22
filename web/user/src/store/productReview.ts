@@ -1,4 +1,4 @@
-import type { ProductReview } from '~/types/api'
+import type { CreateProductReviewRequest, ProductReview } from '~/types/api'
 
 export const useProductReviewStore = defineStore('product-review', {
   state: () => {
@@ -37,6 +37,24 @@ export const useProductReviewStore = defineStore('product-review', {
       }
       finally {
         this.reviewsFetchState.isLoading = false
+      }
+    },
+
+    /**
+     * 商品レビューを投稿する関数
+     * @param productId レビュー対象の商品ID
+     * @param payload レビュー内容
+     * @returns
+     */
+    async postReview(productId: string, payload: CreateProductReviewRequest): Promise<void> {
+      try {
+        await this.productApiClient().v1CreateProductReview({
+          productId: productId,
+          body: payload,
+        })
+      }
+      catch (error) {
+        return this.errorHandler(error)
       }
     },
   },

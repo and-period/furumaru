@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
 import { useProductStore } from '~/store/product'
+import { useProductReviewStore } from '~/store/productReview'
 import type { CreateProductReviewRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 import type { I18n } from '~/types/locales'
 
 const i18n = useI18n()
@@ -11,6 +13,9 @@ const { isAuthenticated } = storeToRefs(authStore)
 
 const productStore = useProductStore()
 const { fetchProduct } = productStore
+
+const productReviewStore = useProductReviewStore()
+const { postReview } = productReviewStore
 
 const lt = (str: keyof I18n['reviews']) => {
   return i18n.t(`reviews.${str}`)
@@ -39,9 +44,26 @@ const { data: product, status, error } = useAsyncData('target-product', () => {
   return fetchProduct(productId.value)
 })
 
-const handleSubmit = () => {
-  // TODO: レビューを投稿する処理を実装する
-  console.log('submit')
+const submitting = ref<boolean>(false)
+const submitErrorMessage = ref<string>('')
+
+const handleSubmit = async () => {
+  submitting.value = true
+  submitErrorMessage.value = ''
+  try {
+    await postReview(productId.value, formData.value)
+  }
+  catch (error) {
+    if (error instanceof ApiBaseError) {
+      submitErrorMessage.value = error.message
+    }
+    else {
+      submitErrorMessage.value = ''
+    }
+  }
+  finally {
+    submitting.value = false
+  }
 }
 
 useSeoMeta({
@@ -86,6 +108,15 @@ useSeoMeta({
           </the-alert>
         </template>
 
+        <template v-if="submitErrorMessage">
+          <the-alert class="mb-4">
+            <div class=" font-semibold">
+              {{ lt('reviewSubmitErrorMessage') }}
+            </div>
+            {{ submitErrorMessage }}
+          </the-alert>
+        </template>
+
         <template v-if="status === 'success'">
           <div class="flex flex-col gap-4">
             <template v-if="product">
@@ -95,6 +126,7 @@ useSeoMeta({
             </template>
             <the-review-form
               v-model="formData"
+              :submitting="submitting"
               @submit="handleSubmit"
             />
           </div>
