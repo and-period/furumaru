@@ -67,8 +67,10 @@ export const useAuthStore = defineStore('auth', {
       this.auth = auth
       this.isAuthenticated = true
 
+      const refreshTokenExpires = dayjs().add(90, 'days')
+
       const cookie = useCookie('auth', { secure: true, maxAge: auth.expiresIn })
-      const refreshToken = useCookie('refreshToken', { secure: true })
+      const refreshToken = useCookie('refreshToken', { secure: true, expires: refreshTokenExpires.toDate() })
 
       cookie.value = encodeURIComponent(JSON.stringify(auth))
       refreshToken.value = auth.refreshToken
