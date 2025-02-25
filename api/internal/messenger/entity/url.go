@@ -83,3 +83,19 @@ func (m *UserURLMaker) Live(scheduleID string) string {
 	webURL.Path = strings.Join(paths, "/")
 	return webURL.String()
 }
+
+func (m *UserURLMaker) ProductReview(productID string) string {
+	// e.g.) /reviews/products/:product-id
+	paths := []string{"reviews", "products", productID}
+	webURL := *m.url // copy
+	webURL.Path = strings.Join(paths, "/")
+	return webURL.String()
+}
+
+func (m *UserURLMaker) ExperienceReview(experienceID string) string {
+	// e.g.) /reviews/experiences/:experience-id
+	paths := []string{"reviews", "experiences", experienceID}
+	webURL := *m.url // copy
+	webURL.Path = strings.Join(paths, "/")
+	return webURL.String()
+}

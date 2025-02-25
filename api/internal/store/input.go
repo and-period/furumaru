@@ -465,9 +465,13 @@ type DraftOrderInput struct {
 	ShippingMessage string `validate:"max=2000"`
 }
 
-type CompleteOrderInput struct {
+type CompleteProductOrderInput struct {
 	OrderID         string `validate:"required"`
 	ShippingMessage string `validate:"required,max=2000"`
+}
+
+type CompleteExperienceOrderInput struct {
+	OrderID string `validate:"required"`
 }
 
 type CancelOrderInput struct {

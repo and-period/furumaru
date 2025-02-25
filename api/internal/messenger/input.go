@@ -182,6 +182,10 @@ type NotifyOrderShippedInput struct {
 	OrderID string `validate:"required"`
 }
 
+type NotifyReviewRequestInput struct {
+	OrderID string `validate:"required"`
+}
+
 /**
  * ReserveNotification - 通知予約関連
  */

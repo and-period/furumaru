@@ -30,4 +30,10 @@ func TestUserURLMaker(t *testing.T) {
 	maker := NewUserURLMaker(webURL)
 	res := maker.SignIn()
 	assert.Equal(t, "http://example.com/signin", res)
+	res = maker.Live("schedule-id")
+	assert.Equal(t, "http://example.com/live/schedule-id", res)
+	res = maker.ProductReview("product-id")
+	assert.Equal(t, "http://example.com/reviews/products/product-id", res)
+	res = maker.ExperienceReview("experience-id")
+	assert.Equal(t, "http://example.com/reviews/experiences/experience-id", res)
 }

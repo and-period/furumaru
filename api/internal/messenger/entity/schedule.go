@@ -8,14 +8,18 @@ import (
 type ScheduleType int32
 
 const (
-	ScheduleTypeUnknown      ScheduleType = 0
-	ScheduleTypeNotification ScheduleType = 1 // お知らせ通知
-	ScheduleTypeStartLive    ScheduleType = 2 // ライブ配信開始通知
+	ScheduleTypeUnknown                 ScheduleType = 0
+	ScheduleTypeNotification            ScheduleType = 1 // お知らせ通知
+	ScheduleTypeStartLive               ScheduleType = 2 // ライブ配信開始通知
+	ScheduleTypeReviewProductRequest    ScheduleType = 3 // 商品レビュー依頼通知
+	ScheduleTypeReviewExperienceRequest ScheduleType = 4 // 体験レビュー依頼通知
 )
 
 var ScheduleTypes = []ScheduleType{
 	ScheduleTypeNotification,
 	ScheduleTypeStartLive,
+	ScheduleTypeReviewProductRequest,
+	ScheduleTypeReviewExperienceRequest,
 }
 
 // ScheduleStatus - 通知スケジュール実行状態

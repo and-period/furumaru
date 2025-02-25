@@ -116,7 +116,7 @@ func (s *service) DraftOrder(ctx context.Context, in *store.DraftOrderInput) err
 	return internalError(err)
 }
 
-func (s *service) CompleteOrder(ctx context.Context, in *store.CompleteOrderInput) error {
+func (s *service) CompleteProductOrder(ctx context.Context, in *store.CompleteProductOrderInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -145,6 +145,36 @@ func (s *service) CompleteOrder(ctx context.Context, in *store.CompleteOrderInpu
 		}
 		if err := s.messenger.NotifyOrderShipped(context.Background(), in); err != nil {
 			s.logger.Error("Failed to notify order shipped", zap.String("orderId", order.ID), zap.Error(err))
+		}
+	}()
+	return nil
+}
+
+func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.CompleteExperienceOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Completable() {
+		return fmt.Errorf("service: this order cannot be complete: %w", exception.ErrFailedPrecondition)
+	}
+	params := &database.CompleteOrderParams{
+		CompletedAt: s.now(),
+	}
+	if err := s.db.Order.Complete(ctx, in.OrderID, params); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.NotifyReviewRequestInput{
+			OrderID: order.ID,
+		}
+		if err := s.messenger.NotifyReviewRequest(context.Background(), in); err != nil {
+			s.logger.Error("Failed to notify review request", zap.String("orderId", order.ID), zap.Error(err))
 		}
 	}()
 	return nil

@@ -26,6 +26,7 @@ import {
   type Promotion,
   type RefundOrderRequest,
   type User,
+  OrderType,
 } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
@@ -245,16 +246,32 @@ const isAuthorized = (): boolean => {
   return props.order.status === OrderStatus.WAITING
 }
 
+// 配送完了通知 - 商品購入時のみ
 const isShipped = (): boolean => {
+  if (!props.order || props.order.type !== OrderType.PRODUCT) {
+    return false
+  }
   return props.order.status === OrderStatus.SHIPPED
 }
 
+// 発送連絡時のメッセージ下書き保存 - 商品購入時のみ
 const isPreservable = (): boolean => {
+  if (!props.order || props.order.type !== OrderType.PRODUCT) {
+    return false
+  }
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
   ]
   return targets.includes(props.order.status)
+}
+
+// 完了通知 - 体験予約時のみ
+const isCompletable = (): boolean => {
+  if (!props.order || props.order.type !== OrderType.EXPERIENCE) {
+    return false
+  }
+  return props.order.status === OrderStatus.SHIPPED
 }
 
 const isCancelable = (): boolean => {
@@ -295,7 +312,7 @@ const getStatus = (): string => {
     case OrderStatus.WAITING:
       return '受注待ち'
     case OrderStatus.PREPARING:
-      return '発送準備中'
+      return props.order.type === OrderType.EXPERIENCE ? '体験準備中' : '発送準備中'
     case OrderStatus.SHIPPED:
       return '発送完了'
     case OrderStatus.COMPLETED:
@@ -577,6 +594,9 @@ const getOrderItems = (fulfillmentId: string): OrderItem[] => {
 }
 
 const showShippingMessage = (): boolean => {
+  if (!props.order || props.order.type !== OrderType.PRODUCT) {
+    return false
+  }
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
@@ -837,6 +857,7 @@ const onSubmitRefund = (): void => {
         </v-card-text>
       </v-card>
       <v-card
+        v-if="props.order.type === OrderType.PRODUCT"
         elevation="0"
         class="mb-4"
       >
@@ -870,6 +891,32 @@ const onSubmitRefund = (): void => {
               &yen; {{ getSubtotal(item).toLocaleString() }}
             </template>
           </v-data-table>
+
+          <v-list v-if="props.order.type === OrderType.EXPERIENCE">
+            <v-list-item class="mb-4">
+              <v-list-item-subtitle class="mb-2">
+                顧客情報
+              </v-list-item-subtitle>
+              <div>{{ getCustomerName() }}</div>
+              <div>{{ getCustomerNameKana() }}</div>
+              <div class="mt-1">
+                &Mu; {{ props.customer.email }}
+              </div>
+              <div>&phone; {{ props.customer.phoneNumber }}</div>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+      <v-card
+        v-if="props.order.type === OrderType.EXPERIENCE"
+        elevation="0"
+        class="mb-4"
+      >
+        <v-card-title class="pb-4">
+          予約情報
+        </v-card-title>
+        <v-card-text>
+          TODO：必要な情報を表示する
         </v-card-text>
       </v-card>
     </v-col>
@@ -1132,6 +1179,20 @@ const onSubmitRefund = (): void => {
           :icon="mdiPlus"
         />
         発送完了を通知
+      </v-btn>
+      <v-btn
+        v-show="isCompletable()"
+        :loading="loading"
+        variant="outlined"
+        color="primary"
+        class="mr-2"
+        @click="onSubmitComplete()"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
+        レビュー依頼を送信
       </v-btn>
       <v-btn
         v-show="isCancelable()"
