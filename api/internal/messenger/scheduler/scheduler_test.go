@@ -125,6 +125,8 @@ func TestScheduler_Run(t *testing.T) {
 			Types: []entity.ScheduleType{
 				entity.ScheduleTypeNotification,
 				entity.ScheduleTypeStartLive,
+				entity.ScheduleTypeReviewProductRequest,
+				entity.ScheduleTypeReviewExperienceRequest,
 			},
 			Statuses: []entity.ScheduleStatus{
 				entity.ScheduleStatusWaiting,

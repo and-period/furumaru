@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -12,6 +13,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -245,8 +247,92 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
 	}
+	sentAt := jst.BeginningOfDay(s.now().AddDate(0, 0, 7)).Add(18 * time.Hour) // 7日後の18時
+	scheduleParams := &entity.NewScheduleParams{
+		MessageType: entity.ScheduleTypeReviewProductRequest,
+		MessageID:   order.ID,
+		SentAt:      sentAt,
+		Deadline:    sentAt.AddDate(0, 0, 7),
+	}
+	schedule := entity.NewSchedule(scheduleParams)
+	if err := s.db.Schedule.Upsert(ctx, schedule); err != nil {
+		return internalError(err)
+	}
 	err = s.sendMessage(ctx, payload)
 	return internalError(err)
+}
+
+// NotifyReviewRequest - レビュー依頼
+func (s *service) NotifyReviewRequest(ctx context.Context, in *messenger.NotifyReviewRequestInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	orderIn := &store.GetOrderInput{
+		OrderID: in.OrderID,
+	}
+	order, err := s.store.GetOrder(ctx, orderIn)
+	if err != nil {
+		return internalError(err)
+	}
+	var payload *entity.WorkerPayload
+	switch order.Type {
+	case sentity.OrderTypeProduct:
+		payload, err = s.newReviewProductRequest(ctx, order)
+	case sentity.OrderTypeExperience:
+		payload, err = s.newReviewExperienceRequest(ctx, order)
+	default:
+		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	err = s.sendMessage(ctx, payload)
+	return internalError(err)
+}
+
+func (s *service) newReviewProductRequest(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+	products, err := s.multiGetProductsByRevision(ctx, order.ProductRevisionIDs())
+	if err != nil {
+		return nil, internalError(err)
+	}
+	maker := entity.NewUserURLMaker(s.userWebURL())
+	builder := entity.NewTemplateDataBuilder().
+		OrderPayment(&order.OrderPayment).
+		ReviewItems(order.OrderItems, products.MapByRevision(), maker)
+	mail := &entity.MailConfig{
+		TemplateID:    entity.EmailTemplateIDUserReviewProductRequest,
+		Substitutions: builder.Build(),
+	}
+	return &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeReviewRequest,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{order.UserID},
+		Email:     mail,
+	}, nil
+}
+
+func (s *service) newReviewExperienceRequest(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+	experiences, err := s.multiGetExperiencesByRevision(ctx, []int64{order.ExperienceRevisionID})
+	if err != nil || len(experiences) == 0 {
+		return nil, internalError(err)
+	}
+	maker := entity.NewUserURLMaker(s.userWebURL())
+	builder := entity.NewTemplateDataBuilder().
+		OrderPayment(&order.OrderPayment).
+		ReviewExperience(experiences[0], maker)
+	mail := &entity.MailConfig{
+		TemplateID:    entity.EmailTemplateIDUserReviewExperienceRequest,
+		Substitutions: builder.Build(),
+	}
+	return &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeReviewRequest,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{order.UserID},
+		Email:     mail,
+	}, nil
 }
 
 // NotifyRegisterAdmin - 管理者登録

@@ -20,6 +20,8 @@ const (
 	EmailTemplateIDUserOrderProductCaptured    EmailTemplateID = "user-order-product-captured"    // 商品支払い完了
 	EmailTemplateIDUserOrderExperienceCaptured EmailTemplateID = "user-order-experience-captured" // 体験支払い完了
 	EmailTemplateIDUserOrderShipped            EmailTemplateID = "user-order-shipped"             // 発送完了
+	EmailTemplateIDUserReviewProductRequest    EmailTemplateID = "user-review-product-request"    // 商品レビュー依頼
+	EmailTemplateIDUserReviewExperienceRequest EmailTemplateID = "user-review-experience-request" // 体験レビュー依頼
 	EmailTemplateIDUserStartLive               EmailTemplateID = "user-start-live"                // ライブ配信開始
 )
 
@@ -136,6 +138,7 @@ func (b *TemplateDataBuilder) OrderItems(items sentity.OrderItems, products map[
 
 func (b *TemplateDataBuilder) OrderExperience(item *sentity.OrderExperience, experience *sentity.Experience) *TemplateDataBuilder {
 	b.data["体験概要"] = experience.Title
+	b.data["サムネイルURL"] = experience.ThumbnailURL
 	b.data["大人人数"] = strconv.FormatInt(item.AdultCount, 10)
 	b.data["中学生人数"] = strconv.FormatInt(item.JuniorHighSchoolCount, 10)
 	b.data["小学生人数"] = strconv.FormatInt(item.ElementarySchoolCount, 10)
@@ -146,6 +149,26 @@ func (b *TemplateDataBuilder) OrderExperience(item *sentity.OrderExperience, exp
 
 func (b *TemplateDataBuilder) Shipped(message string) *TemplateDataBuilder {
 	b.data["メッセージ"] = message
+	return b
+}
+
+func (b *TemplateDataBuilder) ReviewItems(items sentity.OrderItems, products map[int64]*sentity.Product, maker *UserURLMaker) *TemplateDataBuilder {
+	data := make([]map[string]string, 0, len(items))
+	for _, item := range items {
+		product, ok := products[item.ProductRevisionID]
+		if !ok {
+			product = &sentity.Product{}
+		}
+		data = append(data, newReviewItem(product, maker))
+	}
+	b.data["商品一覧"] = data
+	return b
+}
+
+func (b *TemplateDataBuilder) ReviewExperience(experience *sentity.Experience, maker *UserURLMaker) *TemplateDataBuilder {
+	b.data["体験名"] = experience.Title
+	b.data["サムネイルURL"] = experience.ThumbnailURL
+	b.data["レビューURL"] = maker.ExperienceReview(experience.ID)
 	return b
 }
 
@@ -184,5 +207,13 @@ func newOrderItem(item *sentity.OrderItem, product *sentity.Product) map[string]
 		"購入数":      strconv.FormatInt(item.Quantity, 10),
 		"商品金額":     strconv.FormatInt(product.Price, 10),
 		"合計金額":     strconv.FormatInt(product.Price*item.Quantity, 10),
+	}
+}
+
+func newReviewItem(product *sentity.Product, maker *UserURLMaker) map[string]string {
+	return map[string]string{
+		"商品名":      product.Name,
+		"サムネイルURL": product.ThumbnailURL,
+		"レビューURL":  maker.ProductReview(product.ID),
 	}
 }

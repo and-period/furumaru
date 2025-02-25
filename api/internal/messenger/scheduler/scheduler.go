@@ -118,6 +118,8 @@ func (s *scheduler) dispatch(ctx context.Context, schedule *entity.Schedule) err
 		return s.executeNotification(ctx, schedule)
 	case entity.ScheduleTypeStartLive:
 		return s.executeStartLive(ctx, schedule)
+	case entity.ScheduleTypeReviewProductRequest, entity.ScheduleTypeReviewExperienceRequest:
+		return s.executeReviewRequest(ctx, schedule)
 	default:
 		s.logger.Warn("Received unknown message type", zap.Any("schedule", schedule))
 		return nil // 何もしない

@@ -579,21 +579,22 @@ func TestNotifyOrderCaptured(t *testing.T) {
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserOrderExperienceCaptured,
 								Substitutions: map[string]interface{}{
-									"注文番号":  "order-id",
-									"決済方法":  "クレジットカード決済",
-									"商品金額":  "4460",
-									"配送手数料": "0",
-									"割引金額":  "446",
-									"消費税":   "364",
-									"合計金額":  "4014",
-									"郵便番号":  "1000014",
-									"住所":    "東京都 千代田区 永田町1-7-1",
-									"体験概要":  "じゃがいも収穫",
-									"大人人数":  "2",
-									"中学生人数": "1",
-									"小学生人数": "0",
-									"幼児人数":  "0",
-									"シニア人数": "0",
+									"注文番号":     "order-id",
+									"決済方法":     "クレジットカード決済",
+									"商品金額":     "4460",
+									"配送手数料":    "0",
+									"割引金額":     "446",
+									"消費税":      "364",
+									"合計金額":     "4014",
+									"郵便番号":     "1000014",
+									"住所":       "東京都 千代田区 永田町1-7-1",
+									"体験概要":     "じゃがいも収穫",
+									"大人人数":     "2",
+									"中学生人数":    "1",
+									"小学生人数":    "0",
+									"幼児人数":     "0",
+									"シニア人数":    "0",
+									"サムネイルURL": "",
 								},
 							},
 							Report: &entity.ReportConfig{
@@ -693,6 +694,7 @@ func TestNotifyOrderCaptured(t *testing.T) {
 
 func TestNotifyOrderShipped(t *testing.T) {
 	t.Parallel()
+	now := jst.Date(2025, 1, 18, 12, 30, 0, 0)
 	orderIn := &store.GetOrderInput{
 		OrderID: "order-id",
 	}
@@ -784,6 +786,14 @@ func TestNotifyOrderShipped(t *testing.T) {
 			IsDefault: true,
 		},
 	}
+	schedule := &entity.Schedule{
+		MessageType: entity.ScheduleTypeReviewProductRequest,
+		MessageID:   "order-id",
+		Status:      entity.ScheduleStatusWaiting,
+		Count:       0,
+		SentAt:      jst.Date(2025, 1, 25, 18, 0, 0, 0),
+		Deadline:    jst.Date(2025, 2, 1, 18, 0, 0, 0),
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -796,6 +806,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -892,11 +903,24 @@ func TestNotifyOrderShipped(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "failed to send messag",
+			name: "failed to multi get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to upsert schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
 				OrderID: "order-id",
@@ -909,6 +933,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
 				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
@@ -922,7 +947,334 @@ func TestNotifyOrderShipped(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyOrderShipped(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
+	}
+}
+
+func TestNotifyReviewRequest(t *testing.T) {
+	t.Parallel()
+	now := time.Date(2024, 1, 23, 18, 30, 0, 0, time.UTC)
+	orderIn := &store.GetOrderInput{
+		OrderID: "order-id",
+	}
+	order := func(typ sentity.OrderType) *sentity.Order {
+		return &sentity.Order{
+			OrderPayment: sentity.OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				Status:            sentity.PaymentStatusPending,
+				TransactionID:     "transaction-id",
+				PaymentID:         "payment-id",
+				MethodType:        sentity.PaymentMethodTypeCreditCard,
+				Subtotal:          4460,
+				Discount:          446,
+				ShippingFee:       0,
+				Tax:               364,
+				Total:             4014,
+				PaidAt:            now,
+				CapturedAt:        now,
+			},
+			OrderFulfillments: sentity.OrderFulfillments{
+				{
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					Status:            sentity.FulfillmentStatusUnfulfilled,
+					TrackingNumber:    "",
+					ShippingCarrier:   sentity.ShippingCarrierUnknown,
+					ShippingType:      sentity.ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           sentity.ShippingSize60,
+				},
+			},
+			OrderItems: sentity.OrderItems{
+				{
+					ProductRevisionID: 1,
+					OrderID:           "order-id",
+					Quantity:          1,
+				},
+				{
+					ProductRevisionID: 2,
+					OrderID:           "order-id",
+					Quantity:          2,
+				},
+			},
+			OrderExperience: sentity.OrderExperience{
+				OrderID:               "order-id",
+				ExperienceRevisionID:  1,
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 0,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Remarks: sentity.OrderExperienceRemarks{
+					Transportation: "電車",
+					RequestedDate:  now,
+					RequestedTime:  now,
+				},
+			},
+			ID:            "order-id",
+			UserID:        "user-id",
+			CoordinatorID: "coordinator-id",
+			PromotionID:   "",
+			Type:          typ,
+		}
+	}
+	products := sentity.Products{
+		{
+			ID:           "product-id01",
+			Name:         "おいしいじゃがいも",
+			ThumbnailURL: "http://example.com/image01.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id01",
+				Price:     2000,
+			},
+		},
+		{
+			ID:           "product-id02",
+			Name:         "よく茹でたカリフラワー",
+			ThumbnailURL: "http://example.com/image02.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        2,
+				ProductID: "product-id02",
+				Price:     1230,
+			},
+		},
+	}
+	experiencesIn := &store.MultiGetExperiencesByRevisionInput{
+		ExperienceRevisionIDs: []int64{1},
+	}
+	experiences := sentity.Experiences{
+		{
+			ID:           "experience-id",
+			Title:        "じゃがいも収穫",
+			ThumbnailURL: "http://example.com/image01.png",
+		},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.NotifyReviewRequestInput
+		expectErr error
+	}{
+		{
+			name: "success product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
+						expect := []*entity.ReceivedQueue{
+							{
+								ID:         queues[0].ID, // ignore
+								NotifyType: entity.NotifyTypeEmail,
+								EventType:  entity.EventTypeReviewRequest,
+								UserType:   entity.UserTypeUser,
+								UserIDs:    []string{"user-id"},
+								Done:       false,
+							},
+						}
+						assert.Equal(t, expect, queues)
+						return nil
+					})
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeReviewRequest,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Email: &entity.MailConfig{
+								TemplateID: entity.EmailTemplateIDUserReviewProductRequest,
+								Substitutions: map[string]interface{}{
+									"注文番号":  "order-id",
+									"決済方法":  "クレジットカード決済",
+									"商品金額":  "4460",
+									"配送手数料": "0",
+									"割引金額":  "446",
+									"消費税":   "364",
+									"合計金額":  "4014",
+									"商品一覧": []interface{}{
+										map[string]interface{}{
+											"商品名":      "おいしいじゃがいも",
+											"サムネイルURL": "http://example.com/image01.png",
+											"レビューURL":  "http://user.example.com/reviews/products/product-id01",
+										},
+										map[string]interface{}{
+											"商品名":      "よく茹でたカリフラワー",
+											"サムネイルURL": "http://example.com/image02.png",
+											"レビューURL":  "http://user.example.com/reviews/products/product-id02",
+										},
+									},
+								},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success experience",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
+				mocks.store.EXPECT().MultiGetExperiencesByRevision(ctx, experiencesIn).Return(experiences, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
+						expect := []*entity.ReceivedQueue{
+							{
+								ID:         queues[0].ID, // ignore
+								NotifyType: entity.NotifyTypeEmail,
+								EventType:  entity.EventTypeReviewRequest,
+								UserType:   entity.UserTypeUser,
+								UserIDs:    []string{"user-id"},
+								Done:       false,
+							},
+						}
+						assert.Equal(t, expect, queues)
+						return nil
+					})
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeReviewRequest,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Email: &entity.MailConfig{
+								TemplateID: entity.EmailTemplateIDUserReviewExperienceRequest,
+								Substitutions: map[string]interface{}{
+									"注文番号":     "order-id",
+									"決済方法":     "クレジットカード決済",
+									"商品金額":     "4460",
+									"配送手数料":    "0",
+									"割引金額":     "446",
+									"消費税":      "364",
+									"合計金額":     "4014",
+									"体験名":      "じゃがいも収穫",
+									"サムネイルURL": "http://example.com/image01.png",
+									"レビューURL":  "http://user.example.com/reviews/experiences/experience-id",
+								},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.NotifyReviewRequestInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get order",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "unknown order type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeUnknown), nil)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get experiences",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
+				mocks.store.EXPECT().MultiGetExperiencesByRevision(ctx, experiencesIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create received queue",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
+						expect := []*entity.ReceivedQueue{
+							{
+								ID:         queues[0].ID, // ignore
+								NotifyType: entity.NotifyTypeEmail,
+								EventType:  entity.EventTypeReviewRequest,
+								UserType:   entity.UserTypeUser,
+								UserIDs:    []string{"user-id"},
+								Done:       false,
+							},
+						}
+						assert.Equal(t, expect, queues)
+						return nil
+					})
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
+			},
+			input: &messenger.NotifyReviewRequestInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyReviewRequest(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
 	}
 }
 

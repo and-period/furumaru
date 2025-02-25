@@ -77,7 +77,8 @@ type Service interface {
 	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error)                                        // １件取得(決済トランザクションID指定)
 	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                                                               // 注文確定
 	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                                                                   // 注文の下書き保存
-	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                                                             // 注文対応完了
+	CompleteProductOrder(ctx context.Context, in *CompleteProductOrderInput) error                                                               // 注文対応完了（商品）
+	CompleteExperienceOrder(ctx context.Context, in *CompleteExperienceOrderInput) error                                                         // 注文対応完了（商品）
 	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                                                                 // 注文キャンセル
 	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                                                                 // 注文返金依頼
 	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                                           // 注文配送情報更新

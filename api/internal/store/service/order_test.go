@@ -698,7 +698,7 @@ func TestDraftOrder(t *testing.T) {
 	}
 }
 
-func TestCompleteOrder(t *testing.T) {
+func TestCompleteProductOrder(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
 	order := &entity.Order{
@@ -767,7 +767,7 @@ func TestCompleteOrder(t *testing.T) {
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
-		input  *store.CompleteOrderInput
+		input  *store.CompleteProductOrderInput
 		expect error
 	}{
 		{
@@ -777,7 +777,7 @@ func TestCompleteOrder(t *testing.T) {
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
 				mocks.messenger.EXPECT().NotifyOrderShipped(gomock.Any(), messengerIn).Return(assert.AnError)
 			},
-			input: &store.CompleteOrderInput{
+			input: &store.CompleteProductOrderInput{
 				OrderID:         "order-id",
 				ShippingMessage: "購入ありがとうございます。",
 			},
@@ -786,7 +786,7 @@ func TestCompleteOrder(t *testing.T) {
 		{
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
-			input:  &store.CompleteOrderInput{},
+			input:  &store.CompleteProductOrderInput{},
 			expect: exception.ErrInvalidArgument,
 		},
 		{
@@ -794,7 +794,7 @@ func TestCompleteOrder(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(nil, assert.AnError)
 			},
-			input: &store.CompleteOrderInput{
+			input: &store.CompleteProductOrderInput{
 				OrderID:         "order-id",
 				ShippingMessage: "購入ありがとうございます。",
 			},
@@ -806,7 +806,7 @@ func TestCompleteOrder(t *testing.T) {
 				order := &entity.Order{}
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 			},
-			input: &store.CompleteOrderInput{
+			input: &store.CompleteProductOrderInput{
 				OrderID:         "order-id",
 				ShippingMessage: "購入ありがとうございます。",
 			},
@@ -818,7 +818,7 @@ func TestCompleteOrder(t *testing.T) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(assert.AnError)
 			},
-			input: &store.CompleteOrderInput{
+			input: &store.CompleteProductOrderInput{
 				OrderID:         "order-id",
 				ShippingMessage: "購入ありがとうございます。",
 			},
@@ -828,7 +828,117 @@ func TestCompleteOrder(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CompleteOrder(ctx, tt.input)
+			err := service.CompleteProductOrder(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}, withNow(now)))
+	}
+}
+
+func TestCompleteExperienceOrder(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
+	order := &entity.Order{
+		ID:            "order-id",
+		UserID:        "user-id",
+		PromotionID:   "",
+		CoordinatorID: "coordinator-id",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+		OrderPayment: entity.OrderPayment{
+			OrderID:           "order-id",
+			AddressRevisionID: 1,
+			TransactionID:     "transaction-id",
+			PaymentID:         "payment-id",
+			Status:            entity.PaymentStatusCaptured,
+			MethodType:        entity.PaymentMethodTypeCreditCard,
+			Subtotal:          1100,
+			Discount:          0,
+			ShippingFee:       500,
+			Tax:               145,
+			Total:             1600,
+			CreatedAt:         now,
+			UpdatedAt:         now,
+		},
+		OrderExperience: entity.OrderExperience{
+			OrderID:               "order-id",
+			ExperienceRevisionID:  1,
+			AdultCount:            2,
+			JuniorHighSchoolCount: 1,
+			ElementarySchoolCount: 0,
+			PreschoolCount:        0,
+			SeniorCount:           0,
+			Remarks:               entity.OrderExperienceRemarks{},
+			CreatedAt:             now,
+			UpdatedAt:             now,
+		},
+	}
+	params := &database.CompleteOrderParams{
+		CompletedAt: now,
+	}
+	messengerIn := &messenger.NotifyReviewRequestInput{
+		OrderID: "order-id",
+	}
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.CompleteExperienceOrderInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
+				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
+				mocks.messenger.EXPECT().NotifyReviewRequest(gomock.Any(), messengerIn).Return(assert.AnError)
+			},
+			input: &store.CompleteExperienceOrderInput{
+				OrderID: "order-id",
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.CompleteExperienceOrderInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get order",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(nil, assert.AnError)
+			},
+			input: &store.CompleteExperienceOrderInput{
+				OrderID: "order-id",
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "failed to completable",
+			setup: func(ctx context.Context, mocks *mocks) {
+				order := &entity.Order{}
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
+			},
+			input: &store.CompleteExperienceOrderInput{
+				OrderID: "order-id",
+			},
+			expect: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to complete",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
+				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(assert.AnError)
+			},
+			input: &store.CompleteExperienceOrderInput{
+				OrderID: "order-id",
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.CompleteExperienceOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
 		}, withNow(now)))
 	}

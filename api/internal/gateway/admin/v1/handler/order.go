@@ -273,11 +273,27 @@ func (h *handler) CompleteOrder(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	in := &store.CompleteOrderInput{
-		OrderID:         util.GetParam(ctx, "orderId"),
-		ShippingMessage: req.ShippingMessage,
+	order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
 	}
-	if err := h.store.CompleteOrder(ctx, in); err != nil {
+	switch service.OrderType(order.Type) {
+	case service.OrderTypeProduct:
+		in := &store.CompleteProductOrderInput{
+			OrderID:         order.ID,
+			ShippingMessage: req.ShippingMessage,
+		}
+		err = h.store.CompleteProductOrder(ctx, in)
+	case service.OrderTypeExperience:
+		in := &store.CompleteExperienceOrderInput{
+			OrderID: order.ID,
+		}
+		err = h.store.CompleteExperienceOrder(ctx, in)
+	default:
+		err = fmt.Errorf("handler: unknown order type: %w", exception.ErrInternal)
+	}
+	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
