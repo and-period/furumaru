@@ -1127,7 +1127,7 @@ const onSubmitRefund = (): void => {
           <v-textarea
             v-model="completeFormDataValue.shippingMessage"
             label="お客様へのメッセージ"
-            placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
+            placeholder="例：ご注文ありがとうございます！商品の発送が完了しました。商品到着まで今しばらくお待ち下さい。"
             :readonly="!isPreservable()"
           />
         </v-card-text>
