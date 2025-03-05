@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.4](https://github.com/and-period/furumaru/compare/v4.4.3...v4.4.4) - 2025-03-05
+- hotfix(infra): コンテナイメージのバージョン修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2749
+
 ## [v4.4.3](https://github.com/and-period/furumaru/compare/v4.4.2...v4.4.3) - 2025-03-05
 - fix(admin): リフレッシュトークンの有効期限を明示的に指定 by @taba2424 in https://github.com/and-period/furumaru/pull/2738
 - feat(messenger): レビュー依頼通知の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2740
