@@ -3,6 +3,7 @@ package entity
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -169,6 +170,9 @@ func (b *TemplateDataBuilder) ReviewExperience(experience *sentity.Experience, m
 	b.data["体験名"] = experience.Title
 	b.data["サムネイルURL"] = experience.ThumbnailURL
 	b.data["レビューURL"] = maker.ExperienceReview(experience.ID)
+	if strings.HasSuffix(experience.ThumbnailURL, ".jpg") || strings.HasSuffix(experience.ThumbnailURL, ".png") {
+		b.data["サムネイルURL"] = experience.ThumbnailURL
+	}
 	return b
 }
 
@@ -211,9 +215,13 @@ func newOrderItem(item *sentity.OrderItem, product *sentity.Product) map[string]
 }
 
 func newReviewItem(product *sentity.Product, maker *UserURLMaker) map[string]string {
+	var thumbnailURL string
+	if strings.HasSuffix(product.ThumbnailURL, ".jpg") || strings.HasSuffix(product.ThumbnailURL, ".png") {
+		thumbnailURL = product.ThumbnailURL
+	}
 	return map[string]string{
 		"商品名":      product.Name,
-		"サムネイルURL": product.ThumbnailURL,
+		"サムネイルURL": thumbnailURL,
 		"レビューURL":  maker.ProductReview(product.ID),
 	}
 }
