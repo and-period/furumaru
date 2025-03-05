@@ -1,6 +1,7 @@
 module github.com/and-period/furumaru/api
 
-go 1.23
+go 1.24
+
 require (
 	firebase.google.com/go/v4 v4.15.2
 	github.com/aws/aws-lambda-go v1.47.0
