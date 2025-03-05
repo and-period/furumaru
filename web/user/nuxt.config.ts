@@ -142,7 +142,10 @@ export default defineNuxtConfig({
       SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(
         process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0',
       ),
-      INSTAGRAM_APP_ACCESS_TOKEN: process.env.INSTAGRAM_APP_ACCESS_TOKEN || '',
+      INSTAGRAM_GRAPH_API_URL: process.env.INSTAGRAM_GRAPH_API_URL || '',
+      INSTAGRAM_ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN || '',
+      INSTAGRAM_USER_ID: process.env.INSTAGRAM_USER_ID || '',
+      INSTAGRAM_HASH_TAG_ID: process.env.INSTAGRAM_HASH_TAG_ID || '',
     },
   },
   build: {},
