@@ -52,7 +52,7 @@ func NewSpotByUser(spot *sentity.Spot, user *uentity.User) *Spot {
 			Latitude:         spot.Latitude,
 			UserType:         SpotUserTypeUser.Response(),
 			UserID:           spot.UserID,
-			Username:         user.Username,
+			Username:         user.Username(),
 			UserThumbnailURL: user.ThumbnailURL,
 			CreatedAt:        jst.Unix(spot.CreatedAt),
 			UpdatedAt:        jst.Unix(spot.UpdatedAt),

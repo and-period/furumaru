@@ -23,7 +23,7 @@ func NewLiveComment(comment *mentity.BroadcastComment, user *uentity.User) *Live
 		return res
 	}
 	res.UserID = user.ID
-	res.Username = user.Username
+	res.Username = user.Username()
 	res.AccountID = user.AccountID
 	res.ThumbnailURL = user.ThumbnailURL
 	return res
