@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.4.3](https://github.com/and-period/furumaru/compare/v4.4.2...v4.4.3) - 2025-03-05
+- fix(admin): リフレッシュトークンの有効期限を明示的に指定 by @taba2424 in https://github.com/and-period/furumaru/pull/2738
+- feat(messenger): レビュー依頼通知の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2740
+- Fix: fixed shipping message by @hamachans in https://github.com/and-period/furumaru/pull/2743
+- feat(store): ダミーの商品レビューを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2746
+- build(deps): bump the dependencies group across 1 directory with 77 updates by @dependabot in https://github.com/and-period/furumaru/pull/2744
+- build(deps): bump the dependencies group across 1 directory with 58 updates by @dependabot in https://github.com/and-period/furumaru/pull/2745
+- fix(messenger): メールに添付するサムネイルのURLをフィルタリング by @taba2424 in https://github.com/and-period/furumaru/pull/2747
+
 ## [v4.4.2](https://github.com/and-period/furumaru/compare/v4.4.1...v4.4.2) - 2025-02-22
 - レビュー投稿機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2735
 - feat: トップページのコンセプトテキスト部分のアニメーションを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2737
