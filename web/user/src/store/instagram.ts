@@ -1,34 +1,32 @@
 import axios from 'axios'
-import type { InstagramOEmbed } from '~/types/api'
+import type { InstagramPost } from '~/types/api'
 
 export const useInstagramStore = defineStore('instagram', {
   state: () => {
     return {
-      instagramOEmbed: {} as InstagramOEmbed,
-      OEmbedHTML: '' as string,
+      instagramPostsPermalink: [] as string[],
     }
   },
 
   actions: {
-    async getInstagramOEmbed() {
-      console.log('getInstagramOEmbed')
-      const url = 'https://graph.facebook.com/v22.0/instagram_oembed'
-      const postUrl = 'https://www.instagram.com/p/DBwRdmPvSy7/?igsh=MWxsY291djNtcjQ4OA=='
+    async listInstagramPostsPermalinkByHashTag(limit = 5) {
       const runtimeConfig = useRuntimeConfig()
+      const url = `${runtimeConfig.public.INSTAGRAM_GRAPH_API_URL}/${runtimeConfig.public.INSTAGRAM_HASH_TAG_ID}/top_media`
       try {
         const response = await axios.get(url, {
           params: {
-            url: postUrl,
+            fields: 'permalink',
+            user_id: runtimeConfig.public.INSTAGRAM_USER_ID,
             access_token: runtimeConfig.public.INSTAGRAM_ACCESS_TOKEN,
-            omitscript: true,
+            limit,
           },
         })
-        return response.data
+        this.instagramPostsPermalink = response.data.data.map((post: InstagramPost) => post.permalink)
       }
       catch (e) {
         console.error(e)
       }
-      return {} as InstagramOEmbed
+      return
     },
   },
 
