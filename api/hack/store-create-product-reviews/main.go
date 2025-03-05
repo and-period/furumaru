@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"math/rand/v2"
 	"os"
 	"strconv"
 	"time"
@@ -36,106 +35,26 @@ var (
 	debug        bool
 
 	userParams = []*uentity.NewUserParams{
-		{
-			Registered:    false,
-			Lastname:      "佐藤",
-			Firstname:     "優子",
-			LastnameKana:  "サトウ",
-			FirstnameKana: "ユウコ",
-			AccountID:     "yuko_sato",
-			Username:      "ゆうたろう",
-			Email:         "sato.yuko@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "鈴木",
-			Firstname:     "大翔",
-			LastnameKana:  "スズキ",
-			FirstnameKana: "ヒロト",
-			AccountID:     "hiroto_suzuki",
-			Username:      "Dragon_Tamer",
-			Email:         "suzuki.hiroto@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "田中",
-			Firstname:     "美咲",
-			LastnameKana:  "タナカ",
-			FirstnameKana: "ミサキ",
-			AccountID:     "misaki_tanaka",
-			Username:      "みさにゃん",
-			Email:         "tanaka.misaki@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "渡辺",
-			Firstname:     "翔太",
-			LastnameKana:  "ワタナベ",
-			FirstnameKana: "ショウタ",
-			AccountID:     "shota_watanabe",
-			Username:      "空色ショータ",
-			Email:         "watanabe.shota@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "伊藤",
-			Firstname:     "愛",
-			LastnameKana:  "イトウ",
-			FirstnameKana: "アイ",
-			AccountID:     "ai_ito",
-			Username:      "あいぽん",
-			Email:         "ito.ai@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "中村",
-			Firstname:     "陽一",
-			LastnameKana:  "ナカムラ",
-			FirstnameKana: "ヨウイチ",
-			AccountID:     "yoichi_nakamura",
-			Username:      "よっちん",
-			Email:         "nakamura.yoichi@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "小林",
-			Firstname:     "凛",
-			LastnameKana:  "コバヤシ",
-			FirstnameKana: "リン",
-			AccountID:     "rin_kobayashi",
-			Username:      "りんりん星人",
-			Email:         "kobayashi.rin@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "加藤",
-			Firstname:     "大和",
-			LastnameKana:  "カトウ",
-			FirstnameKana: "ヤマト",
-			AccountID:     "yamato_kato",
-			Username:      "やまとん",
-			Email:         "kato.yamato@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "木村",
-			Firstname:     "結衣",
-			LastnameKana:  "キムラ",
-			FirstnameKana: "ユイ",
-			AccountID:     "yui_kimura",
-			Username:      "ゆいぴょん",
-			Email:         "kimura.yui@example.com",
-		},
-		{
-			Registered:    false,
-			Lastname:      "山本",
-			Firstname:     "蓮",
-			LastnameKana:  "ヤマモト",
-			FirstnameKana: "レン",
-			AccountID:     "ren_yamamoto",
-			Username:      "れんれん侍",
-			Email:         "yamamoto.ren@example.com",
-		},
+		{Lastname: "佐藤", Firstname: "優子", LastnameKana: "サトウ", FirstnameKana: "ユウコ", Email: "sato.yuko@example.com"},
+		{Lastname: "鈴木", Firstname: "大翔", LastnameKana: "スズキ", FirstnameKana: "ダイオウ", Email: "suzuki.daiou@example.com"},
+		{Lastname: "田中", Firstname: "美咲", LastnameKana: "タナカ", FirstnameKana: "ミサキ", Email: "tanaka.misaki@example.com"},
+		{Lastname: "渡辺", Firstname: "翔太", LastnameKana: "ワタナベ", FirstnameKana: "ショウタ", Email: "watanabe.shota@example.com"},
+		{Lastname: "伊藤", Firstname: "愛", LastnameKana: "イトウ", FirstnameKana: "アイ", Email: "ito.ai@example.com"},
+		{Lastname: "中村", Firstname: "陽一", LastnameKana: "ナカムラ", FirstnameKana: "ヨウイチ", Email: "nakamura.yoichi@example.com"},
+		{Lastname: "小林", Firstname: "凛", LastnameKana: "コバヤシ", FirstnameKana: "リン", Email: "kobayashi.rin@example.com"},
+		{Lastname: "加藤", Firstname: "大和", LastnameKana: "カトウ", FirstnameKana: "ヤマト", Email: "kato.yamato@example.com"},
+		{Lastname: "木村", Firstname: "結衣", LastnameKana: "キムラ", FirstnameKana: "ユイ", Email: "kimura.yui@example.com"},
+		{Lastname: "山本", Firstname: "蓮", LastnameKana: "ヤマモト", FirstnameKana: "レン", Email: "yamamoto.ren@example.com"},
+		{Lastname: "高橋", Firstname: "さくら", LastnameKana: "タカハシ", FirstnameKana: "サクラ", Email: "takahashi.sakura@example.com"},
+		{Lastname: "斎藤", Firstname: "健一", LastnameKana: "サイトウ", FirstnameKana: "ケンイチ", Email: "saito.kenichi@example.com"},
+		{Lastname: "松本", Firstname: "美咲", LastnameKana: "マツモト", FirstnameKana: "ミサキ", Email: "matsumoto.misaki@example.com"},
+		{Lastname: "井上", Firstname: "大輝", LastnameKana: "イノウエ", FirstnameKana: "ダイキ", Email: "inoue.daiki@example.com"},
+		{Lastname: "山田", Firstname: "千尋", LastnameKana: "ヤマダ", FirstnameKana: "チヒロ", Email: "yamada.chihiro@example.com"},
+		{Lastname: "清水", Firstname: "悠斗", LastnameKana: "シミズ", FirstnameKana: "ユウト", Email: "shimizu.yuto@example.com"},
+		{Lastname: "石川", Firstname: "美羽", LastnameKana: "イシカワ", FirstnameKana: "ミウ", Email: "ishikawa.miu@example.com"},
+		{Lastname: "近藤", Firstname: "颯太", LastnameKana: "コンドウ", FirstnameKana: "ソウタ", Email: "kondo.sota@example.com"},
+		{Lastname: "坂本", Firstname: "七海", LastnameKana: "サカモト", FirstnameKana: "ナナミ", Email: "sakamoto.nanami@example.com"},
+		{Lastname: "吉田", Firstname: "翔太", LastnameKana: "ヨシダ", FirstnameKana: "ショウタ", Email: "yoshida.shota@example.com"},
 	}
 )
 
@@ -303,6 +222,7 @@ func (a *app) readCSVFile(_ context.Context, guests uentity.Guests) (sentity.Pro
 		return nil, fmt.Errorf("failed to read csv file: %w", err)
 	}
 
+	var i int
 	res := make(sentity.ProductReviews, 0)
 	for {
 		// "商品ID","評価","タイトル","コメント"
@@ -314,7 +234,7 @@ func (a *app) readCSVFile(_ context.Context, guests uentity.Guests) (sentity.Pro
 			return nil, fmt.Errorf("failed to read csv file: %w", err)
 		}
 
-		guest := guests[rand.N(len(guests))]
+		guest := guests[i%len(guests)]
 
 		rate, err := strconv.ParseInt(record[1], 10, 64)
 		if err != nil {
@@ -329,6 +249,8 @@ func (a *app) readCSVFile(_ context.Context, guests uentity.Guests) (sentity.Pro
 			Comment:   record[3],
 		}
 		res = append(res, sentity.NewProductReview(review))
+
+		i++
 	}
 	return res, nil
 }
