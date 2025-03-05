@@ -81,9 +81,10 @@ func TestSpotsByUser(t *testing.T) {
 			},
 			users: map[string]*uentity.User{
 				"user-id": {
-					ID:        "user-id",
-					CreatedAt: now,
-					UpdatedAt: now,
+					ID:         "user-id",
+					Registered: true,
+					CreatedAt:  now,
+					UpdatedAt:  now,
 					Member: uentity.Member{
 						Username:     "username",
 						ThumbnailURL: "thumbnail",
