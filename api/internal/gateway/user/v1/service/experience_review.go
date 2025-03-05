@@ -64,7 +64,7 @@ func NewExperienceReview(review *entity.ExperienceReview, user *uentity.User) *E
 			ID:           review.ID,
 			ExperienceID: review.ExperienceID,
 			UserID:       user.ID,
-			Username:     user.Username,
+			Username:     user.Username(),
 			AccountID:    user.AccountID,
 			ThumbnailURL: user.ThumbnailURL,
 			Rate:         review.Rate,

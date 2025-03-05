@@ -64,7 +64,7 @@ func NewProductReview(review *entity.ProductReview, user *uentity.User) *Product
 			ID:           review.ID,
 			ProductID:    review.ProductID,
 			UserID:       user.ID,
-			Username:     user.Username,
+			Username:     user.Username(),
 			AccountID:    user.AccountID,
 			ThumbnailURL: user.ThumbnailURL,
 			Rate:         review.Rate,

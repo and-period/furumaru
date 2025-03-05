@@ -89,6 +89,13 @@ func (u *User) Name() string {
 	return u.Member.Name()
 }
 
+func (u *User) Username() string {
+	if !u.Registered {
+		return "名無しさん"
+	}
+	return u.Member.Username
+}
+
 func (u *User) Email() string {
 	if u.Registered {
 		return u.Member.Email

@@ -23,7 +23,7 @@ func NewVideoComment(comment *mentity.VideoComment, user *uentity.User) *VideoCo
 		return res
 	}
 	res.UserID = user.ID
-	res.Username = user.Username
+	res.Username = user.Username()
 	res.AccountID = user.AccountID
 	res.ThumbnailURL = user.ThumbnailURL
 	return res
