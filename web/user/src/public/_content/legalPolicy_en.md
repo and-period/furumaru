@@ -75,7 +75,6 @@ We apologize for any inconvenience caused.
 ## Shipping costs
 
 The following shipping fees (including tax) will be charged per box for FURUMARU orders, with the exception of certain products.  
-Shipping fee 800 yen - 1200 yen
 The shipping cost varies depending on the delivery destination.
 
 Example: If you receive two boxes with a shipping charge of 800 yen, the calculation is as follows  
