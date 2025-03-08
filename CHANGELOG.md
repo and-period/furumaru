@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.6](https://github.com/and-period/furumaru/compare/v4.4.5...v4.4.6) - 2025-03-08
+- Add: added terms of use by @hamachans in https://github.com/and-period/furumaru/pull/2751
+
 ## [v4.4.4](https://github.com/and-period/furumaru/compare/v4.4.3...v4.4.4) - 2025-03-05
 - hotfix(infra): コンテナイメージのバージョン修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2749
 
