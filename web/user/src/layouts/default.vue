@@ -120,6 +120,10 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
     to: '/privacy',
   },
   {
+    text: ft('termsOfUse'),
+    to: '/terms-of-use',
+  },
+  {
     text: ft('lawLinkText'),
     to: '/legal-notice',
   },
