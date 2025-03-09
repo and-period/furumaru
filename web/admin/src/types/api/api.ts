@@ -8190,6 +8190,12 @@ export interface UploadUrlResponse {
      * @memberof UploadUrlResponse
      */
     'url': string;
+    /**
+     * アップロード用のヘッダー
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof UploadUrlResponse
+     */
+    'headers': { [key: string]: Array<string>; };
 }
 /**
  * 

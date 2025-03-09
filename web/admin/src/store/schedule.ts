@@ -1,7 +1,6 @@
-import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
+import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type { ApproveScheduleRequest, BroadcastViewerLog, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
 
@@ -177,7 +176,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
@@ -197,7 +196,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleImageUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
@@ -217,7 +216,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleOpeningVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })

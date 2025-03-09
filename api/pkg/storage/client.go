@@ -35,7 +35,7 @@ type Bucket interface {
 	// S3 URIの生成
 	GenerateS3URI(path string) string
 	// S3 Bucketへのアップロード用URIの生成
-	GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error)
+	GeneratePresignUploadURI(params *GeneratePresignUploadURIParams) (string, map[string][]string, error)
 	// オブジェクトURLからS3 URIへの置換
 	ReplaceURLToS3URI(rawURL string) (string, error)
 	// S3 Bucketの接続先情報を取得
@@ -58,6 +58,13 @@ type Bucket interface {
 	Copy(ctx context.Context, srcBucket, srcKey, dstKey string, metadata map[string]string) (string, error)
 	// S3 Bucket URLが自身のバケット用URLかの判定
 	IsMyHost(url string) bool
+}
+
+type GeneratePresignUploadURIParams struct {
+	Key         string
+	ExpiresIn   time.Duration
+	ContentType string
+	Metadata    map[string]string
 }
 
 type Metadata struct {
@@ -138,16 +145,20 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 	return u.String(), nil
 }
 
-func (b *bucket) GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error) {
+func (b *bucket) GeneratePresignUploadURI(params *GeneratePresignUploadURIParams) (string, map[string][]string, error) {
 	in := &s3.PutObjectInput{
-		Bucket: aws.String(*b.name),
-		Key:    b.trimKeyPrefix(key),
+		Bucket:   aws.String(*b.name),
+		Key:      b.trimKeyPrefix(params.Key),
+		Metadata: params.Metadata,
 	}
-	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(expiresIn))
+	if params.ContentType != "" {
+		in.ContentType = aws.String(params.ContentType)
+	}
+	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(params.ExpiresIn))
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-	return request.URL, nil
+	return request.URL, request.SignedHeader, nil
 }
 
 func (b *bucket) GenerateS3URI(path string) string {

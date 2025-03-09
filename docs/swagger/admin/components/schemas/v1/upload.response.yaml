@@ -7,12 +7,22 @@ uploadUrlResponse:
     url:
       type: string
       description: 署名付きアップロードURL
+    headers:
+      type: object
+      description: アップロード用のヘッダー
+      additionalProperties:
+        type: array
+        items:
+          type: string
   required:
   - key
   - url
+  - headers
   example:
     key: 'dir/image.png'
     url: 'https://and-period.jp/dir/image.png'
+    headers:
+      'Content-Type': ['image/png']
 uploadStateResponse:
   type: object
   properties:

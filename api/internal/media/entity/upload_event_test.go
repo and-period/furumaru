@@ -15,18 +15,24 @@ func TestUploadStatus(t *testing.T) {
 		FileGroup: "dir",
 		FileType:  "image/png",
 		UploadURL: "http://example.com/dir/key.png",
-		Now:       now,
-		TTL:       time.Hour,
+		UploadHeaders: map[string][]string{
+			"Content-Type": {"image/png"},
+		},
+		Now: now,
+		TTL: time.Hour,
 	}
 	event := NewUploadEvent(params)
 	t.Run("new", func(t *testing.T) {
 		t.Parallel()
 		expect := &UploadEvent{
-			Key:          "dir/key.png",
-			Status:       UploadStatusWaiting,
-			FileGroup:    "dir",
-			FileType:     "image/png",
-			UploadURL:    "http://example.com/dir/key.png",
+			Key:       "dir/key.png",
+			Status:    UploadStatusWaiting,
+			FileGroup: "dir",
+			FileType:  "image/png",
+			UploadURL: "http://example.com/dir/key.png",
+			UploadHeaders: map[string][]string{
+				"Content-Type": {"image/png"},
+			},
 			ReferenceURL: "",
 			ExpiredAt:    now.Add(time.Hour),
 			CreatedAt:    now,
