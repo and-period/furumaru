@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/pkg/storage"
 )
 
 func (s *service) GetUploadEvent(ctx context.Context, in *media.GetUploadEventInput) (*entity.UploadEvent, error) {
@@ -173,18 +174,23 @@ func (s *service) generateUploadURL(
 	if err != nil {
 		return nil, fmt.Errorf("service: failed to get object key: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	const expiresIn = 10 * time.Minute
-	url, err := s.tmp.GeneratePresignUploadURI(key, expiresIn)
+	genParams := &storage.GeneratePresignUploadURIParams{
+		Key:         key,
+		ExpiresIn:   10 * time.Minute,
+		ContentType: in.FileType,
+	}
+	url, headers, err := s.tmp.GeneratePresignUploadURI(genParams)
 	if err != nil {
 		return nil, internalError(err)
 	}
 	params := &entity.UploadEventParams{
-		Key:       key,
-		FileGroup: reg.FileGroup(),
-		FileType:  in.FileType,
-		UploadURL: url,
-		Now:       s.now(),
-		TTL:       s.uploadEventTTL,
+		Key:           key,
+		FileGroup:     reg.FileGroup(),
+		FileType:      in.FileType,
+		UploadURL:     url,
+		UploadHeaders: headers,
+		Now:           s.now(),
+		TTL:           s.uploadEventTTL,
 	}
 	event := entity.NewUploadEvent(params)
 	if err := s.cache.Insert(ctx, event); err != nil {

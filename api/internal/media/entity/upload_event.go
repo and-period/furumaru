@@ -14,37 +14,40 @@ const (
 
 // UploadEvent - ファイルアップロード履歴情報
 type UploadEvent struct {
-	Key          string       `dynamodbav:"key"`                 // オブジェクトキー
-	Status       UploadStatus `dynamodbav:"status"`              // アップロード状況
-	FileGroup    string       `dynamodbav:"file_group"`          // ファイル種別（アップロード先ディレクトリ）
-	FileType     string       `dynamodbav:"file_type"`           // MINEタイプ
-	UploadURL    string       `dynamodbav:"upload_url"`          // ファイルアップロード先URL（一時保管用）
-	ReferenceURL string       `dynamodbav:"reference_url"`       // ファイルアップロード先URL（参照用）
-	ExpiredAt    time.Time    `dynamodbav:"expired_at,unixtime"` // 有効期限
-	CreatedAt    time.Time    `dynamodbav:"created_at"`          // 登録日時
-	UpdatedAt    time.Time    `dynamodbav:"updated_at"`          // 更新日時
+	Key           string              `dynamodbav:"key"`                 // オブジェクトキー
+	Status        UploadStatus        `dynamodbav:"status"`              // アップロード状況
+	FileGroup     string              `dynamodbav:"file_group"`          // ファイル種別（アップロード先ディレクトリ）
+	FileType      string              `dynamodbav:"file_type"`           // MINEタイプ
+	UploadURL     string              `dynamodbav:"upload_url"`          // ファイルアップロード先URL（一時保管用）
+	UploadHeaders map[string][]string `dynamodbav:"upload_headers"`      // ファイルアップロード先URL（一時保管用）ヘッダー
+	ReferenceURL  string              `dynamodbav:"reference_url"`       // ファイルアップロード先URL（参照用）
+	ExpiredAt     time.Time           `dynamodbav:"expired_at,unixtime"` // 有効期限
+	CreatedAt     time.Time           `dynamodbav:"created_at"`          // 登録日時
+	UpdatedAt     time.Time           `dynamodbav:"updated_at"`          // 更新日時
 }
 
 type UploadEventParams struct {
-	Key       string
-	FileGroup string
-	FileType  string
-	UploadURL string
-	Now       time.Time
-	TTL       time.Duration
+	Key           string
+	FileGroup     string
+	FileType      string
+	UploadURL     string
+	UploadHeaders map[string][]string
+	Now           time.Time
+	TTL           time.Duration
 }
 
 func NewUploadEvent(params *UploadEventParams) *UploadEvent {
 	return &UploadEvent{
-		Key:          params.Key,
-		Status:       UploadStatusWaiting,
-		FileGroup:    params.FileGroup,
-		FileType:     params.FileType,
-		UploadURL:    params.UploadURL,
-		ReferenceURL: "",
-		ExpiredAt:    params.Now.Add(params.TTL),
-		CreatedAt:    params.Now,
-		UpdatedAt:    params.Now,
+		Key:           params.Key,
+		Status:        UploadStatusWaiting,
+		FileGroup:     params.FileGroup,
+		FileType:      params.FileType,
+		UploadURL:     params.UploadURL,
+		UploadHeaders: params.UploadHeaders,
+		ReferenceURL:  "",
+		ExpiredAt:     params.Now.Add(params.TTL),
+		CreatedAt:     params.Now,
+		UpdatedAt:     params.Now,
 	}
 }
 

@@ -1,8 +1,7 @@
-import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { useShopStore } from './shop'
+import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProducerRequest,
@@ -126,7 +125,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
@@ -146,7 +145,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
@@ -166,7 +165,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
@@ -186,7 +185,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })

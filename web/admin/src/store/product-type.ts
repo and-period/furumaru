@@ -1,7 +1,6 @@
-import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
+import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductTypeRequest,
@@ -180,7 +179,7 @@ export const useProductTypeStore = defineStore('productType', {
         }
         const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })

@@ -1,6 +1,6 @@
+import { useAdminStore } from './admin'
 import { defineStore } from 'pinia'
 
-import { useAdminStore } from './admin'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateNotificationRequest,

@@ -1,8 +1,7 @@
-import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { useShopStore } from './shop'
+import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type { Coordinator, CreateCoordinatorRequest, GetUploadUrlRequest, Producer, Shop, UpdateCoordinatorRequest } from '~/types/api'
 
@@ -133,7 +132,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
@@ -152,7 +151,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
@@ -171,7 +170,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
@@ -190,7 +189,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
       }
       catch (err) {
         return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
