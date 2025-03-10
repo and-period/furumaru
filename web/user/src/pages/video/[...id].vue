@@ -191,7 +191,7 @@ useSeoMeta({
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
-              <div class="mx-2 mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5 mb-4">
+              <div class="px-[15px] md:px-[36px] mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5 mb-4">
                 <template v-if="video.products.length > 0">
                   <the-video-product-list-item
                     v-for="product in products"
