@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.4.7](https://github.com/and-period/furumaru/compare/v4.4.6...v4.4.7) - 2025-03-10
+- feat(media): 署名URL発行時のヘッダー情報も連携するように by @taba2424 in https://github.com/and-period/furumaru/pull/2753
+- Fix: fixed terms of use by @hamachans in https://github.com/and-period/furumaru/pull/2755
+
 ## [v4.4.6](https://github.com/and-period/furumaru/compare/v4.4.5...v4.4.6) - 2025-03-08
 - Add: added terms of use by @hamachans in https://github.com/and-period/furumaru/pull/2751
 
