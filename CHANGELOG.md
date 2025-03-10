@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.8](https://github.com/and-period/furumaru/compare/v4.4.7...v4.4.8) - 2025-03-10
+- Fix: fixed video item mergin by @hamachans in https://github.com/and-period/furumaru/pull/2756
+
 ## [v4.4.7](https://github.com/and-period/furumaru/compare/v4.4.6...v4.4.7) - 2025-03-10
 - feat(media): 署名URL発行時のヘッダー情報も連携するように by @taba2424 in https://github.com/and-period/furumaru/pull/2753
 - Fix: fixed terms of use by @hamachans in https://github.com/and-period/furumaru/pull/2755
