@@ -3036,21 +3036,13 @@
     "@typescript-eslint/types" "8.23.0"
     eslint-visitor-keys "^4.2.0"
 
-"@unhead/dom@1.11.20":
+"@unhead/dom@1.11.20", "@unhead/dom@^1.11.18":
   version "1.11.20"
   resolved "https://registry.yarnpkg.com/@unhead/dom/-/dom-1.11.20.tgz#b777f439e1c5f80ebcceb89aa45c45e877013c62"
   integrity sha512-jgfGYdOH+xHJF/j8gudjsYu3oIjFyXhCWcgKaw3vQnT616gSqyqnGQGOItL+BQtQZACKNISwIfx5PuOtztMKLA==
   dependencies:
     "@unhead/schema" "1.11.20"
     "@unhead/shared" "1.11.20"
-
-"@unhead/dom@^1.11.18":
-  version "1.11.18"
-  resolved "https://registry.yarnpkg.com/@unhead/dom/-/dom-1.11.18.tgz#2105b0afb567ee3f9c6b21771cfd2116bae8f37e"
-  integrity sha512-zQuJUw/et9zYEV0SZWTDX23IgurwMaXycAuxt4L6OgNL0T4TWP3a0J/Vm3Q02hmdNo/cPKeVBrwBdnFUXjGU4w==
-  dependencies:
-    "@unhead/schema" "1.11.18"
-    "@unhead/shared" "1.11.18"
 
 "@unhead/schema@1.11.18":
   version "1.11.18"
@@ -3068,20 +3060,20 @@
     hookable "^5.5.3"
     zhead "^2.2.4"
 
-"@unhead/shared@1.11.18", "@unhead/shared@^1.11.18":
-  version "1.11.18"
-  resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.11.18.tgz#e35a8adbf526ec640e96ec0c874df70f450d3a6c"
-  integrity sha512-OsupRQRxJqqnuKiL1Guqipjbl7MndD5DofvmGa3PFGu2qNPmOmH2mxGFjRBBgq2XxY1KalIHl/2I9HV6gbK8cw==
-  dependencies:
-    "@unhead/schema" "1.11.18"
-    packrup "^0.1.2"
-
 "@unhead/shared@1.11.20":
   version "1.11.20"
   resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.11.20.tgz#593926bff62d88cda9a19b9d41d2bcdb3ed08da4"
   integrity sha512-1MOrBkGgkUXS+sOKz/DBh4U20DNoITlJwpmvSInxEUNhghSNb56S0RnaHRq0iHkhrO/cDgz2zvfdlRpoPLGI3w==
   dependencies:
     "@unhead/schema" "1.11.20"
+    packrup "^0.1.2"
+
+"@unhead/shared@^1.11.18":
+  version "1.11.18"
+  resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.11.18.tgz#e35a8adbf526ec640e96ec0c874df70f450d3a6c"
+  integrity sha512-OsupRQRxJqqnuKiL1Guqipjbl7MndD5DofvmGa3PFGu2qNPmOmH2mxGFjRBBgq2XxY1KalIHl/2I9HV6gbK8cw==
+  dependencies:
+    "@unhead/schema" "1.11.18"
     packrup "^0.1.2"
 
 "@unhead/ssr@^1.11.18":
