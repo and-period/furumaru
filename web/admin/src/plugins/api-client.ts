@@ -1,5 +1,5 @@
-import { client } from './axios'
 import type { AxiosInstance } from 'axios'
+import { client } from './axios'
 import {
   AddressApi,
   AdministratorApi,

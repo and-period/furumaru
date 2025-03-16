@@ -1,11 +1,12 @@
+import { defineStore } from 'pinia'
+
+import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { useCoordinatorStore } from './coordinator'
 import { useProductTypeStore } from './product-type'
 import { useProductTagStore } from './product-tag'
 import { useProducerStore } from './producer'
-import type { AxiosResponse } from 'axios'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductRequest,
@@ -128,7 +129,7 @@ export const useProductStore = defineStore('product', {
       try {
         const res = await this.getProductMediaUploadUrl(contentType)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
         return this.errorHandler(err, {
