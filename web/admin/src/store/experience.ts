@@ -1,5 +1,5 @@
-import { fileUpload } from './helper'
 import type { AxiosResponse } from 'axios'
+import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateExperienceRequest,
@@ -134,7 +134,7 @@ export const useExperienceStore = defineStore('experience', {
       try {
         const res = await this.getExperienceMediaUploadUrl(contentType)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
         return this.errorHandler(err, {

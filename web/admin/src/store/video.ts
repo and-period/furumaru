@@ -91,7 +91,7 @@ export const useVideoStore = defineStore('video', {
           .videoApi()
           .v1GetVideoFileUploadUrl({ fileType: contentType })
 
-        return await fileUpload(file, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(file, res.data.key, res.data.url)
       }
       catch (error) {
         console.log(error)
@@ -111,7 +111,7 @@ export const useVideoStore = defineStore('video', {
           .videoApi()
           .v1GetVideoThumbnailUploadUrl({ fileType: contentType })
 
-        return await fileUpload(file, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(file, res.data.key, res.data.url)
       }
       catch (error) {
         console.log(error)

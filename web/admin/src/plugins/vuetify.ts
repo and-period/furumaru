@@ -1,10 +1,10 @@
+import { createVuetify } from 'vuetify'
 import { md3 } from 'vuetify/blueprints'
 import { ja } from 'vuetify/locale'
 import * as components from 'vuetify/components'
 import * as labs from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-import { createVuetify } from 'vuetify'
 // @ts-ignore
 import colors from 'vuetify/lib/util/colors.mjs'
 

@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -105,7 +104,7 @@ func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				path := fmt.Sprintf(entity.BroadcastArchiveMP4Path, "schedule-id")
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				generateUploadURLMocks(mocks, t, path, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, path, "mp4", nil)
 			},
 			input: &media.GenerateBroadcastArchiveMP4UploadInput{
 				GenerateUploadURLInput: media.GenerateUploadURLInput{
@@ -169,7 +168,7 @@ func TestGetBroadcastLiveMP4UploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.BroadcastLiveMP4Path, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.BroadcastLiveMP4Path, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -197,7 +196,7 @@ func TestGetVideoThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.VideoThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.VideoThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -224,7 +223,7 @@ func TestGetVideoFileUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.VideoMP4Path, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.VideoMP4Path, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -251,7 +250,7 @@ func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.CoordinatorThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -279,7 +278,7 @@ func TestGetCoordinatorHeaderUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.CoordinatorHeaderPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorHeaderPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -307,7 +306,7 @@ func TestGetCoordinatorPromotionVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.CoordinatorPromotionVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorPromotionVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -335,7 +334,7 @@ func TestGetCoordinatorBonusVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.CoordinatorBonusVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorBonusVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -363,7 +362,7 @@ func TestGetProducerThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProducerThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -391,7 +390,7 @@ func TestGetProducerHeaderUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProducerHeaderPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerHeaderPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -419,7 +418,7 @@ func TestGetProducerPromotionVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProducerPromotionVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerPromotionVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -447,7 +446,7 @@ func TestGetProducerBonusVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProducerBonusVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerBonusVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -475,7 +474,7 @@ func TestGetUserThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.UserThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.UserThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -503,7 +502,7 @@ func TestGetProductMediaImageUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProductMediaImagePath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ProductMediaImagePath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -531,7 +530,7 @@ func TestGetProductMediaVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProductMediaVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ProductMediaVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -559,7 +558,7 @@ func TestGetProductTypeIconUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ProductTypeIconPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ProductTypeIconPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -587,7 +586,7 @@ func TestGetScheduleThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ScheduleThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ScheduleThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -615,7 +614,7 @@ func TestGetScheduleImageUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ScheduleImagePath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ScheduleImagePath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -643,7 +642,7 @@ func TestGetScheduleOpeningVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ScheduleOpeningVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ScheduleOpeningVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -671,7 +670,7 @@ func TestGetExperienceMediaImageUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ExperienceMediaImagePath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.ExperienceMediaImagePath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -698,7 +697,7 @@ func TestGetExperienceMediaVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ExperienceMediaVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ExperienceMediaVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -725,7 +724,7 @@ func TestGetExperiencePromotionVideoUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.ExperiencePromotionVideoPath, "mp4", "video/mp4", nil)
+				generateUploadURLMocks(mocks, t, entity.ExperiencePromotionVideoPath, "mp4", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
@@ -741,6 +740,23 @@ func TestGetExperiencePromotionVideoUploadURL(t *testing.T) {
 	}
 }
 
+func generateUploadURLMocks(mocks *mocks, t *testing.T, path, ext string, err error) {
+	url := "http://example.com/media." + ext
+	mocks.tmp.EXPECT().
+		GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+		DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+			assert.True(t, strings.HasPrefix(key, path), key)
+			assert.True(t, strings.HasSuffix(key, ext), key)
+			return url, nil
+		})
+	mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).
+		DoAndReturn(func(ctx context.Context, event *entity.UploadEvent) error {
+			assert.Contains(t, event.FileType, ext)
+			assert.Equal(t, event.UploadURL, url)
+			return err
+		})
+}
+
 func TestGetSpotThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -752,7 +768,7 @@ func TestGetSpotThumbnailUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				generateUploadURLMocks(mocks, t, entity.SpotThumbnailPath, "png", "image/png", nil)
+				generateUploadURLMocks(mocks, t, entity.SpotThumbnailPath, "png", nil)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -768,34 +784,9 @@ func TestGetSpotThumbnailUploadURL(t *testing.T) {
 	}
 }
 
-func generateUploadURLMocks(mocks *mocks, t *testing.T, path, ext, contentType string, err error) {
-	url := "http://example.com/media." + ext
-	headers := map[string][]string{
-		"Content-Type": {contentType},
-	}
-	mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any()).
-		DoAndReturn(func(params *storage.GeneratePresignUploadURIParams) (string, map[string][]string, error) {
-			assert.True(t, strings.HasPrefix(params.Key, path), params.Key)
-			assert.True(t, strings.HasSuffix(params.Key, ext), params.Key)
-			assert.Equal(t, params.ExpiresIn, 10*time.Minute)
-			assert.Equal(t, params.ContentType, contentType)
-			return url, headers, nil
-		})
-	mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).
-		DoAndReturn(func(ctx context.Context, event *entity.UploadEvent) error {
-			assert.Contains(t, event.FileType, ext)
-			assert.Equal(t, event.UploadURL, url)
-			return err
-		})
-}
-
 func TestGenerateUploadURL(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
-	url := "http://example.com"
-	headers := map[string][]string{
-		"Content-Type": {"image/png"},
-	}
 	tests := []struct {
 		name       string
 		setup      func(ctx context.Context, mocks *mocks)
@@ -807,14 +798,7 @@ func TestGenerateUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any()).
-					DoAndReturn(func(params *storage.GeneratePresignUploadURIParams) (string, map[string][]string, error) {
-						assert.True(t, strings.HasPrefix(params.Key, "coordinators/thumbnail/"), params.Key)
-						assert.True(t, strings.HasSuffix(params.Key, ".png"), params.Key)
-						assert.Equal(t, params.ExpiresIn, 10*time.Minute)
-						assert.Equal(t, params.ContentType, "image/png")
-						return url, headers, nil
-					})
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
 			},
 			input: &media.GenerateUploadURLInput{
@@ -822,15 +806,14 @@ func TestGenerateUploadURL(t *testing.T) {
 			},
 			regulation: entity.CoordinatorThumbnailRegulation,
 			expect: &entity.UploadEvent{
-				Key:           "", // ignore
-				Status:        entity.UploadStatusWaiting,
-				FileGroup:     "coordinators/thumbnail",
-				FileType:      "image/png",
-				UploadURL:     "http://example.com",
-				UploadHeaders: map[string][]string{"Content-Type": {"image/png"}},
-				ExpiredAt:     now.Add(defaultUploadEventTTL),
-				CreatedAt:     now,
-				UpdatedAt:     now,
+				Key:       "", // ignore
+				Status:    entity.UploadStatusWaiting,
+				FileGroup: "coordinators/thumbnail",
+				FileType:  "image/png",
+				UploadURL: "http://example.com",
+				ExpiredAt: now.Add(defaultUploadEventTTL),
+				CreatedAt: now,
+				UpdatedAt: now,
 			},
 			expectErr: nil,
 		},
@@ -855,7 +838,7 @@ func TestGenerateUploadURL(t *testing.T) {
 		{
 			name: "failed to generate presign upload uri",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any()).Return("", nil, assert.AnError)
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("", assert.AnError)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -865,9 +848,9 @@ func TestGenerateUploadURL(t *testing.T) {
 			expectErr:  exception.ErrInternal,
 		},
 		{
-			name: "failed to insert cache",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any()).Return(url, headers, nil)
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.GenerateUploadURLInput{
