@@ -1,5 +1,11 @@
 # Changelog
 
+## [v4.4.9](https://github.com/and-period/furumaru/compare/v4.4.8...v4.4.9) - 2025-03-16
+- build(deps): bump @unhead/dom from 1.11.18 to 1.11.20 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2760
+- build(deps): bump @babel/standalone from 7.26.9 to 7.26.10 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2761
+- Revert "feat(media): 署名URL発行時のヘッダー情報も連携するように" by @taba2424 in https://github.com/and-period/furumaru/pull/2762
+- build(deps): bump the dependencies group in /api with 33 updates by @dependabot in https://github.com/and-period/furumaru/pull/2758
+
 ## [v4.4.8](https://github.com/and-period/furumaru/compare/v4.4.7...v4.4.8) - 2025-03-10
 - Fix: fixed video item mergin by @hamachans in https://github.com/and-period/furumaru/pull/2756
 
