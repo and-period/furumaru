@@ -331,6 +331,18 @@ const onSubmit = async (): Promise<void> => {
               :loading="videoUploading"
               @update:file="onChangeVideo"
             />
+            <template v-if="formDataValue.promotionVideoUrl">
+              <v-responsive
+                :aspect-ratio="16 / 9"
+                class="border pa-4"
+              >
+                <video
+                  class="w-100"
+                  controls
+                  :src="formDataValue.promotionVideoUrl"
+                />
+              </v-responsive>
+            </template>
           </div>
           <v-card-text>
             <v-text-field
