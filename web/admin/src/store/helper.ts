@@ -13,10 +13,9 @@ export async function fileUpload(
   file: File,
   key: string,
   url: string,
-  headers: Record<string, string[]>,
 ): Promise<string> {
   // 署名付きURLを基にファイルをアップロード
-  await upload(file, url, headers)
+  await upload(file, url)
 
   // アップロード後のバリデーション結果を取得
   return await getUploadResult(key)
@@ -37,12 +36,11 @@ function sleep(ms: number): Promise<void> {
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns
  */
-async function upload(
-  file: File,
-  uploadUrl: string,
-  uploadHeaders: Record<string, string[]>,
-): Promise<void> {
-  await axios.put(uploadUrl, file, { headers: uploadHeaders })
+async function upload(file: File, uploadUrl: string): Promise<void> {
+  const headers: RawAxiosRequestHeaders = {
+    'Content-Type': file.type,
+  }
+  await axios.put(uploadUrl, file, { headers })
 }
 
 /**

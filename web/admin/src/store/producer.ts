@@ -27,7 +27,9 @@ export const useProducerStore = defineStore('producer', {
      */
     async fetchProducers(limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
+        const res = await apiClient
+          .producerApi()
+          .v1ListProducers(limit, offset, options)
 
         const coordinatorStore = useCoordinatorStore()
         const shopStore = useShopStore()
@@ -46,9 +48,14 @@ export const useProducerStore = defineStore('producer', {
      * @param name 生産者名(あいまい検索)
      * @param producerIds stateの更新時に残しておく必要がある生産者情報
      */
-    async searchProducers(name = '', producerIds: string[] = []): Promise<void> {
+    async searchProducers(
+      name = '',
+      producerIds: string[] = [],
+    ): Promise<void> {
       try {
-        const res = await apiClient.producerApi().v1ListProducers(undefined, undefined, name)
+        const res = await apiClient
+          .producerApi()
+          .v1ListProducers(undefined, undefined, name)
         const producers: Producer[] = []
         this.producers.forEach((producer: Producer): void => {
           if (!producerIds.includes(producer.id)) {
@@ -123,12 +130,16 @@ export const useProducerStore = defineStore('producer', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
+        const res = await apiClient
+          .producerApi()
+          .v1GetProducerThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -143,12 +154,16 @@ export const useProducerStore = defineStore('producer', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
+        const res = await apiClient
+          .producerApi()
+          .v1GetProducerHeaderUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -163,12 +178,16 @@ export const useProducerStore = defineStore('producer', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
+        const res = await apiClient
+          .producerApi()
+          .v1GetProducerPromotionVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -183,12 +202,16 @@ export const useProducerStore = defineStore('producer', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
+        const res = await apiClient
+          .producerApi()
+          .v1GetProducerBonusVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 

@@ -2,7 +2,15 @@ import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
-import type { ApproveScheduleRequest, BroadcastViewerLog, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
+import type {
+  ApproveScheduleRequest,
+  BroadcastViewerLog,
+  CreateScheduleRequest,
+  GetUploadUrlRequest,
+  PublishScheduleRequest,
+  Schedule,
+  UpdateScheduleRequest,
+} from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -20,7 +28,9 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async fetchSchedules(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.scheduleApi().v1ListSchedules(limit, offset)
+        const res = await apiClient
+          .scheduleApi()
+          .v1ListSchedules(limit, offset)
 
         const coordinatorStore = useCoordinatorStore()
         this.schedules = res.data.schedules
@@ -46,7 +56,9 @@ export const useScheduleStore = defineStore('schedule', {
         coordinatorStore.coordinators.push(res.data.coordinator)
       }
       catch (err) {
-        return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
+        return this.errorHandler(err, {
+          404: '対象の開催スケジュールが見つかりません。',
+        })
       }
     },
 
@@ -57,7 +69,9 @@ export const useScheduleStore = defineStore('schedule', {
         this.viewerLogs = res.data.viewerLogs
       }
       catch (err) {
-        return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
+        return this.errorHandler(err, {
+          404: '対象の開催スケジュールが見つかりません。',
+        })
       }
     },
 
@@ -71,7 +85,9 @@ export const useScheduleStore = defineStore('schedule', {
         return res.data.schedule
       }
       catch (err) {
-        return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、入力内容に誤りがあります。',
+        })
       }
     },
 
@@ -80,7 +96,10 @@ export const useScheduleStore = defineStore('schedule', {
      * @param scheduleId スケジュールID
      * @param payload
      */
-    async updateSchedule(scheduleId: string, payload: UpdateScheduleRequest): Promise<void> {
+    async updateSchedule(
+      scheduleId: string,
+      payload: UpdateScheduleRequest,
+    ): Promise<void> {
       try {
         await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
       }
@@ -115,13 +134,18 @@ export const useScheduleStore = defineStore('schedule', {
      * @param approved 承認フラグ
      * @returns
      */
-    async approveSchedule(scheduleId: string, approved: boolean): Promise<void> {
+    async approveSchedule(
+      scheduleId: string,
+      approved: boolean,
+    ): Promise<void> {
       try {
         const req: ApproveScheduleRequest = { approved }
         await apiClient.scheduleApi().v1ApproveSchedule(scheduleId, req)
 
         // データの更新
-        const index = this.schedules.findIndex(schedule => schedule.id === scheduleId)
+        const index = this.schedules.findIndex(
+          schedule => schedule.id === scheduleId,
+        )
         if (index === -1) {
           return
         }
@@ -142,13 +166,18 @@ export const useScheduleStore = defineStore('schedule', {
      * @param public 公開フラグ
      * @returns
      */
-    async publishSchedule(scheduleId: string, published: boolean): Promise<void> {
+    async publishSchedule(
+      scheduleId: string,
+      published: boolean,
+    ): Promise<void> {
       try {
         const req: PublishScheduleRequest = { public: published }
         await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
 
         // データの更新
-        const index = this.schedules.findIndex(schedule => schedule.id === scheduleId)
+        const index = this.schedules.findIndex(
+          schedule => schedule.id === scheduleId,
+        )
         if (index === -1) {
           return
         }
@@ -174,12 +203,16 @@ export const useScheduleStore = defineStore('schedule', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.scheduleApi().v1GetScheduleThumbnailUploadUrl(body)
+        const res = await apiClient
+          .scheduleApi()
+          .v1GetScheduleThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -194,12 +227,16 @@ export const useScheduleStore = defineStore('schedule', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.scheduleApi().v1GetScheduleImageUploadUrl(body)
+        const res = await apiClient
+          .scheduleApi()
+          .v1GetScheduleImageUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
 
@@ -214,12 +251,16 @@ export const useScheduleStore = defineStore('schedule', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.scheduleApi().v1GetScheduleOpeningVideoUploadUrl(body)
+        const res = await apiClient
+          .scheduleApi()
+          .v1GetScheduleOpeningVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
   },

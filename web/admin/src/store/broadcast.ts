@@ -101,7 +101,7 @@ export const useBroadcastStore = defineStore('broadcast', {
         }
         const res = await apiClient.broadcastApi().v1GetBroadcastLiveUploadUrl(body)
 
-        const inputUrl = await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        const inputUrl = await fileUpload(payload, res.data.key, res.data.url)
 
         const req: ActivateBroadcastMP4Request = {
           inputUrl,
@@ -146,7 +146,7 @@ export const useBroadcastStore = defineStore('broadcast', {
         }
         const res = await apiClient.broadcastApi().v1GetBroadcastArchiveUploadUrl(scheduleId, body)
 
-        const archiveUrl = await fileUpload(payload, res.data.key, res.data.url, res.data.headers)
+        const archiveUrl = await fileUpload(payload, res.data.key, res.data.url)
 
         const req: UpdateBroadcastArchiveRequest = {
           archiveUrl,

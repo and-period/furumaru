@@ -4,7 +4,14 @@ import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
 import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
-import type { CompleteOrderRequest, DraftOrderRequest, ExportOrdersRequest, Order, RefundOrderRequest, UpdateOrderFulfillmentRequest } from '~/types/api'
+import type {
+  CompleteOrderRequest,
+  DraftOrderRequest,
+  ExportOrdersRequest,
+  Order,
+  RefundOrderRequest,
+  UpdateOrderFulfillmentRequest,
+} from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -88,7 +95,10 @@ export const useOrderStore = defineStore('order', {
      * @param payload 下書き情報
      * @returns
      */
-    async draftOrder(orderId: string, payload: DraftOrderRequest): Promise<void> {
+    async draftOrder(
+      orderId: string,
+      payload: DraftOrderRequest,
+    ): Promise<void> {
       try {
         await apiClient.orderApi().v1DraftOrder(orderId, payload)
       }
@@ -106,7 +116,10 @@ export const useOrderStore = defineStore('order', {
      * @param payload 対応完了時に必要な情報
      * @returns
      */
-    async completeOrder(orderId: string, payload: CompleteOrderRequest): Promise<void> {
+    async completeOrder(
+      orderId: string,
+      payload: CompleteOrderRequest,
+    ): Promise<void> {
       try {
         await apiClient.orderApi().v1CompleteOrder(orderId, payload)
       }
@@ -141,7 +154,10 @@ export const useOrderStore = defineStore('order', {
      * @param payload 返金時に必要な情報
      * @returns
      */
-    async refundOrder(orderId: string, payload: RefundOrderRequest): Promise<void> {
+    async refundOrder(
+      orderId: string,
+      payload: RefundOrderRequest,
+    ): Promise<void> {
       try {
         await apiClient.orderApi().v1RefundOrder(orderId, payload)
       }
@@ -160,9 +176,15 @@ export const useOrderStore = defineStore('order', {
      * @param payload 配送情報
      * @returns
      */
-    async updateFulfillment(orderId: string, fulfillmentId: string, payload: UpdateOrderFulfillmentRequest): Promise<void> {
+    async updateFulfillment(
+      orderId: string,
+      fulfillmentId: string,
+      payload: UpdateOrderFulfillmentRequest,
+    ): Promise<void> {
       try {
-        await apiClient.orderApi().v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
+        await apiClient
+          .orderApi()
+          .v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
       }
       catch (err) {
         return this.errorHandler(err, {

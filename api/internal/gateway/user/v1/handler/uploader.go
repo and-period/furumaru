@@ -60,9 +60,8 @@ func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media
 		return
 	}
 	res := &response.UploadURLResponse{
-		Key:     event.Key,
-		URL:     event.UploadURL,
-		Headers: event.UploadHeaders,
+		Key: event.Key,
+		URL: event.UploadURL,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
