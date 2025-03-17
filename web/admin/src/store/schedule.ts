@@ -1,6 +1,6 @@
+import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type { ApproveScheduleRequest, BroadcastViewerLog, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
 

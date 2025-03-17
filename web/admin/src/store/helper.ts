@@ -9,7 +9,12 @@ import { UploadStatus } from '~/types/api'
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns 参照先URL
  */
-export async function fileUpload(file: File, key: string, url: string, headers: Record<string, string[]>): Promise<string> {
+export async function fileUpload(
+  file: File,
+  key: string,
+  url: string,
+  headers: Record<string, string[]>,
+): Promise<string> {
   // 署名付きURLを基にファイルをアップロード
   await upload(file, url, headers)
 
@@ -32,7 +37,11 @@ function sleep(ms: number): Promise<void> {
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns
  */
-async function upload(file: File, uploadUrl: string, uploadHeaders: Record<string, string[]>): Promise<void> {
+async function upload(
+  file: File,
+  uploadUrl: string,
+  uploadHeaders: Record<string, string[]>,
+): Promise<void> {
   await axios.put(uploadUrl, file, { headers: uploadHeaders })
 }
 

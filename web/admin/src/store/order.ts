@@ -1,8 +1,8 @@
+import { defineStore } from 'pinia'
 import { useCoordinatorStore } from './coordinator'
 import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
 import { useProductStore } from './product'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type { CompleteOrderRequest, DraftOrderRequest, ExportOrdersRequest, Order, RefundOrderRequest, UpdateOrderFulfillmentRequest } from '~/types/api'
 
