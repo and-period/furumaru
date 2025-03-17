@@ -9,7 +9,11 @@ import { UploadStatus } from '~/types/api'
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns 参照先URL
  */
-export async function fileUpload(file: File, key: string, url: string): Promise<string> {
+export async function fileUpload(
+  file: File,
+  key: string,
+  url: string,
+): Promise<string> {
   // 署名付きURLを基にファイルをアップロード
   await upload(file, url)
 

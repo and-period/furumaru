@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { apiClient } from '~/plugins/api-client'
@@ -23,9 +22,15 @@ export const useProductTypeStore = defineStore('productType', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchProductTypes(limit = 20, offset = 0, orders = []): Promise<void> {
+    async fetchProductTypes(
+      limit = 20,
+      offset = 0,
+      orders = [],
+    ): Promise<void> {
       try {
-        const res = await apiClient.productTypeApi().v1ListAllProductTypes(limit, offset, orders.join(','))
+        const res = await apiClient
+          .productTypeApi()
+          .v1ListAllProductTypes(limit, offset, orders.join(','))
 
         const categoryStore = useCategoryStore()
         this.productTypes = res.data.productTypes
@@ -44,7 +49,11 @@ export const useProductTypeStore = defineStore('productType', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchProductTypesByCategoryId(categoryId: string, limit = 20, offset = 0): Promise<void> {
+    async fetchProductTypesByCategoryId(
+      categoryId: string,
+      limit = 20,
+      offset = 0,
+    ): Promise<void> {
       if (categoryId === '') {
         this.productTypes = []
         this.totalItems = 0
@@ -52,7 +61,9 @@ export const useProductTypeStore = defineStore('productType', {
       }
 
       try {
-        const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId)
+        const res = await apiClient
+          .productTypeApi()
+          .v1ListProductTypes(categoryId)
 
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
@@ -68,9 +79,15 @@ export const useProductTypeStore = defineStore('productType', {
      * @param categoryId カテゴリ名
      * @param productTypeIds stateの更新時に残しておく必要がある品目情報
      */
-    async searchProductTypes(name = '', categoryId = '', productTypeIds: string[] = []): Promise<void> {
+    async searchProductTypes(
+      name = '',
+      categoryId = '',
+      productTypeIds: string[] = [],
+    ): Promise<void> {
       try {
-        const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId, undefined, undefined, name)
+        const res = await apiClient
+          .productTypeApi()
+          .v1ListProductTypes(categoryId, undefined, undefined, name)
         const productTypes: ProductType[] = []
         this.productTypes.forEach((productType: ProductType): void => {
           if (!productTypeIds.includes(productType.id)) {
@@ -103,10 +120,9 @@ export const useProductTypeStore = defineStore('productType', {
       payload: CreateProductTypeRequest,
     ): Promise<void> {
       try {
-        const res = await apiClient.productTypeApi().v1CreateProductType(
-          categoryId,
-          payload,
-        )
+        const res = await apiClient
+          .productTypeApi()
+          .v1CreateProductType(categoryId, payload)
         this.productTypes.unshift(res.data.productType)
       }
       catch (err) {
@@ -130,11 +146,9 @@ export const useProductTypeStore = defineStore('productType', {
       payload: UpdateProductTypeRequest,
     ) {
       try {
-        await apiClient.productTypeApi().v1UpdateProductType(
-          categoryId,
-          productTypeId,
-          payload,
-        )
+        await apiClient
+          .productTypeApi()
+          .v1UpdateProductType(categoryId, productTypeId, payload)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -156,14 +170,15 @@ export const useProductTypeStore = defineStore('productType', {
       productTypeId: string,
     ): Promise<void> {
       try {
-        await apiClient.productTypeApi().v1DeleteProductType(
-          categoryId,
-          productTypeId,
-        )
+        await apiClient
+          .productTypeApi()
+          .v1DeleteProductType(categoryId, productTypeId)
         this.fetchProductTypes()
       }
       catch (err) {
-        return this.errorHandler(err, { 404: '対象の商品種別または品目が存在しません。' })
+        return this.errorHandler(err, {
+          404: '対象の商品種別または品目が存在しません。',
+        })
       }
     },
 
@@ -178,12 +193,16 @@ export const useProductTypeStore = defineStore('productType', {
         const body: GetUploadUrlRequest = {
           fileType: contentType,
         }
-        const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
+        const res = await apiClient
+          .productTypeApi()
+          .v1GetProductTypeIconUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        return this.errorHandler(err, {
+          400: 'このファイルはアップロードできません。',
+        })
       }
     },
   },

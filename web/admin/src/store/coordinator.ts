@@ -1,10 +1,16 @@
 import { defineStore } from 'pinia'
-
 import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { useShopStore } from './shop'
 import { apiClient } from '~/plugins/api-client'
-import type { Coordinator, CreateCoordinatorRequest, GetUploadUrlRequest, Producer, Shop, UpdateCoordinatorRequest } from '~/types/api'
+import type {
+  Coordinator,
+  CreateCoordinatorRequest,
+  GetUploadUrlRequest,
+  Producer,
+  Shop,
+  UpdateCoordinatorRequest,
+} from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
@@ -23,7 +29,9 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async fetchCoordinators(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.coordinatorApi().v1ListCoordinators(limit, offset)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1ListCoordinators(limit, offset)
 
         const productTypeStore = useProductTypeStore()
         const shopStore = useShopStore()
@@ -42,9 +50,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param name コーディネーター名(あいまい検索)
      * @param coordinatorIds stateの更新時に残しておく必要があるコーディネーター情報
      */
-    async searchCoordinators(name = '', coordinatorIds: string[] = []): Promise<void> {
+    async searchCoordinators(
+      name = '',
+      coordinatorIds: string[] = [],
+    ): Promise<void> {
       try {
-        const res = await apiClient.coordinatorApi().v1ListCoordinators(undefined, undefined, name)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1ListCoordinators(undefined, undefined, name)
         const coordinators: Coordinator[] = []
         this.coordinators.forEach((coordinator: Coordinator): void => {
           if (!coordinatorIds.includes(coordinator.id)) {
@@ -74,7 +87,9 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async getCoordinator(coordinatorId: string): Promise<void> {
       try {
-        const res = await apiClient.coordinatorApi().v1GetCoordinator(coordinatorId)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1GetCoordinator(coordinatorId)
 
         const productTypeStore = useProductTypeStore()
         const shopStore = useShopStore()
@@ -83,7 +98,9 @@ export const useCoordinatorStore = defineStore('coordinator', {
         shopStore.shop = res.data.shop
       }
       catch (err) {
-        return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
+        return this.errorHandler(err, {
+          404: 'コーディネーター情報が見つかりません。',
+        })
       }
     },
 
@@ -93,7 +110,9 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async createCoordinator(payload: CreateCoordinatorRequest) {
       try {
-        const res = await apiClient.coordinatorApi().v1CreateCoordinator(payload)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1CreateCoordinator(payload)
         return res.data
       }
       catch (err) {
@@ -109,9 +128,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload
      * @param coordinatorId 更新するコーディネーターのID
      */
-    async updateCoordinator(coordinatorId: string, payload: UpdateCoordinatorRequest): Promise<void> {
+    async updateCoordinator(
+      coordinatorId: string,
+      payload: UpdateCoordinatorRequest,
+    ): Promise<void> {
       try {
-        await apiClient.coordinatorApi().v1UpdateCoordinator(coordinatorId, payload)
+        await apiClient
+          .coordinatorApi()
+          .v1UpdateCoordinator(coordinatorId, payload)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -131,12 +155,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const body: GetUploadUrlRequest = {
           fileType: payload.type,
         }
-        const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1GetCoordinatorThumbnailUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
+        return this.errorHandler(err, {
+          400: 'ファイルのアップロードに失敗しました',
+        })
       }
     },
 
@@ -150,12 +178,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const body: GetUploadUrlRequest = {
           fileType: payload.type,
         }
-        const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1GetCoordinatorHeaderUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
+        return this.errorHandler(err, {
+          400: 'ファイルのアップロードに失敗しました',
+        })
       }
     },
 
@@ -169,12 +201,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const body: GetUploadUrlRequest = {
           fileType: payload.type,
         }
-        const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1GetCoordinatorPromotionVideoUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
+        return this.errorHandler(err, {
+          400: 'ファイルのアップロードに失敗しました',
+        })
       }
     },
 
@@ -188,12 +224,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const body: GetUploadUrlRequest = {
           fileType: payload.type,
         }
-        const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
+        const res = await apiClient
+          .coordinatorApi()
+          .v1GetCoordinatorBonusVideoUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
       }
       catch (err) {
-        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
+        return this.errorHandler(err, {
+          400: 'ファイルのアップロードに失敗しました',
+        })
       }
     },
 

@@ -28,12 +28,14 @@ interface Props {
   experienceTypes: ExperienceType[]
   searchErrorMessage: string
   searchLoading: boolean
+  videoUploading: boolean
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'update:files', files: FileList): void
+  (e: 'update:video', files: FileList): void
   (
     e: 'update:form-data',
     formData: CreateExperienceRequest | UpdateExperienceRequest,
@@ -115,6 +117,14 @@ const onClickImageUpload = (files?: FileList): void => {
   }
 
   emit('update:files', files)
+}
+
+const onChangeVideo = (files?: FileList): void => {
+  if (!files) {
+    return
+  }
+  // 動画ファイルのemits
+  emit('update:video', files)
 }
 
 const onClickSearchAddress = (): void => {
@@ -318,8 +328,21 @@ const onSubmit = async (): Promise<void> => {
           <div class="mx-4">
             <molecules-video-select-form
               label="紹介動画"
-              :loading="loading"
+              :loading="videoUploading"
+              @update:file="onChangeVideo"
             />
+            <template v-if="formDataValue.promotionVideoUrl">
+              <v-responsive
+                :aspect-ratio="16 / 9"
+                class="border pa-4"
+              >
+                <video
+                  class="w-100"
+                  controls
+                  :src="formDataValue.promotionVideoUrl"
+                />
+              </v-responsive>
+            </template>
           </div>
           <v-card-text>
             <v-text-field

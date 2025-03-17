@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-
 import { useProducerStore } from './producer'
 import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
@@ -29,7 +28,9 @@ export const useLiveStore = defineStore('live', {
         productStore.products = res.data.products
       }
       catch (err) {
-        return this.errorHandler(err, { 404: 'マルシェタイムテーブルが存在しません' })
+        return this.errorHandler(err, {
+          404: 'マルシェタイムテーブルが存在しません',
+        })
       }
     },
 
@@ -45,7 +46,10 @@ export const useLiveStore = defineStore('live', {
      * @param payload
      * @returns
      */
-    async createLive(scheduleId: string, payload: CreateLiveRequest): Promise<void> {
+    async createLive(
+      scheduleId: string,
+      payload: CreateLiveRequest,
+    ): Promise<void> {
       try {
         const res = await apiClient.liveApi().v1CreateLive(scheduleId, payload)
 
@@ -67,11 +71,17 @@ export const useLiveStore = defineStore('live', {
      * @param payload
      * @returns
      */
-    async updateLive(scheduleId: string, liveId: string, payload: UpdateLiveRequest): Promise<void> {
+    async updateLive(
+      scheduleId: string,
+      liveId: string,
+      payload: UpdateLiveRequest,
+    ): Promise<void> {
       try {
         await apiClient.liveApi().v1UpdateLive(scheduleId, liveId, payload)
 
-        const index = this.lives.findIndex((live: Live): boolean => live.id === liveId)
+        const index = this.lives.findIndex(
+          (live: Live): boolean => live.id === liveId,
+        )
         const live = this.lives[index]
         this.lives.splice(index, 1, { ...live, ...payload })
       }
@@ -94,7 +104,9 @@ export const useLiveStore = defineStore('live', {
       try {
         await apiClient.liveApi().v1DeleteLive(scheduleId, liveId)
 
-        const index = this.lives.findIndex((live: Live): boolean => live.id === liveId)
+        const index = this.lives.findIndex(
+          (live: Live): boolean => live.id === liveId,
+        )
         this.lives.splice(index, 1)
       }
       catch (err) {

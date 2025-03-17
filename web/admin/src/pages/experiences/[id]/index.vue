@@ -98,6 +98,32 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
   }))
 }
 
+const videoUploading = ref<boolean>(false)
+
+/**
+ * 紹介動画アップロード処理
+ * @param files
+ */
+const handleVideoUpload = async (files: FileList): Promise<void> => {
+  if (!files) {
+    return
+  }
+  try {
+    videoUploading.value = true
+    const url: string = await experienceStore.uploadExperienceMedia(files[0])
+    formData.value.promotionVideoUrl = url
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    videoUploading.value = false
+  }
+}
+
 const handleSubmit = async () => {
   const req = {
     ...formData.value,
@@ -133,8 +159,12 @@ onMounted(async () => {
     ...formData.value,
     ...result.experience,
   }
-  formData.value.businessOpenTime = convertToTimeFormat(formData.value.businessOpenTime)
-  formData.value.businessCloseTime = convertToTimeFormat(formData.value.businessCloseTime)
+  formData.value.businessOpenTime = convertToTimeFormat(
+    formData.value.businessOpenTime,
+  )
+  formData.value.businessCloseTime = convertToTimeFormat(
+    formData.value.businessCloseTime,
+  )
   isLoading.value = false
 })
 </script>
@@ -150,8 +180,10 @@ onMounted(async () => {
     :alert-text="alertText"
     :producers="producers"
     :experience-types="experienceTypes"
+    :video-uploading="videoUploading"
     @click:search-address="handleSearchAddress"
     @update:files="handleImageUpload"
+    @update:video="handleVideoUpload"
     @submit="handleSubmit"
   />
 </template>
