@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.10](https://github.com/and-period/furumaru/compare/v4.4.9...v4.4.10) - 2025-03-17
+- 体験登録で動画を紐づけられるように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2764
+
 ## [v4.4.9](https://github.com/and-period/furumaru/compare/v4.4.8...v4.4.9) - 2025-03-16
 - build(deps): bump @unhead/dom from 1.11.18 to 1.11.20 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2760
 - build(deps): bump @babel/standalone from 7.26.9 to 7.26.10 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2761
