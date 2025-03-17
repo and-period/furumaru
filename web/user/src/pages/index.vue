@@ -423,19 +423,6 @@ useSeoMeta({
       </the-content-box>
 
       <the-content-box
-        title="Instagram"
-        sub-title="人気の投稿"
-      >
-        <div class="flex flex-col w-full gap-8 md:flex-row">
-          <the-instagram-post
-            v-for="instagramPostsPermalink in instagramPostsPermalinks"
-            :key="instagramPostsPermalink"
-            :permalink="instagramPostsPermalink"
-          />
-        </div>
-      </the-content-box>>
-
-      <the-content-box
         title="EXPERIENCE VIDEO"
         :sub-title="tt('experienceListSubTitle')"
       >
@@ -462,6 +449,39 @@ useSeoMeta({
               :archived-stream-text="tt('archivedStreamText')"
               class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickExperienceVideoItem(experience.id)"
+            />
+          </div>
+          <div class="absolute right-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveRightButton"
+            >
+              <the-right-arrow-icon />
+            </the-icon-button>
+          </div>
+        </div>
+      </the-content-box>
+      <the-content-box
+        title="Instagram"
+        sub-title="人気の投稿"
+      >
+        <div class="relative mx-auto flex max-w-[1440px]">
+          <div class="absolute left-4 flex h-[208px] items-center">
+            <the-icon-button
+              class="hidden bg-white/50 hover:bg-white md:block"
+              @click="handleClickArchiveLeftButton"
+            >
+              <the-left-arrow-icon />
+            </the-icon-button>
+          </div>
+          <div
+            ref="archiveRef"
+            class="hidden-scrollbar flex flex-col w-full items-center gap-8 md:flex-row md:items-start md:overflow-x-scroll"
+          >
+            <the-instagram-post
+              v-for="instagramPostsPermalink in instagramPostsPermalinks"
+              :key="instagramPostsPermalink"
+              :permalink="instagramPostsPermalink"
             />
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
