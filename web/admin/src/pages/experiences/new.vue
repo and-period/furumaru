@@ -74,6 +74,32 @@ const fetchExperienceTypes = async (): Promise<void> => {
   }
 }
 
+const videoUploading = ref<boolean>(false)
+
+/**
+ * 紹介動画アップロード処理
+ * @param files
+ */
+const handleVideoUpload = async (files: FileList): Promise<void> => {
+  if (!files) {
+    return
+  }
+  try {
+    videoUploading.value = true
+    const url: string = await experienceStore.uploadExperienceMedia(files[0])
+    formData.value.promotionVideoUrl = url
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    videoUploading.value = false
+  }
+}
+
 const handleSubmit = async (): Promise<void> => {
   const req = {
     ...formData.value,
@@ -169,8 +195,10 @@ const isLoading = (): boolean => {
     :alert-text="alertText"
     :producers="producers"
     :experience-types="experienceTypes"
+    :video-uploading="videoUploading"
     @click:search-address="handleSearchAddress"
     @update:files="handleImageUpload"
+    @update:video="handleVideoUpload"
     @submit="handleSubmit"
   />
 </template>
