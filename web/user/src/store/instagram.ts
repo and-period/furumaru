@@ -4,7 +4,7 @@ import type { InstagramPost } from '~/types/api'
 export const useInstagramStore = defineStore('instagram', {
   state: () => {
     return {
-      instagramPostsPermalink: [] as string[],
+      instagramPostsPermalinks: [] as string[],
     }
   },
 
@@ -21,7 +21,7 @@ export const useInstagramStore = defineStore('instagram', {
             limit,
           },
         })
-        this.instagramPostsPermalink = response.data.data.map((post: InstagramPost) => post.permalink)
+        this.instagramPostsPermalinks = response.data.data.map((post: InstagramPost) => post.permalink)
       }
       catch (e) {
         console.error(e)

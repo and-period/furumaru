@@ -16,12 +16,13 @@ const { archives, lives, productVideos, experienceVideos } = storeToRefs(topPage
 const { getHomeContent } = topPageStore
 
 const instagramStore = useInstagramStore()
-const { instagramPostsPermalink } = storeToRefs(instagramStore)
+const { instagramPostsPermalinks } = storeToRefs(instagramStore)
 const { listInstagramPostsPermalinkByHashTag } = instagramStore
 
 const tt = (str: keyof I18n['base']['top']) => {
   return i18n.t(`base.top.${str}`)
 }
+// https://www.instagram.com/p/DGh1QXZxqQs/?utm_source=ig_embed&amp;utm_campaign=loading
 
 const isInItLoading = ref<boolean>(false)
 
@@ -420,6 +421,19 @@ useSeoMeta({
           </div>
         </div>
       </the-content-box>
+
+      <the-content-box
+        title="Instagram"
+        sub-title="人気の投稿"
+      >
+        <div class="flex flex-col w-full gap-8 md:flex-row">
+          <the-instagram-post
+            v-for="instagramPostsPermalink in instagramPostsPermalinks"
+            :key="instagramPostsPermalink"
+            :permalink="instagramPostsPermalink"
+          />
+        </div>
+      </the-content-box>>
 
       <the-content-box
         title="EXPERIENCE VIDEO"
