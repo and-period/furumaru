@@ -514,7 +514,7 @@ useSeoMeta({
             {{ dt("noReviewText") }}
           </div>
           <div
-            v-for="review in reviews"
+            v-for="review, i in reviews"
             :key="review.id"
             class="flex flex-col gap-2 py-4"
           >
@@ -536,7 +536,10 @@ useSeoMeta({
             </div>
             <div>
               <div class="flex gap-2 items-center mb-2">
-                <the-rating-star :rate="review.rate" />
+                <the-rating-star
+                  :id="`review-${i}`"
+                  :rate="review.rate"
+                />
                 <div class="font-semibold">
                   {{ review.title }}
                 </div>
