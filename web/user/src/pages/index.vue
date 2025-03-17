@@ -16,8 +16,8 @@ const { archives, lives, productVideos, experienceVideos } = storeToRefs(topPage
 const { getHomeContent } = topPageStore
 
 const instagramStore = useInstagramStore()
-const { OEmbedHTML } = storeToRefs(instagramStore)
-const { getInstagramOEmbed } = instagramStore
+const { instagramPostsPermalink } = storeToRefs(instagramStore)
+const { listInstagramPostsPermalinkByHashTag } = instagramStore
 
 const tt = (str: keyof I18n['base']['top']) => {
   return i18n.t(`base.top.${str}`)
@@ -42,8 +42,8 @@ useAsyncData('home-content', async () => {
   isInItLoading.value = false
 })
 
-useAsyncData('instagram-oembed', async () => {
-  await getInstagramOEmbed()
+useAsyncData('instagram-posts', async () => {
+  await listInstagramPostsPermalinkByHashTag()
 })
 
 onMounted(() => {
