@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.4.11](https://github.com/and-period/furumaru/compare/v4.4.10...v4.4.11) - 2025-03-20
+- レビューの星表示の修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2766
+- 商品登録・編集画面のUI/UX調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2770
+
 ## [v4.4.10](https://github.com/and-period/furumaru/compare/v4.4.9...v4.4.10) - 2025-03-17
 - 体験登録で動画を紐づけられるように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2764
 
