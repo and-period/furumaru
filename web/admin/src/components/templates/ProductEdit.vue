@@ -405,41 +405,11 @@ const onSubmit = async (): Promise<void> => {
               v-model="thumbnailIndex"
               :error-messages="getErrorMessage(formDataValidate.media.$errors)"
             >
-              <v-row>
-                <v-col
-                  v-for="(img, i) in formDataValue.media"
-                  :key="i"
-                  cols="4"
-                  class="d-flex flex-row align-center"
-                >
-                  <v-card
-                    rounded
-                    variant="outlined"
-                    width="100%"
-                    :class="{ 'thumbnail-border': img.isThumbnail }"
-                    @click="onClickThumbnail(i)"
-                  >
-                    <v-img
-                      :src="img.url"
-                      aspect-ratio="1"
-                    >
-                      <div class="d-flex col">
-                        <v-radio
-                          :value="i"
-                          color="primary"
-                        />
-                        <v-btn
-                          :icon="mdiClose"
-                          color="error"
-                          variant="text"
-                          size="small"
-                          @click="onDeleteThumbnail(i)"
-                        />
-                      </div>
-                    </v-img>
-                  </v-card>
-                </v-col>
-              </v-row>
+              <molecules-sortable-product-thumbnail
+                v-model="formDataValue.media"
+                @click="onClickThumbnail"
+                @delete="onDeleteThumbnail"
+              />
             </v-radio-group>
             <p
               v-show="formDataValue.media.length > 0"
