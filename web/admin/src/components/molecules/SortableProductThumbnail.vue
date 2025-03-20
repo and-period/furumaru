@@ -29,7 +29,7 @@ const handleDelete = (i: number) => {
   <v-row ref="element">
     <v-col
       v-for="(img, i) in model"
-      :key="img"
+      :key="img.url"
       cols="4"
     >
       <v-card
