@@ -10,12 +10,14 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 var (
@@ -108,6 +110,8 @@ func setup(_ context.Context) (*app, error) {
 }
 
 func (a *app) run(ctx context.Context) error {
+	a.logger.Debug("Start to run", zap.Bool("debug", debug))
+
 	file, err := os.Open(a.source)
 	if err != nil {
 		return fmt.Errorf("failed to open source csv file: %w", err)
@@ -155,8 +159,14 @@ func (a *app) run(ctx context.Context) error {
 	writer := io.Writer(output)
 
 	// メールを送信する
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.SetLimit(30)
+
+	mu := sync.Mutex{}
+
 	a.logger.Info("Start to send emails")
 	for i, builder := range req {
+		company := builder.substitutions["会社名"]
 		name := builder.substitutions["氏名"]
 		sei := builder.substitutions["姓"]
 		email := builder.substitutions["メールアドレス"]
@@ -164,25 +174,43 @@ func (a *app) run(ctx context.Context) error {
 
 		a.logger.Debug("Sending email", zap.Int("index", i), zap.String("name", name), zap.String("email", email))
 
-		if email == "" {
-			res = "Skip"
-			a.logger.Error("email is empty", zap.Int("index", i), zap.String("name", name))
-		} else {
-			retryFn := func() error {
-				return a.send(ctx, builder)
+		write := func(company, name, sei, email, res string) {
+			mu.Lock()
+			defer mu.Unlock()
+
+			out := fmt.Sprintf("index=%d: 会社名=%s, 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, company, name, sei, email, res)
+			if _, err := fmt.Fprint(writer, out); err != nil {
+				a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
 			}
-			retry := backoff.NewExponentialBackoff(3)
-			err := backoff.Retry(ctx, retry, retryFn, backoff.WithRetryablel(a.isRetryable))
+		}
+
+		if email == "" {
+			a.logger.Error("email is empty", zap.Int("index", i), zap.String("name", name))
+			write(company, name, sei, email, "Skip for email empty")
+			continue
+		} else if name == "" {
+			a.logger.Error("name is empty", zap.Int("index", i), zap.String("email", email))
+			write(company, name, sei, email, "Skip for name empty")
+			continue
+		}
+
+		retryFn := func() error {
+			return a.send(ectx, builder)
+		}
+		retry := backoff.NewExponentialBackoff(3)
+
+		eg.Go(func() error {
+			err := backoff.Retry(ectx, retry, retryFn, backoff.WithRetryablel(a.isRetryable))
 			if err != nil {
 				res = "NG"
 				a.logger.Error("failed to retry", zap.Int("index", i), zap.String("name", name), zap.Error(err))
 			}
-		}
-
-		out := fmt.Sprintf("index=%d: 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, name, sei, email, res)
-		if _, err := fmt.Fprint(writer, out); err != nil {
-			a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
-		}
+			write(company, name, sei, email, res)
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return fmt.Errorf("failed to wait: %w", err)
 	}
 	a.logger.Info("Finish to send emails")
 
