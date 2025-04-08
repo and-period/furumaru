@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/format"
 	"github.com/shopspring/decimal"
 )
 
@@ -217,7 +218,7 @@ func newExperienceRate(review *entity.AggregatedExperienceReview) *ExperienceRat
 	return &ExperienceRate{
 		ExperienceRate: response.ExperienceRate{
 			Count:   review.Count,
-			Average: review.Average,
+			Average: format.Round(review.Average, 1),
 			Detail: map[int64]int64{
 				1: review.Rate1,
 				2: review.Rate2,
