@@ -354,6 +354,8 @@ export interface I18n {
       storageTypeRefrigerated: string
       storageTypeFrozen: string
       producerInformationTitle: string
+      reviewLabel: string
+      noReviewText: string
     }
     experiences: {
       producerLabel: string

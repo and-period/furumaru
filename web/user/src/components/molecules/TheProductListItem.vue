@@ -8,6 +8,7 @@ import type { I18n } from '~/types/locales'
 import { productStatusToString } from '~/lib/product'
 
 interface Props {
+  href?: string
   id: string
   status: ProductStatus
   name: string
@@ -21,7 +22,6 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'click:item', id: string): void
   (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
@@ -65,10 +65,6 @@ const canAddCart = computed<boolean>(() => {
   return false
 })
 
-const handleClickItem = () => {
-  emits('click:item', props.id)
-}
-
 const handleClickCoorinator = () => {
   router.push(`/coordinator/${props.coordinator?.id}`)
 }
@@ -93,10 +89,10 @@ const handleClickAddCartButton = () => {
           }}
         </p>
       </div>
-      <div
+      <nuxt-link
         v-if="thumbnail"
-        class="cursor-pointer w-full"
-        @click="handleClickItem"
+        :to="`/items/${id}`"
+        class="block w-full"
       >
         <template v-if="thumbnailIsVideo">
           <video
@@ -124,7 +120,7 @@ const handleClickAddCartButton = () => {
             </picture>
           </div>
         </template>
-      </div>
+      </nuxt-link>
     </div>
 
     <p
