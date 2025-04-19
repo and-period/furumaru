@@ -2,7 +2,7 @@
 import {
   ProductStatus,
   type Coordinator,
-  type ProductMediaInner,
+  type ExperienceMediaInner,
 } from '~/types/api'
 import type { I18n } from '~/types/locales'
 import { productStatusToString } from '~/lib/product'
@@ -16,7 +16,7 @@ interface Props {
   hasStock: boolean
   originCity: string
   coordinator: Coordinator | undefined
-  thumbnail: ProductMediaInner | undefined
+  thumbnail: ExperienceMediaInner | undefined
   thumbnailIsVideo: boolean
 }
 
