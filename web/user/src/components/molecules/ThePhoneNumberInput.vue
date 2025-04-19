@@ -59,6 +59,16 @@ const viewMessage = computed(() => {
     return props.message
   }
 })
+
+onMounted(() => {
+  // 初期値を設定
+  const tel = props.modelValue.split('-')
+  if (tel.length === 3) {
+    tel1.value = tel[0]
+    tel2.value = tel[1]
+    tel3.value = tel[2]
+  }
+})
 </script>
 
 <template>
