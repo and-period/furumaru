@@ -69,11 +69,17 @@ const priceString = computed<string>(() => {
 })
 
 const canAddCart = computed<boolean>(() => {
-  if (product.value) {
-    return (
-      product.value.status === ProductStatus.FOR_SALE
-      && product.value.inventory > 0
-    )
+  // データ取得に失敗していたらfalseを返す
+  if (status.value === 'success') {
+    if (product.value) {
+      return (
+        product.value.status === ProductStatus.FOR_SALE
+        && product.value.inventory > 0
+      )
+    }
+    else {
+      return false
+    }
   }
   else {
     return false
@@ -130,7 +136,7 @@ const handleClickMediaItem = (index: number) => {
   selectedMediaIndex.value = index
 }
 
-useAsyncData(`product-${id.value}`, async () => {
+const { status, error } = useAsyncData(`product-${id.value}`, async () => {
   await fetchProduct(id.value)
   return true
 })
@@ -156,7 +162,8 @@ useSeoMeta({
     />
   </template>
 
-  <template v-if="productFetchState.isLoading">
+  <!-- ロード状態 -->
+  <template v-if="status === 'pending'">
     <div
       class="animate-pulse bg-white px-[112px] pb-6 pt-[40px] text-main md:grid md:grid-cols-2"
     >
@@ -170,7 +177,15 @@ useSeoMeta({
     </div>
   </template>
 
-  <template v-if="!productFetchState.isLoading && product.thumbnail">
+  <!-- エラーの場合の表示 -->
+  <template v-if="status === 'error'">
+    <the-alert>
+      {{ error?.message }}
+    </the-alert>
+  </template>
+
+  <!-- 商品情報の表示 -->
+  <template v-if="status == 'success' && !productFetchState.isLoading && product.thumbnail">
     <div class="bg-white w-full">
       <div
         class="gap-10 px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 lg:px-[112px] w-full max-w-[1440px] mx-auto"

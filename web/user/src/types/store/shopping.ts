@@ -5,7 +5,7 @@ import type {
   Coordinator,
   PaymentSystem,
   Product,
-  ProductMediaInner,
+  ExperienceMediaInner,
 } from '../api'
 
 export interface ImageItem {
@@ -21,7 +21,7 @@ export interface MediaItem {
 
 // UI上で表示する商品の型定義
 export interface ProductItem extends Product {
-  thumbnail: ProductMediaInner | undefined
+  thumbnail: ExperienceMediaInner | undefined
 }
 
 // UI上で表示するカートの中身の型定義

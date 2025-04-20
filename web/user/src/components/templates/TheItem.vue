@@ -24,10 +24,6 @@ const lt = (str: keyof I18n['items']['list']) => {
   return i18n.t(`items.list.${str}`)
 }
 
-const handleClick = (id: string) => {
-  router.push(`/items/${id}`)
-}
-
 const snackbarItems = ref<Snackbar[]>([])
 
 const handleClickAddCartButton = async (
@@ -79,8 +75,9 @@ watch(currentPage, () => {
   fetchProducts(pagePerItems.value, pagination.value.offset)
 })
 
-const { status } = useAsyncData('products', () => {
-  return fetchProducts(pagePerItems.value, pagination.value.offset)
+const { status } = useAsyncData('products', async () => {
+  await fetchProducts(pagePerItems.value, pagination.value.offset)
+  return true
 })
 
 const hideV1App = false
@@ -175,7 +172,6 @@ const hideV1App = false
             :coordinator="product.coordinator"
             :origin-city="product.originCity"
             :thumbnail-is-video="product.thumbnailIsVideo"
-            @click:item="handleClick"
             @click:add-cart="handleClickAddCartButton"
           />
         </template>
