@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.13](https://github.com/and-period/furumaru/compare/v4.4.12...v4.4.13) - 2025-04-27
+- 商品詳細ページのエラーハンドリングを強化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2782
+
 ## [v4.4.12](https://github.com/and-period/furumaru/compare/v4.4.11...v4.4.12) - 2025-04-08
 - build(deps): bump the dependencies group across 1 directory with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2771
 - refactor(hack): メール送信コマンドのパフォーマンス改善 by @taba2424 in https://github.com/and-period/furumaru/pull/2776
