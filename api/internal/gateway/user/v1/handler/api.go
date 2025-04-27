@@ -51,25 +51,27 @@ type Params struct {
 }
 
 type handler struct {
-	appName     string
-	env         string
-	now         func() time.Time
-	generateID  func() string
-	logger      *zap.Logger
-	sentry      sentry.Client
-	waitGroup   *sync.WaitGroup
-	sharedGroup *singleflight.Group
-	user        user.Service
-	store       store.Service
-	messenger   messenger.Service
-	media       media.Service
+	appName          string
+	env              string
+	cookieBaseDomain string
+	now              func() time.Time
+	generateID       func() string
+	logger           *zap.Logger
+	sentry           sentry.Client
+	waitGroup        *sync.WaitGroup
+	sharedGroup      *singleflight.Group
+	user             user.Service
+	store            store.Service
+	messenger        messenger.Service
+	media            media.Service
 }
 
 type options struct {
-	appName string
-	env     string
-	logger  *zap.Logger
-	sentry  sentry.Client
+	appName          string
+	env              string
+	cookieBaseDomain string
+	logger           *zap.Logger
+	sentry           sentry.Client
 }
 
 type Option func(opts *options)
@@ -83,6 +85,12 @@ func WithAppName(name string) Option {
 func WithEnvironment(env string) Option {
 	return func(opts *options) {
 		opts.env = env
+	}
+}
+
+func WithCookieBaseDomain(domain string) Option {
+	return func(opts *options) {
+		opts.cookieBaseDomain = domain
 	}
 }
 
@@ -100,18 +108,20 @@ func WithSentry(sentry sentry.Client) Option {
 
 func NewHandler(params *Params, opts ...Option) Handler {
 	dopts := &options{
-		appName: "user-gateway",
-		env:     "",
-		logger:  zap.NewNop(),
-		sentry:  sentry.NewFixedMockClient(),
+		appName:          "user-gateway",
+		env:              "",
+		cookieBaseDomain: "",
+		logger:           zap.NewNop(),
+		sentry:           sentry.NewFixedMockClient(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &handler{
-		appName: dopts.appName,
-		env:     dopts.env,
-		now:     jst.Now,
+		appName:          dopts.appName,
+		env:              dopts.env,
+		cookieBaseDomain: dopts.cookieBaseDomain,
+		now:              jst.Now,
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
 		},
@@ -328,8 +338,8 @@ func (h *handler) getSessionID(ctx *gin.Context) string {
 	}
 	// セッションIDが取得できない場合、新規IDを生成してCookieへ保存する
 	sessionID = h.generateID()
-	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", "", true, true)
+	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", h.cookieBaseDomain, true, true)
 	return sessionID
 }
 

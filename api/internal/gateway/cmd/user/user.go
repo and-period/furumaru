@@ -67,6 +67,7 @@ type app struct {
 	SlackAPIToken                string  `default:""               envconfig:"SLACK_API_TOKEN"`
 	SlackChannelID               string  `default:""               envconfig:"SLACK_CHANNEL_ID"`
 	SlackSecretName              string  `default:""               envconfig:"SLACK_SECRET_NAME"`
+	CookieBaseDomain             string  `default:""               envconfig:"COOKIE_BASE_DOMAIN"`
 	AminWebURL                   string  `default:""               envconfig:"ADMIN_WEB_URL"`
 	UserWebURL                   string  `default:""               envconfig:"USER_WEB_URL"`
 }

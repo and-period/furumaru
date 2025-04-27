@@ -270,6 +270,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
+		v1.WithCookieBaseDomain(a.CookieBaseDomain),
 		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),
 	)
