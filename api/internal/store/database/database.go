@@ -580,7 +580,7 @@ type Shipping interface {
 	ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error)
 	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
 	GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error)
-	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error)
+	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) // Depcecated
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 }
@@ -594,6 +594,7 @@ type UpdateShippingParams struct {
 	Box100Frozen      int64
 	HasFreeShipping   bool
 	FreeShippingRates int64
+	InUse             bool
 }
 
 type Shop interface {

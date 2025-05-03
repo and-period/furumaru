@@ -983,6 +983,7 @@ type UpsertShippingInput struct {
 	Box100Frozen      int64                 `validate:"min=0,lt=10000000000"`
 	HasFreeShipping   bool                  `validate:""`
 	FreeShippingRates int64                 `validate:"min=0,lt=10000000000"`
+	InUse             bool                  `validate:""`
 }
 
 type UpsertShippingRate struct {

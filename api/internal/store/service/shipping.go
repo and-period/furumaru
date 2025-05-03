@@ -112,6 +112,7 @@ func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingIn
 			Box100Frozen:      in.Box100Frozen,
 			HasFreeShipping:   in.HasFreeShipping,
 			FreeShippingRates: in.FreeShippingRates,
+			InUse:             true,
 		}
 		shipping = entity.NewShipping(params)
 		err = s.db.Shipping.Create(ctx, shipping)
@@ -126,6 +127,7 @@ func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingIn
 			Box100Frozen:      in.Box100Frozen,
 			HasFreeShipping:   in.HasFreeShipping,
 			FreeShippingRates: in.FreeShippingRates,
+			InUse:             in.InUse,
 		}
 		err = s.db.Shipping.Update(ctx, shipping.ID, params)
 	}
