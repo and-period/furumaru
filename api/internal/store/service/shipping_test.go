@@ -503,6 +503,7 @@ func TestUpsertShipping(t *testing.T) {
 		Box100Frozen:      800,
 		HasFreeShipping:   true,
 		FreeShippingRates: 3000,
+		InUse:             true,
 	}
 	shipping := func(revisionID int64) *entity.Shipping {
 		rates := entity.ShippingRates{
@@ -513,6 +514,7 @@ func TestUpsertShipping(t *testing.T) {
 			ID:            "coordinator-id",
 			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
+			InUse:         true,
 			ShippingRevision: entity.ShippingRevision{
 				ShippingID:        "coordinator-id",
 				Box60Rates:        rates,
@@ -550,6 +552,7 @@ func TestUpsertShipping(t *testing.T) {
 				Box100Frozen:      800,
 				HasFreeShipping:   true,
 				FreeShippingRates: 3000,
+				InUse:             true,
 			},
 			expectErr: nil,
 		},
@@ -570,6 +573,7 @@ func TestUpsertShipping(t *testing.T) {
 				Box100Frozen:      800,
 				HasFreeShipping:   true,
 				FreeShippingRates: 3000,
+				InUse:             true,
 			},
 			expectErr: nil,
 		},
@@ -595,6 +599,7 @@ func TestUpsertShipping(t *testing.T) {
 				Box100Frozen:      800,
 				HasFreeShipping:   true,
 				FreeShippingRates: 3000,
+				InUse:             true,
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -615,6 +620,7 @@ func TestUpsertShipping(t *testing.T) {
 				Box100Frozen:      800,
 				HasFreeShipping:   true,
 				FreeShippingRates: 3000,
+				InUse:             true,
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -635,6 +641,7 @@ func TestUpsertShipping(t *testing.T) {
 				Box100Frozen:      800,
 				HasFreeShipping:   true,
 				FreeShippingRates: 3000,
+				InUse:             true,
 			},
 			expectErr: exception.ErrInternal,
 		},
