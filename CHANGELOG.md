@@ -1,5 +1,9 @@
 # Changelog
 
+## [v4.4.14](https://github.com/and-period/furumaru/compare/v4.4.13...v4.4.14) - 2025-05-03
+- feat(store): Shippingsテーブルにレコード追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2788
+- fix: 管理者画面のラベルの表記を更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2790
+
 ## [v4.4.13](https://github.com/and-period/furumaru/compare/v4.4.12...v4.4.13) - 2025-04-27
 - 商品詳細ページのエラーハンドリングを強化 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2782
 
