@@ -193,7 +193,7 @@ const onSubmit = async (): Promise<void> => {
         <v-text-field
           v-model.number="validate.box60Frozen.$model"
           :error-messages="getErrorMessage(validate.box60Frozen.$errors)"
-          label="冷凍配送価格"
+          label="クール配送価格"
           type="number"
           prefix="通常配送料＋"
           suffix="円"
@@ -246,7 +246,7 @@ const onSubmit = async (): Promise<void> => {
         <v-text-field
           v-model.number="validate.box80Frozen.$model"
           :error-messages="getErrorMessage(validate.box80Frozen.$errors)"
-          label="冷凍配送価格"
+          label="クール配送価格"
           type="number"
           prefix="通常配送料＋"
           suffix="円"
@@ -299,7 +299,7 @@ const onSubmit = async (): Promise<void> => {
         <v-text-field
           v-model.number="validate.box100Frozen.$model"
           :error-messages="getErrorMessage(validate.box100Frozen.$errors)"
-          label="冷凍配送価格"
+          label="クール配送価格"
           type="number"
           prefix="通常配送料＋"
           suffix="円"
