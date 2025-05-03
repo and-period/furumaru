@@ -1,0 +1,1 @@
+ALTER TABLE `stores`.`shippings` ADD COLUMN `in_use` TINYINT NOT NULL DEFAULT 0;
