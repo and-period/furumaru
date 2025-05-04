@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.15](https://github.com/and-period/furumaru/compare/v4.4.14...v4.4.15) - 2025-05-04
+- feat: ふりがなのバリデーションを追加し、エラーメッセージを表示するように変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2791
+
 ## [v4.4.14](https://github.com/and-period/furumaru/compare/v4.4.13...v4.4.14) - 2025-05-03
 - feat(store): Shippingsテーブルにレコード追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2788
 - fix: 管理者画面のラベルの表記を更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2790
