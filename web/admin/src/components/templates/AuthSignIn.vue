@@ -116,11 +116,14 @@ const onSubmit = (): void => {
       </v-btn>
       <v-btn
         block
-        class="mt-2"
+        class="mt-2 mb-4"
         @click="onClickLoginWithLine"
       >
         LINEでログイン
       </v-btn>
+      <nuxt-link to="https://docs.google.com/forms/d/1347pN7xgxm4r_bd9zJ1wszusDNaEsbggUhY9JzfRUCM/viewform?hl=ja&hl=ja&edit_requested=true">
+        コーディネーター登録の申し込み
+      </nuxt-link>
     </v-card-text>
   </v-card>
   <v-container class="text-right">
