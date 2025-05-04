@@ -121,6 +121,14 @@ const onSubmit = (): void => {
       >
         LINEでログイン
       </v-btn>
+      <a
+        href="https://docs.google.com/forms/d/1347pN7xgxm4r_bd9zJ1wszusDNaEsbggUhY9JzfRUCM/viewform?hl=ja&hl=ja&edit_requested=true"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="d-block mt-4"
+      >
+        コーディネーターの申し込み
+      </a>
     </v-card-text>
   </v-card>
   <v-container class="text-right">
