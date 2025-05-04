@@ -5,6 +5,8 @@ import type { I18n } from '~/types/locales'
 interface Props {
   modelValue: CreateAuthUserRequest
   buttonText: string
+  lastnameKanaErrorMessage: string
+  firstnameKanaErrorMessage: string
   telLabel: string
   telPlaceholder: string
   telErrorMessage: string
@@ -86,6 +88,7 @@ const handleSubmit = () => {
           label="姓（かな）"
           :with-label="false"
           :placeholder="t('lastNameKanaPlaceholder')"
+          :error-message="lastnameKanaErrorMessage"
           type="text"
           required
         />
@@ -95,6 +98,7 @@ const handleSubmit = () => {
           label="名（かな）"
           :with-label="false"
           :placeholder="t('firstNameKanaPlaceholder')"
+          :error-message="firstnameKanaErrorMessage"
           type="text"
           required
         />
