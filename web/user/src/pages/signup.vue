@@ -69,18 +69,56 @@ const formData = reactive<CreateAuthUserRequest>({
 })
 
 const hasError = ref<boolean>(false)
+const lastnameKanaErrorMessage = ref<string>('')
+const firstnameKanaMessage = ref<string>('')
 const telErrorMessage = ref<string>('')
+const passwordErrorMessage = ref<string>('')
 const passwordConfirmErrorMessage = ref<string>('')
 
 const apiErrorMessage = ref<string>('')
 
+const isKana = (input: string): boolean => {
+  // ひらがなの正規表現
+  const kanaRegex = /^[\u3040-\u309F]+$/
+  return kanaRegex.test(input)
+}
+
+const isValidJapanesePhoneNumber = (phoneNumber: string): boolean => {
+  const regex = /^0\d{9,10}$/
+  return regex.test(phoneNumber)
+}
+
+const isValidPassword = (password: string): boolean => {
+  // パスワードの正規表現 - 8～32文字で英数字をそれぞれ1文字以上含む
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/
+  return passwordRegex.test(password)
+}
+
 const validate = () => {
   hasError.value = false
+  lastnameKanaErrorMessage.value = ''
+  firstnameKanaMessage.value = ''
   telErrorMessage.value = ''
+  passwordErrorMessage.value = ''
   passwordConfirmErrorMessage.value = ''
 
-  if (!formData.phoneNumber.startsWith('0')) {
-    telErrorMessage.value = '電話番号は0から始まる値を入力してください'
+  if (!isKana(formData.lastnameKana)) {
+    lastnameKanaErrorMessage.value = 'ふりがな（姓）は全角ひらがなで入力してください'
+    hasError.value = true
+  }
+
+  if (!isKana(formData.firstnameKana)) {
+    firstnameKanaMessage.value = 'ふりがな（名）は全角ひらがなで入力してください'
+    hasError.value = true
+  }
+
+  if (!isValidJapanesePhoneNumber(formData.phoneNumber)) {
+    telErrorMessage.value = '電話番号は0から始まる値でハイフンは含めずに入力してください'
+    hasError.value = true
+  }
+
+  if (!isValidPassword(formData.password)) {
+    passwordErrorMessage.value = 'パスワードは8～32文字で英数字をそれぞれ1つ以上含む必要があります'
     hasError.value = true
   }
 
@@ -131,6 +169,8 @@ useSeoMeta({
     :page-name="t('pageName')"
     :error-message="apiErrorMessage"
     :button-text="t('signUp')"
+    :firstname-kana-error-message="firstnameKanaMessage"
+    :lastname-kana-error-message="lastnameKanaErrorMessage"
     :tel-label="t('tel')"
     :tel-placeholder="t('tel')"
     :tel-error-message="telErrorMessage"
@@ -139,7 +179,7 @@ useSeoMeta({
     email-error-message=""
     :password-label="t('password')"
     :password-placeholder="t('password')"
-    password-error-message=""
+    :password-error-message="passwordErrorMessage"
     :password-confirm-label="t('passwordConfirm')"
     :password-confirm-placeholder="t('passwordConfirm')"
     :password-confirm-error-message="passwordConfirmErrorMessage"

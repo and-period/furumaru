@@ -7,6 +7,8 @@ interface Props {
   errorMessage: string
   buttonText: string
   modelValue: CreateAuthUserRequest
+  lastnameKanaErrorMessage: string
+  firstnameKanaErrorMessage: string
   telLabel: string
   telPlaceholder: string
   telErrorMessage: string
@@ -41,7 +43,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="mx-auto block sm:min-w-[560px]">
+  <div class="mx-auto block sm:max-w-[560px]">
     <the-marche-logo class="mb-10" />
     <the-card>
       <the-card-title>
@@ -59,6 +61,8 @@ const handleSubmit = () => {
           <the-sign-up-form
             v-model="formData"
             :button-text="buttonText"
+            :lastname-kana-error-message="lastnameKanaErrorMessage"
+            :firstname-kana-error-message="firstnameKanaErrorMessage"
             :tel-label="telLabel"
             :tel-placeholder="telPlaceholder"
             :tel-error-message="telErrorMessage"
