@@ -1,5 +1,8 @@
 # Changelog
 
+## [v4.4.16](https://github.com/and-period/furumaru/compare/v4.4.15...v4.4.16) - 2025-05-04
+- Add: added coordinator register spply by @hamachans in https://github.com/and-period/furumaru/pull/2793
+
 ## [v4.4.15](https://github.com/and-period/furumaru/compare/v4.4.14...v4.4.15) - 2025-05-04
 - feat: ふりがなのバリデーションを追加し、エラーメッセージを表示するように変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2791
 
