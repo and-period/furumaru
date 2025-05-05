@@ -162,7 +162,7 @@ func TestProduct_ShippingType(t *testing.T) {
 		{
 			name:    "refrigerated",
 			product: &Product{DeliveryType: DeliveryTypeRefrigerated},
-			expect:  ShippingTypeNormal,
+			expect:  ShippingTypeFrozen,
 		},
 		{
 			name:    "frozen",

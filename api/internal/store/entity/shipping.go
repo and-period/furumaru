@@ -22,8 +22,8 @@ type ShippingType int32
 
 const (
 	ShippingTypeUnknown ShippingType = 0
-	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
-	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+	ShippingTypeNormal  ShippingType = 1 // 通常配送
+	ShippingTypeFrozen  ShippingType = 2 // クール配送
 )
 
 // Shipping - 配送設定情報
@@ -57,9 +57,9 @@ type NewShippingParams struct {
 func (t ShippingType) String() string {
 	switch t {
 	case ShippingTypeNormal:
-		return "常温・冷蔵便"
+		return "通常配送"
 	case ShippingTypeFrozen:
-		return "冷凍便"
+		return "クール配送"
 	default:
 		return ""
 	}
