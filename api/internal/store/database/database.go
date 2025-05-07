@@ -14,6 +14,7 @@ var (
 	ErrNotFound           = &Error{err: errors.New("database: not found")}
 	ErrAlreadyExists      = &Error{err: errors.New("database: already exists")}
 	ErrFailedPrecondition = &Error{err: errors.New("database: failed precondition")}
+	ErrPermissionDenied   = &Error{err: errors.New("database: permission denied")}
 	ErrCanceled           = &Error{err: errors.New("database: canceled")}
 	ErrDeadlineExceeded   = &Error{err: errors.New("database: deadline exceeded")}
 	ErrInternal           = &Error{err: errors.New("database: internal error")}
@@ -577,12 +578,24 @@ type ApproveScheduleParams struct {
 }
 
 type Shipping interface {
+	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
 	ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error)
+	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
 	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
 	GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error)
 	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) // Depcecated
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
+	UpdateInUse(ctx context.Context, shopID, shippingID string) error
+	Delete(ctx context.Context, shippingID string) error
+}
+
+type ListShippingsParams struct {
+	ShopID         string
+	CoordinatorIDs []string
+	OnlyInUse      bool
+	Limit          int
+	Offset         int
 }
 
 type UpdateShippingParams struct {
@@ -594,7 +607,6 @@ type UpdateShippingParams struct {
 	Box100Frozen      int64
 	HasFreeShipping   bool
 	FreeShippingRates int64
-	InUse             bool
 }
 
 type Shop interface {

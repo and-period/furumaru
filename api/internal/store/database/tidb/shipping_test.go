@@ -19,6 +19,85 @@ func TestShipping(t *testing.T) {
 	assert.NotNil(t, NewShipping(nil))
 }
 
+func TestShipping_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
+	shippings := make(entity.Shippings, 2)
+	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
+	err = db.DB.Create(&shippings).Error
+	require.NoError(t, err)
+	for i := range shippings {
+		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
+		require.NoError(t, err)
+		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		params *database.ListShippingsParams
+	}
+	type want struct {
+		shippings entity.Shippings
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListShippingsParams{
+					Limit:     10,
+					Offset:    0,
+					OnlyInUse: true,
+				},
+			},
+			want: want{
+				shippings: shippings,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.shippings, actual)
+		})
+	}
+}
+
 func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -33,9 +112,15 @@ func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
+	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
@@ -103,9 +188,15 @@ func TestShipping_MultiGet(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
+	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
@@ -173,9 +264,15 @@ func TestShipping_MultiGetByRevision(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
+	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
 	for i := range shippings {
@@ -243,7 +340,11 @@ func TestShipping_GetDefault(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping(entity.DefaultShippingID, "", 1, now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testShipping(entity.DefaultShippingID, "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 	internal, err := newInternalShippingRevision(&s.ShippingRevision)
@@ -305,7 +406,11 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", 1, now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 	internal, err := newInternalShippingRevision(&s.ShippingRevision)
@@ -382,7 +487,11 @@ func TestShipping_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", 1, now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 
 	type args struct {
 		shipping *entity.Shipping
@@ -456,7 +565,11 @@ func TestShipping_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", 1, now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 
 	type args struct {
 		shippingID string
@@ -529,12 +642,226 @@ func TestShipping_Update(t *testing.T) {
 	}
 }
 
-func testShipping(shippingID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
+func TestShipping_UpdateInUse(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	type args struct {
+		shopID     string
+		shippingID string
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+				s.InUse = false
+				err := db.DB.Create(&s).Error
+				require.NoError(t, err)
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shopID:     "shop-id",
+				shippingID: "shipping-id",
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "already in use",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+				s.InUse = true
+				err := db.DB.Create(&s).Error
+				require.NoError(t, err)
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shopID:     "shop-id",
+				shippingID: "shipping-id",
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "shop id mismatch",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+				err := db.DB.Create(&s).Error
+				require.NoError(t, err)
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shopID:     "other-id",
+				shippingID: "shipping-id",
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, shippingRevisionTable, shippingTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			err = db.UpdateInUse(ctx, tt.args.shopID, tt.args.shippingID)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestShipping_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	type args struct {
+		shippingID string
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+				s.InUse = false
+				err := db.DB.Create(&s).Error
+				require.NoError(t, err)
+				internal, err := newInternalShippingRevision(&s.ShippingRevision)
+				require.NoError(t, err)
+				err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shippingID: "shipping-id",
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "default shipping",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shippingID: entity.DefaultShippingID,
+			},
+			want: want{
+				err: database.ErrPermissionDenied,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shippingID: "",
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "in use",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+				s.InUse = true
+				err := db.DB.Create(&s).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				shippingID: "shipping-id",
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, shippingRevisionTable, shippingTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			err = db.Delete(ctx, tt.args.shippingID)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func testShipping(shippingID, shopID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
 	internal := testShippingRevision(revisionID, shippingID, now)
 	revision, _ := internal.entity()
 	return &entity.Shipping{
 		ID:               shippingID,
+		ShopID:           shopID,
 		CoordinatorID:    coordinatorID,
+		InUse:            true,
 		ShippingRevision: *revision,
 		CreatedAt:        now,
 		UpdatedAt:        now,

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
+	"gorm.io/gorm"
 )
 
 const DefaultShippingID = "default"
@@ -28,12 +29,13 @@ const (
 // Shipping - 配送設定情報
 type Shipping struct {
 	ShippingRevision `gorm:"-"`
-	ID               string    `gorm:"primaryKey;<-:create"` // 配送設定ID
-	ShopID           string    `gorm:"default:null"`         // 店舗ID
-	CoordinatorID    string    `gorm:""`                     // コーディネータID
-	InUse            bool      `gorm:""`                     // 使用中
-	CreatedAt        time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt        time.Time `gorm:""`                     // 更新日時
+	ID               string         `gorm:"primaryKey;<-:create"` // 配送設定ID
+	ShopID           string         `gorm:"default:null"`         // 店舗ID
+	CoordinatorID    string         `gorm:""`                     // コーディネータID
+	InUse            bool           `gorm:""`                     // 使用中
+	CreatedAt        time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt        time.Time      `gorm:""`                     // 更新日時
+	DeletedAt        gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Shippings []*Shipping
