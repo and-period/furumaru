@@ -33,6 +33,12 @@ func TestShipping_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
 	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
 	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
@@ -106,6 +112,12 @@ func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
 	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
 	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
@@ -174,6 +186,12 @@ func TestShipping_MultiGet(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
 	require.NoError(t, err)
 
 	shippings := make(entity.Shippings, 2)
@@ -246,6 +264,12 @@ func TestShipping_MultiGetByRevision(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	shippings := make(entity.Shippings, 2)
 	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
 	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
@@ -316,6 +340,10 @@ func TestShipping_GetDefault(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	s := testShipping(entity.DefaultShippingID, "shop-id", "coordinator-id", 1, now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
@@ -376,6 +404,10 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
@@ -455,6 +487,10 @@ func TestShipping_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
 
 	type args struct {
@@ -527,6 +563,10 @@ func TestShipping_Update(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
@@ -614,6 +654,10 @@ func TestShipping_UpdateInUse(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -730,6 +774,10 @@ func TestShipping_Delete(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	type args struct {
