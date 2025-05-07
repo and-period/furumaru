@@ -31,11 +31,39 @@ func NewShipping(db *mysql.Client) database.Shipping {
 	}
 }
 
-func (s *shipping) ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error) {
+type listShippingsParams database.ListShippingsParams
+
+func (p listShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", p.ShopID)
+	}
+	if len(p.CoordinatorIDs) > 0 {
+		stmt = stmt.Where("coordinator_id IN (?)", p.CoordinatorIDs)
+	}
+	if p.OnlyInUse {
+		stmt = stmt.Where("in_use = ?", true)
+	}
+	return stmt
+}
+
+func (p listShippingsParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
+func (s *shipping) List(ctx context.Context, params *database.ListShippingsParams, fields ...string) (entity.Shippings, error) {
 	var shippings entity.Shippings
 
-	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
-		Where("coordinator_id IN (?)", coordinatorIDs)
+	prm := listShippingsParams(*params)
+
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...)
+	stmt = prm.stmt(stmt)
+	stmt = prm.pagination(stmt)
 
 	if err := stmt.Find(&shippings).Error; err != nil {
 		return nil, dbError(err)
@@ -44,6 +72,29 @@ func (s *shipping) ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []st
 		return nil, dbError(err)
 	}
 	return shippings, nil
+}
+
+func (s *shipping) ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error) {
+	var shippings entity.Shippings
+
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
+		Where("coordinator_id IN (?)", coordinatorIDs).
+		Where("in_use = ?", true)
+
+	if err := stmt.Find(&shippings).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := s.fill(ctx, s.db.DB, shippings...); err != nil {
+		return nil, dbError(err)
+	}
+	return shippings, nil
+}
+
+func (s *shipping) Count(ctx context.Context, params *database.ListShippingsParams) (int64, error) {
+	prm := listShippingsParams(*params)
+
+	total, err := s.db.Count(ctx, s.db.DB, &entity.Shipping{}, prm.stmt)
+	return total, dbError(err)
 }
 
 func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
@@ -112,7 +163,8 @@ func (s *shipping) GetByCoordinatorID(ctx context.Context, coordinatorID string,
 	var shipping *entity.Shipping
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
-		Where("coordinator_id = ?", coordinatorID)
+		Where("coordinator_id = ?", coordinatorID).
+		Where("in_use = ?", true)
 
 	if err := stmt.First(&shipping).Error; err != nil {
 		return nil, dbError(err)
@@ -127,6 +179,22 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := s.now()
 
+		// 既存で使用中の配送設定がある場合、それを無効化する
+		if shipping.InUse {
+			params := map[string]interface{}{
+				"in_use":     false,
+				"updated_at": now,
+			}
+			stmt := tx.WithContext(ctx).
+				Table(shippingTable).
+				Where("shop_id = ?", shipping.ShopID).
+				Where("in_use = ?", true)
+			if err := stmt.Updates(params).Error; err != nil {
+				return err
+			}
+		}
+
+		// 配送設定を登録
 		shipping.CreatedAt, shipping.UpdatedAt = now, now
 		shipping.ShippingRevision.CreatedAt, shipping.ShippingRevision.UpdatedAt = now, now
 
@@ -167,6 +235,83 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *databa
 
 	err = s.db.DB.WithContext(ctx).Table(shippingRevisionTable).Create(&internal).Error
 	return dbError(err)
+}
+
+func (s *shipping) UpdateInUse(ctx context.Context, shopID, shippingID string) error {
+	return s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		current, err := s.get(ctx, tx, shippingID)
+		if err != nil {
+			return err
+		}
+		if current.ShopID != shopID {
+			return fmt.Errorf("tidb: shop id mismatch: %w", database.ErrFailedPrecondition)
+		}
+		if current.InUse {
+			return nil // すでに使用中の場合は何もしない
+		}
+
+		oldParams := map[string]interface{}{
+			"in_use":     false,
+			"updated_at": s.now(),
+		}
+		stmt := tx.WithContext(ctx).
+			Table(shippingTable).
+			Where("shop_id = ?", shopID).
+			Where("in_use = ?", true)
+		if err := stmt.Updates(oldParams).Error; err != nil {
+			return err
+		}
+
+		newParams := map[string]interface{}{
+			"in_use":     true,
+			"updated_at": s.now(),
+		}
+		stmt = tx.WithContext(ctx).
+			Table(shippingTable).
+			Where("id = ?", shippingID)
+		return stmt.Updates(newParams).Error
+	})
+}
+
+func (s *shipping) Delete(ctx context.Context, shippingID string) error {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if shippingID == entity.DefaultShippingID {
+			return fmt.Errorf("tidb: default shipping cannot be deleted: %w", database.ErrPermissionDenied)
+		}
+
+		current, err := s.get(ctx, tx, shippingID)
+		if err != nil {
+			return err
+		}
+		if current.InUse {
+			return fmt.Errorf("tidb: shipping is in use: %w", database.ErrFailedPrecondition)
+		}
+
+		params := map[string]interface{}{
+			"deleted_at": s.now(),
+		}
+		stmt := tx.WithContext(ctx).
+			Table(shippingTable).
+			Where("id = ?", shippingID)
+
+		return stmt.Updates(params).Error
+	})
+	return dbError(err)
+}
+
+func (s *shipping) get(ctx context.Context, tx *gorm.DB, shippingID string, fields ...string) (*entity.Shipping, error) {
+	var shipping *entity.Shipping
+
+	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
+		Where("id = ?", shippingID)
+
+	if err := stmt.First(&shipping).Error; err != nil {
+		return nil, err
+	}
+	if err := s.fill(ctx, tx, shipping); err != nil {
+		return nil, err
+	}
+	return shipping, nil
 }
 
 func (s *shipping) fill(ctx context.Context, tx *gorm.DB, shippings ...*entity.Shipping) error {
