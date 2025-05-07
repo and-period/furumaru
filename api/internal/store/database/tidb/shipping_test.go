@@ -714,17 +714,6 @@ func TestShipping_UpdateInUse(t *testing.T) {
 			},
 		},
 		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				shopID:     "",
-				shippingID: "",
-			},
-			want: want{
-				err: database.ErrNotFound,
-			},
-		},
-		{
 			name: "shop id mismatch",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())

@@ -240,14 +240,18 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *databa
 func (s *shipping) UpdateInUse(ctx context.Context, shopID, shippingID string) error {
 	return s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, shippingID)
-		if err != nil {
+		if err != nil && err != gorm.ErrRecordNotFound {
 			return err
 		}
-		if current.ShopID != shopID {
-			return fmt.Errorf("tidb: shop id mismatch: %w", database.ErrFailedPrecondition)
-		}
-		if current.InUse {
-			return nil // すでに使用中の場合は何もしない
+		if current != nil {
+			// 別店舗の情報は更新できない
+			if current.ShopID != shopID {
+				return fmt.Errorf("tidb: shop id mismatch: %w", database.ErrFailedPrecondition)
+			}
+			// すでに使用中の場合は何もしない
+			if current.InUse {
+				return nil
+			}
 		}
 
 		oldParams := map[string]interface{}{
