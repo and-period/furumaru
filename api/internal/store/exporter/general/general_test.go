@@ -171,7 +171,7 @@ func TestReceipts(t *testing.T) {
 			ShippingFee:               500,
 			Total:                     1600,
 			OrderedAt:                 now,
-			ShippingType:              "常温・冷蔵便",
+			ShippingType:              "通常配送",
 			ShippingSize:              "60",
 		},
 	}
