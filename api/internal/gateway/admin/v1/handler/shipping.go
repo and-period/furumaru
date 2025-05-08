@@ -19,8 +19,14 @@ func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 	r.PATCH("/default", h.UpdateDefaultShipping)
 
 	cr := rg.Group("/coordinators/:coordinatorId/shippings", h.authentication, h.filterAccessShipping)
-	cr.GET("", h.GetShipping)
-	cr.PATCH("", h.UpsertShipping)
+	cr.GET("", h.ListShippings)
+	cr.POST("", h.CreateShipping)
+	cr.GET("/:shippingId", h.GetShipping)
+	cr.PATCH("/:shippingId", h.UpdateShipping)
+	cr.DELETE("/:shippingId", h.DeleteShipping)
+	cr.PATCH("/:shippingId/in-use", h.UpdateShippingInUse)
+	cr.GET("/-/in-use", h.GetShippingInUse) // Deprecated
+	cr.PATCH("", h.UpsertShipping)          // Deprecated
 }
 
 func (h *handler) filterAccessShipping(ctx *gin.Context) {
@@ -85,7 +91,54 @@ func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultSh
 	return res
 }
 
+func (h *handler) ListShippings(ctx *gin.Context) {
+	res := &response.ShippingsResponse{
+		Shippings:    []*response.Shipping{},
+		Coordinators: []*response.Coordinator{},
+		Total:        0,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) GetShipping(ctx *gin.Context) {
+	res := &response.ShippingResponse{
+		Shipping:    &response.Shipping{},
+		Coordinator: &response.Coordinator{},
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateShipping(ctx *gin.Context) {
+	req := &request.CreateShippingRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	res := &response.ShippingResponse{
+		Shipping:    &response.Shipping{},
+		Coordinator: &response.Coordinator{},
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateShipping(ctx *gin.Context) {
+	req := &request.UpdateShippingRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) UpdateShippingInUse(ctx *gin.Context) {
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) DeleteShipping(ctx *gin.Context) {
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) GetShippingInUse(ctx *gin.Context) {
 	in := &store.GetShippingByCoordinatorIDInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
 	}
