@@ -20,6 +20,7 @@ func TestShipping(t *testing.T) {
 			name: "success",
 			shipping: &entity.Shipping{
 				ID:            "shipping-id",
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -63,6 +64,7 @@ func TestShipping(t *testing.T) {
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
+				ShopID:        "shop-id",
 				coordinatorID: "coordinator-id",
 			},
 		},

@@ -7,6 +7,7 @@ import (
 
 type Shipping struct {
 	response.Shipping
+	ShopID        string
 	coordinatorID string
 }
 
@@ -34,6 +35,7 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 			CreatedAt:         shipping.CreatedAt.Unix(),
 			UpdatedAt:         shipping.CreatedAt.Unix(),
 		},
+		ShopID:        shipping.ShopID,
 		coordinatorID: shipping.CoordinatorID,
 	}
 }
