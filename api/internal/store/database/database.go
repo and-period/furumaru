@@ -582,6 +582,7 @@ type Shipping interface {
 	ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error)
 	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
 	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
+	Get(ctx context.Context, shippingID string, fields ...string) (*entity.Shipping, error)
 	GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error)
 	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) // Depcecated
 	Create(ctx context.Context, shipping *entity.Shipping) error

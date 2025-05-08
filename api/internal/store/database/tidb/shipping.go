@@ -144,6 +144,21 @@ func (s *shipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, 
 	return res, nil
 }
 
+func (s *shipping) Get(ctx context.Context, shippingID string, fields ...string) (*entity.Shipping, error) {
+	var shipping *entity.Shipping
+
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
+		Where("id = ?", shippingID)
+
+	if err := stmt.First(&shipping).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := s.fill(ctx, s.db.DB, shipping); err != nil {
+		return nil, dbError(err)
+	}
+	return shipping, nil
+}
+
 func (s *shipping) GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
 

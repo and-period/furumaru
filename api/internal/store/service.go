@@ -148,6 +148,7 @@ type Service interface {
 	ListShippingsByShopID(ctx context.Context, in *ListShippingsByShopIDInput) (entity.Shippings, int64, error)          // 一覧取得(店舗ID指定)
 	ListShippingsByCoordinatorIDs(ctx context.Context, in *ListShippingsByCoordinatorIDsInput) (entity.Shippings, error) // 一覧取得(コーディネータID指定)
 	MultiGetShippingsByRevision(ctx context.Context, in *MultiGetShippingsByRevisionInput) (entity.Shippings, error)     // 一覧取得(変更履歴指定)
+	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)                                     // １件取得
 	GetDefaultShipping(ctx context.Context, in *GetDefaultShippingInput) (*entity.Shipping, error)                       // １件取得(デフォルト設定)
 	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // １件取得(コーディネータID設定)
 	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)                               // 登録

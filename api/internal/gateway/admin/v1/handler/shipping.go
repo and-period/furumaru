@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
@@ -101,9 +102,39 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 }
 
 func (h *handler) GetShipping(ctx *gin.Context) {
+	var (
+		shopID      string
+		shipping    *service.Shipping
+		coordinator *service.Coordinator
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		shippingIn := &store.GetShippingInput{
+			ShippingID: util.GetParam(ctx, "shippingId"),
+		}
+		sshipping, err := h.store.GetShipping(ectx, shippingIn)
+		if err != nil {
+			return err
+		}
+		shopID = sshipping.ShopID
+		shipping = service.NewShipping(sshipping)
+		return nil
+	})
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if coordinator.ShopID != shopID {
+		h.notFound(ctx, errors.New("handler: not found"))
+		return
+	}
 	res := &response.ShippingResponse{
-		Shipping:    &response.Shipping{},
-		Coordinator: &response.Coordinator{},
+		Shipping:    shipping.Response(),
+		Coordinator: coordinator.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

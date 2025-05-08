@@ -972,6 +972,10 @@ type MultiGetShippingsByRevisionInput struct {
 	ShippingRevisionIDs []int64 `validate:"dive,required"`
 }
 
+type GetShippingInput struct {
+	ShippingID string `validate:"required"`
+}
+
 type GetDefaultShippingInput struct{}
 
 type GetShippingByCoordinatorIDInput struct {
