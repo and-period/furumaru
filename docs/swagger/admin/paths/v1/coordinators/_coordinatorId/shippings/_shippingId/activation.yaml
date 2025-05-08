@@ -1,7 +1,7 @@
 patch:
   summary: 配送設定更新
-  description: コーディネータの使用中の配送設定を更新します。
-  operationId: v1UpdateShippingInUse
+  description: 使用する配送設定を更新する。
+  operationId: v1UpdateActiveShipping
   tags:
   - Shipping
   security:

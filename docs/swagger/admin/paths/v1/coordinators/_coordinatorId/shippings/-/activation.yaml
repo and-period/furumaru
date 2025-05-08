@@ -1,7 +1,7 @@
 get:
   summary: 配送設定取得
   description: Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
-  operationId: v1GetShippingInUse
+  operationId: v1GetActiveShipping
   tags:
   - Shipping
   security:

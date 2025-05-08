@@ -44,7 +44,7 @@ export const useShippingStore = defineStore('shipping', {
      */
     async fetchShipping(coordinatorId: string): Promise<void> {
       try {
-        const res = await apiClient.shippingApi().v1GetShippingInUse(coordinatorId)
+        const res = await apiClient.shippingApi().v1GetActiveShipping(coordinatorId)
         this.shipping = res.data.shipping
       }
       catch (err) {

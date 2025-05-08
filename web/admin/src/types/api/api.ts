@@ -8773,61 +8773,6 @@ export interface UsersResponse {
 /**
  * 
  * @export
- * @interface V1CreateShippingRequest
- */
-export interface V1CreateShippingRequest {
-    /**
-     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof V1CreateShippingRequest
-     */
-    'box60Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ60の冷凍便追加配送料(税込:100万未満)
-     * @type {number}
-     * @memberof V1CreateShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof V1CreateShippingRequest
-     */
-    'box80Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(税込:100万未満)
-     * @type {number}
-     * @memberof V1CreateShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof V1CreateShippingRequest
-     */
-    'box100Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(税込:100万未満)
-     * @type {number}
-     * @memberof V1CreateShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof V1CreateShippingRequest
-     */
-    'hasFreeShipping': boolean;
-    /**
-     * 送料無料になる金額(税込:100万未満)
-     * @type {number}
-     * @memberof V1CreateShippingRequest
-     */
-    'freeShippingRates': number;
-}
-/**
- * 
- * @export
  * @interface VerifyAuthEmailRequest
  */
 export interface VerifyAuthEmailRequest {
@@ -21714,6 +21659,50 @@ export class ScheduleApi extends BaseAPI {
 export const ShippingApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * コーディネータの配送設定を作成します。
+         * @summary 配送設定作成
+         * @param {string} coordinatorId コーディネータID
+         * @param {CreateShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateShipping: async (coordinatorId: string, body: CreateShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1CreateShipping', 'coordinatorId', coordinatorId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateShipping', 'body', body)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * コーディネータの配送設定を削除します。
          * @summary 配送設定削除
          * @param {string} coordinatorId コーディネータID
@@ -21737,6 +21726,44 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             }
 
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * @summary 配送設定取得
+         * @param {string} coordinatorId コーディネータID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetActiveShipping: async (coordinatorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1GetActiveShipping', 'coordinatorId', coordinatorId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/-/activation`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -21790,17 +21817,21 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
-         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * コーディネータの配送設定を取得します。
          * @summary 配送設定取得
          * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShippingInUse: async (coordinatorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1GetShipping: async (coordinatorId: string, shippingId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
-            assertParamExists('v1GetShippingInUse', 'coordinatorId', coordinatorId)
-            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/-/in-use`
-                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            assertParamExists('v1GetShipping', 'coordinatorId', coordinatorId)
+            // verify required parameter 'shippingId' is not null or undefined
+            assertParamExists('v1GetShipping', 'shippingId', shippingId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/{shippingId}`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)))
+                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -21847,6 +21878,48 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             }
 
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 使用する配送設定を更新する。
+         * @summary 配送設定更新
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateActiveShipping: async (coordinatorId: string, shippingId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1UpdateActiveShipping', 'coordinatorId', coordinatorId)
+            // verify required parameter 'shippingId' is not null or undefined
+            assertParamExists('v1UpdateActiveShipping', 'shippingId', shippingId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/{shippingId}/activation`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)))
+                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -21954,48 +22027,6 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
-         * コーディネータの使用中の配送設定を更新します。
-         * @summary 配送設定更新
-         * @param {string} coordinatorId コーディネータID
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateShippingInUse: async (coordinatorId: string, shippingId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'coordinatorId' is not null or undefined
-            assertParamExists('v1UpdateShippingInUse', 'coordinatorId', coordinatorId)
-            // verify required parameter 'shippingId' is not null or undefined
-            assertParamExists('v1UpdateShippingInUse', 'shippingId', shippingId)
-            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/{shippingId}/in-use`
-                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)))
-                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
@@ -22050,6 +22081,20 @@ export const ShippingApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ShippingApiAxiosParamCreator(configuration)
     return {
         /**
+         * コーディネータの配送設定を作成します。
+         * @summary 配送設定作成
+         * @param {string} coordinatorId コーディネータID
+         * @param {CreateShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateShipping(coordinatorId: string, body: CreateShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateShipping(coordinatorId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CreateShipping']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * コーディネータの配送設定を削除します。
          * @summary 配送設定削除
          * @param {string} coordinatorId コーディネータID
@@ -22061,6 +22106,19 @@ export const ShippingApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteShipping(coordinatorId, shippingId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1DeleteShipping']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * @summary 配送設定取得
+         * @param {string} coordinatorId コーディネータID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetActiveShipping(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetActiveShipping(coordinatorId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1GetActiveShipping']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -22076,16 +22134,17 @@ export const ShippingApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * コーディネータの配送設定を取得します。
          * @summary 配送設定取得
          * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetShippingInUse(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShippingInUse(coordinatorId, options);
+        async v1GetShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShipping(coordinatorId, shippingId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1GetShippingInUse']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1GetShipping']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -22099,6 +22158,20 @@ export const ShippingApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(coordinatorId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1ListShippings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 使用する配送設定を更新する。
+         * @summary 配送設定更新
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateActiveShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateActiveShipping(coordinatorId, shippingId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1UpdateActiveShipping']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -22130,20 +22203,6 @@ export const ShippingApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * コーディネータの使用中の配送設定を更新します。
-         * @summary 配送設定更新
-         * @param {string} coordinatorId コーディネータID
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateShippingInUse(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateShippingInUse(coordinatorId, shippingId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1UpdateShippingInUse']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
@@ -22168,6 +22227,17 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
     const localVarFp = ShippingApiFp(configuration)
     return {
         /**
+         * コーディネータの配送設定を作成します。
+         * @summary 配送設定作成
+         * @param {string} coordinatorId コーディネータID
+         * @param {CreateShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateShipping(coordinatorId: string, body: CreateShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1CreateShipping(coordinatorId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
          * コーディネータの配送設定を削除します。
          * @summary 配送設定削除
          * @param {string} coordinatorId コーディネータID
@@ -22179,6 +22249,16 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
             return localVarFp.v1DeleteShipping(coordinatorId, shippingId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * @summary 配送設定取得
+         * @param {string} coordinatorId コーディネータID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetActiveShipping(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1GetActiveShipping(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @summary デフォルト配送設定取得
          * @param {*} [options] Override http request option.
@@ -22188,14 +22268,15 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
             return localVarFp.v1GetDefaultShipping(options).then((request) => request(axios, basePath));
         },
         /**
-         * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+         * コーディネータの配送設定を取得します。
          * @summary 配送設定取得
          * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShippingInUse(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
-            return localVarFp.v1GetShippingInUse(coordinatorId, options).then((request) => request(axios, basePath));
+        v1GetShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1GetShipping(coordinatorId, shippingId, options).then((request) => request(axios, basePath));
         },
         /**
          * コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
@@ -22206,6 +22287,17 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingsResponse> {
             return localVarFp.v1ListShippings(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 使用する配送設定を更新する。
+         * @summary 配送設定更新
+         * @param {string} coordinatorId コーディネータID
+         * @param {string} shippingId 配送設定ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateActiveShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateActiveShipping(coordinatorId, shippingId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -22230,17 +22322,6 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
             return localVarFp.v1UpdateShipping(coordinatorId, shippingId, body, options).then((request) => request(axios, basePath));
         },
         /**
-         * コーディネータの使用中の配送設定を更新します。
-         * @summary 配送設定更新
-         * @param {string} coordinatorId コーディネータID
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateShippingInUse(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.v1UpdateShippingInUse(coordinatorId, shippingId, options).then((request) => request(axios, basePath));
-        },
-        /**
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
@@ -22262,6 +22343,19 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
  */
 export class ShippingApi extends BaseAPI {
     /**
+     * コーディネータの配送設定を作成します。
+     * @summary 配送設定作成
+     * @param {string} coordinatorId コーディネータID
+     * @param {CreateShippingRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShippingApi
+     */
+    public v1CreateShipping(coordinatorId: string, body: CreateShippingRequest, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1CreateShipping(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * コーディネータの配送設定を削除します。
      * @summary 配送設定削除
      * @param {string} coordinatorId コーディネータID
@@ -22272,6 +22366,18 @@ export class ShippingApi extends BaseAPI {
      */
     public v1DeleteShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1DeleteShipping(coordinatorId, shippingId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+     * @summary 配送設定取得
+     * @param {string} coordinatorId コーディネータID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShippingApi
+     */
+    public v1GetActiveShipping(coordinatorId: string, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1GetActiveShipping(coordinatorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -22286,15 +22392,16 @@ export class ShippingApi extends BaseAPI {
     }
 
     /**
-     * Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+     * コーディネータの配送設定を取得します。
      * @summary 配送設定取得
      * @param {string} coordinatorId コーディネータID
+     * @param {string} shippingId 配送設定ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1GetShippingInUse(coordinatorId: string, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1GetShippingInUse(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    public v1GetShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1GetShipping(coordinatorId, shippingId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -22307,6 +22414,19 @@ export class ShippingApi extends BaseAPI {
      */
     public v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1ListShippings(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 使用する配送設定を更新する。
+     * @summary 配送設定更新
+     * @param {string} coordinatorId コーディネータID
+     * @param {string} shippingId 配送設定ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShippingApi
+     */
+    public v1UpdateActiveShipping(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1UpdateActiveShipping(coordinatorId, shippingId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -22333,19 +22453,6 @@ export class ShippingApi extends BaseAPI {
      */
     public v1UpdateShipping(coordinatorId: string, shippingId: string, body: UpdateShippingRequest, options?: RawAxiosRequestConfig) {
         return ShippingApiFp(this.configuration).v1UpdateShipping(coordinatorId, shippingId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * コーディネータの使用中の配送設定を更新します。
-     * @summary 配送設定更新
-     * @param {string} coordinatorId コーディネータID
-     * @param {string} shippingId 配送設定ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ShippingApi
-     */
-    public v1UpdateShippingInUse(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1UpdateShippingInUse(coordinatorId, shippingId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
