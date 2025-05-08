@@ -92,10 +92,58 @@ func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultSh
 }
 
 func (h *handler) ListShippings(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	in := &store.ListShippingsByShopIDInput{
+		ShopID: coordinator.ShopID,
+		Limit:  limit,
+		Offset: offset,
+	}
+	shippings, total, err := h.store.ListShippingsByShopID(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	if len(shippings) > 0 {
+		res := &response.ShippingsResponse{
+			Shippings:    service.NewShippings(shippings).Response(),
+			Coordinators: []*response.Coordinator{coordinator.Response()},
+			Total:        total,
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	// 1件も取得できない場合、デフォルトの配送設定を返す
+	shipping, err := h.store.GetDefaultShipping(ctx, &store.GetDefaultShippingInput{})
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	res := &response.ShippingsResponse{
-		Shippings:    []*response.Shipping{},
-		Coordinators: []*response.Coordinator{},
-		Total:        0,
+		Shippings: []*response.Shipping{service.NewShipping(shipping).Response()},
+		Total:     1,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -114,9 +162,31 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	in := &store.CreateShippingInput{
+		ShopID:            coordinator.ShopID,
+		CoordinatorID:     coordinator.ID,
+		Box60Rates:        h.newShippingRatesForCreate(req.Box60Rates),
+		Box60Frozen:       req.Box60Frozen,
+		Box80Rates:        h.newShippingRatesForCreate(req.Box80Rates),
+		Box80Frozen:       req.Box80Frozen,
+		Box100Rates:       h.newShippingRatesForCreate(req.Box100Rates),
+		Box100Frozen:      req.Box100Frozen,
+		HasFreeShipping:   req.HasFreeShipping,
+		FreeShippingRates: req.FreeShippingRates,
+	}
+	shipping, err := h.store.CreateShipping(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	res := &response.ShippingResponse{
-		Shipping:    &response.Shipping{},
-		Coordinator: &response.Coordinator{},
+		Shipping:    service.NewShipping(shipping).Response(),
+		Coordinator: coordinator.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -191,6 +261,30 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []*store.CreateShippingRate {
+	res := make([]*store.CreateShippingRate, len(in))
+	for i := range in {
+		res[i] = &store.CreateShippingRate{
+			Name:            in[i].Name,
+			Price:           in[i].Price,
+			PrefectureCodes: in[i].PrefectureCodes,
+		}
+	}
+	return res
+}
+
+func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []*store.UpdateShippingRate {
+	res := make([]*store.UpdateShippingRate, len(in))
+	for i := range in {
+		res[i] = &store.UpdateShippingRate{
+			Name:            in[i].Name,
+			Price:           in[i].Price,
+			PrefectureCodes: in[i].PrefectureCodes,
+		}
+	}
+	return res
 }
 
 func (h *handler) newShippingRatesForUpsert(in []*request.UpsertShippingRate) []*store.UpsertShippingRate {
