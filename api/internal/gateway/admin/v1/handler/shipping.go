@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -151,32 +152,23 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 
 func (h *handler) GetShipping(ctx *gin.Context) {
 	var (
-		shopID      string
 		shipping    *service.Shipping
 		coordinator *service.Coordinator
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		shippingIn := &store.GetShippingInput{
-			ShippingID: util.GetParam(ctx, "shippingId"),
-		}
-		sshipping, err := h.store.GetShipping(ectx, shippingIn)
-		if err != nil {
-			return err
-		}
-		shopID = sshipping.ShopID
-		shipping = service.NewShipping(sshipping)
-		return nil
+	eg.Go(func() (err error) {
+		shipping, err = h.getShipping(ectx, util.GetParam(ctx, "shippingId"))
+		return
 	})
 	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+		coordinator, err = h.getCoordinator(ectx, util.GetParam(ctx, "coordinatorId"))
 		return
 	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	if coordinator.ShopID != shopID {
+	if shipping.ShopID != coordinator.ShopID {
 		h.notFound(ctx, errors.New("handler: not found"))
 		return
 	}
@@ -228,14 +220,86 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if shipping.ShopID != coordinator.ShopID {
+		h.notFound(ctx, errors.New("handler: not found"))
+		return
+	}
+	in := &store.UpdateShippingInput{
+		ShippingID:        shipping.ID,
+		Box60Rates:        h.newShippingRatesForUpdate(req.Box60Rates),
+		Box60Frozen:       req.Box60Frozen,
+		Box80Rates:        h.newShippingRatesForUpdate(req.Box80Rates),
+		Box80Frozen:       req.Box80Frozen,
+		Box100Rates:       h.newShippingRatesForUpdate(req.Box100Rates),
+		Box100Frozen:      req.Box100Frozen,
+		HasFreeShipping:   req.HasFreeShipping,
+		FreeShippingRates: req.FreeShippingRates,
+	}
+	if err := h.store.UpdateShipping(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UpdateActiveShipping(ctx *gin.Context) {
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if shipping.ShopID != coordinator.ShopID {
+		h.notFound(ctx, errors.New("handler: not found"))
+		return
+	}
+	in := &store.UpdateShippingInUseInput{
+		ShopID:     coordinator.ShopID,
+		ShippingID: shipping.ID,
+	}
+	if err := h.store.UpdateShippingInUse(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteShipping(ctx *gin.Context) {
+	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if shipping.ShopID != coordinator.ShopID {
+		h.notFound(ctx, errors.New("handler: not found"))
+		return
+	}
+	in := &store.DeleteShippingInput{
+		ShippingID: shipping.ID,
+	}
+	if err := h.store.DeleteShipping(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
@@ -292,6 +356,17 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.Shipping, error) {
+	in := &store.GetShippingInput{
+		ShippingID: shippingID,
+	}
+	shipping, err := h.store.GetShipping(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewShipping(shipping), nil
 }
 
 func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []*store.CreateShippingRate {
