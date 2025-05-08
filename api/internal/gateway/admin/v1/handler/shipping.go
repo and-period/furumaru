@@ -122,7 +122,7 @@ func (h *handler) GetShipping(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		coordinator, err = h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
-		return nil
+		return
 	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
