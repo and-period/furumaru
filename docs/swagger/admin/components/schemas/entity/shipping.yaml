@@ -33,6 +33,9 @@ shipping:
     isDefault:
       type: boolean
       description: デフォルト設定
+    inUse:
+      type: boolean
+      description: 使用中
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧
@@ -78,6 +81,7 @@ shipping:
   required:
   - id
   - isDefault
+  - inUse
   - box60Rates
   - box60Frozen
   - box80Rates
@@ -91,6 +95,7 @@ shipping:
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     isDefault: false
+    inUse: true
     box60Rates:
     - number: 1
       name: '離島'

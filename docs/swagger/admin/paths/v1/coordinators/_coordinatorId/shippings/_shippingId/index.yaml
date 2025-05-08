@@ -1,0 +1,94 @@
+patch:
+  summary: 配送設定更新
+  description: コーディネータの配送設定を更新します。
+  operationId: v1UpdateShipping
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: path
+    name: shippingId
+    schema:
+      type: string
+    description: 配送設定ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1UpdateShippingRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 配送設定が見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+delete:
+  summary: 配送設定削除
+  description: コーディネータの配送設定を削除します。
+  operationId: v1DeleteShipping
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: path
+    name: shippingId
+    schema:
+      type: string
+    description: 配送設定ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    403:
+      description: 権限がありません
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 配送設定が見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 使用中のため削除できません
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -24,5 +24,12 @@ type ShippingRate struct {
 }
 
 type ShippingResponse struct {
-	Shipping *Shipping `json:"shipping"` // 配送設定情報
+	Shipping    *Shipping    `json:"shipping"`    // 配送設定情報
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+}
+
+type ShippingsResponse struct {
+	Shippings    []*Shipping    `json:"shippings"`    // 配送設定一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	Total        int64          `json:"total"`        // 合計数
 }
