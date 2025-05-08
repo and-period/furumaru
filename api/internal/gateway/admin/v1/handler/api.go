@@ -273,6 +273,10 @@ func (h *handler) forbidden(ctx *gin.Context, err error) {
 	h.httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
 }
 
+func (h *handler) notFound(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.NotFound, err.Error()))
+}
+
 func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorResponse) {
 	if h.sentry == nil || res.Status < 500 {
 		return

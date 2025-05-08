@@ -64,6 +64,14 @@ func (s *service) MultiGetShippingsByRevision(
 	return shippings, internalError(err)
 }
 
+func (s *service) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	shipping, err := s.db.Shipping.Get(ctx, in.ShippingID)
+	return shipping, internalError(err)
+}
+
 func (s *service) GetDefaultShipping(ctx context.Context, in *store.GetDefaultShippingInput) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
