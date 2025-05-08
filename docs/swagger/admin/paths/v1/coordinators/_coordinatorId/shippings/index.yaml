@@ -21,6 +21,40 @@ get:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/v1ShippingsResponse'
+post:
+  summary: 配送設定作成
+  description: コーディネータの配送設定を作成します。
+  operationId: v1CreateShipping
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateShippingRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ShippingResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
 patch:
   summary: 配送設定更新
   description: Deprecated.コーディネータの配送設定を更新します。

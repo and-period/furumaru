@@ -24,9 +24,9 @@ func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 	cr.GET("/:shippingId", h.GetShipping)
 	cr.PATCH("/:shippingId", h.UpdateShipping)
 	cr.DELETE("/:shippingId", h.DeleteShipping)
-	cr.PATCH("/:shippingId/in-use", h.UpdateShippingInUse)
-	cr.GET("/-/in-use", h.GetShippingInUse) // Deprecated
-	cr.PATCH("", h.UpsertShipping)          // Deprecated
+	cr.PATCH("/:shippingId/activation", h.UpdateActiveShipping)
+	cr.GET("/-/activation", h.GetActiveShipping) // Deprecated
+	cr.PATCH("", h.UpsertShipping)               // Deprecated
 }
 
 func (h *handler) filterAccessShipping(ctx *gin.Context) {
@@ -130,7 +130,7 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) UpdateShippingInUse(ctx *gin.Context) {
+func (h *handler) UpdateActiveShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
@@ -138,7 +138,7 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) GetShippingInUse(ctx *gin.Context) {
+func (h *handler) GetActiveShipping(ctx *gin.Context) {
 	in := &store.GetShippingByCoordinatorIDInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
 	}

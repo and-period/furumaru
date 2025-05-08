@@ -226,12 +226,12 @@ paths:
     $ref: './paths/v1/shippings/default.yaml'
   /v1/coordinators/{coordinatorId}/shippings:
     $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
-  /v1/coordinators/{coordinatorId}/shippings/-/in-use:
-    $ref: './paths/v1/coordinators/_coordinatorId/shippings/-/in-use.yaml'
+  /v1/coordinators/{coordinatorId}/shippings/-/activation:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/-/activation.yaml'
   /v1/coordinators/{coordinatorId}/shippings/{shippingId}:
     $ref: './paths/v1/coordinators/_coordinatorId/shippings/_shippingId/index.yaml'
-  /v1/coordinators/{coordinatorId}/shippings/{shippingId}/in-use:
-    $ref: './paths/v1/coordinators/_coordinatorId/shippings/_shippingId/in-use.yaml'
+  /v1/coordinators/{coordinatorId}/shippings/{shippingId}/activation:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/_shippingId/activation.yaml'
   # Shop
   /v1/shops/{shopId}:
     $ref: './paths/v1/shops/_shopId/index.yaml'
