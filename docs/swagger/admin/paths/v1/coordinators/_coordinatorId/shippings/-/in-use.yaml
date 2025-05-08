@@ -1,0 +1,23 @@
+get:
+  summary: 配送設定取得
+  description: Deprecated.コーディネータの使用中の配送設定を取得します（一度も設定をしていない場合はデフォルトの配送設定を取得します）。
+  operationId: v1GetShippingInUse
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/v1ShippingResponse'

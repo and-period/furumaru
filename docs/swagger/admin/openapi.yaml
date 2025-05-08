@@ -226,6 +226,12 @@ paths:
     $ref: './paths/v1/shippings/default.yaml'
   /v1/coordinators/{coordinatorId}/shippings:
     $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
+  /v1/coordinators/{coordinatorId}/shippings/-/in-use:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/-/in-use.yaml'
+  /v1/coordinators/{coordinatorId}/shippings/{shippingId}:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/_shippingId/index.yaml'
+  /v1/coordinators/{coordinatorId}/shippings/{shippingId}/in-use:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/_shippingId/in-use.yaml'
   # Shop
   /v1/shops/{shopId}:
     $ref: './paths/v1/shops/_shopId/index.yaml'
@@ -620,6 +626,10 @@ components:
       $ref: './components/schemas/v1/schedule.request.yaml#/approveScheduleRequest'
     v1PublishScheduleRequest:
       $ref: './components/schemas/v1/schedule.request.yaml#/publishScheduleRequest'
+    v1CreateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
+    v1UpdateShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/updateShippingRequest'
     v1UpsertShippingRequest:
       $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
     v1UpdateDefaultShippingRequest:
@@ -741,6 +751,8 @@ components:
       $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ShippingsResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
     v1ShopResponse:
       $ref: './components/schemas/v1/shop.response.yaml#/shopResponse'
     v1SpotResponse:

@@ -1,6 +1,7 @@
 get:
-  summary: 配送設定取得
-  operationId: v1GetShipping
+  summary: 配送設定一覧取得
+  description: コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
+  operationId: v1GetShippings
   tags:
   - Shipping
   security:
@@ -19,9 +20,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/v1ShippingResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ShippingsResponse'
 patch:
   summary: 配送設定更新
+  description: Deprecated.コーディネータの配送設定を更新します。
   operationId: v1UpsertShipping
   tags:
   - Shipping
