@@ -381,7 +381,7 @@ func TestShipping_Get(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				shippingID: "shipping-id",
+				shippingID: "",
 			},
 			want: want{
 				shipping: nil,
