@@ -1,7 +1,7 @@
 get:
   summary: 配送設定一覧取得
   description: コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
-  operationId: v1GetShippings
+  operationId: v1ListShippings
   tags:
   - Shipping
   security:
