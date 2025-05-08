@@ -21834,9 +21834,9 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShippings: async (coordinatorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListShippings: async (coordinatorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
-            assertParamExists('v1GetShippings', 'coordinatorId', coordinatorId)
+            assertParamExists('v1ListShippings', 'coordinatorId', coordinatorId)
             const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
                 .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -22095,10 +22095,10 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetShippings(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShippings(coordinatorId, options);
+        async v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(coordinatorId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1GetShippings']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1ListShippings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -22204,8 +22204,8 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShippings(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingsResponse> {
-            return localVarFp.v1GetShippings(coordinatorId, options).then((request) => request(axios, basePath));
+        v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingsResponse> {
+            return localVarFp.v1ListShippings(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -22305,8 +22305,8 @@ export class ShippingApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1GetShippings(coordinatorId: string, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1GetShippings(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    public v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1ListShippings(coordinatorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
