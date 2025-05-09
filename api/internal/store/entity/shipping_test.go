@@ -19,12 +19,12 @@ func TestShippingType_String(t *testing.T) {
 		{
 			name:         "normal",
 			shippingType: ShippingTypeNormal,
-			expect:       "常温・冷蔵便",
+			expect:       "通常配送",
 		},
 		{
 			name:         "frozen",
 			shippingType: ShippingTypeFrozen,
-			expect:       "冷凍便",
+			expect:       "クール配送",
 		},
 		{
 			name:         "unknown",

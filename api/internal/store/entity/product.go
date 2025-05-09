@@ -181,9 +181,9 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 
 func (p *Product) ShippingType() ShippingType {
 	switch p.DeliveryType {
-	case DeliveryTypeNormal, DeliveryTypeRefrigerated:
+	case DeliveryTypeNormal:
 		return ShippingTypeNormal
-	case DeliveryTypeFrozen:
+	case DeliveryTypeRefrigerated, DeliveryTypeFrozen:
 		return ShippingTypeFrozen
 	default:
 		return ShippingTypeUnknown
