@@ -400,7 +400,7 @@ func TestShipping_Get(t *testing.T) {
 
 			db := &shipping{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.shippingID)
-			assert.Equal(t, tt.want.err, err)
+			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.shipping, actual)
 		})
 	}
