@@ -323,7 +323,7 @@ func (h *handler) setAuth(ctx *gin.Context) error {
 	if err != nil || auth.UserID == "" {
 		return err
 	}
-	ctx.Request.Header.Set("userId", auth.UserID)
+	ctx.Request.Header.Set("Userid", auth.UserID)
 	return nil
 }
 

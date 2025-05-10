@@ -61,7 +61,7 @@ func TestMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewMessage(tt.params)
@@ -99,7 +99,7 @@ func TestMessage_IsMine(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.message.IsMine(tt.userType, tt.userID))
@@ -141,7 +141,7 @@ func TestMessages(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewMessages(tt.params)

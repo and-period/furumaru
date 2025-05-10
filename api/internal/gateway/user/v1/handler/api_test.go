@@ -192,7 +192,7 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("Userid", idmock)
 	return req
 }
 
@@ -225,7 +225,7 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("Userid", idmock)
 	return req
 }
 

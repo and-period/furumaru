@@ -117,7 +117,7 @@ func TestListCoordinators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListCoordinators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -227,7 +227,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetCoordinators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -332,7 +332,7 @@ func TestGetCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetCoordinator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -575,7 +575,7 @@ func TestCreateCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, _, err := service.CreateCoordinator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -699,7 +699,7 @@ func TestUpdateCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateCoordinator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -808,7 +808,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateCoordinatorEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -918,7 +918,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ResetCoordinatorPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -962,7 +962,7 @@ func TestRemoveCoordinatorProductType(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.RemoveCoordinatorProductType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1035,7 +1035,7 @@ func TestDeleteCoordinator(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteCoordinator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1086,7 +1086,7 @@ func TestAggregateRelatedProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			res, err := service.AggregateRealatedProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

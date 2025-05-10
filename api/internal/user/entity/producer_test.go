@@ -163,7 +163,7 @@ func TestProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewProducer(tt.params)
@@ -198,7 +198,7 @@ func TestProducers_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.IDs())
@@ -225,7 +225,7 @@ func TestProducers_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.CoordinatorIDs())
@@ -261,7 +261,7 @@ func TestProducers_Unrelated(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.Unrelated())
@@ -333,7 +333,7 @@ func TestProducers_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.producers.Fill(tt.admins, tt.groups)

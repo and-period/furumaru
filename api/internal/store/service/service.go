@@ -136,6 +136,7 @@ func internalError(err error) error {
 		return nil
 	}
 
+	//nolint:errorlint
 	if e, ok := err.(govalidator.ValidationErrors); ok {
 		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
 	}

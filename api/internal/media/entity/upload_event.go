@@ -69,6 +69,7 @@ func (e *UploadEvent) SetResult(success bool, referenceURL string, now time.Time
 	}
 }
 
+//nolint:cyclop
 func (e *UploadEvent) Reguration() (*Regulation, error) {
 	switch e.FileGroup {
 	// ライブ配信関連

@@ -131,7 +131,7 @@ func TestListBroadcasts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListBroadcasts(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -194,7 +194,7 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetBroadcastByScheduleID(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -255,7 +255,7 @@ func TestCreateBroadcast(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateBroadcast(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -358,7 +358,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateBroadcastArchive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -440,7 +440,7 @@ func TestPauseBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.PauseBroadcast(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -521,7 +521,7 @@ func TestUnpauseBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UnpauseBroadcast(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -603,7 +603,7 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ActivateBroadcastRTMP(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -704,7 +704,7 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ActivateBroadcastMP4(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -809,7 +809,7 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ActivateBroadcastStaticImage(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -880,7 +880,7 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeactivateBroadcastStaticImage(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1365,7 +1365,7 @@ func TestAuthYoutubeBroadcastEvent(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			auth, err := service.AuthYoutubeBroadcastEvent(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

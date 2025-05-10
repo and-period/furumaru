@@ -93,7 +93,7 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CreateBroadcastViewerLog(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)

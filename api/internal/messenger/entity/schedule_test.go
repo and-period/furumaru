@@ -32,7 +32,7 @@ func TestSchedule(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewSchedule(tt.params)
@@ -131,7 +131,7 @@ func TestSchedule_Executable(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.schedule.Executable(now))
@@ -220,7 +220,7 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.schedule.ShouldCancel(now))
@@ -263,7 +263,7 @@ func TestSchedules_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.schedules.Map())

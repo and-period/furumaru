@@ -44,7 +44,7 @@ func NewEnforcerFromString(modelText, policyText string) (Enforcer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("casbin: failed to create temp file: %w", err)
 	}
-	defer os.Remove(file.Name())
+	defer os.Remove(file.Name()) //nolint:errcheck
 	if _, err := file.WriteString(policyText); err != nil {
 		return nil, fmt.Errorf("casbin: failed to write policy: %w", err)
 	}

@@ -20,7 +20,7 @@ func (s *service) ListProductTags(
 	}
 	orders, err := s.newListProductTagsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list product tags orders: err=%s: %w", err, exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invalid list product tags orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListProductTagsParams{
 		Name:   in.Name,

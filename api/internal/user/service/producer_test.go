@@ -115,7 +115,7 @@ func TestListProducers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -225,7 +225,7 @@ func TestMultiGetProducers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetProducers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -330,7 +330,7 @@ func TestGetProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -593,7 +593,7 @@ func TestCreateProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -717,7 +717,7 @@ func TestUpdateProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -806,7 +806,7 @@ func TestDeleteProducer(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

@@ -208,7 +208,7 @@ func TestCreateMember(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateMember(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -317,7 +317,7 @@ func TestVerifyMember(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyMember(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -425,7 +425,7 @@ func TestUpdateMemberEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateMemberEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -534,7 +534,7 @@ func TestVerifyMemberEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyMemberEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -607,7 +607,7 @@ func TestUpdateMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateMemberPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -667,7 +667,7 @@ func TestForgotMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ForgotMemberPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -757,7 +757,7 @@ func TestVerifyMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyMemberPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -805,7 +805,7 @@ func TestUpdateMemberUsername(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateMemberUsername(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -853,7 +853,7 @@ func TestUpdateMemberAccountID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateMemberAccountID(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -901,7 +901,7 @@ func TestUpdateMemberThumbnailURL(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateMemberThumbnailURL(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -944,7 +944,7 @@ func TestAuthMemberWithGoogle(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			authURL, err := service.AuthMemberWithGoogle(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -993,7 +993,7 @@ func TestCreateMemberWithGoogle(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateMemberWithGoogle(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1036,7 +1036,7 @@ func TestAuthMemberWithLINE(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			authURL, err := service.AuthMemberWithLINE(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1085,7 +1085,7 @@ func TestCreateMemberWithLINE(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateMemberWithLINE(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1187,7 +1187,7 @@ func TestAuthMemberWithOAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			authURL, err := service.authMemberWithOAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1502,7 +1502,7 @@ func TestCreateMemberWithOAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.createMemberWithOAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

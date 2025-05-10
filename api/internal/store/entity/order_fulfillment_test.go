@@ -36,7 +36,7 @@ func TestShippingSize_String(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.size.String())
@@ -104,7 +104,7 @@ func TestOrderFulfillment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderFulfillment(tt.params)
@@ -259,7 +259,7 @@ func TestOrderFulfillments(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			fulfillments, items, err := NewOrderFulfillments(tt.params)
@@ -319,7 +319,7 @@ func TestOrderFulfillments_Fulfilled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.fulfillments.Fulfilled())
@@ -375,7 +375,7 @@ func TestOrderFulfillments_AddressRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.fulfillments.AddressRevisionIDs())
@@ -469,7 +469,7 @@ func TestOrderFulfillments_GroupByOrderID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.fulfillments.GroupByOrderID())

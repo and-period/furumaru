@@ -105,7 +105,7 @@ func TestLiveSummary(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewLiveSummary(tt.schedule, tt.products)
@@ -164,7 +164,7 @@ func TestLiveSummary_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.live.Response())
@@ -286,7 +286,7 @@ func TestLiveSummaries(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewLiveSummaries(tt.schedules, tt.lives, tt.products)
@@ -330,7 +330,7 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.CoordinatorIDs())
@@ -392,7 +392,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.Response())

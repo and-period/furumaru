@@ -87,7 +87,7 @@ func TestAPIClient_isRetryable(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")
@@ -160,7 +160,7 @@ func TestAPIClient_statusCheck(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")
@@ -236,7 +236,7 @@ func TestAPIClient_bind(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")

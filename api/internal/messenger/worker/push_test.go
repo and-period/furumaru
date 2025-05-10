@@ -129,7 +129,7 @@ func TestMultiSendPush(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.multiSendPush(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -239,7 +239,7 @@ func TestFetchTokens(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			actual, err := worker.fetchTokens(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)

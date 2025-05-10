@@ -236,7 +236,7 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyPaymentAuthorized(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -401,7 +401,7 @@ func TestNotifyPaymentCaptured(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyPaymentCaptured(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -581,7 +581,7 @@ func TestNotifyPaymentFailed(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyPaymentFailed(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -664,7 +664,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyPaymentRefunded(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)

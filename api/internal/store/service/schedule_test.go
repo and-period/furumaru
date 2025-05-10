@@ -110,7 +110,7 @@ func TestListSchedules(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListSchedules(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -185,7 +185,7 @@ func TestMultiGetSchedules(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetSchedules(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -249,7 +249,7 @@ func TestGetSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -453,7 +453,7 @@ func TestCreateSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -557,7 +557,7 @@ func TestUpdateSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -657,7 +657,7 @@ func TestDeleteSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -744,7 +744,7 @@ func TestApproveSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ApproveSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -792,7 +792,7 @@ func TestPublishSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.PublishSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)

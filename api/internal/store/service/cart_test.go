@@ -274,7 +274,7 @@ func TestGetCart(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetCart(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -551,7 +551,7 @@ func TestCalcCart(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			cart, summary, err := service.CalcCart(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -795,7 +795,7 @@ func TestAddCartItem(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.AddCartItem(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1082,7 +1082,7 @@ func TestRemoveCartItem(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.RemoveCartItem(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

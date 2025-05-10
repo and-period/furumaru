@@ -102,7 +102,7 @@ func TestListExperienceTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListExperienceTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -166,7 +166,7 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetExperienceTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -225,7 +225,7 @@ func TestGetExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetExperienceType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -282,7 +282,7 @@ func TestCreateExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateExperienceType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -334,7 +334,7 @@ func TestUpdateExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateExperienceType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -380,7 +380,7 @@ func TestDeleteExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteExperienceType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

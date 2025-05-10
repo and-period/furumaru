@@ -3,6 +3,7 @@ package tidb
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -255,7 +256,7 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *databa
 func (s *shipping) UpdateInUse(ctx context.Context, shopID, shippingID string) error {
 	return s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, shippingID)
-		if err != nil && err != gorm.ErrRecordNotFound {
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
 		if current != nil {

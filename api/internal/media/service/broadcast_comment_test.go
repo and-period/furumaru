@@ -125,7 +125,7 @@ func TestListBroadcastComments(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, token, err := service.ListBroadcastComments(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -214,7 +214,7 @@ func TestCreateBroadcastComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateBroadcastComment(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -298,7 +298,7 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateBroadcastGuestComment(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -347,7 +347,7 @@ func TestUpdateBroadcastComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateBroadcastComment(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

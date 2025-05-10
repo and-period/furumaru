@@ -37,7 +37,7 @@ func TestLive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewLive(tt.params)
@@ -101,7 +101,7 @@ func TestLive_Fill(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.live.Fill(tt.products)
@@ -257,7 +257,7 @@ func TestLives_Validate(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.live.Validate(tt.schedule, tt.lives)
@@ -302,7 +302,7 @@ func TestLives_IDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.IDs())
@@ -346,7 +346,7 @@ func TestLives_ProducerIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.ProducerIDs())
@@ -390,7 +390,7 @@ func TestLives_ProductIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.ProductIDs())
@@ -459,7 +459,7 @@ func TestLives_Fill(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.lives.Fill(tt.products)
@@ -496,7 +496,7 @@ func TestLives_GroupByScheduleID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.GroupByScheduleID())

@@ -29,7 +29,7 @@ func TestBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewBroadcast(tt.params)
@@ -60,7 +60,7 @@ func TestBroadcasts_ScheduleID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.broadcasts.ScheduleIDs())

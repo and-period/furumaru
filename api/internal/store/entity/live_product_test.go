@@ -29,7 +29,7 @@ func TestLiveProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewLiveProduct(tt.params))
@@ -59,7 +59,7 @@ func TestLiveProducts(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewLiveProducts(tt.liveID, tt.productIDs))
@@ -97,7 +97,7 @@ func TestLiveProducts_ProductIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Exactly(t, tt.expect, tt.products.ProductIDs())
@@ -131,7 +131,7 @@ func TestLiveProducts_GroupByLiveID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.GroupByLiveID())
@@ -166,7 +166,7 @@ func TestLiveProducts_SortByPrimary(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.products.SortByPrimary()

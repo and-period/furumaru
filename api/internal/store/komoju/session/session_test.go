@@ -274,7 +274,7 @@ func TestSession_Get(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -556,7 +556,7 @@ func TestSession_Create(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -698,7 +698,7 @@ func TestSession_Cancel(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -864,7 +864,7 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1040,7 +1040,7 @@ func TestSession_ExecuteBankTransfer(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1190,7 +1190,7 @@ func TestSession_ExecuteKonbini(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1328,7 +1328,7 @@ func TestSession_ExecutePayPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1474,7 +1474,7 @@ func TestSession_ExecuteLinePay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1616,7 +1616,7 @@ func TestSession_ExecuteMerpay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1758,7 +1758,7 @@ func TestSession_ExecuteRakutenPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -1898,7 +1898,7 @@ func TestSession_ExecuteAUPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -2048,7 +2048,7 @@ func TestSession_ExecutePaidy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {
@@ -2218,7 +2218,7 @@ func TestSession_ExecutePayEasy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Session) (interface{}, error) {

@@ -81,7 +81,7 @@ func TestNotification(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewNotification(tt.params)
@@ -209,7 +209,7 @@ func TestNotification_Validate(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.notification.Validate(now)
@@ -261,7 +261,7 @@ func TestNotification_Fill(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.notification.Fill(now)
@@ -314,7 +314,7 @@ func TestNotification_TemplateID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.notification.TemplateID())
@@ -390,7 +390,7 @@ func TestNotification_HasTarget(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.hasUserTarget, tt.notification.HasUserTarget())
@@ -451,7 +451,7 @@ func TestNotifications_AdminIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.notifications.AdminIDs()
@@ -503,7 +503,7 @@ func TestNotifications_PromotionIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.notifications.PromotionIDs()
@@ -544,7 +544,7 @@ func TestNotifications_Fill(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.notifications.Fill(now)

@@ -90,7 +90,7 @@ func TestSearchPostalCode(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.SearchPostalCode(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

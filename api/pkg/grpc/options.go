@@ -151,7 +151,7 @@ func filterParams(pb proto.Message) (map[string]interface{}, error) {
 
 	bs, err := protojson.Marshal(pb)
 	if err != nil {
-		return nil, fmt.Errorf("jsonpb serializer failed: %v", err)
+		return nil, fmt.Errorf("jsonpb serializer failed: %w", err)
 	}
 
 	bj := make(map[string]interface{})

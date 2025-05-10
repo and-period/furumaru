@@ -283,45 +283,6 @@ func (o *order) UpdateRefunded(ctx context.Context, orderID string, params *data
 	return o.updatePayment(ctx, p)
 }
 
-type updateOrderPaymentParams struct {
-	orderID  string
-	status   entity.PaymentStatus
-	issuedAt time.Time
-	validate func(order *entity.Order) error
-	updates  map[string]interface{}
-}
-
-func (o *order) noopUpdatePaymentValidate(order *entity.Order) error {
-	return nil
-}
-
-func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentParams) error {
-	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
-		order, err := o.get(ctx, tx, params.orderID)
-		if err != nil {
-			return err
-		}
-		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
-		if updatedAt.After(params.issuedAt) {
-			return fmt.Errorf("tidb: this refunded event is older than the latest data: %w", database.ErrFailedPrecondition)
-		}
-		if err := params.validate(order); err != nil {
-			return nil
-		}
-
-		stmt := tx.WithContext(ctx).
-			Table(orderPaymentTable).
-			Where("order_id = ?", params.orderID)
-		if err := stmt.Updates(params.updates).Error; err != nil {
-			return err
-		}
-
-		order.SetPaymentStatus(params.status)
-		return o.updateStatus(ctx, tx, order.ID, order.Status)
-	})
-	return dbError(err)
-}
-
 func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
 		order, err := o.get(ctx, tx, orderID)
@@ -589,6 +550,45 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 
 	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID(), experiences.MapByOrderID())
 	return nil
+}
+
+type updateOrderPaymentParams struct {
+	orderID  string
+	status   entity.PaymentStatus
+	issuedAt time.Time
+	validate func(order *entity.Order) error
+	updates  map[string]interface{}
+}
+
+func (o *order) noopUpdatePaymentValidate(order *entity.Order) error {
+	return nil
+}
+
+func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentParams) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		order, err := o.get(ctx, tx, params.orderID)
+		if err != nil {
+			return err
+		}
+		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
+		if updatedAt.After(params.issuedAt) {
+			return fmt.Errorf("tidb: this refunded event is older than the latest data: %w", database.ErrFailedPrecondition)
+		}
+		if err := params.validate(order); err != nil {
+			return nil
+		}
+
+		stmt := tx.WithContext(ctx).
+			Table(orderPaymentTable).
+			Where("order_id = ?", params.orderID)
+		if err := stmt.Updates(params.updates).Error; err != nil {
+			return err
+		}
+
+		order.SetPaymentStatus(params.status)
+		return o.updateStatus(ctx, tx, order.ID, order.Status)
+	})
+	return dbError(err)
 }
 
 func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string, status entity.OrderStatus) error {

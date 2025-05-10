@@ -186,7 +186,7 @@ func TestWorker_Dispatch(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.dispatch(ctx, tt.record)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -495,7 +495,7 @@ func TestWorker_Run(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.run(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)

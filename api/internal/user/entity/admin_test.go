@@ -33,7 +33,7 @@ func TestAdminType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewAdminType(tt.adminType)
@@ -74,7 +74,7 @@ func TestAdminType_Validate(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.adminType.Validate()
@@ -117,7 +117,7 @@ func TestAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAdmin(tt.params)
@@ -153,7 +153,7 @@ func TestAdmin_Name(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.admin.Name()
@@ -190,7 +190,7 @@ func TestAdmins_Map(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.admins.Map())
@@ -228,7 +228,7 @@ func TestAdmins_GroupByType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.admins.GroupByType())
@@ -258,7 +258,7 @@ func TestAdmins_IDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.s.IDs())
@@ -295,7 +295,7 @@ func TestAdmins_Devices(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.s.Devices())
@@ -421,7 +421,7 @@ func TestAdmins_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.admins.Fill(tt.groups)

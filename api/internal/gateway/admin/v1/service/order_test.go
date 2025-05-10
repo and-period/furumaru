@@ -44,7 +44,7 @@ func TestOrderType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderType(tt.typ)
@@ -120,7 +120,7 @@ func TestOrderStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderStatus(tt.status)
@@ -410,7 +410,7 @@ func TestOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products, tt.experiences))
 		})
@@ -500,7 +500,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ElementsMatch(t, tt.expect, tt.order.ProductIDs())
 		})
@@ -657,7 +657,7 @@ func TestOrder_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.expect, tt.order.Response())
 		})
@@ -1018,7 +1018,7 @@ func TestOrders(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.expect, NewOrders(tt.orders, tt.addresses, tt.products, tt.experiences))
 		})
@@ -1179,7 +1179,7 @@ func TestOrders_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.expect, tt.orders.Response())
 		})

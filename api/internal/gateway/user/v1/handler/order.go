@@ -192,7 +192,7 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 	if userID != order.UserID {
 		// 不正の疑いがあるため、リクエスト情報をログ出力しておく
 		h.logger.Warn("UserId does not match order information", zap.String("userId", userID), zap.String("orderId", orderID))
-		return nil, fmt.Errorf("%s: %w", errNotFoundOrder, exception.ErrNotFound)
+		return nil, fmt.Errorf("%w: %w", exception.ErrNotFound, errNotFoundOrder)
 	}
 	var (
 		addresses   service.Addresses

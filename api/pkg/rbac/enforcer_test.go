@@ -49,7 +49,7 @@ func TestEnforcer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			enforcer, err := NewEnforcer(tt.modelPath, tt.policyPath)
 			require.Equal(t, tt.expectErr, err != nil, err)
@@ -136,7 +136,7 @@ func TestEnforcer_Enforce(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			enforced, err := enforcer.Enforce(tt.group, tt.path, tt.method)
@@ -195,7 +195,7 @@ func TestEnforcer_GetRolesForuser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			rules, err := enforcer.GetRolesForUser(tt.group, tt.domain...)

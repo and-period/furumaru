@@ -41,7 +41,7 @@ func TestGet(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := Get(tt.ctx, tt.key)
@@ -77,7 +77,7 @@ func TestSet(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			ctx := Set(tt.ctx, tt.key, tt.value)

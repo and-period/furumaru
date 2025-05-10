@@ -73,7 +73,7 @@ func TestPromotion(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPromotion(tt.params)
@@ -149,7 +149,7 @@ func TestPromotion_CalcDiscount(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.promotion.CalcDiscount(tt.total, tt.shippingFee)
@@ -219,7 +219,7 @@ func TestPromotion_IsEnabled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.promotion.IsEnabled(tt.shopID))
@@ -281,7 +281,7 @@ func TestPromotion_Validate(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ErrorIs(t, tt.promotion.Validate(), tt.expect)
@@ -317,7 +317,7 @@ func TestPromotions_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.promotions.IDs())
@@ -354,7 +354,7 @@ func TestPromotions_ShopIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.promotions.ShopIDs())
@@ -416,7 +416,7 @@ func TestPromotions_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.promotions.Fill(now)

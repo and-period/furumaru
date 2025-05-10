@@ -102,7 +102,7 @@ func TestListSpotTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListSpotTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -166,7 +166,7 @@ func TestMultiGetSpotTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetSpotTypes(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -225,7 +225,7 @@ func TestGetSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetSpotType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -282,7 +282,7 @@ func TestCreateSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateSpotType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -334,7 +334,7 @@ func TestUpdateSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateSpotType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -380,7 +380,7 @@ func TestDeleteSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteSpotType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

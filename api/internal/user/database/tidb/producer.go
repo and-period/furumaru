@@ -252,7 +252,7 @@ func (p *producer) AggregateByCoordinatorID(
 	if err != nil {
 		return nil, dbError(err)
 	}
-	defer rows.Close()
+	defer rows.Close() //nolint:errcheck
 
 	res := make(map[string]int64, len(coordinatorIDs))
 	for rows.Next() {

@@ -110,7 +110,7 @@ func TestListUsers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListUsers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -205,7 +205,7 @@ func TestMultiGetUsers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetUsers(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -245,7 +245,7 @@ func TestMultiGetUserDevices(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetUserDevices(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -333,7 +333,7 @@ func TestGetUser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -447,7 +447,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

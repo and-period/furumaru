@@ -82,7 +82,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 	if err := c.checkStatus(res); err != nil {
 		return err
 	}

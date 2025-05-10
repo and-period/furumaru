@@ -179,7 +179,7 @@ func TestGetCheckoutState(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			orderID, status, err := service.GetCheckoutState(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -310,7 +310,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutCreditCard(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -396,7 +396,7 @@ func TestCheckoutPayPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPayPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -482,7 +482,7 @@ func TestCheckoutLinePay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutLinePay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -568,7 +568,7 @@ func TestCheckoutMerpay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutMerpay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -654,7 +654,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutRakutenPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -740,7 +740,7 @@ func TestCheckoutAUPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutAUPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -828,7 +828,7 @@ func TestCheckoutPaidy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPaidy(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -920,7 +920,7 @@ func TestCheckoutBankTransfer(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutBankTransfer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1012,7 +1012,7 @@ func TestCheckoutPayEasy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPayEasy(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -2283,7 +2283,7 @@ func TestCheckoutProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.checkout(ctx, tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -3130,7 +3130,7 @@ func TestCheckoutExperience(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.checkout(ctx, tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)

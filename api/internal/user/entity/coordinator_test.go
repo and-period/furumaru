@@ -114,7 +114,7 @@ func TestCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewCoordinator(tt.params)
@@ -149,7 +149,7 @@ func TestCoordinators_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.coordinators.IDs())
@@ -187,7 +187,7 @@ func TestCoordinators_ProductTypeIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.coordinators.ProductTypeIDs())
@@ -259,7 +259,7 @@ func TestCoordinators_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.coordinators.Fill(tt.admins, tt.groups)

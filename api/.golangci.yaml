@@ -17,8 +17,10 @@ linters:
     rules:
     - path: .*\.go
       linters:
+      - contextcheck
       - depguard
       - err113
+      - exhaustive
       - exhaustruct
       - gochecknoglobals
       - godot
@@ -35,8 +37,11 @@ linters:
       - wsl
     - path: .*_test\.go
       linters:
+      - bodyclose
+      - containedctx
       - dupl
       - errcheck
+      - forbidigo
       - forcetypeassert
       - gocritic
       - gocyclo
@@ -48,6 +53,7 @@ linters:
     - path: hack/.*\.go
       linters:
       - errcheck
+      - forbidigo
     - path: database/tidb/.*_test\.go
       linters:
       - paralleltest
@@ -62,23 +68,3 @@ formatters:
   - gofumpt
   - goimports
   - golines
-
-issues:
-  exclude:
-  - Using the variable on range scope .* in function literal
-  - func name will be used as * by other packages, and that stutters; consider calling this
-  - lines are duplicate of
-  - a blank import should be only in a main or test package, or have a comment justifying it
-  - use strings.ReplaceAll method in
-  exclude-dirs:
-  - bin
-  - mock
-  - tmp
-  exclude-files:
-  - '.*_test\.go'
-  exclude-rules:
-  - path: '_test\.go'
-    linters:
-    - dupl
-    - errcheck
-    - gosec

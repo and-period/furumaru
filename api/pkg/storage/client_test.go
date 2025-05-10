@@ -51,7 +51,7 @@ func TestGenerateObjectURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := &bucket{
@@ -89,7 +89,7 @@ func TestGenerateS3URI(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := &bucket{
@@ -136,7 +136,7 @@ func TestReplaceURLToS3URI(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := &bucket{
@@ -177,7 +177,7 @@ func TestGetHost(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := &bucket{

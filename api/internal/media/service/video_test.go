@@ -144,7 +144,7 @@ func TestListVideos(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListVideos(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -396,7 +396,7 @@ func TestGetVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetVideo(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -660,7 +660,7 @@ func TestCreateVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateVideo(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -847,7 +847,7 @@ func TestUpdateVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateVideo(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -893,7 +893,7 @@ func TestDeleteVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteVideo(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

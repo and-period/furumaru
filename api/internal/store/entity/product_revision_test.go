@@ -29,7 +29,7 @@ func TestProductRevision(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewProductRevision(tt.params)
@@ -62,7 +62,7 @@ func TestProductRevisions_ProductIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.revisions.ProductIDs())
@@ -103,7 +103,7 @@ func TestProductRevisions_MapByProductID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.revisions.MapByProductID())
@@ -196,7 +196,7 @@ func TestProductRevisions_Merge(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.revisions.Merge(tt.products)

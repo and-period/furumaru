@@ -22,7 +22,7 @@ func (s *service) ListPromotions(
 	}
 	orders, err := s.newListPromotionsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list promotions orders: err=%s: %w", err, exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invalid list promotions orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListPromotionsParams{
 		ShopID:        in.ShopID,

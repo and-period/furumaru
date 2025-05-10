@@ -347,7 +347,7 @@ func TestProductOrderPaymentSummary(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewProductOrderPaymentSummary(tt.params)
@@ -591,7 +591,7 @@ func TestExperienceOrderPaymentSummary(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewExperienceOrderPaymentSummary(tt.params)

@@ -109,7 +109,7 @@ func TestListAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListAddresses(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -188,7 +188,7 @@ func TestListDefaultAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListDefaultAddresses(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -266,7 +266,7 @@ func TestMultiGetAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetAddresses(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -345,7 +345,7 @@ func TestMultiGetAddressesByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetAddressesByRevision(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -419,7 +419,7 @@ func TestGetDefaultAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetDefaultAddress(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -535,7 +535,7 @@ func TestCreateAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateAddress(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -709,7 +709,7 @@ func TestUpdateAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAddress(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -757,7 +757,7 @@ func TestDeleteAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteAddress(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

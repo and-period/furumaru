@@ -95,7 +95,7 @@ func (a *app) inject(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("cmd: failed to open sendgrid template file: %w", err)
 		}
-		defer f.Close()
+		defer f.Close() //nolint:errcheck
 		var templateMap map[string]string
 		d := yaml.NewDecoder(f)
 		if err := d.Decode(&templateMap); err != nil {

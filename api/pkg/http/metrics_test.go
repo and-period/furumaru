@@ -31,7 +31,7 @@ func TestMetricsServer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			server := NewMetricsServer(tt.port)
 			go server.Serve()
