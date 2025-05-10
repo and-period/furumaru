@@ -14,18 +14,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Golang Version
-    id: set-version
-    shell: bash
-    working-directory: ${{ inputs.working-directory }}
-    run: |
-      GO_VERSION=$(cat .tool-versions | grep -E '^golang [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
-      echo "go-version=${GO_VERSION}" >> $GITHUB_OUTPUT
-
   - name: Setup Golang
     uses: actions/setup-go@v5
     with:
-      go-version: ${{ steps.set-version.outputs.go-version }}
+      go-version-file: ${{ inputs.working-directory }}/go.mod
       cache: false
 
   - name: Cache go modules
@@ -42,3 +34,14 @@ runs:
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go mod download
+
+  - name: Install tools
+    if: steps.modules-cache.outputs.cache-hit != 'true'
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: go get tool
+
+  - name: Generate
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: go generate ./...
