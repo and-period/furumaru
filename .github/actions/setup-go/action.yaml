@@ -16,6 +16,7 @@ runs:
   steps:
   - name: Setup Golang
     uses: actions/setup-go@v5
+    working-directory: ${{ inputs.working-directory }}
     with:
       go-version-file: 'go.mod'
       cache: false
@@ -38,8 +39,10 @@ runs:
   - name: Install tools
     if: steps.modules-cache.outputs.cache-hit != 'true'
     shell: bash
+    working-directory: ${{ inputs.working-directory }}
     run: go get tool
 
   - name: Generate
     shell: bash
+    working-directory: ${{ inputs.working-directory }}
     run: go generate ./...
