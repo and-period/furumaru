@@ -575,7 +575,7 @@ func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentPar
 			return fmt.Errorf("tidb: this refunded event is older than the latest data: %w", database.ErrFailedPrecondition)
 		}
 		if err := params.validate(order); err != nil {
-			return nil
+			return err
 		}
 
 		stmt := tx.WithContext(ctx).

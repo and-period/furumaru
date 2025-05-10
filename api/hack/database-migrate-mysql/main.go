@@ -4,7 +4,7 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-//nolint:typecheck
+
 package main
 
 import (
@@ -83,6 +83,7 @@ func run() error {
 
 	isExists := app.checkMigrateDB()
 	fmt.Println("recreate database:", !isExists)
+	//nolint:nestif
 	if !isExists {
 		tx, err := app.begin()
 		if err != nil {

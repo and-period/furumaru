@@ -13,7 +13,7 @@ func TestStrings(t *testing.T) {
 
 func BenchmarkStrings(b *testing.B) {
 	const size = 16
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		NewStrings(size)
 	}
 }

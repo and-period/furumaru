@@ -40,7 +40,7 @@ func TestEnforcer(t *testing.T) {
 			expectErr:  false,
 		},
 		{
-			name:       "occured error",
+			name:       "occurred error",
 			modelPath:  "dummy.conf",
 			policyPath: "dummy.csv",
 			expect:     false,

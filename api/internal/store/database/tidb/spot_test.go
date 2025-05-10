@@ -33,6 +33,7 @@ func TestSpot_List(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
@@ -107,6 +108,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.65861, 139.74545, now())
@@ -253,6 +255,7 @@ func TestSpot_Count(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
@@ -327,6 +330,7 @@ func TestSpot_Get(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	s := testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now())
 	err = db.DB.Create(&s).Error
@@ -402,7 +406,7 @@ func TestSpot_Create(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
-
+	require.NoError(t, err)
 	type args struct {
 		spot *entity.Spot
 	}
@@ -474,7 +478,7 @@ func TestSpot_Update(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
-
+	require.NoError(t, err)
 	type args struct {
 		spotID string
 		params *database.UpdateSpotParams

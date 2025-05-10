@@ -717,7 +717,7 @@ func TestApproveSchedule(t *testing.T) {
 			expect: exception.ErrInternal,
 		},
 		{
-			name: "not found administartor",
+			name: "not found administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, exception.ErrNotFound)
 			},

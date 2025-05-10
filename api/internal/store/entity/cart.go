@@ -364,7 +364,7 @@ func (is CartItems) groupByCartBasketKey(products map[string]*Product) map[strin
 		if _, ok := res[key]; !ok {
 			res[key] = make(Products, 0, item.Quantity)
 		}
-		for i := 0; i < int(item.Quantity); i++ {
+		for range item.Quantity {
 			res[key] = append(res[key], product)
 		}
 	}

@@ -82,7 +82,7 @@ func newAddress(components []maps.AddressComponent) (*Address, error) {
 		component := components[i]
 		switch {
 		case slices.Contains(component.Types, "postal_code"):
-			res.PostalCode = strings.Replace(component.LongName, "-", "", -1)
+			res.PostalCode = strings.ReplaceAll(component.LongName, "-", "")
 		case slices.Contains(component.Types, "administrative_area_level_1"):
 			res.Prefecture = component.LongName
 		case slices.Contains(component.Types, "locality"):

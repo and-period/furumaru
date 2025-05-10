@@ -197,7 +197,7 @@ func TestGetAdmin(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success to administartor",
+			name: "success to administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 			},

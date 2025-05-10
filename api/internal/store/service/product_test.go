@@ -607,7 +607,7 @@ func TestCreateProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "nto found coordinator or producer",
+			name: "not found coordinator or producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, database.ErrNotFound)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)

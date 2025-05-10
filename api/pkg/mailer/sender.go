@@ -11,7 +11,7 @@ import (
 
 // SendGridError - エラー構造体
 type SendGridError struct {
-	Code    int
+	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Field   string `json:"field"`
 	Help    string `json:"help"`

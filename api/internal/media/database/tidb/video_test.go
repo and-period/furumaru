@@ -448,6 +448,7 @@ func TestVideo_Create(t *testing.T) {
 			defer cancel()
 
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
+			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
@@ -522,7 +523,7 @@ func TestVideo_Update(t *testing.T) {
 			defer cancel()
 
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
-
+			require.NoError(t, err)
 			tt.setup(ctx, t, db)
 
 			db := &video{db: db, now: now}
@@ -584,7 +585,7 @@ func TestVideo_Delete(t *testing.T) {
 			defer cancel()
 
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
-
+			require.NoError(t, err)
 			tt.setup(ctx, t, db)
 
 			db := &video{db: db, now: now}

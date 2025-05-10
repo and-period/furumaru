@@ -514,6 +514,7 @@ func TestPromotion_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				promotion := testPromotion("promotion-id", "code0001", "", now())
 				err := db.DB.Create(&promotion).Error
+				require.NoError(t, err)
 				promotion = testPromotion("other-id", "code0002", "", now())
 				err = db.DB.Create(&promotion).Error
 				require.NoError(t, err)

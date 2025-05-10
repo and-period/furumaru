@@ -123,6 +123,7 @@ func TestProducer_Count(t *testing.T) {
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
+	require.NoError(t, err)
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
@@ -200,6 +201,7 @@ func TestProducer_MultiGet(t *testing.T) {
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
+	require.NoError(t, err)
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
@@ -277,6 +279,7 @@ func TestProducer_MultiGetWithDeleted(t *testing.T) {
 	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
+	require.NoError(t, err)
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]
@@ -436,6 +439,7 @@ func TestProducer_GetWithDeleted(t *testing.T) {
 	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
+	require.NoError(t, err)
 	producers := make(entity.Producers, 2)
 	producers[0] = testProducer("admin-id01", "coordinator-id", now())
 	producers[0].Admin = *admins[0]

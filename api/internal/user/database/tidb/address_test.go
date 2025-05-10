@@ -29,6 +29,7 @@ func TestAddress_List(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -105,6 +106,7 @@ func TestAddress_ListDefault(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -177,6 +179,7 @@ func TestAddress_Count(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -251,6 +254,7 @@ func TestAddress_MultiGet(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -321,6 +325,7 @@ func TestAddress_MultiGetByRevision(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -391,7 +396,7 @@ func TestAddress_Get(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
-
+	require.NoError(t, err)
 	a := testAddress("address-id", "user-id", 1, now())
 	err = db.DB.Create(&a).Error
 	require.NoError(t, err)
@@ -468,6 +473,7 @@ func TestAddress_GetDefault(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	addresses := make(entity.Addresses, 2)
 	addresses[0] = testAddress("address-id01", "user-id", 1, now())
@@ -551,6 +557,7 @@ func TestAddress_Create(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	type args struct {
 		address *entity.Address
@@ -648,6 +655,7 @@ func TestAddress_Update(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
+	require.NoError(t, err)
 
 	type args struct {
 		addressID string
@@ -822,7 +830,7 @@ func TestAddress_Delete(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
-
+	require.NoError(t, err)
 	a := testAddress("address-id", "user-id", 1, now())
 
 	type args struct {
