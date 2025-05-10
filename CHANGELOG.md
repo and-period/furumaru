@@ -1,5 +1,17 @@
 # Changelog
 
+## [v5.0.0](https://github.com/and-period/furumaru/compare/v4.4.16...v5.0.0) - 2025-05-10
+- feat(store): 配送設定のCRUD実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2800
+- feat(docs): 配送設定関連のAPI仕様書を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2802
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2803
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2804
+- feat(gateway): 配送設定取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2805
+- feat(gateway): 配送設定追加と一覧取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2806
+- feat(gateway): 配送設定更新APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2807
+- fix(store): 配送種別の仕様を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2795
+- chore: golangci-lint by @taba2424 in https://github.com/and-period/furumaru/pull/2808
+- refactor(api): Linterの対応 by @taba2424 in https://github.com/and-period/furumaru/pull/2810
+
 ## [v4.4.16](https://github.com/and-period/furumaru/compare/v4.4.15...v4.4.16) - 2025-05-04
 - Add: added coordinator register spply by @hamachans in https://github.com/and-period/furumaru/pull/2793
 
