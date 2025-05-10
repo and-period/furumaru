@@ -19,9 +19,9 @@ linters:
       linters:
       - contextcheck
       - depguard
-      - dupl   #########
+      - dupl
       - err113
-      - exhaustive #########
+      - exhaustive
       - exhaustruct
       - gochecknoglobals
       - goconst
@@ -41,6 +41,7 @@ linters:
       - tagliatelle
       - unparam
       - varnamelen
+      - wrapcheck
       - wsl
     - path: .*_test\.go
       linters:
@@ -68,7 +69,7 @@ linters:
       - forbidigo
       - funlen
       - gocritic
-      - rowserrcheck ####
+      - rowserrcheck
 
 formatters:
   enable:

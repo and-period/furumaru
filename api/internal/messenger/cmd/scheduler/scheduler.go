@@ -40,7 +40,6 @@ type app struct {
 	TargetDatetime   string `default:""                    envconfig:"TARGET_DATETIME"`
 }
 
-//nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
 		Use:   "scheduler",

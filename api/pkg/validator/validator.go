@@ -40,7 +40,6 @@ func WithCustomValidation(fn func(v *validator.Validate) error) Option {
 	}
 }
 
-//nolint:gosec
 const (
 	hiraganaString    = "^[ぁ-ゔー]*$"
 	passwordString    = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"

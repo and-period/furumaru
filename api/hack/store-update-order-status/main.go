@@ -56,7 +56,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	defer logger.Sync() //nolint:errcheck
+	defer logger.Sync()
 
 	params := &apmysql.Params{
 		Socket:   "tcp",

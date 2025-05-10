@@ -4,7 +4,7 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-//nolint:gocritic,forbidigo,lll
+//nolint:lll
 package main
 
 import (
@@ -198,7 +198,6 @@ func (a *app) begin(ctx context.Context, db *mysql.Client) (*sql.Tx, error) {
 	return tx, nil
 }
 
-//nolint:unparam
 func (a *app) close(tx *sql.Tx) func() {
 	return func() {
 		if r := recover(); r != nil {

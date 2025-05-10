@@ -191,7 +191,7 @@ func TestProductWeight(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewProductWeight(tt.weight, tt.weightUnit)
-			assert.Equal(t, tt.expect, actual) //nolint:testifylint
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }

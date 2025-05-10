@@ -78,7 +78,6 @@ type params struct {
 	googleMapsPlatformAPIKey string
 }
 
-//nolint:funlen
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
 		serviceName: fmt.Sprintf("%s-%s", a.AppName, a.Environment),

@@ -39,7 +39,7 @@ func dbError(err error) error {
 		return fmt.Errorf("%w: %s", database.ErrDeadlineExceeded, err.Error())
 	}
 
-	//nolint:gocritic,errorlint
+	//nolint:errorlint,gocritic
 	switch err := err.(type) {
 	case *gmysql.MySQLError:
 		if err.Number == 1062 {

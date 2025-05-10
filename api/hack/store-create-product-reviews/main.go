@@ -73,12 +73,12 @@ func main() {
 	app, err := setup(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to setup: %v\n", err)
-		os.Exit(1) //nolint:gocritic
+		os.Exit(1)
 	}
 
 	if err := app.run(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to run: %v\n", err)
-		os.Exit(1) //nolint:gocritic
+		os.Exit(1)
 	}
 
 	endAt := jst.Now()

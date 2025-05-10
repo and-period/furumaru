@@ -59,7 +59,6 @@ type schema struct {
 	path     string
 }
 
-//nolint:funlen
 func run() error {
 	app := app{}
 	host := flag.String("db-host", "mysql", "target mysql host")
@@ -184,7 +183,6 @@ func (a *app) begin() (*sql.Tx, error) {
 	return tx, nil
 }
 
-//nolint:unparam
 func (a *app) close(tx *sql.Tx) func() {
 	return func() {
 		if r := recover(); r != nil {

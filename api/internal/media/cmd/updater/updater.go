@@ -36,7 +36,6 @@ type app struct {
 	CDNURL           string `default:""                envconfig:"CDN_URL"`
 }
 
-//nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
 		Use:   "updater",

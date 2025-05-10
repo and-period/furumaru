@@ -9,7 +9,6 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456
 func NewStrings(digit int) string {
 	b := make([]rune, digit)
 	for i := range b {
-		//nolint:gosec
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
