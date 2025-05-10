@@ -388,7 +388,7 @@ func TestMember_UpdateVerified(t *testing.T) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
-				u.Member.VerifiedAt = time.Time{}
+				u.VerifiedAt = time.Time{}
 				err = db.DB.Create(&u.Member).Error
 				require.NoError(t, err)
 			},
@@ -415,7 +415,7 @@ func TestMember_UpdateVerified(t *testing.T) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
-				u.Member.VerifiedAt = now()
+				u.VerifiedAt = now()
 				err = db.DB.Create(&u.Member).Error
 				require.NoError(t, err)
 			},

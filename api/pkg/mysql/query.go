@@ -85,7 +85,7 @@ func (g Geometry) GormDataType() string {
 }
 
 func (g Geometry) GormDBDataType(db *gorm.DB, field *schema.Field) string {
-	switch db.Dialector.Name() {
+	switch db.Name() {
 	case "mysql":
 		return "GEOMETRY"
 	default:
@@ -96,7 +96,7 @@ func (g Geometry) GormDBDataType(db *gorm.DB, field *schema.Field) string {
 func (g Geometry) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	data, _ := g.Value()
 
-	switch db.Dialector.Name() {
+	switch db.Name() {
 	case "mysql":
 		return gorm.Expr("ST_GeomFromText(?)", data)
 	default:

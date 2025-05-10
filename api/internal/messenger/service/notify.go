@@ -108,7 +108,7 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 		return
 	})
 	eg.Go(func() error {
-		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.OrderPayment.AddressRevisionID})
+		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.AddressRevisionID})
 		if err != nil || len(addresses) == 0 {
 			paymentAddress = &uentity.Address{}
 			return err
@@ -117,7 +117,7 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 		return nil
 	})
 	eg.Go(func() (err error) {
-		fulfillmentAddresses, err = s.multiGetAddressesByRevision(ectx, order.OrderFulfillments.AddressRevisionIDs())
+		fulfillmentAddresses, err = s.multiGetAddressesByRevision(ectx, order.AddressRevisionIDs())
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -174,7 +174,7 @@ func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity
 		return nil
 	})
 	eg.Go(func() error {
-		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.OrderPayment.AddressRevisionID})
+		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.AddressRevisionID})
 		if err != nil || len(addresses) == 0 {
 			paymentAddress = &uentity.Address{}
 			return err
@@ -227,7 +227,7 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 	if err != nil {
 		return internalError(err)
 	}
-	addresses, err := s.multiGetAddressesByRevision(ctx, order.OrderFulfillments.AddressRevisionIDs())
+	addresses, err := s.multiGetAddressesByRevision(ctx, order.AddressRevisionIDs())
 	if err != nil {
 		return internalError(err)
 	}

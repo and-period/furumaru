@@ -394,7 +394,7 @@ func (e *internalExperience) unmarshalMedia() error {
 	if err := json.Unmarshal(e.MediaJSON, &media); err != nil {
 		return fmt.Errorf("database: failed to unmarshal media: %w", err)
 	}
-	e.Experience.Media = media
+	e.Media = media
 	return nil
 }
 
@@ -406,7 +406,7 @@ func (e *internalExperience) unmarshalRecommendedPoints() error {
 	if err := json.Unmarshal(e.RecommendedPointsJSON, &points); err != nil {
 		return fmt.Errorf("database: failed to unmarshal recommended points: %w", err)
 	}
-	e.Experience.RecommendedPoints = points
+	e.RecommendedPoints = points
 	return nil
 }
 

@@ -56,7 +56,7 @@ func TestCreateMember(t *testing.T) {
 					Create(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, u *entity.User, auth func(ctx context.Context) error) error {
 						expectUser.ID = u.ID
-						expectUser.Member.UserID, expectUser.Member.CognitoID = u.ID, u.CognitoID
+						expectUser.Member.UserID, expectUser.CognitoID = u.ID, u.CognitoID
 						assert.Equal(t, expectUser, u)
 						return auth(ctx)
 					})

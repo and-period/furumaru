@@ -112,7 +112,7 @@ func (q *internalReceivedQueue) unmarshalUserIDs() error {
 	if err := json.Unmarshal(q.UserIDsJSON, &userIDs); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal received queue user ids: %w", err)
 	}
-	q.ReceivedQueue.UserIDs = userIDs
+	q.UserIDs = userIDs
 	return nil
 }
 

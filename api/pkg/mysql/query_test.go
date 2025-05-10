@@ -26,15 +26,15 @@ func TestNullInt(t *testing.T) {
 	})
 	t.Run("null int", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int](0))
+		assert.Nil(t, NullInt[int](0))
 	})
 	t.Run("null int32", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int32](0))
+		assert.Nil(t, NullInt[int32](0))
 	})
 	t.Run("null int64", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int64](0))
+		assert.Nil(t, NullInt[int64](0))
 	})
 }
 
@@ -46,7 +46,7 @@ func TestNullString(t *testing.T) {
 	})
 	t.Run("null string", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullString(""))
+		assert.Nil(t, NullString(""))
 	})
 }
 

@@ -140,8 +140,8 @@ func TestProduct(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err)
-			actual.ID = ""                        // ignore
-			actual.ProductRevision.ProductID = "" // ignore
+			actual.ID = ""        // ignore
+			actual.ProductID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

@@ -435,6 +435,7 @@ func TestExperience_Get(t *testing.T) {
 	err = db.DB.Create(&internal.ExperienceRevision).Error
 	require.NoError(t, err)
 	e, err := internal.entity()
+	require.NoError(t, err)
 
 	type args struct {
 		experienceID string

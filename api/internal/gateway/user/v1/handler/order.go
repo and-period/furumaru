@@ -210,8 +210,8 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 	})
 	eg.Go(func() (err error) {
 		revisionIDs := make([]int64, 0, 1)
-		if order.OrderExperience.ExperienceRevisionID != 0 {
-			revisionIDs = append(revisionIDs, order.OrderExperience.ExperienceRevisionID)
+		if order.ExperienceRevisionID != 0 {
+			revisionIDs = append(revisionIDs, order.ExperienceRevisionID)
 		}
 		experiences, err = h.multiGetExperiencesByRevision(ectx, revisionIDs)
 		return

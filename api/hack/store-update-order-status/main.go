@@ -115,7 +115,7 @@ func (a *app) getOrderStatus(order *entity.Order) entity.OrderStatus {
 	case entity.PaymentStatusAuthorized:
 		return entity.OrderStatusWaiting
 	case entity.PaymentStatusCaptured:
-		if !order.OrderFulfillments.Fulfilled() {
+		if !order.Fulfilled() {
 			return entity.OrderStatusPreparing
 		}
 		if order.CompletedAt.IsZero() {

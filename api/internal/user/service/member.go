@@ -67,9 +67,9 @@ func (s *service) VerifyMember(ctx context.Context, in *user.VerifyMemberInput) 
 	if err != nil {
 		return internalError(err)
 	}
-	err = s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode)
+	err = s.userAuth.ConfirmSignUp(ctx, u.CognitoID, in.VerifyCode)
 	if errors.Is(err, cognito.ErrCodeExpired) {
-		err = s.userAuth.ResendSignUpCode(ctx, u.Member.CognitoID)
+		err = s.userAuth.ResendSignUpCode(ctx, u.CognitoID)
 		return internalError(err)
 	}
 	if err != nil {

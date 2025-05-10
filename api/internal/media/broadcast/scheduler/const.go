@@ -1,3 +1,4 @@
+//nolint:tagliatelle
 package scheduler
 
 const (

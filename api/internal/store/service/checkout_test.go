@@ -1579,7 +1579,7 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
 				mocks.db.Order.EXPECT().Create(gomock.Any(), gomock.Any()).DoAndReturn(func(_ context.Context, in *entity.Order) error {
-					assert.Equal(t, int64(0), in.OrderPayment.Total)
+					assert.Equal(t, int64(0), in.Total)
 					return nil
 				})
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -2551,7 +2551,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.db.Order.EXPECT().Create(ctx, gomock.Any()).DoAndReturn(func(_ context.Context, in *entity.Order) error {
-					assert.Equal(t, int64(0), in.OrderPayment.Total)
+					assert.Equal(t, int64(0), in.Total)
 					return nil
 				})
 				mocks.messenger.EXPECT().NotifyOrderCaptured(gomock.Any(), gomock.Any()).Return(assert.AnError)

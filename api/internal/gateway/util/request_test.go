@@ -376,7 +376,7 @@ func TestGetQueryFloat64(t *testing.T) {
 			tt.setup(ctx)
 			actual, err := GetQueryFloat64(ctx, tt.query, tt.value)
 			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual) //nolint:testifylint
 		})
 	}
 }

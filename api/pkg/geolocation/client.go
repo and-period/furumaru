@@ -156,7 +156,7 @@ func (c *client) GetGeolocation(ctx context.Context, in *GetGeolocationInput) (*
 	req := &maps.GeocodingRequest{
 		Language: "ja",
 		Region:   "JP",
-		Address:  in.Address.String(),
+		Address:  in.String(),
 	}
 	c.logger.Debug("Request geocoding by address", zap.Any("request", req))
 	res, err := c.client.Geocode(ctx, req)

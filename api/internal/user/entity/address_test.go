@@ -76,8 +76,8 @@ func TestAddress(t *testing.T) {
 			actual, err := NewAddress(tt.params)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			if actual != nil {
-				actual.ID = ""                        // ignore
-				actual.AddressRevision.AddressID = "" // ignore
+				actual.ID = ""        // ignore
+				actual.AddressID = "" // ignore
 			}
 			assert.Equal(t, tt.expect, actual)
 		})

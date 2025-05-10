@@ -39,6 +39,7 @@ func TestGinContextToContext(t *testing.T) {
 	}
 }
 
+//nolint:staticcheck
 func TestGinContextFromContext(t *testing.T) {
 	t.Parallel()
 

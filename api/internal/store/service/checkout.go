@@ -247,7 +247,7 @@ func (s *service) CheckoutFree(ctx context.Context, in *store.CheckoutFreeInput)
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	if in.CheckoutDetail.Total != 0 {
+	if in.Total != 0 {
 		return "", fmt.Errorf("service: invalid total: %w", exception.ErrInvalidArgument)
 	}
 	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
@@ -421,7 +421,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		return "", internalError(err)
 	}
 	// チェックサム
-	if params.payload.Total != order.OrderPayment.Total {
+	if params.payload.Total != order.Total {
 		s.logger.Warn("Failed to checksum before checkout",
 			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
 			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber),
@@ -433,7 +433,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		redirectURL string
 		afterFn     func(context.Context)
 	)
-	if order.OrderPayment.Total > 0 {
+	if order.Total > 0 {
 		redirectURL, afterFn, err = s.executePaymentOrder(ctx, order, params)
 	} else {
 		redirectURL, afterFn, err = s.executeFreeOrder(ctx, order, params)
@@ -453,7 +453,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	// 買い物かごの削除（即時決済の場合は仮売上通知のタイミングで削除するため、ここでは削除しない）
 	go func() {
 		defer s.waitGroup.Done()
-		if order.OrderPayment.IsImmediatePayment() {
+		if order.IsImmediatePayment() {
 			return
 		}
 		cart.RemoveBaskets(baskets.BoxNumbers()...)
@@ -528,21 +528,21 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		Experience:            experience,
 		PaymentMethodType:     params.paymentMethodType,
 		Promotion:             promotion,
-		AdultCount:            params.payload.CheckoutExperienceDetail.AdultCount,
-		JuniorHighSchoolCount: params.payload.CheckoutExperienceDetail.JuniorHighSchoolCount,
-		ElementarySchoolCount: params.payload.CheckoutExperienceDetail.ElementarySchoolCount,
-		PreschoolCount:        params.payload.CheckoutExperienceDetail.PreschoolCount,
-		SeniorCount:           params.payload.CheckoutExperienceDetail.SeniorCount,
-		Transportation:        params.payload.CheckoutExperienceDetail.Transportation,
-		RequetsedDate:         params.payload.CheckoutExperienceDetail.RequestedDate,
-		RequetsedTime:         params.payload.CheckoutExperienceDetail.RequestedTime,
+		AdultCount:            params.payload.AdultCount,
+		JuniorHighSchoolCount: params.payload.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.payload.ElementarySchoolCount,
+		PreschoolCount:        params.payload.PreschoolCount,
+		SeniorCount:           params.payload.SeniorCount,
+		Transportation:        params.payload.Transportation,
+		RequetsedDate:         params.payload.RequestedDate,
+		RequetsedTime:         params.payload.RequestedTime,
 	}
 	order, err := entity.NewExperienceOrder(oparams)
 	if err != nil {
 		return "", internalError(err)
 	}
 	// チェックサム
-	if params.payload.Total != order.OrderPayment.Total {
+	if params.payload.Total != order.Total {
 		s.logger.Warn("Failed to checksum before checkout",
 			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
 			zap.String("coordinatorId", params.payload.CoordinatorID), zap.String("experienceId", params.payload.ExperienceID),
@@ -554,7 +554,7 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		afterFn     func(context.Context)
 	)
 	// 支払い処理
-	if order.OrderPayment.Total == 0 {
+	if order.Total == 0 {
 		redirectURL, afterFn, err = s.executeFreeOrder(ctx, order, params)
 	} else {
 		redirectURL, afterFn, err = s.executePaymentOrder(ctx, order, params)
@@ -579,7 +579,7 @@ func (s *service) executePaymentOrder(
 ) (string, func(context.Context), error) {
 	sparams := &komoju.CreateSessionParams{
 		OrderID:      order.ID,
-		Amount:       order.OrderPayment.Total,
+		Amount:       order.Total,
 		CallbackURL:  params.payload.CallbackURL,
 		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
 		Customer: &komoju.CreateSessionCustomer{

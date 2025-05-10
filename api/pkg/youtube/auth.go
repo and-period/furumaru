@@ -39,11 +39,11 @@ func (a *auth) GetAuthCodeURL(state string) string {
 		oauth2.AccessTypeOffline,
 		oauth2.ApprovalForce,
 	}
-	return a.Config.AuthCodeURL(state, opts...)
+	return a.AuthCodeURL(state, opts...)
 }
 
 func (a *auth) GetToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	token, err := a.Config.Exchange(ctx, code, opts...)
+	token, err := a.Exchange(ctx, code, opts...)
 	if err != nil {
 		return nil, a.internalError(err)
 	}
@@ -54,7 +54,7 @@ func (a *auth) GetToken(ctx context.Context, code string, opts ...oauth2.AuthCod
 }
 
 func (a *auth) GetTokenInfo(ctx context.Context, token *oauth2.Token) (*gauth.Tokeninfo, error) {
-	client := a.Config.Client(ctx, token)
+	client := a.Client(ctx, token)
 	service, err := gauth.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		return nil, a.internalError(err)

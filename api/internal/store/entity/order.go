@@ -235,7 +235,7 @@ func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentSta
 			break
 		}
 	}
-	if o.OrderFulfillments.Fulfilled() {
+	if o.Fulfilled() {
 		o.Status = OrderStatusShipped
 	} else {
 		o.Status = OrderStatusPreparing
@@ -244,15 +244,15 @@ func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentSta
 
 func (o *Order) SetTransaction(transactionID string, now time.Time) {
 	if o.Total > 0 {
-		o.OrderPayment.SetTransactionID(transactionID, now)
+		o.SetTransactionID(transactionID, now)
 		return
 	}
 	// 金額が0円の場合は支払い処理が不要なため、トランザクションIDを詰めると同時に支払い完了とする
 	o.Status = OrderStatusPreparing
-	o.OrderPayment.SetTransactionID(o.ID, now) // 支払い状態を取得できるよう、なにかしらの値を詰める
-	o.OrderPayment.MethodType = PaymentMethodTypeNone
+	o.SetTransactionID(o.ID, now) // 支払い状態を取得できるよう、なにかしらの値を詰める
+	o.MethodType = PaymentMethodTypeNone
 	o.OrderPayment.Status = PaymentStatusCaptured
-	o.OrderPayment.PaidAt, o.OrderPayment.CapturedAt = now, now
+	o.PaidAt, o.CapturedAt = now, now
 }
 
 func (o *Order) Completed() bool {
@@ -288,7 +288,7 @@ func (o *Order) Completable() bool {
 	if o == nil {
 		return false
 	}
-	if !o.OrderFulfillments.Fulfilled() {
+	if !o.Fulfilled() {
 		return false
 	}
 	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
@@ -344,8 +344,8 @@ func (os Orders) PromotionIDs() []string {
 func (os Orders) AddressRevisionIDs() []int64 {
 	res := set.NewEmpty[int64](len(os) * 2) // payment + fulfillment
 	for i := range os {
-		res.Add(os[i].OrderPayment.AddressRevisionID)
-		res.Add(os[i].OrderFulfillments.AddressRevisionIDs()...)
+		res.Add(os[i].AddressRevisionID)
+		res.Add(os[i].AddressRevisionIDs()...)
 	}
 	return res.Slice()
 }
@@ -361,7 +361,7 @@ func (os Orders) ProductRevisionIDs() []int64 {
 func (os Orders) ExperienceRevisionIDs() []int64 {
 	res := set.NewEmpty[int64](len(os))
 	for i := range os {
-		if os[i].OrderExperience.ExperienceRevisionID == 0 {
+		if os[i].ExperienceRevisionID == 0 {
 			continue
 		}
 		res.Add(os[i].ExperienceRevisionID)

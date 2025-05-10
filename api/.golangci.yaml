@@ -38,6 +38,7 @@ linters:
       - perfsprint
       - predeclared
       - revive
+      - tagliatelle
       - unparam
       - varnamelen
       - wsl
@@ -56,6 +57,7 @@ linters:
       - maintidx
       - paralleltest
       - tagalign
+      - testifylint
       - testpackage
       - thelper
     - path: hack/.*\.go

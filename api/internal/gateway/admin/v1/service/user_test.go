@@ -5,7 +5,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -15,37 +14,37 @@ func TestUserStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name     string
-		status   entity.UserStatus
+		status   uentity.UserStatus
 		expect   UserStatus
 		response int32
 	}{
 		{
 			name:     "guest",
-			status:   entity.UserStatusGuest,
+			status:   uentity.UserStatusGuest,
 			expect:   UserStatusGuest,
 			response: 1,
 		},
 		{
 			name:     "provisional",
-			status:   entity.UserStatusProvisional,
+			status:   uentity.UserStatusProvisional,
 			expect:   UserStatusProvisional,
 			response: 2,
 		},
 		{
 			name:     "verified",
-			status:   entity.UserStatusVerified,
+			status:   uentity.UserStatusVerified,
 			expect:   UserStatusVerified,
 			response: 3,
 		},
 		{
 			name:     "deactivated",
-			status:   entity.UserStatusDeactivated,
+			status:   uentity.UserStatusDeactivated,
 			expect:   UserStatusDeactivated,
 			response: 4,
 		},
 		{
 			name:     "unknown",
-			status:   entity.UserStatusUnknown,
+			status:   uentity.UserStatusUnknown,
 			expect:   UserStatusUnknown,
 			response: 0,
 		},
@@ -71,10 +70,10 @@ func TestUser(t *testing.T) {
 	}{
 		{
 			name: "success member",
-			user: &entity.User{
+			user: &uentity.User{
 				ID:         "user-id",
 				Registered: true,
-				Status:     entity.UserStatusVerified,
+				Status:     uentity.UserStatusVerified,
 				Member: uentity.Member{
 					UserID:        "user-id",
 					AccountID:     "account-id",
@@ -95,7 +94,7 @@ func TestUser(t *testing.T) {
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
-			address: &entity.Address{
+			address: &uentity.Address{
 				ID:        "address-id",
 				UserID:    "user-id",
 				IsDefault: true,
@@ -151,10 +150,10 @@ func TestUser(t *testing.T) {
 		},
 		{
 			name: "success guest",
-			user: &entity.User{
+			user: &uentity.User{
 				ID:         "user-id",
 				Registered: false,
-				Status:     entity.UserStatusGuest,
+				Status:     uentity.UserStatusGuest,
 				Guest: uentity.Guest{
 					UserID:        "user-id",
 					Lastname:      "&.",
@@ -168,7 +167,7 @@ func TestUser(t *testing.T) {
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
-			address: &entity.Address{
+			address: &uentity.Address{
 				ID:        "address-id",
 				UserID:    "user-id",
 				IsDefault: true,
@@ -386,7 +385,7 @@ func TestUsers(t *testing.T) {
 				{
 					ID:         "user-id",
 					Registered: true,
-					Status:     entity.UserStatusVerified,
+					Status:     uentity.UserStatusVerified,
 					Member: uentity.Member{
 						UserID:        "user-id",
 						AccountID:     "account-id",

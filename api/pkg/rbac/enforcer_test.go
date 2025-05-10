@@ -1,7 +1,6 @@
 package rbac
 
 import (
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -206,7 +205,7 @@ func TestEnforcer_GetRolesForuser(t *testing.T) {
 }
 
 func generateTempFile(name, content string) (string, error) {
-	f, err := ioutil.TempFile("", name)
+	f, err := os.CreateTemp("", name)
 	if err != nil {
 		return "", err
 	}

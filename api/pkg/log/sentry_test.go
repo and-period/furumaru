@@ -120,7 +120,7 @@ func TestZapFields_FirstError(t *testing.T) {
 		fs := make(ZapFields, 0, 1)
 		ok, err := fs.FirstError()
 		assert.False(t, ok)
-		assert.Nil(t, err)
+		assert.NoError(t, err)
 	})
 	t.Run("exist", func(t *testing.T) {
 		fs := make(ZapFields, 0, 1)

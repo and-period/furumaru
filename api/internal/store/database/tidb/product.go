@@ -398,7 +398,7 @@ func (p *internalProduct) unmarshalTagIDs() error {
 	if err := json.Unmarshal(p.TagIDsJSON, &tagIDs); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal tag ids: %w", err)
 	}
-	p.Product.TagIDs = tagIDs
+	p.TagIDs = tagIDs
 	return nil
 }
 
@@ -410,7 +410,7 @@ func (p *internalProduct) unmarshalMedia() error {
 	if err := json.Unmarshal(p.MediaJSON, &media); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal media: %w", err)
 	}
-	p.Product.Media = media
+	p.Media = media
 	return nil
 }
 
@@ -422,7 +422,7 @@ func (p *internalProduct) unmarshalRecommendedPoints() error {
 	if err := json.Unmarshal(p.RecommendedPointsJSON, &points); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal recommended points: %w", err)
 	}
-	p.Product.RecommendedPoints = points
+	p.RecommendedPoints = points
 	return nil
 }
 

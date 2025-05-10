@@ -636,7 +636,7 @@ func (e *internalOrderExperience) unmarshalRemarks() error {
 	if err := json.Unmarshal(e.RemarksJSON, &remarks); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal order experience remarks: %w", err)
 	}
-	e.OrderExperience.Remarks = *remarks
+	e.Remarks = *remarks
 	return nil
 }
 

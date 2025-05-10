@@ -716,7 +716,7 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 			name: "already empty",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				internal.Product.Inventory = 0
+				internal.Inventory = 0
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
@@ -734,7 +734,7 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 			name: "less then 0",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				internal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				internal.Product.Inventory = 1
+				internal.Inventory = 1
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
