@@ -43,7 +43,6 @@ func TestLive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewLive(tt.live)
@@ -82,7 +81,6 @@ func TestLive_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.live.Response())
@@ -128,7 +126,6 @@ func TestLives(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewLives(tt.lives)
@@ -171,7 +168,6 @@ func TestLives_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.Response())

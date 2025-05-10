@@ -62,7 +62,6 @@ func TestAddressRevision(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewAddressRevision(tt.params)
@@ -143,7 +142,6 @@ func TestAddressRevision_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.revision.Fill()
@@ -181,7 +179,6 @@ func TestAddressRevisions_AddressIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.revisions.AddressIDs())
@@ -234,7 +231,6 @@ func TestAddressRevisions_MapByAddressID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.revisions.MapByAddressID())
@@ -322,7 +318,6 @@ func TestAddressRevisions_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.revisions.Fill()
@@ -460,7 +455,6 @@ func TestAddressRevisions_Merge(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.revisions.Merge(tt.addresses)

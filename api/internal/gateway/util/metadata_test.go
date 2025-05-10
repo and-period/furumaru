@@ -46,7 +46,6 @@ func TestGetAuthToken(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			actual, err := GetAuthToken(tt.ctx)
 			assert.Equal(t, tt.isErr, err != nil, err)

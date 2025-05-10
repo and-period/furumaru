@@ -150,7 +150,6 @@ func TestListOrders(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListOrders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -321,7 +320,6 @@ func TestGetOrder(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -431,7 +429,6 @@ func TestGetOrderByTransactionID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetOrderByTransactionID(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -559,7 +556,6 @@ func TestCaptureOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CaptureOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -690,7 +686,6 @@ func TestDraftOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DraftOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -826,7 +821,6 @@ func TestCompleteProductOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CompleteProductOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -936,7 +930,6 @@ func TestCompleteExperienceOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CompleteExperienceOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -1063,7 +1056,6 @@ func TestCancelOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CancelOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -1197,7 +1189,6 @@ func TestRefundOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.RefundOrder(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -1339,7 +1330,6 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateOrderFulfillment(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
@@ -1467,7 +1457,6 @@ func TestAggregateOrdersByUser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.AggregateOrdersByUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1524,7 +1513,6 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.AggregateOrdersByPaymentMethodType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1591,7 +1579,6 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1949,7 +1936,6 @@ func TestExportOrders(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ExportOrders(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

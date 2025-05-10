@@ -44,7 +44,6 @@ func TestBroadcastStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewBroadcastStatus(tt.status))
@@ -95,7 +94,6 @@ func TestBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewBroadcast(tt.broadcast))
@@ -141,7 +139,6 @@ func TestBroadcasts(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewBroadcasts(tt.broadcasts))

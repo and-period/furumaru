@@ -57,7 +57,6 @@ func TestAddress(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAddress(tt.address)
@@ -116,7 +115,6 @@ func TestAddress_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.address.Response())
@@ -177,7 +175,6 @@ func TestAddresses(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAddresses(tt.addresses)
@@ -232,7 +229,6 @@ func TestAddresses_MapRevision(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.MapByRevision())
@@ -289,7 +285,6 @@ func TestAddresses_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.Response())

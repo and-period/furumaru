@@ -63,7 +63,6 @@ func TestErrorResponse(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			res, code := NewErrorResponse(tt.err)
@@ -96,7 +95,6 @@ func TestErrorResponse_GetDetail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.res.GetDetail())
@@ -206,7 +204,6 @@ func TestErrorResponse_InternalError(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			res, code := NewErrorResponse(tt.err)
@@ -369,7 +366,6 @@ func TestErrorResponse_GRPCError(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			res, code := NewErrorResponse(tt.err)

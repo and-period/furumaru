@@ -34,7 +34,6 @@ func TestGetParam(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -131,7 +130,6 @@ func TestGetParamInt64(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -179,7 +177,6 @@ func TestGetQuery(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -240,7 +237,6 @@ func TestGetQueryInt32(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -303,7 +299,6 @@ func TestGetQueryInt64(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -366,7 +361,6 @@ func TestGetQueryFloat64(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -429,7 +423,6 @@ func TestGetQueryBool(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -468,7 +461,6 @@ func TestGetQueryStrings(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -517,7 +509,6 @@ func TestGetQueryInt32s(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -568,7 +559,6 @@ func TestGetQueryInt64s(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)
@@ -609,7 +599,6 @@ func TestGetOrders(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gin.SetMode(gin.TestMode)

@@ -116,7 +116,6 @@ func TestListMessages(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListMessages(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -262,7 +261,6 @@ func TestGetMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetMessage(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

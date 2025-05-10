@@ -49,7 +49,6 @@ func TestRegulation_Validate(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := reg.Validate(tt.fileType, tt.fileSize)
@@ -98,7 +97,6 @@ func TestRegulation_GetObjectKey(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.regulation.GetObjectKey(tt.contentType, tt.args...)

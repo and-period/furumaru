@@ -86,7 +86,6 @@ func TestCart_Refresh(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.cart.Refresh(tt.products)
@@ -174,7 +173,6 @@ func TestCart_AddItem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.cart.AddItem(tt.productID, tt.quantity)
@@ -222,7 +220,6 @@ func TestCart_RemoveBaskets(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.cart.RemoveBaskets(tt.boxNumbers...)
@@ -407,7 +404,6 @@ func TestCart_RemoveItem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.cart.RemoveItem(tt.productID, tt.boxNumber)
@@ -638,7 +634,6 @@ func TestCartBaskets_MergeByProductID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.baskets.MergeByProductID()
@@ -695,7 +690,6 @@ func TestCartBaskets_AdjustItems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.baskets.AdjustItems(tt.products)
@@ -797,7 +791,6 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.baskets.FilterByCoordinatorID(tt.coordinatorIDs...)
@@ -899,7 +892,6 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.baskets.FilterByBoxNumber(tt.boxNumbers...)
@@ -976,7 +968,6 @@ func TestCartBaskets_VerifyQuantity(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.baskets.VerifyQuantity(tt.additional, tt.product)
@@ -1065,7 +1056,6 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.baskets.TotalPrice(tt.products)
@@ -1110,7 +1100,6 @@ func TestCartBaskets_ProductIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.baskets.ProductIDs())
@@ -1152,7 +1141,6 @@ func TestCartBaskets_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.baskets.CoordinatorID())
@@ -1194,7 +1182,6 @@ func TestCartBaskets_BoxNumbers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.baskets.BoxNumbers())
@@ -1221,7 +1208,6 @@ func TestCartItem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewCartItem(tt.productID, tt.quantity)
@@ -1256,7 +1242,6 @@ func TestCartItems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewCartItems(tt.items)
@@ -1294,7 +1279,6 @@ func TestCartItemsWithProducts(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewCartItemsWithProducts(tt.products)
@@ -1330,7 +1314,6 @@ func TestCartItems_ProductIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.items.ProductIDs())
@@ -1370,7 +1353,6 @@ func TestCartItems_MapByProductID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.items.MapByProductID())
@@ -1394,7 +1376,6 @@ func TestGenerateBascketKey(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := generateCartBasketKey(tt.coordinatorID, tt.shippingType)
@@ -1435,7 +1416,6 @@ func TestParseBascketKey(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			coordinatorID, shippingType, err := parseCartBasketKey(tt.key)
@@ -2178,7 +2158,6 @@ func TestRefreshCart(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := refreshCart(tt.baskets, tt.products)

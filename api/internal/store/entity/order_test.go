@@ -208,7 +208,6 @@ func TestOrderProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewProductOrder(tt.params)
@@ -506,7 +505,6 @@ func TestOrder_SetPaymentStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			order := &Order{}
@@ -557,7 +555,6 @@ func TestOrder_SetFulfillmentStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			order := &Order{OrderFulfillments: tt.fulfillments}
@@ -684,7 +681,6 @@ func TestOrder_Completed(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.order.Completed())
@@ -847,7 +843,6 @@ func TestOrder_EnableAction(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.want.capturable, tt.order.Capturable())
@@ -880,7 +875,6 @@ func TestOrders_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.IDs())
@@ -911,7 +905,6 @@ func TestOrders_UserIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.UserIDs())
@@ -942,7 +935,6 @@ func TestOrders_CoordinatorID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.CoordinatorIDs())
@@ -982,7 +974,6 @@ func TestOrders_PromotionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.PromotionIDs())
@@ -1012,7 +1003,6 @@ func TestOrders_AddressRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.orders.AddressRevisionIDs())
@@ -1042,7 +1032,6 @@ func TestOrders_ProductRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.orders.ProductRevisionIDs())
@@ -1083,7 +1072,6 @@ func TestOrders_ExperienceRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.ExperienceRevisionIDs())
@@ -1152,7 +1140,6 @@ func TestOrders_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.orders.Fill(tt.payments, tt.fulfillments, tt.items, tt.experiences)
@@ -1189,7 +1176,6 @@ func TestAggregatedUserOrders_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.Map())
@@ -1225,7 +1211,6 @@ func TestAggregatedOrderPayments_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.Map())
@@ -1265,7 +1250,6 @@ func TestAggregatedOrderPayments_OrderTotal(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.OrderTotal())
@@ -1299,7 +1283,6 @@ func TestAggregatedOrderPromotions_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.orders.Map())

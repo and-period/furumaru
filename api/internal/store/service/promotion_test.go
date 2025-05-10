@@ -114,7 +114,6 @@ func TestListPromotions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListPromotions(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -186,7 +185,6 @@ func TestMultiGetPromotions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetPromotions(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -266,7 +264,6 @@ func TestGetPromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetPromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -346,7 +343,6 @@ func TestGetPromotionByCode(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetPromotionByCode(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -562,7 +558,6 @@ func TestCreatePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreatePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -869,7 +864,6 @@ func TestUpdatePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdatePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -915,7 +909,6 @@ func TestDeletePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeletePromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

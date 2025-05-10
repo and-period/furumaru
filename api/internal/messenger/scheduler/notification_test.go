@@ -53,7 +53,6 @@ func TestScheduler_executeNotication(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.executeNotification(ctx, tt.schedule)
 			assert.ErrorIs(t, err, tt.expectErr)

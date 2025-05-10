@@ -144,7 +144,6 @@ func TestRetryable(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := Retryable(tt.err)
@@ -209,7 +208,6 @@ func TestNewDSN(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, newDSN(tt.params, tt.options))

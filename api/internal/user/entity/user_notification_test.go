@@ -23,7 +23,6 @@ func TestUserNotification(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewUserNotification(tt.userID)
@@ -62,7 +61,6 @@ func TestUserNotification_Enabled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.notification.Enabled())
@@ -94,7 +92,6 @@ func TestUserNotifications_MapByUserID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.notifications.MapByUserID()

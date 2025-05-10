@@ -159,7 +159,6 @@ func TestListProducts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListProducts(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -255,7 +254,6 @@ func TestMultiGetProducts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetProducts(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -350,7 +348,6 @@ func TestMultiGetProductsByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetProductsByRevision(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -441,7 +438,6 @@ func TestGetProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetProduct(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -856,7 +852,6 @@ func TestCreateProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateProduct(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1062,7 +1057,6 @@ func TestUpdateProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProduct(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1136,7 +1130,6 @@ func TestDeleteProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteProduct(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

@@ -107,7 +107,6 @@ func TestListCategories(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListCategories(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -171,7 +170,6 @@ func TestMultiGetCategories(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetCategories(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -230,7 +228,6 @@ func TestGetCategory(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetCategory(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -286,7 +283,6 @@ func TestCreateCategory(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateCategory(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -334,7 +330,6 @@ func TestUpdateCategory(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateCategory(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -404,7 +399,6 @@ func TestDeleteCategory(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteCategory(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

@@ -46,7 +46,6 @@ func TestRound(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(fmt.Sprintf("input=%f, places=%f", tt.input, tt.places), func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, Round(tt.input, tt.places))

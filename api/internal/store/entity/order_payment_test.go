@@ -61,7 +61,6 @@ func TestPaymentStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewPaymentStatus(tt.status))
@@ -138,7 +137,6 @@ func TestKomojuPaymentTypes(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewKomojuPaymentTypes(tt.methodType)
@@ -221,7 +219,6 @@ func TestPaymentMethodType_String(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.methodType.String())
@@ -693,7 +690,6 @@ func TestProductOrderPayment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewProductOrderPayment(tt.params)
@@ -1003,7 +999,6 @@ func TestOrderPayment_IsCompleted(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			payment := &OrderPayment{Status: tt.status}
@@ -1056,7 +1051,6 @@ func TestOrderPayment_IsCanceled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			payment := &OrderPayment{Status: tt.status}
@@ -1090,7 +1084,6 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.payment.SetTransactionID(tt.transactionID, tt.now)
@@ -1138,7 +1131,6 @@ func TestOrderPayments_AddressRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.payments.AddressRevisionIDs())
@@ -1210,7 +1202,6 @@ func TestOrderPayments_MapByOrderID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.payments.MapByOrderID())

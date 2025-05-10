@@ -136,7 +136,6 @@ func TestProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewProducers(tt.producers, tt.shops)
@@ -202,7 +201,6 @@ func TestProducers_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := tt.producers.Map()
@@ -263,7 +261,6 @@ func TestProducers_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.producers.Response())

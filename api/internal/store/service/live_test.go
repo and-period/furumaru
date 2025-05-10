@@ -188,7 +188,6 @@ func TestListLives(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListLives(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -250,7 +249,6 @@ func TestGetLive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -468,7 +466,6 @@ func TestCreateLive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -684,7 +681,6 @@ func TestUpdateLive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -730,7 +726,6 @@ func TestDeleteLive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

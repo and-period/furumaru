@@ -201,7 +201,6 @@ func TestScheduler_Run(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.Run(ctx, tt.target)
 			assert.ErrorIs(t, err, tt.expect)
@@ -313,7 +312,6 @@ func TestScheduler_execute(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.execute(ctx, tt.schedule, tt.execute)
 			assert.ErrorIs(t, err, tt.expect)

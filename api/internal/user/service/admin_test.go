@@ -102,7 +102,6 @@ func TestMultiGetAdmins(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetAdmins(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -164,7 +163,6 @@ func TestMultiGetAdminDevices(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetAdminDevices(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -232,7 +230,6 @@ func TestGetAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetAdmin(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -293,7 +290,6 @@ func TestForgotAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ForgotAdminPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -369,7 +365,6 @@ func TestVerifyAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyAdminPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

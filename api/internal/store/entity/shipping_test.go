@@ -33,7 +33,6 @@ func TestShippingType_String(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.shippingType.String())
@@ -99,7 +98,6 @@ func TestShipping(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewShipping(tt.params)
@@ -133,7 +131,6 @@ func TestShipping_IsDefault(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.shipping.IsDefault())
@@ -359,7 +356,6 @@ func TestShipping_CalcShippingFee(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.shipping.CalcShippingFee(tt.shippingSize, tt.shippingType, tt.total, tt.prefectureCode)
@@ -528,7 +524,6 @@ func TestShipping_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.shipping.Fill(tt.revision)
@@ -578,7 +573,6 @@ func TestShippings_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.shippings.IDs())
@@ -627,7 +621,6 @@ func TestShippings_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.shippings.CoordinatorIDs())
@@ -691,7 +684,6 @@ func TestShippings_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.shippings.Map())
@@ -777,7 +769,6 @@ func TestShippings_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.shippings.Fill(tt.revisions)

@@ -79,7 +79,6 @@ func TestMultiSendMail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.multiSendMail(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -149,7 +148,6 @@ func TestSendMail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.sendMail(ctx, tt.templateID, tt.personalizations...)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -409,7 +407,6 @@ func TestPersonalizations(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			actual, err := worker.newPersonalizations(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -472,7 +469,6 @@ func TestFetchAdmins(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchAdmins(ctx, tt.adminIDs, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -538,7 +534,6 @@ func TestFetchAdministrators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchAdministrators(ctx, tt.administratorIDs, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -615,7 +610,6 @@ func TestFetchCoordinators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchCoordinators(ctx, tt.coordinatorIDs, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -648,7 +642,6 @@ func TestFetchProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchProducers(ctx, tt.producerIDs, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -723,7 +716,6 @@ func TestFetchUsers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchUsers(ctx, tt.userIDs, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)

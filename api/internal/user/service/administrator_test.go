@@ -102,7 +102,6 @@ func TestListAdministrators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListAdministrators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -176,7 +175,6 @@ func TestMultiGetAdministrators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetAdministrators(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -245,7 +243,6 @@ func TestGetAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -339,7 +336,6 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -403,7 +399,6 @@ func TestUpdateAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -500,7 +495,6 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAdministratorEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -599,7 +593,6 @@ func TestResetAdministratorPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ResetAdministratorPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -643,7 +636,6 @@ func TestDeleteAdministrator(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteAdministrator(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

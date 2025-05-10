@@ -41,7 +41,6 @@ func TestContact(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewContact(tt.params)
@@ -173,7 +172,6 @@ func TestContact_Fill(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.contact.Fill(tt.categoryID, tt.userID, tt.responderID)
@@ -211,7 +209,6 @@ func TestContacts_ContactCategoryIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ElementsMatch(t, tt.expect, tt.contacts.CategoryIDs())
 		})
@@ -247,7 +244,6 @@ func TestContacts_UserIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ElementsMatch(t, tt.expect, tt.contacts.UserIDs())
 		})
@@ -283,7 +279,6 @@ func TestContacts_ResponderIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			assert.ElementsMatch(t, tt.expect, tt.contacts.ResponderIDs())
 		})

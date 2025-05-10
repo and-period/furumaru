@@ -120,7 +120,6 @@ func TestSignInAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.SignInAdmin(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -169,7 +168,6 @@ func TestSignOutAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.SignOutAdmin(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -246,7 +244,6 @@ func TestGetAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetAdminAuth(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -358,7 +355,6 @@ func TestRefreshAdminToken(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.RefreshAdminToken(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -407,7 +403,6 @@ func TestRegisterAdminDevice(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.RegisterAdminDevice(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -504,7 +499,6 @@ func TestUpdateAdminEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAdminEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -590,7 +584,6 @@ func TestVerifyAdminEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.VerifyAdminEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -648,7 +641,6 @@ func TestUpdateAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateAdminPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

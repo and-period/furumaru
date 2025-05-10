@@ -50,7 +50,6 @@ func TestNotification(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewNotification(tt.notification))
@@ -114,7 +113,6 @@ func TestNotification_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.notification.Fill(tt.promotion)
@@ -160,7 +158,6 @@ func TestNotification_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.notification.Response())
@@ -213,7 +210,6 @@ func TestNotifications(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewNotifications(tt.notifications))
@@ -249,7 +245,6 @@ func TestNotifications_AdminIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.notifications.AdminIDs())
@@ -351,7 +346,6 @@ func TestNotifications_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.notifications.Fill(tt.promotions)
@@ -400,7 +394,6 @@ func TestNotifications_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.notifications.Response())

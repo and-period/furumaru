@@ -39,7 +39,6 @@ func TestToTime(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expectBeginningOfDay, BeginningOfDay(tt.now))
@@ -97,7 +96,6 @@ func TestWithInPeriod(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, WithInPeriod(tt.target, tt.startAt, tt.endAt))
@@ -130,7 +128,6 @@ func TestToString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expectFormat, Format(tt.now, tt.format))
@@ -161,7 +158,6 @@ func TestParse(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := Parse(tt.format, tt.target)
@@ -188,7 +184,6 @@ func TestParseFromYYYYMMDD(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ParseFromYYYYMMDD(tt.target)
@@ -215,7 +210,6 @@ func TestParseFromYYYYMM(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ParseFromYYYYMM(tt.target)
@@ -242,7 +236,6 @@ func TestParseFromHHMMSS(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ParseFromHHMMSS(tt.target)
@@ -269,7 +262,6 @@ func TestParseFromHHMM(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ParseFromHHMM(tt.target)
@@ -302,7 +294,6 @@ func TestParseFromUnix(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, ParseFromUnix(tt.target))
@@ -330,7 +321,6 @@ func TestFiscalYear(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, FiscalYear(tt.target))
