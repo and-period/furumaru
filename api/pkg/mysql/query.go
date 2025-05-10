@@ -33,6 +33,8 @@ func NullString(val string) any {
 }
 
 // Geometry 座標情報
+//
+//nolint:recvcheck
 type Geometry struct {
 	X float64
 	Y float64

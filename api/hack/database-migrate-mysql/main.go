@@ -238,7 +238,10 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	const format = "SELECT `version` FROM `%s`.`%s` WHERE `version` = '%s' LIMIT 1"
 	stmt := fmt.Sprintf(format, migrateDB, schemaTable, schema.version)
 	rs, err := tx.Query(stmt)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
 		return false, err
 	}
 	defer rs.Close()

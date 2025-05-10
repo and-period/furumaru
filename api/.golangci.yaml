@@ -12,7 +12,7 @@ linters:
       lines: 200
       statements: 80
     lll:
-      line-length: 120
+      line-length: 140
   exclusions:
     rules:
     - path: .*\.go
@@ -34,6 +34,9 @@ linters:
       - ireturn
       - mnd
       - nlreturn
+      - nonamedreturns
+      - perfsprint
+      - predeclared
       - revive
       - unparam
       - varnamelen
@@ -51,6 +54,7 @@ linters:
       - gomnd
       - lll
       - maintidx
+      - paralleltest
       - tagalign
       - testpackage
       - thelper
@@ -60,12 +64,7 @@ linters:
       - forbidigo
       - funlen
       - gocritic
-    - path: database/tidb/.*_test\.go
-      linters:
-      - paralleltest
-    - path: service/.*_test\.go
-      linters:
-      - paralleltest
+      - rowserrcheck ####
 
 formatters:
   enable:

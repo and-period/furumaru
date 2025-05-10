@@ -272,7 +272,10 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	stmt := fmt.Sprintf(format, schemaTable, schema.database, schema.version)
 	rs, err := tx.Query(stmt)
 	a.logger.Debug("get schema", zap.String("stmt", stmt), zap.Error(err))
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
 		return false, err
 	}
 	defer rs.Close()
