@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"context"
 	"net/url"
 	"testing"
 	"time"
@@ -16,7 +15,7 @@ import (
 
 func TestBucket(t *testing.T) {
 	t.Parallel()
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(t.Context())
 	require.NoError(t, err)
 	bucket := NewBucket(cfg, &Params{},
 		WithMaxRetries(1),

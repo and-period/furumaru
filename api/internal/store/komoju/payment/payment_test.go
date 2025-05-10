@@ -45,7 +45,7 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 			ClientSecret: "client-secret",
 		}
 		client := NewClient(ts.Client(), params, komoju.WithLogger(logger))
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		res, err := fn(ctx, client)
 		if err == nil {

@@ -77,7 +77,7 @@ func TestBeginAndClose(t *testing.T) {
 	t.Skip() // 確認したい時のみコメントアウト
 
 	setEnv()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	params := &Params{
 		Socket:   "tcp",
@@ -99,7 +99,7 @@ func TestTransaction(t *testing.T) {
 	t.Skip() // 確認したい時のみコメントアウト
 
 	setEnv()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	params := &Params{
 		Socket:   "tcp",

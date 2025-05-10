@@ -17,7 +17,7 @@ func TestExperienceReviewReaction(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_Upsert(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -83,7 +83,7 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, experienceReviewReactionTable)
@@ -99,7 +99,7 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -157,7 +157,7 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, experienceReviewReactionTable)
@@ -173,7 +173,7 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -235,7 +235,7 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)

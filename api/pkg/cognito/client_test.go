@@ -16,7 +16,7 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Parallel()
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(t.Context())
 	require.NoError(t, err)
 	auth := NewClient(cfg, &Params{},
 		WithMaxRetries(1),

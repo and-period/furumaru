@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -150,7 +149,7 @@ func TestGeometry_GormValue(t *testing.T) {
 		db := &gorm.DB{Config: &gorm.Config{Dialector: dialector}}
 
 		geometry := Geometry{X: 1, Y: 1}
-		expr := geometry.GormValue(context.Background(), db)
+		expr := geometry.GormValue(t.Context(), db)
 		assert.Equal(t, "ST_GeomFromText(?)", expr.SQL)
 		assert.Equal(t, []interface{}{"POINT(1.000000 1.000000)"}, expr.Vars)
 	})

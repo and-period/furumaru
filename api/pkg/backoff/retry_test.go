@@ -71,7 +71,7 @@ func TestRetry(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithTimeout(context.Background(), tt.timeout)
+			ctx, cancel := context.WithTimeout(t.Context(), tt.timeout)
 			defer cancel()
 			backoff := NewFixedIntervalBackoff(10*time.Millisecond, tt.maxRetries)
 			err := Retry(ctx, backoff, tt.fn, WithRetryablel(tt.retryable))

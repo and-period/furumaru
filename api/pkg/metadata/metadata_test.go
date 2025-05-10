@@ -19,21 +19,21 @@ func TestGet(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			ctx:    metadata.NewIncomingContext(context.Background(), metadata.Pairs("debug", "test")),
+			ctx:    metadata.NewIncomingContext(t.Context(), metadata.Pairs("debug", "test")),
 			key:    "debug",
 			expect: "test",
 			isErr:  false,
 		},
 		{
 			name:   "invalid metadata",
-			ctx:    context.Background(),
+			ctx:    t.Context(),
 			key:    "",
 			expect: "",
 			isErr:  true,
 		},
 		{
 			name:   "not found metadata",
-			ctx:    metadata.NewIncomingContext(context.Background(), metadata.MD{}),
+			ctx:    metadata.NewIncomingContext(t.Context(), metadata.MD{}),
 			key:    "debug",
 			expect: "",
 			isErr:  true,
@@ -62,14 +62,14 @@ func TestSet(t *testing.T) {
 	}{
 		{
 			name:      "success",
-			ctx:       metadata.NewOutgoingContext(context.Background(), metadata.MD{}),
+			ctx:       metadata.NewOutgoingContext(t.Context(), metadata.MD{}),
 			key:       "debug",
 			value:     "test",
 			isSuccess: true,
 		},
 		{
 			name:      "failed to set metadata",
-			ctx:       metadata.NewOutgoingContext(context.Background(), metadata.MD{}),
+			ctx:       metadata.NewOutgoingContext(t.Context(), metadata.MD{}),
 			key:       "",
 			value:     "",
 			isSuccess: false,

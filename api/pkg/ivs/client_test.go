@@ -16,7 +16,7 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Parallel()
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(t.Context())
 	require.NoError(t, err)
 	ivs := NewClient(cfg, &Params{
 		RecordingConfigurationArn: "arn:aws:iam::123456789012:user/Development/product_1234/*",

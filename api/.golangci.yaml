@@ -60,6 +60,8 @@ linters:
       - testifylint
       - testpackage
       - thelper
+      - tparallel
+      - unused
     - path: hack/.*\.go
       linters:
       - errcheck

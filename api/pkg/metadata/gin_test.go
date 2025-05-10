@@ -67,7 +67,7 @@ func TestGinContextFromContext(t *testing.T) {
 		},
 		{
 			name:   "invalid context",
-			ctx:    context.WithValue(ctx.Request.Context(), GinContext, context.Background()),
+			ctx:    context.WithValue(ctx.Request.Context(), GinContext, t.Context()),
 			expect: nil,
 			isErr:  true,
 		},
