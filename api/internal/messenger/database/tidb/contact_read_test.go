@@ -18,7 +18,7 @@ func TestContactRead(t *testing.T) {
 }
 
 func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -84,10 +84,9 @@ func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -101,7 +100,7 @@ func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
 }
 
 func TestContactRead_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -162,9 +161,8 @@ func TestContactRead_Create(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, contactReadTable)
@@ -179,7 +177,7 @@ func TestContactRead_Create(t *testing.T) {
 }
 
 func TestContactRead_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -265,9 +263,8 @@ func TestContactRead_Update(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)

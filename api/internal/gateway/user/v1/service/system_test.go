@@ -33,7 +33,6 @@ func TestPaymentSystemStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPaymentSystemStatus(tt.status)
@@ -66,7 +65,6 @@ func TestPaymentSystemStatus_StoreEntity(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.status.StoreEntity())
@@ -88,7 +86,6 @@ func TestPaymentSystemStatus_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.status.Response())
@@ -120,7 +117,6 @@ func TestPaymentSystem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPaymentSystem(tt.system)
@@ -151,7 +147,6 @@ func TestPaymentSystem_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.system.Response())
@@ -187,7 +182,6 @@ func TestPaymentSystems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPaymentSystems(tt.systems)
@@ -222,7 +216,6 @@ func TestPaymentSystems_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.systems.Response())

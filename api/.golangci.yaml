@@ -9,51 +9,67 @@ linters:
     cyclop:
       max-complexity: 20
     funlen:
-      lines: 100
-      statements: 50
+      lines: 200
+      statements: 80
     lll:
       line-length: 140
   exclusions:
     rules:
     - path: .*\.go
       linters:
+      - contextcheck
       - depguard
+      - dupl
       - err113
+      - exhaustive
       - exhaustruct
       - gochecknoglobals
+      - goconst
       - godot
       - godox
       - golines
       - gosec
       - gosmopolitan
+      - interfacebloat
       - ireturn
       - mnd
       - nlreturn
+      - nonamedreturns
+      - perfsprint
+      - predeclared
       - revive
+      - tagliatelle
       - unparam
       - varnamelen
+      - wrapcheck
       - wsl
     - path: .*_test\.go
       linters:
-      - dupl
+      - bodyclose
+      - containedctx
       - errcheck
+      - forbidigo
       - forcetypeassert
+      - funlen
       - gocritic
       - gocyclo
       - gomnd
       - lll
+      - maintidx
+      - paralleltest
       - tagalign
+      - testifylint
       - testpackage
       - thelper
+      - tparallel
+      - unused
     - path: hack/.*\.go
       linters:
       - errcheck
-    - path: database/tidb/.*_test\.go
-      linters:
-      - paralleltest
-    - path: service/.*_test\.go
-      linters:
-      - paralleltest
+      - forbidigo
+      - funlen
+      - gocritic
+      - rowserrcheck
 
 formatters:
   enable:
@@ -62,23 +78,3 @@ formatters:
   - gofumpt
   - goimports
   - golines
-
-issues:
-  exclude:
-  - Using the variable on range scope .* in function literal
-  - func name will be used as * by other packages, and that stutters; consider calling this
-  - lines are duplicate of
-  - a blank import should be only in a main or test package, or have a comment justifying it
-  - use strings.ReplaceAll method in
-  exclude-dirs:
-  - bin
-  - mock
-  - tmp
-  exclude-files:
-  - '.*_test\.go'
-  exclude-rules:
-  - path: '_test\.go'
-    linters:
-    - dupl
-    - errcheck
-    - gosec

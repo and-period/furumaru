@@ -30,7 +30,6 @@ func TestGinContextToContext(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			ctx := GinContextToContext(tt.ctx)
@@ -39,6 +38,7 @@ func TestGinContextToContext(t *testing.T) {
 	}
 }
 
+//nolint:staticcheck
 func TestGinContextFromContext(t *testing.T) {
 	t.Parallel()
 
@@ -66,14 +66,13 @@ func TestGinContextFromContext(t *testing.T) {
 		},
 		{
 			name:   "invalid context",
-			ctx:    context.WithValue(ctx.Request.Context(), GinContext, context.Background()),
+			ctx:    context.WithValue(ctx.Request.Context(), GinContext, t.Context()),
 			expect: nil,
 			isErr:  true,
 		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := GinContextFromContext(tt.ctx)

@@ -113,21 +113,21 @@ func NewTopOrderValue(current, before int64) *TopOrderValue {
 		return newEmptyTopOrderValue()
 	}
 
-	var comparision float64
+	var comparison float64
 	if before == 0 {
-		comparision = 100 // 0除算を避けるため
+		comparison = 100 // 0除算を避けるため
 	} else {
 		dcurrent := decimal.NewFromInt(current)
 		dbefore := decimal.NewFromInt(before)
 		diff := dcurrent.Sub(dbefore)
 		dcomp := diff.Div(dbefore).Mul(decimal.NewFromInt(100))
-		comparision, _ = dcomp.Float64()
+		comparison, _ = dcomp.Float64()
 	}
 
 	return &TopOrderValue{
 		TopOrderValue: response.TopOrderValue{
 			Value:      current,
-			Comparison: comparision,
+			Comparison: comparison,
 		},
 	}
 }

@@ -16,7 +16,7 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Parallel()
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(t.Context())
 	require.NoError(t, err)
 	ivs := NewClient(cfg, &Params{
 		RecordingConfigurationArn: "arn:aws:iam::123456789012:user/Development/product_1234/*",
@@ -92,7 +92,6 @@ func TestStreamError(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			cli := &client{logger: zap.NewNop()}

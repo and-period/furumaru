@@ -21,7 +21,7 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	}
 	orders, err := s.newListProductsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list products orders: err=%s: %w", err, exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invalid list products orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListProductsParams{
 		Name:           in.Name,

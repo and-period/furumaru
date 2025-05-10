@@ -123,7 +123,6 @@ func TestUploadEvent_SetResult(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.event.SetResult(tt.args.success, tt.args.referenceURL, tt.args.now)
@@ -289,7 +288,6 @@ func TestUploadEvent_Regulation(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.event.Reguration()

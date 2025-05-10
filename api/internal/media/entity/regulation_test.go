@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -50,7 +49,6 @@ func TestRegulation_Validate(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := reg.Validate(tt.fileType, tt.fileSize)
@@ -99,12 +97,11 @@ func TestRegulation_GetObjectKey(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := tt.regulation.GetObjectKey(tt.contentType, tt.args...)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Regexp(t, regexp.MustCompile(tt.expect), actual, actual)
+			assert.Regexp(t, tt.expect, actual, actual)
 		})
 	}
 }

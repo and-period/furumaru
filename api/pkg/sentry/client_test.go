@@ -1,7 +1,6 @@
 package sentry
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -17,7 +16,7 @@ func TestClient(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, client)
 
-		ctx := context.Background()
+		ctx := t.Context()
 		client.ReportError(ctx, assert.AnError)
 		client.ReportPanic(ctx, assert.AnError)
 		client.ReportMessage(ctx, "some message")

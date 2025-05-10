@@ -398,10 +398,10 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 		return
 	})
 	eg.Go(func() (err error) {
-		if order.OrderExperience.ExperienceRevisionID == 0 {
+		if order.ExperienceRevisionID == 0 {
 			return
 		}
-		experiences, err = h.multiGetExperiencesByRevision(ectx, []int64{order.OrderExperience.ExperienceRevisionID})
+		experiences, err = h.multiGetExperiencesByRevision(ectx, []int64{order.ExperienceRevisionID})
 		return
 	})
 	if err := eg.Wait(); err != nil {

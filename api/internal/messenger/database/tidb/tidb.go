@@ -39,13 +39,13 @@ func dbError(err error) error {
 		return fmt.Errorf("%w: %s", database.ErrDeadlineExceeded, err.Error())
 	}
 
-	//nolint:gocritic
+	//nolint:errorlint,gocritic
 	switch err := err.(type) {
 	case *gmysql.MySQLError:
 		if err.Number == 1062 {
-			return fmt.Errorf("%w: %s", database.ErrAlreadyExists, err)
+			return fmt.Errorf("%w: %s", database.ErrAlreadyExists, err.Error())
 		}
-		return fmt.Errorf("%w: %s", database.ErrInternal, err)
+		return fmt.Errorf("%w: %s", database.ErrInternal, err.Error())
 	}
 
 	switch {
@@ -58,16 +58,16 @@ func dbError(err error) error {
 		errors.Is(err, gorm.ErrMissingWhereClause),
 		errors.Is(err, gorm.ErrModelValueRequired),
 		errors.Is(err, gorm.ErrPrimaryKeyRequired):
-		return fmt.Errorf("%w: %s", database.ErrInvalidArgument, err)
+		return fmt.Errorf("%w: %s", database.ErrInvalidArgument, err.Error())
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		return fmt.Errorf("%w: %s", database.ErrNotFound, err)
+		return fmt.Errorf("%w: %s", database.ErrNotFound, err.Error())
 	case errors.Is(err, gorm.ErrDryRunModeUnsupported),
 		errors.Is(err, gorm.ErrInvalidDB),
 		errors.Is(err, gorm.ErrRegistered),
 		errors.Is(err, gorm.ErrUnsupportedDriver),
 		errors.Is(err, gorm.ErrUnsupportedRelation):
-		return fmt.Errorf("%w: %s", database.ErrInternal, err)
+		return fmt.Errorf("%w: %s", database.ErrInternal, err.Error())
 	default:
-		return fmt.Errorf("%w: %s", database.ErrUnknown, err)
+		return fmt.Errorf("%w: %s", database.ErrUnknown, err.Error())
 	}
 }

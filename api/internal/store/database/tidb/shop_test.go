@@ -18,7 +18,7 @@ func TestShop(t *testing.T) {
 }
 
 func TestShop_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -76,7 +76,7 @@ func TestShop_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -90,7 +90,7 @@ func TestShop_List(t *testing.T) {
 }
 
 func TestShop_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -148,7 +148,7 @@ func TestShop_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -162,7 +162,7 @@ func TestShop_Count(t *testing.T) {
 }
 
 func TestShop_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -218,7 +218,7 @@ func TestShop_MultiGet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -232,7 +232,7 @@ func TestShop_MultiGet(t *testing.T) {
 }
 
 func TestShop_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -298,7 +298,7 @@ func TestShop_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -312,7 +312,7 @@ func TestShop_Get(t *testing.T) {
 }
 
 func TestShop_GetByCoordinatorID(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -378,7 +378,7 @@ func TestShop_GetByCoordinatorID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -392,7 +392,7 @@ func TestShop_GetByCoordinatorID(t *testing.T) {
 }
 
 func TestShop_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -449,7 +449,7 @@ func TestShop_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable, shopTable)
@@ -465,7 +465,7 @@ func TestShop_Create(t *testing.T) {
 }
 
 func TestShop_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -514,7 +514,7 @@ func TestShop_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable, shopTable)
@@ -530,7 +530,7 @@ func TestShop_Update(t *testing.T) {
 }
 
 func TestShop_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -573,7 +573,7 @@ func TestShop_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable, shopTable)
@@ -589,7 +589,7 @@ func TestShop_Delete(t *testing.T) {
 }
 
 func TestShop_RemoveProductType(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -632,7 +632,7 @@ func TestShop_RemoveProductType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable, shopTable)
@@ -648,7 +648,7 @@ func TestShop_RemoveProductType(t *testing.T) {
 }
 
 func TestShop_ListProducers(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -705,7 +705,7 @@ func TestShop_ListProducers(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -719,7 +719,7 @@ func TestShop_ListProducers(t *testing.T) {
 }
 
 func TestShop_RelateProducer(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -764,7 +764,7 @@ func TestShop_RelateProducer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable)
@@ -780,7 +780,7 @@ func TestShop_RelateProducer(t *testing.T) {
 }
 
 func TestShop_UnrelateProducer(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -830,7 +830,7 @@ func TestShop_UnrelateProducer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, shopProducerTable)

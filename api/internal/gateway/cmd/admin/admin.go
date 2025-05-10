@@ -84,7 +84,6 @@ type app struct {
 	DefaultProducerGroupIDs           []string `default:""               envconfig:"DEFAULT_PRODUCER_GROUPS"`
 }
 
-//nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
 		Use:   "admin",

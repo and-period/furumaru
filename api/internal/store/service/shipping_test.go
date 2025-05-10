@@ -220,7 +220,6 @@ func TestListShippingsByCoordinatorIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListShippingsByCoordinatorIDs(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -313,7 +312,6 @@ func TestMutiGetShippingsByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetShippingsByRevision(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -472,7 +470,6 @@ func TestGetDefaultShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetDefaultShipping(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -561,7 +558,6 @@ func TestGetShippingByCoordinatorID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetShippingByCoordinatorID(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1112,7 +1108,6 @@ func TestUpdateDefaultShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateDefaultShipping(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1303,7 +1298,6 @@ func TestUpsertShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpsertShipping(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

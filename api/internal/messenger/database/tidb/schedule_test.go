@@ -18,7 +18,7 @@ func TestSchedule(t *testing.T) {
 }
 
 func TestSchedule_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -69,11 +69,10 @@ func TestSchedule_List(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -87,7 +86,7 @@ func TestSchedule_List(t *testing.T) {
 }
 
 func TestSchedule_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -132,11 +131,10 @@ func TestSchedule_Get(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -150,7 +148,7 @@ func TestSchedule_Get(t *testing.T) {
 }
 
 func TestSchedule_Upsert(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -217,9 +215,8 @@ func TestSchedule_Upsert(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, scheduleTable)
@@ -235,7 +232,7 @@ func TestSchedule_Upsert(t *testing.T) {
 }
 
 func TestSchedule_UpsertProcessing(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -300,9 +297,8 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, scheduleTable)
@@ -318,7 +314,7 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 }
 
 func TestSchedule_UpdateDone(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -389,9 +385,8 @@ func TestSchedule_UpdateDone(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, scheduleTable)
@@ -407,7 +402,7 @@ func TestSchedule_UpdateDone(t *testing.T) {
 }
 
 func TestSchedule_UpdateCancel(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -479,9 +474,8 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, scheduleTable)

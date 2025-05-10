@@ -56,7 +56,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	defer logger.Sync() //nolint:errcheck
+	defer logger.Sync()
 
 	params := &apmysql.Params{
 		Socket:   "tcp",
@@ -115,7 +115,7 @@ func (a *app) getOrderStatus(order *entity.Order) entity.OrderStatus {
 	case entity.PaymentStatusAuthorized:
 		return entity.OrderStatusWaiting
 	case entity.PaymentStatusCaptured:
-		if !order.OrderFulfillments.Fulfilled() {
+		if !order.Fulfilled() {
 			return entity.OrderStatusPreparing
 		}
 		if order.CompletedAt.IsZero() {

@@ -101,7 +101,6 @@ func TestSendReport(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.sendReport(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)

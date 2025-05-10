@@ -77,7 +77,7 @@ func TestBeginAndClose(t *testing.T) {
 	t.Skip() // 確認したい時のみコメントアウト
 
 	setEnv()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	params := &Params{
 		Socket:   "tcp",
@@ -99,7 +99,7 @@ func TestTransaction(t *testing.T) {
 	t.Skip() // 確認したい時のみコメントアウト
 
 	setEnv()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	params := &Params{
 		Socket:   "tcp",
@@ -144,7 +144,6 @@ func TestRetryable(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := Retryable(tt.err)
@@ -209,7 +208,6 @@ func TestNewDSN(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, newDSN(tt.params, tt.options))

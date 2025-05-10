@@ -1,7 +1,6 @@
 package rbac
 
 import (
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -40,7 +39,7 @@ func TestEnforcer(t *testing.T) {
 			expectErr:  false,
 		},
 		{
-			name:       "occured error",
+			name:       "occurred error",
 			modelPath:  "dummy.conf",
 			policyPath: "dummy.csv",
 			expect:     false,
@@ -49,7 +48,6 @@ func TestEnforcer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			enforcer, err := NewEnforcer(tt.modelPath, tt.policyPath)
 			require.Equal(t, tt.expectErr, err != nil, err)
@@ -136,7 +134,6 @@ func TestEnforcer_Enforce(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			enforced, err := enforcer.Enforce(tt.group, tt.path, tt.method)
@@ -195,7 +192,6 @@ func TestEnforcer_GetRolesForuser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			rules, err := enforcer.GetRolesForUser(tt.group, tt.domain...)
@@ -206,7 +202,7 @@ func TestEnforcer_GetRolesForuser(t *testing.T) {
 }
 
 func generateTempFile(name, content string) (string, error) {
-	f, err := ioutil.TempFile("", name)
+	f, err := os.CreateTemp("", name)
 	if err != nil {
 		return "", err
 	}

@@ -27,7 +27,7 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 	}
 	orders, err := s.newListBroadcastsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invlid list broadcasts orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invalid list broadcasts orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListBroadcastsParams{
 		ScheduleIDs:   in.ScheduleIDs,

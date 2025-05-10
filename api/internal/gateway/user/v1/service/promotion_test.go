@@ -43,7 +43,6 @@ func TestPromotionStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPromotionStatus(tt.status)
@@ -66,7 +65,6 @@ func TestPromotionStatus_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.status.Response())
@@ -103,7 +101,6 @@ func TestDiscountType(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewDiscountType(tt.discountType))
@@ -140,7 +137,6 @@ func TestDiscountType_StoreEntity(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.discountType.StoreEntity())
@@ -162,7 +158,6 @@ func TestDiscountType_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.discountType.Response())
@@ -211,7 +206,6 @@ func TestPromotion(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewPromotion(tt.promotion))
@@ -260,7 +254,6 @@ func TestPromotion_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.promotion.Response())
@@ -313,7 +306,6 @@ func TestPromotions(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewPromotions(tt.promotions))
@@ -361,7 +353,6 @@ func TestPromotions_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.promotions.Response())

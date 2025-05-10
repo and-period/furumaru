@@ -48,7 +48,6 @@ type app struct {
 	UserFirebaseSecretName       string `default:""                 envconfig:"USER_FIREBASE_SECRET_NAME"`
 }
 
-//nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
 		Use:   "worker",

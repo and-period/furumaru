@@ -95,33 +95,33 @@ func (c *client) lineError(e error) error {
 		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	}
 
-	err, ok := e.(*linebot.APIError)
-	if !ok {
+	var aerr *linebot.APIError
+	if !errors.As(e, &aerr) {
 		return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
 	}
 
-	switch err.Code {
+	switch aerr.Code {
 	case http.StatusBadRequest:
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
+		return fmt.Errorf("%w: %s", ErrInvalidArgument, aerr.Error())
 	case http.StatusUnauthorized:
-		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, aerr.Error())
 	case http.StatusForbidden:
-		return fmt.Errorf("%w: %s", ErrPermissionDenied, err.Error())
+		return fmt.Errorf("%w: %s", ErrPermissionDenied, aerr.Error())
 	case http.StatusNotFound:
-		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
+		return fmt.Errorf("%w: %s", ErrNotFound, aerr.Error())
 	case http.StatusConflict:
-		return fmt.Errorf("%w: %s", ErrAlreadyExists, err.Error())
+		return fmt.Errorf("%w: %s", ErrAlreadyExists, aerr.Error())
 	case http.StatusRequestEntityTooLarge:
-		return fmt.Errorf("%w: %s", ErrPayloadTooLong, err.Error())
+		return fmt.Errorf("%w: %s", ErrPayloadTooLong, aerr.Error())
 	case http.StatusTooManyRequests:
-		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
+		return fmt.Errorf("%w: %s", ErrResourceExhausted, aerr.Error())
 	case http.StatusInternalServerError:
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
+		return fmt.Errorf("%w: %s", ErrInternal, aerr.Error())
 	case http.StatusBadGateway:
-		return fmt.Errorf("%w: %s", ErrUnavailable, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnavailable, aerr.Error())
 	case http.StatusGatewayTimeout:
-		return fmt.Errorf("%w: %s", ErrTimeout, err.Error())
+		return fmt.Errorf("%w: %s", ErrTimeout, aerr.Error())
 	default:
-		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnknown, aerr.Error())
 	}
 }

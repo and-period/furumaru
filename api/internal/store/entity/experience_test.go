@@ -112,7 +112,7 @@ func TestExperience(t *testing.T) {
 			t.Parallel()
 			actual, err := NewExperience(tt.params)
 			assert.Equal(t, tt.hasErr, err != nil, err)
-			actual.ID, actual.ExperienceRevision.ExperienceID = "", "" // ignore
+			actual.ID, actual.ExperienceID = "", "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

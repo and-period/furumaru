@@ -72,7 +72,6 @@ type app struct {
 	UserWebURL                   string  `default:""               envconfig:"USER_WEB_URL"`
 }
 
-//nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
 		Use:   "user",

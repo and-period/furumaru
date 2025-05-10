@@ -108,7 +108,7 @@ func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err erro
 		if err := sm.Acquire(ctx, 1); err != nil {
 			return err
 		}
-		record := record
+
 		eg.Go(func() error {
 			defer sm.Release(1)
 			return u.dispatch(ectx, record)

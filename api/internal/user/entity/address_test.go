@@ -70,14 +70,13 @@ func TestAddress(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewAddress(tt.params)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			if actual != nil {
-				actual.ID = ""                        // ignore
-				actual.AddressRevision.AddressID = "" // ignore
+				actual.ID = ""        // ignore
+				actual.AddressID = "" // ignore
 			}
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -139,7 +138,6 @@ func TestAddress_Name(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.address.Name())
@@ -202,7 +200,6 @@ func TestAddress_NameKana(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.address.NameKana())
@@ -242,7 +239,6 @@ func TestAddress_FullPath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.address.FullPath())
@@ -282,7 +278,6 @@ func TestAddress_ShortPath(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.address.ShortPath())
@@ -341,7 +336,6 @@ func TestAddress_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.address.Fill(tt.revision)
@@ -370,7 +364,6 @@ func TestAddresses_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.IDs())
@@ -430,7 +423,6 @@ func TestAddresses_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.Map())
@@ -490,7 +482,6 @@ func TestAddresses_MapByRevision(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.MapByRevision())
@@ -552,7 +543,6 @@ func TestAddresses_MapByUserID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.MapByUserID())
@@ -630,7 +620,6 @@ func TestAddresses_Fill(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.addresses.Fill(tt.revisions)

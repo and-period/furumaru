@@ -29,7 +29,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 		return internalError(err)
 	}
 	// KOMOJU側の仕様として、即時決済出ないものは支払い待ちステータスでAuthorizedの通知が来るためスキップさせる
-	if order.OrderPayment.IsDeferredPayment() {
+	if order.IsDeferredPayment() {
 		s.logger.Info("Order is authorized but deferred payment", zap.String("orderId", in.OrderID))
 		return nil
 	}
@@ -61,7 +61,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
-		if !order.OrderPayment.IsImmediatePayment() {
+		if !order.IsImmediatePayment() {
 			return
 		}
 		if err := s.removeCartItemByOrder(ctx, order); err != nil {
@@ -181,7 +181,7 @@ func (s *service) removeCartItemByOrder(ctx context.Context, order *entity.Order
 		s.logger.Debug("Cart is empty", zap.String("sessionID", order.SessionID))
 		return nil
 	}
-	revisionIDs := order.OrderItems.ProductRevisionIDs()
+	revisionIDs := order.ProductRevisionIDs()
 	products, err := s.db.Product.MultiGetByRevision(ctx, revisionIDs)
 	if err != nil {
 		return fmt.Errorf("failed to get products: %w", err)

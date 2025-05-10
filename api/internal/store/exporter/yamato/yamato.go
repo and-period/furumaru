@@ -272,7 +272,7 @@ func NewReceipt(params *ReceiptParams) exporter.Receipt {
 	receipt := &Receipt{}
 	receipt.SetReceiptDetails(params.Fulfillment)
 	receipt.SetDeliveryDetails(params.Addresses[params.Fulfillment.AddressRevisionID])
-	receipt.SetClientDetails(params.Addresses[params.Order.OrderPayment.AddressRevisionID])
+	receipt.SetClientDetails(params.Addresses[params.Order.AddressRevisionID])
 	receipt.SetProductDetails(params.Items, params.Products)
 	receipt.SetWebCollectDetails()
 	receipt.SetCollectionAgencyDetails()
@@ -529,7 +529,7 @@ func (r *Receipt) Record() []string {
 func NewReceipts(params *ReceiptsParams) []exporter.Receipt {
 	res := make([]exporter.Receipt, 0, len(params.Orders))
 	for _, order := range params.Orders {
-		itemsMap := order.OrderItems.GroupByFulfillmentID()
+		itemsMap := order.GroupByFulfillmentID()
 		for _, fulfillment := range order.OrderFulfillments {
 			in := &ReceiptParams{
 				Order:       order,

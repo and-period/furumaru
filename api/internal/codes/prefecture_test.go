@@ -62,7 +62,6 @@ func TestPrefectureNames(t *testing.T) {
 	}
 	require.Len(t, PrefectureNames, 47)
 	for key, expect := range tests {
-		key, expect := key, expect
 		t.Run(expect, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, expect, PrefectureNames[key])
@@ -124,7 +123,6 @@ func TestPrefectureJapanese(t *testing.T) {
 	}
 	require.Len(t, PrefectureNames, 47)
 	for key, expect := range tests {
-		key, expect := key, expect
 		t.Run(expect, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, expect, PrefectureJapanese[key])
@@ -233,7 +231,6 @@ func TestPrefectureValues(t *testing.T) {
 	}
 	require.Len(t, PrefectureNames, 47)
 	for key, expect := range tests {
-		key, expect := key, expect
 		t.Run(key, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, expect, PrefectureValues[key])
@@ -263,7 +260,6 @@ func TestToPrefectureNames(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ToPrefectureNames(tt.values...)
@@ -295,7 +291,6 @@ func TestToPrefectureJapanese(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ToPrefectureJapanese(tt.values)
@@ -327,7 +322,6 @@ func TestToPrefectureValues(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ToPrefectureValues(tt.values...)
@@ -344,7 +338,6 @@ func TestValidatePrefectureNames(t *testing.T) {
 		"california": ErrUnknownPrefecture,
 	}
 	for key, expect := range tests {
-		key, expect := key, expect
 		t.Run(key, func(t *testing.T) {
 			t.Parallel()
 			assert.ErrorIs(t, ValidatePrefectureNames(key), expect)
@@ -359,7 +352,6 @@ func TestValidatePrefectureValues(t *testing.T) {
 		1: nil,
 	}
 	for key, expect := range tests {
-		key, expect := key, expect
 		t.Run(strconv.Itoa(int(key)), func(t *testing.T) {
 			t.Parallel()
 			assert.ErrorIs(t, ValidatePrefectureValues(key), expect)

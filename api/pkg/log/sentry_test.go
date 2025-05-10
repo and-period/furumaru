@@ -91,7 +91,6 @@ func TestLoggerWithSentry(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			ctrl := gomock.NewController(t)
@@ -120,7 +119,7 @@ func TestZapFields_FirstError(t *testing.T) {
 		fs := make(ZapFields, 0, 1)
 		ok, err := fs.FirstError()
 		assert.False(t, ok)
-		assert.Nil(t, err)
+		assert.NoError(t, err)
 	})
 	t.Run("exist", func(t *testing.T) {
 		fs := make(ZapFields, 0, 1)
@@ -166,7 +165,6 @@ func TestLogger_GetSentryLovel(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, getSentryLevel(tt.level))

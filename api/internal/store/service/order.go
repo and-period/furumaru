@@ -94,7 +94,7 @@ func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput)
 	if !order.Capturable() {
 		return fmt.Errorf("service: this order cannot be capture: %w", exception.ErrFailedPrecondition)
 	}
-	_, err = s.komoju.Payment.Capture(ctx, order.OrderPayment.PaymentID)
+	_, err = s.komoju.Payment.Capture(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -191,7 +191,7 @@ func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) e
 	if !order.Cancelable() {
 		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
 	}
-	_, err = s.komoju.Payment.Cancel(ctx, order.OrderPayment.PaymentID)
+	_, err = s.komoju.Payment.Cancel(ctx, order.PaymentID)
 	return internalError(err)
 }
 
@@ -207,8 +207,8 @@ func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) e
 		return fmt.Errorf("service: this order cannot be refund: %w", exception.ErrFailedPrecondition)
 	}
 	params := &komoju.RefundParams{
-		PaymentID:   order.OrderPayment.PaymentID,
-		Amount:      order.OrderPayment.Total,
+		PaymentID:   order.PaymentID,
+		Amount:      order.Total,
 		Description: in.Description,
 	}
 	_, err = s.komoju.Payment.Refund(ctx, params)

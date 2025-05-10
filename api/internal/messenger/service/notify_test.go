@@ -212,7 +212,6 @@ func TestNotifyStartLive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyStartLive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -684,7 +683,6 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyOrderCaptured(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -943,7 +941,6 @@ func TestNotifyOrderShipped(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyOrderShipped(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1270,7 +1267,6 @@ func TestNotifyReviewRequest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyReviewRequest(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1356,7 +1352,6 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyRegisterAdmin(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1442,7 +1437,6 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyResetAdminPassword(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1671,7 +1665,6 @@ func TestNotifyNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1742,7 +1735,6 @@ func TestSendMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.sendMessage(ctx, tt.payload)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -1850,7 +1842,6 @@ func TestSendAllAdministrators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.sendAllAdministrators(ctx, tt.payload)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -1958,7 +1949,6 @@ func TestSendAllCoordinators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.sendAllCoordinators(ctx, tt.payload)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -2066,7 +2056,6 @@ func TestSendAllProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.sendAllProducers(ctx, tt.payload)
 			assert.Equal(t, tt.hasErr, err != nil, err)

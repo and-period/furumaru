@@ -82,7 +82,7 @@ func newAddress(components []maps.AddressComponent) (*Address, error) {
 		component := components[i]
 		switch {
 		case slices.Contains(component.Types, "postal_code"):
-			res.PostalCode = strings.Replace(component.LongName, "-", "", -1)
+			res.PostalCode = strings.ReplaceAll(component.LongName, "-", "")
 		case slices.Contains(component.Types, "administrative_area_level_1"):
 			res.Prefecture = component.LongName
 		case slices.Contains(component.Types, "locality"):
@@ -156,7 +156,7 @@ func (c *client) GetGeolocation(ctx context.Context, in *GetGeolocationInput) (*
 	req := &maps.GeocodingRequest{
 		Language: "ja",
 		Region:   "JP",
-		Address:  in.Address.String(),
+		Address:  in.String(),
 	}
 	c.logger.Debug("Request geocoding by address", zap.Any("request", req))
 	res, err := c.client.Geocode(ctx, req)

@@ -41,7 +41,6 @@ func TestOrderItem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderItem(tt.params)
@@ -152,7 +151,6 @@ func TestOrderItems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := NewOrderItems(tt.params)
@@ -192,7 +190,6 @@ func TestOrderItems_ProductRevisionIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.items.ProductRevisionIDs())
@@ -250,7 +247,6 @@ func TestOrderItems_GroupByFulfillmentID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.items.GroupByFulfillmentID())
@@ -308,7 +304,6 @@ func TestOrderItems_GroupByOrderID(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.items.GroupByOrderID())

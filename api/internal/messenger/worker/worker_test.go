@@ -120,7 +120,7 @@ func testWorker(
 ) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -186,7 +186,6 @@ func TestWorker_Dispatch(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.dispatch(ctx, tt.record)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -495,7 +494,6 @@ func TestWorker_Run(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.run(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)

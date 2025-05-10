@@ -3,6 +3,7 @@ package tidb
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -255,7 +256,7 @@ func (s *shipping) Update(ctx context.Context, shippingID string, params *databa
 func (s *shipping) UpdateInUse(ctx context.Context, shopID, shippingID string) error {
 	return s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, shippingID)
-		if err != nil && err != gorm.ErrRecordNotFound {
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
 		if current != nil {
@@ -415,7 +416,7 @@ func (r *internalShippingRevision) unmarshalBox60Rates() error {
 	if err := json.Unmarshal(r.Box60RatesJSON, &rates); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal box60 rates: %w", err)
 	}
-	r.ShippingRevision.Box60Rates = rates
+	r.Box60Rates = rates
 	return nil
 }
 
@@ -427,7 +428,7 @@ func (r *internalShippingRevision) unmarshalBox80Rates() error {
 	if err := json.Unmarshal(r.Box80RatesJSON, &rates); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal box80 rates: %w", err)
 	}
-	r.ShippingRevision.Box80Rates = rates
+	r.Box80Rates = rates
 	return nil
 }
 
@@ -439,7 +440,7 @@ func (r *internalShippingRevision) unmarshalBox100Rates() error {
 	if err := json.Unmarshal(r.Box100RatesJSON, &rates); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal box100 rates: %w", err)
 	}
-	r.ShippingRevision.Box100Rates = rates
+	r.Box100Rates = rates
 	return nil
 }
 

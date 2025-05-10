@@ -64,7 +64,6 @@ func TestMultiGetPaymentSystems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetPaymentSystems(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -121,7 +120,6 @@ func TestGetPaymentSystem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetPaymentSystem(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -173,7 +171,6 @@ func TestUpdatePaymentSystem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdatePaymentSystem(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

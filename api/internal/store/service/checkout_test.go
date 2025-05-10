@@ -179,7 +179,6 @@ func TestGetCheckoutState(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			orderID, status, err := service.GetCheckoutState(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -310,7 +309,6 @@ func TestCheckoutCreditCard(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutCreditCard(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -396,7 +394,6 @@ func TestCheckoutPayPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPayPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -482,7 +479,6 @@ func TestCheckoutLinePay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutLinePay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -568,7 +564,6 @@ func TestCheckoutMerpay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutMerpay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -654,7 +649,6 @@ func TestCheckoutRakutenPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutRakutenPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -740,7 +734,6 @@ func TestCheckoutAUPay(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutAUPay(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -828,7 +821,6 @@ func TestCheckoutPaidy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPaidy(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -920,7 +912,6 @@ func TestCheckoutBankTransfer(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutBankTransfer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1012,7 +1003,6 @@ func TestCheckoutPayEasy(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.CheckoutPayEasy(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1579,7 +1569,7 @@ func TestCheckoutProduct(t *testing.T) {
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
 				mocks.db.Order.EXPECT().Create(gomock.Any(), gomock.Any()).DoAndReturn(func(_ context.Context, in *entity.Order) error {
-					assert.Equal(t, int64(0), in.OrderPayment.Total)
+					assert.Equal(t, int64(0), in.Total)
 					return nil
 				})
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -2283,7 +2273,6 @@ func TestCheckoutProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.checkout(ctx, tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -2551,7 +2540,7 @@ func TestCheckoutExperience(t *testing.T) {
 				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
 				mocks.db.Order.EXPECT().Create(ctx, gomock.Any()).DoAndReturn(func(_ context.Context, in *entity.Order) error {
-					assert.Equal(t, int64(0), in.OrderPayment.Total)
+					assert.Equal(t, int64(0), in.Total)
 					return nil
 				})
 				mocks.messenger.EXPECT().NotifyOrderCaptured(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -3130,7 +3119,6 @@ func TestCheckoutExperience(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.checkout(ctx, tt.params)
 			assert.ErrorIs(t, err, tt.expectErr)

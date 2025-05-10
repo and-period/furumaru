@@ -96,7 +96,7 @@ func testScheduler(
 ) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -201,7 +201,6 @@ func TestScheduler_Run(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.Run(ctx, tt.target)
 			assert.ErrorIs(t, err, tt.expect)
@@ -313,7 +312,6 @@ func TestScheduler_execute(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.execute(ctx, tt.schedule, tt.execute)
 			assert.ErrorIs(t, err, tt.expect)

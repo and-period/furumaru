@@ -236,20 +236,6 @@ func (r *Regulation) Validate(contentType string, size int64) error {
 	return r.validateFormat(contentType)
 }
 
-func (r *Regulation) validateSize(size int64) error {
-	if size > r.MaxSize {
-		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, size)
-	}
-	return nil
-}
-
-func (r *Regulation) validateFormat(contentType string) error {
-	if !r.Formats.Contains(contentType) {
-		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
-	}
-	return nil
-}
-
 func (r *Regulation) GetObjectKey(contentType string, args ...interface{}) (string, error) {
 	ext, err := r.GetFileExtension(contentType)
 	if err != nil {
@@ -290,4 +276,18 @@ func (r *Regulation) ShouldConvert(contentType string) bool {
 	default:
 		return false
 	}
+}
+
+func (r *Regulation) validateSize(size int64) error {
+	if size > r.MaxSize {
+		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, size)
+	}
+	return nil
+}
+
+func (r *Regulation) validateFormat(contentType string) error {
+	if !r.Formats.Contains(contentType) {
+		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
+	}
+	return nil
 }

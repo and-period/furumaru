@@ -45,7 +45,7 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 			ClientSecret: "client-secret",
 		}
 		client := NewClient(ts.Client(), params, komoju.WithLogger(logger))
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		res, err := fn(ctx, client)
 		if err == nil {
@@ -194,7 +194,6 @@ func TestSession_Show(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {
@@ -326,7 +325,6 @@ func TestSession_Capture(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {
@@ -449,7 +447,6 @@ func TestSession_Cancel(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {
@@ -609,7 +606,6 @@ func TestSession_Refund(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {
@@ -801,7 +797,6 @@ func TestSession_RefundRequest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
 			t.Run(tt.name, testClient(tt.handler, tt.expect, func(ctx context.Context, client komoju.Payment) (interface{}, error) {

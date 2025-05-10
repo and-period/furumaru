@@ -165,7 +165,7 @@ func testHTTP(
 	}
 
 	body, err := json.Marshal(expect.body)
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 	require.JSONEq(t, string(body), w.Body.String())
 }
 
@@ -184,15 +184,15 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 	if body != nil {
 		var err error
 		buf, err = json.Marshal(body)
-		require.NoError(t, err, err)
+		require.NoError(t, err)
 	}
 
 	req, err := http.NewRequest(method, path, bytes.NewReader(buf))
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("Userid", idmock)
 	return req
 }
 
@@ -208,24 +208,24 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 
 	filepath := getFilepath(t)
 	file, err := os.Open(filepath)
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 	defer file.Close()
 
 	header := textproto.MIMEHeader{}
 	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, field, filename))
 	header.Set("Content-Type", "multipart/form-data")
 	part, err := writer.CreatePart(header)
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 
 	_, err = io.Copy(part, file)
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 
 	req, err := http.NewRequest(method, path, buf)
-	require.NoError(t, err, err)
+	require.NoError(t, err)
 
 	req.Header.Add("Content-Type", writer.FormDataContentType())
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tokenmock))
-	req.Header.Add("userId", idmock)
+	req.Header.Add("Userid", idmock)
 	return req
 }
 

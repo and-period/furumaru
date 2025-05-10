@@ -49,7 +49,6 @@ func TestArchiveSummary(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewArchiveSummary(tt.schedule)
@@ -88,7 +87,6 @@ func TestArchiveSummary_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.archive.Response())
@@ -140,7 +138,6 @@ func TestArchiveSummaries(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewArchiveSummaries(tt.schedules)
@@ -174,7 +171,6 @@ func TestArchiveSummaries_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.archives.CoordinatorIDs())
@@ -216,7 +212,6 @@ func TestArchiveSummaries_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.archives.Response())

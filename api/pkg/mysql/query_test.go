@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,15 +25,15 @@ func TestNullInt(t *testing.T) {
 	})
 	t.Run("null int", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int](0))
+		assert.Nil(t, NullInt[int](0))
 	})
 	t.Run("null int32", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int32](0))
+		assert.Nil(t, NullInt[int32](0))
 	})
 	t.Run("null int64", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullInt[int64](0))
+		assert.Nil(t, NullInt[int64](0))
 	})
 }
 
@@ -46,7 +45,7 @@ func TestNullString(t *testing.T) {
 	})
 	t.Run("null string", func(t *testing.T) {
 		t.Parallel()
-		assert.Equal(t, nil, NullString(""))
+		assert.Nil(t, NullString(""))
 	})
 }
 
@@ -150,7 +149,7 @@ func TestGeometry_GormValue(t *testing.T) {
 		db := &gorm.DB{Config: &gorm.Config{Dialector: dialector}}
 
 		geometry := Geometry{X: 1, Y: 1}
-		expr := geometry.GormValue(context.Background(), db)
+		expr := geometry.GormValue(t.Context(), db)
 		assert.Equal(t, "ST_GeomFromText(?)", expr.SQL)
 		assert.Equal(t, []interface{}{"POINT(1.000000 1.000000)"}, expr.Vars)
 	})

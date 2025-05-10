@@ -61,7 +61,6 @@ func TestMultiGetUserNotifications(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetUserNotifications(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -116,7 +115,6 @@ func TestGetUserNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetUserNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -184,7 +182,6 @@ func TestUpdateUserNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateUserNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

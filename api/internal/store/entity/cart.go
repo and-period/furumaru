@@ -364,7 +364,7 @@ func (is CartItems) groupByCartBasketKey(products map[string]*Product) map[strin
 		if _, ok := res[key]; !ok {
 			res[key] = make(Products, 0, item.Quantity)
 		}
-		for i := 0; i < int(item.Quantity); i++ {
+		for range item.Quantity {
 			res[key] = append(res[key], product)
 		}
 	}
@@ -409,11 +409,8 @@ func refreshCart(baskets CartBaskets, products map[string]*Product) (CartBaskets
 			return stacks[i].Box100Rate >= stacks[j].Box100Rate
 		})
 
-		for {
+		for len(stacks) != 0 {
 			// 商品がまだあるかの検証
-			if len(stacks) == 0 {
-				break
-			}
 
 			// 箱に詰める商品と詰めない商品を分割
 			picked, rest := pickCartBasket(stacks)

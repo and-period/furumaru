@@ -97,29 +97,29 @@ func (c *client) mailError(e error) error {
 		return fmt.Errorf("%w: %s", ErrTimeout, e.Error())
 	}
 
-	err, ok := e.(*SendGridError)
-	if !ok {
+	var serr *SendGridError
+	if !errors.As(e, &serr) {
 		return fmt.Errorf("%w: %s", ErrUnknown, e.Error())
 	}
 
-	switch err.Code {
+	switch serr.Code {
 	case http.StatusBadRequest:
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
+		return fmt.Errorf("%w: %s", ErrInvalidArgument, serr.Error())
 	case http.StatusUnauthorized:
-		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnauthenticated, serr.Error())
 	case http.StatusForbidden:
-		return fmt.Errorf("%w: %s", ErrPermissionDenied, err.Error())
+		return fmt.Errorf("%w: %s", ErrPermissionDenied, serr.Error())
 	case http.StatusRequestEntityTooLarge:
-		return fmt.Errorf("%w: %s", ErrPayloadTooLong, err.Error())
+		return fmt.Errorf("%w: %s", ErrPayloadTooLong, serr.Error())
 	case http.StatusNotFound:
-		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
+		return fmt.Errorf("%w: %s", ErrNotFound, serr.Error())
 	case http.StatusInternalServerError:
-		return fmt.Errorf("%w: %s", ErrInternal, err.Error())
+		return fmt.Errorf("%w: %s", ErrInternal, serr.Error())
 	case http.StatusBadGateway:
-		return fmt.Errorf("%w: %s", ErrUnavailable, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnavailable, serr.Error())
 	case http.StatusGatewayTimeout:
-		return fmt.Errorf("%w: %s", ErrTimeout, err.Error())
+		return fmt.Errorf("%w: %s", ErrTimeout, serr.Error())
 	default:
-		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())
+		return fmt.Errorf("%w: %s", ErrUnknown, serr.Error())
 	}
 }

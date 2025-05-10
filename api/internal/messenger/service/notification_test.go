@@ -122,7 +122,6 @@ func TestListNotificaitons(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListNotifications(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -187,7 +186,6 @@ func TestGetNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -378,7 +376,6 @@ func TestCreateNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -582,7 +579,6 @@ func TestUpdateNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -628,7 +624,6 @@ func TestDeleteNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteNotification(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

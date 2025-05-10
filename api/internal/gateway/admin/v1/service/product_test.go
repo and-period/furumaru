@@ -48,7 +48,6 @@ func TestProductStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProductStatus(tt.status))
@@ -90,7 +89,6 @@ func TestStorageMethodType(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewStorageMethodType(tt.storageMethodType))
@@ -127,7 +125,6 @@ func TestDeliveryType(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewDeliveryType(tt.deliveryType))
@@ -164,7 +161,6 @@ func TestDeliveryType_StoreEntity(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.deliveryType.StoreEntity())
@@ -186,7 +182,6 @@ func TestDeliveryType_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.deliveryType.Response())
@@ -234,7 +229,6 @@ func TestProductWeight(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewProductWeight(tt.weight, tt.weightUnit)
@@ -265,7 +259,6 @@ func TestProductWeightFromRequest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			weight, weightUnit := NewProductWeightFromRequest(tt.weight)
@@ -380,7 +373,6 @@ func TestProduct(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProduct(tt.product))
@@ -474,7 +466,6 @@ func TestProduct_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.product.Response())
@@ -583,7 +574,6 @@ func TestProducts(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProducts(tt.products))
@@ -635,7 +625,6 @@ func TestProducts_ProducerIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.products.ProducerIDs())
@@ -687,7 +676,6 @@ func TestProducts_CategoryIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.products.CategoryIDs())
@@ -739,7 +727,6 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.products.ProductTypeIDs())
@@ -821,7 +808,6 @@ func TestProducts_Map(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.Map())
@@ -905,7 +891,6 @@ func TestProducts_MapByRevision(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.MapByRevision())
@@ -991,7 +976,6 @@ func TestProducts_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.Response())
@@ -1021,7 +1005,6 @@ func TestProductMedia(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProductMedia(tt.media))
@@ -1051,7 +1034,6 @@ func TestProductMedia_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.media.Response())
@@ -1095,7 +1077,6 @@ func TestMultiProductMedia(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewMultiProductMedia(tt.media))
@@ -1139,7 +1120,6 @@ func TestMultiProductMedia_Response(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.media.Response())

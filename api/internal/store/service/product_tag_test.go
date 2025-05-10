@@ -107,7 +107,6 @@ func TestListProductTags(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListProductTags(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -171,7 +170,6 @@ func TestMultiGetProductTags(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetProductTags(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -230,7 +228,6 @@ func TestGetProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetProductTag(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -286,7 +283,6 @@ func TestCreateProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateProductTag(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -334,7 +330,6 @@ func TestUpdateProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProductTag(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -406,7 +401,6 @@ func TestDeleteProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteProductTag(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

@@ -374,7 +374,7 @@ func (c *internalCoordinator) unmarshalProductTypeIDs() error {
 	if err := json.Unmarshal(c.ProductTypeIDsJSON, &ids); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal product type IDs: %w", err)
 	}
-	c.Coordinator.ProductTypeIDs = ids
+	c.ProductTypeIDs = ids
 	return nil
 }
 
@@ -386,7 +386,7 @@ func (c *internalCoordinator) unmarshalBusinessDays() error {
 	if err := json.Unmarshal(c.BusinessDaysJSON, &days); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal business days: %w", err)
 	}
-	c.Coordinator.BusinessDays = days
+	c.BusinessDays = days
 	return nil
 }
 

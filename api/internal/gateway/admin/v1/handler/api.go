@@ -364,8 +364,8 @@ func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
 
 func setAuth(ctx *gin.Context, adminID string, role service.AdminType) {
 	if adminID != "" {
-		ctx.Request.Header.Set("adminId", adminID)
-		ctx.Request.Header.Set("adminType", strconv.FormatInt(int64(role), 10))
+		ctx.Request.Header.Set("Adminid", adminID)
+		ctx.Request.Header.Set("Admintype", strconv.FormatInt(int64(role), 10))
 	}
 }
 

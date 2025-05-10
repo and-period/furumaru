@@ -36,7 +36,7 @@ func TestAPIClient_Do(t *testing.T) {
 		Method: http.MethodPost,
 		Body:   &testAPIRequest{},
 	}
-	err := client.Do(context.Background(), params, nil)
+	err := client.Do(t.Context(), params, nil)
 	require.Error(t, err)
 }
 
@@ -49,7 +49,7 @@ func TestAPIClient_do(t *testing.T) {
 		Method: http.MethodPost,
 		Body:   &testAPIRequest{},
 	}
-	err := client.do(context.Background(), params, nil)
+	err := client.do(t.Context(), params, nil)
 	require.Error(t, err)
 }
 
@@ -87,7 +87,6 @@ func TestAPIClient_isRetryable(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")
@@ -160,7 +159,6 @@ func TestAPIClient_statusCheck(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")
@@ -188,7 +186,7 @@ func TestAPIClient_statusCheck(t *testing.T) {
 
 func TestAPIClient_request(t *testing.T) {
 	t.Parallel()
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	client := NewAPIClient(&http.Client{}, "basic-id", "secret")
 	params := &APIParams{
@@ -236,7 +234,6 @@ func TestAPIClient_bind(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			client := NewAPIClient(&http.Client{}, "basic-id", "secret")

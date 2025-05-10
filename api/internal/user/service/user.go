@@ -75,7 +75,7 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 	}
 	if u.Registered {
 		auth := func(ctx context.Context) error {
-			err := s.userAuth.DeleteUser(ctx, u.Member.CognitoID)
+			err := s.userAuth.DeleteUser(ctx, u.CognitoID)
 			if errors.Is(err, cognito.ErrNotFound) {
 				return nil // すでに削除済み
 			}

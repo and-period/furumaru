@@ -13,7 +13,7 @@ import (
 )
 
 func TestMetricsServer(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 
 	tests := []struct {
@@ -31,7 +31,6 @@ func TestMetricsServer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			server := NewMetricsServer(tt.port)
 			go server.Serve()
@@ -40,10 +39,12 @@ func TestMetricsServer(t *testing.T) {
 				time.Sleep(2 * time.Second)
 			}()
 
-			for i := 0; i < 10; i++ {
+			for range 10 {
 				time.Sleep(time.Microsecond * 100)
 				url := fmt.Sprintf("http://localhost:%d/metrics", tt.port)
-				res, err := http.Get(url)
+				req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+				require.NoError(t, err)
+				res, err := http.DefaultClient.Do(req)
 				if err != nil && strings.Contains(err.Error(), "connect: connection refused") {
 					continue
 				}

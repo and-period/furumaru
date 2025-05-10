@@ -123,7 +123,7 @@ func testService(
 ) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -197,7 +197,6 @@ func TestInternalError(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := internalError(tt.err)

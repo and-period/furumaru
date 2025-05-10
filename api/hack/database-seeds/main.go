@@ -4,8 +4,6 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678' \
 //	 -src-dir='./hack/database-seeds/master'
-//
-//nolint:gocritic,forbidigo
 package main
 
 import (

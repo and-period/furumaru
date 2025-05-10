@@ -163,7 +163,6 @@ func TestListExperiences(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, total, err := service.ListExperiences(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -299,7 +298,6 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.ListExperiencesByGeolocation(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -404,7 +402,6 @@ func TestMultiGetExperiences(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetExperiences(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -509,7 +506,6 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.MultiGetExperiencesByRevision(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -610,7 +606,6 @@ func TestGetExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.GetExperience(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1122,7 +1117,6 @@ func TestCreateExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateExperience(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1426,7 +1420,6 @@ func TestUpdateExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateExperience(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
@@ -1500,7 +1493,6 @@ func TestDeleteExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.DeleteExperience(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)

@@ -20,7 +20,7 @@ func (s *service) ListCategories(
 	}
 	orders, err := s.newListCategoriesOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list caterogies orders: err=%s: %w", err, exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf("service: invalid list caterogies orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.ListCategoriesParams{
 		Name:   in.Name,

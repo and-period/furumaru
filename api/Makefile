@@ -1,4 +1,4 @@
-.PHONY: help install mockgen fmt vet lint test build build-hack build-dev start-dev
+.PHONY: help install mockgen fmt vet lint lint-fix test build build-hack build-dev start-dev
 
 BUILD_DIR := $(CURDIR)
 
@@ -24,6 +24,9 @@ vet: ## コードの静的解析
 
 lint: ## Linterの実行
 	go tool golangci-lint run -c .golangci.yaml ./...
+
+lint-fix: ## Linterでの修正
+	go tool golangci-lint run -c .golangci.yaml ./... --fix
 
 test: ## テストの実行
 	go test -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)

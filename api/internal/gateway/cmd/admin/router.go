@@ -167,7 +167,10 @@ func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter
 		return
 	}
 
-	details, _ := json.Marshal(res)
+	details, err := json.Marshal(res)
+	if err != nil {
+		a.logger.Error("Failed to marshal response", zap.Error(err))
+	}
 	params := &alertMessageParams{
 		title:   "ふるまる APIアラート",
 		appName: a.AppName,

@@ -209,7 +209,7 @@ func (n *internalNotification) unmarshalTargets() error {
 	if err := json.Unmarshal(n.TargetsJSON, &targets); err != nil {
 		return fmt.Errorf("tidb: failed to unmarshal notification targets: %w", err)
 	}
-	n.Notification.Targets = targets
+	n.Targets = targets
 	return nil
 }
 

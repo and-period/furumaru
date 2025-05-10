@@ -73,7 +73,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 		err error
 	)
 	req.Header.Set("Content-Type", "application/json")
-	for retries := 0; retries < c.maxRetries; retries++ {
+	for range c.maxRetries {
 		res, err = c.client.Do(req)
 		if err != nil || !c.retryable(res.StatusCode) {
 			break
@@ -82,7 +82,7 @@ func (c *client) do(req *http.Request, out interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 	if err := c.checkStatus(res); err != nil {
 		return err
 	}

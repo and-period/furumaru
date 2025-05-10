@@ -67,7 +67,6 @@ type app struct {
 	translate  translate.Client
 }
 
-//nolint:forbidigo,gocritic
 func main() {
 	startedAt := jst.Now()
 

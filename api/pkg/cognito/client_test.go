@@ -16,7 +16,7 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Parallel()
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(t.Context())
 	require.NoError(t, err)
 	auth := NewClient(cfg, &Params{},
 		WithMaxRetries(1),
@@ -90,7 +90,6 @@ func TestAuthError(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			cli := &client{logger: zap.NewNop()}

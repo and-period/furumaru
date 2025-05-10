@@ -4,7 +4,7 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-//nolint:gocritic,forbidigo,lll
+//nolint:lll
 package main
 
 import (
@@ -198,7 +198,6 @@ func (a *app) begin(ctx context.Context, db *mysql.Client) (*sql.Tx, error) {
 	return tx, nil
 }
 
-//nolint:unparam
 func (a *app) close(tx *sql.Tx) func() {
 	return func() {
 		if r := recover(); r != nil {
@@ -272,7 +271,10 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	stmt := fmt.Sprintf(format, schemaTable, schema.database, schema.version)
 	rs, err := tx.Query(stmt)
 	a.logger.Debug("get schema", zap.String("stmt", stmt), zap.Error(err))
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
 		return false, err
 	}
 	defer rs.Close()

@@ -206,7 +206,7 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 	if err != nil {
 		return nil, fmt.Errorf("cognito: failed to request: %w", err)
 	}
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 
 	if res.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(res.Body)

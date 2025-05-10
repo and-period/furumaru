@@ -113,7 +113,7 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) (err error) 
 		if err := sm.Acquire(ctx, 1); err != nil {
 			return err
 		}
-		record := record
+
 		eg.Go(func() error {
 			defer sm.Release(1)
 			return w.dispatch(ectx, record)

@@ -221,7 +221,7 @@ func (b *internalBroadcast) unmarshalArchiveMetadata() error {
 	if err := json.Unmarshal(b.ArchiveMetadataJSON, &metadata); err != nil {
 		return fmt.Errorf("database: failed to unmarshal archive metadata: %w", err)
 	}
-	b.Broadcast.ArchiveMetadata = metadata
+	b.ArchiveMetadata = metadata
 	return nil
 }
 

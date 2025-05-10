@@ -4,7 +4,7 @@
 //	 -db-host='127.0.0.1' -db-port='3316' \
 //	 -db-username='root' -db-password='12345678'
 //
-//nolint:typecheck
+
 package main
 
 import (
@@ -59,7 +59,6 @@ type schema struct {
 	path     string
 }
 
-//nolint:funlen
 func run() error {
 	app := app{}
 	host := flag.String("db-host", "mysql", "target mysql host")
@@ -83,6 +82,7 @@ func run() error {
 
 	isExists := app.checkMigrateDB()
 	fmt.Println("recreate database:", !isExists)
+	//nolint:nestif
 	if !isExists {
 		tx, err := app.begin()
 		if err != nil {
@@ -183,7 +183,6 @@ func (a *app) begin() (*sql.Tx, error) {
 	return tx, nil
 }
 
-//nolint:unparam
 func (a *app) close(tx *sql.Tx) func() {
 	return func() {
 		if r := recover(); r != nil {
@@ -237,7 +236,10 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	const format = "SELECT `version` FROM `%s`.`%s` WHERE `version` = '%s' LIMIT 1"
 	stmt := fmt.Sprintf(format, migrateDB, schemaTable, schema.version)
 	rs, err := tx.Query(stmt)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
 		return false, err
 	}
 	defer rs.Close()

@@ -117,6 +117,7 @@ func (fs ZapFields) FirstError() (bool, error) {
 		if f.Type != zapcore.ErrorType {
 			continue
 		}
+		//nolint:forcetypeassert
 		return true, f.Interface.(error)
 	}
 	return false, nil

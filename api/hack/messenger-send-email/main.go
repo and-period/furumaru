@@ -1,4 +1,3 @@
-//nolint:forbidigo,gocritic
 package main
 
 import (

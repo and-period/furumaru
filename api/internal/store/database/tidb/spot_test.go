@@ -18,7 +18,7 @@ func TestSpot(t *testing.T) {
 }
 
 func TestSpot_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -33,6 +33,7 @@ func TestSpot_List(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
@@ -78,7 +79,7 @@ func TestSpot_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -92,7 +93,7 @@ func TestSpot_List(t *testing.T) {
 }
 
 func TestSpot_ListByGeolocation(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -107,6 +108,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.65861, 139.74545, now())
@@ -224,7 +226,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -238,7 +240,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 }
 
 func TestSpot_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -253,6 +255,7 @@ func TestSpot_Count(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	spots := make(entity.Spots, 3)
 	spots[0] = testSpot("spot-id01", "spot-type-id", 35.658581, 139.745433, now())
@@ -298,7 +301,7 @@ func TestSpot_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -312,7 +315,7 @@ func TestSpot_Count(t *testing.T) {
 }
 
 func TestSpot_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -327,6 +330,7 @@ func TestSpot_Get(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
+	require.NoError(t, err)
 
 	s := testSpot("spot-id", "spot-type-id", 35.658581, 139.745433, now())
 	err = db.DB.Create(&s).Error
@@ -373,7 +377,7 @@ func TestSpot_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			tt.setup(ctx, t, db)
@@ -387,7 +391,7 @@ func TestSpot_Get(t *testing.T) {
 }
 
 func TestSpot_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -402,7 +406,7 @@ func TestSpot_Create(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
-
+	require.NoError(t, err)
 	type args struct {
 		spot *entity.Spot
 	}
@@ -443,7 +447,7 @@ func TestSpot_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, spotTable)
@@ -459,7 +463,7 @@ func TestSpot_Create(t *testing.T) {
 }
 
 func TestSpot_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -474,7 +478,7 @@ func TestSpot_Update(t *testing.T) {
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
 	err = db.DB.Create(&spotType).Error
-
+	require.NoError(t, err)
 	type args struct {
 		spotID string
 		params *database.UpdateSpotParams
@@ -514,7 +518,7 @@ func TestSpot_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, spotTable)
@@ -530,7 +534,7 @@ func TestSpot_Update(t *testing.T) {
 }
 
 func TestSpot_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -573,7 +577,7 @@ func TestSpot_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, spotTable)
@@ -589,7 +593,7 @@ func TestSpot_Delete(t *testing.T) {
 }
 
 func TestSpot_Approve(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -637,7 +641,7 @@ func TestSpot_Approve(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
+			ctx, cancel := context.WithCancel(t.Context())
 			defer cancel()
 
 			err := delete(ctx, spotTable)

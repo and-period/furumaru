@@ -99,10 +99,10 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 		billingAddress, shippingAddress *Address
 		experience                      *Experience
 	)
-	if address, ok := addresses[order.OrderPayment.AddressRevisionID]; ok {
+	if address, ok := addresses[order.AddressRevisionID]; ok {
 		billingAddress = address
 	}
-	if exp, ok := experiences[order.OrderExperience.ExperienceRevisionID]; ok {
+	if exp, ok := experiences[order.ExperienceRevisionID]; ok {
 		experience = exp
 	}
 	if len(order.OrderFulfillments) > 0 {

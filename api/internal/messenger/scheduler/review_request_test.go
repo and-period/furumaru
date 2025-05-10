@@ -53,7 +53,6 @@ func TestScheduler_executeReviewRequest(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
 			err := scheduler.executeReviewRequest(ctx, tt.schedule)
 			assert.ErrorIs(t, err, tt.expectErr)

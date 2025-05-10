@@ -17,10 +17,10 @@ func NewUserOrder(order *entity.Order) *UserOrder {
 		UserOrder: response.UserOrder{
 			OrderID:   order.ID,
 			Status:    NewPaymentStatus(order.OrderPayment.Status).Response(),
-			SubTotal:  order.OrderPayment.Subtotal,
-			Total:     order.OrderPayment.Total,
-			OrderedAt: jst.Unix(order.OrderPayment.OrderedAt),
-			PaidAt:    jst.Unix(order.OrderPayment.PaidAt),
+			SubTotal:  order.Subtotal,
+			Total:     order.Total,
+			OrderedAt: jst.Unix(order.OrderedAt),
+			PaidAt:    jst.Unix(order.PaidAt),
 		},
 	}
 }

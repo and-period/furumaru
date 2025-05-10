@@ -47,7 +47,6 @@ func TestSchedule(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewSchedule(tt.params)
@@ -117,7 +116,6 @@ func TestSchedule_SetStatus(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.schedule.SetStatus(now)
@@ -156,7 +154,6 @@ func TestSchedule_Published(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.schedule.Published())
@@ -210,7 +207,6 @@ func TestSchedules_FIll(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.schedules.Fill(now)
@@ -248,7 +244,6 @@ func TestSchedules_IDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.schedules.IDs())
@@ -284,7 +279,6 @@ func TestSchedules_CoordinatorIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.schedules.CoordinatorIDs())
