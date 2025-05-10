@@ -16,7 +16,6 @@ runs:
   steps:
   - name: Setup Golang
     uses: actions/setup-go@v5
-    working-directory: ${{ inputs.working-directory }}
     with:
       go-version-file: ${{ inputs.working-directory }}/go.mod
       cache: false
