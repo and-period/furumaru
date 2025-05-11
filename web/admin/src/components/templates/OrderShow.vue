@@ -296,6 +296,7 @@ const isUpdatableFulfillment = (): boolean => {
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED,
   ]
   return targets.includes(props.order.status)
 }
