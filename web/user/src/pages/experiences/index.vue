@@ -212,6 +212,7 @@ useSeoMeta({
               :title="experience.title"
               :description="experience.description"
               :thumbnail-url="experience.thumbnailUrl"
+              :promotion-video-url="experience.promotionVideoUrl"
               @click:name="handleClickSpot"
             />
           </template>
