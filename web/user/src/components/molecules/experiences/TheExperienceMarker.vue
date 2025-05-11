@@ -8,6 +8,7 @@ interface Props {
   title: string
   description: string
   thumbnailUrl: string
+  promotionVideoUrl: string
 }
 
 const props = defineProps<Props>()
@@ -70,18 +71,35 @@ watch(isShowInfoWindow, (newValue) => {
     >
       <div
         v-show="isShowInfoWindow"
-        class="text-main grid grid-cols-5 gap-2 max-w-sm"
+        class="text-main grid grid-cols-1 md:grid-cols-5 gap-2 max-w-sm"
       >
-        <div class=" col-span-1">
-          <img
-            :src="thumbnailUrl"
-            class="w-full object-cover"
-            :alt="`${title}のサムネイル`"
-          >
+        <div class="col-span-1 md:col-span-1">
+          <div v-if="promotionVideoUrl">
+            <video
+              :src="promotionVideoUrl"
+              class="w-full max-h-[150px] mt-2"
+              :title="`${title}の動画`"
+              muted
+              playsinline
+              autoplay
+              loop
+            />
+          </div>
+          <div v-else>
+            <img
+              v-if="thumbnailUrl"
+              :src="thumbnailUrl"
+              class="w-full max-h-[150px] mt-2"
+              :title="`${title}の画像`"
+            >
+          </div>
         </div>
-        <div class=" tracking-wider col-span-4 flex flex-col gap-2">
+
+        <div
+          class="tracking-wider md:col-span-4 flex flex-col gap-2 ml-0 md:ml-4"
+        >
           <div
-            class="font-semibold cursor-pointer hover:underline "
+            class="font-semibold cursor-pointer hover:underline"
             @click="handleClickName"
           >
             {{ title }}
