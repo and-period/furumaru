@@ -267,34 +267,27 @@ func (o *Order) Completed() bool {
 	}
 }
 
-// TODO: Order.Statusを利用して書き換える
-func (o *Order) Capturable() bool {
-	if o == nil {
-		return false
-	}
-	return o.OrderPayment.Status == PaymentStatusAuthorized
-}
-
-// TODO: Order.Statusを利用して書き換える
 func (o *Order) Preservable() bool {
 	if o == nil {
 		return false
 	}
-	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
+	return o.Capturable() || o.Completable()
 }
 
-// TODO: Order.Statusを利用して書き換える
+func (o *Order) Capturable() bool {
+	if o == nil {
+		return false
+	}
+	return o.Status == OrderStatusWaiting
+}
+
 func (o *Order) Completable() bool {
 	if o == nil {
 		return false
 	}
-	if !o.Fulfilled() {
-		return false
-	}
-	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
+	return o.Status == OrderStatusPreparing || o.Status == OrderStatusShipped
 }
 
-// TODO: Order.Statusを利用して書き換える
 func (o *Order) Cancelable() bool {
 	if o == nil {
 		return false
@@ -302,7 +295,6 @@ func (o *Order) Cancelable() bool {
 	return o.OrderPayment.Status == PaymentStatusPending || o.OrderPayment.Status == PaymentStatusAuthorized
 }
 
-// TODO: Order.Statusを利用して書き換える
 func (o *Order) Refundable() bool {
 	if o == nil {
 		return false

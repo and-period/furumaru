@@ -219,20 +219,13 @@ func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOr
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	order, err := s.db.Order.Get(ctx, in.OrderID)
-	if err != nil {
-		return internalError(err)
-	}
-	if order.Completed() {
-		return fmt.Errorf("service: this order is already completed: %w", exception.ErrFailedPrecondition)
-	}
 	params := &database.UpdateOrderFulfillmentParams{
 		Status:          entity.FulfillmentStatusFulfilled,
 		ShippingCarrier: in.ShippingCarrier,
 		TrackingNumber:  in.TrackingNumber,
 		ShippedAt:       s.now(),
 	}
-	err = s.db.Order.UpdateFulfillment(ctx, in.OrderID, in.FulfillmentID, params)
+	err := s.db.Order.UpdateFulfillment(ctx, in.OrderID, in.FulfillmentID, params)
 	return internalError(err)
 }
 

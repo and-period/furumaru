@@ -447,6 +447,7 @@ func TestCaptureOrder(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
+		Status:        entity.OrderStatusWaiting,
 		OrderPayment: entity.OrderPayment{
 			OrderID:           "order-id",
 			AddressRevisionID: 1,
@@ -573,6 +574,7 @@ func TestDraftOrder(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
+		Status:        entity.OrderStatusPreparing,
 		OrderPayment: entity.OrderPayment{
 			OrderID:           "order-id",
 			AddressRevisionID: 1,
@@ -703,6 +705,7 @@ func TestCompleteProductOrder(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
+		Status:        entity.OrderStatusShipped,
 		OrderPayment: entity.OrderPayment{
 			OrderID:           "order-id",
 			AddressRevisionID: 1,
@@ -838,6 +841,7 @@ func TestCompleteExperienceOrder(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
+		Status:        entity.OrderStatusPreparing,
 		OrderPayment: entity.OrderPayment{
 			OrderID:           "order-id",
 			AddressRevisionID: 1,
@@ -1199,62 +1203,6 @@ func TestRefundOrder(t *testing.T) {
 func TestUpdateOrderFulfillment(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
-	order := &entity.Order{
-		ID:            "order-id",
-		UserID:        "user-id",
-		PromotionID:   "",
-		CoordinatorID: "coordinator-id",
-		CreatedAt:     now,
-		UpdatedAt:     now,
-		OrderPayment: entity.OrderPayment{
-			OrderID:           "order-id",
-			AddressRevisionID: 1,
-			TransactionID:     "transaction-id",
-			PaymentID:         "payment-id",
-			Status:            entity.PaymentStatusCaptured,
-			MethodType:        entity.PaymentMethodTypeCreditCard,
-			Subtotal:          1100,
-			Discount:          0,
-			ShippingFee:       500,
-			Tax:               145,
-			Total:             1600,
-			CreatedAt:         now,
-			UpdatedAt:         now,
-		},
-		OrderFulfillments: entity.OrderFulfillments{
-			{
-				ID:                "fulfillment-id",
-				OrderID:           "order-id",
-				AddressRevisionID: 1,
-				Status:            entity.FulfillmentStatusFulfilled,
-				TrackingNumber:    "",
-				ShippingCarrier:   entity.ShippingCarrierUnknown,
-				ShippingType:      entity.ShippingTypeNormal,
-				BoxNumber:         1,
-				BoxSize:           entity.ShippingSize60,
-				CreatedAt:         now,
-				UpdatedAt:         now,
-			},
-		},
-		OrderItems: []*entity.OrderItem{
-			{
-				FulfillmentID:     "fufillment-id",
-				ProductRevisionID: 1,
-				OrderID:           "order-id",
-				Quantity:          1,
-				CreatedAt:         now,
-				UpdatedAt:         now,
-			},
-			{
-				FulfillmentID:     "fufillment-id",
-				ProductRevisionID: 2,
-				OrderID:           "order-id",
-				Quantity:          2,
-				CreatedAt:         now,
-				UpdatedAt:         now,
-			},
-		},
-	}
 	params := &database.UpdateOrderFulfillmentParams{
 		Status:          entity.FulfillmentStatusFulfilled,
 		ShippingCarrier: entity.ShippingCarrierYamato,
@@ -1270,7 +1218,6 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(nil)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
@@ -1288,36 +1235,8 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 			expect: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get order",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(nil, assert.AnError)
-			},
-			input: &store.UpdateOrderFulfillmentInput{
-				OrderID:         "order-id",
-				FulfillmentID:   "fulfillment-id",
-				ShippingCarrier: entity.ShippingCarrierYamato,
-				TrackingNumber:  "tracking-number",
-			},
-			expect: exception.ErrInternal,
-		},
-		{
-			name: "failed to completed",
-			setup: func(ctx context.Context, mocks *mocks) {
-				order := &entity.Order{Status: entity.OrderStatusCompleted}
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-			},
-			input: &store.UpdateOrderFulfillmentInput{
-				OrderID:         "order-id",
-				FulfillmentID:   "fulfillment-id",
-				ShippingCarrier: entity.ShippingCarrierYamato,
-				TrackingNumber:  "tracking-number",
-			},
-			expect: exception.ErrFailedPrecondition,
-		},
-		{
 			name: "failed to update fulfillment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
