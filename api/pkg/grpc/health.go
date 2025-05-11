@@ -21,6 +21,10 @@ func (s *healthServer) Check(_ context.Context, _ *health.HealthCheckRequest) (*
 	}, nil
 }
 
+func (s *healthServer) List(_ context.Context, _ *health.HealthListRequest) (*health.HealthListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "Listing is not supported")
+}
+
 func (s *healthServer) Watch(_ *health.HealthCheckRequest, _ health.Health_WatchServer) error {
 	return status.Error(codes.Unimplemented, "Watching is not supported")
 }
