@@ -246,32 +246,34 @@ const isAuthorized = (): boolean => {
   return props.order.status === OrderStatus.WAITING
 }
 
-// 配送完了通知 - 商品購入時のみ
-const isShipped = (): boolean => {
-  if (!props.order || props.order.type !== OrderType.PRODUCT) {
-    return false
-  }
-  return props.order.status === OrderStatus.SHIPPED
-}
-
 // 発送連絡時のメッセージ下書き保存 - 商品購入時のみ
 const isPreservable = (): boolean => {
   if (!props.order || props.order.type !== OrderType.PRODUCT) {
     return false
   }
   const targets: OrderStatus[] = [
+    OrderStatus.WAITING,
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
   ]
   return targets.includes(props.order.status)
 }
 
-// 完了通知 - 体験予約時のみ
+// 完了通知
 const isCompletable = (): boolean => {
-  if (!props.order || props.order.type !== OrderType.EXPERIENCE) {
+  if (!props.order) {
     return false
   }
-  return props.order.status === OrderStatus.SHIPPED
+  const targets: OrderStatus[] = []
+  switch (props.order.type) {
+    case OrderType.PRODUCT:
+      targets.push(OrderStatus.PREPARING, OrderStatus.SHIPPED)
+      break
+    case OrderType.EXPERIENCE:
+      targets.push(OrderStatus.SHIPPED)
+      break
+  }
+  return targets.includes(props.order.status)
 }
 
 const isCancelable = (): boolean => {
@@ -742,14 +744,6 @@ const onSubmitRefund = (): void => {
           </v-row>
           <v-row>
             <v-col cols="3">
-              マルシェ名
-            </v-col>
-            <v-col cols="9">
-              {{ coordinator.marcheName }}
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="3">
               コーディネーター名
             </v-col>
             <v-col cols="9">
@@ -1167,20 +1161,6 @@ const onSubmitRefund = (): void => {
         注文を確定
       </v-btn>
       <v-btn
-        v-show="isShipped()"
-        :loading="loading"
-        variant="outlined"
-        color="primary"
-        class="mr-2"
-        @click="onSubmitComplete()"
-      >
-        <v-icon
-          start
-          :icon="mdiPlus"
-        />
-        発送完了を通知
-      </v-btn>
-      <v-btn
         v-show="isCompletable()"
         :loading="loading"
         variant="outlined"
@@ -1192,7 +1172,7 @@ const onSubmitRefund = (): void => {
           start
           :icon="mdiPlus"
         />
-        レビュー依頼を送信
+        {{ props.order.type === OrderType.PRODUCT ? '発送完了を通知' : 'レビュー依頼を送信' }}
       </v-btn>
       <v-btn
         v-show="isCancelable()"
