@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
-import type { Shipping, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
+import type { Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -9,6 +9,31 @@ export const useShippingStore = defineStore('shipping', {
   }),
 
   actions: {
+    /**
+     * コーディネーターが登録している配送先一覧を取得する非同期関数
+     */
+    async fetchShippings(coordinatorId: string): Promise<ShippingsResponse> {
+      try {
+        const res = await apiClient.shippingApi().v1ListShippings(coordinatorId)
+        return res.data
+      }
+      catch (err) {
+        return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
+      }
+    },
+
+    async fetchShipping(coordinatorId: string, shippingId: string): Promise<Shipping> {
+      try {
+        const res = await apiClient.shippingApi().v1GetShipping(coordinatorId, shippingId)
+        return res.data.shipping
+      }
+      catch (err) {
+        return this.errorHandler(err, {
+          404: '配送設定が見つかりません。',
+        })
+      }
+    },
+
     /**
      * デフォルト配送設定を取得する非同期関数
      * @returns
@@ -42,7 +67,7 @@ export const useShippingStore = defineStore('shipping', {
      * @param coordinatorId
      * @returns
      */
-    async fetchShipping(coordinatorId: string): Promise<void> {
+    async fetchActiveShipping(coordinatorId: string): Promise<void> {
       try {
         const res = await apiClient.shippingApi().v1GetActiveShipping(coordinatorId)
         this.shipping = res.data.shipping

@@ -4,13 +4,16 @@ import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useShippingStore } from '~/store'
 import type { UpsertShippingRequest } from '~/types/api'
 
+const route = useRoute()
+
+const coordinatorId = route.params.id as string
+
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { adminId } = storeToRefs(authStore)
-const { shipping } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpsertShippingRequest>({
@@ -42,21 +45,25 @@ const formData = ref<UpsertShippingRequest>({
   freeShippingRates: 0,
 })
 
-const fetchState = useAsyncData(async (): Promise<void> => {
-  try {
-    await shippingStore.fetchShipping(adminId.value)
-    formData.value = { ...shipping.value }
-  }
-  catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
+const { data, status, error } = useAsyncData(async () => {
+  return await shippingStore.fetchShipping(adminId.value, coordinatorId)
+})
+
+watch(error, (newError) => {
+  if (newError) {
+    if (newError instanceof Error) {
+      show(newError.message)
     }
-    console.log(err)
+    console.log(newError)
   }
 })
 
+watch(data, (newData) => {
+  formData.value = { ...newData }
+})
+
 const isLoading = (): boolean => {
-  return fetchState?.pending?.value || loading.value
+  return status.value === 'pending'
 }
 
 const handleSubmit = async (): Promise<void> => {
@@ -83,13 +90,6 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = false
   }
 }
-
-try {
-  await fetchState.execute()
-}
-catch (err) {
-  console.log('failed to setup', err)
-}
 </script>
 
 <template>
@@ -99,7 +99,7 @@ catch (err) {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :shipping="shipping"
+    :shipping="data"
     @submit="handleSubmit"
   />
 </template>
