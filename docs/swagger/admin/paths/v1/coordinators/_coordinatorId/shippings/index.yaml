@@ -14,6 +14,22 @@ get:
     description: コーディネータID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: offset
+    schema:
+      type: integer
+      format: int64
+    description: 取得開始位置(min:0)
+    required: false
+    example: 0
   responses:
     200:
       description: 成功
