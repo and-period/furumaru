@@ -121,6 +121,7 @@ func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingIn
 	params := &entity.NewShippingParams{
 		ShopID:            in.ShopID,
 		CoordinatorID:     in.CoordinatorID,
+		Name:              in.Name,
 		Box60Rates:        box60Rates,
 		Box60Frozen:       in.Box60Frozen,
 		Box80Rates:        box80Rates,
@@ -155,6 +156,7 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateShippingParams{
+		Name:              in.Name,
 		Box60Rates:        box60Rates,
 		Box60Frozen:       in.Box60Frozen,
 		Box80Rates:        box80Rates,

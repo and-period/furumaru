@@ -23,6 +23,7 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 	return &Shipping{
 		Shipping: response.Shipping{
 			ID:                shipping.ID,
+			Name:              shipping.Name,
 			IsDefault:         shipping.IsDefault(),
 			Box60Rates:        NewShippingRates(shipping.Box60Rates).Response(),
 			Box60Frozen:       shipping.Box60Frozen,

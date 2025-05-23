@@ -228,28 +228,40 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 }
 
 func (s *shipping) Update(ctx context.Context, shippingID string, params *database.UpdateShippingParams) error {
-	rparams := &entity.NewShippingRevisionParams{
-		ShippingID:        shippingID,
-		Box60Rates:        params.Box60Rates,
-		Box60Frozen:       params.Box60Frozen,
-		Box80Rates:        params.Box80Rates,
-		Box80Frozen:       params.Box80Frozen,
-		Box100Rates:       params.Box100Rates,
-		Box100Frozen:      params.Box100Frozen,
-		HasFreeShipping:   params.HasFreeShipping,
-		FreeShippingRates: params.FreeShippingRates,
-	}
-	revision := entity.NewShippingRevision(rparams)
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := s.now()
 
-	now := s.now()
-	revision.CreatedAt, revision.UpdatedAt = now, now
+		updates := map[string]interface{}{
+			"name":       params.Name,
+			"updated_at": now,
+		}
+		stmt := tx.WithContext(ctx).Table(shippingTable).Where("id = ?", shippingID)
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
 
-	internal, err := newInternalShippingRevision(revision)
-	if err != nil {
-		return fmt.Errorf("tidb: %w: %s", database.ErrInvalidArgument, err.Error())
-	}
+		rparams := &entity.NewShippingRevisionParams{
+			ShippingID:        shippingID,
+			Box60Rates:        params.Box60Rates,
+			Box60Frozen:       params.Box60Frozen,
+			Box80Rates:        params.Box80Rates,
+			Box80Frozen:       params.Box80Frozen,
+			Box100Rates:       params.Box100Rates,
+			Box100Frozen:      params.Box100Frozen,
+			HasFreeShipping:   params.HasFreeShipping,
+			FreeShippingRates: params.FreeShippingRates,
+		}
+		revision := entity.NewShippingRevision(rparams)
 
-	err = s.db.DB.WithContext(ctx).Table(shippingRevisionTable).Create(&internal).Error
+		revision.CreatedAt, revision.UpdatedAt = now, now
+
+		internal, err := newInternalShippingRevision(revision)
+		if err != nil {
+			return fmt.Errorf("tidb: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+
+		return tx.WithContext(ctx).Table(shippingRevisionTable).Create(&internal).Error
+	})
 	return dbError(err)
 }
 

@@ -600,6 +600,7 @@ type ListShippingsParams struct {
 }
 
 type UpdateShippingParams struct {
+	Name              string
 	Box60Rates        entity.ShippingRates
 	Box60Frozen       int64
 	Box80Rates        entity.ShippingRates

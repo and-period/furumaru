@@ -671,6 +671,7 @@ func TestShipping_Update(t *testing.T) {
 			args: args{
 				shippingID: "shipping-id",
 				params: &database.UpdateShippingParams{
+					Name:              "配送設定",
 					Box60Rates:        s.Box60Rates,
 					Box60Frozen:       800,
 					Box80Rates:        s.Box80Rates,
@@ -934,6 +935,7 @@ func testShipping(shippingID, shopID, coordinatorID string, revisionID int64, no
 		ID:               shippingID,
 		ShopID:           shopID,
 		CoordinatorID:    coordinatorID,
+		Name:             "配送設定",
 		InUse:            true,
 		ShippingRevision: *revision,
 		CreatedAt:        now,
