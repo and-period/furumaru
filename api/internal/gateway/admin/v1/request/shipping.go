@@ -1,6 +1,7 @@
 package request
 
 type CreateShippingRequest struct {
+	Name              string                `json:"name,omitempty"`              // 配送設定名
 	Box60Rates        []*CreateShippingRate `json:"box60Rates,omitempty"`        // 箱サイズ60の通常便配送料一覧
 	Box60Frozen       int64                 `json:"box60Frozen,omitempty"`       // 箱サイズ60の冷凍便追加配送料(税込)
 	Box80Rates        []*CreateShippingRate `json:"box80Rates,omitempty"`        // 箱サイズ80の通常便配送料一覧
@@ -18,6 +19,7 @@ type CreateShippingRate struct {
 }
 
 type UpdateShippingRequest struct {
+	Name              string                `json:"name,omitempty"`              // 配送設定名
 	Box60Rates        []*UpdateShippingRate `json:"box60Rates,omitempty"`        // 箱サイズ60の通常便配送料一覧
 	Box60Frozen       int64                 `json:"box60Frozen,omitempty"`       // 箱サイズ60の冷凍便追加配送料(税込)
 	Box80Rates        []*UpdateShippingRate `json:"box80Rates,omitempty"`        // 箱サイズ80の通常便配送料一覧

@@ -70,6 +70,7 @@ func TestShipping(t *testing.T) {
 			params: &NewShippingParams{
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
+				Name:              "配送設定",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
 				Box80Rates:        rates,
@@ -83,6 +84,7 @@ func TestShipping(t *testing.T) {
 				ID:            "coordinator-id",
 				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
+				Name:          "配送設定",
 				ShippingRevision: ShippingRevision{
 					ShippingID:        "coordinator-id",
 					Box60Rates:        rates,

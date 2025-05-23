@@ -5,6 +5,7 @@ import "github.com/and-period/furumaru/api/internal/store/entity"
 var DefaultShipping = &entity.Shipping{
 	ID:            "default",
 	CoordinatorID: "",
+	Name:          "デフォルト配送設定",
 }
 
 var DefaultShippingRevision = &entity.ShippingRevision{

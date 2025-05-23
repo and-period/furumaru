@@ -22,6 +22,7 @@ func TestShipping(t *testing.T) {
 				ID:            "shipping-id",
 				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
+				Name:          "配送設定",
 				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				ShippingRevision: entity.ShippingRevision{
@@ -46,6 +47,7 @@ func TestShipping(t *testing.T) {
 			expect: &Shipping{
 				Shipping: response.Shipping{
 					ID:        "shipping-id",
+					Name:      "配送設定",
 					IsDefault: false,
 					Box60Rates: []*response.ShippingRate{
 						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
