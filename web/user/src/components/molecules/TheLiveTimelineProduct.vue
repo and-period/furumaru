@@ -151,7 +151,7 @@ const handleClickItem = () => {
             </select>
           </div>
           <button
-            class="flex h-full bg-orange px-4 py-1 text-white disabled:cursor-not-allowed disabled:bg-main/60"
+            class="flex h-full bg-orange px-4 py-1 text-white transition-all duration-200 ease-in-out hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:bg-main/60"
             :disabled="!canAddCart"
             @click.stop="handleClickAddCart"
           >

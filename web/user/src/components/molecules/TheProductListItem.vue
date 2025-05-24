@@ -160,7 +160,7 @@ const handleClickAddCartButton = () => {
       </div>
       <button
         :disabled="!canAddCart"
-        class="flex h-full grow items-center justify-center bg-orange p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
+        class="flex h-full grow items-center justify-center bg-orange p-1 text-[10px] text-white transition-all duration-200 ease-in-out hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
         @click="handleClickAddCartButton"
       >
         <the-cart-icon
