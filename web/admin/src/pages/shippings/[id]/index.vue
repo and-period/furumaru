@@ -11,7 +11,7 @@ const coordinatorId = route.params.id as string
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
-const { alertType, isShow, alertText, show } = useAlert('error')
+const { alertType, isShow, alertText, show, hide } = useAlert('error')
 
 const { adminId } = storeToRefs(authStore)
 
@@ -62,13 +62,16 @@ watch(data, (newData) => {
   formData.value = { ...newData }
 })
 
-const isLoading = (): boolean => {
+const isLoading = computed(() => {
   return status.value === 'pending'
-}
+})
+
+const submitting = ref<boolean>(false)
 
 const handleSubmit = async (): Promise<void> => {
   try {
-    loading.value = true
+    hide()
+    submitting.value = true
     await shippingStore.upsertShipping(adminId.value, formData.value)
     commonStore.addSnackbar({
       color: 'info',
@@ -87,19 +90,27 @@ const handleSubmit = async (): Promise<void> => {
     })
   }
   finally {
-    loading.value = false
+    submitting.value = false
   }
 }
 </script>
 
 <template>
-  <templates-shipping-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :shipping="data"
-    @submit="handleSubmit"
-  />
+  <div>
+    <v-alert
+      v-show="isShow"
+      :type="alertType"
+      v-text="alertText"
+    />
+
+    <v-card-title>
+      配送情報詳細
+    </v-card-title>
+    <organisms-shipping-form
+      v-model="formData"
+      form-type="update"
+      :submitting="submitting"
+      @submit="handleSubmit"
+    />
+  </div>
 </template>
