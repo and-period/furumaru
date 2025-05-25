@@ -12,9 +12,9 @@ export const useShippingStore = defineStore('shipping', {
     /**
      * コーディネーターが登録している配送先一覧を取得する非同期関数
      */
-    async fetchShippings(coordinatorId: string): Promise<ShippingsResponse> {
+    async fetchShippings(coordinatorId: string, limit: number, offset: number): Promise<ShippingsResponse> {
       try {
-        const res = await apiClient.shippingApi().v1ListShippings(coordinatorId)
+        const res = await apiClient.shippingApi().v1ListShippings(coordinatorId, limit, offset)
         return res.data
       }
       catch (err) {
