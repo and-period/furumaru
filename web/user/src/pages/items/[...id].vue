@@ -162,6 +162,29 @@ useSeoMeta({
     />
   </template>
 
+  <!-- スマホ用：下部固定カート追加ボタン -->
+  <div
+    class="grid grid-cols-5 fixed bottom-0 left-0 z-50 w-full bg-white px-4 py-3 shadow-[0_-2px_8px_rgba(0,0,0,0.05)] md:hidden"
+  >
+    <div class="flex col-span-2 items-end justify-start">
+      <div
+        class="text-[24px] font-bold md:mt-[60px] md:flex md:flex-row md:text-[32px]"
+      >
+        {{ priceString }}
+      </div>
+      <p class="pb-1 pl-2 text-[12px] md:text-[16px]">
+        {{ dt("itemPriceTaxIncludedText") }}
+      </p>
+    </div>
+    <button
+      class="col-span-3 w-full bg-orange py-4 text-center text-white transition-all duration-200 ease-in-out hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:bg-main/60"
+      :disabled="!canAddCart"
+      @click="handleClickAddCartButton"
+    >
+      {{ dt("addToCartText") }}
+    </button>
+  </div>
+
   <!-- ロード状態 -->
   <template v-if="status === 'pending'">
     <div

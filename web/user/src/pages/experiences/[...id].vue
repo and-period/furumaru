@@ -181,6 +181,20 @@ useSeoMeta({
 
     <!-- Experience Section -->
     <template v-if="data?.experience">
+      <!-- スマホ用：下部固定申込むボタン -->
+      <div
+        v-if="data?.experience"
+        class="fixed bottom-0 left-0 z-50 w-full bg-white px-4 py-3 shadow-[0_-2px_8px_rgba(0,0,0,0.05)] md:hidden"
+      >
+        <button
+          class="w-full bg-orange py-4 text-center text-white transition-all duration-200 ease-in-out hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:bg-main/60"
+          :disabled="!canAddCart"
+          @click="handleClickApplyButton"
+        >
+          {{ dt("applyButtonText") }}
+        </button>
+      </div>
+
       <div class="bg-white w-full">
         <div
           class="gap-10 px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 lg:px-[112px] w-full max-w-[1440px] mx-auto"
@@ -499,7 +513,7 @@ useSeoMeta({
             </div>
 
             <button
-              class="mt-2 w-full bg-orange py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
+              class="mt-4 w-full bg-orange py-4 text-center text-white transition-all duration-200 ease-in-out hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:bg-main/60"
               :disabled="!canAddCart"
               @click="handleClickApplyButton"
             >
