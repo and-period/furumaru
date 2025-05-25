@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import { useAuthStore, useShippingStore } from '~/store'
 import { dateTimeFormatter } from '~/lib/formatter/day'
 
@@ -58,7 +59,17 @@ const totalItems = computed(() => {
   <v-card
     :loading="status === 'pending'"
   >
-    <v-card-title>配送先一覧</v-card-title>
+    <v-card-title class="d-flex">
+      配送先一覧
+      <v-spacer />
+      <v-btn
+        variant="outlined"
+        to="/shippings/new"
+      >
+        <v-icon :icon="mdiPlus" />
+        新規作成
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <v-data-table-server
         hover
