@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
-import type { Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
+import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -19,6 +19,23 @@ export const useShippingStore = defineStore('shipping', {
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
+      }
+    },
+
+    /**
+     * 新規の配送設定を作成する非同期関数
+     * @param coordinatorId コーディネーターID
+     * @param payload 配送先情報
+     * @returns
+     */
+    async createShipping(coordinatorId: string, payload: CreateShippingRequest): Promise<void> {
+      try {
+        await apiClient.shippingApi().v1CreateShipping(
+          coordinatorId, payload,
+        )
+      }
+      catch (err) {
+        return this.errorHandler(err)
       }
     },
 
