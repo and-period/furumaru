@@ -22,6 +22,12 @@ export const useShippingStore = defineStore('shipping', {
       }
     },
 
+    /**
+     * 指定した配送設定を取得する非同期関数
+     * @param coordinatorId コーディネーターID
+     * @param shippingId 配送設定ID
+     * @returns
+     */
     async fetchShipping(coordinatorId: string, shippingId: string): Promise<Shipping> {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(coordinatorId, shippingId)
