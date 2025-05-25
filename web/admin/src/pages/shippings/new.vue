@@ -49,7 +49,6 @@ const handleSubmit = async () => {
   hide()
   submitting.value = true
 
-  const authStore = useAuthStore()
   try {
     await createShipping(adminId.value, formData.value)
     router.push('/shippings')
