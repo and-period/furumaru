@@ -1,5 +1,5 @@
-import { app as fbApp, app as fbApp } from './firebase'
 import { type Analytics, getAnalytics, logEvent } from 'firebase/analytics'
+import { app as fbApp, app as fbApp } from './firebase'
 
 export default defineNuxtPlugin((nuxtApp) => {
   // 開発環境のイベントはGAに送信しない

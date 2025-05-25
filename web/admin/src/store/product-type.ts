@@ -1,6 +1,6 @@
+import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductTypeRequest,
