@@ -191,6 +191,7 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		return
 	}
 	in := &store.CreateShippingInput{
+		Name:              req.Name,
 		ShopID:            coordinator.ShopID,
 		CoordinatorID:     coordinator.ID,
 		Box60Rates:        h.newShippingRatesForCreate(req.Box60Rates),
@@ -235,6 +236,7 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 		return
 	}
 	in := &store.UpdateShippingInput{
+		Name:              req.Name,
 		ShippingID:        shipping.ID,
 		Box60Rates:        h.newShippingRatesForUpdate(req.Box60Rates),
 		Box60Frozen:       req.Box60Frozen,

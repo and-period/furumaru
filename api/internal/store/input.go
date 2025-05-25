@@ -985,6 +985,7 @@ type GetShippingByCoordinatorIDInput struct {
 type CreateShippingInput struct {
 	ShopID            string                `validate:"required"`
 	CoordinatorID     string                `validate:"required"`
+	Name              string                `validate:"required,max=64"`
 	Box60Rates        []*CreateShippingRate `validate:"required,dive,required"`
 	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
 	Box80Rates        []*CreateShippingRate `validate:"required,dive,required"`
@@ -1004,6 +1005,7 @@ type CreateShippingRate struct {
 
 type UpdateShippingInput struct {
 	ShippingID        string                `validate:"required"`
+	Name              string                `validate:"required,max=64"`
 	Box60Rates        []*UpdateShippingRate `validate:"required,dive,required"`
 	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
 	Box80Rates        []*UpdateShippingRate `validate:"required,dive,required"`

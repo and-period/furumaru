@@ -607,6 +607,7 @@ func TestCreateShipping(t *testing.T) {
 							ID:            shipping.ID, // ignore
 							ShopID:        "shop-id",
 							CoordinatorID: "coordinator-id",
+							Name:          "配送設定",
 							ShippingRevision: entity.ShippingRevision{
 								ShippingID: shipping.ID,
 								Box60Rates: entity.ShippingRates{
@@ -634,6 +635,7 @@ func TestCreateShipping(t *testing.T) {
 					})
 			},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
@@ -661,6 +663,7 @@ func TestCreateShipping(t *testing.T) {
 					})
 			},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
@@ -685,6 +688,7 @@ func TestCreateShipping(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 			},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        []*store.CreateShippingRate{},
@@ -702,6 +706,7 @@ func TestCreateShipping(t *testing.T) {
 			name:  "invalid box 80 rates",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
@@ -719,6 +724,7 @@ func TestCreateShipping(t *testing.T) {
 			name:  "invalid box 100 rates",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CreateShippingInput{
+				Name:          "配送設定",
 				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Box60Rates:    rates,
@@ -735,6 +741,7 @@ func TestCreateShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
 			},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
@@ -755,6 +762,7 @@ func TestCreateShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateShippingInput{
+				Name:              "配送設定",
 				ShopID:            "shop-id",
 				CoordinatorID:     "coordinator-id",
 				Box60Rates:        rates,
@@ -800,6 +808,7 @@ func TestUpdateShipping(t *testing.T) {
 		{Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	params := &database.UpdateShippingParams{
+		Name: "配送設定",
 		Box60Rates: entity.ShippingRates{
 			{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
 			{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
@@ -831,6 +840,7 @@ func TestUpdateShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Update(ctx, "shipping-id", params).Return(nil)
 			},
 			input: &store.UpdateShippingInput{
+				Name:              "配送設定",
 				ShippingID:        "shipping-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,
@@ -854,6 +864,7 @@ func TestUpdateShipping(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 			},
 			input: &store.UpdateShippingInput{
+				Name:              "配送設定",
 				ShippingID:        "shipping-id",
 				Box60Rates:        []*store.UpdateShippingRate{},
 				Box60Frozen:       800,
@@ -871,6 +882,7 @@ func TestUpdateShipping(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 			},
 			input: &store.UpdateShippingInput{
+				Name:         "配送設定",
 				ShippingID:   "shipping-id",
 				Box60Rates:   rates,
 				Box60Frozen:  800,
@@ -886,6 +898,7 @@ func TestUpdateShipping(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 			},
 			input: &store.UpdateShippingInput{
+				Name:         "配送設定",
 				ShippingID:   "shipping-id",
 				Box60Rates:   rates,
 				Box60Frozen:  800,
@@ -902,6 +915,7 @@ func TestUpdateShipping(t *testing.T) {
 				mocks.db.Shipping.EXPECT().Update(ctx, "shipping-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateShippingInput{
+				Name:              "配送設定",
 				ShippingID:        "shipping-id",
 				Box60Rates:        rates,
 				Box60Frozen:       800,

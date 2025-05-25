@@ -21862,10 +21862,12 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
          * コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
          * @summary 配送設定一覧取得
          * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListShippings: async (coordinatorId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListShippings: async (coordinatorId: string, limit?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
             assertParamExists('v1ListShippings', 'coordinatorId', coordinatorId)
             const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
@@ -21884,6 +21886,14 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
 
 
     
@@ -22151,11 +22161,13 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
          * @summary 配送設定一覧取得
          * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(coordinatorId, options);
+        async v1ListShippings(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(coordinatorId, limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1ListShippings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -22282,11 +22294,13 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
          * @summary 配送設定一覧取得
          * @param {string} coordinatorId コーディネータID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingsResponse> {
-            return localVarFp.v1ListShippings(coordinatorId, options).then((request) => request(axios, basePath));
+        v1ListShippings(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ShippingsResponse> {
+            return localVarFp.v1ListShippings(coordinatorId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 使用する配送設定を更新する。
@@ -22408,12 +22422,14 @@ export class ShippingApi extends BaseAPI {
      * コーディネータの配送設定一覧を取得します。（１件も存在しない場合、デフォルト配送設定を取得します）
      * @summary 配送設定一覧取得
      * @param {string} coordinatorId コーディネータID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1ListShippings(coordinatorId: string, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1ListShippings(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    public v1ListShippings(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1ListShippings(coordinatorId, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

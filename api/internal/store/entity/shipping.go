@@ -32,6 +32,7 @@ type Shipping struct {
 	ID               string         `gorm:"primaryKey;<-:create"` // 配送設定ID
 	ShopID           string         `gorm:"default:null"`         // 店舗ID
 	CoordinatorID    string         `gorm:""`                     // コーディネータID
+	Name             string         `gorm:""`                     // 配送設定名
 	InUse            bool           `gorm:""`                     // 使用中
 	CreatedAt        time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt        time.Time      `gorm:""`                     // 更新日時
@@ -42,6 +43,7 @@ type Shippings []*Shipping
 
 type NewShippingParams struct {
 	ShopID            string
+	Name              string
 	CoordinatorID     string
 	Box60Rates        ShippingRates
 	Box60Frozen       int64
@@ -82,6 +84,7 @@ func NewShipping(params *NewShippingParams) *Shipping {
 		ID:               params.CoordinatorID, // PKはコーディネータと同一にする
 		ShopID:           params.ShopID,
 		CoordinatorID:    params.CoordinatorID,
+		Name:             params.Name,
 		InUse:            params.InUse,
 		ShippingRevision: *revision,
 	}
