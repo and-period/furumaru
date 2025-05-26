@@ -15,7 +15,7 @@ func (h *handler) getShippingByCoordinatorID(ctx context.Context, coordinatorID 
 	}
 	shipping, err := h.store.GetShippingByCoordinatorID(ctx, in)
 	if errors.Is(err, exception.ErrNotFound) {
-		// 配送設定の登録をしていない場合、デフォルト設定を返却する
+		// 配送設定の登録をしていない場合、デフォルト配送設定を返却する
 		in := &store.GetDefaultShippingInput{}
 		shipping, err = h.store.GetDefaultShipping(ctx, in)
 	}
