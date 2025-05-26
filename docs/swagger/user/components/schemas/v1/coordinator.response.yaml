@@ -3,6 +3,8 @@ coordinatorResponse:
   properties:
     coordinator:
       $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    shipping:
+      $ref: './../../../openapi.yaml#/components/schemas/shipping'
     lives:
       type: array
       description: 開催中・開催予定のマルシェ一覧
@@ -35,6 +37,7 @@ coordinatorResponse:
         $ref: './../../../openapi.yaml#/components/schemas/experience'
   required:
   - coordinator
+  - shipping
   - lives
   - archives
   - productTypes
@@ -55,6 +58,46 @@ coordinatorResponse:
       facebookId: 'facebook-id'
       prefecture: '東京都'
       city: '千代田区'
+    shipping:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      box60Rates:
+      - number: 1
+        name: '離島'
+        price: 2000
+        prefectures: ['北海道', '沖縄県']
+        prefectureCodes: [1, 47]
+      - number: 2
+        name: 'その他'
+        price: 1200
+        prefectures: ['青森県', '岩手県', '宮城県']
+        prefectureCodes: [2, 3, 4]
+      box60Frozen: 500
+      box80Rates:
+      - number: 1
+        name: '離島'
+        price: 2000
+        prefectures: ['北海道', '沖縄県']
+        prefectureCodes: [1, 47]
+      - number: 2
+        name: 'その他'
+        price: 1200
+        prefectures: ['青森県', '岩手県', '宮城県']
+        prefectureCodes: [2, 3, 4]
+      box80Frozen: 500
+      box100Rates:
+      - number: 1
+        name: '離島'
+        price: 2000
+        prefectures: ['北海道', '沖縄県']
+        prefectureCodes: [1, 47]
+      - number: 2
+        name: 'その他'
+        price: 1200
+        prefectures: ['青森県', '岩手県', '宮城県']
+        prefectureCodes: [2, 3, 4]
+      box100Frozen: 500
+      hasFreeShipping: true
+      freeShippingRates: 3000
     lives:
     - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2

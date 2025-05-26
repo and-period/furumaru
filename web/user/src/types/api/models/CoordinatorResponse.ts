@@ -43,6 +43,12 @@ import {
     ProductFromJSONTyped,
     ProductToJSON,
 } from './Product';
+import type { Shipping } from './Shipping';
+import {
+    ShippingFromJSON,
+    ShippingFromJSONTyped,
+    ShippingToJSON,
+} from './Shipping';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
@@ -68,6 +74,12 @@ export interface CoordinatorResponse {
      * @memberof CoordinatorResponse
      */
     coordinator: Coordinator;
+    /**
+     * 
+     * @type {Shipping}
+     * @memberof CoordinatorResponse
+     */
+    shipping: Shipping;
     /**
      * 開催中・開催予定のマルシェ一覧
      * @type {Array<LiveSummary>}
@@ -111,6 +123,7 @@ export interface CoordinatorResponse {
  */
 export function instanceOfCoordinatorResponse(value: object): value is CoordinatorResponse {
     if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('shipping' in value) || value['shipping'] === undefined) return false;
     if (!('lives' in value) || value['lives'] === undefined) return false;
     if (!('archives' in value) || value['archives'] === undefined) return false;
     if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
@@ -131,6 +144,7 @@ export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'shipping': ShippingFromJSON(json['shipping']),
         'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
         'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
         'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
@@ -147,6 +161,7 @@ export function CoordinatorResponseToJSON(value?: CoordinatorResponse | null): a
     return {
         
         'coordinator': CoordinatorToJSON(value['coordinator']),
+        'shipping': ShippingToJSON(value['shipping']),
         'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
         'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
         'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
