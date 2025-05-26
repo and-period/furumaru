@@ -131,6 +131,7 @@ func (s *Shipping) CalcShippingFee(
 }
 
 func (s *Shipping) Fill(revision *ShippingRevision) {
+	s.ShippingRevision.Fill()
 	s.ShippingRevision = *revision
 }
 

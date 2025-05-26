@@ -309,6 +309,8 @@ components:
       $ref: './components/schemas/entity/promotion.yaml#/promotion'
     schedule:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
+    shipping:
+      $ref: './components/schemas/entity/shipping.yaml#/shipping'
     spot:
       $ref: './components/schemas/entity/spot.yaml#/spot'
     spotType:

@@ -253,6 +253,12 @@ func TestToPrefectureNames(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name:      "success with sort",
+			values:    []int32{3, 2, 1},
+			expect:    []string{"hokkaido", "aomori", "iwate"},
+			expectErr: nil,
+		},
+		{
 			name:      "failed to convert",
 			values:    []int32{0},
 			expect:    nil,
@@ -269,31 +275,37 @@ func TestToPrefectureNames(t *testing.T) {
 	}
 }
 
-func TestToPrefectureJapanese(t *testing.T) {
+func TestToPrefectureJapaneses(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
-		values    int32
-		expect    string
+		values    []int32
+		expect    []string
 		expectErr error
 	}{
 		{
 			name:      "success",
-			values:    1,
-			expect:    "北海道",
+			values:    []int32{1, 2, 3},
+			expect:    []string{"北海道", "青森県", "岩手県"},
+			expectErr: nil,
+		},
+		{
+			name:      "success with sort",
+			values:    []int32{3, 2, 1},
+			expect:    []string{"北海道", "青森県", "岩手県"},
 			expectErr: nil,
 		},
 		{
 			name:      "failed to convert",
-			values:    0,
-			expect:    "",
+			values:    []int32{0},
+			expect:    nil,
 			expectErr: ErrUnknownPrefecture,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := ToPrefectureJapanese(tt.values)
+			actual, err := ToPrefectureJapaneses(tt.values...)
 			assert.ErrorIs(t, tt.expectErr, err)
 			assert.Equal(t, tt.expect, actual)
 		})

@@ -32,10 +32,11 @@ type ShippingRevisions []*ShippingRevision
 
 // ShippingRate - 配送料金情報
 type ShippingRate struct {
-	Number          int64   `json:"number"`      // No.
-	Name            string  `json:"name"`        // 配送料金設定名
-	Price           int64   `json:"price"`       // 配送料金(税込)
-	PrefectureCodes []int32 `json:"prefectures"` // 対象都道府県一覧
+	Number          int64    `json:"number"`      // No.
+	Name            string   `json:"name"`        // 配送料金設定名
+	Price           int64    `json:"price"`       // 配送料金(税込)
+	Prefectures     []string `json:"-"`           // 対象都道府県名
+	PrefectureCodes []int32  `json:"prefectures"` // 対象都道府県一覧
 }
 
 type ShippingRates []*ShippingRate
@@ -64,6 +65,12 @@ func NewShippingRevision(params *NewShippingRevisionParams) *ShippingRevision {
 		HasFreeShipping:   params.HasFreeShipping,
 		FreeShippingRates: params.FreeShippingRates,
 	}
+}
+
+func (r *ShippingRevision) Fill() {
+	r.Box60Rates.Fill()
+	r.Box80Rates.Fill()
+	r.Box100Rates.Fill()
 }
 
 func (rs ShippingRevisions) ShippingIDs() []string {
@@ -107,6 +114,11 @@ func NewShippingRate(num int64, name string, price int64, prefs []int32) *Shippi
 	}
 }
 
+func (r *ShippingRate) Fill() {
+	prefectures, _ := codes.ToPrefectureJapaneses(r.PrefectureCodes...)
+	r.Prefectures = prefectures
+}
+
 func (rs ShippingRates) Find(prefectureCode int32) (*ShippingRate, error) {
 	for _, rate := range rs {
 		set := set.New(rate.PrefectureCodes...)
@@ -139,6 +151,12 @@ func (rs ShippingRates) Validate() error {
 		return errInvalidShippingRatePrefLength
 	}
 	return nil
+}
+
+func (rs ShippingRates) Fill() {
+	for _, r := range rs {
+		r.Fill()
+	}
 }
 
 func (rs ShippingRates) Marshal() ([]byte, error) {
