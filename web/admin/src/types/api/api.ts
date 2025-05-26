@@ -2443,6 +2443,12 @@ export interface CreateShippingRate {
  */
 export interface CreateShippingRequest {
     /**
+     * 配送設定名(64文字以内)
+     * @type {string}
+     * @memberof CreateShippingRequest
+     */
+    'name': string;
+    /**
      * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
      * @type {Array<CreateShippingRate>}
      * @memberof CreateShippingRequest
@@ -6076,6 +6082,12 @@ export interface Shipping {
      */
     'id': string;
     /**
+     * 配送設定名
+     * @type {string}
+     * @memberof Shipping
+     */
+    'name': string;
+    /**
      * デフォルト設定
      * @type {boolean}
      * @memberof Shipping
@@ -8071,6 +8083,12 @@ export interface UpdateShippingRate {
  * @interface UpdateShippingRequest
  */
 export interface UpdateShippingRequest {
+    /**
+     * 配送設定名(64文字以内)
+     * @type {string}
+     * @memberof UpdateShippingRequest
+     */
+    'name': string;
     /**
      * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
      * @type {Array<UpdateShippingRate>}

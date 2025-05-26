@@ -20,6 +20,9 @@ createShippingRate:
 createShippingRequest:
   type: object
   properties:
+    name:
+      type: string
+      description: 配送設定名(64文字以内)
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
@@ -55,6 +58,7 @@ createShippingRequest:
       format: int64
       description: 送料無料になる金額(税込:100万未満)
   required:
+  - name
   - box60Rates
   - box60Frozen
   - box80Rates
@@ -64,6 +68,7 @@ createShippingRequest:
   - hasFreeShipping
   - freeShippingRates
   example:
+    name: '配送設定名'
     box60Rates:
     - number: 1
       name: '離島'
@@ -118,6 +123,9 @@ updateShippingRate:
 updateShippingRequest:
   type: object
   properties:
+    name:
+      type: string
+      description: 配送設定名(64文字以内)
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
@@ -153,6 +161,7 @@ updateShippingRequest:
       format: int64
       description: 送料無料になる金額(税込:100万未満)
   required:
+  - name
   - box60Rates
   - box60Frozen
   - box80Rates
@@ -162,6 +171,7 @@ updateShippingRequest:
   - hasFreeShipping
   - freeShippingRates
   example:
+    name: '配送設定名'
     box60Rates:
     - number: 1
       name: '離島'

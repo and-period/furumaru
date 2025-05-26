@@ -30,6 +30,9 @@ shipping:
     id:
       type: string
       description: 配送設定ID
+    name:
+      type: string
+      description: 配送設定名
     isDefault:
       type: boolean
       description: デフォルト設定
@@ -80,6 +83,7 @@ shipping:
       description: 更新日時 (unixtime)
   required:
   - id
+  - name
   - isDefault
   - inUse
   - box60Rates
@@ -94,6 +98,7 @@ shipping:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: '配送設定名'
     isDefault: false
     inUse: true
     box60Rates:
