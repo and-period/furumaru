@@ -3,7 +3,7 @@ package response
 // Shipping - 配送設定情報
 type Shipping struct {
 	ID                string          `json:"id"`                // 配送設定ID
-	Name              string          `json:"name,omitempty"`    // 配送設定名
+	Name              string          `json:"name"`              // 配送設定名
 	IsDefault         bool            `json:"isDefault"`         // デフォルト設定フラグ
 	Box60Rates        []*ShippingRate `json:"box60Rates"`        // 箱サイズ60の通常（常温・冷蔵便）配送料一覧
 	Box60Frozen       int64           `json:"box60Frozen"`       // 箱サイズ60の追加（冷凍便）追加配送料(税込)
