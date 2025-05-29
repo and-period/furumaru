@@ -69,6 +69,52 @@ func TestShippingRevision(t *testing.T) {
 	}
 }
 
+func TestShippingRevision_Fill(t *testing.T) {
+	t.Parallel()
+	pref1 := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int32{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+	}
+	additional := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: []string{"徳島県", "香川県"}, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: []string{"愛媛県", "高知県"}, PrefectureCodes: pref2},
+	}
+	tests := []struct {
+		name   string
+		params *ShippingRevision
+		expect *ShippingRevision
+	}{
+		{
+			name: "success",
+			params: &ShippingRevision{
+				Box60Rates:  rates,
+				Box80Rates:  rates,
+				Box100Rates: rates,
+			},
+			expect: &ShippingRevision{
+				Box60Rates:  additional,
+				Box80Rates:  additional,
+				Box100Rates: additional,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.params.Fill()
+			assert.Equal(t, tt.expect, tt.params)
+		})
+	}
+}
+
 func TestShippingRevisions_ShippingIDs(t *testing.T) {
 	t.Parallel()
 	pref1 := []int32{
@@ -465,6 +511,42 @@ func TestShippingRates_Validate(t *testing.T) {
 			t.Parallel()
 			err := tt.rates.Validate()
 			assert.Equal(t, tt.hasErr, tt.rates.Validate() != nil, err)
+		})
+	}
+}
+
+func TestShippingRates_Fill(t *testing.T) {
+	t.Parallel()
+	pref1 := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int32{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	tests := []struct {
+		name   string
+		rates  ShippingRates
+		expect ShippingRates
+	}{
+		{
+			name: "success",
+			rates: ShippingRates{
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+			},
+			expect: ShippingRates{
+				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: []string{"徳島県", "香川県"}, PrefectureCodes: pref1},
+				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: []string{"愛媛県", "高知県"}, PrefectureCodes: pref2},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.rates.Fill()
+			assert.Equal(t, tt.expect, tt.rates)
 		})
 	}
 }

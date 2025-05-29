@@ -176,24 +176,19 @@ func (s *shipping) GetDefault(ctx context.Context, fields ...string) (*entity.Sh
 }
 
 func (s *shipping) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) {
-	var shipping *entity.Shipping
-
-	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
-		Where("coordinator_id = ?", coordinatorID).
-		Where("in_use = ?", true)
-
-	if err := stmt.First(&shipping).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := s.fill(ctx, s.db.DB, shipping); err != nil {
-		return nil, dbError(err)
-	}
-	return shipping, nil
+	shipping, err := s.getByCoordinatorID(ctx, s.db.DB, coordinatorID, fields...)
+	return shipping, dbError(err)
 }
 
 func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := s.now()
+
+		// 既存で使用中の配送設定を取得
+		existing, err := s.getByCoordinatorID(ctx, tx, shipping.CoordinatorID)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
 
 		// 既存で使用中の配送設定がある場合、それを無効化する
 		if shipping.InUse {
@@ -208,6 +203,11 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 			if err := stmt.Updates(params).Error; err != nil {
 				return err
 			}
+		}
+
+		// 既存で使用中になっているものがない場合、今回作成するものを使用中にする
+		if existing == nil {
+			shipping.InUse = true
 		}
 
 		// 配送設定を登録
@@ -336,6 +336,22 @@ func (s *shipping) get(ctx context.Context, tx *gorm.DB, shippingID string, fiel
 
 	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
 		Where("id = ?", shippingID)
+
+	if err := stmt.First(&shipping).Error; err != nil {
+		return nil, err
+	}
+	if err := s.fill(ctx, tx, shipping); err != nil {
+		return nil, err
+	}
+	return shipping, nil
+}
+
+func (s *shipping) getByCoordinatorID(ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string) (*entity.Shipping, error) {
+	var shipping *entity.Shipping
+
+	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
+		Where("coordinator_id = ?", coordinatorID).
+		Where("in_use = ?", true)
 
 	if err := stmt.First(&shipping).Error; err != nil {
 		return nil, err

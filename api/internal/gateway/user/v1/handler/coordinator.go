@@ -90,6 +90,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	}
 
 	var (
+		shipping     *service.Shipping
 		lives        service.LiveSummaries
 		archives     service.ArchiveSummaries
 		productTypes service.ProductTypes
@@ -98,6 +99,10 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		experiences  service.Experiences
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		shipping, err = h.getShippingByCoordinatorID(ectx, coordinator.ID)
+		return
+	})
 	eg.Go(func() (err error) {
 		params := &listLiveSummariesParams{
 			coordinatorID: coordinator.ID,
@@ -149,6 +154,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 
 	res := &response.CoordinatorResponse{
 		Coordinator:  coordinator.Response(),
+		Shipping:     shipping.Response(),
 		Lives:        lives.Response(),
 		Archives:     archives.Response(),
 		ProductTypes: productTypes.Response(),

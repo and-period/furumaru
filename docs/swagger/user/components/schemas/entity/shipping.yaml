@@ -13,6 +13,12 @@ shippingRate:
       type: integer
       format: int64
       description: 配送料金（税込）
+    prefectures:
+      type: array
+      description: 対象都道府県一覧
+      items:
+        type: string
+        description: 都道府県名
     prefectureCodes:
       type: array
       description: 対象都道府県コード一覧
@@ -22,6 +28,7 @@ shippingRate:
   - number
   - name
   - price
+  - prefectures
   - prefectureCodes
 shipping:
   type: object
@@ -30,15 +37,6 @@ shipping:
     id:
       type: string
       description: 配送設定ID
-    name:
-      type: string
-      description: 配送設定名
-    isDefault:
-      type: boolean
-      description: デフォルト設定
-    inUse:
-      type: boolean
-      description: 使用中
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧
@@ -73,19 +71,8 @@ shipping:
       type: integer
       format: int64
       description: 送料無料になる金額（税込）
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
   required:
   - id
-  - name
-  - isDefault
-  - inUse
   - box60Rates
   - box60Frozen
   - box80Rates
@@ -94,44 +81,43 @@ shipping:
   - box100Frozen
   - hasFreeShipping
   - freeShippingRates
-  - createdAt
-  - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    name: '配送設定名'
-    isDefault: false
-    inUse: true
     box60Rates:
     - number: 1
       name: '離島'
       price: 2000
+      prefectures: ['北海道', '沖縄県']
       prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
+      prefectures: ['青森県', '岩手県', '宮城県']
       prefectureCodes: [2, 3, 4]
     box60Frozen: 500
     box80Rates:
     - number: 1
       name: '離島'
       price: 2000
+      prefectures: ['北海道', '沖縄県']
       prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
+      prefectures: ['青森県', '岩手県', '宮城県']
       prefectureCodes: [2, 3, 4]
     box80Frozen: 500
     box100Rates:
     - number: 1
       name: '離島'
       price: 2000
+      prefectures: ['北海道', '沖縄県']
       prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
+      prefectures: ['青森県', '岩手県', '宮城県']
       prefectureCodes: [2, 3, 4]
     box100Frozen: 500
     hasFreeShipping: true
     freeShippingRates: 3000
-    createdAt: 1640962800
-    updatedAt: 1640962800

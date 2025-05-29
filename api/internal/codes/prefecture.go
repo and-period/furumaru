@@ -2,6 +2,8 @@ package codes
 
 import (
 	"errors"
+	"slices"
+	"sort"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 )
@@ -216,7 +218,21 @@ func ToPrefectureName(value int32) (string, error) {
 }
 
 func ToPrefectureNames(values ...int32) ([]string, error) {
-	return set.UniqWithErr(values, ToPrefectureName)
+	sort.SliceStable(values, func(i, j int) bool {
+		return values[i] < values[j]
+	})
+	names := make([]string, 0, len(values))
+	for _, value := range values {
+		name, err := ToPrefectureName(value)
+		if err != nil {
+			return nil, err
+		}
+		if slices.Contains(names, name) {
+			continue
+		}
+		names = append(names, name)
+	}
+	return names, nil
 }
 
 func ToPrefectureJapanese(value int32) (string, error) {
@@ -225,6 +241,24 @@ func ToPrefectureJapanese(value int32) (string, error) {
 		return "", ErrUnknownPrefecture
 	}
 	return name, nil
+}
+
+func ToPrefectureJapaneses(values ...int32) ([]string, error) {
+	sort.SliceStable(values, func(i, j int) bool {
+		return values[i] < values[j]
+	})
+	names := make([]string, 0, len(values))
+	for _, value := range values {
+		name, err := ToPrefectureJapanese(value)
+		if err != nil {
+			return nil, err
+		}
+		if slices.Contains(names, name) {
+			continue
+		}
+		names = append(names, name)
+	}
+	return names, nil
 }
 
 func ToPrefectureValue(name string) (int32, error) {

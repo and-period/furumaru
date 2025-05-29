@@ -1,1 +1,1 @@
-ALTER TABLE `stores`.`shippings` ADD COLUMN `name` VARCHAR(64) NOT NULL DEFAULT '';
+ALTER TABLE `stores`.`shippings` ADD COLUMN `deleted_at` DATETIME NULL DEFAULT NULL;
