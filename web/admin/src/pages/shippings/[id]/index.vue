@@ -2,11 +2,12 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useShippingStore } from '~/store'
-import type { UpsertShippingRequest } from '~/types/api'
+import type { UpdateShippingRequest } from '~/types/api'
 
+const router = useRouter()
 const route = useRoute()
 
-const coordinatorId = route.params.id as string
+const shippingId = route.params.id as string
 
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
@@ -15,8 +16,8 @@ const { alertType, isShow, alertText, show, hide } = useAlert('error')
 
 const { adminId } = storeToRefs(authStore)
 
-const loading = ref<boolean>(false)
-const formData = ref<UpsertShippingRequest>({
+const formData = ref<UpdateShippingRequest>({
+  name: '',
   box60Rates: [
     {
       name: '',
@@ -46,7 +47,7 @@ const formData = ref<UpsertShippingRequest>({
 })
 
 const { data, status, error } = useAsyncData(async () => {
-  return await shippingStore.fetchShipping(adminId.value, coordinatorId)
+  return await shippingStore.fetchShipping(adminId.value, shippingId)
 })
 
 watch(error, (newError) => {
@@ -72,11 +73,12 @@ const handleSubmit = async (): Promise<void> => {
   try {
     hide()
     submitting.value = true
-    await shippingStore.upsertShipping(adminId.value, formData.value)
+    await shippingStore.updateShipping(adminId.value, shippingId, formData.value)
     commonStore.addSnackbar({
       color: 'info',
       message: '配送設定を更新しました。',
     })
+    router.push('/shippings')
   }
   catch (err) {
     if (err instanceof Error) {
@@ -108,6 +110,7 @@ const handleSubmit = async (): Promise<void> => {
     </v-card-title>
     <organisms-shipping-form
       v-model="formData"
+      :loading=" status === 'pending' "
       form-type="update"
       :submitting="submitting"
       @submit="handleSubmit"

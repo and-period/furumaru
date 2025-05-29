@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import type { CreateShippingRequest, UpdateDefaultShippingRequest, UpsertShippingRequest, Shipping } from '~/types/api'
+import type { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
 
 import { getErrorMessage } from '~/lib/validations'
 import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
@@ -10,6 +10,7 @@ import { UpsertShippingValidationRules } from '~/types/validations'
 interface Props {
   formType: 'create' | 'update'
   submitting: boolean
+  loading: boolean
 }
 
 defineProps<Props>()
@@ -20,7 +21,7 @@ interface Emits {
 
 const emit = defineEmits<Emits>()
 
-const formData = defineModel<CreateShippingRequest | UpdateDefaultShippingRequest | UpsertShippingRequest>({ required: true })
+const formData = defineModel<CreateShippingRequest | UpdateShippingRequest>({ required: true })
 
 /**
  * サイズ60の配送料オプションのインデックス配列を計算する
@@ -172,7 +173,23 @@ const handleSubmit = async () => {
 
 <template>
   <div>
-    <v-card class="mb-4 py-2">
+    <v-card
+      class="mb-4"
+      :loading="loading"
+    >
+      <v-card-text>
+        <v-text-field
+          v-model="validate.name.$model"
+          :error-messages="getErrorMessage(validate.name.$errors)"
+          label="配送設定名"
+          type="text"
+        />
+      </v-card-text>
+    </v-card>
+    <v-card
+      class="mb-4 py-2"
+      :loading="loading"
+    >
       <v-card-title>配送オプション：サイズ60</v-card-title>
       <v-card-text>
         <div class="d-flex flex-column flex-md-row justify-center">
@@ -225,7 +242,10 @@ const handleSubmit = async () => {
       </v-card-actions>
     </v-card>
 
-    <v-card class="mb-4 py-2">
+    <v-card
+      class="mb-4 py-2"
+      :loading="loading"
+    >
       <v-card-title>配送オプション：サイズ80</v-card-title>
       <v-card-text>
         <div class="d-flex flex-column flex-md-row justify-center">
@@ -278,7 +298,10 @@ const handleSubmit = async () => {
       </v-card-actions>
     </v-card>
 
-    <v-card class="mb-4 py-2">
+    <v-card
+      class="mb-4 py-2"
+      :loading="loading"
+    >
       <v-card-title>配送オプション：サイズ100</v-card-title>
       <v-card-text>
         <div class="d-flex flex-column flex-md-row justify-center">

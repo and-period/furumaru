@@ -15,6 +15,7 @@ const { createShipping } = shippingStore
 const { alertType, isShow, alertText, show, hide } = useAlert('error')
 
 const formData = ref<CreateShippingRequest>({
+  name: '',
   box60Rates: [
     {
       name: '',
@@ -87,6 +88,7 @@ const handleSubmit = async () => {
     </v-card-title>
     <organisms-shipping-form
       v-model="formData"
+      :loading="false"
       form-type="create"
       :submitting="submitting"
       @submit="handleSubmit"

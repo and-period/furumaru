@@ -15,8 +15,8 @@ const { alertType, isShow, alertText, show, hide } = useAlert('error')
 
 const headers: VDataTable['headers'] = [
   {
-    title: 'id',
-    key: 'id',
+    title: '名前',
+    key: 'name',
     sortable: false,
   },
   {
