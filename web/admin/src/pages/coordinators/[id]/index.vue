@@ -101,7 +101,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await Promise.all([
       coordinatorStore.getCoordinator(coordinatorId),
-      shippingStore.fetchShipping(coordinatorId),
+      shippingStore.fetchActiveShipping(coordinatorId),
     ])
     coordinatorFormData.value = {
       ...coordinator.value,

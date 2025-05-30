@@ -1,6 +1,6 @@
 <script setup lang='ts'>
-import VersionInfo from '../../version.json'
 import dayjs from 'dayjs'
+import VersionInfo from '../../version.json'
 
 const builtAt = computed(() => dayjs(VersionInfo.buildDate))
 </script>
