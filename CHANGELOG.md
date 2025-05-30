@@ -1,5 +1,36 @@
 # Changelog
 
+## [v5.0.0](https://github.com/and-period/furumaru/compare/v4.4.16...v5.0.0) - 2025-05-30
+- feat(store): 配送設定のCRUD実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2800
+- feat(docs): 配送設定関連のAPI仕様書を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2802
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2803
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2804
+- feat(gateway): 配送設定取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2805
+- feat(gateway): 配送設定追加と一覧取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2806
+- feat(gateway): 配送設定更新APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2807
+- fix(store): 配送種別の仕様を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2795
+- chore: golangci-lint by @taba2424 in https://github.com/and-period/furumaru/pull/2808
+- refactor(api): Linterの対応 by @taba2424 in https://github.com/and-period/furumaru/pull/2810
+- fix(api): Golangのバージョンを更新 by @taba2424 in https://github.com/and-period/furumaru/pull/2811
+- Fix: 体験で動画があれば動画を表示するように修正 by @hamachans in https://github.com/and-period/furumaru/pull/2812
+- feat(store): 注文ステータスの変更ロジックの改修 by @taba2424 in https://github.com/and-period/furumaru/pull/2813
+- feat(admin): 注文ステータスの変更ロジックの改修 by @taba2424 in https://github.com/and-period/furumaru/pull/2814
+- fix(admin): 発送完了通知後も配送情報を更新できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2815
+- build(deps): bump the dependencies group across 1 directory with 72 updates by @dependabot in https://github.com/and-period/furumaru/pull/2809
+- build(deps): bump the dependencies group in /docs/swagger with 2 updates by @dependabot in https://github.com/and-period/furumaru/pull/2796
+- build(deps-dev): bump npm-run-all2 from 8.0.1 to 8.0.3 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2819
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2822
+- feat(store): 配送設定名の追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2821
+- Fix/product ux by @hamachans in https://github.com/and-period/furumaru/pull/2823
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2825
+- feat(hack): 配送設定関連の権限追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2827
+- feat(gateway): コーディネータ詳細取得APIに配送設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2826
+- fix(gateway): omitemptyタグの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2828
+- fix(store): 配送設定登録時の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2829
+- build(deps-dev): bump npm-run-all2 from 8.0.3 to 8.0.4 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2831
+- build(deps): bump the dependencies group across 1 directory with 44 updates by @dependabot in https://github.com/and-period/furumaru/pull/2830
+- 管理者画面の配送管理機能の刷新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2824
+
 ## [v4.4.16](https://github.com/and-period/furumaru/compare/v4.4.15...v4.4.16) - 2025-05-04
 - Add: added coordinator register spply by @hamachans in https://github.com/and-period/furumaru/pull/2793
 
