@@ -5,7 +5,7 @@ import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } fr
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
 import { Prefecture } from '~/types/api'
-import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest } from '~/types/api'
+import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest, Shipping } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -95,6 +95,23 @@ const promotionVideoUploadStatus = ref<ImageUploadStatus>({
 const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: '',
+})
+
+const shippingsLimit = ref<number>(20)
+const shippingsOffset = ref<number>(0)
+const shippings = ref<Shipping[]>([])
+/**
+ * 配送情報の取得
+ */
+const { data: shippingsResponse, error } = useAsyncData('shippings', async () => {
+  const res = await shippingStore.fetchShippings(coordinatorId, shippingsLimit.value, shippingsOffset.value)
+  return res
+})
+
+watch(shippingsResponse, (res) => {
+  if (res) {
+    shippings.value = res.shippings
+  }
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -336,6 +353,7 @@ catch (err) {
     :search-error-message="searchAddress.errorMessage.value"
     :coordinator="coordinator"
     :product-types="productTypes"
+    :shippings="shippings"
     :shipping="shipping"
     @click:search-address="handleSearchAddress"
     @update:search-product-type="handleSearchProductType"

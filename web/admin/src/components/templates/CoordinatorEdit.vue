@@ -88,6 +88,7 @@ const props = defineProps({
     type: Object as PropType<Coordinator>,
     default: (): Coordinator => ({
       id: '',
+      shopId: '',
       status: AdminStatus.UNKNOWN,
       lastname: '',
       lastnameKana: '',
@@ -125,9 +126,15 @@ const props = defineProps({
       updatedAt: 0,
     }),
   },
+  shippings: {
+    type: Array<Shipping>,
+    default: () => [],
+  },
   shipping: {
     type: Object as PropType<Shipping>,
     default: (): Shipping => ({
+      name: '',
+      inUse: false,
       id: '',
       isDefault: false,
       box60Rates: [],
@@ -339,6 +346,7 @@ const onClickSearchAddress = (): void => {
       <organisms-coordinator-shipping
         v-model:form-data="shippingFormDataValue"
         :loading="loading"
+        :shippings="shippings"
         :shipping="shipping"
         @submit="onSubmitShipping"
       />
