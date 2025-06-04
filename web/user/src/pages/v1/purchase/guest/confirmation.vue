@@ -210,6 +210,7 @@ onMounted(async () => {
     const result = await verifyPromotionCode(promotionCode.value, coordinatorId.value)
     if (result) {
       validPromotionCode.value = result
+      checkoutFormData.value.promotionCode = promotionCode.value
     }
     else {
       console.log('無効なプロモーションコードが設定されています。')
