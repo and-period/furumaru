@@ -78,7 +78,7 @@ jobs:
           go-build-cache
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-    - uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+    - uses: reproducible-containers/buildkit-cache-dance@v3.2.0
       with:
         cache-map: |
           {
