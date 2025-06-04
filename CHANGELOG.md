@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.0.2](https://github.com/and-period/furumaru/compare/v5.0.1...v5.0.2) - 2025-06-04
+- Fix/user/web/promotion code by @wf-yamaday in https://github.com/and-period/furumaru/pull/2838
+
 ## [v5.0.1](https://github.com/and-period/furumaru/compare/v5.0.0...v5.0.1) - 2025-06-04
 - build(deps): bump shell-quote from 1.8.2 to 1.8.3 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2834
 - fix: プロモーションコードが有効だった場合にpayloadに詰める処理を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2836
