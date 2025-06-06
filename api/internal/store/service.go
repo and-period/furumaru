@@ -146,11 +146,13 @@ type Service interface {
 	PublishSchedule(ctx context.Context, in *PublishScheduleInput) error                         // 公開
 	// Shipping - 配送設定
 	ListShippingsByShopID(ctx context.Context, in *ListShippingsByShopIDInput) (entity.Shippings, int64, error)          // 一覧取得(店舗ID指定)
-	ListShippingsByCoordinatorIDs(ctx context.Context, in *ListShippingsByCoordinatorIDsInput) (entity.Shippings, error) // 一覧取得(コーディネータID指定)
+	ListShippingsByShopIDs(ctx context.Context, in *ListShippingsByShopIDsInput) (entity.Shippings, error)               // 一覧取得(店舗ID指定)
+	ListShippingsByCoordinatorIDs(ctx context.Context, in *ListShippingsByCoordinatorIDsInput) (entity.Shippings, error) // Deprecated: 一覧取得(コーディネータID指定)
 	MultiGetShippingsByRevision(ctx context.Context, in *MultiGetShippingsByRevisionInput) (entity.Shippings, error)     // 一覧取得(変更履歴指定)
 	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)                                     // １件取得
 	GetDefaultShipping(ctx context.Context, in *GetDefaultShippingInput) (*entity.Shipping, error)                       // １件取得(デフォルト設定)
-	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // １件取得(コーディネータID設定)
+	GetShippingByShopID(ctx context.Context, in *GetShippingByShopIDInput) (*entity.Shipping, error)                     // １件取得(店舗ID指定)
+	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // Deprecated: １件取得(コーディネータID指定)
 	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)                               // 登録
 	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error                                                   // 更新
 	UpdateShippingInUse(ctx context.Context, in *UpdateShippingInUseInput) error                                         // 更新(使用中)

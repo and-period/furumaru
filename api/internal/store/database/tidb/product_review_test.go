@@ -32,6 +32,10 @@ func TestProductReview_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -41,7 +45,7 @@ func TestProductReview_List(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -118,6 +122,10 @@ func TestProductReview_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -127,7 +135,7 @@ func TestProductReview_Get(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -205,6 +213,10 @@ func TestProductReview_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -214,7 +226,7 @@ func TestProductReview_Create(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -289,6 +301,10 @@ func TestProductReview_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -298,7 +314,7 @@ func TestProductReview_Update(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -369,6 +385,10 @@ func TestProductReview_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -378,7 +398,7 @@ func TestProductReview_Delete(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -443,6 +463,10 @@ func TestProductReview_Aggregate(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -452,7 +476,7 @@ func TestProductReview_Aggregate(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error

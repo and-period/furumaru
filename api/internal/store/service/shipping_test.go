@@ -138,6 +138,97 @@ func TestListShippingsByShopID(t *testing.T) {
 	}
 }
 
+func TestListShippingsByShopIDs(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 7, 15, 18, 30, 0, 0)
+	shikoku := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	set := set.New(shikoku...)
+	others := make([]int32, 0, 47-len(shikoku))
+	for val := range codes.PrefectureNames {
+		if set.Contains(val) {
+			continue
+		}
+		others = append(others, val)
+	}
+	rates := entity.ShippingRates{
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
+	}
+	shippings := entity.Shippings{
+		{
+			ID:            "shipping-id",
+			ShopID:        "shop-id",
+			CoordinatorID: "coordinator-id",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+			ShippingRevision: entity.ShippingRevision{
+				Box60Rates:        rates,
+				Box60Frozen:       800,
+				Box80Rates:        rates,
+				Box80Frozen:       800,
+				Box100Rates:       rates,
+				Box100Frozen:      800,
+				HasFreeShipping:   true,
+				FreeShippingRates: 3000,
+			},
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.ListShippingsByShopIDsInput
+		expect    entity.Shippings
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().ListByShopIDs(gomock.Any(), []string{"shop-id"}).Return(shippings, nil)
+			},
+			input: &store.ListShippingsByShopIDsInput{
+				ShopIDs: []string{"shop-id"},
+			},
+			expect:    shippings,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListShippingsByShopIDsInput{
+				ShopIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list shippings",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().ListByShopIDs(gomock.Any(), []string{"shop-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.ListShippingsByShopIDsInput{
+				ShopIDs: []string{"shop-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListShippingsByShopIDs(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestListShippingsByCoordinatorIDs(t *testing.T) {
 	t.Parallel()
 

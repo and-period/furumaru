@@ -42,6 +42,9 @@ func (p listExperiencesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.HostPrefecture > 0 {
 		stmt = stmt.Where("host_prefecture = ?", p.HostPrefecture)
 	}
+	if p.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", p.ShopID)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
@@ -111,6 +114,9 @@ func (e *experience) ListByGeolocation(
 
 	stmt := e.db.Statement(ctx, e.db.DB, experienceTable, fields...).
 		Where(distance, params.Latitude, params.Latitude, params.Longitude, params.Radius)
+	if params.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", params.CoordinatorID)
 	}
