@@ -38,6 +38,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("`name` LIKE ?", fmt.Sprintf("%%%s%%", p.Name)).
 			Or("`description` LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
 	}
+	if p.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", p.ShopID)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}

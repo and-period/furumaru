@@ -27,6 +27,10 @@ func TestLive_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -34,7 +38,7 @@ func TestLive_List(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(internalProducts, 1)
-	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
 	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -42,7 +46,7 @@ func TestLive_List(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
@@ -119,6 +123,10 @@ func TestLive_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -126,7 +134,7 @@ func TestLive_Count(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(internalProducts, 1)
-	products[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
 	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -134,7 +142,7 @@ func TestLive_Count(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
@@ -210,6 +218,10 @@ func TestLive_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -217,7 +229,7 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 1)
-	internal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	internal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -225,7 +237,7 @@ func TestLive_Get(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
@@ -304,6 +316,10 @@ func TestLive_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -311,9 +327,9 @@ func TestLive_Update(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 3)
-	pinternal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	pinternal[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	pinternal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[2] = testProduct("product-id03", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 3, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -321,7 +337,7 @@ func TestLive_Update(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
@@ -391,6 +407,10 @@ func TestLive_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	category := testCategory("category-id", "野菜", now())
 	err = db.DB.Create(&category).Error
 	require.NoError(t, err)
@@ -398,9 +418,9 @@ func TestLive_Delete(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 3)
-	pinternal[0] = testProduct("product-id01", "type-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	pinternal[2] = testProduct("product-id03", "type-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	pinternal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	pinternal[1] = testProduct("product-id02", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[2] = testProduct("product-id03", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 3, now())
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -408,7 +428,7 @@ func TestLive_Delete(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 

@@ -38,6 +38,9 @@ func NewOrder(db *mysql.Client) database.Order {
 type listOrdersParams database.ListOrdersParams
 
 func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", p.ShopID)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
@@ -363,6 +366,9 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses).
 		Where("orders.created_at >= ?", params.CreatedAtGte).
 		Where("orders.created_at < ?", params.CreatedAtLt)
+	if params.ShopID != "" {
+		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
@@ -386,6 +392,9 @@ func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateO
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
 		Where("orders.user_id IN (?)", params.UserIDs).
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.ShopID != "" {
+		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
@@ -412,6 +421,9 @@ func (o *order) AggregateByPaymentMethodType(
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
 		Where("order_payments.status IN (?)", params.PaymentMethodTypes).
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.ShopID != "" {
+		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
@@ -443,6 +455,9 @@ func (o *order) AggregateByPromotion(
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
 		Where("orders.promotion_id IN (?)", params.PromotionIDs).
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.ShopID != "" {
+		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
@@ -483,6 +498,9 @@ func (o *order) AggregateByPeriod(
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses).
 		Where("orders.created_at >= ?", params.CreatedAtGte).
 		Where("orders.created_at < ?", params.CreatedAtLt)
+	if params.ShopID != "" {
+		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
+	}
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}

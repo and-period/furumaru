@@ -44,6 +44,14 @@ func (s *service) ListShippingsByShopID(
 	return shippings, total, nil
 }
 
+func (s *service) ListShippingsByShopIDs(ctx context.Context, in *store.ListShippingsByShopIDsInput) (entity.Shippings, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	shippings, err := s.db.Shipping.ListByShopIDs(ctx, in.ShopIDs)
+	return shippings, internalError(err)
+}
+
 func (s *service) ListShippingsByCoordinatorIDs(
 	ctx context.Context, in *store.ListShippingsByCoordinatorIDsInput,
 ) (entity.Shippings, error) {
@@ -77,6 +85,14 @@ func (s *service) GetDefaultShipping(ctx context.Context, in *store.GetDefaultSh
 		return nil, internalError(err)
 	}
 	shipping, err := s.db.Shipping.GetDefault(ctx)
+	return shipping, internalError(err)
+}
+
+func (s *service) GetShippingByShopID(ctx context.Context, in *store.GetShippingByShopIDInput) (*entity.Shipping, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	shipping, err := s.db.Shipping.GetByShopID(ctx, in.ShopID)
 	return shipping, internalError(err)
 }
 

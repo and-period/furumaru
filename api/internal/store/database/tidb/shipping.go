@@ -38,6 +38,9 @@ func (p listShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ShopID != "" {
 		stmt = stmt.Where("shop_id = ?", p.ShopID)
 	}
+	if len(p.ShopIDs) > 0 {
+		stmt = stmt.Where("shop_id IN (?)", p.ShopIDs)
+	}
 	if len(p.CoordinatorIDs) > 0 {
 		stmt = stmt.Where("coordinator_id IN (?)", p.CoordinatorIDs)
 	}
@@ -65,6 +68,22 @@ func (s *shipping) List(ctx context.Context, params *database.ListShippingsParam
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...)
 	stmt = prm.stmt(stmt)
 	stmt = prm.pagination(stmt)
+
+	if err := stmt.Find(&shippings).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := s.fill(ctx, s.db.DB, shippings...); err != nil {
+		return nil, dbError(err)
+	}
+	return shippings, nil
+}
+
+func (s *shipping) ListByShopIDs(ctx context.Context, shopIDs []string, fields ...string) (entity.Shippings, error) {
+	var shippings entity.Shippings
+
+	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
+		Where("shop_id IN (?)", shopIDs).
+		Where("in_use = ?", true)
 
 	if err := stmt.Find(&shippings).Error; err != nil {
 		return nil, dbError(err)
@@ -173,6 +192,11 @@ func (s *shipping) GetDefault(ctx context.Context, fields ...string) (*entity.Sh
 		return nil, dbError(err)
 	}
 	return shipping, nil
+}
+
+func (s *shipping) GetByShopID(ctx context.Context, shopID string, fields ...string) (*entity.Shipping, error) {
+	shipping, err := s.getByShopID(ctx, s.db.DB, shopID, fields...)
+	return shipping, dbError(err)
 }
 
 func (s *shipping) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) {
@@ -336,6 +360,22 @@ func (s *shipping) get(ctx context.Context, tx *gorm.DB, shippingID string, fiel
 
 	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
 		Where("id = ?", shippingID)
+
+	if err := stmt.First(&shipping).Error; err != nil {
+		return nil, err
+	}
+	if err := s.fill(ctx, tx, shipping); err != nil {
+		return nil, err
+	}
+	return shipping, nil
+}
+
+func (s *shipping) getByShopID(ctx context.Context, tx *gorm.DB, shopID string, fields ...string) (*entity.Shipping, error) {
+	var shipping *entity.Shipping
+
+	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
+		Where("shop_id = ?", shopID).
+		Where("in_use = ?", true)
 
 	if err := stmt.First(&shipping).Error; err != nil {
 		return nil, err
