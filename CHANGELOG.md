@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.0.2](https://github.com/and-period/furumaru/compare/v5.0.1...v5.0.2) - 2025-06-04
+- Fix/user/web/promotion code by @wf-yamaday in https://github.com/and-period/furumaru/pull/2838
+
+## [v5.0.1](https://github.com/and-period/furumaru/compare/v5.0.0...v5.0.1) - 2025-06-04
+- build(deps): bump shell-quote from 1.8.2 to 1.8.3 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2834
+- fix: プロモーションコードが有効だった場合にpayloadに詰める処理を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2836
+
 ## [v5.0.0](https://github.com/and-period/furumaru/compare/v4.4.16...v5.0.0) - 2025-05-30
 - feat(store): 配送設定のCRUD実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2800
 - feat(docs): 配送設定関連のAPI仕様書を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2802
