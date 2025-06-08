@@ -113,7 +113,6 @@ func (s *service) CreateCoordinator(
 	}
 	params := &entity.NewCoordinatorParams{
 		Admin:             entity.NewAdmin(adminParams),
-		MarcheName:        in.MarcheName,
 		Username:          in.Username,
 		Profile:           in.Profile,
 		ProductTypeIDs:    in.ProductTypeIDs,
@@ -129,7 +128,6 @@ func (s *service) CreateCoordinator(
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
-		BusinessDays:      in.BusinessDays,
 	}
 	coordinator, err := entity.NewCoordinator(params)
 	if err != nil {

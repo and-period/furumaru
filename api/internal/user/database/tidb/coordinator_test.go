@@ -586,7 +586,6 @@ func TestCoordinator_Update(t *testing.T) {
 					LastnameKana:      "あんどぴりおど",
 					FirstnameKana:     "すたっふ",
 					PhoneNumber:       "+819012345678",
-					MarcheName:        "&.マルシェ",
 					Username:          "&.農園",
 					Profile:           "紹介文です。",
 					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
@@ -600,7 +599,6 @@ func TestCoordinator_Update(t *testing.T) {
 					City:              "千代田区",
 					AddressLine1:      "永田町1-7-1",
 					AddressLine2:      "",
-					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				},
 			},
 			want: want{
@@ -762,7 +760,6 @@ func testCoordinator(id string, now time.Time) *internalCoordinator {
 	coordinator := &entity.Coordinator{
 		AdminID:           id,
 		PhoneNumber:       "+819012345678",
-		MarcheName:        "&.マルシェ",
 		Username:          "&.農園",
 		Profile:           "紹介文です。",
 		ProductTypeIDs:    []string{"product-type-id"},
@@ -778,7 +775,6 @@ func testCoordinator(id string, now time.Time) *internalCoordinator {
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",
-		BusinessDays:      []time.Weekday{time.Monday},
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}

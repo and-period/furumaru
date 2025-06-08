@@ -203,10 +203,6 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
-		businessDays, err := json.Marshal(params.BusinessDays)
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
 
 		now := c.now()
 		adminParams := map[string]interface{}{
@@ -218,7 +214,6 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 		}
 		coordinatorParams := map[string]interface{}{
 			"product_type_ids":    productTypeIDs,
-			"marche_name":         params.MarcheName,
 			"username":            params.Username,
 			"profile":             params.Profile,
 			"thumbnail_url":       params.ThumbnailURL,
@@ -233,7 +228,6 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"city":                params.City,
 			"address_line1":       params.AddressLine1,
 			"address_line2":       params.AddressLine2,
-			"business_days":       businessDays,
 			"updated_at":          now,
 		}
 
@@ -334,7 +328,6 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 type internalCoordinator struct {
 	entity.Coordinator `gorm:"embedded"`
 	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い品目ID一覧(JSON)
-	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
 }
 
 type internalCoordinators []*internalCoordinator
@@ -344,23 +337,15 @@ func newInternalCoordinator(coordinator *entity.Coordinator) (*internalCoordinat
 	if err != nil {
 		return nil, fmt.Errorf("tidb: failed to marshal product type IDs: %w", err)
 	}
-	days, err := json.Marshal(coordinator.BusinessDays)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal business days: %w", err)
-	}
 	internal := &internalCoordinator{
 		Coordinator:        *coordinator,
 		ProductTypeIDsJSON: typeIDs,
-		BusinessDaysJSON:   days,
 	}
 	return internal, nil
 }
 
 func (c *internalCoordinator) entity() (*entity.Coordinator, error) {
 	if err := c.unmarshalProductTypeIDs(); err != nil {
-		return nil, err
-	}
-	if err := c.unmarshalBusinessDays(); err != nil {
 		return nil, err
 	}
 	return &c.Coordinator, nil
@@ -375,18 +360,6 @@ func (c *internalCoordinator) unmarshalProductTypeIDs() error {
 		return fmt.Errorf("tidb: failed to unmarshal product type IDs: %w", err)
 	}
 	c.ProductTypeIDs = ids
-	return nil
-}
-
-func (c *internalCoordinator) unmarshalBusinessDays() error {
-	if c == nil || c.BusinessDaysJSON == nil {
-		return nil
-	}
-	var days []time.Weekday
-	if err := json.Unmarshal(c.BusinessDaysJSON, &days); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal business days: %w", err)
-	}
-	c.BusinessDays = days
 	return nil
 }
 
