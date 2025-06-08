@@ -21,11 +21,11 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Dependabot metadata
       id: dependabot-metadata
-      uses: dependabot/fetch-metadata@v2
+      uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b # v2.4.0
       with:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
 

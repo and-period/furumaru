@@ -48,7 +48,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
@@ -75,14 +75,14 @@ jobs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      uses: aws-actions/amazon-ecs-render-task-definition@6bb171240ff2b056ea6c599c9d2370c043f200be # v1.7.3
       with:
         task-definition: ./task-definition.json
         container-name: ${{ inputs.ecs-container-name }}
         image: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
 
     - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      uses: aws-actions/amazon-ecs-deploy-task-definition@538b32884c2bf327057c6805f0315e5ee92102cc # v2.3.2
       with:
         cluster: ${{ inputs.ecs-cluster-name }}
         service: ${{ inputs.ecs-service-name }}
