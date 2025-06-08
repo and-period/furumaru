@@ -32,10 +32,14 @@ func TestExperienceReview_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -112,10 +116,14 @@ func TestExperienceReview_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -193,10 +201,14 @@ func TestExperienceReview_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -271,10 +283,14 @@ func TestExperienceReview_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -345,10 +361,14 @@ func TestExperienceReview_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -413,10 +433,14 @@ func TestExperienceReview_Aggregate(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error

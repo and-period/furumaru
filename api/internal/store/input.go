@@ -964,6 +964,10 @@ type ListShippingsByShopIDInput struct {
 	Offset int64  `validate:"min=0"`
 }
 
+type ListShippingsByShopIDsInput struct {
+	ShopIDs []string `validate:"dive,required"`
+}
+
 type ListShippingsByCoordinatorIDsInput struct {
 	CoordinatorIDs []string `validate:"dive,required"`
 }
@@ -977,6 +981,10 @@ type GetShippingInput struct {
 }
 
 type GetDefaultShippingInput struct{}
+
+type GetShippingByShopIDInput struct {
+	ShopID string `validate:"required"`
+}
 
 type GetShippingByCoordinatorIDInput struct {
 	CoordinatorID string `validate:"required"`

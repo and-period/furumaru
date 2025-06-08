@@ -29,6 +29,9 @@ func NewSchedule(db *mysql.Client) database.Schedule {
 type listSchedulesParams database.ListSchedulesParams
 
 func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.ShopID != "" {
+		stmt = stmt.Where("shop_id = ?", p.ShopID)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}

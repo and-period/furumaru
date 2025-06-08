@@ -31,9 +31,15 @@ func TestSchedule_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now().Add(time.Hour))
+	schedules[0] = testSchedule("schedule-id01", "shop-id01", "coordinator-id", now())
+	schedules[1] = testSchedule("schedule-id02", "shop-id02", "coordinator-id", now().Add(time.Hour))
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -97,9 +103,15 @@ func TestSchedule_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
+	schedules[0] = testSchedule("schedule-id01", "shop-id01", "coordinator-id01", now())
+	schedules[1] = testSchedule("schedule-id02", "shop-id02", "coordinator-id02", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -163,9 +175,15 @@ func TestSchedule_MultiGet(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
+	schedules[0] = testSchedule("schedule-id01", "shop-id01", "coordinator-id01", now())
+	schedules[1] = testSchedule("schedule-id02", "shop-id02", "coordinator-id02", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -226,7 +244,11 @@ func TestSchedule_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testSchedule("schedule-id", "coordinator-id", now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
@@ -287,7 +309,11 @@ func TestSchedule_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testSchedule("schedule-id", "coordinator-id", now())
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 
 	type args struct {
 		schedule *entity.Schedule
@@ -314,7 +340,7 @@ func TestSchedule_Create(t *testing.T) {
 		{
 			name: "duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -358,6 +384,10 @@ func TestSchedule_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		scheduleID string
 		params     *database.UpdateScheduleParams
@@ -374,7 +404,7 @@ func TestSchedule_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -417,7 +447,7 @@ func TestSchedule_Update(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -470,6 +500,10 @@ func TestSchedule_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		scheduleID string
 	}
@@ -485,7 +519,7 @@ func TestSchedule_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -529,6 +563,10 @@ func TestSchedule_Approve(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		scheduleID string
 		params     *database.ApproveScheduleParams
@@ -545,7 +583,7 @@ func TestSchedule_Approve(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -594,6 +632,10 @@ func TestSchedule_Publish(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		scheduleID string
 		public     bool
@@ -610,7 +652,7 @@ func TestSchedule_Publish(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule := testSchedule("schedule-id", "shop-id", "coordinator-id", now())
 				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -642,9 +684,10 @@ func TestSchedule_Publish(t *testing.T) {
 	}
 }
 
-func testSchedule(id, coordinatorID string, now time.Time) *entity.Schedule {
+func testSchedule(id, shopID, coordinatorID string, now time.Time) *entity.Schedule {
 	schedule := &entity.Schedule{
 		ID:              id,
+		ShopID:          shopID,
 		CoordinatorID:   coordinatorID,
 		Status:          entity.ScheduleStatusLive,
 		Title:           "旬の夏野菜配信",

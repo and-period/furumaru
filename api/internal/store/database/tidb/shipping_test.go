@@ -98,6 +98,81 @@ func TestShipping_List(t *testing.T) {
 	}
 }
 
+func TestShipping_ListByShopIDs(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shops := make(internalShops, 2)
+	shops[0] = testShop("shop-id01", "coordinator-id01", []string{}, []string{}, now())
+	shops[1] = testShop("shop-id02", "coordinator-id02", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shops).Error
+	require.NoError(t, err)
+
+	shippings := make(entity.Shippings, 2)
+	shippings[0] = testShipping("shipping-id01", "shop-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "shop-id02", "coordinator-id02", 2, now())
+	err = db.DB.Create(&shippings).Error
+	require.NoError(t, err)
+	for i := range shippings {
+		internal, err := newInternalShippingRevision(&shippings[i].ShippingRevision)
+		require.NoError(t, err)
+		err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		shopIDs []string
+	}
+	type want struct {
+		shippings entity.Shippings
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shopIDs: []string{"shop-id01", "shop-id02"},
+			},
+			want: want{
+				shippings: shippings,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(t.Context())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			actual, err := db.ListByShopIDs(ctx, tt.args.shopIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.shippings, actual)
+		})
+	}
+}
+
 func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	defer cancel()
@@ -462,6 +537,86 @@ func TestShipping_GetDefault(t *testing.T) {
 
 			db := &shipping{db: db, now: now}
 			actual, err := db.GetDefault(ctx)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.shipping, actual)
+		})
+	}
+}
+
+func TestShipping_GetByShopID(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
+	s := testShipping("shipping-id", "shop-id", "coordinator-id", 1, now())
+	err = db.DB.Create(&s).Error
+	require.NoError(t, err)
+	internal, err := newInternalShippingRevision(&s.ShippingRevision)
+	require.NoError(t, err)
+	err = db.DB.Table(shippingRevisionTable).Create(&internal).Error
+	require.NoError(t, err)
+
+	type args struct {
+		shopID string
+	}
+	type want struct {
+		shipping *entity.Shipping
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shopID: "shop-id",
+			},
+			want: want{
+				shipping: s,
+				hasErr:   false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				shopID: "",
+			},
+			want: want{
+				shipping: nil,
+				hasErr:   true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(t.Context())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			actual, err := db.GetByShopID(ctx, tt.args.shopID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.shipping, actual)
 		})
