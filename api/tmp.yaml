@@ -9,7 +9,7 @@ linters:
     cyclop:
       max-complexity: 20
     funlen:
-      lines: 200
+      lines: 150
       statements: 80
     lll:
       line-length: 140
@@ -19,7 +19,6 @@ linters:
       linters:
       - contextcheck
       - depguard
-      - dupl
       - err113
       - exhaustruct
       - gochecknoglobals
@@ -41,16 +40,9 @@ linters:
       - unparam
       - varnamelen
       - wsl
-    - path: hack/.*\.go
-      linters:
-      - errcheck
-      - exhaustive
-      - forbidigo
-      - funlen
-      - gocritic
-      - rowserrcheck
     - path: .*_test\.go
       linters:
+      - bodyclose
       - containedctx
       - errcheck
       - forbidigo
@@ -61,31 +53,19 @@ linters:
       - gomnd
       - lll
       - maintidx
+      - paralleltest
       - tagalign
       - testifylint
       - testpackage
       - thelper
+      - tparallel
       - unused
-    - path: handler/.*_test\.go
+    - path: hack/.*\.go
       linters:
-      - paralleltest
-      - tparallel
-    - path: scheduler/.*_test\.go
-      linters:
-      - paralleltest
-      - tparallel
-    - path: service/.*_test\.go
-      linters:
-      - paralleltest
-      - tparallel
-    - path: tidb/.*_test\.go
-      linters:
-      - paralleltest
-      - tparallel
-    - path: worker/.*_test\.go
-      linters:
-      - paralleltest
-      - tparallel
+      - errcheck
+      - forbidigo
+      - funlen
+      - gocritic
 
 formatters:
   enable:

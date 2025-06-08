@@ -18,8 +18,6 @@ func TestThread(t *testing.T) {
 }
 
 func TestThread_ListByContactID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestThread_ListByContactID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -79,9 +76,7 @@ func TestThread_ListByContactID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &thread{db: db, now: now}
@@ -93,8 +88,6 @@ func TestThread_ListByContactID(t *testing.T) {
 }
 
 func TestThread_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,8 +95,7 @@ func TestThread_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -152,9 +144,7 @@ func TestThread_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &thread{db: db, now: now}
@@ -166,8 +156,6 @@ func TestThread_Count(t *testing.T) {
 }
 
 func TestThread_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -175,8 +163,7 @@ func TestThread_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -227,9 +214,7 @@ func TestThread_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, threadTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)
@@ -242,8 +227,6 @@ func TestThread_Create(t *testing.T) {
 }
 
 func TestThread_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -251,8 +234,7 @@ func TestThread_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -307,9 +289,7 @@ func TestThread_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &thread{db: db, now: now}
@@ -321,8 +301,6 @@ func TestThread_Get(t *testing.T) {
 }
 
 func TestThread_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -330,8 +308,7 @@ func TestThread_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -378,9 +355,7 @@ func TestThread_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, threadTable)
 			require.NoError(t, err)
 
@@ -394,8 +369,6 @@ func TestThread_Update(t *testing.T) {
 }
 
 func TestThread_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -403,8 +376,7 @@ func TestThread_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -445,9 +417,7 @@ func TestThread_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, threadTable)
 			require.NoError(t, err)
 

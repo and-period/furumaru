@@ -18,8 +18,6 @@ func TestContactCategory(t *testing.T) {
 }
 
 func TestContactCategory_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestContactCategory_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	contactCategories := make(entity.ContactCategories, 3)
@@ -70,9 +67,7 @@ func TestContactCategory_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &contactCategory{db: db, now: now}
@@ -84,8 +79,6 @@ func TestContactCategory_List(t *testing.T) {
 }
 
 func TestContactCategory_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -93,8 +86,7 @@ func TestContactCategory_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	contactCategories := make(entity.ContactCategories, 3)
@@ -137,9 +129,7 @@ func TestContactCategory_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &contactCategory{db: db, now: now}
@@ -151,8 +141,6 @@ func TestContactCategory_MultiGet(t *testing.T) {
 }
 
 func TestContactCategory_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -160,8 +148,7 @@ func TestContactCategory_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	c := testContactCategory("category-id", "問い合わせ種別", now())
@@ -208,9 +195,7 @@ func TestContactCategory_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &contactCategory{db: db, now: now}
@@ -222,8 +207,6 @@ func TestContactCategory_Get(t *testing.T) {
 }
 
 func TestContactCategory_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -231,8 +214,7 @@ func TestContactCategory_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	c := testContactCategory("category-id", "問い合わせ種別", now())
@@ -276,9 +258,7 @@ func TestContactCategory_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, contactCategoryTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)

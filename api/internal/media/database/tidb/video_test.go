@@ -13,9 +13,11 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
+func TestVideo(t *testing.T) {
+	assert.NotNil(t, NewVideo(nil))
+}
+
 func TestVideo_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -24,7 +26,7 @@ func TestVideo_List(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
@@ -77,8 +79,7 @@ func TestVideo_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -91,8 +92,6 @@ func TestVideo_List(t *testing.T) {
 }
 
 func TestVideo_ListByProductID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -100,8 +99,7 @@ func TestVideo_ListByProductID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
@@ -149,9 +147,7 @@ func TestVideo_ListByProductID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &video{db: db, now: now}
@@ -163,8 +159,6 @@ func TestVideo_ListByProductID(t *testing.T) {
 }
 
 func TestVideo_ListByExperienceID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -172,8 +166,7 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
@@ -221,9 +214,7 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &video{db: db, now: now}
@@ -235,8 +226,6 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 }
 
 func TestVideo_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -245,7 +234,7 @@ func TestVideo_Count(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
@@ -295,8 +284,7 @@ func TestVideo_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -309,8 +297,6 @@ func TestVideo_Count(t *testing.T) {
 }
 
 func TestVideo_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -319,7 +305,7 @@ func TestVideo_Get(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
@@ -370,8 +356,7 @@ func TestVideo_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -384,8 +369,6 @@ func TestVideo_Get(t *testing.T) {
 }
 
 func TestVideo_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -394,7 +377,7 @@ func TestVideo_Create(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -441,9 +424,7 @@ func TestVideo_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
 			require.NoError(t, err)
 
@@ -457,8 +438,6 @@ func TestVideo_Create(t *testing.T) {
 }
 
 func TestVideo_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -467,7 +446,7 @@ func TestVideo_Update(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -516,11 +495,10 @@ func TestVideo_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
 			require.NoError(t, err)
+
 			tt.setup(ctx, t, db)
 
 			db := &video{db: db, now: now}
@@ -531,8 +509,6 @@ func TestVideo_Update(t *testing.T) {
 }
 
 func TestVideo_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -540,8 +516,7 @@ func TestVideo_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -578,9 +553,7 @@ func TestVideo_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, videoProductTable, videoExperienceTable, videoTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)

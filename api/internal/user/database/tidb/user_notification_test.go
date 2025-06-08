@@ -17,8 +17,6 @@ func TestUserNotification(t *testing.T) {
 }
 
 func TestUserNotification_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,6 +25,7 @@ func TestUserNotification_MultiGet(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -70,9 +69,7 @@ func TestUserNotification_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &userNotification{db: db, now: now}
@@ -84,8 +81,6 @@ func TestUserNotification_MultiGet(t *testing.T) {
 }
 
 func TestUserNotification_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -94,6 +89,7 @@ func TestUserNotification_Get(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -147,9 +143,7 @@ func TestUserNotification_Get(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, userNotificationTable, userTable)
 			require.NoError(t, err)
 

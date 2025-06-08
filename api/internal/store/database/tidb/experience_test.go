@@ -19,8 +19,6 @@ func TestExperience(t *testing.T) {
 }
 
 func TestExperience_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -28,8 +26,7 @@ func TestExperience_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -90,9 +87,7 @@ func TestExperience_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -104,8 +99,6 @@ func TestExperience_List(t *testing.T) {
 }
 
 func TestExperience_ListByGeolocation(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -113,8 +106,7 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -177,9 +169,7 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -191,8 +181,6 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 }
 
 func TestExperience_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -200,8 +188,7 @@ func TestExperience_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -257,9 +244,7 @@ func TestExperience_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -271,8 +256,6 @@ func TestExperience_Count(t *testing.T) {
 }
 
 func TestExperience_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -280,8 +263,7 @@ func TestExperience_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -338,9 +320,7 @@ func TestExperience_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -352,8 +332,6 @@ func TestExperience_MultiGet(t *testing.T) {
 }
 
 func TestExperience_MultiGetByRevision(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -361,8 +339,7 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -419,9 +396,7 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -433,8 +408,6 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 }
 
 func TestExperience_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -442,8 +415,7 @@ func TestExperience_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -501,9 +473,7 @@ func TestExperience_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experience{db: db, now: now}
@@ -515,8 +485,6 @@ func TestExperience_Get(t *testing.T) {
 }
 
 func TestExperience_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -524,8 +492,7 @@ func TestExperience_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -581,9 +548,7 @@ func TestExperience_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceRevisionTable, experienceTable)
 			require.NoError(t, err)
 
@@ -597,8 +562,6 @@ func TestExperience_Create(t *testing.T) {
 }
 
 func TestExperience_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -606,8 +569,7 @@ func TestExperience_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -677,9 +639,7 @@ func TestExperience_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceRevisionTable, experienceTable)
 			require.NoError(t, err)
 
@@ -693,8 +653,6 @@ func TestExperience_Update(t *testing.T) {
 }
 
 func TestExperience_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -702,8 +660,7 @@ func TestExperience_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -746,9 +703,7 @@ func TestExperience_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceRevisionTable, experienceTable)
 			require.NoError(t, err)
 

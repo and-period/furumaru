@@ -18,8 +18,6 @@ func TestReceivedQueue(t *testing.T) {
 }
 
 func TestReceivedQueue_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestReceivedQueue_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
@@ -94,8 +91,6 @@ func TestReceivedQueue_Get(t *testing.T) {
 }
 
 func TestReceivedQueue_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -103,8 +98,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
@@ -149,9 +143,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, receivedQueueTable)
 			require.NoError(t, err)
 
@@ -165,8 +157,6 @@ func TestReceivedQueue_Create(t *testing.T) {
 }
 
 func TestReceivedQueue_UpdateDone(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -174,8 +164,7 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -210,9 +199,7 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, receivedQueueTable)
 			require.NoError(t, err)
 

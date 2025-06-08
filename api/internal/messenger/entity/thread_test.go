@@ -116,6 +116,7 @@ func TestThreads_IDs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.threads.IDs()
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -154,6 +155,7 @@ func TestThreads_UserIDs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.threads.UserIDs()
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -192,6 +194,7 @@ func TestThreads_AdminIDs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.threads.AdminIDs()
 			assert.Equal(t, tt.expect, actual)
 		})

@@ -17,8 +17,6 @@ func TestExperienceReviewReaction(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_Upsert(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -26,8 +24,7 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -87,9 +84,7 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceReviewReactionTable)
 			require.NoError(t, err)
 
@@ -103,8 +98,6 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -112,8 +105,7 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -165,9 +157,7 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceReviewReactionTable)
 			require.NoError(t, err)
 
@@ -181,8 +171,6 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 }
 
 func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -190,8 +178,7 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -247,9 +234,7 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experienceReviewReaction{db: db, now: now}

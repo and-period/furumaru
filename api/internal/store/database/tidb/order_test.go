@@ -19,8 +19,6 @@ func TestOrder(t *testing.T) {
 }
 
 func TestOrder_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -28,8 +26,7 @@ func TestOrder_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -117,9 +114,7 @@ func TestOrder_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -131,8 +126,6 @@ func TestOrder_List(t *testing.T) {
 }
 
 func TestOrder_ListUserIDs(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -140,8 +133,7 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -258,9 +250,7 @@ func TestOrder_ListUserIDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -273,8 +263,6 @@ func TestOrder_ListUserIDs(t *testing.T) {
 }
 
 func TestOrder_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -282,8 +270,7 @@ func TestOrder_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -373,9 +360,7 @@ func TestOrder_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -387,8 +372,6 @@ func TestOrder_Count(t *testing.T) {
 }
 
 func TestOrder_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -396,8 +379,7 @@ func TestOrder_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -487,9 +469,7 @@ func TestOrder_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -501,8 +481,6 @@ func TestOrder_Get(t *testing.T) {
 }
 
 func TestOrder_GetByTransactionID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -510,8 +488,7 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -604,9 +581,7 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -618,8 +593,6 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 }
 
 func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -627,8 +600,7 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -720,9 +692,7 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -734,8 +704,6 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 }
 
 func TestOrder_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -743,8 +711,7 @@ func TestOrder_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -852,9 +819,7 @@ func TestOrder_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -868,8 +833,6 @@ func TestOrder_Create(t *testing.T) {
 }
 
 func TestOrder_UpdateAuthorized(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -877,8 +840,7 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -993,9 +955,7 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1009,8 +969,6 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 }
 
 func TestOrder_UpdateCaptured(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1018,8 +976,7 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1134,9 +1091,7 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1150,8 +1105,6 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 }
 
 func TestOrder_UpdateFailed(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1159,8 +1112,7 @@ func TestOrder_UpdateFailed(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1278,9 +1230,7 @@ func TestOrder_UpdateFailed(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1294,8 +1244,6 @@ func TestOrder_UpdateFailed(t *testing.T) {
 }
 
 func TestOrder_UpdateRefunded(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1303,8 +1251,7 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1441,9 +1388,7 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1457,8 +1402,6 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 }
 
 func TestOrder_UpdateFulfillment(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1466,8 +1409,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1611,9 +1553,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1627,8 +1567,6 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 }
 
 func TestOrder_Draft(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1636,8 +1574,7 @@ func TestOrder_Draft(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1721,9 +1658,7 @@ func TestOrder_Draft(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1737,8 +1672,6 @@ func TestOrder_Draft(t *testing.T) {
 }
 
 func TestOrder_Complete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1746,8 +1679,7 @@ func TestOrder_Complete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1832,9 +1764,7 @@ func TestOrder_Complete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
@@ -1848,8 +1778,6 @@ func TestOrder_Complete(t *testing.T) {
 }
 
 func TestOrder_Aggregate(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1857,8 +1785,7 @@ func TestOrder_Aggregate(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -1954,9 +1881,7 @@ func TestOrder_Aggregate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -1968,8 +1893,6 @@ func TestOrder_Aggregate(t *testing.T) {
 }
 
 func TestOrder_AggregateByUser(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1977,8 +1900,7 @@ func TestOrder_AggregateByUser(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -2076,9 +1998,7 @@ func TestOrder_AggregateByUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -2090,8 +2010,6 @@ func TestOrder_AggregateByUser(t *testing.T) {
 }
 
 func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -2099,8 +2017,7 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -2197,9 +2114,7 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -2211,8 +2126,6 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 }
 
 func TestOrder_AggregateByPromotion(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -2220,8 +2133,7 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -2320,9 +2232,7 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
@@ -2334,8 +2244,6 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 }
 
 func TestOrder_AggregateByPeriod(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -2343,8 +2251,7 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -2444,9 +2351,7 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}

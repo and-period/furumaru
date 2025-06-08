@@ -19,8 +19,6 @@ func TestProductReview(t *testing.T) {
 }
 
 func TestProductReview_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -28,8 +26,7 @@ func TestProductReview_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -94,9 +91,7 @@ func TestProductReview_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &productReview{db: db, now: now}
@@ -109,8 +104,6 @@ func TestProductReview_List(t *testing.T) {
 }
 
 func TestProductReview_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -118,8 +111,7 @@ func TestProductReview_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -186,9 +178,7 @@ func TestProductReview_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &productReview{db: db, now: now}
@@ -200,8 +190,6 @@ func TestProductReview_Get(t *testing.T) {
 }
 
 func TestProductReview_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -209,8 +197,7 @@ func TestProductReview_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -272,9 +259,7 @@ func TestProductReview_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productReviewTable)
 			require.NoError(t, err)
 
@@ -288,8 +273,6 @@ func TestProductReview_Create(t *testing.T) {
 }
 
 func TestProductReview_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -297,8 +280,7 @@ func TestProductReview_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -356,9 +338,7 @@ func TestProductReview_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productReviewTable)
 			require.NoError(t, err)
 
@@ -372,8 +352,6 @@ func TestProductReview_Update(t *testing.T) {
 }
 
 func TestProductReview_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -381,8 +359,7 @@ func TestProductReview_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -434,9 +411,7 @@ func TestProductReview_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productReviewTable)
 			require.NoError(t, err)
 
@@ -450,8 +425,6 @@ func TestProductReview_Delete(t *testing.T) {
 }
 
 func TestProductReview_Aggregate(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -459,8 +432,7 @@ func TestProductReview_Aggregate(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
@@ -537,9 +509,7 @@ func TestProductReview_Aggregate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &productReview{db: db, now: now}

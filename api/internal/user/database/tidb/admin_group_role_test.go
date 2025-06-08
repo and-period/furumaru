@@ -14,8 +14,6 @@ import (
 )
 
 func TestAdminGroupRole_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -24,6 +22,7 @@ func TestAdminGroupRole_List(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -78,9 +77,7 @@ func TestAdminGroupRole_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminGroupRole{db: db, now: now}
@@ -92,8 +89,6 @@ func TestAdminGroupRole_List(t *testing.T) {
 }
 
 func TestAdminGroupRole_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,6 +97,7 @@ func TestAdminGroupRole_Count(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -156,9 +152,7 @@ func TestAdminGroupRole_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminGroupRole{db: db, now: now}
@@ -170,8 +164,6 @@ func TestAdminGroupRole_Count(t *testing.T) {
 }
 
 func TestAdminGroupRole_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -180,6 +172,7 @@ func TestAdminGroupRole_Get(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -242,9 +235,7 @@ func TestAdminGroupRole_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminGroupRole{db: db, now: now}
@@ -256,8 +247,6 @@ func TestAdminGroupRole_Get(t *testing.T) {
 }
 
 func TestAdminGroupRole_Upsert(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -266,6 +255,7 @@ func TestAdminGroupRole_Upsert(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -321,9 +311,7 @@ func TestAdminGroupRole_Upsert(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, adminGroupRoleTable)
 			require.NoError(t, err)
 
@@ -337,8 +325,6 @@ func TestAdminGroupRole_Upsert(t *testing.T) {
 }
 
 func TestAdminGroupRole_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -347,6 +333,7 @@ func TestAdminGroupRole_Delete(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -394,9 +381,7 @@ func TestAdminGroupRole_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, adminGroupRoleTable)
 			require.NoError(t, err)
 

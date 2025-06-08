@@ -14,8 +14,6 @@ import (
 )
 
 func TestAdminRole_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -24,6 +22,7 @@ func TestAdminRole_List(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -63,9 +62,7 @@ func TestAdminRole_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminRole{db: db, now: now}
@@ -77,8 +74,6 @@ func TestAdminRole_List(t *testing.T) {
 }
 
 func TestAdminRole_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -87,6 +82,7 @@ func TestAdminRole_Count(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -126,9 +122,7 @@ func TestAdminRole_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminRole{db: db, now: now}
@@ -140,8 +134,6 @@ func TestAdminRole_Count(t *testing.T) {
 }
 
 func TestAdminRole_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -150,6 +142,7 @@ func TestAdminRole_MultiGet(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -189,9 +182,7 @@ func TestAdminRole_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminRole{db: db, now: now}
@@ -203,8 +194,6 @@ func TestAdminRole_MultiGet(t *testing.T) {
 }
 
 func TestAdminRole_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -213,6 +202,7 @@ func TestAdminRole_Get(t *testing.T) {
 		return current
 	}
 
+	ctx := t.Context()
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
@@ -260,9 +250,7 @@ func TestAdminRole_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &adminRole{db: db, now: now}

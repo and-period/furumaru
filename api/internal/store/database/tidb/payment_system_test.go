@@ -17,8 +17,6 @@ func TestPaymentSystem(t *testing.T) {
 }
 
 func TestPaymentSystem_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -26,8 +24,7 @@ func TestPaymentSystem_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	systems := make(entity.PaymentSystems, 2)
@@ -67,9 +64,7 @@ func TestPaymentSystem_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &paymentSystem{db: db, now: now}
@@ -81,8 +76,6 @@ func TestPaymentSystem_MultiGet(t *testing.T) {
 }
 
 func TestPaymentSystem_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -90,8 +83,7 @@ func TestPaymentSystem_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	system := testPaymentSystem(entity.PaymentMethodTypeCreditCard, now())
@@ -126,9 +118,7 @@ func TestPaymentSystem_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &paymentSystem{db: db, now: now}
@@ -140,8 +130,6 @@ func TestPaymentSystem_Get(t *testing.T) {
 }
 
 func TestPaymentSystem_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -149,8 +137,7 @@ func TestPaymentSystem_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -184,9 +171,7 @@ func TestPaymentSystem_Update(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, paymentSystemTable)
 			require.NoError(t, err)
 

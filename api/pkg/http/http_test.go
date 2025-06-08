@@ -1,3 +1,4 @@
+//nolint:paralleltest
 package http
 
 import (
@@ -21,7 +22,6 @@ func TestHTTPServer(t *testing.T) {
 		handler http.Handler
 		port    int64
 		expect  int
-		isErr   bool
 	}{
 		{
 			name: "success",
@@ -35,7 +35,6 @@ func TestHTTPServer(t *testing.T) {
 			}(),
 			port:   20080,
 			expect: http.StatusOK,
-			isErr:  false,
 		},
 	}
 
@@ -54,10 +53,11 @@ func TestHTTPServer(t *testing.T) {
 				req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 				require.NoError(t, err)
 				res, err := http.DefaultClient.Do(req)
+				require.NoError(t, err)
+				defer res.Body.Close()
 				if err != nil && strings.Contains(err.Error(), "connect: connection refused") {
 					continue
 				}
-				require.Equal(t, tt.isErr, err != nil, err)
 				assert.Equal(t, tt.expect, res.StatusCode)
 				break
 			}

@@ -18,8 +18,6 @@ func TestContactRead(t *testing.T) {
 }
 
 func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -86,9 +83,7 @@ func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &contactRead{db: db, now: now}
@@ -100,8 +95,6 @@ func TestContactRead_GetByContactIDAndUserID(t *testing.T) {
 }
 
 func TestContactRead_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -109,8 +102,7 @@ func TestContactRead_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
@@ -162,9 +154,7 @@ func TestContactRead_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, contactReadTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)
@@ -177,8 +167,6 @@ func TestContactRead_Create(t *testing.T) {
 }
 
 func TestContactRead_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -186,8 +174,7 @@ func TestContactRead_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 	category := testContactCategory("category-id", "お問い合わせ種別", now())
 	err = db.DB.Create(&category).Error
@@ -264,9 +251,7 @@ func TestContactRead_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &contactRead{db: db, now: now}

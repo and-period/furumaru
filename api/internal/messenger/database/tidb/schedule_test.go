@@ -18,8 +18,6 @@ func TestSchedule(t *testing.T) {
 }
 
 func TestSchedule_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestSchedule_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	schedules := make(entity.Schedules, 3)
@@ -72,9 +69,7 @@ func TestSchedule_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &schedule{db: db, now: now}
@@ -86,8 +81,6 @@ func TestSchedule_List(t *testing.T) {
 }
 
 func TestSchedule_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -95,8 +88,7 @@ func TestSchedule_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	s := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now().Add(-time.Hour))
@@ -134,9 +126,7 @@ func TestSchedule_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &schedule{db: db, now: now}
@@ -148,8 +138,6 @@ func TestSchedule_Get(t *testing.T) {
 }
 
 func TestSchedule_Upsert(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -157,8 +145,7 @@ func TestSchedule_Upsert(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -216,9 +203,7 @@ func TestSchedule_Upsert(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
 
@@ -232,8 +217,6 @@ func TestSchedule_Upsert(t *testing.T) {
 }
 
 func TestSchedule_UpsertProcessing(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -241,8 +224,7 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -298,9 +280,7 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
 
@@ -314,8 +294,6 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 }
 
 func TestSchedule_UpdateDone(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -323,8 +301,7 @@ func TestSchedule_UpdateDone(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -386,9 +363,7 @@ func TestSchedule_UpdateDone(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
 
@@ -402,8 +377,6 @@ func TestSchedule_UpdateDone(t *testing.T) {
 }
 
 func TestSchedule_UpdateCancel(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -411,8 +384,7 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -475,9 +447,7 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, scheduleTable)
 			require.NoError(t, err)
 

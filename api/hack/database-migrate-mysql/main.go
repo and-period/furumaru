@@ -8,6 +8,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"flag"
@@ -70,6 +71,9 @@ func run() error {
 
 	set := set.New(skipDDLs...)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	defer cancel()
+
 	/**
 	 * -------------------------
 	 * データベースの管理
@@ -80,7 +84,7 @@ func run() error {
 		return err
 	}
 
-	isExists := app.checkMigrateDB()
+	isExists := app.checkMigrateDB(ctx)
 	fmt.Println("recreate database:", !isExists)
 	//nolint:nestif
 	if !isExists {
@@ -91,20 +95,20 @@ func run() error {
 		defer app.close(tx)
 
 		// マイクロサービス用のDBを再作成
-		if err := app.dropDBIfExists(tx, databases...); err != nil {
+		if err := app.dropDBIfExists(ctx, tx, databases...); err != nil {
 			return app.rollback(tx, err)
 		}
-		if err := app.createDBIfNotExists(tx, databases...); err != nil {
+		if err := app.createDBIfNotExists(ctx, tx, databases...); err != nil {
 			return app.rollback(tx, err)
 		}
 
 		// DDL管理用のDBを作成
-		if err := app.createDBIfNotExists(tx, migrateDB); err != nil {
+		if err := app.createDBIfNotExists(ctx, tx, migrateDB); err != nil {
 			return app.rollback(tx, err)
 		}
 
 		// DDL管理用のTableを作成
-		if err := app.createSchemaTable(tx); err != nil {
+		if err := app.createSchemaTable(ctx, tx); err != nil {
 			return app.rollback(tx, err)
 		}
 
@@ -137,7 +141,7 @@ func run() error {
 			continue
 		}
 
-		isApplied, err := app.getSchema(tx, schemas[i])
+		isApplied, err := app.getSchema(ctx, tx, schemas[i])
 		if err != nil {
 			fmt.Println("debug: err=", err)
 			return app.rollback(tx, err)
@@ -148,7 +152,7 @@ func run() error {
 		}
 
 		fmt.Printf("%s is applying...", schemas[i].filename)
-		if err := app.applySchema(tx, schemas[i]); err != nil {
+		if err := app.applySchema(ctx, tx, schemas[i]); err != nil {
 			fmt.Println("debug: err=", err)
 			return app.rollback(tx, err)
 		}
@@ -196,46 +200,46 @@ func (a *app) rollback(tx *sql.Tx, err error) error {
 	return fmt.Errorf("%w: %s", err, tx.Rollback().Error())
 }
 
-func (a *app) checkMigrateDB() bool {
+func (a *app) checkMigrateDB(ctx context.Context) bool {
 	stmt := fmt.Sprintf("USE `%s`", migrateDB)
-	rs, _ := a.db.Exec(stmt)
+	rs, _ := a.db.ExecContext(ctx, stmt)
 	return rs != nil
 }
 
-func (a *app) createDBIfNotExists(tx *sql.Tx, dbs ...string) error {
+func (a *app) createDBIfNotExists(ctx context.Context, tx *sql.Tx, dbs ...string) error {
 	const format = "CREATE SCHEMA IF NOT EXISTS `%s` DEFAULT CHARACTER SET utf8mb4"
 	for i := range dbs {
 		stmt := fmt.Sprintf(format, dbs[i])
-		if _, err := tx.Exec(stmt); err != nil {
+		if _, err := tx.ExecContext(ctx, stmt); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (a *app) dropDBIfExists(tx *sql.Tx, dbs ...string) error {
+func (a *app) dropDBIfExists(ctx context.Context, tx *sql.Tx, dbs ...string) error {
 	const format = "DROP DATABASE IF EXISTS `%s`"
 	for i := range dbs {
 		stmt := fmt.Sprintf(format, dbs[i])
-		if _, err := tx.Exec(stmt); err != nil {
+		if _, err := tx.ExecContext(ctx, stmt); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (a *app) createSchemaTable(tx *sql.Tx) error {
+func (a *app) createSchemaTable(ctx context.Context, tx *sql.Tx) error {
 	//nolint:lll
 	const format = "CREATE TABLE `%s`.`%s` (`version` VARCHAR(10) NOT NULL, `database` VARCHAR(256) NOT NULL, `filename` VARCHAR(256) NOT NULL, `created_at` INT NOT NULL, `updated_at` INT NOT NULL, PRIMARY KEY(`version`)) ENGINE = InnoDB"
 	stmt := fmt.Sprintf(format, migrateDB, schemaTable)
-	_, err := tx.Exec(stmt)
+	_, err := tx.ExecContext(ctx, stmt)
 	return err
 }
 
-func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
+func (a *app) getSchema(ctx context.Context, tx *sql.Tx, schema *schema) (bool, error) {
 	const format = "SELECT `version` FROM `%s`.`%s` WHERE `version` = '%s' LIMIT 1"
 	stmt := fmt.Sprintf(format, migrateDB, schemaTable, schema.version)
-	rs, err := tx.Query(stmt)
+	rs, err := tx.QueryContext(ctx, stmt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
@@ -246,7 +250,7 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	return rs.Next(), nil
 }
 
-func (a *app) applySchema(tx *sql.Tx, schema *schema) error {
+func (a *app) applySchema(ctx context.Context, tx *sql.Tx, schema *schema) error {
 	bytes, err := os.ReadFile(schema.path)
 	if err != nil {
 		return err
@@ -258,7 +262,7 @@ func (a *app) applySchema(tx *sql.Tx, schema *schema) error {
 		if sql == "" || sql == "\n" {
 			continue // split時、配列の最後に空文字が入るため
 		}
-		if _, err := tx.Exec(sql); err != nil {
+		if _, err := tx.ExecContext(ctx, sql); err != nil {
 			return err
 		}
 	}
@@ -267,7 +271,7 @@ func (a *app) applySchema(tx *sql.Tx, schema *schema) error {
 	//nolint:lll
 	const format = "INSERT INTO `%s`.`%s` (`version`, `database`, `filename`, `created_at`, `updated_at`) VALUES ('%s', '%s', '%s', '%d', '%d')"
 	stmt := fmt.Sprintf(format, migrateDB, schemaTable, schema.version, schema.database, schema.filename, now, now)
-	if _, err := tx.Exec(stmt); err != nil {
+	if _, err := tx.ExecContext(ctx, stmt); err != nil {
 		return err
 	}
 	return nil

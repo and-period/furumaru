@@ -121,6 +121,7 @@ func TestGeometry_Scan(t *testing.T) {
 func TestGeometry_GormDataType(t *testing.T) {
 	t.Parallel()
 	t.Run("geometry", func(t *testing.T) {
+		t.Parallel()
 		geometry := Geometry{X: 1, Y: 1}
 		dataType := geometry.GormDataType()
 		assert.Equal(t, "geometry", dataType)

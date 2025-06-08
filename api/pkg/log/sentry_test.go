@@ -116,12 +116,14 @@ func TestLoggerWithSentry(t *testing.T) {
 func TestZapFields_FirstError(t *testing.T) {
 	t.Parallel()
 	t.Run("empty", func(t *testing.T) {
+		t.Parallel()
 		fs := make(ZapFields, 0, 1)
 		ok, err := fs.FirstError()
 		assert.False(t, ok)
 		assert.NoError(t, err)
 	})
 	t.Run("exist", func(t *testing.T) {
+		t.Parallel()
 		fs := make(ZapFields, 0, 1)
 		fs = append(fs, zap.String("hoge", "fuga"), zap.Error(assert.AnError))
 		ok, res := fs.FirstError()
