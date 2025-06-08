@@ -21,7 +21,6 @@ linters:
       - depguard
       - dupl
       - err113
-      - exhaustive
       - exhaustruct
       - gochecknoglobals
       - goconst
@@ -41,37 +40,35 @@ linters:
       - tagliatelle
       - unparam
       - varnamelen
-      - wrapcheck
       - wsl
     - path: .*_test\.go
       linters:
-      - bodyclose
       - containedctx
       - errcheck
-      - forbidigo
       - forcetypeassert
       - funlen
       - gocritic
       - gocyclo
       - gomnd
       - lll
-      - maintidx
-      - noctx
-      - paralleltest
       - tagalign
       - testifylint
       - testpackage
       - thelper
-      - tparallel
       - unused
+    - path: tidb/.*_test\.go
+      linters:
+      - paralleltest
+    - path: service/.*_test\.go
+      linters:
+      - paralleltest
     - path: hack/.*\.go
       linters:
       - errcheck
+      - exhaustive
       - forbidigo
       - funlen
       - gocritic
-      - noctx
-      - rowserrcheck
 
 formatters:
   enable:

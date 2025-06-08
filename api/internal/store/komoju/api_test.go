@@ -197,6 +197,7 @@ func TestAPIClient_request(t *testing.T) {
 	}
 	res, err := client.request(ctx, params)
 	require.Error(t, err)
+	defer res.Body.Close()
 	require.Nil(t, res)
 }
 

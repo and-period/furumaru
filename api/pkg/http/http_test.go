@@ -54,6 +54,7 @@ func TestHTTPServer(t *testing.T) {
 				req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 				require.NoError(t, err)
 				res, err := http.DefaultClient.Do(req)
+				defer res.Body.Close()
 				if err != nil && strings.Contains(err.Error(), "connect: connection refused") {
 					continue
 				}
