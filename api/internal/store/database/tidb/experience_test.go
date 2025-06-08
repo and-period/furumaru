@@ -610,6 +610,10 @@ func TestExperience_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)

@@ -500,6 +500,10 @@ func TestSchedule_Delete(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
+	require.NoError(t, err)
+
 	type args struct {
 		scheduleID string
 	}
@@ -557,6 +561,10 @@ func TestSchedule_Approve(t *testing.T) {
 	}
 
 	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shop := testShop("shop-id", "coordinator-id", []string{}, []string{}, now())
+	err = db.DB.Table(shopTable).Create(&shop).Error
 	require.NoError(t, err)
 
 	type args struct {
