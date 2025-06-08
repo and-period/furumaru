@@ -253,6 +253,7 @@ func TestValidator(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			validator := NewValidator(tt.opts...)
 			err := validator.Struct(tt.input)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -301,6 +302,7 @@ func TestValidator_CustomValidation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			validator := NewValidator(WithCustomValidation(tt.custom))
 			err := validator.Struct(tt.input)
 			assert.Equal(t, tt.hasErr, err != nil, err)

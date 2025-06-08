@@ -29,6 +29,7 @@ func TestExperienceReviewReaction(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := NewExperienceReviewReaction(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -72,6 +73,7 @@ func TestAggregatedExperienceReviewReactions_GetTotalByMap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.reviews.GetTotalByMap()
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -144,6 +146,7 @@ func TestAggregatedExperienceReviewReactions_GroupByReviewID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.reviews.GroupByReviewID()
 			assert.Equal(t, tt.expect, actual)
 		})

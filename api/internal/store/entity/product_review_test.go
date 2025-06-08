@@ -33,6 +33,7 @@ func TestProductReview(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := NewProductReview(tt.params)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
@@ -112,6 +113,7 @@ func TestProductReviews_SetReactions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			tt.reviews.SetReactions(tt.reactions)
 			assert.ElementsMatch(t, tt.expect, tt.reviews)
 		})
@@ -142,6 +144,7 @@ func TestProductReviews_IDs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.reviews.IDs()
 			assert.ElementsMatch(t, tt.expect, actual)
 		})
@@ -172,6 +175,7 @@ func TestProductReviews_UserIDs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.reviews.UserIDs()
 			assert.ElementsMatch(t, tt.expect, actual)
 		})
@@ -215,6 +219,7 @@ func TestAggregatedProductReviews_Map(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			actual := tt.reviews.Map()
 			assert.Equal(t, tt.expect, actual)
 		})

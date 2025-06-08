@@ -27,7 +27,7 @@ lint-fix:
 	go tool golangci-lint run -c .golangci.yaml ./... --fix
 
 test: ## テストの実行
-	go test -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)
+	go tool gotestsum -- -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)
 
 build: ## アプリケーションのコンパイル
 	GOOS=linux GOARCH=arm64 go build -o ${BUILD_DIR}/app ./cmd/${SERVICE}/main.go

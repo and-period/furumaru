@@ -1,3 +1,4 @@
+//nolint:paralleltest,tparallel
 package rbac
 
 import (
