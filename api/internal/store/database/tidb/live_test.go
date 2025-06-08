@@ -14,8 +14,6 @@ import (
 )
 
 func TestLive_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -23,8 +21,7 @@ func TestLive_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -92,9 +89,7 @@ func TestLive_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &live{db: db, now: now}
@@ -106,8 +101,6 @@ func TestLive_List(t *testing.T) {
 }
 
 func TestLive_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -115,8 +108,7 @@ func TestLive_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -183,9 +175,7 @@ func TestLive_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &live{db: db, now: now}
@@ -197,8 +187,6 @@ func TestLive_Count(t *testing.T) {
 }
 
 func TestLive_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -206,8 +194,7 @@ func TestLive_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -277,9 +264,7 @@ func TestLive_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &live{db: db, now: now}
@@ -291,8 +276,6 @@ func TestLive_Get(t *testing.T) {
 }
 
 func TestLive_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -300,8 +283,7 @@ func TestLive_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -362,9 +344,7 @@ func TestLive_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, liveTable)
 			require.NoError(t, err)
 
@@ -378,8 +358,6 @@ func TestLive_Update(t *testing.T) {
 }
 
 func TestLive_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -387,8 +365,7 @@ func TestLive_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -442,9 +419,7 @@ func TestLive_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, liveTable)
 			require.NoError(t, err)
 

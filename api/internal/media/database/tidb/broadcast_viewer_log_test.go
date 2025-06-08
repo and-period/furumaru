@@ -19,8 +19,6 @@ func TestBroadcastViewerLog(t *testing.T) {
 }
 
 func TestBroadcastViewerLog_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -29,7 +27,7 @@ func TestBroadcastViewerLog_Create(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -76,9 +74,7 @@ func TestBroadcastViewerLog_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, broadcastViewerLogTable)
 			require.NoError(t, err)
 
@@ -92,8 +88,6 @@ func TestBroadcastViewerLog_Create(t *testing.T) {
 }
 
 func TestBroadcastViewerLog_GetTotal(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,7 +96,7 @@ func TestBroadcastViewerLog_GetTotal(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -153,8 +147,7 @@ func TestBroadcastViewerLog_GetTotal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -167,8 +160,6 @@ func TestBroadcastViewerLog_GetTotal(t *testing.T) {
 }
 
 func TestBroadcastViewerLog_Aggregate(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -177,7 +168,7 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -240,8 +231,7 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 

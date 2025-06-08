@@ -18,8 +18,6 @@ func TestNotification(t *testing.T) {
 }
 
 func TestNotification_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestNotification_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := make(internalNotifications, 3)
@@ -89,9 +86,7 @@ func TestNotification_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &notification{db: db, now: now}
@@ -103,8 +98,6 @@ func TestNotification_List(t *testing.T) {
 }
 
 func TestNotificaiton_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -112,8 +105,7 @@ func TestNotificaiton_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := make(internalNotifications, 3)
@@ -156,9 +148,7 @@ func TestNotificaiton_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &notification{db: db, now: now}
@@ -170,8 +160,6 @@ func TestNotificaiton_Count(t *testing.T) {
 }
 
 func TestNotification_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -179,8 +167,7 @@ func TestNotification_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testNotification("notification-id", now())
@@ -229,9 +216,7 @@ func TestNotification_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &notification{db: db, now: now}
@@ -243,8 +228,6 @@ func TestNotification_Get(t *testing.T) {
 }
 
 func TestNotification_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -252,8 +235,7 @@ func TestNotification_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testNotification("notification-id", now())
@@ -300,9 +282,7 @@ func TestNotification_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
 
@@ -316,8 +296,6 @@ func TestNotification_Create(t *testing.T) {
 }
 
 func TestNotification_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -325,8 +303,7 @@ func TestNotification_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args = struct {
@@ -381,9 +358,7 @@ func TestNotification_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
 
@@ -397,8 +372,6 @@ func TestNotification_Update(t *testing.T) {
 }
 
 func TestNotificaiton_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -406,8 +379,7 @@ func TestNotificaiton_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -440,9 +412,7 @@ func TestNotificaiton_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, notificationTable)
 			require.NoError(t, err)
 

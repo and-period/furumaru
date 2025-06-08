@@ -14,8 +14,6 @@ import (
 )
 
 func TestGuest_GetByEmail(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -23,8 +21,7 @@ func TestGuest_GetByEmail(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	u := testGuestUser("user-id", "test-user@and-period.jp", now())
@@ -73,9 +70,7 @@ func TestGuest_GetByEmail(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &guest{db: db, now: now}
@@ -87,8 +82,6 @@ func TestGuest_GetByEmail(t *testing.T) {
 }
 
 func TestGuest_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -96,8 +89,7 @@ func TestGuest_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -142,9 +134,7 @@ func TestGuest_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, guestTable, userTable)
 			require.NoError(t, err)
 
@@ -158,8 +148,6 @@ func TestGuest_Create(t *testing.T) {
 }
 
 func TestGuest_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -167,8 +155,7 @@ func TestGuest_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -210,9 +197,7 @@ func TestGuest_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, guestTable, userTable)
 			require.NoError(t, err)
 
@@ -226,8 +211,6 @@ func TestGuest_Update(t *testing.T) {
 }
 
 func TestGuest_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -235,8 +218,7 @@ func TestGuest_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -271,9 +253,7 @@ func TestGuest_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, guestTable, userTable)
 			require.NoError(t, err)
 

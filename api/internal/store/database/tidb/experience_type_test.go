@@ -19,8 +19,6 @@ func TestExperienceType(t *testing.T) {
 }
 
 func TestExperienceType_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -28,8 +26,7 @@ func TestExperienceType_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	types := make(entity.ExperienceTypes, 3)
@@ -71,9 +68,7 @@ func TestExperienceType_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experienceType{db: db, now: now}
@@ -85,8 +80,6 @@ func TestExperienceType_List(t *testing.T) {
 }
 
 func TestExperienceType_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -94,8 +87,7 @@ func TestExperienceType_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	types := make(entity.ExperienceTypes, 3)
@@ -137,9 +129,7 @@ func TestExperienceType_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experienceType{db: db, now: now}
@@ -151,8 +141,6 @@ func TestExperienceType_Count(t *testing.T) {
 }
 
 func TestExperienceType_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -160,8 +148,7 @@ func TestExperienceType_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	types := make(entity.ExperienceTypes, 3)
@@ -200,9 +187,7 @@ func TestExperienceType_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experienceType{db: db, now: now}
@@ -214,8 +199,6 @@ func TestExperienceType_MultiGet(t *testing.T) {
 }
 
 func TestExperienceType_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -223,8 +206,7 @@ func TestExperienceType_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
@@ -271,9 +253,7 @@ func TestExperienceType_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &experienceType{db: db, now: now}
@@ -285,8 +265,6 @@ func TestExperienceType_Get(t *testing.T) {
 }
 
 func TestExperienceType_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -294,8 +272,7 @@ func TestExperienceType_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -338,9 +315,7 @@ func TestExperienceType_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceTypeTable)
 			require.NoError(t, err)
 
@@ -354,8 +329,6 @@ func TestExperienceType_Create(t *testing.T) {
 }
 
 func TestExperienceType_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -363,8 +336,7 @@ func TestExperienceType_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -401,9 +373,7 @@ func TestExperienceType_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceTypeTable)
 			require.NoError(t, err)
 
@@ -417,8 +387,6 @@ func TestExperienceType_Update(t *testing.T) {
 }
 
 func TestExperienceType_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -426,8 +394,7 @@ func TestExperienceType_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -460,9 +427,7 @@ func TestExperienceType_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, experienceTypeTable)
 			require.NoError(t, err)
 

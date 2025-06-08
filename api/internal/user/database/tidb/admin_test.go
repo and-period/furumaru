@@ -17,8 +17,6 @@ func TestAdmin(t *testing.T) {
 }
 
 func TestAdmin_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -26,8 +24,7 @@ func TestAdmin_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	admins := make(entity.Admins, 2)
@@ -65,9 +62,7 @@ func TestAdmin_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &admin{db: db, now: now}
@@ -79,8 +74,6 @@ func TestAdmin_MultiGet(t *testing.T) {
 }
 
 func TestAdmin_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -88,8 +81,7 @@ func TestAdmin_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
@@ -136,9 +128,7 @@ func TestAdmin_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &admin{db: db, now: now}
@@ -150,8 +140,6 @@ func TestAdmin_Get(t *testing.T) {
 }
 
 func TestAdmin_GetByCognitoID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -159,8 +147,7 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
@@ -207,9 +194,7 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &admin{db: db, now: now}
@@ -221,8 +206,6 @@ func TestAdmin_GetByCognitoID(t *testing.T) {
 }
 
 func TestAdmin_GetByEmail(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -230,8 +213,7 @@ func TestAdmin_GetByEmail(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
@@ -278,9 +260,7 @@ func TestAdmin_GetByEmail(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &admin{db: db, now: now}
@@ -292,8 +272,6 @@ func TestAdmin_GetByEmail(t *testing.T) {
 }
 
 func TestAdmin_UpdateEmail(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -301,8 +279,7 @@ func TestAdmin_UpdateEmail(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -337,9 +314,7 @@ func TestAdmin_UpdateEmail(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, adminTable)
 			require.NoError(t, err)
 
@@ -353,8 +328,6 @@ func TestAdmin_UpdateEmail(t *testing.T) {
 }
 
 func TestAdmin_UpdateDevice(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -362,8 +335,7 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -398,9 +370,7 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, adminTable)
 			require.NoError(t, err)
 

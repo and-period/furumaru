@@ -18,8 +18,6 @@ func TestReportTemplate(t *testing.T) {
 }
 
 func TestReportTemplate_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestReportTemplate_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	tmpl := testReportTemplate("report-id", now())
@@ -75,9 +72,7 @@ func TestReportTemplate_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &reportTemplate{db: db, now: now}

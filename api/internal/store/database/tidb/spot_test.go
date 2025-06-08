@@ -18,8 +18,6 @@ func TestSpot(t *testing.T) {
 }
 
 func TestSpot_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestSpot_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -79,9 +76,7 @@ func TestSpot_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &spot{db: db, now: now}
@@ -93,8 +88,6 @@ func TestSpot_List(t *testing.T) {
 }
 
 func TestSpot_ListByGeolocation(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,8 +95,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -226,9 +218,7 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &spot{db: db, now: now}
@@ -240,8 +230,6 @@ func TestSpot_ListByGeolocation(t *testing.T) {
 }
 
 func TestSpot_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -249,8 +237,7 @@ func TestSpot_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -301,9 +288,7 @@ func TestSpot_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &spot{db: db, now: now}
@@ -315,8 +300,6 @@ func TestSpot_Count(t *testing.T) {
 }
 
 func TestSpot_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -324,8 +307,7 @@ func TestSpot_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -377,9 +359,7 @@ func TestSpot_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &spot{db: db, now: now}
@@ -391,8 +371,6 @@ func TestSpot_Get(t *testing.T) {
 }
 
 func TestSpot_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -400,8 +378,7 @@ func TestSpot_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -447,9 +424,7 @@ func TestSpot_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, spotTable)
 			require.NoError(t, err)
 
@@ -463,8 +438,6 @@ func TestSpot_Create(t *testing.T) {
 }
 
 func TestSpot_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -472,8 +445,7 @@ func TestSpot_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	spotType := testSpotType("spot-type-id", "観光地", now())
@@ -518,9 +490,7 @@ func TestSpot_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, spotTable)
 			require.NoError(t, err)
 
@@ -534,8 +504,6 @@ func TestSpot_Update(t *testing.T) {
 }
 
 func TestSpot_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -543,8 +511,7 @@ func TestSpot_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -577,9 +544,7 @@ func TestSpot_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, spotTable)
 			require.NoError(t, err)
 
@@ -593,8 +558,6 @@ func TestSpot_Delete(t *testing.T) {
 }
 
 func TestSpot_Approve(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -602,8 +565,7 @@ func TestSpot_Approve(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -641,9 +603,7 @@ func TestSpot_Approve(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, spotTable)
 			require.NoError(t, err)
 

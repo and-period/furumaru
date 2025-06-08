@@ -18,8 +18,6 @@ func TestProduct(t *testing.T) {
 }
 
 func TestProduct_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,8 +25,7 @@ func TestProduct_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -111,9 +108,7 @@ func TestProduct_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &product{db: db, now: now}
@@ -125,8 +120,6 @@ func TestProduct_List(t *testing.T) {
 }
 
 func TestProduct_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -134,8 +127,7 @@ func TestProduct_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -198,9 +190,7 @@ func TestProduct_Count(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &product{db: db, now: now}
@@ -212,8 +202,6 @@ func TestProduct_Count(t *testing.T) {
 }
 
 func TestProduct_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -221,8 +209,7 @@ func TestProduct_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -283,9 +270,7 @@ func TestProduct_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &product{db: db, now: now}
@@ -297,8 +282,6 @@ func TestProduct_MultiGet(t *testing.T) {
 }
 
 func TestProduct_MultiGetByRevision(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -306,8 +289,7 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	categories := make(entity.Categories, 2)
@@ -368,9 +350,7 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &product{db: db, now: now}
@@ -382,8 +362,6 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 }
 
 func TestProduct_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -391,8 +369,7 @@ func TestProduct_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -442,9 +419,7 @@ func TestProduct_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &product{db: db, now: now}
@@ -456,8 +431,6 @@ func TestProduct_Get(t *testing.T) {
 }
 
 func TestProduct_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -465,8 +438,7 @@ func TestProduct_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -525,9 +497,7 @@ func TestProduct_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
@@ -541,8 +511,6 @@ func TestProduct_Create(t *testing.T) {
 }
 
 func TestProduct_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -550,8 +518,7 @@ func TestProduct_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -625,9 +592,7 @@ func TestProduct_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
@@ -641,8 +606,6 @@ func TestProduct_Update(t *testing.T) {
 }
 
 func TestProduct_DescreaseInventory(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -650,8 +613,7 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -745,9 +707,7 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
@@ -761,8 +721,6 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 }
 
 func TestProduct_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -770,8 +728,7 @@ func TestProduct_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	category := testCategory("category-id", "野菜", now())
@@ -816,9 +773,7 @@ func TestProduct_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 

@@ -14,8 +14,6 @@ import (
 )
 
 func TestAddress_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -23,8 +21,7 @@ func TestAddress_List(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -76,9 +73,7 @@ func TestAddress_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -90,8 +85,6 @@ func TestAddress_List(t *testing.T) {
 }
 
 func TestAddress_ListDefault(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -99,8 +92,7 @@ func TestAddress_ListDefault(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -148,9 +140,7 @@ func TestAddress_ListDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -162,8 +152,6 @@ func TestAddress_ListDefault(t *testing.T) {
 }
 
 func TestAddress_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -171,8 +159,7 @@ func TestAddress_Count(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -222,9 +209,7 @@ func TestAddress_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -236,8 +221,6 @@ func TestAddress_Count(t *testing.T) {
 }
 
 func TestAddress_MultiGet(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -245,8 +228,7 @@ func TestAddress_MultiGet(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -292,9 +274,7 @@ func TestAddress_MultiGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -306,8 +286,6 @@ func TestAddress_MultiGet(t *testing.T) {
 }
 
 func TestAddress_MultiGetByRevision(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -315,8 +293,7 @@ func TestAddress_MultiGetByRevision(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -362,9 +339,7 @@ func TestAddress_MultiGetByRevision(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -376,8 +351,6 @@ func TestAddress_MultiGetByRevision(t *testing.T) {
 }
 
 func TestAddress_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -385,8 +358,7 @@ func TestAddress_Get(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -438,9 +410,7 @@ func TestAddress_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -452,8 +422,6 @@ func TestAddress_Get(t *testing.T) {
 }
 
 func TestAddress_GetDefault(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -461,8 +429,7 @@ func TestAddress_GetDefault(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -521,9 +488,7 @@ func TestAddress_GetDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
@@ -535,8 +500,6 @@ func TestAddress_GetDefault(t *testing.T) {
 }
 
 func TestAddress_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -544,8 +507,7 @@ func TestAddress_Create(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -616,9 +578,7 @@ func TestAddress_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, addressRevisionTable, addressTable)
 			require.NoError(t, err)
 
@@ -632,8 +592,6 @@ func TestAddress_Create(t *testing.T) {
 }
 
 func TestAddress_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -641,8 +599,7 @@ func TestAddress_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -790,9 +747,7 @@ func TestAddress_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, addressRevisionTable, addressTable)
 			require.NoError(t, err)
 
@@ -806,8 +761,6 @@ func TestAddress_Update(t *testing.T) {
 }
 
 func TestAddress_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -815,8 +768,7 @@ func TestAddress_Delete(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
@@ -889,9 +841,7 @@ func TestAddress_Delete(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, addressRevisionTable, addressTable)
 			require.NoError(t, err)
 

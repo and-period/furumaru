@@ -18,8 +18,6 @@ func TestBroadcast(t *testing.T) {
 }
 
 func TestBroadcast_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -28,7 +26,7 @@ func TestBroadcast_List(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := make(internalBroadcasts, 2)
@@ -90,8 +88,7 @@ func TestBroadcast_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -104,8 +101,6 @@ func TestBroadcast_List(t *testing.T) {
 }
 
 func TestBroadcast_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -114,7 +109,7 @@ func TestBroadcast_Count(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := make(internalBroadcasts, 2)
@@ -174,8 +169,7 @@ func TestBroadcast_Count(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -188,8 +182,6 @@ func TestBroadcast_Count(t *testing.T) {
 }
 
 func TestBroadcast_Get(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -198,7 +190,7 @@ func TestBroadcast_Get(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -247,8 +239,7 @@ func TestBroadcast_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -261,8 +252,6 @@ func TestBroadcast_Get(t *testing.T) {
 }
 
 func TestBroadcast_GetByScheduleID(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -271,7 +260,7 @@ func TestBroadcast_GetByScheduleID(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -320,8 +309,7 @@ func TestBroadcast_GetByScheduleID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -334,8 +322,6 @@ func TestBroadcast_GetByScheduleID(t *testing.T) {
 }
 
 func TestBroadcast_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -344,7 +330,7 @@ func TestBroadcast_Create(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	internal := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -391,9 +377,7 @@ func TestBroadcast_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, broadcastTable)
 			require.NoError(t, err)
 
@@ -407,8 +391,6 @@ func TestBroadcast_Create(t *testing.T) {
 }
 
 func TestBroadcast_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -417,7 +399,7 @@ func TestBroadcast_Update(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	type args struct {
@@ -591,9 +573,7 @@ func TestBroadcast_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, broadcastTable)
 			require.NoError(t, err)
 

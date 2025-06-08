@@ -19,8 +19,6 @@ func TestBroadcastComment(t *testing.T) {
 }
 
 func TestBroadcastComment_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -29,7 +27,7 @@ func TestBroadcastComment_List(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -99,23 +97,20 @@ func TestBroadcastComment_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
 			db := &broadcastComment{db: db, now: now}
-			actual, token, err := db.List(ctx, tt.args.params)
+			comments, token, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
-			assert.Equal(t, tt.want.comments, actual)
+			assert.Equal(t, tt.want.comments, comments)
 			assert.Equal(t, tt.want.token, token)
 		})
 	}
 }
 
 func TestBroadcastComment_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -124,7 +119,7 @@ func TestBroadcastComment_Create(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -171,9 +166,7 @@ func TestBroadcastComment_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, broadcastCommentTable)
 			require.NoError(t, err)
 
@@ -187,8 +180,6 @@ func TestBroadcastComment_Create(t *testing.T) {
 }
 
 func TestBroadcastComment_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -197,7 +188,7 @@ func TestBroadcastComment_Update(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
@@ -238,9 +229,7 @@ func TestBroadcastComment_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, broadcastCommentTable)
 			require.NoError(t, err)
 

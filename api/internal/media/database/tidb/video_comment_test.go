@@ -19,8 +19,6 @@ func TestVideoComment(t *testing.T) {
 }
 
 func TestVideoComment_List(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -29,11 +27,11 @@ func TestVideoComment_List(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	err = db.DB.Create(&vide).Error
+	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
 	comments := make(entity.VideoComments, 2)
@@ -70,8 +68,8 @@ func TestVideoComment_List(t *testing.T) {
 				},
 			},
 			want: want{
-				comments: comments[1:],
-				token:    strconv.FormatInt(comments[0].CreatedAt.UnixNano(), 10),
+				comments: comments[:1],
+				token:    strconv.FormatInt(comments[1].CreatedAt.UnixNano(), 10),
 				err:      nil,
 			},
 		},
@@ -99,8 +97,7 @@ func TestVideoComment_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
+			ctx := t.Context()
 
 			tt.setup(ctx, t, db)
 
@@ -114,8 +111,6 @@ func TestVideoComment_List(t *testing.T) {
 }
 
 func TestVideoComment_Create(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -124,11 +119,11 @@ func TestVideoComment_Create(t *testing.T) {
 		return current
 	}
 
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	err = db.DB.Create(&vide).Error
+	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -171,9 +166,7 @@ func TestVideoComment_Create(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, videoCommentTable)
 			require.NoError(t, err)
 
@@ -187,8 +180,6 @@ func TestVideoComment_Create(t *testing.T) {
 }
 
 func TestVideoComment_Update(t *testing.T) {
-	ctx, cancel := context.WithCancel(t.Context())
-	defer cancel()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -196,8 +187,7 @@ func TestVideoComment_Update(t *testing.T) {
 	now := func() time.Time {
 		return current
 	}
-
-	err := deleteAll(ctx)
+	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
 	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
@@ -238,9 +228,7 @@ func TestVideoComment_Update(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(t.Context())
-			defer cancel()
-
+			ctx := t.Context()
 			err := delete(ctx, videoCommentTable)
 			require.NoError(t, err)
 
