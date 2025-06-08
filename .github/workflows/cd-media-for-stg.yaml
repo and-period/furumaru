@@ -35,7 +35,7 @@ jobs:
       lambda-function-name-start-updater: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
   build_and_push:
     name: build and push

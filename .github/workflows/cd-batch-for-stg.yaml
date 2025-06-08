@@ -31,7 +31,7 @@ jobs:
       batch-job-definition-media-update-archive: ${{ vars.JOB_DEFINITION_MEDIA_UPDATE_ARCHIVE }}
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
   build_and_push_media_update_archive:
     name: build and push media update archive
