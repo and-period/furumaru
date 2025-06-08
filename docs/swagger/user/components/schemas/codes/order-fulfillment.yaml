@@ -67,5 +67,5 @@ shippingType:
   - FROZEN
   x-enum-descriptions:
   - 不明
-  - 常温・冷蔵便
-  - 冷凍便
+  - 常温便
+  - 冷蔵・冷凍便

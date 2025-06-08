@@ -6268,11 +6268,11 @@ export const ShippingType = {
     */
     UNKNOWN: 0,
     /**
-    * 常温・冷蔵便
+    * 常温便
     */
     NORMAL: 1,
     /**
-    * 冷凍便
+    * 冷蔵・冷凍便
     */
     FROZEN: 2
 } as const;

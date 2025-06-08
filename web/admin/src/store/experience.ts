@@ -1,5 +1,5 @@
-import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
+import type { AxiosResponse } from 'axios'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateExperienceRequest,
