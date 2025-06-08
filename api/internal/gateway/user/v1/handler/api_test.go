@@ -176,7 +176,7 @@ func isError(res *httptest.ResponseRecorder) bool {
 /**
  * newHTTPRequest - HTTP Request(application/json)を生成
  */
-func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.Request {
+func newHTTPRequest(t *testing.T, method, path string, body any) *http.Request {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -187,6 +187,7 @@ func newHTTPRequest(t *testing.T, method, path string, body interface{}) *http.R
 		require.NoError(t, err)
 	}
 
+	//nolint:noctx
 	req, err := http.NewRequest(method, path, bytes.NewReader(buf))
 	require.NoError(t, err)
 
@@ -220,6 +221,7 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 	_, err = io.Copy(part, file)
 	require.NoError(t, err)
 
+	//nolint:noctx
 	req, err := http.NewRequest(method, path, buf)
 	require.NoError(t, err)
 

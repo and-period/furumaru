@@ -259,7 +259,7 @@ func (a *app) execute(ctx context.Context, migrate *mysql.Client, database strin
 
 	// DDLの適用
 	for i := range schemas {
-		isApplied, err := a.getSchema(migrateTx, schemas[i])
+		isApplied, err := a.getSchema(ctx, migrateTx, schemas[i])
 		if err != nil {
 			a.logger.Error("failed to get schema", zap.Error(err))
 			return a.rollback(tx, err)
@@ -270,7 +270,7 @@ func (a *app) execute(ctx context.Context, migrate *mysql.Client, database strin
 		}
 
 		a.logger.Info("applying schema...", zap.String("filename", schemas[i].filename))
-		if err := a.applySchema(migrateTx, tx, schemas[i]); err != nil {
+		if err := a.applySchema(ctx, migrateTx, tx, schemas[i]); err != nil {
 			a.logger.Error("failed to apply schema", zap.Error(err))
 			return a.rollback(tx, err)
 		}
@@ -288,10 +288,10 @@ func (a *app) execute(ctx context.Context, migrate *mysql.Client, database strin
 	return nil
 }
 
-func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
+func (a *app) getSchema(ctx context.Context, tx *sql.Tx, schema *schema) (bool, error) {
 	const format = "SELECT `database`, `version` FROM `%s` WHERE `database` = '%s' AND `version` = '%s' LIMIT 1"
 	stmt := fmt.Sprintf(format, schemaTable, schema.database, schema.version)
-	rs, err := tx.Query(stmt)
+	rs, err := tx.QueryContext(ctx, stmt)
 	a.logger.Debug("get schema", zap.String("stmt", stmt), zap.Error(err))
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
@@ -303,7 +303,7 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 	return rs.Next(), nil
 }
 
-func (a *app) applySchema(migrate, tx *sql.Tx, schema *schema) error {
+func (a *app) applySchema(ctx context.Context, migrate, tx *sql.Tx, schema *schema) error {
 	bytes, err := os.ReadFile(schema.path)
 	if err != nil {
 		return err
@@ -315,7 +315,7 @@ func (a *app) applySchema(migrate, tx *sql.Tx, schema *schema) error {
 		if sql == "" || sql == "\n" {
 			continue // split時、配列の最後に空文字が入るため
 		}
-		if _, err := tx.Exec(sql); err != nil {
+		if _, err := tx.ExecContext(ctx, sql); err != nil {
 			return err
 		}
 	}
@@ -323,7 +323,7 @@ func (a *app) applySchema(migrate, tx *sql.Tx, schema *schema) error {
 	now := jst.Now().Unix()
 	const format = "INSERT INTO `%s` (`database`, `version`, `filename`, `created_at`, `updated_at`) VALUES ('%s', '%s', '%s', '%d', '%d')"
 	stmt := fmt.Sprintf(format, schemaTable, schema.database, schema.version, schema.filename, now, now)
-	if _, err := migrate.Exec(stmt); err != nil {
+	if _, err := migrate.ExecContext(ctx, stmt); err != nil {
 		return err
 	}
 	return nil

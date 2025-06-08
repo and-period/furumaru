@@ -45,12 +45,14 @@ linters:
       linters:
       - containedctx
       - errcheck
+      - forbidigo
       - forcetypeassert
       - funlen
       - gocritic
       - gocyclo
       - gomnd
       - lll
+      - maintidx
       - tagalign
       - testifylint
       - testpackage
