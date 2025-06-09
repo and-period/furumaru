@@ -28,6 +28,7 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListOrdersParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		UserID:        in.UserID,
 		Types:         in.Types,
@@ -59,6 +60,7 @@ func (s *service) ListOrderUserIDs(ctx context.Context, in *store.ListOrderUserI
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListOrdersParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
@@ -234,6 +236,7 @@ func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrders
 		return nil, internalError(err)
 	}
 	params := &database.AggregateOrdersParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		CreatedAtGte:  in.CreatedAtGte,
 		CreatedAtLt:   in.CreatedAtLt,
@@ -247,6 +250,7 @@ func (s *service) AggregateOrdersByUser(ctx context.Context, in *store.Aggregate
 		return nil, internalError(err)
 	}
 	params := &database.AggregateOrdersByUserParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		UserIDs:       in.UserIDs,
 	}
@@ -262,6 +266,7 @@ func (s *service) AggregateOrdersByPaymentMethodType(
 		return nil, internalError(err)
 	}
 	params := &database.AggregateOrdersByPaymentMethodTypeParams{
+		ShopID:             in.ShopID,
 		CoordinatorID:      in.CoordinatorID,
 		PaymentMethodTypes: entity.AllPaymentMethodTypes,
 		CreatedAtGte:       in.CreatedAtGte,
@@ -279,6 +284,7 @@ func (s *service) AggregateOrdersByPromotion(
 		return nil, internalError(err)
 	}
 	params := &database.AggregateOrdersByPromotionParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		PromotionIDs:  in.PromotionIDs,
 	}
@@ -294,6 +300,7 @@ func (s *service) AggregateOrdersByPeriod(
 		return nil, internalError(err)
 	}
 	params := &database.AggregateOrdersByPeriodParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		PeriodType:    in.PeriodType,
 		CreatedAtGte:  in.CreatedAtGte,
@@ -308,6 +315,7 @@ func (s *service) ExportOrders(ctx context.Context, in *store.ExportOrdersInput)
 		return nil, internalError(err)
 	}
 	params := &database.ListOrdersParams{
+		ShopID:        in.ShopID,
 		CoordinatorID: in.CoordinatorID,
 		Statuses:      []entity.OrderStatus{entity.OrderStatusPreparing},
 	}

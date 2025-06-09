@@ -24,6 +24,7 @@ func TestListExperiences(t *testing.T) {
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListExperiencesParams{
 		Name:           "収穫",
+		ShopID:         "shop-id",
 		CoordinatorID:  "coordinator-id",
 		ProducerID:     "producer-id",
 		OnlyPublished:  true,
@@ -35,6 +36,7 @@ func TestListExperiences(t *testing.T) {
 	experiences := entity.Experiences{
 		{
 			ID:            "experience-id",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			ProducerID:    "producer-id",
 			TypeID:        "experience-type-id",
@@ -99,6 +101,7 @@ func TestListExperiences(t *testing.T) {
 			},
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
@@ -128,6 +131,7 @@ func TestListExperiences(t *testing.T) {
 			},
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
@@ -148,6 +152,7 @@ func TestListExperiences(t *testing.T) {
 			},
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
@@ -177,6 +182,7 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListExperiencesByGeolocationParams{
+		ShopID:         "shop-id",
 		CoordinatorID:  "coordinator-id",
 		ProducerID:     "producer-id",
 		Longitude:      136.251739,
@@ -189,6 +195,7 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 	experiences := entity.Experiences{
 		{
 			ID:            "experience-id",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			ProducerID:    "producer-id",
 			TypeID:        "experience-type-id",
@@ -251,6 +258,7 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 				mocks.db.Experience.EXPECT().ListByGeolocation(ctx, params).Return(experiences, nil)
 			},
 			input: &store.ListExperiencesByGeolocationInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				Longitude:       136.251739,
@@ -282,6 +290,7 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 				mocks.db.Experience.EXPECT().ListByGeolocation(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.ListExperiencesByGeolocationInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				Longitude:       136.251739,

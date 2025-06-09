@@ -24,6 +24,7 @@ func TestListOrders(t *testing.T) {
 
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
 	params := &database.ListOrdersParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		Limit:         30,
 		Offset:        0,
@@ -33,6 +34,7 @@ func TestListOrders(t *testing.T) {
 			ID:            "order-id",
 			UserID:        "user-id",
 			PromotionID:   "",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			CreatedAt:     now,
 			UpdatedAt:     now,
@@ -101,6 +103,7 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Limit:         30,
 				Offset:        0,
@@ -124,6 +127,7 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Limit:         30,
 				Offset:        0,
@@ -139,6 +143,7 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListOrdersInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Limit:         30,
 				Offset:        0,
@@ -162,6 +167,7 @@ func TestListOrders(t *testing.T) {
 func TestListOrderUserIDs(t *testing.T) {
 	t.Parallel()
 	params := &database.ListOrdersParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		Limit:         30,
 		Offset:        0,
@@ -180,6 +186,7 @@ func TestListOrderUserIDs(t *testing.T) {
 				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return([]string{"user-id"}, int64(1), nil)
 			},
 			input: &store.ListOrderUserIDsInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Limit:         30,
 				Offset:        0,
@@ -202,6 +209,7 @@ func TestListOrderUserIDs(t *testing.T) {
 				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return(nil, int64(0), assert.AnError)
 			},
 			input: &store.ListOrderUserIDsInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Limit:         30,
 				Offset:        0,
@@ -229,6 +237,7 @@ func TestGetOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -336,6 +345,7 @@ func TestGetOrderByTransactionID(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -444,6 +454,7 @@ func TestCaptureOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -571,6 +582,7 @@ func TestDraftOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -702,6 +714,7 @@ func TestCompleteProductOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -838,6 +851,7 @@ func TestCompleteExperienceOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -948,6 +962,7 @@ func TestCancelOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -1074,6 +1089,7 @@ func TestRefundOrder(t *testing.T) {
 		ID:            "order-id",
 		UserID:        "user-id",
 		PromotionID:   "",
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -1320,6 +1336,7 @@ func TestAggregateOrdersByUser(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByUserParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		UserIDs:       []string{"user-id"},
 	}
@@ -1346,6 +1363,7 @@ func TestAggregateOrdersByUser(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByUserInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1367,6 +1385,7 @@ func TestAggregateOrdersByUser(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByUserInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				UserIDs:       []string{"user-id"},
 			},
@@ -1388,6 +1407,7 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByPaymentMethodTypeParams{
+		ShopID:             "shop-id",
 		CoordinatorID:      "coordinator-id",
 		PaymentMethodTypes: entity.AllPaymentMethodTypes,
 	}
@@ -1413,6 +1433,7 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 			},
 			expect:    orders,
@@ -1424,6 +1445,7 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 			},
 			expect:    nil,
@@ -1444,6 +1466,7 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByPromotionParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		PromotionIDs:  []string{"promotion-id"},
 	}
@@ -1468,6 +1491,7 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPromotionInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				PromotionIDs:  []string{"promotion-id"},
 			},
@@ -1489,6 +1513,7 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPromotionInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				PromotionIDs:  []string{"promotion-id"},
 			},
@@ -1511,6 +1536,7 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 
 	now := time.Now()
 	params := &database.AggregateOrdersByPeriodParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		PeriodType:    entity.AggregateOrderPeriodTypeDay,
 		CreatedAtGte:  now.AddDate(0, 0, -7),
@@ -1539,6 +1565,7 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPeriodInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				PeriodType:    entity.AggregateOrderPeriodTypeDay,
 				CreatedAtGte:  now.AddDate(0, 0, -7),
@@ -1560,6 +1587,7 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPeriodInput{
+				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				PeriodType:    entity.AggregateOrderPeriodTypeDay,
 				CreatedAtGte:  now.AddDate(0, 0, -7),
@@ -1583,6 +1611,7 @@ func TestExportOrders(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2024, 1, 23, 18, 30, 0, 0)
 	ordersParams := &database.ListOrdersParams{
+		ShopID:        "shop-id",
 		CoordinatorID: "coordinator-id",
 		Statuses:      []entity.OrderStatus{entity.OrderStatusPreparing},
 	}
@@ -1590,6 +1619,7 @@ func TestExportOrders(t *testing.T) {
 		{
 			ID:            "order-id",
 			UserID:        "user-id",
+			ShopID:        "shop-id",
 			CoordinatorID: "coordinator-id",
 			PromotionID:   "promotion-id",
 			ManagementID:  1,
@@ -1671,6 +1701,7 @@ func TestExportOrders(t *testing.T) {
 			ID:              "product-id",
 			TypeID:          "type-id",
 			TagIDs:          []string{"tag-id"},
+			ShopID:          "shop-id",
 			CoordinatorID:   "coordinator-id",
 			ProducerID:      "producer-id",
 			Name:            "新鮮なじゃがいも",
@@ -1721,6 +1752,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1735,6 +1767,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1750,6 +1783,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierYamato,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1764,6 +1798,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierYamato,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1779,6 +1814,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierSagawa,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1793,6 +1829,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierSagawa,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1816,6 +1853,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(nil, assert.AnError)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1831,6 +1869,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
@@ -1846,6 +1885,7 @@ func TestExportOrders(t *testing.T) {
 				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(nil, assert.AnError)
 			},
 			input: &store.ExportOrdersInput{
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
