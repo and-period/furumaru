@@ -66,9 +66,6 @@ func (a *app) Execute(ctx context.Context) error {
 			return fmt.Errorf("failed to execute categories table: %w", err)
 		}
 		a.logger.Info("Completed categories table")
-		return nil
-	})
-	eg.Go(func() error {
 		if err := a.executeProductTypes(ectx); err != nil {
 			return fmt.Errorf("failed to execute product_types table: %w", err)
 		}
