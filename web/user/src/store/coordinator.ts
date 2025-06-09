@@ -32,6 +32,27 @@ export const useCoordinatorStore = defineStore('coordinator', {
         product: state.coordinatorResponse.productTypes,
       }
     },
+    products(state) {
+      const products = state.coordinatorResponse.products ?? []
+      return products.map((product) => {
+        const thumbnail = product.media.find(m => m.isThumbnail)
+        return {
+          ...product,
+          // 在庫があるかのフラグ
+          hasStock: product.inventory > 0,
+          // サムネイル画像のマッピング
+          thumbnail,
+          // 生産者情報をマッピング
+          producer: state.coordinatorResponse.producers?.find(
+            producer => producer.id === product.producerId,
+          ),
+          // 商品タイプをマッピング
+          productType: state.coordinatorResponse.productTypes?.find(
+            productType => productType.id === product.productTypeId,
+          ),
+        }
+      })
+    },
     archives(state) {
       return {
         ...state.coordinatorResponse.archives,

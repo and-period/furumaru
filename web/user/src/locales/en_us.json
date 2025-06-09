@@ -345,7 +345,8 @@
       "producerInformationTitle": "Producer of this Product",
       "reviewCountLabel": "reviews",
       "reviewLabel": "Customer Reviews",
-      "noReviewText": "No reviews yet"
+      "noReviewText": "No reviews yet",
+      "relatedProduct": "Related Products"
     },
     "experiences": {
       "producerLabel": "Producer",
