@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -39,18 +40,31 @@ func NewClient(params *common.Params) (common.Client, error) {
 
 func (a *app) Execute(ctx context.Context) error {
 	a.logger.Info("Executing users database seeds...")
-	if err := a.executeAdminPolicies(ctx); err != nil {
-		return err
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if err := a.executeAdminPolicies(ectx); err != nil {
+			return fmt.Errorf("failed to execute admin policies table: %w", err)
+		}
+		a.logger.Info("Completed admin policies table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executeAdminRoles(ectx); err != nil {
+			return fmt.Errorf("failed to execute admin roles table: %w", err)
+		}
+		a.logger.Info("Completed admin roles table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executeAdminGroups(ectx); err != nil {
+			return fmt.Errorf("failed to execute admin groups table: %w", err)
+		}
+		a.logger.Info("Completed admin groups table")
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return fmt.Errorf("failed to execute users database seeds: %w", err)
 	}
-	a.logger.Info("Completed admin policies table")
-	if err := a.executeAdminRoles(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed admin roles table")
-	if err := a.executeAdminGroups(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed admin groups table")
 	a.logger.Info("Completed users database seeds")
 	return nil
 }

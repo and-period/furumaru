@@ -22,6 +22,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 var (
@@ -139,14 +140,18 @@ func setup(ctx context.Context) (*app, error) {
 
 func (a *app) run(ctx context.Context) error {
 	a.logger.Info("Database seeds will begin")
-	if err := a.user.Execute(ctx); err != nil {
-		return err
-	}
-	if err := a.store.Execute(ctx); err != nil {
-		return err
-	}
-	if err := a.messenger.Execute(ctx); err != nil {
-		return err
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return a.user.Execute(ectx)
+	})
+	eg.Go(func() error {
+		return a.store.Execute(ectx)
+	})
+	eg.Go(func() error {
+		return a.messenger.Execute(ectx)
+	})
+	if err := eg.Wait(); err != nil {
+		return fmt.Errorf("failed to execute database seeds: %w", err)
 	}
 	a.logger.Info("Database seeds has completed")
 	return nil

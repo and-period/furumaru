@@ -17,6 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -59,22 +60,38 @@ func NewClient(params *common.Params) (common.Client, error) {
 
 func (a *app) Execute(ctx context.Context) error {
 	a.logger.Info("Executing stores database seeds...")
-	if err := a.executeCategories(ctx); err != nil {
-		return err
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if err := a.executeCategories(ectx); err != nil {
+			return fmt.Errorf("failed to execute categories table: %w", err)
+		}
+		a.logger.Info("Completed categories table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executeProductTypes(ectx); err != nil {
+			return fmt.Errorf("failed to execute product_types table: %w", err)
+		}
+		a.logger.Info("Completed product_types table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executeShipping(ectx); err != nil {
+			return fmt.Errorf("failed to execute shippings table: %w", err)
+		}
+		a.logger.Info("Completed shippings table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executePaymentSystems(ectx); err != nil {
+			return fmt.Errorf("failed to execute payment_systems table: %w", err)
+		}
+		a.logger.Info("Completed payment_systems table")
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return fmt.Errorf("failed to execute stores database seeds: %w", err)
 	}
-	a.logger.Info("Completed categories table")
-	if err := a.executeProductTypes(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed product_types table")
-	if err := a.executeShipping(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed shippings table")
-	if err := a.executePaymentSystems(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed payment_systems table")
 	a.logger.Info("Completed stores database seeds")
 	return nil
 }

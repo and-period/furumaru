@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -14,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -49,18 +51,31 @@ func NewClient(params *common.Params) (common.Client, error) {
 
 func (a *app) Execute(ctx context.Context) error {
 	a.logger.Info("Executing messengers database seeds...")
-	if err := a.executeMessageTemplates(ctx); err != nil {
-		return err
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if err := a.executeMessageTemplates(ectx); err != nil {
+			return fmt.Errorf("failed to execute message_templates table: %w", err)
+		}
+		a.logger.Info("Completed message_templates table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executePushTemplates(ectx); err != nil {
+			return fmt.Errorf("failed to execute push_templates table: %w", err)
+		}
+		a.logger.Info("Completed push_templates table")
+		return nil
+	})
+	eg.Go(func() error {
+		if err := a.executeReportTemplates(ectx); err != nil {
+			return fmt.Errorf("failed to execute report_templates table: %w", err)
+		}
+		a.logger.Info("Completed report_templates table")
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return fmt.Errorf("failed to execute messengers database seeds: %w", err)
 	}
-	a.logger.Info("Completed message_templates table")
-	if err := a.executePushTemplates(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed push_templates table")
-	if err := a.executeReportTemplates(ctx); err != nil {
-		return err
-	}
-	a.logger.Info("Completed report_templates table")
 	a.logger.Info("Completed messengers database seeds")
 	return nil
 }
