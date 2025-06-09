@@ -569,6 +569,95 @@ func TestGetDefaultShipping(t *testing.T) {
 	}
 }
 
+func TestGetShippingByShopID(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 7, 16, 18, 30, 0, 0)
+	shikoku := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	set := set.New(shikoku...)
+	others := make([]int32, 0, 47-len(shikoku))
+	for val := range codes.PrefectureNames {
+		if set.Contains(val) {
+			continue
+		}
+		others = append(others, val)
+	}
+	rates := entity.ShippingRates{
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
+	}
+	shipping := &entity.Shipping{
+		ID:            "shipping-id",
+		ShopID:        "shop-id",
+		CoordinatorID: "coordinator-id",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+		ShippingRevision: entity.ShippingRevision{
+			ID:                1,
+			ShippingID:        "shipping-id",
+			Box60Rates:        rates,
+			Box60Frozen:       800,
+			Box80Rates:        rates,
+			Box80Frozen:       800,
+			Box100Rates:       rates,
+			Box100Frozen:      800,
+			HasFreeShipping:   true,
+			FreeShippingRates: 3000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetShippingByShopIDInput
+		expect    *entity.Shipping
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().GetByShopID(ctx, "shop-id").Return(shipping, nil)
+			},
+			input: &store.GetShippingByShopIDInput{
+				ShopID: "shop-id",
+			},
+			expect:    shipping,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetShippingByShopIDInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get shipping",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Shipping.EXPECT().GetByShopID(ctx, "shop-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetShippingByShopIDInput{
+				ShopID: "shop-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetShippingByShopID(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetShippingByCoordinatorID(t *testing.T) {
 	t.Parallel()
 

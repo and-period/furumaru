@@ -23,6 +23,7 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 	params := &database.ListExperiencesParams{
 		Name:           in.Name,
 		HostPrefecture: in.PrefectureCode,
+		ShopID:         in.ShopID,
 		CoordinatorID:  in.CoordinatorID,
 		ProducerID:     in.ProducerID,
 		OnlyPublished:  in.OnlyPublished,
@@ -59,6 +60,7 @@ func (s *service) ListExperiencesByGeolocation(
 		return nil, internalError(err)
 	}
 	params := &database.ListExperiencesByGeolocationParams{
+		ShopID:         in.ShopID,
 		CoordinatorID:  in.CoordinatorID,
 		ProducerID:     in.ProducerID,
 		Longitude:      in.Longitude,

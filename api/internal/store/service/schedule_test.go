@@ -23,12 +23,14 @@ func TestListSchedules(t *testing.T) {
 
 	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
 	params := &database.ListSchedulesParams{
+		ShopID: "shop-id",
 		Limit:  20,
 		Offset: 0,
 	}
 	schedules := entity.Schedules{
 		{
 			ID:              "schedule-id",
+			ShopID:          "shop-id",
 			CoordinatorID:   "coordinator-id",
 			Status:          entity.ScheduleStatusLive,
 			Title:           "&.マルシェ",
@@ -61,6 +63,7 @@ func TestListSchedules(t *testing.T) {
 				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListSchedulesInput{
+				ShopID: "shop-id",
 				Limit:  20,
 				Offset: 0,
 			},
@@ -86,6 +89,7 @@ func TestListSchedules(t *testing.T) {
 				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListSchedulesInput{
+				ShopID: "shop-id",
 				Limit:  20,
 				Offset: 0,
 			},
@@ -100,6 +104,7 @@ func TestListSchedules(t *testing.T) {
 				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListSchedulesInput{
+				ShopID: "shop-id",
 				Limit:  20,
 				Offset: 0,
 			},
