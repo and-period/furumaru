@@ -25,7 +25,10 @@ const { product, productFetchState } = storeToRefs(productStore)
 const { coordnatorInfo, products } = storeToRefs(coordinatorStore)
 
 const cooordinatorProducts = computed(() => {
-  return Array.isArray(products.value) ? products.value : []
+  const currentId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  return Array.isArray(products.value)
+    ? products.value.filter(product => product.id !== currentId)
+    : []
 })
 
 const productReviewStore = useProductReviewStore()
