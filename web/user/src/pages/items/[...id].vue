@@ -22,9 +22,9 @@ const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
-const { coordnatorInfo, products } = storeToRefs(coordinatorStore)
+const { coordinatorInfo, products } = storeToRefs(coordinatorStore)
 
-const cooordinatorProducts = computed(() => {
+const coordinatorProducts = computed(() => {
   const currentId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
   return Array.isArray(products.value)
     ? products.value.filter(product => product.id !== currentId)
@@ -626,7 +626,7 @@ useSeoMeta({
           class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4"
         >
           <the-product-list-item
-            v-for="coordinatorProduct in cooordinatorProducts ?? []"
+            v-for="coordinatorProduct in coordinatorProducts ?? []"
             :id="coordinatorProduct.id"
             :key="coordinatorProduct.id"
             :status="coordinatorProduct.status"
@@ -636,7 +636,7 @@ useSeoMeta({
             :has-stock="coordinatorProduct.hasStock"
             :thumbnail="coordinatorProduct.thumbnail"
             :origin-city="coordinatorProduct.originCity"
-            :coordinator="coordnatorInfo"
+            :coordinator="coordinatorInfo"
             :thumbnail-is-video="false"
             @click:add-cart="handleClickAddCartButton"
           />

@@ -25,7 +25,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
   },
 
   getters: {
-    coordnatorInfo(state) {
+    coordinatorInfo(state) {
       return {
         ...state.coordinatorResponse.coordinator,
         // 関連product
