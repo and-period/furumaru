@@ -50,7 +50,6 @@ func TestListCoordinators(t *testing.T) {
 			City:           "千代田区",
 			AddressLine1:   "永田町1-7-1",
 			AddressLine2:   "",
-			BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			CreatedAt:      now,
 			UpdatedAt:      now,
 		},
@@ -155,7 +154,6 @@ func TestMultiGetCoordinators(t *testing.T) {
 			City:           "千代田区",
 			AddressLine1:   "永田町1-7-1",
 			AddressLine2:   "",
-			BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			CreatedAt:      now,
 			UpdatedAt:      now,
 		},
@@ -262,7 +260,6 @@ func TestGetCoordinator(t *testing.T) {
 		City:           "千代田区",
 		AddressLine1:   "永田町1-7-1",
 		AddressLine2:   "",
-		BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
@@ -370,7 +367,6 @@ func TestCreateCoordinator(t *testing.T) {
 						FirstnameKana: "すたっふ",
 						Email:         "test-admin@and-period.jp",
 					},
-					MarcheName:     "&.マルシェ",
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-id"},
@@ -385,7 +381,6 @@ func TestCreateCoordinator(t *testing.T) {
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
-					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				}
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().

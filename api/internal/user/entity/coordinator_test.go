@@ -2,7 +2,6 @@ package entity
 
 import (
 	"testing"
-	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +29,6 @@ func TestCoordinator(t *testing.T) {
 					Email:         "test-coordinator@and-period.jp",
 				},
 				PhoneNumber:       "+819012345678",
-				MarcheName:        "&.マルシェ",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
 				ProductTypeIDs:    []string{"product-type-id"},
@@ -45,12 +43,10 @@ func TestCoordinator(t *testing.T) {
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
-				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expect: &Coordinator{
 				AdminID:           "admin-id",
 				PhoneNumber:       "+819012345678",
-				MarcheName:        "&.マルシェ",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
 				ProductTypeIDs:    []string{"product-type-id"},
@@ -66,7 +62,6 @@ func TestCoordinator(t *testing.T) {
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
-				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				Admin: Admin{
 					CognitoID:     "cognito-id",
 					Lastname:      "&.",
@@ -91,7 +86,6 @@ func TestCoordinator(t *testing.T) {
 					Email:         "test-coordinator@and-period.jp",
 				},
 				PhoneNumber:       "+819012345678",
-				MarcheName:        "&.マルシェ",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
 				ProductTypeIDs:    []string{"product-type-id"},
@@ -106,7 +100,6 @@ func TestCoordinator(t *testing.T) {
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
-				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expect: nil,
 			hasErr: true,
