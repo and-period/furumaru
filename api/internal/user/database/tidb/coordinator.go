@@ -34,7 +34,6 @@ type listCoordinatorsParams database.ListCoordinatorsParams
 func (p listCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("`username` LIKE ?", "%"+p.Name+"%").
-			Or("`marche_name` LIKE ?", "%"+p.Name+"%").
 			Or("`profile` LIKE ?", "%"+p.Name+"%")
 	}
 	stmt = stmt.Order("updated_at DESC")
