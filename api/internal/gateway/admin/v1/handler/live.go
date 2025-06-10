@@ -35,7 +35,7 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+			shop, err := h.getShop(ctx, getShopID(ctx))
 			if err != nil {
 				return false, err
 			}
@@ -152,7 +152,7 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 	}
 
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+		shop, err := h.getShop(ctx, getShopID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)
 			return

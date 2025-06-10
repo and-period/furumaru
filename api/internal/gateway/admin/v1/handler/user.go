@@ -76,9 +76,9 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	case service.AdminTypeCoordinator:
 		// コーディネータの場合、注文した購入者のみを取得する
 		in := &store.ListOrderUserIDsInput{
-			CoordinatorID: getAdminID(ctx),
-			Limit:         limit,
-			Offset:        offset,
+			ShopID: getShopID(ctx),
+			Limit:  limit,
+			Offset: offset,
 		}
 		var userIDs []string
 		userIDs, total, err = h.store.ListOrderUserIDs(ctx, in)
@@ -107,10 +107,8 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	}
 
 	in := &store.AggregateOrdersByUserInput{
+		ShopID:  getShopID(ctx),
 		UserIDs: users.IDs(),
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	orders, err := h.store.AggregateOrdersByUser(ctx, in)
 	if err != nil {
@@ -179,22 +177,18 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		in := &store.ListOrdersInput{
+			ShopID: getShopID(ctx),
 			UserID: userID,
 			Limit:  limit,
 			Offset: offset,
-		}
-		if getAdminType(ctx) == service.AdminTypeCoordinator {
-			in.CoordinatorID = getAdminID(ctx)
 		}
 		orders, total, err = h.store.ListOrders(ectx, in)
 		return
 	})
 	eg.Go(func() error {
 		in := &store.AggregateOrdersByUserInput{
+			ShopID:  getShopID(ctx),
 			UserIDs: []string{userID},
-		}
-		if getAdminType(ctx) == service.AdminTypeCoordinator {
-			in.CoordinatorID = getAdminID(ctx)
 		}
 		aggregate, err := h.store.AggregateOrdersByUser(ectx, in)
 		if err != nil {

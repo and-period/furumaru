@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -68,31 +69,13 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	}
 
 	in := &store.ListExperiencesInput{
+		ShopID:         getShopID(ctx),
 		Name:           util.GetQuery(ctx, "name", ""),
 		ProducerID:     util.GetQuery(ctx, "producerId", ""),
 		ExcludeDeleted: true,
 		Limit:          limit,
 		Offset:         offset,
 		NoLimit:        false,
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-		if err != nil {
-			h.httpError(ctx, err)
-			return
-		}
-		// 生産者が紐づかない場合、体験が存在しないためアーリーリターンする
-		if len(producers) == 0 {
-			res := &response.ExperiencesResponse{
-				Experiences:     []*response.Experience{},
-				Coordinators:    []*response.Coordinator{},
-				Producers:       []*response.Producer{},
-				ExperienceTypes: []*response.ExperienceType{},
-			}
-			ctx.JSON(http.StatusOK, res)
-			return
-		}
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {
@@ -193,12 +176,12 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
 			return
 		}
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		shop, err := h.getShop(ctx, getShopID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
-		if !producers.Contains(req.ProducerID) {
+		if !slices.Contains(shop.ProducerIDs, req.ProducerID) {
 			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
 			return
 		}

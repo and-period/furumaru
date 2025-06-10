@@ -453,10 +453,10 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.GetShippingByCoordinatorIDInput{
-		CoordinatorID: getAdminID(ctx),
+	in := &store.GetShippingByShopIDInput{
+		ShopID: getShopID(ctx),
 	}
-	shipping, err := h.store.GetShippingByCoordinatorID(ctx, in)
+	shipping, err := h.store.GetShippingByShopID(ctx, in)
 	if errors.Is(err, exception.ErrNotFound) {
 		// 配送設定の登録をしていない場合、デフォルト設定を返却する
 		in := &store.GetDefaultShippingInput{}

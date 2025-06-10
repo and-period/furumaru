@@ -48,6 +48,7 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 	return &Schedule{
 		Schedule: response.Schedule{
 			ID:              schedule.ID,
+			ShopID:          schedule.ShopID,
 			CoordinatorID:   schedule.CoordinatorID,
 			Status:          NewScheduleStatus(schedule.Status).Response(),
 			Title:           schedule.Title,

@@ -29,7 +29,7 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
 	params := &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+			shop, err := h.getShop(ctx, getShopID(ctx))
 			if err != nil {
 				return false, err
 			}
@@ -66,9 +66,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	)
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in := &store.ListShopProducersInput{
-			CoordinatorID: getAdminID(ctx),
-			Limit:         limit,
-			Offset:        offset,
+			ShopID: getShopID(ctx),
+			Limit:  limit,
+			Offset: offset,
 		}
 		producerIDs, err := h.store.ListShopProducers(ctx, in)
 		if err != nil {
@@ -281,18 +281,4 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 		return nil, err
 	}
 	return service.NewProducer(producer), nil
-}
-
-func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
-	if coordinatorID == "" {
-		return service.Producers{}, nil
-	}
-	in := &user.ListProducersInput{
-		CoordinatorID: coordinatorID,
-	}
-	producers, _, err := h.user.ListProducers(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	return service.NewProducers(producers), nil
 }

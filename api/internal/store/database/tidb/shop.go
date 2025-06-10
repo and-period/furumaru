@@ -192,8 +192,7 @@ func (s *shop) ListProducers(ctx context.Context, params *database.ListShopProdu
 		"DISTINCT(producer_id) AS producer_id",
 	}
 	stmt := s.db.Statement(ctx, s.db.DB, shopProducerTable, fields...).
-		Joins("LEFT OUTER JOIN shops ON shop_producers.shop_id = shops.id").
-		Where("shops.coordinator_id = ?", params.CoordinatorID).
+		Where("shop_id = ?", params.ShopID).
 		Order("producer_id")
 
 	if params.Limit > 0 {

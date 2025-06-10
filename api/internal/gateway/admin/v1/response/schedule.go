@@ -3,6 +3,7 @@ package response
 // Schedule - マルシェ開催情報
 type Schedule struct {
 	ID              string `json:"id"`              // スケジュールID
+	ShopID          string `json:"shopId"`          // 店舗ID
 	CoordinatorID   string `json:"coordinatorId"`   // コーディネータID
 	Status          int32  `json:"status"`          // 開催状況
 	Title           string `json:"title"`           // タイトル

@@ -577,7 +577,8 @@ const (
 
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
-	CoordinatorID    string               `validate:""`
+	ShopID           string               `validate:""`
+	CoordinatorID    string               `validate:""` // Deprecated
 	ProducerID       string               `validate:""`
 	ProducerIDs      []string             `validate:"dive,required"`
 	OnlyPublished    bool                 `validate:""`
@@ -1101,9 +1102,9 @@ type ListShopsInput struct {
 }
 
 type ListShopProducersInput struct {
-	CoordinatorID string `validate:""`
-	Limit         int64  `validate:"min=0,max=200"`
-	Offset        int64  `validate:"min=0"`
+	ShopID string `validate:""`
+	Limit  int64  `validate:"min=0,max=200"`
+	Offset int64  `validate:"min=0"`
 }
 
 type MultiGetShopsInput struct {

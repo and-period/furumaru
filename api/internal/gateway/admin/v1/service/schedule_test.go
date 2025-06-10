@@ -67,6 +67,7 @@ func TestSchedule(t *testing.T) {
 			name: "success",
 			schedule: &entity.Schedule{
 				ID:              "schedule-id",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Status:          entity.ScheduleStatusLive,
 				Title:           "スケジュールタイトル",
@@ -85,6 +86,7 @@ func TestSchedule(t *testing.T) {
 			expect: &Schedule{
 				Schedule: response.Schedule{
 					ID:              "schedule-id",
+					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
@@ -122,6 +124,7 @@ func TestSchedule_Response(t *testing.T) {
 			schedule: &Schedule{
 				Schedule: response.Schedule{
 					ID:              "schedule-id",
+					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
@@ -139,6 +142,7 @@ func TestSchedule_Response(t *testing.T) {
 			},
 			expect: &response.Schedule{
 				ID:              "schedule-id",
+				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
 				Status:          ScheduleStatusLive.Response(),
 				Title:           "スケジュールタイトル",
@@ -176,6 +180,7 @@ func TestSchedules(t *testing.T) {
 			schedules: entity.Schedules{
 				{
 					ID:              "schedule-id",
+					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          entity.ScheduleStatusLive,
 					Title:           "スケジュールタイトル",
@@ -196,6 +201,7 @@ func TestSchedules(t *testing.T) {
 				{
 					Schedule: response.Schedule{
 						ID:              "schedule-id",
+						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
 						Status:          ScheduleStatusLive.Response(),
 						Title:           "スケジュールタイトル",
@@ -235,6 +241,7 @@ func TestSchedules_Response(t *testing.T) {
 				{
 					Schedule: response.Schedule{
 						ID:              "schedule-id",
+						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
 						Status:          ScheduleStatusLive.Response(),
 						Title:           "スケジュールタイトル",
@@ -254,6 +261,7 @@ func TestSchedules_Response(t *testing.T) {
 			expect: []*response.Schedule{
 				{
 					ID:              "schedule-id",
+					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",

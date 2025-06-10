@@ -5927,6 +5927,12 @@ export interface Schedule {
      */
     'id': string;
     /**
+     * 店舗ID
+     * @type {string}
+     * @memberof Schedule
+     */
+    'shopId': string;
+    /**
      * コーディネーターID
      * @type {string}
      * @memberof Schedule
@@ -24082,10 +24088,11 @@ export const TopApiAxiosParamCreator = function (configuration?: Configuration) 
          * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
          * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
          * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {string} [shopId] 店舗ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1TopOrders: async (startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1TopOrders: async (startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, shopId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/top/orders`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -24112,6 +24119,10 @@ export const TopApiAxiosParamCreator = function (configuration?: Configuration) 
 
             if (periodType !== undefined) {
                 localVarQueryParameter['periodType'] = periodType;
+            }
+
+            if (shopId !== undefined) {
+                localVarQueryParameter['shopId'] = shopId;
             }
 
 
@@ -24141,11 +24152,12 @@ export const TopApiFp = function(configuration?: Configuration) {
          * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
          * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
          * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {string} [shopId] 店舗ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopOrdersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1TopOrders(startAt, endAt, periodType, options);
+        async v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, shopId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TopOrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1TopOrders(startAt, endAt, periodType, shopId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TopApi.v1TopOrders']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -24166,11 +24178,12 @@ export const TopApiFactory = function (configuration?: Configuration, basePath?:
          * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
          * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
          * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+         * @param {string} [shopId] 店舗ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig): AxiosPromise<TopOrdersResponse> {
-            return localVarFp.v1TopOrders(startAt, endAt, periodType, options).then((request) => request(axios, basePath));
+        v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, shopId?: string, options?: RawAxiosRequestConfig): AxiosPromise<TopOrdersResponse> {
+            return localVarFp.v1TopOrders(startAt, endAt, periodType, shopId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -24188,12 +24201,13 @@ export class TopApi extends BaseAPI {
      * @param {number} [startAt] 集計開始日時（unixtime,未指定の場合は１週間前の時刻）
      * @param {number} [endAt] 集計終了日時（unixtime,未指定の場合は現在時刻）
      * @param {TopOrderPeriodType} [periodType] 集計期間（未指定の場合は日次）
+     * @param {string} [shopId] 店舗ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TopApi
      */
-    public v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, options?: RawAxiosRequestConfig) {
-        return TopApiFp(this.configuration).v1TopOrders(startAt, endAt, periodType, options).then((request) => request(this.axios, this.basePath));
+    public v1TopOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType, shopId?: string, options?: RawAxiosRequestConfig) {
+        return TopApiFp(this.configuration).v1TopOrders(startAt, endAt, periodType, shopId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -653,9 +653,9 @@ type UpdateShopParams struct {
 }
 
 type ListShopProducersParams struct {
-	CoordinatorID string
-	Limit         int
-	Offset        int
+	ShopID string
+	Limit  int
+	Offset int
 }
 
 type Spot interface {

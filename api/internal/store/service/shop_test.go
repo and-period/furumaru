@@ -110,9 +110,9 @@ func TestListShopProducers(t *testing.T) {
 	t.Parallel()
 
 	params := &database.ListShopProducersParams{
-		CoordinatorID: "coordinator-id",
-		Limit:         20,
-		Offset:        0,
+		ShopID: "shop-id",
+		Limit:  20,
+		Offset: 0,
 	}
 
 	tests := []struct {
@@ -128,8 +128,8 @@ func TestListShopProducers(t *testing.T) {
 				mocks.db.Shop.EXPECT().ListProducers(ctx, params).Return([]string{"producer-id"}, nil)
 			},
 			input: &store.ListShopProducersInput{
-				CoordinatorID: "coordinator-id",
-				Limit:         20,
+				ShopID: "shop-id",
+				Limit:  20,
 			},
 			expect:    []string{"producer-id"},
 			expectErr: nil,
@@ -149,8 +149,8 @@ func TestListShopProducers(t *testing.T) {
 				mocks.db.Shop.EXPECT().ListProducers(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.ListShopProducersInput{
-				CoordinatorID: "coordinator-id",
-				Limit:         20,
+				ShopID: "shop-id",
+				Limit:  20,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,

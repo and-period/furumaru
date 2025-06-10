@@ -75,13 +75,11 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 
 	in := &store.ListOrdersInput{
+		ShopID:   getShopID(ctx),
 		Limit:    limit,
 		Offset:   offset,
 		Statuses: statuses,
 		Types:    types,
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	orders, total, err := h.store.ListOrders(ctx, in)
 	if err != nil {
@@ -354,11 +352,9 @@ func (h *handler) ExportOrders(ctx *gin.Context) {
 		return
 	}
 	in := &store.ExportOrdersInput{
+		ShopID:          getShopID(ctx),
 		ShippingCarrier: sentity.ShippingCarrier(req.ShippingCarrier),
 		EncodingType:    codes.CharacterEncodingType(req.CharacterEncodingType),
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	value, err := h.store.ExportOrders(ctx, in)
 	if err != nil {

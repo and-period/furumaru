@@ -31,6 +31,7 @@ func (t AuthProviderType) Response() int32 {
 
 type Auth struct {
 	response.Auth
+	GroupIDs []string
 }
 
 func NewAuth(auth *uentity.AdminAuth) *Auth {
@@ -43,6 +44,7 @@ func NewAuth(auth *uentity.AdminAuth) *Auth {
 			ExpiresIn:    auth.ExpiresIn,
 			TokenType:    util.AuthTokenType,
 		},
+		GroupIDs: auth.GroupIDs,
 	}
 }
 

@@ -156,7 +156,7 @@ func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	shop, err := h.getShopByCoordinatorID(ctx, schedule.CoordinatorID)
+	shop, err := h.getShop(ctx, schedule.ShopID)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -214,7 +214,7 @@ func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	shop, err := h.getShopByCoordinatorID(ctx, schedule.CoordinatorID)
+	shop, err := h.getShop(ctx, schedule.ShopID)
 	if err != nil {
 		h.httpError(ctx, err)
 		return

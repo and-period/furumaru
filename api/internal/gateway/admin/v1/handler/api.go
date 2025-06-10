@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -16,7 +17,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -324,15 +324,17 @@ func (h *handler) authentication(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.GetAdminAuthInput{AccessToken: token}
-	auth, err := h.user.GetAdminAuth(ctx, in)
+	auth, err := h.getAuth(ctx, token)
 	if err != nil || auth.AdminID == "" {
 		h.unauthorized(ctx, err)
 		return
 	}
-	adminType := service.NewAdminType(auth.Type)
+	if err := h.setShop(ctx, auth); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 
-	setAuth(ctx, auth.AdminID, adminType)
+	setAuth(ctx, auth)
 
 	// 認可情報の検証
 	if err := h.enforce(ctx, auth); err != nil {
@@ -343,7 +345,18 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
+func (h *handler) getAuth(ctx *gin.Context, token string) (*service.Auth, error) {
+	in := &user.GetAdminAuthInput{
+		AccessToken: token,
+	}
+	auth, err := h.user.GetAdminAuth(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewAuth(auth), nil
+}
+
+func (h *handler) enforce(ctx *gin.Context, admin *service.Auth) error {
 	if h.enforcer == nil {
 		return nil
 	}
@@ -362,20 +375,58 @@ func (h *handler) enforce(ctx *gin.Context, admin *uentity.AdminAuth) error {
 	return fmt.Errorf("handler: you don't have the correct permissions: %w", exception.ErrForbidden)
 }
 
-func setAuth(ctx *gin.Context, adminID string, role service.AdminType) {
-	if adminID != "" {
-		ctx.Request.Header.Set("Adminid", adminID)
-		ctx.Request.Header.Set("Admintype", strconv.FormatInt(int64(role), 10))
+func setAuth(ctx *gin.Context, auth *service.Auth) {
+	if auth == nil {
+		return
+	}
+	ctx.Request.Header.Set("Adminid", auth.AdminID)
+	ctx.Request.Header.Set("Admintype", strconv.FormatInt(int64(auth.Type), 10))
+}
+
+func (h *handler) setShop(ctx *gin.Context, auth *service.Auth) error {
+	if auth == nil {
+		return nil
+	}
+	switch service.AdminType(auth.Type) {
+	case service.AdminTypeAdministrator:
+		return nil // 管理者は店舗を指定しない
+	case service.AdminTypeCoordinator:
+		shop, err := h.getShopByCoordinatorID(ctx, auth.AdminID)
+		if err != nil {
+			return err
+		}
+		ctx.Request.Header.Set("Shopid", shop.ID)
+		return nil
+	case service.AdminTypeProducer:
+		in := &store.ListShopsInput{
+			ProducerIDs: []string{auth.AdminID},
+		}
+		shops, _, err := h.store.ListShops(ctx, in)
+		if err != nil {
+			return err
+		}
+		ctx.Request.Header.Set("Shopids", strings.Join(shops.IDs(), ","))
+		return nil
+	default:
+		return fmt.Errorf("handler: unknown admin role: %w", exception.ErrForbidden)
 	}
 }
 
 func getAdminID(ctx *gin.Context) string {
-	return ctx.GetHeader("adminId")
+	return ctx.GetHeader("Adminid")
 }
 
 func getAdminType(ctx *gin.Context) service.AdminType {
-	role, _ := strconv.ParseInt(ctx.GetHeader("adminType"), 10, 32)
+	role, _ := strconv.ParseInt(ctx.GetHeader("Admintype"), 10, 32)
 	return service.AdminType(role)
+}
+
+func getShopID(ctx *gin.Context) string {
+	return ctx.GetHeader("Shopid")
+}
+
+func getShopIDs(ctx *gin.Context) []string {
+	return strings.Split(ctx.GetHeader("Shopids"), ",")
 }
 
 func currentAdmin(ctx *gin.Context, adminID string) bool {
