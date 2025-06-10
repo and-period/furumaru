@@ -35,9 +35,9 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	coordinatorID := util.GetQuery(ctx, "coordinatorId", "")
+	shopID := util.GetQuery(ctx, "shopId", "")
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		coordinatorID = getAdminID(ctx)
+		shopID = getShopID(ctx)
 	}
 	periodTypeStr := util.GetQuery(ctx, "periodType", defaultPeriodType.Response())
 
@@ -54,9 +54,9 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		in := &store.AggregateOrdersInput{
-			CoordinatorID: coordinatorID,
-			CreatedAtGte:  startAt,
-			CreatedAtLt:   endAt,
+			ShopID:       shopID,
+			CreatedAtGte: startAt,
+			CreatedAtLt:  endAt,
 		}
 		current, err = h.store.AggregateOrders(ectx, in)
 		return
@@ -64,28 +64,28 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		diff := endAt.Sub(startAt)
 		in := &store.AggregateOrdersInput{
-			CoordinatorID: coordinatorID,
-			CreatedAtGte:  startAt.Add(-diff),
-			CreatedAtLt:   endAt.Add(-diff),
+			ShopID:       shopID,
+			CreatedAtGte: startAt.Add(-diff),
+			CreatedAtLt:  endAt.Add(-diff),
 		}
 		previous, err = h.store.AggregateOrders(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {
 		in := &store.AggregateOrdersByPeriodInput{
-			CoordinatorID: coordinatorID,
-			PeriodType:    periodType.StoreEntity(),
-			CreatedAtGte:  startAt,
-			CreatedAtLt:   endAt,
+			ShopID:       shopID,
+			PeriodType:   periodType.StoreEntity(),
+			CreatedAtGte: startAt,
+			CreatedAtLt:  endAt,
 		}
 		orders, err = h.store.AggregateOrdersByPeriod(ectx, in)
 		return
 	})
 	eg.Go(func() (err error) {
 		in := &store.AggregateOrdersByPaymentMethodTypeInput{
-			CoordinatorID: coordinatorID,
-			CreatedAtGte:  startAt,
-			CreatedAtLt:   endAt,
+			ShopID:       shopID,
+			CreatedAtGte: startAt,
+			CreatedAtLt:  endAt,
 		}
 		payments, err = h.store.AggregateOrdersByPaymentMethodType(ectx, in)
 		return

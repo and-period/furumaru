@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,11 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "admin-id", service.AdminTypeAdministrator)
+	auth := &service.Auth{Auth: response.Auth{
+		AdminID: "admin-id",
+		Type:    service.AdminTypeAdministrator.Response(),
+	}}
+	setAuth(ctx, auth)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
 	assert.Equal(t, service.AdminTypeAdministrator, getAdminType(ctx))
 	assert.True(t, currentAdmin(ctx, "admin-id"))
@@ -138,7 +143,11 @@ func TestFilterAccess(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctx, _ := gin.CreateTestContext(w)
 			ctx.Request = &http.Request{Header: http.Header{}}
-			setAuth(ctx, "admin-id", tt.role)
+			auth := &service.Auth{Auth: response.Auth{
+				AdminID: "admin-id",
+				Type:    int32(tt.role),
+			}}
+			setAuth(ctx, auth)
 			assert.ErrorIs(t, filterAccess(ctx, tt.params), tt.expect)
 		})
 	}

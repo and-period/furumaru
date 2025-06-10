@@ -66,9 +66,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	)
 	if getAdminType(ctx) == service.AdminTypeCoordinator {
 		in := &store.ListShopProducersInput{
-			CoordinatorID: getAdminID(ctx),
-			Limit:         limit,
-			Offset:        offset,
+			ShopID: getShopID(ctx),
+			Limit:  limit,
+			Offset: offset,
 		}
 		producerIDs, err := h.store.ListShopProducers(ctx, in)
 		if err != nil {
@@ -281,6 +281,20 @@ func (h *handler) getProducer(ctx context.Context, producerID string) (*service.
 		return nil, err
 	}
 	return service.NewProducer(producer), nil
+}
+
+func (h *handler) getProducersByShopID(ctx context.Context, shopID string) (service.Producers, error) {
+	if shopID == "" {
+		return service.Producers{}, nil
+	}
+	in := &store.ListShopProducersInput{
+		ShopID: shopID,
+	}
+	producerIDs, err := h.store.ListShopProducers(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return h.multiGetProducers(ctx, producerIDs)
 }
 
 func (h *handler) getProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {

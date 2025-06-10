@@ -45,9 +45,9 @@ func (s *service) ListShopProducers(ctx context.Context, in *store.ListShopProdu
 		return nil, internalError(err)
 	}
 	params := &database.ListShopProducersParams{
-		CoordinatorID: in.CoordinatorID,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
+		ShopID: in.ShopID,
+		Limit:  int(in.Limit),
+		Offset: int(in.Offset),
 	}
 	producerIDs, err := s.db.Shop.ListProducers(ctx, params)
 	return producerIDs, internalError(err)

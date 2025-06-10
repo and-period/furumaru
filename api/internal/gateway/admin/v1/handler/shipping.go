@@ -305,6 +305,7 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// Deprecated
 func (h *handler) GetActiveShipping(ctx *gin.Context) {
 	in := &store.GetShippingByCoordinatorIDInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),

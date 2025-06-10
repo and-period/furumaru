@@ -75,28 +75,13 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 
 	in := &store.ListProductsInput{
+		ShopID:         getShopID(ctx),
 		Name:           util.GetQuery(ctx, "name", ""),
 		ProducerID:     util.GetQuery(ctx, "producerId", ""),
 		ExcludeDeleted: true,
 		Limit:          limit,
 		Offset:         offset,
 		Orders:         orders,
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-		if err != nil {
-			h.httpError(ctx, err)
-			return
-		}
-		// 生産者が紐づかない場合、商品が存在しないためアーリーリターンする
-		if len(producers) == 0 {
-			res := &response.ProductsResponse{
-				Products: []*response.Product{},
-			}
-			ctx.JSON(http.StatusOK, res)
-			return
-		}
-		in.ProducerIDs = producers.IDs()
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {

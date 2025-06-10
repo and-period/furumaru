@@ -643,7 +643,7 @@ func TestShop_ListProducers(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListShopProducersParams{
-					CoordinatorID: "coordinator-id01",
+					ShopID: "shop-id01",
 				},
 			},
 			want: want{

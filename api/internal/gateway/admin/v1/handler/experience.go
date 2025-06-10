@@ -68,31 +68,13 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	}
 
 	in := &store.ListExperiencesInput{
+		ShopID:         getShopID(ctx),
 		Name:           util.GetQuery(ctx, "name", ""),
 		ProducerID:     util.GetQuery(ctx, "producerId", ""),
 		ExcludeDeleted: true,
 		Limit:          limit,
 		Offset:         offset,
 		NoLimit:        false,
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
-		if err != nil {
-			h.httpError(ctx, err)
-			return
-		}
-		// 生産者が紐づかない場合、体験が存在しないためアーリーリターンする
-		if len(producers) == 0 {
-			res := &response.ExperiencesResponse{
-				Experiences:     []*response.Experience{},
-				Coordinators:    []*response.Coordinator{},
-				Producers:       []*response.Producer{},
-				ExperienceTypes: []*response.ExperienceType{},
-			}
-			ctx.JSON(http.StatusOK, res)
-			return
-		}
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {

@@ -64,11 +64,9 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 	}
 
 	in := &store.ListSchedulesInput{
+		ShopID: getShopID(ctx),
 		Limit:  limit,
 		Offset: offset,
-	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
 	}
 	schedules, total, err := h.store.ListSchedules(ctx, in)
 	if err != nil {
