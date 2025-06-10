@@ -348,7 +348,8 @@
       "producerInformationTitle": "この商品の生産者",
       "reviewCountLabel": "件の評価",
       "reviewLabel": "商品レビュー",
-      "noReviewText": "現在、レビューはありません"
+      "noReviewText": "現在、レビューはありません",
+      "relatedProduct": "関連商品"
     },
     "experiences": {
       "producerLabel": "生産者",

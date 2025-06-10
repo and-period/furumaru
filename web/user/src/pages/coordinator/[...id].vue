@@ -9,7 +9,7 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const { coordnatorInfo, archives, lives, producers }
+const { coordinatorInfo, archives, lives, producers }
   = storeToRefs(coordinatorStore)
 
 const id = computed<string>(() => {
@@ -40,10 +40,10 @@ useAsyncData(`coordinator-${id.value}`, () => {
     <div class="static mx-auto w-full text-main md:max-w-[1216px]">
       <!-- ヘッダー部分 -->
       <div class="h-[160px] w-full md:h-[320px] md:w-[1216px]">
-        <template v-if="coordnatorInfo.headerUrl">
+        <template v-if="coordinatorInfo.headerUrl">
           <img
             class="h-full w-full object-cover"
-            :src="coordnatorInfo.headerUrl"
+            :src="coordinatorInfo.headerUrl"
           >
         </template>
         <template v-else>
@@ -56,21 +56,21 @@ useAsyncData(`coordinator-${id.value}`, () => {
         <div class="col-span-2">
           <div class="flex justify-center">
             <img
-              :src="coordnatorInfo.thumbnailUrl"
+              :src="coordinatorInfo.thumbnailUrl"
               class="block aspect-square w-[120px] rounded-full border-2 border-white md:w-[168px]"
             >
           </div>
           <p
             class="mt-4 text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
           >
-            {{ coordnatorInfo.marcheName }}
+            {{ coordinatorInfo.marcheName }}
           </p>
           <div
             class="flex justify-center pt-2 text-[12px] tracking-[1.4px] md:text-[14px]"
           >
-            <p>{{ coordnatorInfo.prefecture }}</p>
+            <p>{{ coordinatorInfo.prefecture }}</p>
             <p class="pl-2">
-              {{ coordnatorInfo.city }}
+              {{ coordinatorInfo.city }}
             </p>
           </div>
           <div class="my-4 flex justify-center tracking-[2.4px]">
@@ -78,13 +78,13 @@ useAsyncData(`coordinator-${id.value}`, () => {
               コーディネータ
             </p>
             <p class="ml-2 text-[16px] font-bold md:text-[24px]">
-              {{ coordnatorInfo.username }}
+              {{ coordinatorInfo.username }}
             </p>
           </div>
           <p
             class="mx-4 text-[14px] tracking-[1.4px] md:mx-0 md:text-[16px] md:tracking-[1.6px]"
           >
-            {{ coordnatorInfo.profile }}
+            {{ coordinatorInfo.profile }}
           </p>
           <hr class="m-4 border-dashed border-main md:mx-0">
           <div class="mx-4 grid grid-cols-3 md:mx-0">
@@ -94,7 +94,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <div class="flex justify-end">
               <a
                 :href="
-                  'https://www.instagram.com/' + coordnatorInfo.instagramId
+                  'https://www.instagram.com/' + coordinatorInfo.instagramId
                 "
                 target="_blank"
               >
@@ -130,7 +130,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 </svg>
               </a>
               <a
-                :href="'https://www.facebook.com/' + coordnatorInfo.facebookId"
+                :href="'https://www.facebook.com/' + coordinatorInfo.facebookId"
                 target="_blank"
               >
                 <svg

@@ -7,6 +7,7 @@ import { ProductStatus } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { I18n } from '~/types/locales'
 import { useProductReviewStore } from '~/store/productReview'
+import { useCoordinatorStore } from '~/store/coordinator'
 
 const i18n = useI18n()
 
@@ -14,11 +15,21 @@ const route = useRoute()
 
 const productStore = useProductStore()
 const shoppingCartStore = useShoppingCartStore()
+const coordinatorStore = useCoordinatorStore()
+const { fetchCoordinator } = coordinatorStore
 
 const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
+const { coordinatorInfo, products } = storeToRefs(coordinatorStore)
+
+const coordinatorProducts = computed(() => {
+  const currentId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  return Array.isArray(products.value)
+    ? products.value.filter(product => product.id !== currentId)
+    : []
+})
 
 const productReviewStore = useProductReviewStore()
 const { fetchReviews } = productReviewStore
@@ -34,6 +45,15 @@ const itemThumbnailAlt = computed<string>(() => {
   return i18n.t('items.list.itemThumbnailAlt', {
     itemName: product.value.name,
   })
+})
+
+watchEffect(() => {
+  if (product.value && product.value.coordinatorId) {
+    useAsyncData(
+      `coordinator-${product.value.coordinatorId}`,
+      () => fetchCoordinator(product.value.coordinatorId),
+    )
+  }
 })
 
 const expirationDateText = computed<string>(() => {
@@ -587,6 +607,39 @@ useSeoMeta({
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto mt-[40px] w-full px-4 xl:px-28 max-w-[1440px]">
+    <div
+      class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+    >
+      <p
+        class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+      >
+        {{ dt("relatedProduct") }}
+      </p>
+
+      <div>
+        <div
+          class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4"
+        >
+          <the-product-list-item
+            v-for="coordinatorProduct in coordinatorProducts ?? []"
+            :id="coordinatorProduct.id"
+            :key="coordinatorProduct.id"
+            :status="coordinatorProduct.status"
+            :name="coordinatorProduct.name"
+            :price="coordinatorProduct.price"
+            :inventory="coordinatorProduct.inventory"
+            :has-stock="coordinatorProduct.hasStock"
+            :thumbnail="coordinatorProduct.thumbnail"
+            :origin-city="coordinatorProduct.originCity"
+            :coordinator="coordinatorInfo"
+            :thumbnail-is-video="false"
+            @click:add-cart="handleClickAddCartButton"
+          />
         </div>
       </div>
     </div>
