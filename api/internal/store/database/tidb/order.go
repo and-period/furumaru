@@ -41,9 +41,6 @@ func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ShopID != "" {
 		stmt = stmt.Where("shop_id = ?", p.ShopID)
 	}
-	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
 	if p.UserID != "" {
 		stmt = stmt.Where("user_id = ?", p.UserID)
 	}
@@ -369,9 +366,6 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 	if params.ShopID != "" {
 		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
 	}
-	if params.CoordinatorID != "" {
-		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
-	}
 
 	err := stmt.Scan(&orders).Error
 	return &orders, dbError(err)
@@ -394,9 +388,6 @@ func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateO
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
 	if params.ShopID != "" {
 		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
-	}
-	if params.CoordinatorID != "" {
-		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
 	stmt = stmt.Group("orders.user_id")
 
@@ -423,9 +414,6 @@ func (o *order) AggregateByPaymentMethodType(
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
 	if params.ShopID != "" {
 		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
-	}
-	if params.CoordinatorID != "" {
-		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
 	if !params.CreatedAtGte.IsZero() {
 		stmt = stmt.Where("orders.created_at >= ?", params.CreatedAtGte)
@@ -457,9 +445,6 @@ func (o *order) AggregateByPromotion(
 		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
 	if params.ShopID != "" {
 		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
-	}
-	if params.CoordinatorID != "" {
-		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
 	stmt = stmt.Group("orders.promotion_id")
 
@@ -500,9 +485,6 @@ func (o *order) AggregateByPeriod(
 		Where("orders.created_at < ?", params.CreatedAtLt)
 	if params.ShopID != "" {
 		stmt = stmt.Where("orders.shop_id = ?", params.ShopID)
-	}
-	if params.CoordinatorID != "" {
-		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}
 	stmt = stmt.Group("period").Order("period ASC")
 

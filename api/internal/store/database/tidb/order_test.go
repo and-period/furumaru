@@ -98,9 +98,9 @@ func TestOrder_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListOrdersParams{
-					CoordinatorID: "coordinator-id",
-					Limit:         2,
-					Offset:        0,
+					ShopID: "shop-id",
+					Limit:  2,
+					Offset: 0,
 				},
 			},
 			want: want{
@@ -233,9 +233,9 @@ func TestOrder_ListUserIDs(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListOrdersParams{
-					CoordinatorID: "coordinator-id",
-					Limit:         10,
-					Offset:        0,
+					ShopID: "shop-id",
+					Limit:  10,
+					Offset: 0,
 				},
 			},
 			want: want{
@@ -1860,9 +1860,9 @@ func TestOrder_Aggregate(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.AggregateOrdersParams{
-					CoordinatorID: "coordinator-id",
-					CreatedAtGte:  now().AddDate(0, 0, -1),
-					CreatedAtLt:   now().AddDate(0, 0, 1),
+					ShopID:       "shop-id",
+					CreatedAtGte: now().AddDate(0, 0, -1),
+					CreatedAtLt:  now().AddDate(0, 0, 1),
 				},
 			},
 			want: want{
@@ -1975,8 +1975,8 @@ func TestOrder_AggregateByUser(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.AggregateOrdersByUserParams{
-					UserIDs:       []string{"user-id", "other-id"},
-					CoordinatorID: "coordinator-id",
+					ShopID:  "shop-id",
+					UserIDs: []string{"user-id", "other-id"},
 				},
 			},
 			want: want{
@@ -2092,8 +2092,8 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.AggregateOrdersByPaymentMethodTypeParams{
+					ShopID:             "shop-id",
 					PaymentMethodTypes: entity.AllPaymentMethodTypes,
-					CoordinatorID:      "coordinator-id",
 				},
 			},
 			want: want{
@@ -2211,8 +2211,8 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.AggregateOrdersByPromotionParams{
-					PromotionIDs:  []string{"promotion-id"},
-					CoordinatorID: "coordinator-id",
+					ShopID:       "shop-id",
+					PromotionIDs: []string{"promotion-id"},
 				},
 			},
 			want: want{
@@ -2326,10 +2326,10 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.AggregateOrdersByPeriodParams{
-					PeriodType:    entity.AggregateOrderPeriodTypeDay,
-					CoordinatorID: "coordinator-id",
-					CreatedAtGte:  now().AddDate(0, 0, -1),
-					CreatedAtLt:   now().AddDate(0, 0, 1),
+					ShopID:       "shop-id",
+					PeriodType:   entity.AggregateOrderPeriodTypeDay,
+					CreatedAtGte: now().AddDate(0, 0, -1),
+					CreatedAtLt:  now().AddDate(0, 0, 1),
 				},
 			},
 			want: want{

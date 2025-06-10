@@ -52,16 +52,6 @@ func (s *service) ListShippingsByShopIDs(ctx context.Context, in *store.ListShip
 	return shippings, internalError(err)
 }
 
-func (s *service) ListShippingsByCoordinatorIDs(
-	ctx context.Context, in *store.ListShippingsByCoordinatorIDsInput,
-) (entity.Shippings, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
-	}
-	shippings, err := s.db.Shipping.ListByCoordinatorIDs(ctx, in.CoordinatorIDs)
-	return shippings, internalError(err)
-}
-
 func (s *service) MultiGetShippingsByRevision(
 	ctx context.Context, in *store.MultiGetShippingsByRevisionInput,
 ) (entity.Shippings, error) {

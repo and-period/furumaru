@@ -24,10 +24,9 @@ func TestListOrders(t *testing.T) {
 
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
 	params := &database.ListOrdersParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		Limit:         30,
-		Offset:        0,
+		ShopID: "shop-id",
+		Limit:  30,
+		Offset: 0,
 	}
 	orders := entity.Orders{
 		{
@@ -103,10 +102,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				Limit:         30,
-				Offset:        0,
+				ShopID: "shop-id",
+				Limit:  30,
+				Offset: 0,
 			},
 			expect:      orders,
 			expectTotal: 1,
@@ -127,10 +125,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListOrdersInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				Limit:         30,
-				Offset:        0,
+				ShopID: "shop-id",
+				Limit:  30,
+				Offset: 0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -143,10 +140,9 @@ func TestListOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListOrdersInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				Limit:         30,
-				Offset:        0,
+				ShopID: "shop-id",
+				Limit:  30,
+				Offset: 0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -167,10 +163,9 @@ func TestListOrders(t *testing.T) {
 func TestListOrderUserIDs(t *testing.T) {
 	t.Parallel()
 	params := &database.ListOrdersParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		Limit:         30,
-		Offset:        0,
+		ShopID: "shop-id",
+		Limit:  30,
+		Offset: 0,
 	}
 	tests := []struct {
 		name        string
@@ -186,10 +181,9 @@ func TestListOrderUserIDs(t *testing.T) {
 				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return([]string{"user-id"}, int64(1), nil)
 			},
 			input: &store.ListOrderUserIDsInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				Limit:         30,
-				Offset:        0,
+				ShopID: "shop-id",
+				Limit:  30,
+				Offset: 0,
 			},
 			expect:      []string{"user-id"},
 			expectTotal: 1,
@@ -209,10 +203,9 @@ func TestListOrderUserIDs(t *testing.T) {
 				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return(nil, int64(0), assert.AnError)
 			},
 			input: &store.ListOrderUserIDsInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				Limit:         30,
-				Offset:        0,
+				ShopID: "shop-id",
+				Limit:  30,
+				Offset: 0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -1277,9 +1270,9 @@ func TestAggregateOrders(t *testing.T) {
 
 	now := time.Now()
 	params := &database.AggregateOrdersParams{
-		CoordinatorID: "coordinator-id",
-		CreatedAtGte:  now.AddDate(0, 0, -7),
-		CreatedAtLt:   now,
+		ShopID:       "shop-id",
+		CreatedAtGte: now.AddDate(0, 0, -7),
+		CreatedAtLt:  now,
 	}
 	order := &entity.AggregatedOrder{
 		OrderCount:    2,
@@ -1301,9 +1294,9 @@ func TestAggregateOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(order, nil)
 			},
 			input: &store.AggregateOrdersInput{
-				CoordinatorID: "coordinator-id",
-				CreatedAtGte:  now.AddDate(0, 0, -7),
-				CreatedAtLt:   now,
+				ShopID:       "shop-id",
+				CreatedAtGte: now.AddDate(0, 0, -7),
+				CreatedAtLt:  now,
 			},
 			expect:    order,
 			expectErr: nil,
@@ -1314,9 +1307,9 @@ func TestAggregateOrders(t *testing.T) {
 				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersInput{
-				CoordinatorID: "coordinator-id",
-				CreatedAtGte:  now.AddDate(0, 0, -7),
-				CreatedAtLt:   now,
+				ShopID:       "shop-id",
+				CreatedAtGte: now.AddDate(0, 0, -7),
+				CreatedAtLt:  now,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -1336,9 +1329,8 @@ func TestAggregateOrdersByUser(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByUserParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		UserIDs:       []string{"user-id"},
+		ShopID:  "shop-id",
+		UserIDs: []string{"user-id"},
 	}
 	orders := entity.AggregatedUserOrders{
 		{
@@ -1363,9 +1355,8 @@ func TestAggregateOrdersByUser(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByUserInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				UserIDs:       []string{"user-id"},
+				ShopID:  "shop-id",
+				UserIDs: []string{"user-id"},
 			},
 			expect:    orders,
 			expectErr: nil,
@@ -1385,9 +1376,8 @@ func TestAggregateOrdersByUser(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByUser(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByUserInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				UserIDs:       []string{"user-id"},
+				ShopID:  "shop-id",
+				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -1408,7 +1398,6 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 
 	params := &database.AggregateOrdersByPaymentMethodTypeParams{
 		ShopID:             "shop-id",
-		CoordinatorID:      "coordinator-id",
 		PaymentMethodTypes: entity.AllPaymentMethodTypes,
 	}
 	orders := entity.AggregatedOrderPayments{
@@ -1433,8 +1422,7 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
+				ShopID: "shop-id",
 			},
 			expect:    orders,
 			expectErr: nil,
@@ -1445,8 +1433,7 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
+				ShopID: "shop-id",
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -1466,9 +1453,8 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 	t.Parallel()
 
 	params := &database.AggregateOrdersByPromotionParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		PromotionIDs:  []string{"promotion-id"},
+		ShopID:       "shop-id",
+		PromotionIDs: []string{"promotion-id"},
 	}
 	orders := entity.AggregatedOrderPromotions{
 		{
@@ -1491,9 +1477,8 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPromotionInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				PromotionIDs:  []string{"promotion-id"},
+				ShopID:       "shop-id",
+				PromotionIDs: []string{"promotion-id"},
 			},
 			expect:    orders,
 			expectErr: nil,
@@ -1513,9 +1498,8 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPromotionInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				PromotionIDs:  []string{"promotion-id"},
+				ShopID:       "shop-id",
+				PromotionIDs: []string{"promotion-id"},
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -1536,11 +1520,10 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 
 	now := time.Now()
 	params := &database.AggregateOrdersByPeriodParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		PeriodType:    entity.AggregateOrderPeriodTypeDay,
-		CreatedAtGte:  now.AddDate(0, 0, -7),
-		CreatedAtLt:   now,
+		ShopID:       "shop-id",
+		PeriodType:   entity.AggregateOrderPeriodTypeDay,
+		CreatedAtGte: now.AddDate(0, 0, -7),
+		CreatedAtLt:  now,
 	}
 	orders := entity.AggregatedPeriodOrders{
 		{
@@ -1565,11 +1548,10 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPeriodInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				PeriodType:    entity.AggregateOrderPeriodTypeDay,
-				CreatedAtGte:  now.AddDate(0, 0, -7),
-				CreatedAtLt:   now,
+				ShopID:       "shop-id",
+				PeriodType:   entity.AggregateOrderPeriodTypeDay,
+				CreatedAtGte: now.AddDate(0, 0, -7),
+				CreatedAtLt:  now,
 			},
 			expect:    orders,
 			expectErr: nil,
@@ -1587,11 +1569,10 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 				mocks.db.Order.EXPECT().AggregateByPeriod(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPeriodInput{
-				ShopID:        "shop-id",
-				CoordinatorID: "coordinator-id",
-				PeriodType:    entity.AggregateOrderPeriodTypeDay,
-				CreatedAtGte:  now.AddDate(0, 0, -7),
-				CreatedAtLt:   now,
+				ShopID:       "shop-id",
+				PeriodType:   entity.AggregateOrderPeriodTypeDay,
+				CreatedAtGte: now.AddDate(0, 0, -7),
+				CreatedAtLt:  now,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -1611,9 +1592,8 @@ func TestExportOrders(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2024, 1, 23, 18, 30, 0, 0)
 	ordersParams := &database.ListOrdersParams{
-		ShopID:        "shop-id",
-		CoordinatorID: "coordinator-id",
-		Statuses:      []entity.OrderStatus{entity.OrderStatusPreparing},
+		ShopID:   "shop-id",
+		Statuses: []entity.OrderStatus{entity.OrderStatusPreparing},
 	}
 	orders := entity.Orders{
 		{
@@ -1753,7 +1733,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1768,7 +1747,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1784,7 +1762,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierYamato,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1799,7 +1776,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierYamato,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1815,7 +1791,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierSagawa,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1830,7 +1805,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierSagawa,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1854,7 +1828,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1870,7 +1843,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
@@ -1886,7 +1858,6 @@ func TestExportOrders(t *testing.T) {
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ShippingCarrier: entity.ShippingCarrierUnknown,
 				EncodingType:    codes.CharacterEncodingTypeUTF8,
 			},
