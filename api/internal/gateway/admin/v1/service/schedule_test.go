@@ -124,6 +124,7 @@ func TestSchedule_Response(t *testing.T) {
 			schedule: &Schedule{
 				Schedule: response.Schedule{
 					ID:              "schedule-id",
+					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
