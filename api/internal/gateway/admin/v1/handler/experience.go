@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -175,12 +176,12 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
 			return
 		}
-		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		shop, err := h.getShop(ctx, getShopID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
-		if !producers.Contains(req.ProducerID) {
+		if !slices.Contains(shop.ProducerIDs, req.ProducerID) {
 			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
 			return
 		}

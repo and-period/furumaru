@@ -5,6 +5,9 @@ schedule:
     id:
       type: string
       description: マルシェ開催スケジュールID
+    shopId:
+      type: string
+      description: 店舗ID
     coordinatorId:
       type: string
       description: コーディネーターID
@@ -49,6 +52,7 @@ schedule:
       description: 更新日時 (unixtime)
   required:
   - id
+  - shopId
   - coordinatorId
   - status
   - title
@@ -64,6 +68,7 @@ schedule:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    shopId: 'shop-id'
     coordinatorId: 'coordinator-id'
     status: 4
     title: 'マルシェ開催スケジュールタイトル'

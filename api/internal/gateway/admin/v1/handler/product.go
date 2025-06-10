@@ -259,10 +259,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		shop, err = h.getShopByCoordinatorID(ectx, req.CoordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
 		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
 		return
 	})

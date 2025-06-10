@@ -37,7 +37,7 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
 				return true, nil
 			}
-			shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+			shop, err := h.getShop(ctx, getShopID(ctx))
 			if err != nil {
 				return false, err
 			}
@@ -101,7 +101,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 			h.badRequest(ctx, err)
 			return
 		}
-		shop, err := h.getShopByCoordinatorID(ctx, getAdminID(ctx))
+		shop, err := h.getShop(ctx, getShopID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)
 			return
