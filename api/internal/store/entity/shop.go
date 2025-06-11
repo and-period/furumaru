@@ -56,6 +56,14 @@ func (ss Shops) IDs() []string {
 	})
 }
 
+func (ss Shops) ProductTypeIDs() []string {
+	set := set.NewEmpty[string](len(ss))
+	for _, s := range ss {
+		set.Add(s.ProductTypeIDs...)
+	}
+	return set.Slice()
+}
+
 func (ss Shops) MapByCoordinatorID() map[string]*Shop {
 	res := make(map[string]*Shop, len(ss))
 	for i := range ss {

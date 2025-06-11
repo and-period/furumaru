@@ -1,0 +1,1 @@
+ALTER TABLE `users`.`coordinators` DROP COLUMN `product_type_ids`;

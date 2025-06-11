@@ -45,6 +45,15 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	var shopID string
+	if coordinatorID := util.GetQuery(ctx, "coordinatorId", ""); coordinatorID != "" {
+		coordinator, err := h.getCoordinator(ctx, coordinatorID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		shopID = coordinator.ShopID
+	}
 
 	in := &store.ListExperiencesInput{
 		Name:            util.GetQuery(ctx, "name", ""),
@@ -54,7 +63,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		OnlyPublished:   true,
 		ExcludeFinished: true,
 		ExcludeDeleted:  true,
-		CoordinatorID:   util.GetQuery(ctx, "coordinatorId", ""),
+		ShopID:          shopID,
 		ProducerID:      util.GetQuery(ctx, "producerId", ""),
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
@@ -98,6 +107,15 @@ func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	var shopID string
+	if coordinatorID := util.GetQuery(ctx, "coordinatorId", ""); coordinatorID != "" {
+		coordinator, err := h.getCoordinator(ctx, coordinatorID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		shopID = coordinator.ShopID
+	}
 
 	in := &store.ListExperiencesByGeolocationInput{
 		Latitude:        latitude,
@@ -106,7 +124,7 @@ func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
 		OnlyPublished:   true,
 		ExcludeFinished: true,
 		ExcludeDeleted:  true,
-		CoordinatorID:   util.GetQuery(ctx, "coordinatorId", ""),
+		ShopID:          shopID,
 		ProducerID:      util.GetQuery(ctx, "producerId", ""),
 	}
 	experiences, err := h.store.ListExperiencesByGeolocation(ctx, in)

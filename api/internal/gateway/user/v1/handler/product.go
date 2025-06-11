@@ -36,6 +36,15 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	var shopID string
+	if coordinatorID := util.GetQuery(ctx, "coordinatorId", ""); coordinatorID != "" {
+		coordinator, err := h.getCoordinator(ctx, coordinatorID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		shopID = coordinator.ShopID
+	}
 
 	in := &store.ListProductsInput{
 		Limit:            limit,
@@ -43,7 +52,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		OnlyPublished:    true,
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
-		CoordinatorID:    util.GetQuery(ctx, "coordinatorId", ""),
+		ShopID:           shopID,
 		Orders: []*store.ListProductsOrder{
 			// 売り切れでないもの順 && 公開日時が新しいもの順
 			{Key: store.ListProductsOrderBySoldOut, OrderByASC: true},

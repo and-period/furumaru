@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // Coordinator - コーディネータ情報
@@ -14,7 +13,6 @@ type Coordinator struct {
 	PhoneNumber       string    `gorm:""`                     // 電話番号
 	Username          string    `gorm:""`                     // 表示名
 	Profile           string    `gorm:""`                     // 紹介文
-	ProductTypeIDs    []string  `gorm:"-"`                    // Deprecated: 取り扱い品目ID一覧
 	ThumbnailURL      string    `gorm:""`                     // サムネイルURL
 	HeaderURL         string    `gorm:""`                     // ヘッダー画像URL
 	PromotionVideoURL string    `gorm:""`                     // 紹介動画URL
@@ -38,7 +36,6 @@ type NewCoordinatorParams struct {
 	PhoneNumber       string
 	Username          string
 	Profile           string
-	ProductTypeIDs    []string
 	ThumbnailURL      string
 	HeaderURL         string
 	PromotionVideoURL string
@@ -62,7 +59,6 @@ func NewCoordinator(params *NewCoordinatorParams) (*Coordinator, error) {
 		PhoneNumber:       params.PhoneNumber,
 		Username:          params.Username,
 		Profile:           params.Profile,
-		ProductTypeIDs:    params.ProductTypeIDs,
 		ThumbnailURL:      params.ThumbnailURL,
 		HeaderURL:         params.HeaderURL,
 		PromotionVideoURL: params.PromotionVideoURL,
@@ -91,14 +87,6 @@ func (cs Coordinators) IDs() []string {
 		res[i] = cs[i].AdminID
 	}
 	return res
-}
-
-func (cs Coordinators) ProductTypeIDs() []string {
-	res := set.NewEmpty[string](len(cs))
-	for i := range cs {
-		res.Add(cs[i].ProductTypeIDs...)
-	}
-	return res.Slice()
 }
 
 func (cs Coordinators) Fill(admins map[string]*Admin, groups map[string]AdminGroupUsers) {

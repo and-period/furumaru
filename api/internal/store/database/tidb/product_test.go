@@ -78,12 +78,12 @@ func TestProduct_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductsParams{
-					Name:          "いも",
-					CoordinatorID: "coordinator-id",
-					ProducerID:    "producer-id",
-					ProducerIDs:   []string{"producer-id"},
-					Limit:         3,
-					Offset:        0,
+					Name:        "いも",
+					ShopID:      "shop-id",
+					ProducerID:  "producer-id",
+					ProducerIDs: []string{"producer-id"},
+					Limit:       3,
+					Offset:      0,
 				},
 			},
 			want: want{
@@ -182,9 +182,9 @@ func TestProduct_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductsParams{
-					Name:          "いも",
-					CoordinatorID: "coordinator-id",
-					ProducerID:    "producer-id",
+					Name:       "いも",
+					ShopID:     "shop-id",
+					ProducerID: "producer-id",
 				},
 			},
 			want: want{

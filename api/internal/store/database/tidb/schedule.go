@@ -32,9 +32,6 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ShopID != "" {
 		stmt = stmt.Where("shop_id = ?", p.ShopID)
 	}
-	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("EXISTS (SELECT * FROM lives WHERE lives.schedule_id = schedules.id AND lives.producer_id = ?)", p.ProducerID)
 	}

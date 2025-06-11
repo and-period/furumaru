@@ -24,7 +24,6 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 	}
 	params := &database.ListSchedulesParams{
 		ShopID:        in.ShopID,
-		CoordinatorID: in.CoordinatorID,
 		ProducerID:    in.ProducerID,
 		StartAtGte:    in.StartAtGte,
 		StartAtLt:     in.StartAtLt,

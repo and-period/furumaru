@@ -41,9 +41,6 @@ func (p listShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ShopIDs) > 0 {
 		stmt = stmt.Where("shop_id IN (?)", p.ShopIDs)
 	}
-	if len(p.CoordinatorIDs) > 0 {
-		stmt = stmt.Where("coordinator_id IN (?)", p.CoordinatorIDs)
-	}
 	if p.OnlyInUse {
 		stmt = stmt.Where("in_use = ?", true)
 	}
@@ -83,22 +80,6 @@ func (s *shipping) ListByShopIDs(ctx context.Context, shopIDs []string, fields .
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
 		Where("shop_id IN (?)", shopIDs).
-		Where("in_use = ?", true)
-
-	if err := stmt.Find(&shippings).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := s.fill(ctx, s.db.DB, shippings...); err != nil {
-		return nil, dbError(err)
-	}
-	return shippings, nil
-}
-
-func (s *shipping) ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error) {
-	var shippings entity.Shippings
-
-	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
-		Where("coordinator_id IN (?)", coordinatorIDs).
 		Where("in_use = ?", true)
 
 	if err := stmt.Find(&shippings).Error; err != nil {

@@ -200,7 +200,6 @@ type ListExperiencesInput struct {
 	Name            string `validate:"max=64"`
 	PrefectureCode  int32  `validate:"min=0,max=47"`
 	ShopID          string `validate:""`
-	CoordinatorID   string `validate:""` // Deprecated
 	ProducerID      string `validate:""`
 	OnlyPublished   bool   `validate:""`
 	ExcludeFinished bool   `validate:""`
@@ -212,7 +211,6 @@ type ListExperiencesInput struct {
 
 type ListExperiencesByGeolocationInput struct {
 	ShopID          string  `validate:""`
-	CoordinatorID   string  `validate:""` // Deprecated
 	ProducerID      string  `validate:""`
 	Latitude        float64 `validate:"min=-90,max=90"`
 	Longitude       float64 `validate:"min=-180,max=180"`
@@ -435,20 +433,18 @@ type DeleteLiveInput struct {
  * Order - 注文履歴
  */
 type ListOrdersInput struct {
-	ShopID        string               `validate:""`
-	CoordinatorID string               `validate:""` // Deprecated
-	UserID        string               `validate:""`
-	Types         []entity.OrderType   `validate:""`
-	Statuses      []entity.OrderStatus `validate:""`
-	Limit         int64                `validate:"required,max=200"`
-	Offset        int64                `validate:"min=0"`
+	ShopID   string               `validate:""`
+	UserID   string               `validate:""`
+	Types    []entity.OrderType   `validate:""`
+	Statuses []entity.OrderStatus `validate:""`
+	Limit    int64                `validate:"required,max=200"`
+	Offset   int64                `validate:"min=0"`
 }
 
 type ListOrderUserIDsInput struct {
-	ShopID        string `validate:""`
-	CoordinatorID string `validate:""` // Deprecated
-	Limit         int64  `validate:"required,max=200"`
-	Offset        int64  `validate:"min=0"`
+	ShopID string `validate:""`
+	Limit  int64  `validate:"required,max=200"`
+	Offset int64  `validate:"min=0"`
 }
 
 type GetOrderInput struct {
@@ -495,42 +491,36 @@ type UpdateOrderFulfillmentInput struct {
 }
 
 type AggregateOrdersInput struct {
-	ShopID        string    `validate:""`
-	CoordinatorID string    `validate:""` // Deprecated
-	CreatedAtGte  time.Time `validate:""`
-	CreatedAtLt   time.Time `validate:""`
+	ShopID       string    `validate:""`
+	CreatedAtGte time.Time `validate:""`
+	CreatedAtLt  time.Time `validate:""`
 }
 
 type AggregateOrdersByUserInput struct {
-	ShopID        string   `validate:""`
-	CoordinatorID string   `validate:""` // Deprecated
-	UserIDs       []string `validate:"dive,required"`
+	ShopID  string   `validate:""`
+	UserIDs []string `validate:"dive,required"`
 }
 
 type AggregateOrdersByPaymentMethodTypeInput struct {
-	ShopID        string    `validate:""`
-	CoordinatorID string    `validate:""` // Deprecated
-	CreatedAtGte  time.Time `validate:""`
-	CreatedAtLt   time.Time `validate:""`
+	ShopID       string    `validate:""`
+	CreatedAtGte time.Time `validate:""`
+	CreatedAtLt  time.Time `validate:""`
 }
 
 type AggregateOrdersByPromotionInput struct {
-	ShopID        string   `validate:""`
-	CoordinatorID string   `validate:""` // Deprecated
-	PromotionIDs  []string `validate:"dive,required"`
+	ShopID       string   `validate:""`
+	PromotionIDs []string `validate:"dive,required"`
 }
 
 type AggregateOrdersByPeriodInput struct {
-	ShopID        string                          `validate:""`
-	CoordinatorID string                          `validate:""` // Deprecated
-	PeriodType    entity.AggregateOrderPeriodType `validate:"required"`
-	CreatedAtGte  time.Time                       `validate:""`
-	CreatedAtLt   time.Time                       `validate:""`
+	ShopID       string                          `validate:""`
+	PeriodType   entity.AggregateOrderPeriodType `validate:"required"`
+	CreatedAtGte time.Time                       `validate:""`
+	CreatedAtLt  time.Time                       `validate:""`
 }
 
 type ExportOrdersInput struct {
 	ShopID          string                      `validate:""`
-	CoordinatorID   string                      `validate:""` // Deprecated
 	ShippingCarrier entity.ShippingCarrier      `validate:"oneof=0 1 2"`
 	EncodingType    codes.CharacterEncodingType `validate:"oneof=0 1"`
 }
@@ -578,7 +568,6 @@ const (
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
 	ShopID           string               `validate:""`
-	CoordinatorID    string               `validate:""` // Deprecated
 	ProducerID       string               `validate:""`
 	ProducerIDs      []string             `validate:"dive,required"`
 	OnlyPublished    bool                 `validate:""`
@@ -908,7 +897,6 @@ type DeletePromotionInput struct {
 
 type ListSchedulesInput struct {
 	ShopID        string    `validate:""`
-	CoordinatorID string    `validate:""` // Deprecated
 	ProducerID    string    `validate:""`
 	StartAtGte    time.Time `validate:""`
 	StartAtLt     time.Time `validate:""`

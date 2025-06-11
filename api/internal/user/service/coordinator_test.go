@@ -369,7 +369,6 @@ func TestCreateCoordinator(t *testing.T) {
 					},
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
-					ProductTypeIDs: []string{"product-type-id"},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					HeaderURL:      "https://and-period.jp/header.png",
 					InstagramID:    "instgram-id",
@@ -909,49 +908,6 @@ func TestResetCoordinatorPassword(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ResetCoordinatorPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestRemoveCoordinatorProductType(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.RemoveCoordinatorProductTypeInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().RemoveProductTypeID(ctx, "product-type-id").Return(nil)
-			},
-			input: &user.RemoveCoordinatorProductTypeInput{
-				ProductTypeID: "product-type-id",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.RemoveCoordinatorProductTypeInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to remove product type id",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().RemoveProductTypeID(ctx, "product-type-id").Return(assert.AnError)
-			},
-			input: &user.RemoveCoordinatorProductTypeInput{
-				ProductTypeID: "product-type-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RemoveCoordinatorProductType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

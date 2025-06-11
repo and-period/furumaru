@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -56,19 +55,12 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 
-	var (
-		productTypes service.ProductTypes
-		shops        sentity.Shops
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		productTypes, err = h.multiGetProductTypes(ectx, coordinators.ProductTypeIDs())
+	shops, err := h.listShopsByCoordinatorIDs(ctx, coordinators.IDs())
+	if err != nil {
+		h.httpError(ctx, err)
 		return
-	})
-	eg.Go(func() (err error) {
-		shops, err = h.listShopsByCoordinatorIDs(ectx, coordinators.IDs())
-		return
-	})
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, shops.ProductTypeIDs())
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -105,16 +97,16 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		params := &listLiveSummariesParams{
-			coordinatorID: coordinator.ID,
-			noLimit:       true,
+			shopID:  coordinator.ShopID,
+			noLimit: true,
 		}
 		lives, _, err = h.listLiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
 		params := &listArchiveSummariesParams{
-			coordinatorID: coordinator.ID,
-			noLimit:       true,
+			shopID:  coordinator.ShopID,
+			noLimit: true,
 		}
 		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return
@@ -129,7 +121,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		in := &store.ListProductsInput{
-			CoordinatorID:    coordinator.ID,
+			ShopID:           coordinator.ShopID,
 			OnlyPublished:    true,
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
@@ -139,7 +131,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		in := &store.ListExperiencesInput{
-			CoordinatorID:   coordinator.ID,
+			ShopID:          coordinator.ShopID,
 			OnlyPublished:   true,
 			ExcludeFinished: true,
 			NoLimit:         true,

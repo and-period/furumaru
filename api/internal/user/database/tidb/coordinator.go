@@ -2,8 +2,6 @@ package tidb
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -11,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
 	"golang.org/x/sync/errgroup"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -53,7 +50,7 @@ func (p listCoordinatorsParams) pagination(stmt *gorm.DB) *gorm.DB {
 func (c *coordinator) List(
 	ctx context.Context, params *database.ListCoordinatorsParams, fields ...string,
 ) (entity.Coordinators, error) {
-	var internal internalCoordinators
+	var coordinators entity.Coordinators
 
 	p := listCoordinatorsParams(*params)
 
@@ -61,11 +58,7 @@ func (c *coordinator) List(
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	if err := stmt.Find(&internal).Error; err != nil {
-		return nil, dbError(err)
-	}
-	coordinators, err := internal.entities()
-	if err != nil {
+	if err := stmt.Find(&coordinators).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -84,16 +77,12 @@ func (c *coordinator) Count(ctx context.Context, params *database.ListCoordinato
 func (c *coordinator) MultiGet(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
-	var internal internalCoordinators
+	var coordinators entity.Coordinators
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs)
 
-	if err := stmt.Find(&internal).Error; err != nil {
-		return nil, dbError(err)
-	}
-	coordinators, err := internal.entities()
-	if err != nil {
+	if err := stmt.Find(&coordinators).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -105,17 +94,13 @@ func (c *coordinator) MultiGet(
 func (c *coordinator) MultiGetWithDeleted(
 	ctx context.Context, coordinatorIDs []string, fields ...string,
 ) (entity.Coordinators, error) {
-	var internal internalCoordinators
+	var coordinators entity.Coordinators
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id IN (?)", coordinatorIDs).
 		Unscoped()
 
-	if err := stmt.Find(&internal).Error; err != nil {
-		return nil, dbError(err)
-	}
-	coordinators, err := internal.entities()
-	if err != nil {
+	if err := stmt.Find(&coordinators).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
@@ -140,17 +125,13 @@ func (c *coordinator) Get(
 func (c *coordinator) GetWithDeleted(
 	ctx context.Context, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
-	var internal *internalCoordinator
+	var coordinator *entity.Coordinator
 
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
 		Where("admin_id = ?", coordinatorID).
 		Unscoped()
 
-	if err := stmt.First(&internal).Error; err != nil {
-		return nil, dbError(err)
-	}
-	coordinator, err := internal.entity()
-	if err != nil {
+	if err := stmt.First(&coordinator).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {
@@ -163,10 +144,6 @@ func (c *coordinator) Create(
 	ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error,
 ) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		internal, err := newInternalCoordinator(coordinator)
-		if err != nil {
-			return err
-		}
 		params := &entity.NewAdminGroupUsersParams{
 			AdminID:  coordinator.AdminID,
 			GroupIDs: coordinator.GroupIDs,
@@ -183,7 +160,7 @@ func (c *coordinator) Create(
 		if err := tx.WithContext(ctx).Table(adminTable).Create(&coordinator.Admin).Error; err != nil {
 			return err
 		}
-		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&internal).Error; err != nil {
+		if err := tx.WithContext(ctx).Table(coordinatorTable).Create(&coordinator).Error; err != nil {
 			return err
 		}
 		if len(groups) > 0 {
@@ -198,11 +175,6 @@ func (c *coordinator) Create(
 
 func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		productTypeIDs, err := json.Marshal(params.ProductTypeIDs)
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
-
 		now := c.now()
 		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
@@ -212,7 +184,6 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"updated_at":     now,
 		}
 		coordinatorParams := map[string]interface{}{
-			"product_type_ids":    productTypeIDs,
 			"username":            params.Username,
 			"profile":             params.Profile,
 			"thumbnail_url":       params.ThumbnailURL,
@@ -230,7 +201,7 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"updated_at":          now,
 		}
 
-		err = tx.WithContext(ctx).
+		err := tx.WithContext(ctx).
 			Table(adminTable).
 			Where("id = ?", coordinatorID).
 			Updates(adminParams).Error
@@ -263,33 +234,18 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 	return dbError(err)
 }
 
-func (c *coordinator) RemoveProductTypeID(ctx context.Context, productTypeID string) error {
-	sub := gorm.Expr("JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))", productTypeID)
-
-	err := c.db.DB.WithContext(ctx).
-		Table(coordinatorTable).
-		Where("JSON_SEARCH(product_type_ids, 'one', ?) IS NOT NULL", productTypeID).
-		Update("product_type_ids", sub).Error
-	return dbError(err)
-}
-
 func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
-	var internal *internalCoordinator
+	var coordinator *entity.Coordinator
 
 	stmt := c.db.Statement(ctx, tx, coordinatorTable, fields...).
 		Where("admin_id = ?", coordinatorID)
 
-	if err := stmt.First(&internal).Error; err != nil {
+	if err := stmt.First(&coordinator).Error; err != nil {
 		return nil, err
 	}
-	coordinator, err := internal.entity()
-	if err != nil {
-		return nil, err
-	}
-
-	return coordinator, err
+	return coordinator, nil
 }
 
 func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*entity.Coordinator) error {
@@ -322,54 +278,4 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 
 	entity.Coordinators(coordinators).Fill(admins.Map(), groups.GroupByAdminID())
 	return nil
-}
-
-type internalCoordinator struct {
-	entity.Coordinator `gorm:"embedded"`
-	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い品目ID一覧(JSON)
-}
-
-type internalCoordinators []*internalCoordinator
-
-func newInternalCoordinator(coordinator *entity.Coordinator) (*internalCoordinator, error) {
-	typeIDs, err := json.Marshal(coordinator.ProductTypeIDs)
-	if err != nil {
-		return nil, fmt.Errorf("tidb: failed to marshal product type IDs: %w", err)
-	}
-	internal := &internalCoordinator{
-		Coordinator:        *coordinator,
-		ProductTypeIDsJSON: typeIDs,
-	}
-	return internal, nil
-}
-
-func (c *internalCoordinator) entity() (*entity.Coordinator, error) {
-	if err := c.unmarshalProductTypeIDs(); err != nil {
-		return nil, err
-	}
-	return &c.Coordinator, nil
-}
-
-func (c *internalCoordinator) unmarshalProductTypeIDs() error {
-	if c == nil || c.ProductTypeIDsJSON == nil {
-		return nil
-	}
-	var ids []string
-	if err := json.Unmarshal(c.ProductTypeIDsJSON, &ids); err != nil {
-		return fmt.Errorf("tidb: failed to unmarshal product type IDs: %w", err)
-	}
-	c.ProductTypeIDs = ids
-	return nil
-}
-
-func (cs internalCoordinators) entities() (entity.Coordinators, error) {
-	res := make(entity.Coordinators, len(cs))
-	for i := range cs {
-		c, err := cs[i].entity()
-		if err != nil {
-			return nil, err
-		}
-		res[i] = c
-	}
-	return res, nil
 }

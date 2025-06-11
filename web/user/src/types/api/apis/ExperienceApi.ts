@@ -84,7 +84,6 @@ export interface V1ListExperienceReviewsRequest {
 export interface V1ListExperiencesRequest {
     limit?: number;
     offset?: number;
-    coordinatorId?: string;
     producerId?: string;
     prefecture?: Prefecture;
 }
@@ -396,10 +395,6 @@ export class ExperienceApi extends runtime.BaseAPI {
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
-        }
-
-        if (requestParameters['coordinatorId'] != null) {
-            queryParameters['coordinatorId'] = requestParameters['coordinatorId'];
         }
 
         if (requestParameters['producerId'] != null) {

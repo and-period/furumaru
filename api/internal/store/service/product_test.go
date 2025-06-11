@@ -22,13 +22,12 @@ func TestListProducts(t *testing.T) {
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListProductsParams{
-		Name:          "みかん",
-		CoordinatorID: "coordinator-id",
-		ProducerID:    "",
-		ProducerIDs:   []string{"producer-id"},
-		EndAtGte:      jst.Date(2022, 6, 28, 18, 30, 0, 0),
-		Limit:         30,
-		Offset:        0,
+		Name:        "みかん",
+		ProducerID:  "",
+		ProducerIDs: []string{"producer-id"},
+		EndAtGte:    jst.Date(2022, 6, 28, 18, 30, 0, 0),
+		Limit:       30,
+		Offset:      0,
 		Orders: []*database.ListProductsOrder{
 			{Key: database.ListProductsOrderByName, OrderByASC: true},
 		},
@@ -90,7 +89,6 @@ func TestListProducts(t *testing.T) {
 			},
 			input: &store.ListProductsInput{
 				Name:             "みかん",
-				CoordinatorID:    "coordinator-id",
 				ProducerID:       "",
 				ProducerIDs:      []string{"producer-id"},
 				ExcludeOutOfSale: true,
@@ -120,7 +118,6 @@ func TestListProducts(t *testing.T) {
 			},
 			input: &store.ListProductsInput{
 				Name:             "みかん",
-				CoordinatorID:    "coordinator-id",
 				ProducerID:       "",
 				ProducerIDs:      []string{"producer-id"},
 				ExcludeOutOfSale: true,
@@ -142,7 +139,6 @@ func TestListProducts(t *testing.T) {
 			},
 			input: &store.ListProductsInput{
 				Name:             "みかん",
-				CoordinatorID:    "coordinator-id",
 				ProducerID:       "",
 				ProducerIDs:      []string{"producer-id"},
 				ExcludeOutOfSale: true,

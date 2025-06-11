@@ -152,11 +152,11 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListExperiencesByGeolocationParams{
-					CoordinatorID: "coordinator-id",
-					ProducerID:    "producer-id",
-					Latitude:      35.276833,
-					Longitude:     136.251739,
-					Radius:        1000,
+					ShopID:     "shop-id",
+					ProducerID: "producer-id",
+					Latitude:   35.276833,
+					Longitude:  136.251739,
+					Radius:     1000,
 				},
 			},
 			want: want{

@@ -95,7 +95,6 @@ type ListExperiencesParams struct {
 	Name           string
 	HostPrefecture int32
 	ShopID         string
-	CoordinatorID  string // Deprecated
 	ProducerID     string
 	OnlyPublished  bool
 	ExcludeDeleted bool
@@ -106,7 +105,6 @@ type ListExperiencesParams struct {
 
 type ListExperiencesByGeolocationParams struct {
 	ShopID         string
-	CoordinatorID  string // Deprecated
 	ProducerID     string
 	Longitude      float64
 	Latitude       float64
@@ -244,13 +242,12 @@ type Order interface {
 }
 
 type ListOrdersParams struct {
-	ShopID        string
-	CoordinatorID string // Deprecated
-	UserID        string
-	Types         []entity.OrderType
-	Statuses      []entity.OrderStatus
-	Limit         int
-	Offset        int
+	ShopID   string
+	UserID   string
+	Types    []entity.OrderType
+	Statuses []entity.OrderStatus
+	Limit    int
+	Offset   int
 }
 
 type UpdateOrderAuthorizedParams struct {
@@ -294,38 +291,33 @@ type CompleteOrderParams struct {
 }
 
 type AggregateOrdersParams struct {
-	ShopID        string
-	CoordinatorID string // Deprecated
-	CreatedAtGte  time.Time
-	CreatedAtLt   time.Time
+	ShopID       string
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
 }
 
 type AggregateOrdersByUserParams struct {
-	ShopID        string
-	CoordinatorID string // Deprecated
-	UserIDs       []string
+	ShopID  string
+	UserIDs []string
 }
 
 type AggregateOrdersByPaymentMethodTypeParams struct {
 	ShopID             string
-	CoordinatorID      string // Deprecated
 	PaymentMethodTypes []entity.PaymentMethodType
 	CreatedAtGte       time.Time
 	CreatedAtLt        time.Time
 }
 
 type AggregateOrdersByPromotionParams struct {
-	ShopID        string
-	CoordinatorID string // Deprecated
-	PromotionIDs  []string
+	ShopID       string
+	PromotionIDs []string
 }
 
 type AggregateOrdersByPeriodParams struct {
-	ShopID        string
-	CoordinatorID string // Deprecated
-	PeriodType    entity.AggregateOrderPeriodType
-	CreatedAtGte  time.Time
-	CreatedAtLt   time.Time
+	ShopID       string
+	PeriodType   entity.AggregateOrderPeriodType
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
 }
 
 type PaymentSystem interface {
@@ -363,7 +355,6 @@ const (
 type ListProductsParams struct {
 	Name           string
 	ShopID         string
-	CoordinatorID  string
 	ProducerID     string
 	ProducerIDs    []string
 	ProductTypeIDs []string
@@ -561,7 +552,6 @@ type Schedule interface {
 
 type ListSchedulesParams struct {
 	ShopID        string
-	CoordinatorID string // Deprecated
 	ProducerID    string
 	StartAtGte    time.Time
 	StartAtLt     time.Time
@@ -590,7 +580,6 @@ type ApproveScheduleParams struct {
 type Shipping interface {
 	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
 	ListByShopIDs(ctx context.Context, shopIDs []string, fields ...string) (entity.Shippings, error)
-	ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error) // Deprecated
 	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
 	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
 	Get(ctx context.Context, shippingID string, fields ...string) (*entity.Shipping, error)
@@ -604,12 +593,11 @@ type Shipping interface {
 }
 
 type ListShippingsParams struct {
-	ShopID         string
-	ShopIDs        []string
-	CoordinatorIDs []string // Deprecated
-	OnlyInUse      bool
-	Limit          int
-	Offset         int
+	ShopID    string
+	ShopIDs   []string
+	OnlyInUse bool
+	Limit     int
+	Offset    int
 }
 
 type UpdateShippingParams struct {

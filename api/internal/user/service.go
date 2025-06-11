@@ -56,7 +56,6 @@ type Service interface {
 	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error                                       // 更新
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error                             // メールアドレス更新
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error                         // パスワードリセット
-	RemoveCoordinatorProductType(ctx context.Context, in *RemoveCoordinatorProductTypeInput) error                 // 品目削除によるデータ変更
 	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error) // 担当生産者数の取得
 	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error                                       // 退会
 	// Guest - ゲスト

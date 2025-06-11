@@ -25,7 +25,6 @@ func TestListExperiences(t *testing.T) {
 	params := &database.ListExperiencesParams{
 		Name:           "収穫",
 		ShopID:         "shop-id",
-		CoordinatorID:  "coordinator-id",
 		ProducerID:     "producer-id",
 		OnlyPublished:  true,
 		ExcludeDeleted: true,
@@ -102,7 +101,6 @@ func TestListExperiences(t *testing.T) {
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
 				ExcludeFinished: true,
@@ -132,7 +130,6 @@ func TestListExperiences(t *testing.T) {
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
 				ExcludeFinished: true,
@@ -153,7 +150,6 @@ func TestListExperiences(t *testing.T) {
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				OnlyPublished:   true,
 				ExcludeFinished: true,
@@ -183,7 +179,6 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListExperiencesByGeolocationParams{
 		ShopID:         "shop-id",
-		CoordinatorID:  "coordinator-id",
 		ProducerID:     "producer-id",
 		Longitude:      136.251739,
 		Latitude:       35.276833,
@@ -259,7 +254,6 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 			},
 			input: &store.ListExperiencesByGeolocationInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				Longitude:       136.251739,
 				Latitude:        35.276833,
@@ -291,7 +285,6 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 			},
 			input: &store.ListExperiencesByGeolocationInput{
 				ShopID:          "shop-id",
-				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				Longitude:       136.251739,
 				Latitude:        35.276833,
