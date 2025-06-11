@@ -21,13 +21,6 @@ get:
     required: false
     example: 0
   - in: query
-    name: coordinatorId
-    schema:
-      type: string
-    description: コーディネータID
-    required: false
-    example: 'kSByoE6FetnPs5Byk3a9Zx'
-  - in: query
     name: producerId
     schema:
       type: string

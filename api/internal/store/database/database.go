@@ -95,7 +95,6 @@ type ListExperiencesParams struct {
 	Name           string
 	HostPrefecture int32
 	ShopID         string
-	CoordinatorID  string // Deprecated
 	ProducerID     string
 	OnlyPublished  bool
 	ExcludeDeleted bool
@@ -106,7 +105,6 @@ type ListExperiencesParams struct {
 
 type ListExperiencesByGeolocationParams struct {
 	ShopID         string
-	CoordinatorID  string // Deprecated
 	ProducerID     string
 	Longitude      float64
 	Latitude       float64
@@ -357,7 +355,6 @@ const (
 type ListProductsParams struct {
 	Name           string
 	ShopID         string
-	CoordinatorID  string
 	ProducerID     string
 	ProducerIDs    []string
 	ProductTypeIDs []string
@@ -555,7 +552,6 @@ type Schedule interface {
 
 type ListSchedulesParams struct {
 	ShopID        string
-	CoordinatorID string // Deprecated
 	ProducerID    string
 	StartAtGte    time.Time
 	StartAtLt     time.Time

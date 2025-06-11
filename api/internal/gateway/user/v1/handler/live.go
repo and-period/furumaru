@@ -11,16 +11,16 @@ import (
 const liveEndDuration = time.Hour // 終了予定時間を過ぎたあとも配信しているケースを救うため
 
 type listLiveSummariesParams struct {
-	coordinatorID string
-	producerID    string
-	limit         int64
-	offset        int64
-	noLimit       bool
+	shopID     string
+	producerID string
+	limit      int64
+	offset     int64
+	noLimit    bool
 }
 
 func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummariesParams) (service.LiveSummaries, int64, error) {
 	in := &store.ListSchedulesInput{
-		CoordinatorID: params.coordinatorID,
+		ShopID:        params.shopID,
 		ProducerID:    params.producerID,
 		EndAtGte:      h.now().Add(-liveEndDuration),
 		OnlyPublished: true,
@@ -53,16 +53,16 @@ func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummari
 }
 
 type listArchiveSummariesParams struct {
-	coordinatorID string
-	producerID    string
-	limit         int64
-	offset        int64
-	noLimit       bool
+	shopID     string
+	producerID string
+	limit      int64
+	offset     int64
+	noLimit    bool
 }
 
 func (h *handler) listArchiveSummaries(ctx context.Context, params *listArchiveSummariesParams) (service.ArchiveSummaries, int64, error) {
 	in := &store.ListSchedulesInput{
-		CoordinatorID: params.coordinatorID,
+		ShopID:        params.shopID,
 		ProducerID:    params.producerID,
 		EndAtLt:       h.now().Add(-liveEndDuration),
 		OnlyPublished: true,

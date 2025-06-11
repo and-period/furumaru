@@ -369,7 +369,6 @@ func TestCreateCoordinator(t *testing.T) {
 					},
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
-					ProductTypeIDs: []string{"product-type-id"},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					HeaderURL:      "https://and-period.jp/header.png",
 					InstagramID:    "instgram-id",

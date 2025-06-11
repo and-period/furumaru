@@ -121,6 +121,7 @@ func TestCoordinators(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id01",
 				},
 				{
 					Coordinator: response.Coordinator{
@@ -138,6 +139,7 @@ func TestCoordinators(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id02",
 				},
 			},
 			response: []*response.Coordinator{
@@ -210,6 +212,7 @@ func TestCoordinators_Map(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id01",
 				},
 				{
 					Coordinator: response.Coordinator{
@@ -227,6 +230,7 @@ func TestCoordinators_Map(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id02",
 				},
 			},
 			expect: map[string]*Coordinator{
@@ -246,6 +250,7 @@ func TestCoordinators_Map(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id01",
 				},
 				"coordinator-id02": {
 					Coordinator: response.Coordinator{
@@ -263,6 +268,7 @@ func TestCoordinators_Map(t *testing.T) {
 						Prefecture:        "東京都",
 						City:              "千代田区",
 					},
+					ShopID: "shop-id02",
 				},
 			},
 		},

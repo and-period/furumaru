@@ -200,7 +200,6 @@ type ListExperiencesInput struct {
 	Name            string `validate:"max=64"`
 	PrefectureCode  int32  `validate:"min=0,max=47"`
 	ShopID          string `validate:""`
-	CoordinatorID   string `validate:""` // Deprecated
 	ProducerID      string `validate:""`
 	OnlyPublished   bool   `validate:""`
 	ExcludeFinished bool   `validate:""`
@@ -212,7 +211,6 @@ type ListExperiencesInput struct {
 
 type ListExperiencesByGeolocationInput struct {
 	ShopID          string  `validate:""`
-	CoordinatorID   string  `validate:""` // Deprecated
 	ProducerID      string  `validate:""`
 	Latitude        float64 `validate:"min=-90,max=90"`
 	Longitude       float64 `validate:"min=-180,max=180"`
@@ -570,7 +568,6 @@ const (
 type ListProductsInput struct {
 	Name             string               `validate:"max=128"`
 	ShopID           string               `validate:""`
-	CoordinatorID    string               `validate:""` // Deprecated
 	ProducerID       string               `validate:""`
 	ProducerIDs      []string             `validate:"dive,required"`
 	OnlyPublished    bool                 `validate:""`
@@ -900,7 +897,6 @@ type DeletePromotionInput struct {
 
 type ListSchedulesInput struct {
 	ShopID        string    `validate:""`
-	CoordinatorID string    `validate:""` // Deprecated
 	ProducerID    string    `validate:""`
 	StartAtGte    time.Time `validate:""`
 	StartAtLt     time.Time `validate:""`

@@ -107,6 +107,32 @@ func TestShops_IDs(t *testing.T) {
 	}
 }
 
+func TestShops_ProductTypeIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		shops  Shops
+		expect []string
+	}{
+		{
+			name: "success",
+			shops: Shops{
+				{ID: "1", ProductTypeIDs: []string{"1", "2"}},
+				{ID: "2", ProductTypeIDs: []string{"2", "3"}},
+				{ID: "3", ProductTypeIDs: []string{"3", "4"}},
+			},
+			expect: []string{"1", "2", "3", "4"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.shops.ProductTypeIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestShops_MapByCoordinatorID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

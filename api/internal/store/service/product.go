@@ -26,7 +26,6 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	params := &database.ListProductsParams{
 		Name:           in.Name,
 		ShopID:         in.ShopID,
-		CoordinatorID:  in.CoordinatorID,
 		ProducerID:     in.ProducerID,
 		ProducerIDs:    in.ProducerIDs,
 		OnlyPublished:  in.OnlyPublished,

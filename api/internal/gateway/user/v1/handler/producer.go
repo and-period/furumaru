@@ -91,8 +91,8 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		params := &listArchiveSummariesParams{
-			coordinatorID: producer.ID,
-			noLimit:       true,
+			producerID: producer.ID,
+			noLimit:    true,
 		}
 		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return

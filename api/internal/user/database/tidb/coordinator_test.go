@@ -35,14 +35,12 @@ func TestCoordinator_List(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now().Add(time.Hour))
 	err = db.DB.Debug().Create(&admins).Error
 	require.NoError(t, err)
-	internal := make(internalCoordinators, 2)
-	internal[0] = testCoordinator("admin-id01", now())
-	internal[0].Admin = *admins[0]
-	internal[1] = testCoordinator("admin-id02", now())
-	internal[1].Admin = *admins[1]
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	coordinators, err := internal.entities()
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Table(coordinatorTable).Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -105,12 +103,12 @@ func TestCoordinator_Count(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	require.NoError(t, err)
-	internal := make(internalCoordinators, 2)
-	internal[0] = testCoordinator("admin-id01", now())
-	internal[0].Admin = *admins[0]
-	internal[1] = testCoordinator("admin-id02", now())
-	internal[1].Admin = *admins[1]
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Table(coordinatorTable).Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -173,14 +171,12 @@ func TestCoordinator_MultiGet(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	require.NoError(t, err)
-	internal := make(internalCoordinators, 2)
-	internal[0] = testCoordinator("admin-id01", now())
-	internal[0].Admin = *admins[0]
-	internal[1] = testCoordinator("admin-id02", now())
-	internal[1].Admin = *admins[1]
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	coordinators, err := internal.entities()
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Table(coordinatorTable).Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -241,14 +237,12 @@ func TestCoordinator_MultiGetWithDeleted(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	require.NoError(t, err)
-	internal := make(internalCoordinators, 2)
-	internal[0] = testCoordinator("admin-id01", now())
-	internal[0].Admin = *admins[0]
-	internal[1] = testCoordinator("admin-id02", now())
-	internal[1].Admin = *admins[1]
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	coordinators, err := internal.entities()
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Table(coordinatorTable).Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -305,11 +299,9 @@ func TestCoordinator_Get(t *testing.T) {
 	admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
-	internal := testCoordinator("admin-id", now())
-	internal.Admin = *admin
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	c, err := internal.entity()
+	c := testCoordinator("admin-id", now())
+	c.Admin = *admin
+	err = db.DB.Table(coordinatorTable).Create(&c).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -381,14 +373,12 @@ func TestCoordinator_GetWithDeleted(t *testing.T) {
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
 	require.NoError(t, err)
-	internal := make(internalCoordinators, 2)
-	internal[0] = testCoordinator("admin-id01", now())
-	internal[0].Admin = *admins[0]
-	internal[1] = testCoordinator("admin-id02", now())
-	internal[1].Admin = *admins[1]
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	coordinators, err := internal.entities()
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Table(coordinatorTable).Create(&coordinators).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -464,14 +454,12 @@ func TestCoordinator_Create(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	admin := *testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+	admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 	err = db.DB.Create(&admin).Error
 	require.NoError(t, err)
-	internal := testCoordinator("admin-id", now())
-	internal.Admin = admin
-	err = db.DB.Table(coordinatorTable).Create(&internal).Error
-	require.NoError(t, err)
-	c, err := internal.entity()
+	c := testCoordinator("admin-id", now())
+	c.Admin = *admin
+	err = db.DB.Table(coordinatorTable).Create(&c).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -756,13 +744,12 @@ func TestCoordinator_RemoveProductTypeID(t *testing.T) {
 	}
 }
 
-func testCoordinator(id string, now time.Time) *internalCoordinator {
-	coordinator := &entity.Coordinator{
+func testCoordinator(id string, now time.Time) *entity.Coordinator {
+	return &entity.Coordinator{
 		AdminID:           id,
 		PhoneNumber:       "+819012345678",
 		Username:          "&.農園",
 		Profile:           "紹介文です。",
-		ProductTypeIDs:    []string{"product-type-id"},
 		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 		HeaderURL:         "https://and-period.jp/header.png",
 		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -778,6 +765,4 @@ func testCoordinator(id string, now time.Time) *internalCoordinator {
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
-	internal, _ := newInternalCoordinator(coordinator)
-	return internal
 }

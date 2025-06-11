@@ -8,6 +8,7 @@ import (
 
 type Coordinator struct {
 	response.Coordinator
+	ShopID string
 }
 
 type Coordinators []*Coordinator
@@ -29,6 +30,7 @@ func NewCoordinator(coordinator *uentity.Coordinator, shop *sentity.Shop) *Coord
 			ProductTypeIDs:    shop.ProductTypeIDs,
 			BusinessDays:      shop.BusinessDays,
 		},
+		ShopID: shop.ID,
 	}
 }
 

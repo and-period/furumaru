@@ -39,12 +39,21 @@ func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	var shopID string
+	if coordinatorID := util.GetQuery(ctx, "coordinator", ""); coordinatorID != "" {
+		coordinator, err := h.getCoordinator(ctx, coordinatorID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		shopID = coordinator.ShopID
+	}
 
 	params := &listLiveSummariesParams{
-		coordinatorID: util.GetQuery(ctx, "coordinator", ""),
-		producerID:    util.GetQuery(ctx, "producer", ""),
-		limit:         limit,
-		offset:        offset,
+		shopID:     shopID,
+		producerID: util.GetQuery(ctx, "producer", ""),
+		limit:      limit,
+		offset:     offset,
 	}
 	lives, total, err := h.listLiveSummaries(ctx, params)
 	if err != nil {
@@ -81,12 +90,21 @@ func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	var shopID string
+	if coordinatorID := util.GetQuery(ctx, "coordinator", ""); coordinatorID != "" {
+		coordinator, err := h.getCoordinator(ctx, coordinatorID)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		shopID = coordinator.ShopID
+	}
 
 	params := &listArchiveSummariesParams{
-		coordinatorID: util.GetQuery(ctx, "coordinator", ""),
-		producerID:    util.GetQuery(ctx, "producer", ""),
-		limit:         limit,
-		offset:        offset,
+		shopID:     shopID,
+		producerID: util.GetQuery(ctx, "producer", ""),
+		limit:      limit,
+		offset:     offset,
 	}
 	archives, total, err := h.listArchiveSummaries(ctx, params)
 	if err != nil {

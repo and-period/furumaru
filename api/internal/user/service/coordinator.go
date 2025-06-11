@@ -115,7 +115,6 @@ func (s *service) CreateCoordinator(
 		Admin:             entity.NewAdmin(adminParams),
 		Username:          in.Username,
 		Profile:           in.Profile,
-		ProductTypeIDs:    in.ProductTypeIDs,
 		ThumbnailURL:      in.ThumbnailURL,
 		HeaderURL:         in.HeaderURL,
 		PromotionVideoURL: in.PromotionVideoURL,

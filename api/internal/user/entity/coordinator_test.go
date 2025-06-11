@@ -31,7 +31,6 @@ func TestCoordinator(t *testing.T) {
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
-				ProductTypeIDs:    []string{"product-type-id"},
 				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 				HeaderURL:         "https://and-period.jp/header.png",
 				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -49,7 +48,6 @@ func TestCoordinator(t *testing.T) {
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
-				ProductTypeIDs:    []string{"product-type-id"},
 				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 				HeaderURL:         "https://and-period.jp/header.png",
 				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -88,7 +86,6 @@ func TestCoordinator(t *testing.T) {
 				PhoneNumber:       "+819012345678",
 				Username:          "&.農園",
 				Profile:           "紹介文です。",
-				ProductTypeIDs:    []string{"product-type-id"},
 				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 				HeaderURL:         "https://and-period.jp/header.png",
 				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -144,43 +141,6 @@ func TestCoordinators_IDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.coordinators.IDs())
-		})
-	}
-}
-
-func TestCoordinators_ProductTypeIDs(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name         string
-		coordinators Coordinators
-		expect       []string
-	}{
-		{
-			name: "success",
-			coordinators: Coordinators{
-				{
-					AdminID:        "coordinator-id01",
-					ProductTypeIDs: []string{"product-type-id01"},
-				},
-				{
-					AdminID:        "coordinator-id02",
-					ProductTypeIDs: []string{},
-				},
-				{
-					AdminID:        "coordinator-id03",
-					ProductTypeIDs: []string{"product-type-id01", "product-type-id02"},
-				},
-			},
-			expect: []string{
-				"product-type-id01",
-				"product-type-id02",
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.ElementsMatch(t, tt.expect, tt.coordinators.ProductTypeIDs())
 		})
 	}
 }
