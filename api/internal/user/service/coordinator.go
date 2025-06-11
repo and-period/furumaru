@@ -253,14 +253,6 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 	return nil
 }
 
-func (s *service) RemoveCoordinatorProductType(ctx context.Context, in *user.RemoveCoordinatorProductTypeInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Coordinator.RemoveProductTypeID(ctx, in.ProductTypeID)
-	return internalError(err)
-}
-
 func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordinatorInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

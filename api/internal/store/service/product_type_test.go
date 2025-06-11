@@ -8,7 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -361,9 +360,6 @@ func TestDeleteProductType(t *testing.T) {
 	params := &database.ListProductsParams{
 		ProductTypeIDs: []string{"product-type-id"},
 	}
-	in := &user.RemoveCoordinatorProductTypeInput{
-		ProductTypeID: "product-type-id",
-	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -376,7 +372,6 @@ func TestDeleteProductType(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
 				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(nil)
 				mocks.db.ProductType.EXPECT().Delete(ctx, "product-type-id").Return(nil)
-				mocks.user.EXPECT().RemoveCoordinatorProductType(gomock.Any(), in).Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{
 				ProductTypeID: "product-type-id",

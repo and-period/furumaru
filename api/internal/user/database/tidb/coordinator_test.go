@@ -687,63 +687,6 @@ func TestCoordinator_Delete(t *testing.T) {
 	}
 }
 
-func TestCoordinator_RemoveProductTypeID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-	err := deleteAll(t.Context())
-	require.NoError(t, err)
-
-	type args struct {
-		productTypeID string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				coordinator := testCoordinator("admin-id", now())
-				err = db.DB.Table(coordinatorTable).Create(&coordinator).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productTypeID: "product-type-id",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ctx := t.Context()
-			err := delete(ctx, coordinatorTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &coordinator{db: db, now: now}
-			err = db.RemoveProductTypeID(ctx, tt.args.productTypeID)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func testCoordinator(id string, now time.Time) *entity.Coordinator {
 	return &entity.Coordinator{
 		AdminID:           id,

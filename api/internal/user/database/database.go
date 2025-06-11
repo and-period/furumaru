@@ -202,7 +202,6 @@ type Coordinator interface {
 	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
-	RemoveProductTypeID(ctx context.Context, productTypeID string) error
 }
 
 type ListCoordinatorsParams struct {

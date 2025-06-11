@@ -9,8 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -132,16 +130,5 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 	if err := s.db.ProductType.Delete(ctx, in.ProductTypeID); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(1)
-	go func(productTypeID string) {
-		defer s.waitGroup.Done()
-		in := &user.RemoveCoordinatorProductTypeInput{
-			ProductTypeID: productTypeID,
-		}
-		if err := s.user.RemoveCoordinatorProductType(context.Background(), in); err != nil {
-			s.logger.Error("Failed to remove product type in coordinators",
-				zap.String("productTypeId", productTypeID), zap.Error(err))
-		}
-	}(in.ProductTypeID)
 	return nil
 }
