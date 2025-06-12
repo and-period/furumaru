@@ -1139,6 +1139,15 @@ var AdminPolicies = entity.AdminPolicies{
 		Method:      "POST",
 		Action:      entity.AdminPolicyActionAllow,
 	},
+	{
+		ID:          "top_get",
+		Name:        "トップ 取得",
+		Description: "トップの取得権限です。",
+		Priority:    127,
+		Path:        "/v1/top/*",
+		Method:      "GET",
+		Action:      entity.AdminPolicyActionAllow,
+	},
 }
 
 type AdminRole struct {
@@ -1160,6 +1169,7 @@ var AdminRoles = []AdminRole{
 			"message_get",
 			"postal_code_search",
 			"upload_get",
+			"top_get",
 		},
 	},
 	{

@@ -329,6 +329,7 @@ func (h *handler) authentication(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
+
 	if err := h.setShop(ctx, auth); err != nil {
 		h.httpError(ctx, err)
 		return

@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) topRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/top")
+	r := rg.Group("/top", h.authentication)
 
 	r.GET("/orders", h.TopOrders)
 }
