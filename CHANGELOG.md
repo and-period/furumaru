@@ -1,5 +1,22 @@
 # Changelog
 
+## [v5.0.3](https://github.com/and-period/furumaru/compare/v5.0.2...v5.0.3) - 2025-06-12
+- build(deps): bump the dependencies group in /api with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2833
+- build(deps): bump reproducible-containers/buildkit-cache-dance from 3.1.2 to 3.2.0 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2797
+- feat(workflow): github actionsのバージョン指定をハッシュに by @taba2424 in https://github.com/and-period/furumaru/pull/2842
+- refactor(store): 店舗IDベースでレコードを引っ張ってこれるように by @taba2424 in https://github.com/and-period/furumaru/pull/2840
+- fix(docs): 配送関連のAPI仕様書を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2844
+- refactor(api): Linterの対応 by @taba2424 in https://github.com/and-period/furumaru/pull/2843
+- fix(user): コーディネータの不要なフィールドを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2845
+- refactor(store): 店舗IDベースで情報取得できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2846
+- fix(workflow): データベースの初期値投入処理の実行時間改善 by @taba2424 in https://github.com/and-period/furumaru/pull/2847
+- Fix/product coordinator by @hamachans in https://github.com/and-period/furumaru/pull/2848
+- refactor(admin): コーディネータベースでの取得から店舗ベースへの取得に by @taba2424 in https://github.com/and-period/furumaru/pull/2849
+- build(deps): bump the dependencies group in /api with 45 updates by @dependabot in https://github.com/and-period/furumaru/pull/2851
+- build(deps): bump the dependencies group across 1 directory with 277 updates by @dependabot in https://github.com/and-period/furumaru/pull/2852
+- refactor(store): 不要なメソッドの削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2850
+- fix(gateway): トップ取得APIのパーミッション修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2853
+
 ## [v5.0.2](https://github.com/and-period/furumaru/compare/v5.0.1...v5.0.2) - 2025-06-04
 - Fix/user/web/promotion code by @wf-yamaday in https://github.com/and-period/furumaru/pull/2838
 
