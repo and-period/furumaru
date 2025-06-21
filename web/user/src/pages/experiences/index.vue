@@ -292,6 +292,7 @@ useSeoMeta({
         :zoom="12"
         :map-type-control-options="mapTypeControlOptions"
         :clickable-icons="false"
+        :gesture-handling="'greedy'"
         @dragstart="onMapDragStart"
         @idle="onMapIdle"
         @zoom_changed="onMapZoomChanged"
