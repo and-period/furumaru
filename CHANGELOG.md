@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.0.4](https://github.com/and-period/furumaru/compare/v5.0.3...v5.0.4) - 2025-06-21
+- fix: 現在地に戻る不具合の修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2857
+- feat(map): マップのジェスチャー処理を「greedy」に設定 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2859
+
 ## [v5.0.3](https://github.com/and-period/furumaru/compare/v5.0.2...v5.0.3) - 2025-06-12
 - build(deps): bump the dependencies group in /api with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2833
 - build(deps): bump reproducible-containers/buildkit-cache-dance from 3.1.2 to 3.2.0 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2797
