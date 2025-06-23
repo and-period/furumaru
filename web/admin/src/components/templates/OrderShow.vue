@@ -23,7 +23,6 @@ import {
   type OrderFulfillment,
   type Product,
   type ProductMediaInner,
-  type Promotion,
   type RefundOrderRequest,
   type User,
   OrderType,
@@ -120,10 +119,6 @@ const props = defineProps({
   },
   products: {
     type: Array<Product>,
-    default: () => [],
-  },
-  promotions: {
-    type: Array<Promotion>,
     default: () => [],
   },
   completeFormData: {

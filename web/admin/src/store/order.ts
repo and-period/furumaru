@@ -1,14 +1,15 @@
+import { defineStore } from 'pinia'
 import { useCoordinatorStore } from './coordinator'
 import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
 import { useProductStore } from './product'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CompleteOrderRequest,
   DraftOrderRequest,
   ExportOrdersRequest,
   Order,
+  OrderResponse,
   RefundOrderRequest,
   UpdateOrderFulfillmentRequest,
 } from '~/types/api'
@@ -50,19 +51,10 @@ export const useOrderStore = defineStore('order', {
      * @param orderId 注文ID
      * @returns 注文情報
      */
-    async getOrder(orderId: string): Promise<void> {
+    async getOrder(orderId: string): Promise<OrderResponse> {
       try {
         const res = await apiClient.orderApi().v1GetOrder(orderId)
-
-        const coordinatorStore = useCoordinatorStore()
-        const customerStore = useCustomerStore()
-        const promotionStore = usePromotionStore()
-        const productStore = useProductStore()
-        this.order = res.data.order
-        coordinatorStore.coordinator = res.data.coordinator
-        customerStore.customer = res.data.user
-        promotionStore.promotions.push(res.data.promotion)
-        productStore.products = res.data.products
+        return res.data
       }
       catch (err) {
         return this.errorHandler(err, {

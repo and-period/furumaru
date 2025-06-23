@@ -8,19 +8,13 @@ import type { FulfillmentInput } from '~/types/props'
 
 const route = useRoute()
 const orderStore = useOrderStore()
-const coordinatorStore = useCoordinatorStore()
 const customerStore = useCustomerStore()
-const promotionStore = usePromotionStore()
-const productStore = useProductStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const orderId = route.params.id as string
 
-const { order } = storeToRefs(orderStore)
-const { coordinator } = storeToRefs(coordinatorStore)
+// Pinia storeからの参照を取得
 const { customer } = storeToRefs(customerStore)
-const { promotions } = storeToRefs(promotionStore)
-const { products } = storeToRefs(productStore)
 
 const loading = ref<boolean>(false)
 const cancelDialog = ref<boolean>(false)
@@ -33,44 +27,65 @@ const refundFormData = ref<RefundOrderRequest>({
 })
 const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 
-const fetchState = useAsyncData('orders', async (): Promise<boolean> => {
-  await fetchOrder()
-  return true
+// 注文データの初期取得用の非同期処理
+// 問題点: API呼び出しに失敗した場合もtrueを返しているため、UIが正常に描画されてしまう
+const { data, refresh, status, error } = useAsyncData(`order-${orderId}`, () => {
+  // fetchOrder関数を呼び出して注文情報を取得
+  return orderStore.getOrder(orderId)
 })
 
-const fetchOrder = async (): Promise<void> => {
-  try {
-    await orderStore.getOrder(orderId)
-    const inputs = order.value.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
+watch(data, (newData) => {
+  // 注文情報が更新されたら、フォームデータを初期化
+  if (newData) {
+    completeFormData.value = {
+      shippingMessage: newData.order.shippingMessage,
+    }
+    refundFormData.value = {
+      description: newData.order.refund.reason || '',
+    }
+    fulfillmentsFormData.value = newData.order.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
       fulfillmentId: fulfillment.fulfillmentId,
       shippingCarrier: fulfillment.shippingCarrier,
       trackingNumber: fulfillment.trackingNumber,
     }))
-    completeFormData.value = {
-      shippingMessage: order.value.shippingMessage,
-    }
-    refundFormData.value = {
-      description: order.value.refund?.reason || '',
-    }
-    fulfillmentsFormData.value = inputs
   }
-  catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
+})
+
+// 注文情報を取得
+const order = computed(() => {
+  return data.value?.order || null
+})
+
+// コーディネーター情報を取得
+const coordinator = computed(() => {
+  return data.value?.coordinator
+})
+
+// 商品情報を取得
+const products = computed(() => {
+  return data.value?.products || []
+})
+
+watch(error, (err) => {
+  // エラーが発生した場合、アラートを表示
+  if (err) {
+    show(err.message)
+    console.error(err)
   }
-}
+})
 
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || loading.value
-}
+// ローディング状態を返す関数
+const isLoading = computed<boolean>(() => {
+  // statusが'pending'の場合はローディング中と判断
+  return status.value === 'pending' || loading.value
+})
 
+// 売上確定処理のハンドラー
 const handleSubmitCapture = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.captureOrder(orderId)
-    fetchState.refresh()
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -83,6 +98,7 @@ const handleSubmitCapture = async (): Promise<void> => {
   }
 }
 
+// 下書き保存処理のハンドラー
 const handleSubmitDraft = async (): Promise<void> => {
   try {
     loading.value = true
@@ -100,11 +116,12 @@ const handleSubmitDraft = async (): Promise<void> => {
   }
 }
 
+// 完了処理のハンドラー
 const handleSubmitComplete = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.completeOrder(orderId, completeFormData.value)
-    fetchState.refresh()
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -117,12 +134,13 @@ const handleSubmitComplete = async (): Promise<void> => {
   }
 }
 
+// キャンセル処理のハンドラー
 const handleSubmitCancel = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.cancelOrder(orderId)
     cancelDialog.value = false
-    fetchState.refresh()
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -135,12 +153,13 @@ const handleSubmitCancel = async (): Promise<void> => {
   }
 }
 
+// 返金処理のハンドラー
 const handleSubmitRefund = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.refundOrder(orderId, refundFormData.value)
     refundDialog.value = false
-    fetchState.refresh()
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -153,6 +172,7 @@ const handleSubmitRefund = async (): Promise<void> => {
   }
 }
 
+// 配送情報更新処理のハンドラー
 const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<void> => {
   const payload = fulfillmentsFormData.value.find((formData: FulfillmentInput): boolean => {
     return formData.fulfillmentId === fulfillmentId
@@ -165,7 +185,7 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     loading.value = true
     const req: UpdateOrderFulfillmentRequest = { ...payload }
     await orderStore.updateFulfillment(orderId, fulfillmentId, req)
-    fetchState.refresh()
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -177,30 +197,23 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     loading.value = false
   }
 }
-
-try {
-  await fetchState.execute()
-}
-catch (err) {
-  console.log('failed to setup', err)
-}
 </script>
 
 <template>
   <templates-order-show
+    v-if="order"
     v-model:complete-form-data="completeFormData"
     v-model:refund-form-data="refundFormData"
     v-model:fulfillments-form-data="fulfillmentsFormData"
     v-model:cancel-dialog="cancelDialog"
     v-model:refund-dialog="refundDialog"
-    :loading="isLoading()"
+    :loading="isLoading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :order="order"
     :coordinator="coordinator"
     :customer="customer"
-    :promotions="promotions"
     :products="products"
     @submit:capture="handleSubmitCapture"
     @submit:draft="handleSubmitDraft"

@@ -1,5 +1,5 @@
-import { useShopStore } from './shop'
 import { defineStore } from 'pinia'
+import { useShopStore } from './shop'
 
 import { apiClient } from '~/plugins/api-client'
 import type {
