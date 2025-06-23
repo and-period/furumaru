@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { useCoordinatorStore, useCustomerStore, useOrderStore, useProductStore, usePromotionStore } from '~/store'
+import { useCustomerStore, useOrderStore } from '~/store'
 import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
@@ -30,6 +30,7 @@ const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 // 注文データの初期取得用の非同期処理
 // 問題点: API呼び出しに失敗した場合もtrueを返しているため、UIが正常に描画されてしまう
 const { data, refresh, status, error } = useAsyncData(`order-${orderId}`, () => {
+  console.log('注文詳細を取得します。')
   // fetchOrder関数を呼び出して注文情報を取得
   return orderStore.getOrder(orderId)
 })
