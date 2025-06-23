@@ -200,26 +200,34 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
 </script>
 
 <template>
-  <templates-order-show
-    v-if="order"
-    v-model:complete-form-data="completeFormData"
-    v-model:refund-form-data="refundFormData"
-    v-model:fulfillments-form-data="fulfillmentsFormData"
-    v-model:cancel-dialog="cancelDialog"
-    v-model:refund-dialog="refundDialog"
-    :loading="isLoading"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :order="order"
-    :coordinator="coordinator"
-    :customer="customer"
-    :products="products"
-    @submit:capture="handleSubmitCapture"
-    @submit:draft="handleSubmitDraft"
-    @submit:complete="handleSubmitComplete"
-    @submit:update-fulfillment="handleSubmitUpdateFulfillment"
-    @submit:cancel="handleSubmitCancel"
-    @submit:refund="handleSubmitRefund"
-  />
+  <div>
+    <v-alert
+      v-show="isShow"
+      :type="alertType"
+      v-text="alertText"
+    />
+
+    <templates-order-show
+      v-if="order"
+      v-model:complete-form-data="completeFormData"
+      v-model:refund-form-data="refundFormData"
+      v-model:fulfillments-form-data="fulfillmentsFormData"
+      v-model:cancel-dialog="cancelDialog"
+      v-model:refund-dialog="refundDialog"
+      :loading="isLoading"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :order="order"
+      :coordinator="coordinator"
+      :customer="customer"
+      :products="products"
+      @submit:capture="handleSubmitCapture"
+      @submit:draft="handleSubmitDraft"
+      @submit:complete="handleSubmitComplete"
+      @submit:update-fulfillment="handleSubmitUpdateFulfillment"
+      @submit:cancel="handleSubmitCancel"
+      @submit:refund="handleSubmitRefund"
+    />
+  </div>
 </template>
