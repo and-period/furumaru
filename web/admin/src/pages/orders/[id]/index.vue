@@ -8,20 +8,13 @@ import type { FulfillmentInput } from '~/types/props'
 
 const route = useRoute()
 const orderStore = useOrderStore()
-const coordinatorStore = useCoordinatorStore()
 const customerStore = useCustomerStore()
-const promotionStore = usePromotionStore()
-const productStore = useProductStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const orderId = route.params.id as string
 
 // Pinia storeからの参照を取得
-const { order } = storeToRefs(orderStore)
-const { coordinator } = storeToRefs(coordinatorStore)
 const { customer } = storeToRefs(customerStore)
-const { promotions } = storeToRefs(promotionStore)
-const { products } = storeToRefs(productStore)
 
 const loading = ref<boolean>(false)
 const cancelDialog = ref<boolean>(false)
@@ -36,52 +29,63 @@ const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 
 // 注文データの初期取得用の非同期処理
 // 問題点: API呼び出しに失敗した場合もtrueを返しているため、UIが正常に描画されてしまう
-const fetchState = useAsyncData('orders', async (): Promise<boolean> => {
+const { data, refresh, status, error } = useAsyncData(`order-${orderId}`, () => {
   // fetchOrder関数を呼び出して注文情報を取得
-  await fetchOrder()
-  return true // 常にtrueを返している
+  return orderStore.getOrder(orderId)
 })
 
-// 注文情報を取得する関数
-const fetchOrder = async (): Promise<void> => {
-  try {
-    // orderStoreを通じて注文情報を取得
-    await orderStore.getOrder(orderId)
-    // 取得したデータをフォーム入力用に変換
-    const inputs = order.value.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
+watch(data, (newData) => {
+  // 注文情報が更新されたら、フォームデータを初期化
+  if (newData) {
+    completeFormData.value = {
+      shippingMessage: newData.order.shippingMessage,
+    }
+    refundFormData.value = {
+      description: newData.order.refund.reason || '',
+    }
+    fulfillmentsFormData.value = newData.order.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
       fulfillmentId: fulfillment.fulfillmentId,
       shippingCarrier: fulfillment.shippingCarrier,
       trackingNumber: fulfillment.trackingNumber,
     }))
-    completeFormData.value = {
-      shippingMessage: order.value.shippingMessage,
-    }
-    refundFormData.value = {
-      description: order.value.refund?.reason || '',
-    }
-    fulfillmentsFormData.value = inputs
   }
-  catch (err) {
-    // エラーハンドリング - ここでエラーをキャッチしているが、呼び出し元のfetchStateには伝播していない
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-    // 注: ここでエラーを再スローしていないため、fetchStateは常に成功として扱われる
+})
+
+// 注文情報を取得
+const order = computed(() => {
+  return data.value?.order || null
+})
+
+// コーディネーター情報を取得
+const coordinator = computed(() => {
+  return data.value?.coordinator
+})
+
+// 商品情報を取得
+const products = computed(() => {
+  return data.value?.products || []
+})
+
+watch(error, (err) => {
+  // エラーが発生した場合、アラートを表示
+  if (err) {
+    show(err.message)
+    console.error(err)
   }
-}
+})
 
 // ローディング状態を返す関数
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || loading.value
-}
+const isLoading = computed<boolean>(() => {
+  // statusが'pending'の場合はローディング中と判断
+  return status.value === 'pending' || loading.value
+})
 
 // 売上確定処理のハンドラー
 const handleSubmitCapture = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.captureOrder(orderId)
-    fetchState.refresh() // 処理成功後にデータを再取得
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -117,7 +121,7 @@ const handleSubmitComplete = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.completeOrder(orderId, completeFormData.value)
-    fetchState.refresh() // 処理成功後にデータを再取得
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -136,7 +140,7 @@ const handleSubmitCancel = async (): Promise<void> => {
     loading.value = true
     await orderStore.cancelOrder(orderId)
     cancelDialog.value = false
-    fetchState.refresh() // 処理成功後にデータを再取得
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -155,7 +159,7 @@ const handleSubmitRefund = async (): Promise<void> => {
     loading.value = true
     await orderStore.refundOrder(orderId, refundFormData.value)
     refundDialog.value = false
-    fetchState.refresh() // 処理成功後にデータを再取得
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -181,7 +185,7 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     loading.value = true
     const req: UpdateOrderFulfillmentRequest = { ...payload }
     await orderStore.updateFulfillment(orderId, fulfillmentId, req)
-    fetchState.refresh() // 処理成功後にデータを再取得
+    refresh() // 処理成功後にデータを再取得
   }
   catch (err) {
     if (err instanceof Error) {
@@ -193,33 +197,23 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     loading.value = false
   }
 }
-
-// コンポーネントマウント時に非同期データ取得を実行
-// 問題点: ここでのエラーはキャッチしているが、UI側に状態が反映されていない
-try {
-  await fetchState.execute()
-}
-catch (err) {
-  console.log('failed to setup', err)
-  // 注: このエラーがキャッチされてもUI側にエラー状態が反映されていない
-}
 </script>
 
 <template>
   <templates-order-show
+    v-if="order"
     v-model:complete-form-data="completeFormData"
     v-model:refund-form-data="refundFormData"
     v-model:fulfillments-form-data="fulfillmentsFormData"
     v-model:cancel-dialog="cancelDialog"
     v-model:refund-dialog="refundDialog"
-    :loading="isLoading()"
+    :loading="isLoading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :order="order"
     :coordinator="coordinator"
     :customer="customer"
-    :promotions="promotions"
     :products="products"
     @submit:capture="handleSubmitCapture"
     @submit:draft="handleSubmitDraft"
