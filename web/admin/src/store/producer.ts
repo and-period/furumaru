@@ -1,7 +1,7 @@
+import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { useShopStore } from './shop'
-import { defineStore } from 'pinia'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProducerRequest,
