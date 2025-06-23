@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.0.5](https://github.com/and-period/furumaru/compare/v5.0.4...v5.0.5) - 2025-06-23
+- 注文詳細取得のロジックの改修 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2860
+
 ## [v5.0.4](https://github.com/and-period/furumaru/compare/v5.0.3...v5.0.4) - 2025-06-21
 - fix: 現在地に戻る不具合の修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2857
 - feat(map): マップのジェスチャー処理を「greedy」に設定 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2859
