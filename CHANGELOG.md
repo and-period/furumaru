@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.0.6](https://github.com/and-period/furumaru/compare/v5.0.5...v5.0.6) - 2025-06-24
+- Fix/web/admin/order detail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2862
+
 ## [v5.0.5](https://github.com/and-period/furumaru/compare/v5.0.4...v5.0.5) - 2025-06-23
 - 注文詳細取得のロジックの改修 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2860
 
