@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { useCoordinatorStore, useCustomerStore, useOrderStore, useProductStore, usePromotionStore } from '~/store'
+import { useCustomerStore, useOrderStore } from '~/store'
 import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
@@ -30,6 +30,7 @@ const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 // 注文データの初期取得用の非同期処理
 // 問題点: API呼び出しに失敗した場合もtrueを返しているため、UIが正常に描画されてしまう
 const { data, refresh, status, error } = useAsyncData(`order-${orderId}`, () => {
+  console.log('注文詳細を取得します。')
   // fetchOrder関数を呼び出して注文情報を取得
   return orderStore.getOrder(orderId)
 })
@@ -200,26 +201,34 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
 </script>
 
 <template>
-  <templates-order-show
-    v-if="order"
-    v-model:complete-form-data="completeFormData"
-    v-model:refund-form-data="refundFormData"
-    v-model:fulfillments-form-data="fulfillmentsFormData"
-    v-model:cancel-dialog="cancelDialog"
-    v-model:refund-dialog="refundDialog"
-    :loading="isLoading"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :order="order"
-    :coordinator="coordinator"
-    :customer="customer"
-    :products="products"
-    @submit:capture="handleSubmitCapture"
-    @submit:draft="handleSubmitDraft"
-    @submit:complete="handleSubmitComplete"
-    @submit:update-fulfillment="handleSubmitUpdateFulfillment"
-    @submit:cancel="handleSubmitCancel"
-    @submit:refund="handleSubmitRefund"
-  />
+  <div>
+    <v-alert
+      v-show="isShow"
+      :type="alertType"
+      v-text="alertText"
+    />
+
+    <templates-order-show
+      v-if="order"
+      v-model:complete-form-data="completeFormData"
+      v-model:refund-form-data="refundFormData"
+      v-model:fulfillments-form-data="fulfillmentsFormData"
+      v-model:cancel-dialog="cancelDialog"
+      v-model:refund-dialog="refundDialog"
+      :loading="isLoading"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :order="order"
+      :coordinator="coordinator"
+      :customer="customer"
+      :products="products"
+      @submit:capture="handleSubmitCapture"
+      @submit:draft="handleSubmitDraft"
+      @submit:complete="handleSubmitComplete"
+      @submit:update-fulfillment="handleSubmitUpdateFulfillment"
+      @submit:cancel="handleSubmitCancel"
+      @submit:refund="handleSubmitRefund"
+    />
+  </div>
 </template>
