@@ -360,7 +360,7 @@ const getCompletedAt = (): string => {
 /**
  * 支払い情報
  */
-const getAllItems = (): OrderItem[] => {
+const getAllItems = computed(() => {
   const items: OrderItem[] = []
   if (!props.order) {
     return items
@@ -377,7 +377,7 @@ const getAllItems = (): OrderItem[] => {
     }
   })
   return items
-}
+})
 
 const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
@@ -820,7 +820,7 @@ const onSubmitRefund = (): void => {
                 <tbody class="text-grey">
                   <tr>
                     <td>小計</td>
-                    <td>{{ getAllItems().length }}つのアイテム</td>
+                    <td>{{ getAllItems.length }}つのアイテム</td>
                     <td>&yen; {{ order.payment.subtotal.toLocaleString() }}</td>
                   </tr>
                   <tr>
@@ -857,7 +857,7 @@ const onSubmitRefund = (): void => {
         <v-card-text>
           <v-data-table
             :headers="productHeaders"
-            :items="getAllItems()"
+            :items="getAllItems"
           >
             <template #[`item.media`]="{ item }">
               <v-img
