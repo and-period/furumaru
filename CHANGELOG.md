@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.0.7](https://github.com/and-period/furumaru/compare/v5.0.6...v5.0.7) - 2025-07-03
+- docs: Add Claude Code configuration and project documentation by @taba2424 in https://github.com/and-period/furumaru/pull/2868
+- build(deps): bump the dependencies group across 1 directory with 55 updates by @dependabot in https://github.com/and-period/furumaru/pull/2865
+- build(deps): bump the dependencies group across 1 directory with 5 updates by @dependabot in https://github.com/and-period/furumaru/pull/2866
+- build(deps): bump the dependencies group across 1 directory with 68 updates by @dependabot in https://github.com/and-period/furumaru/pull/2867
+- build(deps): bump the dependencies group in /api with 19 updates by @dependabot in https://github.com/and-period/furumaru/pull/2870
+
 ## [v5.0.6](https://github.com/and-period/furumaru/compare/v5.0.5...v5.0.6) - 2025-06-24
 - Fix/web/admin/order detail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2862
 
