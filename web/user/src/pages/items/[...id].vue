@@ -41,6 +41,17 @@ const dt = (str: keyof I18n['items']['details']) => {
   return i18n.t(`items.details.${str}`)
 }
 
+// 商品説明文をリンク化する関数
+function autoLink(text: string): string {
+  if (!text) return ''
+  return text.replace(
+    /(https?:\/\/[^\s]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline break-all">$1</a>'
+  )
+}
+
+const productDescriptionHtml = computed(() => autoLink(product.value?.description ?? ''))
+
 const itemThumbnailAlt = computed<string>(() => {
   return i18n.t('items.list.itemThumbnailAlt', {
     itemName: product.value.name,
@@ -436,7 +447,7 @@ useSeoMeta({
         <div class="col-span-2 mt-[40px] pb-10 md:mt-[80px] md:pb-16">
           <article
             class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px] whitespace-pre-wrap"
-            v-text="product.description"
+            v-html="productDescriptionHtml"
           />
         </div>
 
