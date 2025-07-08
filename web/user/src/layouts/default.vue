@@ -224,7 +224,7 @@ onUnmounted(() => {
         <slot />
         <div
           v-if="showBanner"
-          class="fixed bottom-10 size-10 md:left-8 left-4 bg-white border-line border-2 md:p-3 p-2 md:w-[170px] md:h-[170px] w-[120px] h-[120px] z-20"
+          class="fixed bottom-10 size-10 md:left-8 left-4 bg-white border-line border-2 md:p-3 p-2 md:w-[170px] md:h-[170px] w-[120px] h-[120px] z-20 rounded-xl flex flex-col"
         >
           <div class="text-right text-line w-full h-5">
             <button @click="handleClickCloseBanner">
@@ -245,14 +245,14 @@ onUnmounted(() => {
             </button>
           </div>
           <a
-            class="flex flex-col items-center justify-center md:gap-2 gap-1"
+            class="flex flex-col items-center md:gap-4 gap-2 grow justify-center"
             href="https://lin.ee/49SOeUC"
             target="_blank"
             rel="noopener noreferrer"
           >
             <the-line-icon />
             <p class="text-xs md:text-[16px] md:leading-[24px]">
-              LINEの友達追加でクーポンをプレゼント！
+              友達追加でお得な情報をGET！
             </p>
           </a>
         </div>
