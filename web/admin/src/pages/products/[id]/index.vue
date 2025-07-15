@@ -207,6 +207,19 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
+const handleClickBackButton = () => {
+  router.back()
+}
+
+const productEditRef = ref<any>(null)
+
+const handleClickUpdateButton = async () => {
+  // Call the onSubmit method of the ProductEdit component to trigger validation
+  if (productEditRef.value?.onSubmit) {
+    await productEditRef.value.onSubmit()
+  }
+}
+
 try {
   await fetchState.execute()
 }
@@ -216,23 +229,48 @@ catch (err) {
 </script>
 
 <template>
-  <templates-product-edit
-    v-model:form-data="formData"
-    v-model:selected-category-id="selectedCategoryId"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :product="product"
-    :producers="producers"
-    :categories="categories"
-    :product-types="productTypes"
-    :product-tags="productTags"
-    :admin-type="adminType"
-    @update:files="handleImageUpload"
-    @update:search-category="handleSearchCategory"
-    @update:search-product-type="handleSearchProductType"
-    @update:search-product-tag="handleSearchProductTag"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-product-edit
+      ref="productEditRef"
+      v-model:form-data="formData"
+      v-model:selected-category-id="selectedCategoryId"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :product="product"
+      :producers="producers"
+      :categories="categories"
+      :product-types="productTypes"
+      :product-tags="productTags"
+      :admin-type="adminType"
+      class="mb-16"
+      @update:files="handleImageUpload"
+      @update:search-category="handleSearchCategory"
+      @update:search-product-type="handleSearchProductType"
+      @update:search-product-tag="handleSearchProductTag"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="handleClickBackButton"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="loading"
+          @click="handleClickUpdateButton"
+        >
+          更新
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

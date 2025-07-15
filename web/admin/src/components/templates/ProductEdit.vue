@@ -354,6 +354,11 @@ const onSubmit = async (): Promise<void> => {
 
   emit('submit')
 }
+
+// Expose the onSubmit method to parent components
+defineExpose({
+  onSubmit,
+})
 </script>
 
 <template>
@@ -770,18 +775,4 @@ const onSubmit = async (): Promise<void> => {
       </v-card>
     </v-col>
   </v-row>
-
-  <v-btn
-    v-show="isUpdatable()"
-    :loading="loading"
-    block
-    variant="outlined"
-    @click="onSubmit"
-  >
-    <v-icon
-      start
-      :icon="mdiPlus"
-    />
-    更新
-  </v-btn>
 </template>
