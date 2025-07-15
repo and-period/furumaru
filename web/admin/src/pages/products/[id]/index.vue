@@ -211,7 +211,7 @@ const handleClickBackButton = () => {
   router.back()
 }
 
-const productEditRef = ref<any>(null)
+const productEditRef = ref<UpdateProductRequest>(null)
 
 const handleClickUpdateButton = async () => {
   // Call the onSubmit method of the ProductEdit component to trigger validation
