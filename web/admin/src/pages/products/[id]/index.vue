@@ -12,12 +12,12 @@ import {
   useProductTypeStore,
 } from '~/store'
 import {
-  type UpdateProductRequest,
-  type CreateProductRequestMediaInner,
+
   DeliveryType,
   StorageMethodType,
   Prefecture,
 } from '~/types/api'
+import type { UpdateProductRequest, CreateProductRequestMediaInner } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()

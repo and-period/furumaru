@@ -3,7 +3,8 @@ import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { AdminType, type Category, type CreateCategoryRequest, type UpdateCategoryRequest } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '~/types/api'
 import { getErrorMessage } from '~/lib/validations'
 import { CreateCategoryValidationRules, UpdateCategoryValidationRules } from '~/types/validations'
 

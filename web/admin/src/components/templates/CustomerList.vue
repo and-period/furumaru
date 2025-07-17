@@ -2,9 +2,11 @@
 import { mdiDelete } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { type PrefecturesListItem, prefecturesList } from '~/constants'
+import { prefecturesList } from '~/constants'
+import type { PrefecturesListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { UserStatus, type UserToList } from '~/types/api'
+import { UserStatus } from '~/types/api'
+import type { UserToList } from '~/types/api'
 
 const props = defineProps({
   loading: {

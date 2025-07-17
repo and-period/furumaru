@@ -6,11 +6,12 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import {
-  type Coordinator,
+
   ScheduleStatus,
-  type Schedule,
+
   AdminType,
 } from '~/types/api'
+import type { Coordinator, Schedule } from '~/types/api'
 
 const props = defineProps({
   loading: {

@@ -1,4 +1,5 @@
-import { prefecturesList, type PrefecturesListItem } from '~/constants'
+import { prefecturesList } from '~/constants'
+import type { PrefecturesListItem } from '~/constants'
 import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
 
 export interface PrefecturesListSelectItems extends PrefecturesListItem {

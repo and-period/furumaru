@@ -3,7 +3,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { usePaymentSystemStore } from '~/store'
-import { PaymentSystemStatus, type PaymentMethodType, type PaymentSystem } from '~/types/api'
+import { PaymentSystemStatus } from '~/types/api'
+import type { PaymentMethodType, PaymentSystem } from '~/types/api'
 
 const paymentSystemStore = usePaymentSystemStore()
 const { alertType, isShow, alertText, show } = useAlert('error')

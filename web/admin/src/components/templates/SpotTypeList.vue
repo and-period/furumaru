@@ -4,7 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import useVuelidate from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminType, type CreateSpotTypeRequest, type SpotType, type UpdateSpotTypeRequest } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest } from '~/types/api'
 import { getErrorMessage } from '~/lib/validations'
 import { CreateSpotTypeValidationRules, UpdateSpotTypeValidationRules } from '~/types/validations'
 

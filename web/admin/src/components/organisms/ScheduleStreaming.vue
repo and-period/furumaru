@@ -2,10 +2,11 @@
 import { mdiPaperclip, mdiContentCopy } from '@mdi/js'
 import Hls from 'hls.js'
 import {
-  type Broadcast,
+
   BroadcastStatus,
-  type AuthYoutubeBroadcastRequest,
+
 } from '~/types/api'
+import type { Broadcast, AuthYoutubeBroadcastRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

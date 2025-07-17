@@ -4,7 +4,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
-import { type CreateNotificationRequest, NotificationType } from '~/types/api'
+import { NotificationType } from '~/types/api'
+import type { CreateNotificationRequest } from '~/types/api'
 
 const router = useRouter()
 const commonStore = useCommonStore()

@@ -5,7 +5,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminType, type Address, AdminStatus } from '~/types/api'
+import { Prefecture, PaymentStatus, UserStatus, AdminType, AdminStatus } from '~/types/api'
+import type { UserOrder, User, Address } from '~/types/api'
 
 const props = defineProps({
   loading: {

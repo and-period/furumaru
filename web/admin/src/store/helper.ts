@@ -1,4 +1,5 @@
-import axios, { type RawAxiosRequestHeaders } from 'axios'
+import axios from 'axios'
+import type { RawAxiosRequestHeaders } from 'axios'
 
 import { apiClient } from '~/plugins/api-client'
 import { UploadStatus } from '~/types/api'

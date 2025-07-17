@@ -2,7 +2,8 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 
-import { type UpdateCoordinatorRequest, type Coordinator, AdminStatus, Prefecture } from '~/types/api'
+import { AdminStatus, Prefecture } from '~/types/api'
+import type { UpdateCoordinatorRequest, Coordinator } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { UpdateCoordinatorValidationRules } from '~/types/validations'

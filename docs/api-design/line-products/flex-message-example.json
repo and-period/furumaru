@@ -1,0 +1,90 @@
+{
+  "type": "flex",
+  "altText": "ふるマル商品一覧",
+  "contents": {
+    "type": "carousel",
+    "contents": [
+      {
+        "type": "bubble",
+        "hero": {
+          "type": "image",
+          "url": "https://cdn.furumaru.jp/products/01HFQJ8Z7D8JXPR8XBXBFM8C5F/thumb.jpg",
+          "size": "full",
+          "aspectRatio": "1:1",
+          "aspectMode": "cover"
+        },
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "text",
+              "text": "新潟県産コシヒカリ",
+              "size": "lg",
+              "weight": "bold",
+              "wrap": true,
+              "maxLines": 2
+            },
+            {
+              "type": "text",
+              "text": "田中農園",
+              "size": "sm",
+              "color": "#666666",
+              "margin": "xs"
+            },
+            {
+              "type": "text",
+              "text": "新潟県の豊かな土壌で育った、甘みと粘りが特徴のコシヒカリです。",
+              "size": "sm",
+              "wrap": true,
+              "maxLines": 3,
+              "margin": "md"
+            },
+            {
+              "type": "box",
+              "layout": "horizontal",
+              "spacing": "xs",
+              "margin": "md",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "¥3,000",
+                  "size": "xl",
+                  "weight": "bold",
+                  "color": "#FF5551",
+                  "flex": 0
+                },
+                {
+                  "type": "text",
+                  "text": "（税込）",
+                  "size": "xs",
+                  "color": "#666666",
+                  "gravity": "bottom",
+                  "margin": "sm"
+                }
+              ]
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "uri",
+                "label": "詳細を見る",
+                "uri": "https://liff.line.me/1234567890-AbCdEfGh?productId=01HFQJ8Z7D8JXPR8XBXBFM8C5F"
+              },
+              "style": "primary",
+              "height": "sm"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

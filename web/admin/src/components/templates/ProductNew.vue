@@ -5,25 +5,25 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import {
-  type Category,
-  type CreateProductRequest,
+
   DeliveryType,
   Prefecture,
-  type Producer,
+
   ProductStatus,
-  type ProductTag,
-  type ProductType,
+
   StorageMethodType,
   Weekday,
 } from '~/types/api'
+import type { Category, CreateProductRequest, Producer, ProductTag, ProductType } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import {
-  type PrefecturesListItem,
+
   prefecturesList,
-  type CityListItem,
+
   cityList,
 } from '~/constants'
+import type { PrefecturesListItem, CityListItem } from '~/constants'
 import {
   CreateProductValidationRules,
   NotSameTimeDataValidationRules,

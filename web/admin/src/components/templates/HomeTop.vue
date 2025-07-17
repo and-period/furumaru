@@ -11,7 +11,8 @@ import { LineChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
 
 import type { AlertType } from '~/lib/hooks'
-import { PaymentMethodType, TopOrderPeriodType, type TopOrderSalesTrend, type TopOrdersResponse } from '~/types/api'
+import { PaymentMethodType, TopOrderPeriodType } from '~/types/api'
+import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 
 use([

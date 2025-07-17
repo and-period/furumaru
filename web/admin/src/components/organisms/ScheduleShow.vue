@@ -3,10 +3,11 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getErrorMessage } from '~/lib/validations'
 import {
-  type Schedule,
+
   ScheduleStatus,
-  type UpdateScheduleRequest,
+
 } from '~/types/api'
+import type { Schedule, UpdateScheduleRequest } from '~/types/api'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import {
   TimeDataValidationRules,

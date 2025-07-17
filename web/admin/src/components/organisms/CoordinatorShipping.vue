@@ -4,7 +4,8 @@ import useVuelidate from '@vuelidate/core'
 
 import type { Shipping, UpsertShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
-import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { getSelectablePrefecturesList } from '~/lib/prefectures'
+import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { UpsertShippingValidationRules } from '~/types/validations'
 
 const props = defineProps({

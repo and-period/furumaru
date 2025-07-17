@@ -2,7 +2,8 @@
 import useVuelidate from '@vuelidate/core'
 import type { PropType } from 'vue'
 import { getErrorMessage } from '~/lib/validations'
-import { Weekday, type ProductType, type Shop, type UpdateShopRequest } from '~/types/api'
+import { Weekday } from '~/types/api'
+import type { ProductType, Shop, UpdateShopRequest } from '~/types/api'
 import { UpdateShopValidationRules } from '~/types/validations'
 
 const props = defineProps({
