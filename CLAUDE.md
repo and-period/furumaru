@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **決済**: KomojuとStripe
 
 ### フロントエンドアプリケーション (`/web`)
-- **管理者ポータル** (`/web/admin`): Nuxt 3 + Vue 3 + Vuetify (ポート3010)
+- **管理者ポータル** (`/web/admin`): Nuxt 4 + Vue 3 + Vuetify (ポート3010)
 - **購入者ポータル** (`/web/user`): Nuxt 3 + Vue 3 + Tailwind CSS (ポート3000)
 - **状態管理**: Pinia
 - **リアルタイム機能**: HLS.jsによる動画ストリーミング
