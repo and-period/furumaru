@@ -5,13 +5,15 @@ const props = defineProps({
     default: 140,
   },
 })
+
+const titleSrc = '/app-title.svg'
 </script>
 
 <template>
   <img
     class="title"
     alt="ふるマル"
-    src="/app-title.svg"
+    :src="titleSrc"
     :width="props.width"
   >
 </template>
