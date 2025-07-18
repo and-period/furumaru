@@ -58,10 +58,11 @@ export default defineNuxtConfig({
   },
 
   googleFonts: {
-    download: true,
+    download: false,
     inject: true,
     overwriting: true,
     display: 'swap',
+    preload: true,
     families: {
       'BIZ+UDGothic': true,
     },
