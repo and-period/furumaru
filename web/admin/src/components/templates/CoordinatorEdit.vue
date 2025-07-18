@@ -2,7 +2,8 @@
 import type { VTabs } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday, type UpsertShippingRequest, type Shipping, type Shop, type UpdateShopRequest } from '~/types/api'
+import { AdminStatus, Prefecture, Weekday } from '~/types/api'
+import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({

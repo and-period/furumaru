@@ -4,7 +4,8 @@ import { unix } from 'dayjs'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useVideoStore } from '~/store'
 import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
-import { AdminType, type Video, type VideoResponse } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { Video, VideoResponse } from '~/types/api'
 
 const videoStore = useVideoStore()
 const { videoResponse } = storeToRefs(videoStore)

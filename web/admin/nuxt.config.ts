@@ -14,7 +14,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { hid: 'description', name: 'description', content: '' },
+        { name: 'description', content: '' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
@@ -42,6 +42,11 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
+  imports: {
+    autoImport: true,
+    dirs: ['stores', 'composables', 'utils'],
+  },
+
   eslint: {
     config: {
       stylistic: {
@@ -53,10 +58,11 @@ export default defineNuxtConfig({
   },
 
   googleFonts: {
-    download: true,
+    download: false,
     inject: true,
     overwriting: true,
     display: 'swap',
+    preload: true,
     families: {
       'BIZ+UDGothic': true,
     },
@@ -104,12 +110,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    vue: {
-      script: {
-        defineModel: true,
-        propsDestructure: true,
-      },
-    },
     build: {
       sourcemap: true,
     },
@@ -124,4 +124,8 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2024-10-27',
+
+  future: {
+    compatibilityVersion: 4,
+  },
 })

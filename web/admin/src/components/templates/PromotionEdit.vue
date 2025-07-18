@@ -4,7 +4,8 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminType, DiscountType, PromotionStatus, PromotionTargetType, type Promotion, type Shop, type UpdatePromotionRequest } from '~/types/api'
+import { AdminType, DiscountType, PromotionStatus, PromotionTargetType } from '~/types/api'
+import type { Promotion, Shop, UpdatePromotionRequest } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types/validations'
 

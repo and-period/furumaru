@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **決済**: KomojuとStripe
 
 ### フロントエンドアプリケーション (`/web`)
-- **管理者ポータル** (`/web/admin`): Nuxt 3 + Vue 3 + Vuetify (ポート3010)
+- **管理者ポータル** (`/web/admin`): Nuxt 4 + Vue 3 + Vuetify (ポート3010)
 - **購入者ポータル** (`/web/user`): Nuxt 3 + Vue 3 + Tailwind CSS (ポート3000)
 - **状態管理**: Pinia
 - **リアルタイム機能**: HLS.jsによる動画ストリーミング
@@ -150,6 +150,13 @@ make down           # 全コンテナを停止・削除
 3. **ポートの競合**: ポート3000、3010、18000、18010、3306が利用可能であることを確認
 4. **サービスの依存関係**: 一部のサービスは他のサービスの起動が必要（docker-compose.yamlを確認）
 5. **モックの再生成**: インターフェース変更後は`make mockgen`を実行
+
+### Git/PR運用ルール
+
+1. **mainブランチ保護**: mainブランチには直接pushしない
+2. **フィーチャーブランチ**: 新機能や修正は必ずフィーチャーブランチで作業
+3. **PR必須**: mainブランチへの変更は必ずPull Requestを経由
+4. **自動化**: `/push`コマンド実行時は自動的に新しいブランチを作成し、PRを作成
 
 ### テストアプローチ
 

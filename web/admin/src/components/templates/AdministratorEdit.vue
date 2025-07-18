@@ -2,7 +2,8 @@
 import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminStatus, type Administrator, type UpdateAdministratorRequest } from '~/types/api'
+import { AdminStatus } from '~/types/api'
+import type { Administrator, UpdateAdministratorRequest } from '~/types/api'
 import { UpdateAdministratorValidationRules } from '~/types/validations'
 
 const props = defineProps({

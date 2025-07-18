@@ -4,7 +4,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
-import { ShippingCarrier, type ExportOrdersRequest, CharacterEncodingType } from '~/types/api'
+import { ShippingCarrier, CharacterEncodingType } from '~/types/api'
+import type { ExportOrdersRequest } from '~/types/api'
 
 const router = useRouter()
 const orderStore = useOrderStore()

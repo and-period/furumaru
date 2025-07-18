@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Furumaru LINE Products API
+  description: LINE向け商品一覧取得API仕様
+  version: 1.0.0
+  contact:
+    name: Furumaru API Support
+    email: api-support@furumaru.jp
+
+servers:
+  - url: https://api.furumaru.jp/v1
+    description: Production server
+  - url: https://staging-api.furumaru.jp/v1
+    description: Staging server
+
+paths:
+  /line/products:
+    get:
+      summary: LINE向け商品一覧取得
+      description: LINEアプリ内で表示する商品一覧を取得します
+      operationId: listLineProducts
+      tags:
+        - LINE Products
+      parameters:
+        - name: limit
+          in: query
+          description: 取得件数（1-20）
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+        - name: offset
+          in: query
+          description: 取得開始位置
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: category_id
+          in: query
+          description: カテゴリーID
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9]{26}$'
+        - name: producer_id
+          in: query
+          description: 生産者ID
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9]{26}$'
+        - name: prefecture_code
+          in: query
+          description: 都道府県コード（1-47）
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 47
+        - name: sort
+          in: query
+          description: ソート順
+          schema:
+            type: string
+            enum:
+              - recommended
+              - new
+              - price_asc
+              - price_desc
+            default: recommended
+      # 認証不要（公開API）
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineProductsResponse'
+        '400':
+          description: リクエストパラメータエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LineProductsResponse:
+      type: object
+      required:
+        - products
+        - pagination
+        - display_settings
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineProduct'
+          maxItems: 20
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        display_settings:
+          $ref: '#/components/schemas/DisplaySettings'
+
+    LineProduct:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - thumbnail_url
+        - price
+        - price_text
+        - producer
+        - prefecture
+        - tags
+        - is_limited
+        - is_out_of_stock
+        - line_url
+      properties:
+        id:
+          type: string
+          description: 商品ID
+          example: "01HFQJ8Z7D8JXPR8XBXBFM8C5F"
+        name:
+          type: string
+          description: 商品名（最大40文字）
+          maxLength: 40
+          example: "新潟県産コシヒカリ"
+        description:
+          type: string
+          description: 商品説明（最大100文字）
+          maxLength: 100
+          example: "新潟県の豊かな土壌で育った、甘みと粘りが特徴のコシヒカリです。"
+        thumbnail_url:
+          type: string
+          format: uri
+          description: サムネイル画像URL（HTTPS必須）
+          example: "https://cdn.furumaru.jp/products/01HFQJ8Z7D8JXPR8XBXBFM8C5F/thumb.jpg"
+        price:
+          type: integer
+          description: 価格（税込）
+          minimum: 0
+          example: 3000
+        price_text:
+          type: string
+          description: 表示用価格テキスト
+          example: "¥3,000"
+        producer:
+          $ref: '#/components/schemas/LineProducer'
+        prefecture:
+          type: string
+          description: 都道府県名
+          example: "新潟県"
+        tags:
+          type: array
+          items:
+            type: string
+          maxItems: 3
+          description: 商品タグ（最大3つ）
+          example: ["お米", "新潟県産", "コシヒカリ"]
+        is_limited:
+          type: boolean
+          description: 限定商品フラグ
+          example: true
+        is_out_of_stock:
+          type: boolean
+          description: 在庫切れフラグ
+          example: false
+        line_url:
+          type: string
+          format: uri
+          description: LINE内商品詳細URL（LIFF URL）
+          example: "https://liff.line.me/1234567890-AbCdEfGh?productId=01HFQJ8Z7D8JXPR8XBXBFM8C5F"
+
+    LineProducer:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          description: 生産者ID
+          example: "01HFQHYZVW2QPHW2J0X4XP5EKQ"
+        name:
+          type: string
+          description: 生産者名
+          maxLength: 20
+          example: "田中農園"
+
+    Pagination:
+      type: object
+      required:
+        - total
+        - limit
+        - offset
+        - has_next
+      properties:
+        total:
+          type: integer
+          description: 総件数
+          minimum: 0
+          example: 150
+        limit:
+          type: integer
+          description: 取得件数
+          minimum: 1
+          maximum: 20
+          example: 10
+        offset:
+          type: integer
+          description: 取得開始位置
+          minimum: 0
+          example: 0
+        has_next:
+          type: boolean
+          description: 次のページが存在するか
+          example: true
+
+    DisplaySettings:
+      type: object
+      required:
+        - show_producer
+        - show_prefecture
+        - show_tags
+      properties:
+        show_producer:
+          type: boolean
+          description: 生産者情報を表示するか
+          example: true
+        show_prefecture:
+          type: boolean
+          description: 都道府県を表示するか
+          example: true
+        show_tags:
+          type: boolean
+          description: タグを表示するか
+          example: true
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: エラーコード
+          enum:
+            - INVALID_PARAMETER
+            - NOT_FOUND
+            - INTERNAL_SERVER_ERROR
+          example: "INVALID_PARAMETER"
+        message:
+          type: string
+          description: エラーメッセージ
+          example: "limitは1以上20以下である必要があります"
+        details:
+          type: object
+          description: エラーの詳細情報
+          additionalProperties: true
+          example:
+            field: "limit"
+            value: 50

@@ -2,7 +2,8 @@
 import { mdiPencil } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { paymentsList, type PaymentListItem } from '~/constants'
+import { paymentsList } from '~/constants'
+import type { PaymentListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
 import { PaymentSystemStatus } from '~/types/api'
 import type { PaymentMethodType, PaymentSystem } from '~/types/api'

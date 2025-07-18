@@ -9,13 +9,9 @@ import {
   OrderStatus,
   ShippingType,
   ShippingCarrier,
-  type Coordinator,
-  type ExportOrdersRequest,
-  type Order,
-  type Promotion,
-  type User,
-  type OrderFulfillment,
+
 } from '~/types/api'
+import type { Coordinator, ExportOrdersRequest, Order, Promotion, User, OrderFulfillment } from '~/types/api'
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface ImportFormData {

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import axios, { type RawAxiosRequestHeaders } from 'axios'
+import axios from 'axios'
+import type { RawAxiosRequestHeaders } from 'axios'
 import { storeToRefs } from 'pinia'
 
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore, useProductTypeStore } from '~/store'
-import { type CreateCoordinatorRequest, Prefecture } from '~/types/api'
+import { Prefecture } from '~/types/api'
+import type { CreateCoordinatorRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()

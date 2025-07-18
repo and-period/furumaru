@@ -4,7 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { dateTimeFormatter } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { AdminType, type Coordinator, type Shipping } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { Coordinator, Shipping } from '~/types/api'
 
 const props = defineProps({
   loading: {

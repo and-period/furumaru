@@ -1,5 +1,7 @@
-import { type FirebaseApp, type FirebaseOptions, initializeApp } from 'firebase/app'
-import { getMessaging, type Messaging } from 'firebase/messaging'
+import { initializeApp } from 'firebase/app'
+import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
+import { getMessaging } from 'firebase/messaging'
+import type { Messaging } from 'firebase/messaging'
 
 let app: FirebaseApp
 let messaging: Messaging

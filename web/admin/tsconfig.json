@@ -9,5 +9,5 @@
       "@@/*": ["./../*"]
     }
   },
-  "types": ["@nuxt/types", "@nuxtjs/i18n", "@types/node", "vitest/globals", "@pinia/nuxt"],
+  "types": ["@types/node"]
 }

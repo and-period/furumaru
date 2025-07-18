@@ -9,9 +9,9 @@ import {
   DiscountType,
   PromotionStatus,
   PromotionTargetType,
-  type Promotion,
-  type Shop,
+
 } from '~/types/api'
+import type { Promotion, Shop } from '~/types/api'
 
 const props = defineProps({
   loading: {

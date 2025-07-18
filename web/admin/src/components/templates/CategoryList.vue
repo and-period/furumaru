@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { type CreateCategoryRequest, type Category, type ProductType, type CreateProductTypeRequest, AdminType, type UpdateCategoryRequest, type UpdateProductTypeRequest } from '~/types/api'
+import { AdminType } from '~/types/api'
+import type { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, UpdateCategoryRequest, UpdateProductTypeRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({

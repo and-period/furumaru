@@ -4,7 +4,8 @@ import useVuelidate from '@vuelidate/core'
 import type { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
 
 import { getErrorMessage } from '~/lib/validations'
-import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { getSelectablePrefecturesList } from '~/lib/prefectures'
+import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { UpsertShippingValidationRules } from '~/types/validations'
 
 interface Props {

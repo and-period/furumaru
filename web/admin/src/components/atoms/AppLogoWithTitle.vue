@@ -5,13 +5,15 @@ const props = defineProps({
     default: 200,
   },
 })
+
+const logoSrc = '/app-logo-with-title.svg'
 </script>
 
 <template>
   <img
     class="logo"
     alt="ふるマル ロゴ"
-    src="/app-logo-with-title.svg"
+    :src="logoSrc"
     :width="props.width"
   >
 </template>

@@ -125,5 +125,6 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
  * piniaに共通エラーハンドラーを注入するプラグイン
  */
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.$pinia.use(apiErrorHandler)
+  const pinia = nuxtApp.$pinia as any
+  pinia.use(apiErrorHandler)
 })

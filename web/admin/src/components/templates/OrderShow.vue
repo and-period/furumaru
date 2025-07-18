@@ -16,17 +16,10 @@ import {
   ShippingCarrier,
   ShippingSize,
   ShippingType,
-  type CompleteOrderRequest,
-  type Coordinator,
-  type Order,
-  type OrderItem,
-  type OrderFulfillment,
-  type Product,
-  type ProductMediaInner,
-  type RefundOrderRequest,
-  type User,
+
   OrderType,
 } from '~/types/api'
+import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({

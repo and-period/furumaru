@@ -5,15 +5,12 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import {
-  type Product,
-  type ProductMediaInner,
+
   ProductStatus,
-  type Category,
-  type ProductTag,
-  type ProductType,
-  type Producer,
+
   AdminType,
 } from '~/types/api'
+import type { Product, ProductMediaInner, Category, ProductTag, ProductType, Producer } from '~/types/api'
 
 const props = defineProps({
   selectedItemId: {

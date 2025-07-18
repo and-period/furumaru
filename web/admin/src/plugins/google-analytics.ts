@@ -1,4 +1,5 @@
-import { type Analytics, getAnalytics, logEvent } from 'firebase/analytics'
+import { getAnalytics, logEvent } from 'firebase/analytics'
+import type { Analytics } from 'firebase/analytics'
 import { app as fbApp } from './firebase'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -9,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const analytics: Analytics = getAnalytics(fbApp)
 
-  nuxtApp.router?.afterEach((to, _) => {
+  nuxtApp.router?.afterEach((to: any) => {
     // GAにページ遷移情報を保存する
     console.log('analytics', analytics)
     logEvent(analytics, 'page_view', {
