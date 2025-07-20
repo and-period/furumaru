@@ -26,4 +26,5 @@ export default defineNuxtConfig({
       VERSION: pkg.version || '0.1.0',
     },
   },
+  srcDir: 'src',
 });
