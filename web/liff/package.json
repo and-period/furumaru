@@ -7,12 +7,19 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "format": "yarn lint --fix",
+    "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
     "@line/liff": "^2.23.0",
+    "@nuxt/devtools": "latest",
+    "@nuxt/eslint-config": "^1.6.0",
+    "eslint": "^9.31.0",
     "nuxt": "^3.8.2",
-    "@nuxt/devtools": "latest"
+    "typescript": "^5.8.3"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
+  "dependencies": {}
 }

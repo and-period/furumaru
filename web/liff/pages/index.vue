@@ -1,11 +1,33 @@
+<script setup lang="ts">
+import liff from '@line/liff';
+// Import runtime config for env variables
+const runtimeConfig = useRuntimeConfig();
+const version = runtimeConfig.public.VERSION;
+const liffId = runtimeConfig.public.LIFF_ID;
+
+// Init LIFF when DOM is mounted
+// https://vuejs.org/api/composition-api-lifecycle.html#onmounted
+onMounted(async () => {
+  if (!liffId) {
+    console.error('Please set LIFF_ID in .env file');
+    return;
+  };
+
+  await liff.init({ liffId: liffId });
+  console.log('LIFF init success');
+  console.log('LIFF SDK version', liff.getVersion());
+});
+</script>
+
 <template>
   <div class="home">
     <h1 class="home__title">
-      Welcome to <br /><a
+      Welcome to <br>
+      <a
         class="home__title__link"
         href="https://developers.line.biz/en/docs/liff/overview/"
-        >LIFF Starter!</a
-      >
+      >LIFF Starter!
+      </a>
     </h1>
     <div class="home__badges">
       <span class="home__badges__badge badge--primary"> LIFF Starter </span>
@@ -204,24 +226,3 @@ body {
   }
 }
 </style>
-
-<script setup lang="ts">
-import liff from '@line/liff';
-// Import runtime config for env variables
-const runtimeConfig = useRuntimeConfig();
-const version = runtimeConfig.public.VERSION;
-const liffId = runtimeConfig.public.LIFF_ID;
-
-// Init LIFF when DOM is mounted
-// https://vuejs.org/api/composition-api-lifecycle.html#onmounted
-onMounted(async () => {
-  if(!liffId) {
-    console.error('Please set LIFF_ID in .env file')
-    return
-  };
-
-  await liff.init({ liffId: liffId });
-  console.log('LIFF init success');
-  console.log('LIFF SDK version', liff.getVersion());
-})
-</script>
