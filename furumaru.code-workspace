@@ -1,0 +1,22 @@
+{
+  "folders": [
+	{
+		"path": "."
+	},
+	{
+		"path": "web/admin"
+	},
+	{
+		"path": "web/user"
+	},
+	{
+		"path": "web/liff"
+	},
+	{
+		"path": "api"
+	}
+],
+  "settings": {
+
+	}
+}
