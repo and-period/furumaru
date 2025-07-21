@@ -2,6 +2,7 @@
 import pkg from './package.json';
 
 export default defineNuxtConfig({
+  modules: ['@nuxtjs/tailwindcss'],
   plugins: [],
   app: {
     head: {
@@ -27,4 +28,8 @@ export default defineNuxtConfig({
     },
   },
   srcDir: 'src',
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+  },
 });
