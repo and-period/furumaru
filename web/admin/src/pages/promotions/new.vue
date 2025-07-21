@@ -49,12 +49,35 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-promotion-new
-    v-model:form-data="formData"
-    :loading="loading"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-promotion-new
+      v-model:form-data="formData"
+      :loading="loading"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          type="submit"
+          form="create-promotion-form"
+        >
+          登録
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

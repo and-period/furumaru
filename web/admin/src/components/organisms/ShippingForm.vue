@@ -173,7 +173,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div>
+  <div class="mb-16">
     <v-card
       class="mb-4"
       :loading="loading"
@@ -354,14 +354,5 @@ const handleSubmit = async () => {
         </v-btn>
       </v-card-actions>
     </v-card>
-
-    <v-btn
-      block
-      variant="outlined"
-      :loading="submitting"
-      @click="handleSubmit"
-    >
-      {{ formType === 'create' ? '作成' : '更新' }}
-    </v-btn>
   </div>
 </template>
