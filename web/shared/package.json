@@ -11,12 +11,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./types/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.umd.js"
-    },
-    "./components/*": {
-      "import": "./dist/components/*.es.js",
-      "types": "./dist/types/components/*.d.ts"
     },
     "./dist/index.css": "./dist/index.css"
   },

@@ -10,7 +10,7 @@ export default defineConfig({
       entry: resolve(__dirname, './src/index.ts'),
       name: '@furumaru/shared',
       fileName: "index",
-      formats: ['es', 'umd'],
+      formats: ['es', 'cjs', 'umd'],
     },
     rollupOptions: {
       external: ['vue'],
@@ -21,5 +21,10 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue(), dts({ tsconfigPath: './tsconfig.app.json' })],
+  plugins: [
+    vue(),
+    dts({ 
+      include: ['src/**/**.ts', 'src/**/**.vue'],
+      tsconfigPath: './tsconfig.app.json',
+    })],
 })
