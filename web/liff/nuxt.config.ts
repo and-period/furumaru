@@ -5,9 +5,9 @@ export default defineNuxtConfig({
   plugins: [],
   app: {
     head: {
-      title: 'LIFF Starter',
+      title: 'ふるまる - LINE連携アプリ',
       htmlAttrs: {
-        lang: 'en',
+        lang: 'ja',
       },
       meta: [
         { charset: 'utf-8' },
