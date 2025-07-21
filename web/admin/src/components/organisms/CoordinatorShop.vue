@@ -78,7 +78,10 @@ const onChangeSearchProductType = (name: string): void => {
 
 <template>
   <v-card>
-    <v-form @submit.prevent="onSubmit">
+    <v-form
+      id="update-shop-form"
+      @submit.prevent="onSubmit"
+    >
       <v-card-text>
         <v-text-field
           v-model="validate.name.$model"
@@ -129,18 +132,6 @@ const onChangeSearchProductType = (name: string): void => {
           multiple
         />
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
-        >
-          更新
-        </v-btn>
-      </v-card-actions>
     </v-form>
   </v-card>
 </template>

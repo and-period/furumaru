@@ -164,7 +164,10 @@ const onClickSearchAddress = (): void => {
 
 <template>
   <v-card>
-    <v-form @submit.prevent="onSubmit">
+    <v-form
+      id="update-coordinator-form"
+      @submit.prevent="onSubmit"
+    >
       <v-card-text>
         <v-text-field
           v-model="validate.username.$model"
@@ -307,18 +310,6 @@ const onClickSearchAddress = (): void => {
           prefix="https://www.facebook.com/"
         />
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
-        >
-          更新
-        </v-btn>
-      </v-card-actions>
     </v-form>
   </v-card>
 </template>

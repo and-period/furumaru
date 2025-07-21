@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useCustomerStore, useOrderStore } from '~/store'
+import { OrderStatus, OrderType } from '~/types/api'
 import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
@@ -198,6 +199,48 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     loading.value = false
   }
 }
+
+// Helper functions for button visibility (copied from OrderShow template)
+const isAuthorized = (): boolean => {
+  return order.value?.status === OrderStatus.WAITING
+}
+
+// 発送連絡時のメッセージ下書き保存 - 商品購入時のみ
+const isPreservable = (): boolean => {
+  if (!order.value || order.value.type !== OrderType.PRODUCT) {
+    return false
+  }
+  const targets: OrderStatus[] = [
+    OrderStatus.WAITING,
+    OrderStatus.PREPARED,
+    OrderStatus.COMPLETED,
+  ]
+  return targets.includes(order.value.status)
+}
+
+const isCompletable = (): boolean => {
+  const targets: OrderStatus[] = [OrderStatus.PREPARED]
+  return order.value ? targets.includes(order.value.status) : false
+}
+
+const isCancelable = (): boolean => {
+  const targets: OrderStatus[] = [OrderStatus.WAITING, OrderStatus.PREPARED]
+  return order.value ? targets.includes(order.value.status) : false
+}
+
+const isRefundable = (): boolean => {
+  const targets: OrderStatus[] = [OrderStatus.COMPLETED]
+  return order.value ? targets.includes(order.value.status) : false
+}
+
+// Action handlers for the buttons
+const handleClickOpenCancelDialog = (): void => {
+  cancelDialog.value = true
+}
+
+const handleClickOpenRefundDialog = (): void => {
+  refundDialog.value = true
+}
 </script>
 
 <template>
@@ -230,5 +273,46 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
       @submit:cancel="handleSubmitCancel"
       @submit:refund="handleSubmitRefund"
     />
+    
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          v-show="isPreservable()"
+          :loading="isLoading"
+          variant="outlined"
+          color="info"
+          @click="handleSubmitDraft()"
+        >
+          下書き保存
+        </v-btn>
+        <v-btn
+          v-show="isCompletable()"
+          :loading="isLoading"
+          variant="outlined"
+          color="primary"
+          @click="handleSubmitComplete()"
+        >
+          {{ order?.type === OrderType.PRODUCT ? '発送完了を通知' : 'レビュー依頼を送信' }}
+        </v-btn>
+        <v-btn
+          v-show="isRefundable()"
+          :loading="isLoading"
+          variant="outlined"
+          color="error"
+          @click="handleClickOpenRefundDialog"
+        >
+          返金
+        </v-btn>
+      </div>
+    </div>
   </div>
 </template>

@@ -271,22 +271,45 @@ catch (err) {
 </script>
 
 <template>
-  <templates-product-new
-    v-model:form-data="formData"
-    v-model:selected-category-id="selectedCategoryId"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :producers="producers"
-    :categories="categories"
-    :product-types="productTypes"
-    :product-tags="productTags"
-    @update:files="handleImageUpload"
-    @update:search-producer="handleSearchProducer"
-    @update:search-category="handleSearchCategory"
-    @update:search-product-type="handleSearchProductType"
-    @update:search-product-tag="handleSearchProductTag"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-product-new
+      v-model:form-data="formData"
+      v-model:selected-category-id="selectedCategoryId"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :producers="producers"
+      :categories="categories"
+      :product-types="productTypes"
+      :product-tags="productTags"
+      @update:files="handleImageUpload"
+      @update:search-producer="handleSearchProducer"
+      @update:search-category="handleSearchCategory"
+      @update:search-product-type="handleSearchProductType"
+      @update:search-product-tag="handleSearchProductTag"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          @click="handleSubmit"
+          :loading="isLoading()"
+        >
+          登録
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

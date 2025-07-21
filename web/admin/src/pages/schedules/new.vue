@@ -131,18 +131,41 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <templates-schedule-new
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :image-upload-status="imageUploadStatus"
-    :opening-video-upload-status="openingVideoUploadStatus"
-    @update:thumbnail="handleUploadThumbnail"
-    @update:image="handleUploadImage"
-    @update:opening-video="handleUploadOpeningVideo"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-schedule-new
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :image-upload-status="imageUploadStatus"
+      :opening-video-upload-status="openingVideoUploadStatus"
+      @update:thumbnail="handleUploadThumbnail"
+      @update:image="handleUploadImage"
+      @update:opening-video="handleUploadOpeningVideo"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          type="submit"
+          form="create-schedule-form"
+        >
+          登録
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

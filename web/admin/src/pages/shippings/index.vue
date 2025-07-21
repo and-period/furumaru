@@ -83,17 +83,11 @@ const handleUpdatePage = async (page: number): Promise<void> => {
 
     <v-card
       :loading="status === 'pending'"
+      class="mb-16"
     >
       <v-card-title class="d-flex">
         配送先一覧
         <v-spacer />
-        <v-btn
-          variant="outlined"
-          to="/shippings/new"
-        >
-          <v-icon :icon="mdiPlus" />
-          新規作成
-        </v-btn>
       </v-card-title>
       <v-card-text>
         <v-data-table-server
@@ -120,5 +114,26 @@ const handleUpdatePage = async (page: number): Promise<void> => {
         </v-data-table-server>
       </v-card-text>
     </v-card>
+    
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          @click="$router.push('/shippings/new')"
+        >
+          作成
+        </v-btn>
+      </div>
+    </div>
   </div>
 </template>

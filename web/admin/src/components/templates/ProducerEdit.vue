@@ -187,10 +187,13 @@ const onClickSearchAddress = (): void => {
     v-text="props.alertText"
   />
 
-  <v-card>
+  <v-card class="mb-16">
     <v-card-title>生産者詳細</v-card-title>
 
-    <v-form @submit.prevent="onSubmit">
+    <v-form
+      id="update-producer-form"
+      @submit.prevent="onSubmit"
+    >
       <v-card-text>
         <v-text-field
           v-model="validate.username.$model"
@@ -333,18 +336,6 @@ const onClickSearchAddress = (): void => {
           prefix="https://www.facebook.com/"
         />
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
-        >
-          更新
-        </v-btn>
-      </v-card-actions>
     </v-form>
   </v-card>
 </template>
