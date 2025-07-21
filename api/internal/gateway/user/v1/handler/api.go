@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 	"sync"
 	"time"
 
@@ -43,11 +44,12 @@ type Handler interface {
 }
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	User      user.Service
-	Store     store.Service
-	Messenger messenger.Service
-	Media     media.Service
+	WaitGroup  *sync.WaitGroup
+	UserWebURL *url.URL
+	User       user.Service
+	Store      store.Service
+	Messenger  messenger.Service
+	Media      media.Service
 }
 
 type handler struct {
@@ -60,6 +62,7 @@ type handler struct {
 	sentry           sentry.Client
 	waitGroup        *sync.WaitGroup
 	sharedGroup      *singleflight.Group
+	userWebURL       func() *url.URL
 	user             user.Service
 	store            store.Service
 	messenger        messenger.Service
@@ -117,6 +120,10 @@ func NewHandler(params *Params, opts ...Option) Handler {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	userWebURL := func() *url.URL {
+		url := *params.UserWebURL // copy
+		return &url
+	}
 	return &handler{
 		appName:          dopts.appName,
 		env:              dopts.env,
@@ -129,6 +136,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		sentry:      dopts.sentry,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
+		userWebURL:  userWebURL,
 		user:        params.User,
 		store:       params.Store,
 		messenger:   params.Messenger,

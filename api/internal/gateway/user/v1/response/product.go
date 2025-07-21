@@ -1,5 +1,7 @@
 package response
 
+import "encoding/xml"
+
 // Product - 商品情報
 type Product struct {
 	ID                string          `json:"id"`                // 商品ID
@@ -64,4 +66,37 @@ type ProductsResponse struct {
 	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
 	ProductTags  []*ProductTag  `json:"productTags"`  // 商品タグ一覧
 	Total        int64          `json:"total"`        // 商品合計数
+}
+
+// MerchantCenterFeedResponse - Google Merchant Center用レスポンス
+type MerchantCenterFeedResponse struct {
+	XMLName xml.Name               `xml:"rss"`
+	Version string                 `xml:"version,attr"`
+	Xmlns   string                 `xml:"xmlns:g,attr"`
+	Channel *MerchantCenterChannel `xml:"channel"`
+}
+
+type MerchantCenterChannel struct {
+	Title       string                `xml:"title"`
+	Link        string                `xml:"link"`
+	Description string                `xml:"description"`
+	Items       []*MerchantCenterItem `xml:"item"`
+}
+
+type MerchantCenterItem struct {
+	ID                    string `xml:"g:id"`
+	Title                 string `xml:"g:title"`
+	Description           string `xml:"g:description"`
+	Link                  string `xml:"g:link"`
+	ImageLink             string `xml:"g:image_link"`
+	Condition             string `xml:"g:condition"`
+	Availability          string `xml:"g:availability"`
+	Price                 string `xml:"g:price"`
+	Brand                 string `xml:"g:brand"`
+	GTIN                  string `xml:"g:gtin,omitempty"`
+	MPN                   string `xml:"g:mpn,omitempty"`
+	GoogleProductCategory string `xml:"g:google_product_category,omitempty"`
+	ProductType           string `xml:"g:product_type,omitempty"`
+	ItemGroupID           string `xml:"g:item_group_id,omitempty"`
+	ShippingWeight        string `xml:"g:shipping_weight,omitempty"`
 }

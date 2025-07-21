@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/xml"
-	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -290,42 +288,18 @@ func (h *handler) getProductDetails(ctx context.Context, productIDs ...string) (
 	return res, nil
 }
 
-type MerchantCenterFeed struct {
-	XMLName xml.Name               `xml:"rss"`
-	Version string                 `xml:"version,attr"`
-	Channel *MerchantCenterChannel `xml:"channel"`
-}
-
-type MerchantCenterChannel struct {
-	Title       string                `xml:"title"`
-	Link        string                `xml:"link"`
-	Description string                `xml:"description"`
-	Items       []*MerchantCenterItem `xml:"item"`
-}
-
-type MerchantCenterItem struct {
-	ID                    string `xml:"g:id"`
-	Title                 string `xml:"g:title"`
-	Description           string `xml:"g:description"`
-	Link                  string `xml:"g:link"`
-	ImageLink             string `xml:"g:image_link"`
-	Condition             string `xml:"g:condition"`
-	Availability          string `xml:"g:availability"`
-	Price                 string `xml:"g:price"`
-	Brand                 string `xml:"g:brand"`
-	GTIN                  string `xml:"g:gtin,omitempty"`
-	MPN                   string `xml:"g:mpn,omitempty"`
-	GoogleProductCategory string `xml:"g:google_product_category,omitempty"`
-	ProductType           string `xml:"g:product_type,omitempty"`
-	ItemGroupID           string `xml:"g:item_group_id,omitempty"`
-	ShippingWeight        string `xml:"g:shipping_weight,omitempty"`
-}
-
 func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
-	const maxProducts = 10000
+	const (
+		limit       = 10000
+		title       = "ふるマル - 全国ふるさとマルシェ"
+		description = "地域・地方の特産品を扱うECマーケットプレイス"
+		version     = "2.0"
+		xmlns       = "http://base.google.com/ns/1.0"
+		contentType = "application/xml; charset=utf-8"
+	)
 
 	in := &store.ListProductsInput{
-		Limit:            maxProducts,
+		Limit:            limit,
 		Offset:           0,
 		OnlyPublished:    true,
 		ExcludeOutOfSale: true,
@@ -334,44 +308,39 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 			{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
 		},
 	}
-
 	products, _, err := h.store.ListProducts(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
+	res := &response.MerchantCenterFeedResponse{
+		Version: version,
+		Xmlns:   xmlns,
+		Channel: &response.MerchantCenterChannel{
+			Title:       title,
+			Link:        h.userWebURL().String(),
+			Description: description,
+			Items:       []*response.MerchantCenterItem{},
+		},
+	}
 	if len(products) == 0 {
-		feed := &MerchantCenterFeed{
-			Version: "2.0",
-			Channel: &MerchantCenterChannel{
-				Title:       "ふるマル - 全国ふるさとマルシェ",
-				Link:        "https://furumaru.jp",
-				Description: "地域・地方の特産品を扱うECマーケットプレイス",
-				Items:       []*MerchantCenterItem{},
-			},
-		}
-		ctx.Header("Content-Type", "application/xml; charset=utf-8")
-		ctx.XML(http.StatusOK, feed)
+		ctx.Header("Content-Type", contentType)
+		ctx.XML(http.StatusOK, res)
 		return
 	}
 
 	var (
-		producers    service.Producers
-		categories   service.Categories
-		productTypes service.ProductTypes
+		details      *service.ProductDetailsParams
+		coordinators service.Coordinators
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		producers, err = h.multiGetProducers(ectx, products.ProducerIDs())
+		details, err = h.getProductDetails(ectx, products.IDs()...)
 		return
 	})
 	eg.Go(func() (err error) {
-		productTypes, err = h.multiGetProductTypes(ectx, products.ProductTypeIDs())
-		if err != nil || len(productTypes) == 0 {
-			return
-		}
-		categories, err = h.multiGetCategories(ectx, productTypes.CategoryIDs())
+		coordinators, err = h.multiGetCoordinators(ectx, products.CoordinatorIDs())
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -379,85 +348,14 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 		return
 	}
 
-	producersMap := producers.Map()
-	categoriesMap := categories.Map()
-	productTypesMap := productTypes.Map()
-
-	items := make([]*MerchantCenterItem, 0, len(products))
-	for _, product := range products {
-		if !product.Public {
-			continue
-		}
-
-		producer := producersMap[product.ProducerID]
-		productType := productTypesMap[product.TypeID]
-
-		var category *service.Category
-		if productType != nil {
-			category = categoriesMap[productType.CategoryID]
-		}
-
-		description := product.Description
-		if description == "" {
-			description = product.Name
-		}
-		if len(description) > 5000 {
-			description = description[:4997] + "..."
-		}
-
-		imageLink := ""
-		if len(product.Media) > 0 {
-			imageLink = product.Media[0].URL
-		}
-
-		brandName := ""
-		if producer != nil {
-			brandName = producer.Username
-		}
-
-		productTypeName := ""
-		if productType != nil {
-			productTypeName = productType.Name
-		}
-
-		availability := "in_stock"
-		if product.Inventory <= 0 {
-			availability = "out_of_stock"
-		}
-
-		price := fmt.Sprintf("%.0f JPY", float64(product.Price))
-
-		item := &MerchantCenterItem{
-			ID:             product.ID,
-			Title:          product.Name,
-			Description:    description,
-			Link:           fmt.Sprintf("https://furumaru.jp/products/%s", product.ID),
-			ImageLink:      imageLink,
-			Condition:      "new",
-			Availability:   availability,
-			Price:          price,
-			Brand:          brandName,
-			ProductType:    productTypeName,
-			ShippingWeight: fmt.Sprintf("%.0f g", product.Weight),
-		}
-
-		if category != nil {
-			item.GoogleProductCategory = category.Name
-		}
-
-		items = append(items, item)
+	params := &service.NewMerchantCenterItemsParams{
+		Products:     service.NewProducts(products, details),
+		Coordinators: coordinators.Map(),
+		Details:      details,
+		WebURL:       h.userWebURL,
 	}
+	res.Channel.Items = service.NewMerchantCenterItems(params).Response()
 
-	feed := &MerchantCenterFeed{
-		Version: "2.0",
-		Channel: &MerchantCenterChannel{
-			Title:       "ふるマル - 全国ふるさとマルシェ",
-			Link:        "https://furumaru.jp",
-			Description: "地域・地方の特産品を扱うECマーケットプレイス",
-			Items:       items,
-		},
-	}
-
-	ctx.Header("Content-Type", "application/xml; charset=utf-8")
-	ctx.XML(http.StatusOK, feed)
+	ctx.Header("Content-Type", contentType)
+	ctx.XML(http.StatusOK, res)
 }
