@@ -8,4 +8,12 @@ export default createConfigForNuxt({
       quotes: 'single',
     },
   },
-});
+}).override(
+  'nuxt/vue/rules', {
+    rules: {
+      'vue/no-multiple-template-root': 'off',
+      'vue/multi-word-component-names': 'off',
+    },
+    files: ['src/pages/**', 'src/layouts/**', 'src/app.vue'],
+  },
+);
