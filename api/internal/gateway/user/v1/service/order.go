@@ -94,7 +94,12 @@ func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {
+func NewOrder(
+	order *entity.Order,
+	addresses map[int64]*Address,
+	products map[int64]*Product,
+	experiences map[int64]*Experience,
+) *Order {
 	var (
 		billingAddress, shippingAddress *Address
 		experience                      *Experience
@@ -139,7 +144,12 @@ func (o *Order) Response() *response.Order {
 	return &o.Order
 }
 
-func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) Orders {
+func NewOrders(
+	orders entity.Orders,
+	addresses map[int64]*Address,
+	products map[int64]*Product,
+	experiences map[int64]*Experience,
+) Orders {
 	res := make(Orders, len(orders))
 	for i := range orders {
 		res[i] = NewOrder(orders[i], addresses, products, experiences)

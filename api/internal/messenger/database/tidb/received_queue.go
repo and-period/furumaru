@@ -48,7 +48,12 @@ func (q *receivedQueue) MultiCreate(ctx context.Context, queues ...*entity.Recei
 	return dbError(err)
 }
 
-func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, typ entity.NotifyType, done bool) error {
+func (q *receivedQueue) UpdateDone(
+	ctx context.Context,
+	queueID string,
+	typ entity.NotifyType,
+	done bool,
+) error {
 	updates := map[string]interface{}{
 		"done":       done,
 		"updated_at": q.now(),

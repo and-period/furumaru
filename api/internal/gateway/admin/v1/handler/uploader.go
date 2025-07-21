@@ -165,7 +165,10 @@ func (h *handler) CreateSpotThumbnailURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetSpotThumbnailUploadURL)
 }
 
-func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {
+func (h *handler) getUploadURL(
+	ctx *gin.Context,
+	fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error),
+) {
 	req := &request.GetUploadURLRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)

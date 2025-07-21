@@ -84,7 +84,9 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), notificationsIn).
+					Return(notifications, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().
 					SendMessage(gomock.Any(), gomock.Any()).
@@ -161,7 +163,9 @@ func TestNotifyStartLive(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().
+					ListUsers(gomock.Any(), usersIn).
+					Return(nil, int64(0), assert.AnError)
 			},
 			input: &messenger.NotifyStartLiveInput{
 				ScheduleID: "schedule-id",
@@ -174,7 +178,9 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), notificationsIn).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyStartLiveInput{
 				ScheduleID: "schedule-id",
@@ -187,8 +193,12 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), notificationsIn).
+					Return(notifications, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &messenger.NotifyStartLiveInput{
 				ScheduleID: "schedule-id",
@@ -201,9 +211,13 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), notificationsIn).
+					Return(notifications, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
-				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+				mocks.producer.EXPECT().
+					SendMessage(gomock.Any(), gomock.Any()).
+					Return("", assert.AnError)
 			},
 			input: &messenger.NotifyStartLiveInput{
 				ScheduleID: "schedule-id",
@@ -212,10 +226,13 @@ func TestNotifyStartLive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyStartLive(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyStartLive(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -382,7 +399,9 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "unknown order type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeUnknown), nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeUnknown), nil)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -393,10 +412,19 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "product success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).Times(2)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(gomock.Any(), gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil).
+					Times(2)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -482,10 +510,19 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "product failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
-				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(gomock.Any(), gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil).
+					AnyTimes()
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -495,10 +532,19 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "product failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil).
+					AnyTimes()
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -508,10 +554,19 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "product failed to multi get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError).MinTimes(1)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(gomock.Any(), gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError).
+					MinTimes(1)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -521,11 +576,22 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "product failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).Times(2)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(gomock.Any(), gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil).
+					Times(2)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -536,10 +602,18 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(experiences, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -616,10 +690,18 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(experiences, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -629,10 +711,18 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience failed to multi get experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(nil, assert.AnError)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -642,10 +732,18 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience failed to multi get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(experiences, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -655,11 +753,21 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(experiences, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -669,10 +777,18 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		{
 			name: "experience failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).Return(experiences, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(gomock.Any(), experiencesIn).
+					Return(experiences, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).
+					Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
@@ -683,10 +799,13 @@ func TestNotifyOrderCaptured(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyOrderCaptured(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyOrderCaptured(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -802,8 +921,12 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(ctx, gomock.Any()).
+					Return(addresses, nil)
 				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
@@ -893,7 +1016,9 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
 				OrderID: "order-id",
@@ -904,8 +1029,12 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "failed to multi get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(ctx, gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
 				OrderID: "order-id",
@@ -916,8 +1045,12 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "failed to upsert schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(ctx, gomock.Any()).
+					Return(addresses, nil)
 				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
@@ -929,10 +1062,16 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "failed to send messag",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(ctx, gomock.Any()).
+					Return(addresses, nil)
 				mocks.db.Schedule.EXPECT().Upsert(ctx, schedule).Return(nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
 				OrderID: "order-id",
@@ -941,10 +1080,13 @@ func TestNotifyOrderShipped(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyOrderShipped(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyOrderShipped(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1057,8 +1199,12 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "success product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -1123,8 +1269,12 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "success experience",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(ctx, experiencesIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(ctx, experiencesIn).
+					Return(experiences, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -1196,7 +1346,9 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "unknown order type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeUnknown), nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeUnknown), nil)
 			},
 			input: &messenger.NotifyReviewRequestInput{
 				OrderID: "order-id",
@@ -1206,8 +1358,12 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyReviewRequestInput{
 				OrderID: "order-id",
@@ -1217,8 +1373,12 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "failed to multi get experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeExperience), nil)
-				mocks.store.EXPECT().MultiGetExperiencesByRevision(ctx, experiencesIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeExperience), nil)
+				mocks.store.EXPECT().
+					MultiGetExperiencesByRevision(ctx, experiencesIn).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyReviewRequestInput{
 				OrderID: "order-id",
@@ -1228,9 +1388,15 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &messenger.NotifyReviewRequestInput{
 				OrderID: "order-id",
@@ -1240,8 +1406,12 @@ func TestNotifyReviewRequest(t *testing.T) {
 		{
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
-				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.store.EXPECT().
+					GetOrder(ctx, orderIn).
+					Return(order(sentity.OrderTypeProduct), nil)
+				mocks.store.EXPECT().
+					MultiGetProductsByRevision(ctx, gomock.Any()).
+					Return(products, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -1267,10 +1437,13 @@ func TestNotifyReviewRequest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyReviewRequest(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyReviewRequest(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1352,10 +1525,13 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyRegisterAdmin(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyRegisterAdmin(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1437,10 +1613,13 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyResetAdminPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyResetAdminPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1497,10 +1676,18 @@ func TestNotifyNotification(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
-				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), unotificationsIn).Return(unotifications, nil)
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(coordinators, int64(1), nil)
-				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(producers, int64(0), nil)
+				mocks.user.EXPECT().
+					ListUsers(gomock.Any(), gomock.Any()).
+					Return(users, int64(1), nil)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), unotificationsIn).
+					Return(unotifications, nil)
+				mocks.user.EXPECT().
+					ListCoordinators(gomock.Any(), gomock.Any()).
+					Return(coordinators, int64(1), nil)
+				mocks.user.EXPECT().
+					ListProducers(gomock.Any(), gomock.Any()).
+					Return(producers, int64(0), nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -1594,7 +1781,10 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "success to target none",
 			setup: func(ctx context.Context, mocks *mocks) {
-				notification := &entity.Notification{Targets: []entity.NotificationTarget{}, CreatedBy: "admin-id"}
+				notification := &entity.Notification{
+					Targets:   []entity.NotificationTarget{},
+					CreatedBy: "admin-id",
+				}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
@@ -1614,7 +1804,9 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -1637,9 +1829,15 @@ func TestNotifyNotification(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
-				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(uentity.Coordinators{}, int64(0), nil)
-				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(uentity.Producers{}, int64(0), nil)
+				mocks.user.EXPECT().
+					ListUsers(gomock.Any(), gomock.Any()).
+					Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().
+					ListCoordinators(gomock.Any(), gomock.Any()).
+					Return(uentity.Coordinators{}, int64(0), nil)
+				mocks.user.EXPECT().
+					ListProducers(gomock.Any(), gomock.Any()).
+					Return(uentity.Producers{}, int64(0), nil)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -1652,10 +1850,18 @@ func TestNotifyNotification(t *testing.T) {
 				unotifications := uentity.UserNotifications{{UserID: "user-id", Disabled: true}}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
-				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
-				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), unotificationsIn).Return(unotifications, nil)
-				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
-				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().
+					ListUsers(gomock.Any(), gomock.Any()).
+					Return(users, int64(1), nil)
+				mocks.user.EXPECT().
+					MultiGetUserNotifications(gomock.Any(), unotificationsIn).
+					Return(unotifications, nil)
+				mocks.user.EXPECT().
+					ListCoordinators(gomock.Any(), gomock.Any()).
+					Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().
+					ListProducers(gomock.Any(), gomock.Any()).
+					Return(nil, int64(0), assert.AnError)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -1665,10 +1871,13 @@ func TestNotifyNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1735,10 +1944,13 @@ func TestSendMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.sendMessage(ctx, tt.payload)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.sendMessage(ctx, tt.payload)
+				assert.Equal(t, tt.hasErr, err != nil, err)
+			}),
+		)
 	}
 }
 
@@ -1763,7 +1975,9 @@ func TestSendAllAdministrators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
+				mocks.user.EXPECT().
+					ListAdministrators(ctx, in).
+					Return(administrators, int64(2), nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
@@ -1792,7 +2006,9 @@ func TestSendAllAdministrators(t *testing.T) {
 			name: "success empty",
 			setup: func(ctx context.Context, mocks *mocks) {
 				administrators := uentity.Administrators{}
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(0), nil)
+				mocks.user.EXPECT().
+					ListAdministrators(ctx, in).
+					Return(administrators, int64(0), nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -1804,7 +2020,9 @@ func TestSendAllAdministrators(t *testing.T) {
 		{
 			name: "failed to list administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().
+					ListAdministrators(ctx, in).
+					Return(nil, int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -1816,8 +2034,12 @@ func TestSendAllAdministrators(t *testing.T) {
 		{
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.user.EXPECT().
+					ListAdministrators(ctx, in).
+					Return(administrators, int64(2), nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -1829,7 +2051,9 @@ func TestSendAllAdministrators(t *testing.T) {
 		{
 			name: "failed to send message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().ListAdministrators(ctx, in).Return(administrators, int64(2), nil)
+				mocks.user.EXPECT().
+					ListAdministrators(ctx, in).
+					Return(administrators, int64(2), nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
 			},
@@ -1842,10 +2066,13 @@ func TestSendAllAdministrators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.sendAllAdministrators(ctx, tt.payload)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.sendAllAdministrators(ctx, tt.payload)
+				assert.Equal(t, tt.hasErr, err != nil, err)
+			}),
+		)
 	}
 }
 
@@ -1924,7 +2151,9 @@ func TestSendAllCoordinators(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListCoordinators(ctx, in).Return(coordinators, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -1949,10 +2178,13 @@ func TestSendAllCoordinators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.sendAllCoordinators(ctx, tt.payload)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.sendAllCoordinators(ctx, tt.payload)
+				assert.Equal(t, tt.hasErr, err != nil, err)
+			}),
+		)
 	}
 }
 
@@ -2031,7 +2263,9 @@ func TestSendAllProducers(t *testing.T) {
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().ListProducers(ctx, in).Return(producers, int64(2), nil)
-				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.db.ReceivedQueue.EXPECT().
+					MultiCreate(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -2056,9 +2290,12 @@ func TestSendAllProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.sendAllProducers(ctx, tt.payload)
-			assert.Equal(t, tt.hasErr, err != nil, err)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.sendAllProducers(ctx, tt.payload)
+				assert.Equal(t, tt.hasErr, err != nil, err)
+			}),
+		)
 	}
 }

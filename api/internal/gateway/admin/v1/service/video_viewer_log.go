@@ -52,7 +52,10 @@ func (i VideoViewerLogInterval) MediaEntity() entity.AggregateVideoViewerLogInte
 	}
 }
 
-func NewVideoViewerLog(aggregate *entity.AggregatedVideoViewerLog, interval time.Duration) *VideoViewerLog {
+func NewVideoViewerLog(
+	aggregate *entity.AggregatedVideoViewerLog,
+	interval time.Duration,
+) *VideoViewerLog {
 	return &VideoViewerLog{
 		VideoViewerLog: response.VideoViewerLog{
 			VideoID: aggregate.VideoID,
@@ -63,7 +66,11 @@ func NewVideoViewerLog(aggregate *entity.AggregatedVideoViewerLog, interval time
 	}
 }
 
-func newEmptyVideoViewerLog(videoID string, startAt time.Time, interval time.Duration) *VideoViewerLog {
+func newEmptyVideoViewerLog(
+	videoID string,
+	startAt time.Time,
+	interval time.Duration,
+) *VideoViewerLog {
 	aggregate := &entity.AggregatedVideoViewerLog{
 		VideoID:    videoID,
 		ReportedAt: startAt,

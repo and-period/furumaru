@@ -48,7 +48,11 @@ func (c *videoComment) List(
 	if params.NextToken != "" {
 		nsec, err := strconv.ParseInt(params.NextToken, 10, 64)
 		if err != nil {
-			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
+			return nil, "", fmt.Errorf(
+				"database: failed to parse next token: %s: %w",
+				err.Error(),
+				database.ErrInvalidArgument,
+			)
 		}
 		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
 	}
@@ -73,7 +77,11 @@ func (c *videoComment) Create(ctx context.Context, comment *entity.VideoComment)
 	return dbError(err)
 }
 
-func (c *videoComment) Update(ctx context.Context, commentID string, params *database.UpdateVideoCommentParams) error {
+func (c *videoComment) Update(
+	ctx context.Context,
+	commentID string,
+	params *database.UpdateVideoCommentParams,
+) error {
 	updates := map[string]interface{}{
 		"disabled":   params.Disabled,
 		"updated_at": c.now(),

@@ -48,7 +48,10 @@ func (a *administrator) List(
 	return administrators, nil
 }
 
-func (a *administrator) Count(ctx context.Context, _ *database.ListAdministratorsParams) (int64, error) {
+func (a *administrator) Count(
+	ctx context.Context,
+	_ *database.ListAdministratorsParams,
+) (int64, error) {
 	total, err := a.db.Count(ctx, a.db.DB, &entity.Administrator{}, nil)
 	return total, dbError(err)
 }
@@ -116,7 +119,11 @@ func (a *administrator) Create(
 	return dbError(err)
 }
 
-func (a *administrator) Update(ctx context.Context, administratorID string, params *database.UpdateAdministratorParams) error {
+func (a *administrator) Update(
+	ctx context.Context,
+	administratorID string,
+	params *database.UpdateAdministratorParams,
+) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := a.now()
 		adminParams := map[string]interface{}{
@@ -177,7 +184,11 @@ func (a *administrator) get(
 	return administrator, err
 }
 
-func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ...*entity.Administrator) error {
+func (a *administrator) fill(
+	ctx context.Context,
+	tx *gorm.DB,
+	administrators ...*entity.Administrator,
+) error {
 	var (
 		admins entity.Admins
 		groups entity.AdminGroupUsers

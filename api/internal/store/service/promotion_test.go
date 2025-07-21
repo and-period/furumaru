@@ -98,7 +98,9 @@ func TestListPromotions(t *testing.T) {
 			name: "failed to count promotions",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Promotion.EXPECT().List(gomock.Any(), params).Return(promotions, nil)
-				mocks.db.Promotion.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Promotion.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListPromotionsInput{
 				Limit:  30,
@@ -114,12 +116,15 @@ func TestListPromotions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListPromotions(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListPromotions(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -154,7 +159,9 @@ func TestMultiGetPromotions(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().MultiGet(ctx, []string{"promotion-id"}).Return(promotions, nil)
+				mocks.db.Promotion.EXPECT().
+					MultiGet(ctx, []string{"promotion-id"}).
+					Return(promotions, nil)
 			},
 			input: &store.MultiGetPromotionsInput{
 				PromotionIDs: []string{"promotion-id"},
@@ -174,7 +181,9 @@ func TestMultiGetPromotions(t *testing.T) {
 		{
 			name: "failed to multi get promotions",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Promotion.EXPECT().MultiGet(ctx, []string{"promotion-id"}).Return(nil, assert.AnError)
+				mocks.db.Promotion.EXPECT().
+					MultiGet(ctx, []string{"promotion-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetPromotionsInput{
 				PromotionIDs: []string{"promotion-id"},
@@ -185,11 +194,14 @@ func TestMultiGetPromotions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetPromotions(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetPromotions(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -264,11 +276,14 @@ func TestGetPromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetPromotion(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetPromotion(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -343,11 +358,14 @@ func TestGetPromotionByCode(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetPromotionByCode(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetPromotionByCode(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -395,7 +413,9 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "success for all",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, promotion *entity.Promotion) error {
@@ -434,7 +454,9 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "success for only shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
 				mocks.db.Promotion.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -499,8 +521,12 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Shop.EXPECT().
+					GetByCoordinatorID(ctx, "admin-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreatePromotionInput{
 				AdminID:      "admin-id",
@@ -519,7 +545,9 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "invalid admin type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeProducer), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeProducer), nil)
 			},
 			input: &store.CreatePromotionInput{
 				AdminID:      "admin-id",
@@ -538,7 +566,9 @@ func TestCreatePromotion(t *testing.T) {
 		{
 			name: "failed to create promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreatePromotionInput{
@@ -558,10 +588,13 @@ func TestCreatePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreatePromotion(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreatePromotion(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -641,7 +674,9 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "success for all",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
 			},
@@ -663,8 +698,12 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "success for only shop when administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.db.Promotion.EXPECT().
+					Get(ctx, "promotion-id").
+					Return(promotion("shop-id"), nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
 			},
 			input: &store.UpdatePromotionInput{
@@ -685,8 +724,12 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "success for only shop when coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().
+					Get(ctx, "promotion-id").
+					Return(promotion("shop-id"), nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
 				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(nil)
 			},
@@ -734,7 +777,9 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to get promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(nil, assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
@@ -755,7 +800,9 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "cannot update promotion for all",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
 			},
 			input: &store.UpdatePromotionInput{
@@ -776,9 +823,15 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().
+					Get(ctx, "promotion-id").
+					Return(promotion("shop-id"), nil)
+				mocks.db.Shop.EXPECT().
+					GetByCoordinatorID(ctx, "admin-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
 				AdminID:      "admin-id",
@@ -799,8 +852,12 @@ func TestUpdatePromotion(t *testing.T) {
 			name: "cannot update other shop promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
 				shop := &entity.Shop{ID: "invalid-id"}
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.db.Promotion.EXPECT().
+					Get(ctx, "promotion-id").
+					Return(promotion("shop-id"), nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "admin-id").Return(shop, nil)
 			},
 			input: &store.UpdatePromotionInput{
@@ -821,8 +878,12 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "invalid admin type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeProducer), nil)
-				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion("shop-id"), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeProducer), nil)
+				mocks.db.Promotion.EXPECT().
+					Get(ctx, "promotion-id").
+					Return(promotion("shop-id"), nil)
 			},
 			input: &store.UpdatePromotionInput{
 				AdminID:      "admin-id",
@@ -842,9 +903,13 @@ func TestUpdatePromotion(t *testing.T) {
 		{
 			name: "failed to update promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion(""), nil)
-				mocks.db.Promotion.EXPECT().Update(ctx, "promotion-id", params).Return(assert.AnError)
+				mocks.db.Promotion.EXPECT().
+					Update(ctx, "promotion-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdatePromotionInput{
 				AdminID:      "admin-id",
@@ -864,10 +929,13 @@ func TestUpdatePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdatePromotion(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdatePromotion(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -909,9 +977,12 @@ func TestDeletePromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeletePromotion(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeletePromotion(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

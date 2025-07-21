@@ -15,13 +15,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotificationsInput) (entity.Notifications, int64, error) {
+func (s *service) ListNotifications(
+	ctx context.Context,
+	in *messenger.ListNotificationsInput,
+) (entity.Notifications, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
 	orders, err := s.newListNotificationsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list notifications orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list notifications orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListNotificationsParams{
 		Limit:  int(in.Limit),
@@ -49,7 +56,9 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 	return notifications, total, nil
 }
 
-func (s *service) newListNotificationsOrders(in []*messenger.ListNotificationsOrder) ([]*database.ListNotificationsOrder, error) {
+func (s *service) newListNotificationsOrders(
+	in []*messenger.ListNotificationsOrder,
+) ([]*database.ListNotificationsOrder, error) {
 	res := make([]*database.ListNotificationsOrder, len(in))
 	for i := range in {
 		var key database.ListNotificationsOrderKey
@@ -69,7 +78,10 @@ func (s *service) newListNotificationsOrders(in []*messenger.ListNotificationsOr
 	return res, nil
 }
 
-func (s *service) GetNotification(ctx context.Context, in *messenger.GetNotificationInput) (*entity.Notification, error) {
+func (s *service) GetNotification(
+	ctx context.Context,
+	in *messenger.GetNotificationInput,
+) (*entity.Notification, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -103,7 +115,11 @@ func (s *service) CreateNotification(
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("service: not found reference: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: not found reference: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -120,7 +136,11 @@ func (s *service) CreateNotification(
 	}
 	notification := entity.NewNotification(params)
 	if err := notification.Validate(s.now()); err != nil {
-		return nil, fmt.Errorf("service: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: invalid notification: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err := s.db.Notification.Create(ctx, notification); err != nil {
 		return nil, internalError(err)
@@ -132,13 +152,20 @@ func (s *service) CreateNotification(
 			NotificationID: notification.ID,
 		}
 		if err := s.ReserveNotification(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to reserve notification",
+				zap.String("notificationId", notification.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return notification, nil
 }
 
-func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
+func (s *service) UpdateNotification(
+	ctx context.Context,
+	in *messenger.UpdateNotificationInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -147,7 +174,11 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	}
 	_, err := s.user.GetAdmin(ctx, adminIn)
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid admin id format: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return internalError(err)
@@ -166,7 +197,11 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	notification.Note = in.Note
 	notification.PublishedAt = in.PublishedAt
 	if err := notification.Validate(s.now()); err != nil {
-		return fmt.Errorf("api: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid notification: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.UpdateNotificationParams{
 		Targets:     in.Targets,
@@ -186,13 +221,20 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 			NotificationID: notification.ID,
 		}
 		if err := s.ReserveNotification(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to reserve notification",
+				zap.String("notificationId", notification.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
 }
 
-func (s *service) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
+func (s *service) DeleteNotification(
+	ctx context.Context,
+	in *messenger.DeleteNotificationInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

@@ -52,7 +52,10 @@ func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) multiGetSpotTypes(ctx context.Context, spotTypeIDs []string) (service.SpotTypes, error) {
+func (h *handler) multiGetSpotTypes(
+	ctx context.Context,
+	spotTypeIDs []string,
+) (service.SpotTypes, error) {
 	if len(spotTypeIDs) == 0 {
 		return service.SpotTypes{}, nil
 	}

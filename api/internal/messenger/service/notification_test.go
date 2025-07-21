@@ -84,7 +84,9 @@ func TestListNotificaitons(t *testing.T) {
 		{
 			name: "failed to list notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					List(gomock.Any(), params).
+					Return(nil, assert.AnError)
 				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &messenger.ListNotificationsInput{
@@ -104,7 +106,9 @@ func TestListNotificaitons(t *testing.T) {
 			name: "failed to count notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().List(gomock.Any(), params).Return(notifications, nil)
-				mocks.db.Notification.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListNotificationsInput{
 				Limit:  30,
@@ -122,12 +126,15 @@ func TestListNotificaitons(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListNotifications(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListNotifications(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -175,7 +182,9 @@ func TestGetNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.GetNotificationInput{
 				NotificationID: "notification-id",
@@ -186,11 +195,14 @@ func TestGetNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -244,7 +256,9 @@ func TestCreateNotification(t *testing.T) {
 						return nil
 					})
 				// 非同期関連
-				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypeSystem,
@@ -284,7 +298,9 @@ func TestCreateNotification(t *testing.T) {
 						return nil
 					})
 				// 非同期関連
-				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypePromotion,
@@ -307,7 +323,9 @@ func TestCreateNotification(t *testing.T) {
 		{
 			name: "not found admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetAdmin(gomock.Any(), adminIn).
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypeSystem,
@@ -376,10 +394,13 @@ func TestCreateNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -430,10 +451,14 @@ func TestUpdateNotification(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(notification(), nil)
 				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", params).Return(nil)
 				// 非同期関連
-				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -452,7 +477,9 @@ func TestUpdateNotification(t *testing.T) {
 		{
 			name: "not found admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetAdmin(gomock.Any(), adminIn).
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -497,7 +524,9 @@ func TestUpdateNotification(t *testing.T) {
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -539,7 +568,9 @@ func TestUpdateNotification(t *testing.T) {
 			name: "invalid domain validation",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(notification(), nil)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -559,8 +590,12 @@ func TestUpdateNotification(t *testing.T) {
 			name: "failed to update notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
-				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", params).Return(assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(notification(), nil)
+				mocks.db.Notification.EXPECT().
+					Update(ctx, "notification-id", params).
+					Return(assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -579,10 +614,13 @@ func TestUpdateNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -624,9 +662,12 @@ func TestDeleteNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

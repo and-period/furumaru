@@ -80,7 +80,35 @@ func TestGeometry_Scan(t *testing.T) {
 		t.Parallel()
 		geometry := Geometry{}
 
-		err := geometry.Scan([]byte{0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0, 0, 240, 191})
+		err := geometry.Scan(
+			[]byte{
+				0,
+				0,
+				0,
+				0,
+				1,
+				1,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				240,
+				63,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				240,
+				191,
+			},
+		)
 		assert.NoError(t, err)
 		assert.Equal(t, Geometry{X: 1, Y: -1}, geometry)
 	})
@@ -88,7 +116,9 @@ func TestGeometry_Scan(t *testing.T) {
 		t.Parallel()
 		geometry := Geometry{}
 
-		err := geometry.Scan([]byte{0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0, 0})
+		err := geometry.Scan(
+			[]byte{0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0, 0},
+		)
 		assert.Error(t, err)
 		assert.Equal(t, Geometry{}, geometry)
 	})

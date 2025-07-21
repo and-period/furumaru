@@ -58,8 +58,12 @@ func TestListBroadcastComments(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.BroadcastComment.EXPECT().List(ctx, params).Return(comments, "next-token", nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.db.BroadcastComment.EXPECT().
+					List(ctx, params).
+					Return(comments, "next-token", nil)
 			},
 			input: &media.ListBroadcastCommentsInput{
 				ScheduleID:   "schedule-id",
@@ -93,7 +97,9 @@ func TestListBroadcastComments(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ListBroadcastCommentsInput{
 				ScheduleID:   "schedule-id",
@@ -109,7 +115,9 @@ func TestListBroadcastComments(t *testing.T) {
 		{
 			name: "failed to list broadcast comments",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastComment.EXPECT().List(ctx, params).Return(nil, "", assert.AnError)
 			},
 			input: &media.ListBroadcastCommentsInput{
@@ -125,12 +133,15 @@ func TestListBroadcastComments(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, token, err := service.ListBroadcastComments(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectToken, token)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, token, err := service.ListBroadcastComments(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectToken, token)
+			}),
+		)
 	}
 }
 
@@ -158,7 +169,9 @@ func TestCreateBroadcastComment(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastComment.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, comment *entity.BroadcastComment) error {
@@ -189,7 +202,9 @@ func TestCreateBroadcastComment(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateBroadcastCommentInput{
 				ScheduleID: "schedule-id",
@@ -201,7 +216,9 @@ func TestCreateBroadcastComment(t *testing.T) {
 		{
 			name: "failed to create broadcast comment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastComment.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.CreateBroadcastCommentInput{
@@ -213,10 +230,13 @@ func TestCreateBroadcastComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateBroadcastComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateBroadcastComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -244,7 +264,9 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastComment.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, comment *entity.BroadcastComment) error {
@@ -274,7 +296,9 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateBroadcastGuestCommentInput{
 				ScheduleID: "schedule-id",
@@ -285,7 +309,9 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		{
 			name: "failed to create broadcast comment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastComment.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.CreateBroadcastGuestCommentInput{
@@ -296,10 +322,13 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateBroadcastGuestComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateBroadcastGuestComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -334,7 +363,9 @@ func TestUpdateBroadcastComment(t *testing.T) {
 		{
 			name: "failed to update broadcast comment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.BroadcastComment.EXPECT().Update(ctx, "comment-id", params).Return(assert.AnError)
+				mocks.db.BroadcastComment.EXPECT().
+					Update(ctx, "comment-id", params).
+					Return(assert.AnError)
 			},
 			input: &media.UpdateBroadcastCommentInput{
 				CommentID: "comment-id",
@@ -344,9 +375,12 @@ func TestUpdateBroadcastComment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateBroadcastComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateBroadcastComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

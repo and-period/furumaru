@@ -79,7 +79,9 @@ func (os OrderExperiences) MapByOrderID() map[string]*OrderExperience {
 	return m
 }
 
-func NewOrderExperienceRemarks(params *NewOrderExperienceRemarksParams) (*OrderExperienceRemarks, error) {
+func NewOrderExperienceRemarks(
+	params *NewOrderExperienceRemarksParams,
+) (*OrderExperienceRemarks, error) {
 	var (
 		requestedDate, requestedTime time.Time
 		err                          error

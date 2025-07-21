@@ -24,7 +24,11 @@ func NewPushTemplate(db *mysql.Client) database.PushTemplate {
 	}
 }
 
-func (t *pushTemplate) Get(ctx context.Context, pushID entity.PushTemplateID, fields ...string) (*entity.PushTemplate, error) {
+func (t *pushTemplate) Get(
+	ctx context.Context,
+	pushID entity.PushTemplateID,
+	fields ...string,
+) (*entity.PushTemplate, error) {
 	var template *entity.PushTemplate
 
 	stmt := t.db.Statement(ctx, t.db.DB, pushTemplateTable, fields...).

@@ -9,7 +9,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListSpotTypes(ctx context.Context, in *store.ListSpotTypesInput) (entity.SpotTypes, int64, error) {
+func (s *service) ListSpotTypes(
+	ctx context.Context,
+	in *store.ListSpotTypesInput,
+) (entity.SpotTypes, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -37,7 +40,10 @@ func (s *service) ListSpotTypes(ctx context.Context, in *store.ListSpotTypesInpu
 	return types, total, nil
 }
 
-func (s *service) MultiGetSpotTypes(ctx context.Context, in *store.MultiGetSpotTypesInput) (entity.SpotTypes, error) {
+func (s *service) MultiGetSpotTypes(
+	ctx context.Context,
+	in *store.MultiGetSpotTypesInput,
+) (entity.SpotTypes, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -45,7 +51,10 @@ func (s *service) MultiGetSpotTypes(ctx context.Context, in *store.MultiGetSpotT
 	return types, internalError(err)
 }
 
-func (s *service) GetSpotType(ctx context.Context, in *store.GetSpotTypeInput) (*entity.SpotType, error) {
+func (s *service) GetSpotType(
+	ctx context.Context,
+	in *store.GetSpotTypeInput,
+) (*entity.SpotType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -53,7 +62,10 @@ func (s *service) GetSpotType(ctx context.Context, in *store.GetSpotTypeInput) (
 	return typ, internalError(err)
 }
 
-func (s *service) CreateSpotType(ctx context.Context, in *store.CreateSpotTypeInput) (*entity.SpotType, error) {
+func (s *service) CreateSpotType(
+	ctx context.Context,
+	in *store.CreateSpotTypeInput,
+) (*entity.SpotType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

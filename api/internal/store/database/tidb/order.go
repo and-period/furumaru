@@ -63,7 +63,11 @@ func (p listOrdersParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (o *order) List(ctx context.Context, params *database.ListOrdersParams, fields ...string) (entity.Orders, error) {
+func (o *order) List(
+	ctx context.Context,
+	params *database.ListOrdersParams,
+	fields ...string,
+) (entity.Orders, error) {
 	var orders entity.Orders
 
 	p := listOrdersParams(*params)
@@ -82,7 +86,10 @@ func (o *order) List(ctx context.Context, params *database.ListOrdersParams, fie
 	return orders, nil
 }
 
-func (o *order) ListUserIDs(ctx context.Context, params *database.ListOrdersParams) ([]string, int64, error) {
+func (o *order) ListUserIDs(
+	ctx context.Context,
+	params *database.ListOrdersParams,
+) ([]string, int64, error) {
 	var userIDs []string
 	var total int64
 
@@ -116,7 +123,10 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 	return order, dbError(err)
 }
 
-func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error) {
+func (o *order) GetByTransactionID(
+	ctx context.Context,
+	userID, transactionID string,
+) (*entity.Order, error) {
 	var order *entity.Order
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "orders.*").
@@ -133,7 +143,10 @@ func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID st
 	return order, nil
 }
 
-func (o *order) GetByTransactionIDWithSessionID(ctx context.Context, sessionID, transactionID string) (*entity.Order, error) {
+func (o *order) GetByTransactionIDWithSessionID(
+	ctx context.Context,
+	sessionID, transactionID string,
+) (*entity.Order, error) {
 	var order *entity.Order
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "orders.*").
@@ -201,14 +214,21 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	return dbError(err)
 }
 
-func (o *order) UpdateAuthorized(ctx context.Context, orderID string, params *database.UpdateOrderAuthorizedParams) error {
+func (o *order) UpdateAuthorized(
+	ctx context.Context,
+	orderID string,
+	params *database.UpdateOrderAuthorizedParams,
+) error {
 	p := &updateOrderPaymentParams{
 		orderID:  orderID,
 		status:   entity.PaymentStatusAuthorized,
 		issuedAt: params.IssuedAt,
 		validate: func(order *entity.Order) error {
 			if order.Completed() {
-				return fmt.Errorf("tidb: this order is already completed: %w", database.ErrFailedPrecondition)
+				return fmt.Errorf(
+					"tidb: this order is already completed: %w",
+					database.ErrFailedPrecondition,
+				)
 			}
 			return nil
 		},
@@ -224,7 +244,11 @@ func (o *order) UpdateAuthorized(ctx context.Context, orderID string, params *da
 	return o.updatePayment(ctx, p)
 }
 
-func (o *order) UpdateCaptured(ctx context.Context, orderID string, params *database.UpdateOrderCapturedParams) error {
+func (o *order) UpdateCaptured(
+	ctx context.Context,
+	orderID string,
+	params *database.UpdateOrderCapturedParams,
+) error {
 	p := &updateOrderPaymentParams{
 		orderID:  orderID,
 		status:   entity.PaymentStatusCaptured,
@@ -242,7 +266,11 @@ func (o *order) UpdateCaptured(ctx context.Context, orderID string, params *data
 	return o.updatePayment(ctx, p)
 }
 
-func (o *order) UpdateFailed(ctx context.Context, orderID string, params *database.UpdateOrderFailedParams) error {
+func (o *order) UpdateFailed(
+	ctx context.Context,
+	orderID string,
+	params *database.UpdateOrderFailedParams,
+) error {
 	p := &updateOrderPaymentParams{
 		orderID:  orderID,
 		status:   params.Status,
@@ -260,7 +288,11 @@ func (o *order) UpdateFailed(ctx context.Context, orderID string, params *databa
 	return o.updatePayment(ctx, p)
 }
 
-func (o *order) UpdateRefunded(ctx context.Context, orderID string, params *database.UpdateOrderRefundedParams) error {
+func (o *order) UpdateRefunded(
+	ctx context.Context,
+	orderID string,
+	params *database.UpdateOrderRefundedParams,
+) error {
 	p := &updateOrderPaymentParams{
 		orderID:  orderID,
 		status:   params.Status,
@@ -283,14 +315,21 @@ func (o *order) UpdateRefunded(ctx context.Context, orderID string, params *data
 	return o.updatePayment(ctx, p)
 }
 
-func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
+func (o *order) UpdateFulfillment(
+	ctx context.Context,
+	orderID, fulfillmentID string,
+	params *database.UpdateOrderFulfillmentParams,
+) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
 		order, err := o.get(ctx, tx, orderID)
 		if err != nil {
 			return err
 		}
 		if order.Completed() {
-			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"mysql: this order is already completed: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		updates := map[string]interface{}{
@@ -321,7 +360,11 @@ func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID st
 	return dbError(err)
 }
 
-func (o *order) Draft(ctx context.Context, orderID string, params *database.DraftOrderParams) error {
+func (o *order) Draft(
+	ctx context.Context,
+	orderID string,
+	params *database.DraftOrderParams,
+) error {
 	updates := map[string]interface{}{
 		"shipping_message": params.ShippingMessage,
 		"updated_at":       o.now(),
@@ -333,7 +376,11 @@ func (o *order) Draft(ctx context.Context, orderID string, params *database.Draf
 	return dbError(err)
 }
 
-func (o *order) Complete(ctx context.Context, orderID string, params *database.CompleteOrderParams) error {
+func (o *order) Complete(
+	ctx context.Context,
+	orderID string,
+	params *database.CompleteOrderParams,
+) error {
 	now := o.now()
 	updates := map[string]interface{}{
 		"shipping_message": params.ShippingMessage,
@@ -348,7 +395,10 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	return dbError(err)
 }
 
-func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (*entity.AggregatedOrder, error) {
+func (o *order) Aggregate(
+	ctx context.Context,
+	params *database.AggregateOrdersParams,
+) (*entity.AggregatedOrder, error) {
 	var orders entity.AggregatedOrder
 
 	fields := []string{
@@ -371,7 +421,10 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 	return &orders, dbError(err)
 }
 
-func (o *order) AggregateByUser(ctx context.Context, params *database.AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error) {
+func (o *order) AggregateByUser(
+	ctx context.Context,
+	params *database.AggregateOrdersByUserParams,
+) (entity.AggregatedUserOrders, error) {
 	var orders entity.AggregatedUserOrders
 
 	fields := []string{
@@ -494,7 +547,12 @@ func (o *order) AggregateByPeriod(
 	return internal.entities(), nil
 }
 
-func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
+func (o *order) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	orderID string,
+	fields ...string,
+) (*entity.Order, error) {
 	var order *entity.Order
 
 	stmt := o.db.Statement(ctx, tx, orderTable, fields...).
@@ -548,7 +606,8 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		return err
 	}
 
-	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID(), experiences.MapByOrderID())
+	entity.Orders(orders).
+		Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID(), experiences.MapByOrderID())
 	return nil
 }
 
@@ -572,7 +631,10 @@ func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentPar
 		}
 		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
 		if updatedAt.After(params.issuedAt) {
-			return fmt.Errorf("tidb: this refunded event is older than the latest data: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"tidb: this refunded event is older than the latest data: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 		if err := params.validate(order); err != nil {
 			return err
@@ -591,7 +653,12 @@ func (o *order) updatePayment(ctx context.Context, params *updateOrderPaymentPar
 	return dbError(err)
 }
 
-func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string, status entity.OrderStatus) error {
+func (o *order) updateStatus(
+	ctx context.Context,
+	tx *gorm.DB,
+	orderID string,
+	status entity.OrderStatus,
+) error {
 	updates := map[string]interface{}{
 		"status":     status,
 		"updated_at": o.now(),
@@ -609,7 +676,9 @@ type internalOrderExperience struct {
 
 type internalOrderExperiences []*internalOrderExperience
 
-func newInternalOrderExperience(experience *entity.OrderExperience) (*internalOrderExperience, error) {
+func newInternalOrderExperience(
+	experience *entity.OrderExperience,
+) (*internalOrderExperience, error) {
 	remarks, err := experience.Remarks.Marshal()
 	if err != nil {
 		return nil, fmt.Errorf("tidb: failed to marshal order experience remarks: %w", err)

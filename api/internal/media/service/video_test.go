@@ -144,12 +144,15 @@ func TestListVideos(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListVideos(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListVideos(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -200,7 +203,9 @@ func TestListProductVideos(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Video.EXPECT().ListByProductID(gomock.Any(), "product-id").Return(videos, nil)
+				mocks.db.Video.EXPECT().
+					ListByProductID(gomock.Any(), "product-id").
+					Return(videos, nil)
 			},
 			input: &media.ListProductVideosInput{
 				ProductID: "product-id",
@@ -218,7 +223,9 @@ func TestListProductVideos(t *testing.T) {
 		{
 			name: "failed to list videos",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Video.EXPECT().ListByProductID(gomock.Any(), "product-id").Return(nil, assert.AnError)
+				mocks.db.Video.EXPECT().
+					ListByProductID(gomock.Any(), "product-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ListProductVideosInput{
 				ProductID: "product-id",
@@ -229,11 +236,14 @@ func TestListProductVideos(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListProductVideos(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListProductVideos(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -284,7 +294,9 @@ func TestListExperienceVideos(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Video.EXPECT().ListByExperienceID(gomock.Any(), "experience-id").Return(videos, nil)
+				mocks.db.Video.EXPECT().
+					ListByExperienceID(gomock.Any(), "experience-id").
+					Return(videos, nil)
 			},
 			input: &media.ListExperienceVideosInput{
 				ExperienceID: "experience-id",
@@ -302,7 +314,9 @@ func TestListExperienceVideos(t *testing.T) {
 		{
 			name: "failed to list videos",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Video.EXPECT().ListByExperienceID(gomock.Any(), "experience-id").Return(nil, assert.AnError)
+				mocks.db.Video.EXPECT().
+					ListByExperienceID(gomock.Any(), "experience-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ListExperienceVideosInput{
 				ExperienceID: "experience-id",
@@ -313,11 +327,14 @@ func TestListExperienceVideos(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListExperienceVideos(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListExperienceVideos(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -395,11 +412,14 @@ func TestGetVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetVideo(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -435,9 +455,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 				mocks.db.Video.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, video *entity.Video) error {
@@ -496,9 +520,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, exception.ErrNotFound)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -519,9 +547,15 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "unmatch products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(sentity.Products{}, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProducts(gomock.Any(), productIn).
+					Return(sentity.Products{}, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -542,9 +576,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "unmatch experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(sentity.Experiences{}, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(sentity.Experiences{}, nil)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -565,9 +603,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -588,9 +630,15 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(nil, assert.AnError)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.store.EXPECT().
+					MultiGetProducts(gomock.Any(), productIn).
+					Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -611,9 +659,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "failed to multi get experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateVideoInput{
 				Title:             "オンデマンド配信",
@@ -634,9 +686,13 @@ func TestCreateVideo(t *testing.T) {
 		{
 			name: "failed to create video",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 				mocks.db.Video.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.CreateVideoInput{
@@ -658,10 +714,13 @@ func TestCreateVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateVideo(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -705,7 +764,9 @@ func TestUpdateVideo(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 				mocks.db.Video.EXPECT().Update(ctx, "video-id", params).Return(nil)
 			},
 			input: &media.UpdateVideoInput{
@@ -733,8 +794,12 @@ func TestUpdateVideo(t *testing.T) {
 		{
 			name: "unmatch products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(sentity.Products{}, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetProducts(gomock.Any(), productIn).
+					Return(sentity.Products{}, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.UpdateVideoInput{
 				VideoID:           "video-id",
@@ -756,7 +821,9 @@ func TestUpdateVideo(t *testing.T) {
 			name: "unmatch experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(sentity.Experiences{}, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(sentity.Experiences{}, nil)
 			},
 			input: &media.UpdateVideoInput{
 				VideoID:           "video-id",
@@ -777,8 +844,12 @@ func TestUpdateVideo(t *testing.T) {
 		{
 			name: "failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(nil, assert.AnError)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetProducts(gomock.Any(), productIn).
+					Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 			},
 			input: &media.UpdateVideoInput{
 				VideoID:           "video-id",
@@ -800,7 +871,9 @@ func TestUpdateVideo(t *testing.T) {
 			name: "failed to multi get experiences",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(nil, assert.AnError)
 			},
 			input: &media.UpdateVideoInput{
 				VideoID:           "video-id",
@@ -822,7 +895,9 @@ func TestUpdateVideo(t *testing.T) {
 			name: "failed to update video",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
-				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.store.EXPECT().
+					MultiGetExperiences(gomock.Any(), experienceIn).
+					Return(experiences, nil)
 				mocks.db.Video.EXPECT().Update(ctx, "video-id", params).Return(assert.AnError)
 			},
 			input: &media.UpdateVideoInput{
@@ -844,10 +919,13 @@ func TestUpdateVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateVideo(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -889,9 +967,12 @@ func TestDeleteVideo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteVideo(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

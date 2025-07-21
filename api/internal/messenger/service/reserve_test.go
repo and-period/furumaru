@@ -90,10 +90,13 @@ func TestReserveStartLive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ReserveStartLive(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ReserveStartLive(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -137,7 +140,9 @@ func TestReserveNotification(t *testing.T) {
 		{
 			name: "not found notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, database.ErrNotFound)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(nil, database.ErrNotFound)
 			},
 			input: &messenger.ReserveNotificationInput{
 				NotificationID: "notification-id",
@@ -147,7 +152,9 @@ func TestReserveNotification(t *testing.T) {
 		{
 			name: "failed to get notification",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(nil, assert.AnError)
+				mocks.db.Notification.EXPECT().
+					Get(ctx, "notification-id").
+					Return(nil, assert.AnError)
 			},
 			input: &messenger.ReserveNotificationInput{
 				NotificationID: "notification-id",
@@ -167,9 +174,12 @@ func TestReserveNotification(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ReserveNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ReserveNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }

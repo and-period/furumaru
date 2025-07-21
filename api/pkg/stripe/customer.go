@@ -23,7 +23,10 @@ func (c *client) GetCustomer(ctx context.Context, customerID string) (*stripe.Cu
 }
 
 // reference: https://stripe.com/docs/api/customers/create
-func (c *client) CreateCustomer(ctx context.Context, in *CreateCustomerParams) (*stripe.Customer, error) {
+func (c *client) CreateCustomer(
+	ctx context.Context,
+	in *CreateCustomerParams,
+) (*stripe.Customer, error) {
 	params := &stripe.CustomerParams{
 		Params: stripe.Params{
 			Context:  ctx,

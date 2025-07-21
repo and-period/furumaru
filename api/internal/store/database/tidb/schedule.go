@@ -33,7 +33,10 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("shop_id = ?", p.ShopID)
 	}
 	if p.ProducerID != "" {
-		stmt = stmt.Where("EXISTS (SELECT * FROM lives WHERE lives.schedule_id = schedules.id AND lives.producer_id = ?)", p.ProducerID)
+		stmt = stmt.Where(
+			"EXISTS (SELECT * FROM lives WHERE lives.schedule_id = schedules.id AND lives.producer_id = ?)",
+			p.ProducerID,
+		)
 	}
 	if !p.StartAtGte.IsZero() {
 		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
@@ -64,7 +67,11 @@ func (p listSchedulesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (s *schedule) List(ctx context.Context, params *database.ListSchedulesParams, fields ...string) (entity.Schedules, error) {
+func (s *schedule) List(
+	ctx context.Context,
+	params *database.ListSchedulesParams,
+	fields ...string,
+) (entity.Schedules, error) {
 	var schedules entity.Schedules
 
 	p := listSchedulesParams(*params)
@@ -89,7 +96,11 @@ func (s *schedule) Count(ctx context.Context, params *database.ListSchedulesPara
 	return total, dbError(err)
 }
 
-func (s *schedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error) {
+func (s *schedule) MultiGet(
+	ctx context.Context,
+	scheduleIDs []string,
+	fields ...string,
+) (entity.Schedules, error) {
 	var schedules entity.Schedules
 
 	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...).
@@ -104,7 +115,11 @@ func (s *schedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ..
 	return schedules, nil
 }
 
-func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
+func (s *schedule) Get(
+	ctx context.Context,
+	scheduleID string,
+	fields ...string,
+) (*entity.Schedule, error) {
 	schedule, err := s.get(ctx, s.db.DB, scheduleID, fields...)
 	return schedule, dbError(err)
 }
@@ -117,14 +132,21 @@ func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error 
 	return dbError(err)
 }
 
-func (s *schedule) Update(ctx context.Context, scheduleID string, params *database.UpdateScheduleParams) error {
+func (s *schedule) Update(
+	ctx context.Context,
+	scheduleID string,
+	params *database.UpdateScheduleParams,
+) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		schedule, err := s.get(ctx, tx, scheduleID, "start_at")
 		if err != nil {
 			return err
 		}
 		if s.now().After(schedule.StartAt) {
-			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"database: this schedule has already started: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		update := map[string]interface{}{
@@ -155,7 +177,11 @@ func (s *schedule) Delete(ctx context.Context, scheduleID string) error {
 	return dbError(err)
 }
 
-func (s *schedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
+func (s *schedule) Approve(
+	ctx context.Context,
+	scheduleID string,
+	params *database.ApproveScheduleParams,
+) error {
 	var approvedAdminID *string
 	if params.Approved {
 		approvedAdminID = &params.ApprovedAdminID
@@ -185,7 +211,12 @@ func (s *schedule) Publish(ctx context.Context, scheduleID string, public bool) 
 	return dbError(err)
 }
 
-func (s *schedule) get(ctx context.Context, tx *gorm.DB, scheduleID string, fields ...string) (*entity.Schedule, error) {
+func (s *schedule) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	scheduleID string,
+	fields ...string,
+) (*entity.Schedule, error) {
 	var schedule *entity.Schedule
 
 	err := s.db.Statement(ctx, tx, scheduleTable, fields...).

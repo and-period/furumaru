@@ -30,7 +30,13 @@ func TestVideoComment_List(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	video := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
@@ -122,7 +128,13 @@ func TestVideoComment_Create(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	video := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
@@ -190,7 +202,13 @@ func TestVideoComment_Update(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	vide := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&vide).Error
 	require.NoError(t, err)
 

@@ -162,7 +162,9 @@ func TestScheduler_Run(t *testing.T) {
 				mocks.db.Schedule.EXPECT().List(ctx, params(now)).Return(schedules, nil)
 				mocks.messenger.EXPECT().NotifyNotification(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.db.Schedule.EXPECT().UpsertProcessing(gomock.Any(), schedules[0]).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(gomock.Any(), messageType, "message-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(gomock.Any(), messageType, "message-id").
+					Return(nil)
 			},
 			target: now,
 			expect: nil,
@@ -175,7 +177,9 @@ func TestScheduler_Run(t *testing.T) {
 				mocks.db.Schedule.EXPECT().List(ctx, params(now)).Return(schedules, nil)
 				mocks.messenger.EXPECT().NotifyStartLive(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.db.Schedule.EXPECT().UpsertProcessing(gomock.Any(), schedules[0]).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(gomock.Any(), messageType, "message-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(gomock.Any(), messageType, "message-id").
+					Return(nil)
 			},
 			target: now,
 			expect: nil,
@@ -201,10 +205,13 @@ func TestScheduler_Run(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
-			err := scheduler.Run(ctx, tt.target)
-			assert.ErrorIs(t, err, tt.expect)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
+				err := scheduler.Run(ctx, tt.target)
+				assert.ErrorIs(t, err, tt.expect)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -231,7 +238,9 @@ func TestScheduler_execute(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").
+					Return(nil)
 			},
 			schedule: schedule,
 			execute: func(ctx context.Context, schedule *entity.Schedule) error {
@@ -259,7 +268,9 @@ func TestScheduler_execute(t *testing.T) {
 		{
 			name: "success canceled",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().UpdateCancel(ctx, entity.ScheduleTypeNotification, "notification-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateCancel(ctx, entity.ScheduleTypeNotification, "notification-id").
+					Return(nil)
 			},
 			schedule: &entity.Schedule{
 				MessageType: entity.ScheduleTypeNotification,
@@ -301,7 +312,9 @@ func TestScheduler_execute(t *testing.T) {
 			name: "failed to update done",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").Return(assert.AnError)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").
+					Return(assert.AnError)
 			},
 			schedule: schedule,
 			execute: func(ctx context.Context, schedule *entity.Schedule) error {
@@ -312,9 +325,12 @@ func TestScheduler_execute(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
-			err := scheduler.execute(ctx, tt.schedule, tt.execute)
-			assert.ErrorIs(t, err, tt.expect)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
+				err := scheduler.execute(ctx, tt.schedule, tt.execute)
+				assert.ErrorIs(t, err, tt.expect)
+			}, withNow(now)),
+		)
 	}
 }

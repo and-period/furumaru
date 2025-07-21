@@ -284,7 +284,10 @@ func (h *handler) getContact(ctx context.Context, contactID string) (*service.Co
 	return contact, nil
 }
 
-func (h *handler) getContactDetailsByContactID(ctx context.Context, contactID string) (service.Threads, int64, error) {
+func (h *handler) getContactDetailsByContactID(
+	ctx context.Context,
+	contactID string,
+) (service.Threads, int64, error) {
 	in := &messenger.ListThreadsInput{
 		ContactID: contactID,
 	}

@@ -188,7 +188,10 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		experiences, err = h.multiGetExperiences(ectx, req.ExperienceIDs)
 		if len(experiences) != len(req.ExperienceIDs) {
-			return fmt.Errorf("handler: unmatch experiences length: %w", exception.ErrInvalidArgument)
+			return fmt.Errorf(
+				"handler: unmatch experiences length: %w",
+				exception.ErrInvalidArgument,
+			)
 		}
 		return
 	})
@@ -262,7 +265,10 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 			return err
 		}
 		if len(experiences) != len(req.ExperienceIDs) {
-			return fmt.Errorf("handler: unmatch experiences length: %w", exception.ErrInvalidArgument)
+			return fmt.Errorf(
+				"handler: unmatch experiences length: %w",
+				exception.ErrInvalidArgument,
+			)
 		}
 		return nil
 	})
@@ -311,7 +317,11 @@ func (h *handler) AnalyzeVideo(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	viewerLogIntervalStr := util.GetQuery(ctx, "viewerLogInterval", string(defaultViewerLogInterval))
+	viewerLogIntervalStr := util.GetQuery(
+		ctx,
+		"viewerLogInterval",
+		string(defaultViewerLogInterval),
+	)
 
 	startAt := jst.ParseFromUnix(startAtUnix)
 	endAt := jst.ParseFromUnix(endAtUnix)
@@ -330,7 +340,8 @@ func (h *handler) AnalyzeVideo(ctx *gin.Context) {
 	}
 
 	res := &response.AnalyzeVideoResponse{
-		ViewerLogs:   service.NewVideoViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+		ViewerLogs: service.NewVideoViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).
+			Response(),
 		TotalViewers: totalViewers,
 	}
 	ctx.JSON(http.StatusOK, res)

@@ -48,7 +48,11 @@ func (p listLivesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (l *live) List(ctx context.Context, params *database.ListLivesParams, fields ...string) (entity.Lives, error) {
+func (l *live) List(
+	ctx context.Context,
+	params *database.ListLivesParams,
+	fields ...string,
+) (entity.Lives, error) {
 	var lives entity.Lives
 
 	p := listLivesParams(*params)
@@ -124,7 +128,12 @@ func (l *live) Delete(ctx context.Context, liveID string) error {
 	return dbError(err)
 }
 
-func (l *live) get(ctx context.Context, tx *gorm.DB, liveID string, fields ...string) (*entity.Live, error) {
+func (l *live) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	liveID string,
+	fields ...string,
+) (*entity.Live, error) {
 	var live *entity.Live
 
 	stmt := l.db.Statement(ctx, tx, liveTable, fields...).Where("id = ?", liveID)
@@ -154,7 +163,12 @@ func (l *live) fill(ctx context.Context, tx *gorm.DB, lives ...*entity.Live) err
 	return nil
 }
 
-func (l *live) replaceProducts(ctx context.Context, tx *gorm.DB, liveID string, products entity.LiveProducts) error {
+func (l *live) replaceProducts(
+	ctx context.Context,
+	tx *gorm.DB,
+	liveID string,
+	products entity.LiveProducts,
+) error {
 	// 不要なレコードを削除
 	stmt := tx.WithContext(ctx).Where("live_id = ?", liveID)
 	if len(products.ProductIDs()) > 0 {

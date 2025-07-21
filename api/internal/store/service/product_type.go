@@ -20,7 +20,11 @@ func (s *service) ListProductTypes(
 	}
 	orders, err := s.newListProductTypesOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list product types orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list product types orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListProductTypesParams{
 		Name:       in.Name,
@@ -48,7 +52,9 @@ func (s *service) ListProductTypes(
 	return productTypes, total, nil
 }
 
-func (s *service) newListProductTypesOrders(in []*store.ListProductTypesOrder) ([]*database.ListProductTypesOrder, error) {
+func (s *service) newListProductTypesOrders(
+	in []*store.ListProductTypesOrder,
+) ([]*database.ListProductTypesOrder, error) {
 	res := make([]*database.ListProductTypesOrder, len(in))
 	for i := range in {
 		var key database.ListProductTypesOrderKey
@@ -76,7 +82,10 @@ func (s *service) MultiGetProductTypes(
 	return productTypes, internalError(err)
 }
 
-func (s *service) GetProductType(ctx context.Context, in *store.GetProductTypeInput) (*entity.ProductType, error) {
+func (s *service) GetProductType(
+	ctx context.Context,
+	in *store.GetProductTypeInput,
+) (*entity.ProductType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

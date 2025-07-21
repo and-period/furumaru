@@ -196,7 +196,12 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 	}, nil
 }
 
-func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems, experience *OrderExperience) {
+func (o *Order) Fill(
+	payment *OrderPayment,
+	fulfillments OrderFulfillments,
+	items OrderItems,
+	experience *OrderExperience,
+) {
 	if payment != nil {
 		o.OrderPayment = *payment
 	}
@@ -292,7 +297,8 @@ func (o *Order) Cancelable() bool {
 	if o == nil {
 		return false
 	}
-	return o.OrderPayment.Status == PaymentStatusPending || o.OrderPayment.Status == PaymentStatusAuthorized
+	return o.OrderPayment.Status == PaymentStatusPending ||
+		o.OrderPayment.Status == PaymentStatusAuthorized
 }
 
 func (o *Order) Refundable() bool {

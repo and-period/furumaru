@@ -42,7 +42,11 @@ func (c *contactCategory) List(
 	return categories, dbError(err)
 }
 
-func (c *contactCategory) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.ContactCategories, error) {
+func (c *contactCategory) MultiGet(
+	ctx context.Context,
+	categoryIDs []string,
+	fields ...string,
+) (entity.ContactCategories, error) {
 	var categories entity.ContactCategories
 
 	err := c.db.Statement(ctx, c.db.DB, contactCategoryTable, fields...).
@@ -51,7 +55,11 @@ func (c *contactCategory) MultiGet(ctx context.Context, categoryIDs []string, fi
 	return categories, dbError(err)
 }
 
-func (c *contactCategory) Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error) {
+func (c *contactCategory) Get(
+	ctx context.Context,
+	categoryID string,
+	fields ...string,
+) (*entity.ContactCategory, error) {
 	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
 	return category, dbError(err)
 }

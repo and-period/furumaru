@@ -213,7 +213,10 @@ func newMultipartRequest(t *testing.T, method, path, field string) *http.Request
 	defer file.Close()
 
 	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, field, filename))
+	header.Set(
+		"Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s"; filename="%s"`, field, filename),
+	)
 	header.Set("Content-Type", "multipart/form-data")
 	part, err := writer.CreatePart(header)
 	require.NoError(t, err)

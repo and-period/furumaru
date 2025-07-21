@@ -24,7 +24,10 @@ func NewExperienceReviewReaction(db *mysql.Client) database.ExperienceReviewReac
 	}
 }
 
-func (r *experienceReviewReaction) Upsert(ctx context.Context, reaction *entity.ExperienceReviewReaction) error {
+func (r *experienceReviewReaction) Upsert(
+	ctx context.Context,
+	reaction *entity.ExperienceReviewReaction,
+) error {
 	now := r.now()
 	reaction.CreatedAt, reaction.UpdatedAt = now, now
 
@@ -41,8 +44,12 @@ func (r *experienceReviewReaction) Upsert(ctx context.Context, reaction *entity.
 	return dbError(err)
 }
 
-func (r *experienceReviewReaction) Delete(ctx context.Context, experienceReviewID, userID string) error {
-	stmt := r.db.DB.WithContext(ctx).Where("review_id = ? AND user_id = ?", experienceReviewID, userID)
+func (r *experienceReviewReaction) Delete(
+	ctx context.Context,
+	experienceReviewID, userID string,
+) error {
+	stmt := r.db.DB.WithContext(ctx).
+		Where("review_id = ? AND user_id = ?", experienceReviewID, userID)
 
 	err := stmt.Delete(&entity.ExperienceReviewReaction{}).Error
 	return dbError(err)

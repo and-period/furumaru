@@ -15,13 +15,19 @@ func RegisterHealthServer(s *grpc.Server) {
 	health.RegisterHealthServer(s, &healthServer{})
 }
 
-func (s *healthServer) Check(_ context.Context, _ *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
+func (s *healthServer) Check(
+	_ context.Context,
+	_ *health.HealthCheckRequest,
+) (*health.HealthCheckResponse, error) {
 	return &health.HealthCheckResponse{
 		Status: health.HealthCheckResponse_SERVING,
 	}, nil
 }
 
-func (s *healthServer) List(_ context.Context, _ *health.HealthListRequest) (*health.HealthListResponse, error) {
+func (s *healthServer) List(
+	_ context.Context,
+	_ *health.HealthListRequest,
+) (*health.HealthListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "Listing is not supported")
 }
 

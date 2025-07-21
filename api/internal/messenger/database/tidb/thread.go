@@ -44,7 +44,11 @@ func (p listThreadsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (t *thread) List(ctx context.Context, params *database.ListThreadsParams, fields ...string) (entity.Threads, error) {
+func (t *thread) List(
+	ctx context.Context,
+	params *database.ListThreadsParams,
+	fields ...string,
+) (entity.Threads, error) {
 	var threads entity.Threads
 
 	p := listThreadsParams(*params)
@@ -66,7 +70,11 @@ func (t *thread) Count(ctx context.Context, params *database.ListThreadsParams) 
 	return total, dbError(err)
 }
 
-func (t *thread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
+func (t *thread) Get(
+	ctx context.Context,
+	threadID string,
+	fields ...string,
+) (*entity.Thread, error) {
 	thread, err := t.get(ctx, t.db.DB, threadID, fields...)
 	return thread, dbError(err)
 }
@@ -79,7 +87,11 @@ func (t *thread) Create(ctx context.Context, thread *entity.Thread) error {
 	return dbError(err)
 }
 
-func (t *thread) Update(ctx context.Context, threadID string, params *database.UpdateThreadParams) error {
+func (t *thread) Update(
+	ctx context.Context,
+	threadID string,
+	params *database.UpdateThreadParams,
+) error {
 	updates := map[string]interface{}{
 		"content":    params.Content,
 		"user_id":    params.UserID,

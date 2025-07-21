@@ -74,7 +74,10 @@ func IsRetryable(err error) bool {
 		return false
 	}
 	switch e.Code {
-	case ErrCodeInternalServerError, ErrCodeBadGateway, ErrCodeGatewayTimeout, ErrCodeServiceunavailable:
+	case ErrCodeInternalServerError,
+		ErrCodeBadGateway,
+		ErrCodeGatewayTimeout,
+		ErrCodeServiceunavailable:
 		return true
 	}
 	return false
@@ -89,5 +92,12 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("komoju: method=%s, route=%s, status=%d, code=%s, message=%s", e.Method, e.Route, e.Status, e.Code, e.Message)
+	return fmt.Sprintf(
+		"komoju: method=%s, route=%s, status=%d, code=%s, message=%s",
+		e.Method,
+		e.Route,
+		e.Status,
+		e.Code,
+		e.Message,
+	)
 }

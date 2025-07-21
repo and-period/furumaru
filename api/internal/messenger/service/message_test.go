@@ -99,7 +99,9 @@ func TestListMessages(t *testing.T) {
 			name: "failed to count messagses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Message.EXPECT().List(gomock.Any(), params).Return(messages, nil)
-				mocks.db.Message.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Message.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &messenger.ListMessagesInput{
 				Limit:    20,
@@ -116,12 +118,15 @@ func TestListMessages(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListMessages(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListMessages(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -244,7 +249,9 @@ func TestGetMessage(t *testing.T) {
 					Read:     false,
 				}
 				mocks.db.Message.EXPECT().Get(ctx, "message-id").Return(message, nil)
-				mocks.db.Message.EXPECT().UpdateRead(gomock.Any(), "message-id").Return(assert.AnError)
+				mocks.db.Message.EXPECT().
+					UpdateRead(gomock.Any(), "message-id").
+					Return(assert.AnError)
 			},
 			input: &messenger.GetMessageInput{
 				MessageID: "message-id",
@@ -261,10 +268,13 @@ func TestGetMessage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetMessage(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetMessage(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }

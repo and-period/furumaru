@@ -34,7 +34,11 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 		ImageURL: template.ImageURL,
 		Data:     payload.Push.Data,
 	}
-	w.logger.Debug("Send push", zap.String("templateId", string(payload.Push.TemplateID)), zap.Any("message", msg))
+	w.logger.Debug(
+		"Send push",
+		zap.String("templateId", string(payload.Push.TemplateID)),
+		zap.Any("message", msg),
+	)
 	sendFn := func() error {
 		return w.sendMessaing(ctx, msg, payload.UserType, tokens)
 	}
@@ -70,7 +74,12 @@ func (w *worker) fetchUserTokens(ctx context.Context, userIDs []string) ([]strin
 	return w.user.MultiGetUserDevices(ctx, in)
 }
 
-func (w *worker) sendMessaing(ctx context.Context, msg *messaging.Message, userType entity.UserType, tokens []string) error {
+func (w *worker) sendMessaing(
+	ctx context.Context,
+	msg *messaging.Message,
+	userType entity.UserType,
+	tokens []string,
+) error {
 	switch userType {
 	case entity.UserTypeAdmin,
 		entity.UserTypeAdministrator,

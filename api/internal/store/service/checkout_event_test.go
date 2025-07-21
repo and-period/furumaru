@@ -95,11 +95,17 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "success when immediate payment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeCreditCard), nil)
 				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(nil)
 				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
-				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(&komoju.PaymentResponse{}, nil)
-				mocks.cache.EXPECT().Get(gomock.Any(), &entity.Cart{SessionID: "session-id"}).Return(assert.AnError)
+				mocks.komojuPayment.EXPECT().
+					Capture(ctx, "payment-id").
+					Return(&komoju.PaymentResponse{}, nil)
+				mocks.cache.EXPECT().
+					Get(gomock.Any(), &entity.Cart{SessionID: "session-id"}).
+					Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -114,7 +120,9 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "success when not immediate payment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeKonbini), nil)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeKonbini), nil)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -135,8 +143,12 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 						Status: komoju.PaymentStatusCaptured,
 					},
 				}
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
-				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().
+					UpdateAuthorized(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
@@ -186,8 +198,12 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
-				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().
+					UpdateAuthorized(ctx, "order-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -202,8 +218,12 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "failed to show payment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
-				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().
+					UpdateAuthorized(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(nil, assert.AnError)
 			},
 			input: &store.NotifyPaymentAuthorizedInput{
@@ -219,8 +239,12 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		{
 			name: "failed to capture",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order(entity.PaymentMethodTypeCreditCard), nil)
-				mocks.db.Order.EXPECT().UpdateAuthorized(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					Get(ctx, "order-id").
+					Return(order(entity.PaymentMethodTypeCreditCard), nil)
+				mocks.db.Order.EXPECT().
+					UpdateAuthorized(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 				mocks.komojuPayment.EXPECT().Show(ctx, "payment-id").Return(payment, nil)
 				mocks.komojuPayment.EXPECT().Capture(ctx, "payment-id").Return(nil, assert.AnError)
 			},
@@ -236,10 +260,13 @@ func TestNotifyPaymentAuthorized(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentAuthorized(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyPaymentAuthorized(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -320,7 +347,9 @@ func TestNotifyPaymentCaptured(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().UpdateCaptured(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderCaptured(gomock.Any(), in).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyOrderCaptured(gomock.Any(), in).
+					Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentCapturedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -370,7 +399,9 @@ func TestNotifyPaymentCaptured(t *testing.T) {
 			name: "already updated",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.db.Order.EXPECT().UpdateCaptured(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					UpdateCaptured(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 			},
 			input: &store.NotifyPaymentCapturedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -386,7 +417,9 @@ func TestNotifyPaymentCaptured(t *testing.T) {
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.db.Order.EXPECT().UpdateCaptured(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().
+					UpdateCaptured(ctx, "order-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentCapturedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -400,10 +433,13 @@ func TestNotifyPaymentCaptured(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentCaptured(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyPaymentCaptured(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -482,7 +518,10 @@ func TestNotifyPaymentFailed(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().UpdateFailed(ctx, "order-id", params).Return(nil)
-				mocks.db.Product.EXPECT().DecreaseInventory(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(2)
+				mocks.db.Product.EXPECT().
+					DecreaseInventory(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return(nil).
+					Times(2)
 			},
 			input: &store.NotifyPaymentFailedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -548,7 +587,9 @@ func TestNotifyPaymentFailed(t *testing.T) {
 			name: "already updated",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.db.Order.EXPECT().UpdateFailed(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					UpdateFailed(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 			},
 			input: &store.NotifyPaymentFailedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -565,7 +606,10 @@ func TestNotifyPaymentFailed(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().UpdateFailed(ctx, "order-id", params).Return(nil)
-				mocks.db.Product.EXPECT().DecreaseInventory(gomock.Any(), gomock.Any(), gomock.Any()).Return(assert.AnError).MinTimes(1)
+				mocks.db.Product.EXPECT().
+					DecreaseInventory(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return(assert.AnError).
+					MinTimes(1)
 			},
 			input: &store.NotifyPaymentFailedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -579,10 +623,13 @@ func TestNotifyPaymentFailed(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentFailed(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyPaymentFailed(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -628,7 +675,9 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateRefunded(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().
+					UpdateRefunded(ctx, "order-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -645,7 +694,9 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "already updated",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateRefunded(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().
+					UpdateRefunded(ctx, "order-id", params).
+					Return(database.ErrFailedPrecondition)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				NotifyPaymentPayload: store.NotifyPaymentPayload{
@@ -661,9 +712,12 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentRefunded(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.NotifyPaymentRefunded(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }

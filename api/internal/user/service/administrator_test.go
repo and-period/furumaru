@@ -52,7 +52,9 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().
+					List(gomock.Any(), params).
+					Return(administrators, nil)
 				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListAdministratorsInput{
@@ -74,7 +76,9 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "failed to list administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					List(gomock.Any(), params).
+					Return(nil, assert.AnError)
 				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListAdministratorsInput{
@@ -88,8 +92,12 @@ func TestListAdministrators(t *testing.T) {
 		{
 			name: "failed to count administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().List(gomock.Any(), params).Return(administrators, nil)
-				mocks.db.Administrator.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					List(gomock.Any(), params).
+					Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &user.ListAdministratorsInput{
 				Limit:  30,
@@ -102,12 +110,15 @@ func TestListAdministrators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListAdministrators(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListAdministrators(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -144,7 +155,9 @@ func TestMultiGetAdministrators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(administrators, nil)
+				mocks.db.Administrator.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(administrators, nil)
 			},
 			input: &user.MultiGetAdministratorsInput{
 				AdministratorIDs: []string{"admin-id"},
@@ -164,7 +177,9 @@ func TestMultiGetAdministrators(t *testing.T) {
 		{
 			name: "failed to multi get administrators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAdministratorsInput{
 				AdministratorIDs: []string{"admin-id"},
@@ -175,11 +190,14 @@ func TestMultiGetAdministrators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetAdministrators(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetAdministrators(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -243,11 +261,14 @@ func TestGetAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetAdministrator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetAdministrator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -300,7 +321,9 @@ func TestCreateAdministrator(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Administrator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyRegisterAdmin(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
@@ -321,7 +344,9 @@ func TestCreateAdministrator(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateAdministratorInput{
 				Lastname:      "&.",
@@ -336,10 +361,13 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateAdministrator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateAdministrator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -384,7 +412,9 @@ func TestUpdateAdministrator(t *testing.T) {
 		{
 			name: "failed to update administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Update(ctx, "administrator-id", params).Return(assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Update(ctx, "administrator-id", params).
+					Return(assert.AnError)
 			},
 			input: &user.UpdateAdministratorInput{
 				AdministratorID: "administrator-id",
@@ -399,10 +429,13 @@ func TestUpdateAdministrator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateAdministrator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateAdministrator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -440,9 +473,13 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Admin.EXPECT().
+					UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").
+					Return(nil)
 			},
 			input: &user.UpdateAdministratorEmailInput{
 				AdministratorID: "administrator-id",
@@ -459,7 +496,9 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(nil, assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.UpdateAdministratorEmailInput{
 				AdministratorID: "administrator-id",
@@ -470,7 +509,9 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to admin change email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(assert.AnError)
 			},
 			input: &user.UpdateAdministratorEmailInput{
@@ -482,9 +523,13 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 		{
 			name: "failed to update email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").Return(assert.AnError)
+				mocks.db.Admin.EXPECT().
+					UpdateEmail(ctx, "administrator-id", "test-admin@and-period.jp").
+					Return(assert.AnError)
 			},
 			input: &user.UpdateAdministratorEmailInput{
 				AdministratorID: "administrator-id",
@@ -495,10 +540,13 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateAdministratorEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateAdministratorEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -532,7 +580,9 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
 				mocks.adminAuth.EXPECT().
 					AdminChangePassword(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
@@ -544,7 +594,9 @@ func TestResetAdministratorPassword(t *testing.T) {
 						assert.Equal(t, params, expect)
 						return nil
 					})
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().
+					NotifyResetAdminPassword(gomock.Any(), gomock.Any()).
+					Return(nil)
 			},
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
@@ -554,9 +606,13 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "success without notify",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyResetAdminPassword(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
@@ -572,7 +628,9 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "failed to get by admin id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(nil, assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
@@ -582,8 +640,12 @@ func TestResetAdministratorPassword(t *testing.T) {
 		{
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Get(ctx, "administrator-id").Return(administrator, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Get(ctx, "administrator-id").
+					Return(administrator, nil)
+				mocks.adminAuth.EXPECT().
+					AdminChangePassword(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
@@ -593,10 +655,13 @@ func TestResetAdministratorPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ResetAdministratorPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ResetAdministratorPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -611,7 +676,9 @@ func TestDeleteAdministrator(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Delete(ctx, "administrator-id", gomock.Any()).Return(nil)
+				mocks.db.Administrator.EXPECT().
+					Delete(ctx, "administrator-id", gomock.Any()).
+					Return(nil)
 			},
 			input: &user.DeleteAdministratorInput{
 				AdministratorID: "administrator-id",
@@ -627,7 +694,9 @@ func TestDeleteAdministrator(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Administrator.EXPECT().Delete(ctx, "administrator-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Administrator.EXPECT().
+					Delete(ctx, "administrator-id", gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.DeleteAdministratorInput{
 				AdministratorID: "administrator-id",
@@ -636,9 +705,12 @@ func TestDeleteAdministrator(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteAdministrator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteAdministrator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

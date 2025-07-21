@@ -39,11 +39,35 @@ func TestExperience_List(t *testing.T) {
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
 	internal := make(internalExperiences, 3)
-	internal[0] = testExperience("experience-id01", "experience-type-id01", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal[0] = testExperience(
+		"experience-id01",
+		"experience-type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	internal[0].StartAt = now().AddDate(0, 0, -1)
-	internal[1] = testExperience("experience-id02", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 2, now())
+	internal[1] = testExperience(
+		"experience-id02",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		2,
+		now(),
+	)
 	internal[1].StartAt = now().AddDate(0, 0, -2)
-	internal[2] = testExperience("experience-id03", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 3, now())
+	internal[2] = testExperience(
+		"experience-id03",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		3,
+		now(),
+	)
 	internal[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Table(experienceTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -119,11 +143,35 @@ func TestExperience_ListByGeolocation(t *testing.T) {
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
 	internal := make(internalExperiences, 3)
-	internal[0] = testExperience("experience-id01", "experience-type-id01", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal[0] = testExperience(
+		"experience-id01",
+		"experience-type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	internal[0].StartAt = now().AddDate(0, 0, -1)
-	internal[1] = testExperience("experience-id02", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 2, now())
+	internal[1] = testExperience(
+		"experience-id02",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		2,
+		now(),
+	)
 	internal[1].StartAt = now().AddDate(0, 0, -2)
-	internal[2] = testExperience("experience-id03", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 3, now())
+	internal[2] = testExperience(
+		"experience-id03",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		3,
+		now(),
+	)
 	internal[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Table(experienceTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -201,9 +249,33 @@ func TestExperience_Count(t *testing.T) {
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
 	experiences := make(internalExperiences, 3)
-	experiences[0] = testExperience("experience-id01", "experience-type-id01", "shop-id", "coordinator-id", "producer-id", 1, now())
-	experiences[1] = testExperience("experience-id02", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 2, now())
-	experiences[2] = testExperience("experience-id03", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 3, now())
+	experiences[0] = testExperience(
+		"experience-id01",
+		"experience-type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
+	experiences[1] = testExperience(
+		"experience-id02",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		2,
+		now(),
+	)
+	experiences[2] = testExperience(
+		"experience-id03",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		3,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
@@ -276,11 +348,35 @@ func TestExperience_MultiGet(t *testing.T) {
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
 	internal := make(internalExperiences, 3)
-	internal[0] = testExperience("experience-id01", "experience-type-id01", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal[0] = testExperience(
+		"experience-id01",
+		"experience-type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	internal[0].StartAt = now().AddDate(0, 0, -1)
-	internal[1] = testExperience("experience-id02", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 2, now())
+	internal[1] = testExperience(
+		"experience-id02",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		2,
+		now(),
+	)
 	internal[1].StartAt = now().AddDate(0, 0, -2)
-	internal[2] = testExperience("experience-id03", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 3, now())
+	internal[2] = testExperience(
+		"experience-id03",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		3,
+		now(),
+	)
 	internal[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Table(experienceTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -352,11 +448,35 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 	err = db.DB.Create(&types).Error
 	require.NoError(t, err)
 	internal := make(internalExperiences, 3)
-	internal[0] = testExperience("experience-id01", "experience-type-id01", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal[0] = testExperience(
+		"experience-id01",
+		"experience-type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	internal[0].StartAt = now().AddDate(0, 0, -1)
-	internal[1] = testExperience("experience-id02", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 2, now())
+	internal[1] = testExperience(
+		"experience-id02",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		2,
+		now(),
+	)
 	internal[1].StartAt = now().AddDate(0, 0, -2)
-	internal[2] = testExperience("experience-id03", "experience-type-id02", "shop-id", "coordinator-id", "producer-id", 3, now())
+	internal[2] = testExperience(
+		"experience-id03",
+		"experience-type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		3,
+		now(),
+	)
 	internal[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Table(experienceTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -425,7 +545,15 @@ func TestExperience_Get(t *testing.T) {
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)
-	internal := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal := testExperience(
+		"experience-id",
+		"experience-type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&internal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&internal.ExperienceRevision).Error
@@ -502,7 +630,15 @@ func TestExperience_Create(t *testing.T) {
 	typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
 	err = db.DB.Create(&typ).Error
 	require.NoError(t, err)
-	internal := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	internal := testExperience(
+		"experience-id",
+		"experience-type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	e, err := internal.entity()
 	require.NoError(t, err)
 
@@ -531,7 +667,15 @@ func TestExperience_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				e := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+				e := testExperience(
+					"experience-id",
+					"experience-type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					1,
+					now(),
+				)
 				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
@@ -596,7 +740,15 @@ func TestExperience_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				e := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+				e := testExperience(
+					"experience-id",
+					"experience-type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					1,
+					now(),
+				)
 				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
@@ -686,7 +838,15 @@ func TestExperience_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				e := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+				e := testExperience(
+					"experience-id",
+					"experience-type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					1,
+					now(),
+				)
 				err := db.DB.Table(experienceTable).Create(&e).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&e.ExperienceRevision).Error
@@ -716,7 +876,11 @@ func TestExperience_Delete(t *testing.T) {
 	}
 }
 
-func testExperience(experienceID, typeID, shopID, coordinatorID, producerID string, revisionID int64, now time.Time) *internalExperience {
+func testExperience(
+	experienceID, typeID, shopID, coordinatorID, producerID string,
+	revisionID int64,
+	now time.Time,
+) *internalExperience {
 	experience := &entity.Experience{
 		ID:            experienceID,
 		ShopID:        shopID,
@@ -767,7 +931,11 @@ func testExperience(experienceID, typeID, shopID, coordinatorID, producerID stri
 	return internal
 }
 
-func testExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {
+func testExperienceRevision(
+	revisionID int64,
+	experienceID string,
+	now time.Time,
+) *entity.ExperienceRevision {
 	return &entity.ExperienceRevision{
 		ID:                    revisionID,
 		ExperienceID:          experienceID,

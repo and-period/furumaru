@@ -30,11 +30,29 @@ func TestVideo_List(t *testing.T) {
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
-	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0] = testVideo(
+		"video-id01",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[0].PublishedAt = now().AddDate(0, 0, -1)
-	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1] = testVideo(
+		"video-id02",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[1].PublishedAt = now().AddDate(0, 0, -2)
-	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2] = testVideo(
+		"video-id03",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[2].PublishedAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
@@ -103,11 +121,29 @@ func TestVideo_ListByProductID(t *testing.T) {
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
-	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0] = testVideo(
+		"video-id01",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[0].PublishedAt = now().AddDate(0, 0, -1)
-	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1] = testVideo(
+		"video-id02",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[1].PublishedAt = now().AddDate(0, 0, -2)
-	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2] = testVideo(
+		"video-id03",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[2].PublishedAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
@@ -170,11 +206,29 @@ func TestVideo_ListByExperienceID(t *testing.T) {
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
-	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0] = testVideo(
+		"video-id01",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[0].PublishedAt = now().AddDate(0, 0, -1)
-	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1] = testVideo(
+		"video-id02",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[1].PublishedAt = now().AddDate(0, 0, -2)
-	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2] = testVideo(
+		"video-id03",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	videos[2].PublishedAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
@@ -238,9 +292,27 @@ func TestVideo_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	videos := make(entity.Videos, 3)
-	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0] = testVideo(
+		"video-id01",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
+	videos[1] = testVideo(
+		"video-id02",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
+	videos[2] = testVideo(
+		"video-id03",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
 	for _, video := range videos {
@@ -308,7 +380,13 @@ func TestVideo_Get(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	v := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&v).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&v.VideoProducts).Error
@@ -396,7 +474,13 @@ func TestVideo_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				video: testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now()),
+				video: testVideo(
+					"video-id",
+					"coordinator-id",
+					[]string{"product-id"},
+					[]string{"experience-id"},
+					now(),
+				),
 			},
 			want: want{
 				err: nil,
@@ -405,7 +489,13 @@ func TestVideo_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+				v := testVideo(
+					"video-id",
+					"coordinator-id",
+					[]string{"product-id"},
+					[]string{"experience-id"},
+					now(),
+				)
 				err = db.DB.Create(&v).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&v.VideoProducts).Error
@@ -414,7 +504,13 @@ func TestVideo_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				video: testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now()),
+				video: testVideo(
+					"video-id",
+					"coordinator-id",
+					[]string{"product-id"},
+					[]string{"experience-id"},
+					now(),
+				),
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -465,7 +561,13 @@ func TestVideo_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+				v := testVideo(
+					"video-id",
+					"coordinator-id",
+					[]string{"product-id"},
+					[]string{"experience-id"},
+					now(),
+				)
 				err = db.DB.Create(&v).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&v.VideoProducts).Error
@@ -534,7 +636,13 @@ func TestVideo_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+				v := testVideo(
+					"video-id",
+					"coordinator-id",
+					[]string{"product-id"},
+					[]string{"experience-id"},
+					now(),
+				)
 				err = db.DB.Create(&v).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&v.VideoProducts).Error
@@ -565,7 +673,11 @@ func TestVideo_Delete(t *testing.T) {
 	}
 }
 
-func testVideo(videoID, coordinatorID string, productIDs, experienceIDs []string, now time.Time) *entity.Video {
+func testVideo(
+	videoID, coordinatorID string,
+	productIDs, experienceIDs []string,
+	now time.Time,
+) *entity.Video {
 	products := make(entity.VideoProducts, len(productIDs))
 	for i, productID := range productIDs {
 		products[i] = testVideoProduct(videoID, productID, int64(i), now)
@@ -594,7 +706,11 @@ func testVideo(videoID, coordinatorID string, productIDs, experienceIDs []string
 	}
 }
 
-func testVideoProduct(videoID, productID string, priority int64, now time.Time) *entity.VideoProduct {
+func testVideoProduct(
+	videoID, productID string,
+	priority int64,
+	now time.Time,
+) *entity.VideoProduct {
 	return &entity.VideoProduct{
 		VideoID:   videoID,
 		ProductID: productID,
@@ -604,7 +720,11 @@ func testVideoProduct(videoID, productID string, priority int64, now time.Time) 
 	}
 }
 
-func testVideoExperience(videoID, experienceID string, priority int64, now time.Time) *entity.VideoExperience {
+func testVideoExperience(
+	videoID, experienceID string,
+	priority int64,
+	now time.Time,
+) *entity.VideoExperience {
 	return &entity.VideoExperience{
 		VideoID:      videoID,
 		ExperienceID: experienceID,

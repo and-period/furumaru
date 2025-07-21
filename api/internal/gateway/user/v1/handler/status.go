@@ -45,7 +45,10 @@ func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) getPaymentSystem(ctx context.Context, methodType service.PaymentMethodType) (*service.PaymentSystem, error) {
+func (h *handler) getPaymentSystem(
+	ctx context.Context,
+	methodType service.PaymentMethodType,
+) (*service.PaymentSystem, error) {
 	in := &store.GetPaymentSystemInput{
 		MethodType: methodType.StoreEntity(),
 	}

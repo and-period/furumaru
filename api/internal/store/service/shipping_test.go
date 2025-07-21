@@ -115,7 +115,9 @@ func TestListShippingsByShopID(t *testing.T) {
 			name: "failed to count shippings",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shipping.EXPECT().List(gomock.Any(), params).Return(shippings, nil)
-				mocks.db.Shipping.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListShippingsByShopIDInput{
 				ShopID: "shop-id",
@@ -129,12 +131,15 @@ func TestListShippingsByShopID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListShippingsByShopID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListShippingsByShopID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -190,7 +195,9 @@ func TestListShippingsByShopIDs(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().ListByShopIDs(gomock.Any(), []string{"shop-id"}).Return(shippings, nil)
+				mocks.db.Shipping.EXPECT().
+					ListByShopIDs(gomock.Any(), []string{"shop-id"}).
+					Return(shippings, nil)
 			},
 			input: &store.ListShippingsByShopIDsInput{
 				ShopIDs: []string{"shop-id"},
@@ -210,7 +217,9 @@ func TestListShippingsByShopIDs(t *testing.T) {
 		{
 			name: "failed to list shippings",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().ListByShopIDs(gomock.Any(), []string{"shop-id"}).Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					ListByShopIDs(gomock.Any(), []string{"shop-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.ListShippingsByShopIDsInput{
 				ShopIDs: []string{"shop-id"},
@@ -221,11 +230,14 @@ func TestListShippingsByShopIDs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListShippingsByShopIDs(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListShippingsByShopIDs(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -282,7 +294,9 @@ func TestMutiGetShippingsByRevision(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(shippings, nil)
+				mocks.db.Shipping.EXPECT().
+					MultiGetByRevision(ctx, []int64{1}).
+					Return(shippings, nil)
 			},
 			input: &store.MultiGetShippingsByRevisionInput{
 				ShippingRevisionIDs: []int64{1},
@@ -302,7 +316,9 @@ func TestMutiGetShippingsByRevision(t *testing.T) {
 		{
 			name: "failed to multiGet",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					MultiGetByRevision(ctx, []int64{1}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetShippingsByRevisionInput{
 				ShippingRevisionIDs: []int64{1},
@@ -313,11 +329,14 @@ func TestMutiGetShippingsByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetShippingsByRevision(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetShippingsByRevision(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -394,11 +413,14 @@ func TestGetShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -471,11 +493,14 @@ func TestGetDefaultShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetDefaultShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetDefaultShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -560,11 +585,14 @@ func TestGetShippingByShopID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetShippingByShopID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetShippingByShopID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -619,7 +647,9 @@ func TestGetShippingByCoordinatorID(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shipping, nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(shipping, nil)
 			},
 			input: &store.GetShippingByCoordinatorIDInput{
 				CoordinatorID: "coordinator-id",
@@ -637,7 +667,9 @@ func TestGetShippingByCoordinatorID(t *testing.T) {
 		{
 			name: "failed to get shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetShippingByCoordinatorIDInput{
 				CoordinatorID: "coordinator-id",
@@ -648,11 +680,14 @@ func TestGetShippingByCoordinatorID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetShippingByCoordinatorID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetShippingByCoordinatorID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -828,7 +863,9 @@ func TestCreateShipping(t *testing.T) {
 		{
 			name: "failed to get by coordinator id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreateShippingInput{
 				Name:              "配送設定",
@@ -848,7 +885,9 @@ func TestCreateShipping(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, database.ErrNotFound)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, database.ErrNotFound)
 				mocks.db.Shipping.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateShippingInput{
@@ -869,10 +908,13 @@ func TestCreateShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1020,10 +1062,13 @@ func TestUpdateShipping(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1056,7 +1101,9 @@ func TestUpdateShippingInUse(t *testing.T) {
 		{
 			name: "failed to update in use",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().UpdateInUse(ctx, "shop-id", "shipping-id").Return(assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					UpdateInUse(ctx, "shop-id", "shipping-id").
+					Return(assert.AnError)
 			},
 			input: &store.UpdateShippingInUseInput{
 				ShopID:     "shop-id",
@@ -1067,10 +1114,13 @@ func TestUpdateShippingInUse(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateShippingInUse(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateShippingInUse(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1195,7 +1245,9 @@ func TestUpdateDefaultShipping(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().Update(ctx, entity.DefaultShippingID, params).Return(assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					Update(ctx, entity.DefaultShippingID, params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateDefaultShippingInput{
 				Box60Rates:        rates,
@@ -1212,10 +1264,13 @@ func TestUpdateDefaultShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateDefaultShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateDefaultShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1292,7 +1347,9 @@ func TestUpsertShipping(t *testing.T) {
 		{
 			name: "success to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, database.ErrNotFound)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, database.ErrNotFound)
 				mocks.db.Shipping.EXPECT().Create(ctx, shipping(0)).Return(nil)
 			},
 			input: &store.UpsertShippingInput{
@@ -1313,7 +1370,9 @@ func TestUpsertShipping(t *testing.T) {
 		{
 			name: "success to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shipping(1), nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(shipping(1), nil)
 				mocks.db.Shipping.EXPECT().Update(ctx, "coordinator-id", params).Return(nil)
 			},
 			input: &store.UpsertShippingInput{
@@ -1340,7 +1399,9 @@ func TestUpsertShipping(t *testing.T) {
 		{
 			name: "failed to get",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
 				ShopID:            "shop-id",
@@ -1360,7 +1421,9 @@ func TestUpsertShipping(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, database.ErrNotFound)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, database.ErrNotFound)
 				mocks.db.Shipping.EXPECT().Create(ctx, shipping(0)).Return(assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
@@ -1381,8 +1444,12 @@ func TestUpsertShipping(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shipping(1), nil)
-				mocks.db.Shipping.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(shipping(1), nil)
+				mocks.db.Shipping.EXPECT().
+					Update(ctx, "coordinator-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpsertShippingInput{
 				ShopID:            "shop-id",
@@ -1402,10 +1469,13 @@ func TestUpsertShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpsertShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpsertShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1443,9 +1513,12 @@ func TestDeleteShipping(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteShipping(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteShipping(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

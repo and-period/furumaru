@@ -107,7 +107,10 @@ func (c *client) ForgotPassword(ctx context.Context, username string) error {
 	return c.authError(err)
 }
 
-func (c *client) ConfirmForgotPassword(ctx context.Context, params *ConfirmForgotPasswordParams) error {
+func (c *client) ConfirmForgotPassword(
+	ctx context.Context,
+	params *ConfirmForgotPasswordParams,
+) error {
 	in := &cognito.ConfirmForgotPasswordInput{
 		ClientId:         c.appClientID,
 		Username:         aws.String(params.Username),
@@ -156,7 +159,10 @@ func (c *client) ChangeEmail(ctx context.Context, params *ChangeEmailParams) err
 	return c.authError(err)
 }
 
-func (c *client) ConfirmChangeEmail(ctx context.Context, params *ConfirmChangeEmailParams) (string, error) {
+func (c *client) ConfirmChangeEmail(
+	ctx context.Context,
+	params *ConfirmChangeEmailParams,
+) (string, error) {
 	username := aws.String(params.Username)
 	// 新しいメールアドレス情報の取得
 	userIn := &cognito.AdminGetUserInput{

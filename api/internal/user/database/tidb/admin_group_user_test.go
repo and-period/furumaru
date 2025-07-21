@@ -45,7 +45,12 @@ func TestAdminGroupUser_List(t *testing.T) {
 	require.NoError(t, err)
 
 	users := make(entity.AdminGroupUsers, 2)
-	users[0] = testAdminGroupUser("group-id", "admin-id01", now().Add(time.Hour), now().Add(-time.Hour))
+	users[0] = testAdminGroupUser(
+		"group-id",
+		"admin-id01",
+		now().Add(time.Hour),
+		now().Add(-time.Hour),
+	)
 	users[1] = testAdminGroupUser("group-id", "admin-id02", now().Add(time.Hour), now())
 	err = db.DB.WithContext(ctx).Table(adminGroupUserTable).Create(&users).Error
 	require.NoError(t, err)
@@ -122,7 +127,12 @@ func TestAdminGroupUser_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	users := make(entity.AdminGroupUsers, 2)
-	users[0] = testAdminGroupUser("group-id", "admin-id01", now().Add(time.Hour), now().Add(-time.Hour))
+	users[0] = testAdminGroupUser(
+		"group-id",
+		"admin-id01",
+		now().Add(time.Hour),
+		now().Add(-time.Hour),
+	)
 	users[1] = testAdminGroupUser("group-id", "admin-id02", now().Add(time.Hour), now())
 	err = db.DB.WithContext(ctx).Table(adminGroupUserTable).Create(&users).Error
 	require.NoError(t, err)

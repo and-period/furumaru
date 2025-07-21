@@ -27,10 +27,13 @@ func TestHTTPServer(t *testing.T) {
 			name: "success",
 			handler: func() http.Handler {
 				mux := http.NewServeMux()
-				mux.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					fmt.Fprintf(w, "Hello World")
-					w.WriteHeader(http.StatusOK)
-				}))
+				mux.Handle(
+					"/health",
+					http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						fmt.Fprintf(w, "Hello World")
+						w.WriteHeader(http.StatusOK)
+					}),
+				)
 				return mux
 			}(),
 			port:   20080,

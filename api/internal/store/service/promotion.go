@@ -22,7 +22,11 @@ func (s *service) ListPromotions(
 	}
 	orders, err := s.newListPromotionsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list promotions orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list promotions orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListPromotionsParams{
 		ShopID:        in.ShopID,
@@ -51,7 +55,9 @@ func (s *service) ListPromotions(
 	return promotions, total, nil
 }
 
-func (s *service) newListPromotionsOrders(in []*store.ListPromotionsOrder) ([]*database.ListPromotionsOrder, error) {
+func (s *service) newListPromotionsOrders(
+	in []*store.ListPromotionsOrder,
+) ([]*database.ListPromotionsOrder, error) {
 	res := make([]*database.ListPromotionsOrder, len(in))
 	for i := range in {
 		var key database.ListPromotionsOrderKey
@@ -89,7 +95,10 @@ func (s *service) MultiGetPromotions(
 	return promotions, internalError(err)
 }
 
-func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput) (*entity.Promotion, error) {
+func (s *service) GetPromotion(
+	ctx context.Context,
+	in *store.GetPromotionInput,
+) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -103,7 +112,10 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 	return promotion, nil
 }
 
-func (s *service) GetPromotionByCode(ctx context.Context, in *store.GetPromotionByCodeInput) (*entity.Promotion, error) {
+func (s *service) GetPromotionByCode(
+	ctx context.Context,
+	in *store.GetPromotionByCodeInput,
+) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -117,7 +129,10 @@ func (s *service) GetPromotionByCode(ctx context.Context, in *store.GetPromotion
 	return promotion, nil
 }
 
-func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotionInput) (*entity.Promotion, error) {
+func (s *service) CreatePromotion(
+	ctx context.Context,
+	in *store.CreatePromotionInput,
+) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -156,7 +171,11 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	}
 	promotion := entity.NewPromotion(params)
 	if err := promotion.Validate(); err != nil {
-		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: validation error: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err := s.db.Promotion.Create(ctx, promotion); err != nil {
 		return nil, internalError(err)
@@ -183,7 +202,10 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 	switch promotion.TargetType {
 	case entity.PromotionTargetTypeAllShop:
 		if admin.Type != uentity.AdminTypeAdministrator {
-			return fmt.Errorf("service: cannot update promotion for all shops: %w", exception.ErrForbidden)
+			return fmt.Errorf(
+				"service: cannot update promotion for all shops: %w",
+				exception.ErrForbidden,
+			)
 		}
 	case entity.PromotionTargetTypeSpecificShop:
 		switch admin.Type {
@@ -194,10 +216,16 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 				return internalError(err)
 			}
 			if promotion.ShopID != shop.ID {
-				return fmt.Errorf("service: this coordinator does not have permission to update promotion: %w", exception.ErrForbidden)
+				return fmt.Errorf(
+					"service: this coordinator does not have permission to update promotion: %w",
+					exception.ErrForbidden,
+				)
 			}
 		default:
-			return fmt.Errorf("service: cannot update promotion for only shop: %w", exception.ErrForbidden)
+			return fmt.Errorf(
+				"service: cannot update promotion for only shop: %w",
+				exception.ErrForbidden,
+			)
 		}
 	}
 

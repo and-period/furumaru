@@ -24,7 +24,10 @@ func NewProductReviewReaction(db *mysql.Client) database.ProductReviewReaction {
 	}
 }
 
-func (r *productReviewReaction) Upsert(ctx context.Context, reaction *entity.ProductReviewReaction) error {
+func (r *productReviewReaction) Upsert(
+	ctx context.Context,
+	reaction *entity.ProductReviewReaction,
+) error {
 	now := r.now()
 	reaction.CreatedAt, reaction.UpdatedAt = now, now
 
@@ -48,7 +51,10 @@ func (r *productReviewReaction) Delete(ctx context.Context, productReviewID, use
 	return dbError(err)
 }
 
-func (r *productReviewReaction) GetUserReactions(ctx context.Context, productID, userID string) (entity.ProductReviewReactions, error) {
+func (r *productReviewReaction) GetUserReactions(
+	ctx context.Context,
+	productID, userID string,
+) (entity.ProductReviewReactions, error) {
 	var reactions entity.ProductReviewReactions
 
 	stmt := r.db.Statement(ctx, r.db.DB, productReviewReactionTable).

@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 )
 
-func (h *handler) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (service.Addresses, error) {
+func (h *handler) multiGetAddressesByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (service.Addresses, error) {
 	if len(revisionIDs) == 0 {
 		return service.Addresses{}, nil
 	}

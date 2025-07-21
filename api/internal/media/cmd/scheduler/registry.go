@@ -81,7 +81,11 @@ func (a *app) inject(ctx context.Context) error {
 		Endpoint: a.MediaConvertEndpoint,
 		RoleARN:  a.MediaConvertRoleARN,
 	}
-	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(params.logger))
+	mediaConvertClient := mediaconvert.NewMediaConvert(
+		awscfg,
+		&mediaConvertParams,
+		mediaconvert.WithLogger(params.logger),
+	)
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -118,7 +122,11 @@ func (a *app) inject(ctx context.Context) error {
 	case "START":
 		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(params.logger))
 	case "CLOSE":
-		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(params.logger), scheduler.WithStorageURL(a.CDNURL))
+		a.job = scheduler.NewCloser(
+			jobParams,
+			scheduler.WithLogger(params.logger),
+			scheduler.WithStorageURL(a.CDNURL),
+		)
 	default:
 		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}

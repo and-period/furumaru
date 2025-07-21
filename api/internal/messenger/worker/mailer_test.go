@@ -47,7 +47,9 @@ func TestMultiSendMail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(admins, nil)
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "admin-register", personalizations).Return(nil)
+				mocks.mailer.EXPECT().
+					MultiSendFromInfo(ctx, "admin-register", personalizations).
+					Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
@@ -79,10 +81,13 @@ func TestMultiSendMail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.multiSendMail(ctx, tt.payload)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.multiSendMail(ctx, tt.payload)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -112,7 +117,9 @@ func TestSendMail(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(nil)
+				mocks.mailer.EXPECT().
+					MultiSendFromInfo(ctx, "email-id", personalizations).
+					Return(nil)
 			},
 			templateID:       "email-id",
 			personalizations: personalizations,
@@ -128,7 +135,9 @@ func TestSendMail(t *testing.T) {
 		{
 			name: "failed to send info mail",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(assert.AnError)
+				mocks.mailer.EXPECT().
+					MultiSendFromInfo(ctx, "email-id", personalizations).
+					Return(assert.AnError)
 			},
 			templateID:       "email-id",
 			personalizations: personalizations,
@@ -148,10 +157,13 @@ func TestSendMail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.sendMail(ctx, tt.templateID, tt.personalizations...)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.sendMail(ctx, tt.templateID, tt.personalizations...)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -407,11 +419,14 @@ func TestPersonalizations(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			actual, err := worker.newPersonalizations(ctx, tt.payload)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				actual, err := worker.newPersonalizations(ctx, tt.payload)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -469,10 +484,13 @@ func TestFetchAdmins(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchAdmins(ctx, tt.adminIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.fetchAdmins(ctx, tt.adminIDs, tt.execute(t))
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -534,10 +552,13 @@ func TestFetchAdministrators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchAdministrators(ctx, tt.administratorIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.fetchAdministrators(ctx, tt.administratorIDs, tt.execute(t))
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -610,10 +631,13 @@ func TestFetchCoordinators(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchCoordinators(ctx, tt.coordinatorIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.fetchCoordinators(ctx, tt.coordinatorIDs, tt.execute(t))
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -642,10 +666,13 @@ func TestFetchProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchProducers(ctx, tt.producerIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.fetchProducers(ctx, tt.producerIDs, tt.execute(t))
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -716,9 +743,12 @@ func TestFetchUsers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchUsers(ctx, tt.userIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.fetchUsers(ctx, tt.userIDs, tt.execute(t))
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

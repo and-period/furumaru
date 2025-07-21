@@ -17,7 +17,10 @@ func (s *service) MultiGetUserNotifications(
 	return notifications, internalError(err)
 }
 
-func (s *service) GetUserNotification(ctx context.Context, in *user.GetUserNotificationInput) (*entity.UserNotification, error) {
+func (s *service) GetUserNotification(
+	ctx context.Context,
+	in *user.GetUserNotificationInput,
+) (*entity.UserNotification, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -25,7 +28,10 @@ func (s *service) GetUserNotification(ctx context.Context, in *user.GetUserNotif
 	return notification, internalError(err)
 }
 
-func (s *service) UpdateUserNotification(ctx context.Context, in *user.UpdateUserNotificationInput) error {
+func (s *service) UpdateUserNotification(
+	ctx context.Context,
+	in *user.UpdateUserNotificationInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

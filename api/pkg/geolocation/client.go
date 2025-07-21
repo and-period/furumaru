@@ -89,7 +89,8 @@ func newAddress(components []maps.AddressComponent) (*Address, error) {
 			res.City = component.LongName
 		case slices.Contains(component.Types, "sublocality"):
 			res.AddressLine1 += component.LongName
-		case slices.Contains(component.Types, "premise"), slices.Contains(component.Types, "subpremise"):
+		case slices.Contains(component.Types, "premise"),
+			slices.Contains(component.Types, "subpremise"):
 			if len(res.AddressLine2) > 0 {
 				res.AddressLine2 += " "
 			}
@@ -152,7 +153,10 @@ type GetGeolocationOutput struct {
 	Longitude float64
 }
 
-func (c *client) GetGeolocation(ctx context.Context, in *GetGeolocationInput) (*GetGeolocationOutput, error) {
+func (c *client) GetGeolocation(
+	ctx context.Context,
+	in *GetGeolocationInput,
+) (*GetGeolocationOutput, error) {
 	req := &maps.GeocodingRequest{
 		Language: "ja",
 		Region:   "JP",

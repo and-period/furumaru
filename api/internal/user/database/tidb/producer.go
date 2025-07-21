@@ -172,7 +172,11 @@ func (p *producer) Create(
 	return dbError(err)
 }
 
-func (p *producer) Update(ctx context.Context, producerID string, params *database.UpdateProducerParams) error {
+func (p *producer) Update(
+	ctx context.Context,
+	producerID string,
+	params *database.UpdateProducerParams,
+) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
 		adminParams := map[string]interface{}{
@@ -217,7 +221,11 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 	return dbError(err)
 }
 
-func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
+func (p *producer) Delete(
+	ctx context.Context,
+	producerID string,
+	auth func(ctx context.Context) error,
+) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
 		updates := map[string]interface{}{

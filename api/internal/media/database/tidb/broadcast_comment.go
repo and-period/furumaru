@@ -49,7 +49,11 @@ func (c *broadcastComment) List(
 	if params.NextToken != "" {
 		nsec, err := strconv.ParseInt(params.NextToken, 10, 64)
 		if err != nil {
-			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
+			return nil, "", fmt.Errorf(
+				"database: failed to parse next token: %s: %w",
+				err.Error(),
+				database.ErrInvalidArgument,
+			)
 		}
 		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
 	}
@@ -74,11 +78,19 @@ func (c *broadcastComment) Create(ctx context.Context, comment *entity.Broadcast
 	return dbError(err)
 }
 
-func (c *broadcastComment) Update(ctx context.Context, commentID string, params *database.UpdateBroadcastCommentParams) error {
+func (c *broadcastComment) Update(
+	ctx context.Context,
+	commentID string,
+	params *database.UpdateBroadcastCommentParams,
+) error {
 	values := map[string]interface{}{
 		"disabled":   params.Disabled,
 		"updated_at": c.now(),
 	}
-	err := c.db.DB.WithContext(ctx).Table(broadcastCommentTable).Where("id = ?", commentID).Updates(values).Error
+	err := c.db.DB.WithContext(ctx).
+		Table(broadcastCommentTable).
+		Where("id = ?", commentID).
+		Updates(values).
+		Error
 	return dbError(err)
 }

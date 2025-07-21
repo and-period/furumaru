@@ -28,7 +28,9 @@ type NewExperienceReviewReactionParams struct {
 	ReactionType ExperienceReviewReactionType
 }
 
-func NewExperienceReviewReaction(params *NewExperienceReviewReactionParams) *ExperienceReviewReaction {
+func NewExperienceReviewReaction(
+	params *NewExperienceReviewReactionParams,
+) *ExperienceReviewReaction {
 	return &ExperienceReviewReaction{
 		ReviewID:     params.ReviewID,
 		UserID:       params.UserID,

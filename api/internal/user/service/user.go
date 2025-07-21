@@ -11,7 +11,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListUsers(ctx context.Context, in *user.ListUsersInput) (entity.Users, int64, error) {
+func (s *service) ListUsers(
+	ctx context.Context,
+	in *user.ListUsersInput,
+) (entity.Users, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -41,7 +44,10 @@ func (s *service) ListUsers(ctx context.Context, in *user.ListUsersInput) (entit
 	return users, total, nil
 }
 
-func (s *service) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput) (entity.Users, error) {
+func (s *service) MultiGetUsers(
+	ctx context.Context,
+	in *user.MultiGetUsersInput,
+) (entity.Users, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -49,7 +55,10 @@ func (s *service) MultiGetUsers(ctx context.Context, in *user.MultiGetUsersInput
 	return users, internalError(err)
 }
 
-func (s *service) MultiGetUserDevices(_ context.Context, in *user.MultiGetUserDevicesInput) ([]string, error) {
+func (s *service) MultiGetUserDevices(
+	_ context.Context,
+	in *user.MultiGetUserDevicesInput,
+) ([]string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

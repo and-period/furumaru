@@ -115,7 +115,10 @@ func (h *handler) UpdateShop(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) listShopsByCoordinatorIDs(ctx context.Context, coordinatorIDs []string) (service.Shops, error) {
+func (h *handler) listShopsByCoordinatorIDs(
+	ctx context.Context,
+	coordinatorIDs []string,
+) (service.Shops, error) {
 	in := &store.ListShopsInput{
 		CoordinatorIDs: coordinatorIDs,
 		NoLimit:        true,
@@ -127,7 +130,10 @@ func (h *handler) listShopsByCoordinatorIDs(ctx context.Context, coordinatorIDs 
 	return service.NewShops(shops), nil
 }
 
-func (h *handler) listShopsByProducerIDs(ctx context.Context, producerIDs []string) (service.Shops, error) {
+func (h *handler) listShopsByProducerIDs(
+	ctx context.Context,
+	producerIDs []string,
+) (service.Shops, error) {
 	in := &store.ListShopsInput{
 		ProducerIDs: producerIDs,
 		NoLimit:     true,
@@ -164,7 +170,10 @@ func (h *handler) getShop(ctx context.Context, shopID string) (*service.Shop, er
 	return service.NewShop(shop), nil
 }
 
-func (h *handler) getShopByCoordinatorID(ctx context.Context, coordinatorID string) (*service.Shop, error) {
+func (h *handler) getShopByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+) (*service.Shop, error) {
 	in := &store.GetShopByCoordinatorIDInput{
 		CoordinatorID: coordinatorID,
 	}

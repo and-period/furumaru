@@ -144,7 +144,10 @@ func (h *handler) DeleteAddress(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (service.Addresses, error) {
+func (h *handler) multiGetAddressesByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (service.Addresses, error) {
 	if len(revisionIDs) == 0 {
 		return service.Addresses{}, nil
 	}

@@ -11,7 +11,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) CreateVideoViewerLog(ctx context.Context, in *media.CreateVideoViewerLogInput) error {
+func (s *service) CreateVideoViewerLog(
+	ctx context.Context,
+	in *media.CreateVideoViewerLogInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

@@ -44,7 +44,9 @@ func TestCreateMember(t *testing.T) {
 					PhoneNumber: "+819012345678",
 					Password:    "Passw0rd",
 				}
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, database.ErrNotFound)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test@and-period.jp").
+					Return(nil, database.ErrNotFound)
 				mocks.userAuth.EXPECT().
 					SignUp(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.SignUpParams) error {
@@ -135,7 +137,9 @@ func TestCreateMember(t *testing.T) {
 		{
 			name: "failed to get member",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, assert.AnError)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test@and-period.jp").
+					Return(nil, assert.AnError)
 			},
 			input: &user.CreateMemberInput{
 				Username:             "username",
@@ -188,8 +192,12 @@ func TestCreateMember(t *testing.T) {
 		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, database.ErrNotFound)
-				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test@and-period.jp").
+					Return(nil, database.ErrNotFound)
+				mocks.db.Member.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateMemberInput{
 				Username:             "username",
@@ -208,10 +216,13 @@ func TestCreateMember(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateMember(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateMember(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -249,7 +260,9 @@ func TestVerifyMember(t *testing.T) {
 			name: "success resend signup code",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().
+					ConfirmSignUp(ctx, "cognito-id", "123456").
+					Return(cognito.ErrCodeExpired)
 				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.VerifyMemberInput{
@@ -279,7 +292,9 @@ func TestVerifyMember(t *testing.T) {
 			name: "failed to confirm sign up",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(assert.AnError)
+				mocks.userAuth.EXPECT().
+					ConfirmSignUp(ctx, "cognito-id", "123456").
+					Return(assert.AnError)
 			},
 			input: &user.VerifyMemberInput{
 				UserID:     "user-id",
@@ -291,7 +306,9 @@ func TestVerifyMember(t *testing.T) {
 			name: "failed to resend signup code",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().
+					ConfirmSignUp(ctx, "cognito-id", "123456").
+					Return(cognito.ErrCodeExpired)
 				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.VerifyMemberInput{
@@ -316,10 +333,13 @@ func TestVerifyMember(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.VerifyMember(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.VerifyMember(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -346,8 +366,12 @@ func TestUpdateMemberEmail(t *testing.T) {
 					OldEmail:    "test-user@and-period.jp",
 					NewEmail:    "test-other@and-period.jp",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
+				mocks.db.Member.EXPECT().
+					GetByCognitoID(ctx, "cognito-id", "provider_type", "email").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(nil)
 			},
 			input: &user.UpdateMemberEmailInput{
@@ -365,7 +389,9 @@ func TestUpdateMemberEmail(t *testing.T) {
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", assert.AnError)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("", assert.AnError)
 			},
 			input: &user.UpdateMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -376,8 +402,12 @@ func TestUpdateMemberEmail(t *testing.T) {
 		{
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(nil, assert.AnError)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
+				mocks.db.Member.EXPECT().
+					GetByCognitoID(ctx, "cognito-id", "provider_type", "email").
+					Return(nil, assert.AnError)
 			},
 			input: &user.UpdateMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -392,8 +422,12 @@ func TestUpdateMemberEmail(t *testing.T) {
 					ProviderType: entity.UserAuthProviderTypeGoogle,
 					Email:        "test-user@and-period.jp",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
+				mocks.db.Member.EXPECT().
+					GetByCognitoID(ctx, "cognito-id", "provider_type", "email").
+					Return(m, nil)
 			},
 			input: &user.UpdateMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -410,8 +444,12 @@ func TestUpdateMemberEmail(t *testing.T) {
 					OldEmail:    "test-user@and-period.jp",
 					NewEmail:    "test-other@and-period.jp",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "provider_type", "email").Return(m, nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
+				mocks.db.Member.EXPECT().
+					GetByCognitoID(ctx, "cognito-id", "provider_type", "email").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ChangeEmail(ctx, params).Return(assert.AnError)
 			},
 			input: &user.UpdateMemberEmailInput{
@@ -423,10 +461,13 @@ func TestUpdateMemberEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateMemberEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateMemberEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -451,10 +492,16 @@ func TestVerifyMemberEmail(t *testing.T) {
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
 				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
-				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
-				mocks.db.Member.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(nil)
+				mocks.userAuth.EXPECT().
+					ConfirmChangeEmail(ctx, params).
+					Return("test-user@and-period.jp", nil)
+				mocks.db.Member.EXPECT().
+					UpdateEmail(ctx, "user-id", "test-user@and-period.jp").
+					Return(nil)
 			},
 			input: &user.VerifyMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -471,7 +518,9 @@ func TestVerifyMemberEmail(t *testing.T) {
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", assert.AnError)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("", assert.AnError)
 			},
 			input: &user.VerifyMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -482,8 +531,12 @@ func TestVerifyMemberEmail(t *testing.T) {
 		{
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
-				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(nil, assert.AnError)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
+				mocks.db.Member.EXPECT().
+					GetByCognitoID(ctx, "cognito-id", "user_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.VerifyMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -499,7 +552,9 @@ func TestVerifyMemberEmail(t *testing.T) {
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
 				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", assert.AnError)
 			},
@@ -517,10 +572,16 @@ func TestVerifyMemberEmail(t *testing.T) {
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
 				}
-				mocks.userAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("cognito-id", nil)
+				mocks.userAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("cognito-id", nil)
 				mocks.db.Member.EXPECT().GetByCognitoID(ctx, "cognito-id", "user_id").Return(m, nil)
-				mocks.userAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-user@and-period.jp", nil)
-				mocks.db.Member.EXPECT().UpdateEmail(ctx, "user-id", "test-user@and-period.jp").Return(assert.AnError)
+				mocks.userAuth.EXPECT().
+					ConfirmChangeEmail(ctx, params).
+					Return("test-user@and-period.jp", nil)
+				mocks.db.Member.EXPECT().
+					UpdateEmail(ctx, "user-id", "test-user@and-period.jp").
+					Return(assert.AnError)
 			},
 			input: &user.VerifyMemberEmailInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -531,10 +592,13 @@ func TestVerifyMemberEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.VerifyMemberEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.VerifyMemberEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -603,10 +667,13 @@ func TestUpdateMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateMemberPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateMemberPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -624,7 +691,9 @@ func TestForgotMemberPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.ForgotMemberPasswordInput{
@@ -641,7 +710,9 @@ func TestForgotMemberPassword(t *testing.T) {
 		{
 			name: "failed to get by email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.ForgotMemberPasswordInput{
 				Email: "test-user@and-period.jp",
@@ -651,7 +722,9 @@ func TestForgotMemberPassword(t *testing.T) {
 		{
 			name: "failed to forget password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.ForgotMemberPasswordInput{
@@ -662,10 +735,13 @@ func TestForgotMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ForgotMemberPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ForgotMemberPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -688,7 +764,9 @@ func TestVerifyMemberPassword(t *testing.T) {
 					VerifyCode:  "123456",
 					NewPassword: "Passw0rd",
 				}
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
 			},
 			input: &user.VerifyMemberPasswordInput{
@@ -719,7 +797,9 @@ func TestVerifyMemberPassword(t *testing.T) {
 		{
 			name: "failed to get by email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.VerifyMemberPasswordInput{
 				Email:                "test-user@and-period.jp",
@@ -737,7 +817,9 @@ func TestVerifyMemberPassword(t *testing.T) {
 					VerifyCode:  "123456",
 					NewPassword: "Passw0rd",
 				}
-				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
+				mocks.db.Member.EXPECT().
+					GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").
+					Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(assert.AnError)
 			},
 			input: &user.VerifyMemberPasswordInput{
@@ -751,10 +833,13 @@ func TestVerifyMemberPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.VerifyMemberPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.VerifyMemberPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -787,7 +872,9 @@ func TestUpdateMemberUsername(t *testing.T) {
 		{
 			name: "failed to update username",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().UpdateUsername(ctx, "user-id", "username").Return(assert.AnError)
+				mocks.db.Member.EXPECT().
+					UpdateUsername(ctx, "user-id", "username").
+					Return(assert.AnError)
 			},
 			input: &user.UpdateMemberUsernameInput{
 				UserID:   "user-id",
@@ -798,10 +885,13 @@ func TestUpdateMemberUsername(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateMemberUsername(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateMemberUsername(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -834,7 +924,9 @@ func TestUpdateMemberAccountID(t *testing.T) {
 		{
 			name: "failed to update account id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().UpdateAccountID(ctx, "user-id", "account-id").Return(assert.AnError)
+				mocks.db.Member.EXPECT().
+					UpdateAccountID(ctx, "user-id", "account-id").
+					Return(assert.AnError)
 			},
 			input: &user.UpdateMemberAccountIDInput{
 				UserID:    "user-id",
@@ -845,10 +937,13 @@ func TestUpdateMemberAccountID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateMemberAccountID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateMemberAccountID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -864,7 +959,9 @@ func TestUpdateMemberThumbnailURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").Return(nil)
+				mocks.db.Member.EXPECT().
+					UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").
+					Return(nil)
 			},
 			input: &user.UpdateMemberThumbnailURLInput{
 				UserID:       "user-id",
@@ -881,7 +978,9 @@ func TestUpdateMemberThumbnailURL(t *testing.T) {
 		{
 			name: "failed to update thumbnail url",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").Return(assert.AnError)
+				mocks.db.Member.EXPECT().
+					UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").
+					Return(assert.AnError)
 			},
 			input: &user.UpdateMemberThumbnailURLInput{
 				UserID:       "user-id",
@@ -892,10 +991,13 @@ func TestUpdateMemberThumbnailURL(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateMemberThumbnailURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateMemberThumbnailURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -934,11 +1036,14 @@ func TestAuthMemberWithGoogle(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			authURL, err := service.AuthMemberWithGoogle(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, authURL)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				authURL, err := service.AuthMemberWithGoogle(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, authURL)
+			}),
+		)
 	}
 }
 
@@ -982,10 +1087,13 @@ func TestCreateMemberWithGoogle(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateMemberWithGoogle(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateMemberWithGoogle(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1024,11 +1132,14 @@ func TestAuthMemberWithLINE(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			authURL, err := service.AuthMemberWithLINE(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, authURL)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				authURL, err := service.AuthMemberWithLINE(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, authURL)
+			}),
+		)
 	}
 }
 
@@ -1072,10 +1183,13 @@ func TestCreateMemberWithLINE(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateMemberWithLINE(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateMemberWithLINE(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1157,7 +1271,9 @@ func TestAuthMemberWithOAuth(t *testing.T) {
 			name: "failed to generate auth url",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
-				mocks.userAuth.EXPECT().GenerateAuthURL(ctx, gomock.Any()).Return("", assert.AnError)
+				mocks.userAuth.EXPECT().
+					GenerateAuthURL(ctx, gomock.Any()).
+					Return("", assert.AnError)
 			},
 			input: &authMemberWithOAuthParams{
 				payload: &user.AuthMemberDetailWithOAuth{
@@ -1173,11 +1289,14 @@ func TestAuthMemberWithOAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			authURL, err := service.authMemberWithOAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, authURL)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				authURL, err := service.authMemberWithOAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, authURL)
+			}),
+		)
 	}
 }
 
@@ -1463,7 +1582,9 @@ func TestCreateMemberWithOAuth(t *testing.T) {
 					})
 				mocks.userAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.userAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Member.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &createMemberWithOAuthParams{
 				payload: &user.CreateMemberDetailWithOAuth{
@@ -1487,9 +1608,12 @@ func TestCreateMemberWithOAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.createMemberWithOAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.createMemberWithOAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

@@ -134,7 +134,10 @@ func (f *OrderFulfillment) Response() *response.OrderFulfillment {
 	return &f.OrderFulfillment
 }
 
-func NewOrderFulfillments(fulfillments entity.OrderFulfillments, addresses map[int64]*Address) OrderFulfillments {
+func NewOrderFulfillments(
+	fulfillments entity.OrderFulfillments,
+	addresses map[int64]*Address,
+) OrderFulfillments {
 	res := make(OrderFulfillments, len(fulfillments))
 	for i, f := range fulfillments {
 		res[i] = NewOrderFulfillment(f, addresses[f.AddressRevisionID])

@@ -254,7 +254,10 @@ func (h *handler) ListUserExperienceReviews(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) getExperienceReview(ctx context.Context, reviewID string) (*service.ExperienceReview, error) {
+func (h *handler) getExperienceReview(
+	ctx context.Context,
+	reviewID string,
+) (*service.ExperienceReview, error) {
 	in := &store.GetExperienceReviewInput{
 		ReviewID: reviewID,
 	}
@@ -269,7 +272,10 @@ func (h *handler) getExperienceReview(ctx context.Context, reviewID string) (*se
 	return service.NewExperienceReview(review, user), nil
 }
 
-func (h *handler) aggregateExperienceRates(ctx context.Context, experienceIDs ...string) (service.ExperienceRates, error) {
+func (h *handler) aggregateExperienceRates(
+	ctx context.Context,
+	experienceIDs ...string,
+) (service.ExperienceRates, error) {
 	in := &store.AggregateExperienceReviewsInput{
 		ExperienceIDs: experienceIDs,
 	}

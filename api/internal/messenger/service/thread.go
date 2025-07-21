@@ -13,7 +13,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListThreads(ctx context.Context, in *messenger.ListThreadsInput) (entity.Threads, int64, error) {
+func (s *service) ListThreads(
+	ctx context.Context,
+	in *messenger.ListThreadsInput,
+) (entity.Threads, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -50,7 +53,10 @@ func (s *service) ListThreads(ctx context.Context, in *messenger.ListThreadsInpu
 	return threads, total, nil
 }
 
-func (s *service) GetThread(ctx context.Context, in *messenger.GetThreadInput) (*entity.Thread, error) {
+func (s *service) GetThread(
+	ctx context.Context,
+	in *messenger.GetThreadInput,
+) (*entity.Thread, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -58,13 +64,20 @@ func (s *service) GetThread(ctx context.Context, in *messenger.GetThreadInput) (
 	return thread, internalError(err)
 }
 
-func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadInput) (*entity.Thread, error) {
+func (s *service) CreateThread(
+	ctx context.Context,
+	in *messenger.CreateThreadInput,
+) (*entity.Thread, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	_, err := s.db.Contact.Get(ctx, in.ContactID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid contact id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid contact id: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -126,7 +139,11 @@ func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadIn
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid user id format: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return internalError(err)

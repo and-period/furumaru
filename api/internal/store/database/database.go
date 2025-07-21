@@ -52,7 +52,11 @@ type CartActionLog interface {
 }
 
 type Category interface {
-	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
+	List(
+		ctx context.Context,
+		params *ListCategoriesParams,
+		fields ...string,
+	) (entity.Categories, error)
 	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)
 	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error)
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.Category, error)
@@ -80,11 +84,27 @@ type ListCategoriesOrder struct {
 }
 
 type Experience interface {
-	List(ctx context.Context, params *ListExperiencesParams, fields ...string) (entity.Experiences, error)
-	ListByGeolocation(ctx context.Context, params *ListExperiencesByGeolocationParams, fields ...string) (entity.Experiences, error)
+	List(
+		ctx context.Context,
+		params *ListExperiencesParams,
+		fields ...string,
+	) (entity.Experiences, error)
+	ListByGeolocation(
+		ctx context.Context,
+		params *ListExperiencesByGeolocationParams,
+		fields ...string,
+	) (entity.Experiences, error)
 	Count(ctx context.Context, params *ListExperiencesParams) (int64, error)
-	MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.Experiences, error)
-	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Experiences, error)
+	MultiGet(
+		ctx context.Context,
+		experienceIDs []string,
+		fields ...string,
+	) (entity.Experiences, error)
+	MultiGetByRevision(
+		ctx context.Context,
+		revisionIDs []int64,
+		fields ...string,
+	) (entity.Experiences, error)
 	Get(ctx context.Context, experienceID string, fields ...string) (*entity.Experience, error)
 	Create(ctx context.Context, experience *entity.Experience) error
 	Update(ctx context.Context, experienceID string, params *UpdateExperienceParams) error
@@ -144,12 +164,27 @@ type UpdateExperienceParams struct {
 }
 
 type ExperienceReview interface {
-	List(ctx context.Context, params *ListExperienceReviewsParams, fields ...string) (entity.ExperienceReviews, string, error)
-	Get(ctx context.Context, experienceReviewID string, fields ...string) (*entity.ExperienceReview, error)
+	List(
+		ctx context.Context,
+		params *ListExperienceReviewsParams,
+		fields ...string,
+	) (entity.ExperienceReviews, string, error)
+	Get(
+		ctx context.Context,
+		experienceReviewID string,
+		fields ...string,
+	) (*entity.ExperienceReview, error)
 	Create(ctx context.Context, experienceReview *entity.ExperienceReview) error
-	Update(ctx context.Context, experienceReviewID string, params *UpdateExperienceReviewParams) error
+	Update(
+		ctx context.Context,
+		experienceReviewID string,
+		params *UpdateExperienceReviewParams,
+	) error
 	Delete(ctx context.Context, experienceReviewID string) error
-	Aggregate(ctx context.Context, params *AggregateExperienceReviewsParams) (entity.AggregatedExperienceReviews, error)
+	Aggregate(
+		ctx context.Context,
+		params *AggregateExperienceReviewsParams,
+	) (entity.AggregatedExperienceReviews, error)
 }
 
 type ListExperienceReviewsParams struct {
@@ -173,14 +208,29 @@ type AggregateExperienceReviewsParams struct {
 type ExperienceReviewReaction interface {
 	Upsert(ctx context.Context, reaction *entity.ExperienceReviewReaction) error
 	Delete(ctx context.Context, experienceReviewID, userID string) error
-	GetUserReactions(ctx context.Context, experienceID, userID string) (entity.ExperienceReviewReactions, error)
+	GetUserReactions(
+		ctx context.Context,
+		experienceID, userID string,
+	) (entity.ExperienceReviewReactions, error)
 }
 
 type ExperienceType interface {
-	List(ctx context.Context, params *ListExperienceTypesParams, fields ...string) (entity.ExperienceTypes, error)
+	List(
+		ctx context.Context,
+		params *ListExperienceTypesParams,
+		fields ...string,
+	) (entity.ExperienceTypes, error)
 	Count(ctx context.Context, params *ListExperienceTypesParams) (int64, error)
-	MultiGet(ctx context.Context, experienceTypeIDs []string, fields ...string) (entity.ExperienceTypes, error)
-	Get(ctx context.Context, experienceTypeID string, fields ...string) (*entity.ExperienceType, error)
+	MultiGet(
+		ctx context.Context,
+		experienceTypeIDs []string,
+		fields ...string,
+	) (entity.ExperienceTypes, error)
+	Get(
+		ctx context.Context,
+		experienceTypeID string,
+		fields ...string,
+	) (*entity.ExperienceType, error)
 	Create(ctx context.Context, experienceType *entity.ExperienceType) error
 	Update(ctx context.Context, experienceTypeID string, params *UpdateExperienceTypeParams) error
 	Delete(ctx context.Context, experienceTypeID string) error
@@ -225,20 +275,39 @@ type Order interface {
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)
-	GetByTransactionIDWithSessionID(ctx context.Context, sessionID, transactionID string) (*entity.Order, error)
+	GetByTransactionIDWithSessionID(
+		ctx context.Context,
+		sessionID, transactionID string,
+	) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
 	UpdateAuthorized(ctx context.Context, orderID string, params *UpdateOrderAuthorizedParams) error
 	UpdateCaptured(ctx context.Context, orderID string, params *UpdateOrderCapturedParams) error
 	UpdateFailed(ctx context.Context, orderID string, params *UpdateOrderFailedParams) error
 	UpdateRefunded(ctx context.Context, orderID string, params *UpdateOrderRefundedParams) error
-	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
+	UpdateFulfillment(
+		ctx context.Context,
+		orderID, fulfillmentID string,
+		params *UpdateOrderFulfillmentParams,
+	) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (*entity.AggregatedOrder, error)
-	AggregateByUser(ctx context.Context, params *AggregateOrdersByUserParams) (entity.AggregatedUserOrders, error)
-	AggregateByPaymentMethodType(ctx context.Context, params *AggregateOrdersByPaymentMethodTypeParams) (entity.AggregatedOrderPayments, error)
-	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
-	AggregateByPeriod(ctx context.Context, params *AggregateOrdersByPeriodParams) (entity.AggregatedPeriodOrders, error)
+	AggregateByUser(
+		ctx context.Context,
+		params *AggregateOrdersByUserParams,
+	) (entity.AggregatedUserOrders, error)
+	AggregateByPaymentMethodType(
+		ctx context.Context,
+		params *AggregateOrdersByPaymentMethodTypeParams,
+	) (entity.AggregatedOrderPayments, error)
+	AggregateByPromotion(
+		ctx context.Context,
+		params *AggregateOrdersByPromotionParams,
+	) (entity.AggregatedOrderPromotions, error)
+	AggregateByPeriod(
+		ctx context.Context,
+		params *AggregateOrdersByPeriodParams,
+	) (entity.AggregatedPeriodOrders, error)
 }
 
 type ListOrdersParams struct {
@@ -321,16 +390,32 @@ type AggregateOrdersByPeriodParams struct {
 }
 
 type PaymentSystem interface {
-	MultiGet(ctx context.Context, methodTypes []entity.PaymentMethodType, fields ...string) (entity.PaymentSystems, error)
-	Get(ctx context.Context, methodType entity.PaymentMethodType, fields ...string) (*entity.PaymentSystem, error)
-	Update(ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus) error
+	MultiGet(
+		ctx context.Context,
+		methodTypes []entity.PaymentMethodType,
+		fields ...string,
+	) (entity.PaymentSystems, error)
+	Get(
+		ctx context.Context,
+		methodType entity.PaymentMethodType,
+		fields ...string,
+	) (*entity.PaymentSystem, error)
+	Update(
+		ctx context.Context,
+		methodType entity.PaymentMethodType,
+		status entity.PaymentSystemStatus,
+	) error
 }
 
 type Product interface {
 	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
 	Count(ctx context.Context, params *ListProductsParams) (int64, error)
 	MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error)
-	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error)
+	MultiGetByRevision(
+		ctx context.Context,
+		revisionIDs []int64,
+		fields ...string,
+	) (entity.Products, error)
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
@@ -401,12 +486,23 @@ type UpdateProductParams struct {
 }
 
 type ProductReview interface {
-	List(ctx context.Context, params *ListProductReviewsParams, fields ...string) (entity.ProductReviews, string, error)
-	Get(ctx context.Context, productReviewID string, fields ...string) (*entity.ProductReview, error)
+	List(
+		ctx context.Context,
+		params *ListProductReviewsParams,
+		fields ...string,
+	) (entity.ProductReviews, string, error)
+	Get(
+		ctx context.Context,
+		productReviewID string,
+		fields ...string,
+	) (*entity.ProductReview, error)
 	Create(ctx context.Context, productReview *entity.ProductReview) error
 	Update(ctx context.Context, productReviewID string, params *UpdateProductReviewParams) error
 	Delete(ctx context.Context, productReviewID string) error
-	Aggregate(ctx context.Context, params *AggregateProductReviewsParams) (entity.AggregatedProductReviews, error)
+	Aggregate(
+		ctx context.Context,
+		params *AggregateProductReviewsParams,
+	) (entity.AggregatedProductReviews, error)
 }
 
 type ListProductReviewsParams struct {
@@ -430,13 +526,24 @@ type AggregateProductReviewsParams struct {
 type ProductReviewReaction interface {
 	Upsert(ctx context.Context, reaction *entity.ProductReviewReaction) error
 	Delete(ctx context.Context, productReviewID, userID string) error
-	GetUserReactions(ctx context.Context, productID, userID string) (entity.ProductReviewReactions, error)
+	GetUserReactions(
+		ctx context.Context,
+		productID, userID string,
+	) (entity.ProductReviewReactions, error)
 }
 
 type ProductTag interface {
-	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
+	List(
+		ctx context.Context,
+		params *ListProductTagsParams,
+		fields ...string,
+	) (entity.ProductTags, error)
 	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
-	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
+	MultiGet(
+		ctx context.Context,
+		productTagIDs []string,
+		fields ...string,
+	) (entity.ProductTags, error)
 	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
 	Create(ctx context.Context, productTag *entity.ProductTag) error
 	Update(ctx context.Context, productTagID, name string) error
@@ -462,9 +569,17 @@ type ListProductTagsOrder struct {
 }
 
 type ProductType interface {
-	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
+	List(
+		ctx context.Context,
+		params *ListProductTypesParams,
+		fields ...string,
+	) (entity.ProductTypes, error)
 	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
-	MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error)
+	MultiGet(
+		ctx context.Context,
+		productTypeIDs []string,
+		fields ...string,
+	) (entity.ProductTypes, error)
 	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name, iconURL string) error
@@ -491,9 +606,17 @@ type ListProductTypesOrder struct {
 }
 
 type Promotion interface {
-	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
+	List(
+		ctx context.Context,
+		params *ListPromotionsParams,
+		fields ...string,
+	) (entity.Promotions, error)
 	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
-	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
+	MultiGet(
+		ctx context.Context,
+		promotionIDs []string,
+		fields ...string,
+	) (entity.Promotions, error)
 	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
 	GetByCode(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
 	Create(ctx context.Context, promotion *entity.Promotion) error
@@ -539,7 +662,11 @@ type UpdatePromotionParams struct {
 }
 
 type Schedule interface {
-	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
+	List(
+		ctx context.Context,
+		params *ListSchedulesParams,
+		fields ...string,
+	) (entity.Schedules, error)
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
 	MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error)
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
@@ -578,14 +705,26 @@ type ApproveScheduleParams struct {
 }
 
 type Shipping interface {
-	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
+	List(
+		ctx context.Context,
+		params *ListShippingsParams,
+		fields ...string,
+	) (entity.Shippings, error)
 	ListByShopIDs(ctx context.Context, shopIDs []string, fields ...string) (entity.Shippings, error)
 	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
-	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
+	MultiGetByRevision(
+		ctx context.Context,
+		revisionIDs []int64,
+		fields ...string,
+	) (entity.Shippings, error)
 	Get(ctx context.Context, shippingID string, fields ...string) (*entity.Shipping, error)
 	GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error)
 	GetByShopID(ctx context.Context, shopID string, fields ...string) (*entity.Shipping, error)
-	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) // Depcecated
+	GetByCoordinatorID(
+		ctx context.Context,
+		coordinatorID string,
+		fields ...string,
+	) (*entity.Shipping, error) // Depcecated
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
 	UpdateInUse(ctx context.Context, shopID, shippingID string) error
@@ -617,7 +756,11 @@ type Shop interface {
 	MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error)
 	Count(ctx context.Context, params *ListShopsParams) (int64, error)
 	Get(ctx context.Context, shopID string, fields ...string) (*entity.Shop, error)
-	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error)
+	GetByCoordinatorID(
+		ctx context.Context,
+		coordinatorID string,
+		fields ...string,
+	) (*entity.Shop, error)
 	Create(ctx context.Context, shop *entity.Shop) error
 	Update(ctx context.Context, shopID string, params *UpdateShopParams) error
 	Delete(ctx context.Context, shopID string) error
@@ -648,7 +791,11 @@ type ListShopProducersParams struct {
 
 type Spot interface {
 	List(ctx context.Context, params *ListSpotsParams, fields ...string) (entity.Spots, error)
-	ListByGeolocation(ctx context.Context, params *ListSpotsByGeolocationParams, fields ...string) (entity.Spots, error)
+	ListByGeolocation(
+		ctx context.Context,
+		params *ListSpotsByGeolocationParams,
+		fields ...string,
+	) (entity.Spots, error)
 	Count(ctx context.Context, params *ListSpotsParams) (int64, error)
 	Get(ctx context.Context, spotID string, fields ...string) (*entity.Spot, error)
 	Create(ctx context.Context, spot *entity.Spot) error
@@ -695,7 +842,11 @@ type ApproveSpotParams struct {
 }
 
 type SpotType interface {
-	List(ctx context.Context, params *ListSpotTypesParams, fields ...string) (entity.SpotTypes, error)
+	List(
+		ctx context.Context,
+		params *ListSpotTypesParams,
+		fields ...string,
+	) (entity.SpotTypes, error)
 	Count(ctx context.Context, params *ListSpotTypesParams) (int64, error)
 	MultiGet(ctx context.Context, spotTypeIDs []string, fields ...string) (entity.SpotTypes, error)
 	Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error)

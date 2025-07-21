@@ -61,7 +61,9 @@ func NewSchedule(schedule *sentity.Schedule, broadcast *mentity.Broadcast) *Sche
 	}
 }
 
-func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.ScheduleDistributionMetadata) {
+func newBroadcastDetail(
+	broadcast *mentity.Broadcast,
+) (string, bool, *response.ScheduleDistributionMetadata) {
 	metadata := &response.ScheduleDistributionMetadata{
 		Subtitles: map[string]string{},
 	}

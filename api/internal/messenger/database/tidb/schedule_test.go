@@ -29,7 +29,11 @@ func TestSchedule_List(t *testing.T) {
 	require.NoError(t, err)
 
 	schedules := make(entity.Schedules, 3)
-	schedules[0] = testSchedule(entity.ScheduleTypeNotification, "schedule-id01", now().Add(-time.Hour))
+	schedules[0] = testSchedule(
+		entity.ScheduleTypeNotification,
+		"schedule-id01",
+		now().Add(-time.Hour),
+	)
 	schedules[1] = testSchedule(entity.ScheduleTypeNotification, "schedule-id02", now())
 	schedules[2] = testSchedule(entity.ScheduleTypeNotification, "schedule-id03", now())
 	err = db.DB.Create(&schedules).Error
@@ -252,7 +256,11 @@ func TestSchedule_UpsertProcessing(t *testing.T) {
 		{
 			name: "success update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now().Add(-15*time.Minute))
+				schedule := testSchedule(
+					entity.ScheduleTypeNotification,
+					"schedule-id",
+					now().Add(-15*time.Minute),
+				)
 				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -403,7 +411,11 @@ func TestSchedule_UpdateCancel(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now().Add(-15*time.Minute))
+				schedule := testSchedule(
+					entity.ScheduleTypeNotification,
+					"schedule-id",
+					now().Add(-15*time.Minute),
+				)
 				schedule.Status = entity.ScheduleStatusProcessing
 				schedule.Count = 2
 				err := db.DB.Create(&schedule).Error

@@ -9,7 +9,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*service.Shipping, error) {
+func (h *handler) getShippingByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+) (*service.Shipping, error) {
 	in := &store.GetShippingByCoordinatorIDInput{
 		CoordinatorID: coordinatorID,
 	}

@@ -19,7 +19,10 @@ type Client interface {
 	// チャンネル関連
 	// ######################
 	// チャンネル作成
-	CreateChannel(ctx context.Context, params *CreateChannelParams) (*ivs.CreateChannelOutput, error)
+	CreateChannel(
+		ctx context.Context,
+		params *CreateChannelParams,
+	) (*ivs.CreateChannelOutput, error)
 	// チャンネル取得
 	GetChannel(ctx context.Context, params *GetChannelParams) (*types.Channel, error)
 	// チャンネル削除

@@ -108,7 +108,10 @@ func (h *handler) DeleteSpotType(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetSpotTypes(ctx context.Context, spotTypeIDs []string) (service.SpotTypes, error) {
+func (h *handler) multiGetSpotTypes(
+	ctx context.Context,
+	spotTypeIDs []string,
+) (service.SpotTypes, error) {
 	if len(spotTypeIDs) == 0 {
 		return service.SpotTypes{}, nil
 	}

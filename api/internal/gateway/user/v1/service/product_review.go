@@ -81,7 +81,10 @@ func (r *ProductReview) Response() *response.ProductReview {
 	return &r.ProductReview
 }
 
-func NewProductReviews(reviews entity.ProductReviews, users map[string]*uentity.User) ProductReviews {
+func NewProductReviews(
+	reviews entity.ProductReviews,
+	users map[string]*uentity.User,
+) ProductReviews {
 	res := make(ProductReviews, 0, len(reviews))
 	for _, review := range reviews {
 		user, ok := users[review.UserID]

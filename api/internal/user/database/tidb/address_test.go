@@ -865,7 +865,11 @@ func testAddress(addressID, userID string, revisionID int64, now time.Time) *ent
 	}
 }
 
-func testAddressRevision(revisionID int64, addressID string, now time.Time) *entity.AddressRevision {
+func testAddressRevision(
+	revisionID int64,
+	addressID string,
+	now time.Time,
+) *entity.AddressRevision {
 	return &entity.AddressRevision{
 		ID:             revisionID,
 		AddressID:      addressID,

@@ -126,7 +126,11 @@ func (a *app) inject(ctx context.Context) error {
 	params.line = linebot
 
 	// Firebaseの設定（管理者用）
-	afbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.adminFirebaseCredentials))
+	afbapp, err := firebase.NewApp(
+		ctx,
+		nil,
+		option.WithCredentialsJSON(params.adminFirebaseCredentials),
+	)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase client for admin: %w", err)
 	}
@@ -139,7 +143,11 @@ func (a *app) inject(ctx context.Context) error {
 	params.adminMessaging = amessaging
 
 	// Firebaseの設定（利用者用）
-	ufbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.userFirebaseCredentials))
+	ufbapp, err := firebase.NewApp(
+		ctx,
+		nil,
+		option.WithCredentialsJSON(params.userFirebaseCredentials),
+	)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase client for user: %w", err)
 	}

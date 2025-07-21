@@ -163,7 +163,15 @@ func TestUserOrders(t *testing.T) {
 						OrderedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 						PaidAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
 						RefundedAt:        time.Time{},
-						CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0), UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						CreatedAt: jst.Date(
+							2022,
+							1,
+							1,
+							0,
+							0,
+							0,
+							0,
+						), UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					},
 					OrderFulfillments: entity.OrderFulfillments{
 						{

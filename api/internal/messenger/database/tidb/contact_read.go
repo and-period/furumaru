@@ -25,7 +25,10 @@ func NewContactRead(db *mysql.Client) database.ContactRead {
 	}
 }
 
-func (c *contactRead) GetByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string,
+func (c *contactRead) GetByContactIDAndUserID(
+	ctx context.Context,
+	contactID, userID string,
+	fields ...string,
 ) (*entity.ContactRead, error) {
 	contactRead, err := c.getByContactIDAndUserID(ctx, c.db.DB, contactID, userID, fields...)
 	return contactRead, dbError(err)
@@ -63,7 +66,11 @@ func (c *contactRead) Update(ctx context.Context, params *database.UpdateContact
 	return dbError(err)
 }
 
-func (c *contactRead) getByContactIDAndUserID(ctx context.Context, tx *gorm.DB, contactID, userID string, fields ...string,
+func (c *contactRead) getByContactIDAndUserID(
+	ctx context.Context,
+	tx *gorm.DB,
+	contactID, userID string,
+	fields ...string,
 ) (*entity.ContactRead, error) {
 	var contactRead *entity.ContactRead
 

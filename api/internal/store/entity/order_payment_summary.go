@@ -40,7 +40,9 @@ type NewExperienceOrderPaymentSummaryParams struct {
 	SeniorCount           int64
 }
 
-func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) (*OrderPaymentSummary, error) {
+func NewProductOrderPaymentSummary(
+	params *NewProductOrderPaymentSummaryParams,
+) (*OrderPaymentSummary, error) {
 	var shippingFee int64
 	// 商品購入価格の算出
 	subtotal, err := params.Baskets.TotalPrice(params.Products.Map())
@@ -55,7 +57,12 @@ func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) 
 		if params.PrefectureCode == 0 {
 			break // 配送先都道府県の指定がない場合、配送料金は算出しない
 		}
-		fee, err := params.Shipping.CalcShippingFee(basket.BoxSize, basket.BoxType, subtotal, params.PrefectureCode)
+		fee, err := params.Shipping.CalcShippingFee(
+			basket.BoxSize,
+			basket.BoxType,
+			subtotal,
+			params.PrefectureCode,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +85,9 @@ func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) 
 	}, nil
 }
 
-func NewExperienceOrderPaymentSummary(params *NewExperienceOrderPaymentSummaryParams) *OrderPaymentSummary {
+func NewExperienceOrderPaymentSummary(
+	params *NewExperienceOrderPaymentSummaryParams,
+) *OrderPaymentSummary {
 	var subtotal int64
 	// 体験購入価格の算出
 	subtotal += params.Experience.PriceAdult * params.AdultCount

@@ -48,7 +48,9 @@ func TestListExperienceReviews(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReview.EXPECT().List(ctx, params).Return(reviews, "next-token", nil)
+				mocks.db.ExperienceReview.EXPECT().
+					List(ctx, params).
+					Return(reviews, "next-token", nil)
 			},
 			input: &store.ListExperienceReviewsInput{
 				ExperienceID: "experience-id",
@@ -86,12 +88,15 @@ func TestListExperienceReviews(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, token, err := service.ListExperienceReviews(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expectToken, token)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, token, err := service.ListExperienceReviews(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expectToken, token)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -150,11 +155,14 @@ func TestGetExperienceReview(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetExperienceReview(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetExperienceReview(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -283,10 +291,13 @@ func TestCreateExperienceReview(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateExperienceReview(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateExperienceReview(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -327,7 +338,9 @@ func TestUpdateExperienceReview(t *testing.T) {
 		{
 			name: "failed to update experience review",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReview.EXPECT().Update(ctx, "review-id", params).Return(assert.AnError)
+				mocks.db.ExperienceReview.EXPECT().
+					Update(ctx, "review-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateExperienceReviewInput{
 				ReviewID: "review-id",
@@ -340,10 +353,13 @@ func TestUpdateExperienceReview(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateExperienceReview(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateExperienceReview(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -385,10 +401,13 @@ func TestDeleteExperienceReview(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteExperienceReview(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteExperienceReview(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -441,7 +460,9 @@ func TestAggregateExperienceReviews(t *testing.T) {
 		{
 			name: "failed to aggregate experience reviews",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReview.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
+				mocks.db.ExperienceReview.EXPECT().
+					Aggregate(ctx, params).
+					Return(nil, assert.AnError)
 			},
 			input: &store.AggregateExperienceReviewsInput{
 				ExperienceIDs: []string{"experience-id"},
@@ -452,10 +473,13 @@ func TestAggregateExperienceReviews(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateExperienceReviews(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateExperienceReviews(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }

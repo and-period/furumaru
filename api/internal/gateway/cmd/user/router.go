@@ -107,7 +107,12 @@ func (a *app) enableDebugMode(ctx *gin.Context) bool {
 	return strings.Contains(ctx.ContentType(), contentType)
 }
 
-func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter, startAt time.Time) {
+func (a *app) writeAccessLog(
+	ctx *gin.Context,
+	req []byte,
+	w *wrapResponseWriter,
+	startAt time.Time,
+) {
 	const msg = "Access log"
 	skipPaths := map[string]bool{
 		"/health": true,

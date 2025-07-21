@@ -40,7 +40,16 @@ func TestProductReviewReaction_Upsert(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct(
+		"product-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{"tag-id"},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -127,7 +136,16 @@ func TestProductReviewReaction_Delete(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct(
+		"product-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{"tag-id"},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -206,7 +224,16 @@ func TestProductReviewReaction_GetUserReactions(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	pinternal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	pinternal := testProduct(
+		"product-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{"tag-id"},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&pinternal.ProductRevision).Error
@@ -263,7 +290,10 @@ func TestProductReviewReaction_GetUserReactions(t *testing.T) {
 	}
 }
 
-func testProductReviewReaction(reviewID, userID string, now time.Time) *entity.ProductReviewReaction {
+func testProductReviewReaction(
+	reviewID, userID string,
+	now time.Time,
+) *entity.ProductReviewReaction {
 	return &entity.ProductReviewReaction{
 		ReviewID:     reviewID,
 		UserID:       userID,

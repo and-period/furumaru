@@ -92,7 +92,11 @@ func (s *service) UpdateMemberEmail(ctx context.Context, in *user.UpdateMemberEm
 		return internalError(err)
 	}
 	if m.ProviderType != entity.UserAuthProviderTypeEmail {
-		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: not allow provider type to change email")
+		return fmt.Errorf(
+			"%w: %s",
+			exception.ErrFailedPrecondition,
+			"api: not allow provider type to change email",
+		)
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
@@ -129,7 +133,10 @@ func (s *service) VerifyMemberEmail(ctx context.Context, in *user.VerifyMemberEm
 	return internalError(err)
 }
 
-func (s *service) UpdateMemberPassword(ctx context.Context, in *user.UpdateMemberPasswordInput) error {
+func (s *service) UpdateMemberPassword(
+	ctx context.Context,
+	in *user.UpdateMemberPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -142,7 +149,10 @@ func (s *service) UpdateMemberPassword(ctx context.Context, in *user.UpdateMembe
 	return internalError(err)
 }
 
-func (s *service) ForgotMemberPassword(ctx context.Context, in *user.ForgotMemberPasswordInput) error {
+func (s *service) ForgotMemberPassword(
+	ctx context.Context,
+	in *user.ForgotMemberPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -156,7 +166,10 @@ func (s *service) ForgotMemberPassword(ctx context.Context, in *user.ForgotMembe
 	return nil
 }
 
-func (s *service) VerifyMemberPassword(ctx context.Context, in *user.VerifyMemberPasswordInput) error {
+func (s *service) VerifyMemberPassword(
+	ctx context.Context,
+	in *user.VerifyMemberPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -173,7 +186,10 @@ func (s *service) VerifyMemberPassword(ctx context.Context, in *user.VerifyMembe
 	return internalError(err)
 }
 
-func (s *service) UpdateMemberUsername(ctx context.Context, in *user.UpdateMemberUsernameInput) error {
+func (s *service) UpdateMemberUsername(
+	ctx context.Context,
+	in *user.UpdateMemberUsernameInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -181,7 +197,10 @@ func (s *service) UpdateMemberUsername(ctx context.Context, in *user.UpdateMembe
 	return internalError(err)
 }
 
-func (s *service) UpdateMemberAccountID(ctx context.Context, in *user.UpdateMemberAccountIDInput) error {
+func (s *service) UpdateMemberAccountID(
+	ctx context.Context,
+	in *user.UpdateMemberAccountIDInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -189,7 +208,10 @@ func (s *service) UpdateMemberAccountID(ctx context.Context, in *user.UpdateMemb
 	return internalError(err)
 }
 
-func (s *service) UpdateMemberThumbnailURL(ctx context.Context, in *user.UpdateMemberThumbnailURLInput) error {
+func (s *service) UpdateMemberThumbnailURL(
+	ctx context.Context,
+	in *user.UpdateMemberThumbnailURLInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -197,7 +219,10 @@ func (s *service) UpdateMemberThumbnailURL(ctx context.Context, in *user.UpdateM
 	return internalError(err)
 }
 
-func (s *service) AuthMemberWithGoogle(ctx context.Context, in *user.AuthMemberWithGoogleInput) (string, error) {
+func (s *service) AuthMemberWithGoogle(
+	ctx context.Context,
+	in *user.AuthMemberWithGoogleInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -212,7 +237,10 @@ func (s *service) AuthMemberWithGoogle(ctx context.Context, in *user.AuthMemberW
 	return s.authMemberWithOAuth(ctx, params)
 }
 
-func (s *service) CreateMemberWithGoogle(ctx context.Context, in *user.CreateMemberWithGoogleInput) (*entity.User, error) {
+func (s *service) CreateMemberWithGoogle(
+	ctx context.Context,
+	in *user.CreateMemberWithGoogleInput,
+) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -227,7 +255,10 @@ func (s *service) CreateMemberWithGoogle(ctx context.Context, in *user.CreateMem
 	return s.createMemberWithOAuth(ctx, params)
 }
 
-func (s *service) AuthMemberWithLINE(ctx context.Context, in *user.AuthMemberWithLINEInput) (string, error) {
+func (s *service) AuthMemberWithLINE(
+	ctx context.Context,
+	in *user.AuthMemberWithLINEInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -242,7 +273,10 @@ func (s *service) AuthMemberWithLINE(ctx context.Context, in *user.AuthMemberWit
 	return s.authMemberWithOAuth(ctx, params)
 }
 
-func (s *service) CreateMemberWithLINE(ctx context.Context, in *user.CreateMemberWithLINEInput) (*entity.User, error) {
+func (s *service) CreateMemberWithLINE(
+	ctx context.Context,
+	in *user.CreateMemberWithLINEInput,
+) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -263,7 +297,10 @@ type authMemberWithOAuthParams struct {
 	redirectURI  string
 }
 
-func (s *service) authMemberWithOAuth(ctx context.Context, params *authMemberWithOAuthParams) (string, error) {
+func (s *service) authMemberWithOAuth(
+	ctx context.Context,
+	params *authMemberWithOAuthParams,
+) (string, error) {
 	eventParams := &entity.UserAuthEventParams{
 		SessionID:    params.payload.SessionID,
 		ProviderType: params.providerType,
@@ -290,7 +327,10 @@ type createMemberWithOAuthParams struct {
 	redirectURI  string
 }
 
-func (s *service) createMemberWithOAuth(ctx context.Context, params *createMemberWithOAuthParams) (*entity.User, error) {
+func (s *service) createMemberWithOAuth(
+	ctx context.Context,
+	params *createMemberWithOAuthParams,
+) (*entity.User, error) {
 	event := &entity.UserAuthEvent{SessionID: params.payload.SessionID}
 	if err := s.cache.Get(ctx, event); err != nil {
 		return nil, internalError(err)
@@ -299,7 +339,10 @@ func (s *service) createMemberWithOAuth(ctx context.Context, params *createMembe
 		return nil, fmt.Errorf("service: invalid nonce: %w", exception.ErrFailedPrecondition)
 	}
 	if event.ProviderType != params.providerType {
-		return nil, fmt.Errorf("service: invalid provider type: %w", exception.ErrFailedPrecondition)
+		return nil, fmt.Errorf(
+			"service: invalid provider type: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 
 	// Cognitoユーザーの取得

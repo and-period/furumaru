@@ -7,11 +7,26 @@ import (
 )
 
 type Payment interface {
-	Show(ctx context.Context, paymentID string) (*PaymentResponse, error)                     // 決済情報の照会
-	Capture(ctx context.Context, paymentID string) (*PaymentResponse, error)                  // 売上確定処理
-	Cancel(ctx context.Context, paymentID string) (*PaymentResponse, error)                   // キャンセル
-	Refund(ctx context.Context, params *RefundParams) (*PaymentResponse, error)               // 返金処理
-	RefundRequest(ctx context.Context, params *RefundRequestParams) (*PaymentResponse, error) // 返金要求処理
+	Show(
+		ctx context.Context,
+		paymentID string,
+	) (*PaymentResponse, error) // 決済情報の照会
+	Capture(
+		ctx context.Context,
+		paymentID string,
+	) (*PaymentResponse, error) // 売上確定処理
+	Cancel(
+		ctx context.Context,
+		paymentID string,
+	) (*PaymentResponse, error) // キャンセル
+	Refund(
+		ctx context.Context,
+		params *RefundParams,
+	) (*PaymentResponse, error) // 返金処理
+	RefundRequest(
+		ctx context.Context,
+		params *RefundRequestParams,
+	) (*PaymentResponse, error) // 返金要求処理
 }
 
 type RefundParams struct {
@@ -122,19 +137,58 @@ type RefundRequest struct {
 }
 
 type Session interface {
-	Get(ctx context.Context, sessionID string) (*SessionResponse, error)                                   // 決済情報の照会
-	Create(ctx context.Context, params *CreateSessionParams) (*SessionResponse, error)                     // 決済トランザクションの作成
-	Cancel(ctx context.Context, sessionID string) (*SessionResponse, error)                                // 決済キャンセル
-	OrderCreditCard(ctx context.Context, params *OrderCreditCardParams) (*OrderSessionResponse, error)     // クレジット決済
-	OrderBankTransfer(ctx context.Context, params *OrderBankTransferParams) (*OrderSessionResponse, error) // 銀行振込決済
-	OrderKonbini(ctx context.Context, params *OrderKonbiniParams) (*OrderSessionResponse, error)           // コンビニ決済
-	OrderPayPay(ctx context.Context, params *OrderPayPayParams) (*OrderSessionResponse, error)             // PayPay決済
-	OrderLinePay(ctx context.Context, params *OrderLinePayParams) (*OrderSessionResponse, error)           // LINE Pay決済
-	OrderMerpay(ctx context.Context, params *OrderMerpayParams) (*OrderSessionResponse, error)             // メルペイ決済
-	OrderRakutenPay(ctx context.Context, params *OrderRakutenPayParams) (*OrderSessionResponse, error)     // 楽天ペイ決済
-	OrderAUPay(ctx context.Context, params *OrderAUPayParams) (*OrderSessionResponse, error)               // au PAY決済
-	OrderPaidy(ctx context.Context, params *OrderPaidyParams) (*OrderSessionResponse, error)               // Paidy決済
-	OrderPayEasy(ctx context.Context, params *OrderPayEasyParams) (*OrderSessionResponse, error)           // Pay-easy決済
+	Get(
+		ctx context.Context,
+		sessionID string,
+	) (*SessionResponse, error) // 決済情報の照会
+	Create(
+		ctx context.Context,
+		params *CreateSessionParams,
+	) (*SessionResponse, error) // 決済トランザクションの作成
+	Cancel(
+		ctx context.Context,
+		sessionID string,
+	) (*SessionResponse, error) // 決済キャンセル
+	OrderCreditCard(
+		ctx context.Context,
+		params *OrderCreditCardParams,
+	) (*OrderSessionResponse, error) // クレジット決済
+	OrderBankTransfer(
+		ctx context.Context,
+		params *OrderBankTransferParams,
+	) (*OrderSessionResponse, error) // 銀行振込決済
+	OrderKonbini(
+		ctx context.Context,
+		params *OrderKonbiniParams,
+	) (*OrderSessionResponse, error) // コンビニ決済
+	OrderPayPay(
+		ctx context.Context,
+		params *OrderPayPayParams,
+	) (*OrderSessionResponse, error) // PayPay決済
+	OrderLinePay(
+		ctx context.Context,
+		params *OrderLinePayParams,
+	) (*OrderSessionResponse, error) // LINE Pay決済
+	OrderMerpay(
+		ctx context.Context,
+		params *OrderMerpayParams,
+	) (*OrderSessionResponse, error) // メルペイ決済
+	OrderRakutenPay(
+		ctx context.Context,
+		params *OrderRakutenPayParams,
+	) (*OrderSessionResponse, error) // 楽天ペイ決済
+	OrderAUPay(
+		ctx context.Context,
+		params *OrderAUPayParams,
+	) (*OrderSessionResponse, error) // au PAY決済
+	OrderPaidy(
+		ctx context.Context,
+		params *OrderPaidyParams,
+	) (*OrderSessionResponse, error) // Paidy決済
+	OrderPayEasy(
+		ctx context.Context,
+		params *OrderPayEasyParams,
+	) (*OrderSessionResponse, error) // Pay-easy決済
 }
 
 type CreateSessionParams struct {

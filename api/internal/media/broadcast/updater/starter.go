@@ -48,7 +48,11 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 	s.logger.Debug("Received event", zap.Any("payload", payload))
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, payload.ScheduleID)
 	if err != nil {
-		s.logger.Error("Not found broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		s.logger.Error(
+			"Not found broadcast",
+			zap.Error(err),
+			zap.String("scheduleId", payload.ScheduleID),
+		)
 		return nil
 	}
 	dir := fmt.Sprintf(entity.BroadcastArchiveHLSPath, payload.ScheduleID)
@@ -73,7 +77,11 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 		},
 	}
 	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
-		s.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		s.logger.Error(
+			"Failed to update broadcast",
+			zap.Error(err),
+			zap.String("scheduleId", payload.ScheduleID),
+		)
 		return err
 	}
 	s.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))

@@ -89,11 +89,14 @@ func TestUpsertProductReviewReaction(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UpsertProductReviewReaction(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.UpsertProductReviewReaction(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -109,7 +112,9 @@ func TestDeleteProductReviewReaction(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductReviewReaction.EXPECT().Delete(ctx, "preview-id", "user-id").Return(nil)
+				mocks.db.ProductReviewReaction.EXPECT().
+					Delete(ctx, "preview-id", "user-id").
+					Return(nil)
 			},
 			input: &store.DeleteProductReviewReactionInput{
 				ReviewID: "preview-id",
@@ -126,7 +131,9 @@ func TestDeleteProductReviewReaction(t *testing.T) {
 		{
 			name: "failed to delete product review reaction",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductReviewReaction.EXPECT().Delete(ctx, "preview-id", "user-id").Return(assert.AnError)
+				mocks.db.ProductReviewReaction.EXPECT().
+					Delete(ctx, "preview-id", "user-id").
+					Return(assert.AnError)
 			},
 			input: &store.DeleteProductReviewReactionInput{
 				ReviewID: "preview-id",
@@ -137,10 +144,13 @@ func TestDeleteProductReviewReaction(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteProductReviewReaction(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteProductReviewReaction(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -168,7 +178,9 @@ func TestGetUserProductReviewReactions(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductReviewReaction.EXPECT().GetUserReactions(ctx, "product-id", "user-id").Return(reactions, nil)
+				mocks.db.ProductReviewReaction.EXPECT().
+					GetUserReactions(ctx, "product-id", "user-id").
+					Return(reactions, nil)
 			},
 			input: &store.GetUserProductReviewReactionsInput{
 				ProductID: "product-id",
@@ -187,7 +199,9 @@ func TestGetUserProductReviewReactions(t *testing.T) {
 		{
 			name: "failed to get user product review reactions",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductReviewReaction.EXPECT().GetUserReactions(ctx, "product-id", "user-id").Return(nil, assert.AnError)
+				mocks.db.ProductReviewReaction.EXPECT().
+					GetUserReactions(ctx, "product-id", "user-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetUserProductReviewReactionsInput{
 				ProductID: "product-id",
@@ -199,10 +213,13 @@ func TestGetUserProductReviewReactions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetUserProductReviewReactions(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetUserProductReviewReactions(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }

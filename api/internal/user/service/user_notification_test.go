@@ -32,7 +32,9 @@ func TestMultiGetUserNotifications(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.UserNotification.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(notifications, nil)
+				mocks.db.UserNotification.EXPECT().
+					MultiGet(ctx, []string{"user-id"}).
+					Return(notifications, nil)
 			},
 			input: &user.MultiGetUserNotificationsInput{
 				UserIDs: []string{"user-id"},
@@ -51,7 +53,9 @@ func TestMultiGetUserNotifications(t *testing.T) {
 		{
 			name: "failed to multi get notifications",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.UserNotification.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(nil, assert.AnError)
+				mocks.db.UserNotification.EXPECT().
+					MultiGet(ctx, []string{"user-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetUserNotificationsInput{
 				UserIDs: []string{"user-id"},
@@ -61,11 +65,14 @@ func TestMultiGetUserNotifications(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetUserNotifications(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetUserNotifications(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -115,11 +122,14 @@ func TestGetUserNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetUserNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetUserNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -182,9 +192,12 @@ func TestUpdateUserNotification(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateUserNotification(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateUserNotification(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

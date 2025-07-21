@@ -8,7 +8,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
 )
 
-func (c *client) CreateJob(ctx context.Context, template string, settings *types.JobSettings) error {
+func (c *client) CreateJob(
+	ctx context.Context,
+	template string,
+	settings *types.JobSettings,
+) error {
 	in := &mediaconvert.CreateJobInput{
 		Role:        c.role,
 		Settings:    settings,

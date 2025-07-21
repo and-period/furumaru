@@ -25,7 +25,11 @@ func NewAdminGroup(db *mysql.Client) database.AdminGroup {
 	}
 }
 
-func (g *adminGroup) List(ctx context.Context, params *database.ListAdminGroupsParams, fields ...string) (entity.AdminGroups, error) {
+func (g *adminGroup) List(
+	ctx context.Context,
+	params *database.ListAdminGroupsParams,
+	fields ...string,
+) (entity.AdminGroups, error) {
 	var groups entity.AdminGroups
 
 	stmt := g.db.Statement(ctx, g.db.DB, adminGroupTable, fields...)
@@ -40,12 +44,19 @@ func (g *adminGroup) List(ctx context.Context, params *database.ListAdminGroupsP
 	return groups, dbError(err)
 }
 
-func (g *adminGroup) Count(ctx context.Context, params *database.ListAdminGroupsParams) (int64, error) {
+func (g *adminGroup) Count(
+	ctx context.Context,
+	params *database.ListAdminGroupsParams,
+) (int64, error) {
 	total, err := g.db.Count(ctx, g.db.DB, &entity.AdminGroup{}, nil)
 	return total, dbError(err)
 }
 
-func (g *adminGroup) MultiGet(ctx context.Context, groupIDs []string, fields ...string) (entity.AdminGroups, error) {
+func (g *adminGroup) MultiGet(
+	ctx context.Context,
+	groupIDs []string,
+	fields ...string,
+) (entity.AdminGroups, error) {
 	var groups entity.AdminGroups
 
 	stmt := g.db.Statement(ctx, g.db.DB, adminGroupTable, fields...).
@@ -55,7 +66,11 @@ func (g *adminGroup) MultiGet(ctx context.Context, groupIDs []string, fields ...
 	return groups, dbError(err)
 }
 
-func (g *adminGroup) Get(ctx context.Context, groupID string, fields ...string) (*entity.AdminGroup, error) {
+func (g *adminGroup) Get(
+	ctx context.Context,
+	groupID string,
+	fields ...string,
+) (*entity.AdminGroup, error) {
 	var group *entity.AdminGroup
 
 	stmt := g.db.Statement(ctx, g.db.DB, adminGroupTable, fields...).

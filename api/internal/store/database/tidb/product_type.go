@@ -77,7 +77,10 @@ func (t *productType) List(
 	return productTypes, nil
 }
 
-func (t *productType) Count(ctx context.Context, params *database.ListProductTypesParams) (int64, error) {
+func (t *productType) Count(
+	ctx context.Context,
+	params *database.ListProductTypesParams,
+) (int64, error) {
 	p := listProductTypesParams(*params)
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ProductType{}, p.stmt)
@@ -98,7 +101,11 @@ func (t *productType) MultiGet(
 	return productTypes, nil
 }
 
-func (t *productType) Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error) {
+func (t *productType) Get(
+	ctx context.Context,
+	productTypeID string,
+	fields ...string,
+) (*entity.ProductType, error) {
 	productType, err := t.get(ctx, t.db.DB, productTypeID, fields...)
 	return productType, dbError(err)
 }

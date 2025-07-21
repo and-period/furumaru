@@ -88,7 +88,9 @@ func TestListSpotTypes(t *testing.T) {
 			name: "failed to count spot types",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().List(gomock.Any(), params).Return(types, nil)
-				mocks.db.SpotType.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.SpotType.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListSpotTypesInput{
 				Name:   "収穫",
@@ -102,12 +104,15 @@ func TestListSpotTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListSpotTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListSpotTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -134,7 +139,9 @@ func TestMultiGetSpotTypes(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.SpotType.EXPECT().MultiGet(gomock.Any(), []string{"spot-type-id"}).Return(types, nil)
+				mocks.db.SpotType.EXPECT().
+					MultiGet(gomock.Any(), []string{"spot-type-id"}).
+					Return(types, nil)
 			},
 			input: &store.MultiGetSpotTypesInput{
 				SpotTypeIDs: []string{"spot-type-id"},
@@ -154,7 +161,9 @@ func TestMultiGetSpotTypes(t *testing.T) {
 		{
 			name: "failed to multi get spot types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.SpotType.EXPECT().MultiGet(gomock.Any(), []string{"spot-type-id"}).Return(nil, assert.AnError)
+				mocks.db.SpotType.EXPECT().
+					MultiGet(gomock.Any(), []string{"spot-type-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetSpotTypesInput{
 				SpotTypeIDs: []string{"spot-type-id"},
@@ -165,11 +174,14 @@ func TestMultiGetSpotTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetSpotTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetSpotTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -212,7 +224,9 @@ func TestGetSpotType(t *testing.T) {
 		{
 			name: "failed to get spot type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.SpotType.EXPECT().Get(gomock.Any(), "spot-type-id").Return(nil, assert.AnError)
+				mocks.db.SpotType.EXPECT().
+					Get(gomock.Any(), "spot-type-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetSpotTypeInput{
 				SpotTypeID: "spot-type-id",
@@ -223,11 +237,14 @@ func TestGetSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetSpotType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetSpotType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -279,10 +296,13 @@ func TestCreateSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateSpotType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateSpotType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -319,7 +339,9 @@ func TestUpdateSpotType(t *testing.T) {
 		{
 			name: "failed to update spot type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.SpotType.EXPECT().Update(ctx, "spot-type-id", params).Return(assert.AnError)
+				mocks.db.SpotType.EXPECT().
+					Update(ctx, "spot-type-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateSpotTypeInput{
 				SpotTypeID: "spot-type-id",
@@ -330,10 +352,13 @@ func TestUpdateSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateSpotType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateSpotType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -375,9 +400,12 @@ func TestDeleteSpotType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteSpotType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteSpotType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

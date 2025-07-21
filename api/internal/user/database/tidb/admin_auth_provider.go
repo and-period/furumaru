@@ -37,7 +37,10 @@ func (p *adminAuthProvider) List(
 }
 
 func (p *adminAuthProvider) Get(
-	ctx context.Context, adminID string, providerType entity.AdminAuthProviderType, fields ...string,
+	ctx context.Context,
+	adminID string,
+	providerType entity.AdminAuthProviderType,
+	fields ...string,
 ) (*entity.AdminAuthProvider, error) {
 	var provider *entity.AdminAuthProvider
 

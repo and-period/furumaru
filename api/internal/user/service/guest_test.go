@@ -41,7 +41,9 @@ func TestUpsertGuest(t *testing.T) {
 		{
 			name: "success to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Guest.EXPECT().GetByEmail(ctx, "test@example.com").Return(nil, database.ErrNotFound)
+				mocks.db.Guest.EXPECT().
+					GetByEmail(ctx, "test@example.com").
+					Return(nil, database.ErrNotFound)
 				mocks.db.Guest.EXPECT().Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, user *entity.User) error {
 						expect := &entity.User{
@@ -93,7 +95,9 @@ func TestUpsertGuest(t *testing.T) {
 		{
 			name: "success to get by email",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Guest.EXPECT().GetByEmail(ctx, "test@example.com").Return(nil, assert.AnError)
+				mocks.db.Guest.EXPECT().
+					GetByEmail(ctx, "test@example.com").
+					Return(nil, assert.AnError)
 			},
 			input: &user.UpsertGuestInput{
 				Lastname:      "&.",
@@ -107,7 +111,9 @@ func TestUpsertGuest(t *testing.T) {
 		{
 			name: "success to create",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Guest.EXPECT().GetByEmail(ctx, "test@example.com").Return(nil, database.ErrNotFound)
+				mocks.db.Guest.EXPECT().
+					GetByEmail(ctx, "test@example.com").
+					Return(nil, database.ErrNotFound)
 				mocks.db.Guest.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.UpsertGuestInput{
@@ -136,9 +142,12 @@ func TestUpsertGuest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.UpsertGuest(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.UpsertGuest(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

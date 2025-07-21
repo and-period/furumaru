@@ -28,7 +28,10 @@ e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
 m = g(r.sub, p.sub) && keyMatch2(r.obj, p.obj) && regexMatch(r.act, p.act)
 `
 
-func (s *service) GenerateAdminRole(ctx context.Context, in *user.GenerateAdminRoleInput) (string, string, error) {
+func (s *service) GenerateAdminRole(
+	ctx context.Context,
+	in *user.GenerateAdminRoleInput,
+) (string, string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", "", internalError(err)
 	}

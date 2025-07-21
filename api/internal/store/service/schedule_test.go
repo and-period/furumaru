@@ -101,7 +101,9 @@ func TestListSchedules(t *testing.T) {
 			name: "failed to count schedules",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().List(gomock.Any(), params).Return(schedules, nil)
-				mocks.db.Schedule.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Schedule.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListSchedulesInput{
 				ShopID: "shop-id",
@@ -115,12 +117,15 @@ func TestListSchedules(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListSchedules(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListSchedules(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -158,7 +163,9 @@ func TestMultiGetSchedules(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().MultiGet(gomock.Any(), []string{"schedule-id"}).Return(schedules, nil)
+				mocks.db.Schedule.EXPECT().
+					MultiGet(gomock.Any(), []string{"schedule-id"}).
+					Return(schedules, nil)
 			},
 			input: &store.MultiGetSchedulesInput{
 				ScheduleIDs: []string{"schedule-id"},
@@ -178,7 +185,9 @@ func TestMultiGetSchedules(t *testing.T) {
 		{
 			name: "failed to list schedules",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().MultiGet(gomock.Any(), []string{"schedule-id"}).Return(nil, assert.AnError)
+				mocks.db.Schedule.EXPECT().
+					MultiGet(gomock.Any(), []string{"schedule-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetSchedulesInput{
 				ScheduleIDs: []string{"schedule-id"},
@@ -189,11 +198,14 @@ func TestMultiGetSchedules(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetSchedules(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetSchedules(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -252,11 +264,14 @@ func TestGetSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -309,8 +324,12 @@ func TestCreateSchedule(t *testing.T) {
 						assert.Equal(t, expect, schedule)
 						return nil
 					})
-				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
-				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().
+					CreateBroadcast(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
+				mocks.messenger.EXPECT().
+					ReserveStartLive(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				ShopID:          "shop-id",
@@ -394,7 +413,9 @@ func TestCreateSchedule(t *testing.T) {
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(ctx, "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetCoordinator(ctx, coordinatorIn).
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
 				ShopID:          "shop-id",
@@ -455,10 +476,13 @@ func TestCreateSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -500,7 +524,9 @@ func TestUpdateSchedule(t *testing.T) {
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
 				mocks.db.Schedule.EXPECT().Update(ctx, "schedule-id", &params).Return(nil)
-				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					ReserveStartLive(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
@@ -558,10 +584,13 @@ func TestUpdateSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -601,7 +630,9 @@ func TestDeleteSchedule(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+				mocks.media.EXPECT().
+					GetBroadcastByScheduleID(ctx, broadcastIn).
+					Return(broadcast, nil)
 				mocks.db.Schedule.EXPECT().Delete(ctx, "schedule-id").Return(nil)
 			},
 			input: &store.DeleteScheduleInput{
@@ -623,7 +654,9 @@ func TestDeleteSchedule(t *testing.T) {
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(nil, assert.AnError)
+				mocks.media.EXPECT().
+					GetBroadcastByScheduleID(ctx, broadcastIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.DeleteScheduleInput{
 				ScheduleID: "schedule-id",
@@ -635,7 +668,9 @@ func TestDeleteSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &mentity.Broadcast{Status: mentity.BroadcastStatusActive}
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+				mocks.media.EXPECT().
+					GetBroadcastByScheduleID(ctx, broadcastIn).
+					Return(broadcast, nil)
 			},
 			input: &store.DeleteScheduleInput{
 				ScheduleID: "schedule-id",
@@ -646,7 +681,9 @@ func TestDeleteSchedule(t *testing.T) {
 			name: "failed to delete schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+				mocks.media.EXPECT().
+					GetBroadcastByScheduleID(ctx, broadcastIn).
+					Return(broadcast, nil)
 				mocks.db.Schedule.EXPECT().Delete(ctx, "schedule-id").Return(assert.AnError)
 			},
 			input: &store.DeleteScheduleInput{
@@ -657,10 +694,13 @@ func TestDeleteSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -718,7 +758,9 @@ func TestApproveSchedule(t *testing.T) {
 		{
 			name: "not found administrator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetAdministrator(ctx, adminIn).
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &store.ApproveScheduleInput{
 				ScheduleID: "schedule-id",
@@ -731,7 +773,9 @@ func TestApproveSchedule(t *testing.T) {
 			name: "failed to approve schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(admin, nil)
-				mocks.db.Schedule.EXPECT().Approve(ctx, "schedule-id", params).Return(assert.AnError)
+				mocks.db.Schedule.EXPECT().
+					Approve(ctx, "schedule-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.ApproveScheduleInput{
 				ScheduleID: "schedule-id",
@@ -743,10 +787,13 @@ func TestApproveSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ApproveSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ApproveSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -790,9 +837,12 @@ func TestPublishSchedule(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.PublishSchedule(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.PublishSchedule(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }

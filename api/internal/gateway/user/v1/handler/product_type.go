@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {
+func (h *handler) multiGetProductTypes(
+	ctx context.Context,
+	productTypeIDs []string,
+) (service.ProductTypes, error) {
 	if len(productTypeIDs) == 0 {
 		return service.ProductTypes{}, nil
 	}
@@ -21,7 +24,10 @@ func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []str
 	return service.NewProductTypes(sproductTypes), nil
 }
 
-func (h *handler) getProductType(ctx context.Context, productTypeID string) (*service.ProductType, error) {
+func (h *handler) getProductType(
+	ctx context.Context,
+	productTypeID string,
+) (*service.ProductType, error) {
 	in := &store.GetProductTypeInput{
 		ProductTypeID: productTypeID,
 	}

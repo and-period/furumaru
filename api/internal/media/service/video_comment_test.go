@@ -89,12 +89,15 @@ func TestListVideoComments(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, token, err := service.ListVideoComments(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectToken, token)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, token, err := service.ListVideoComments(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectToken, token)
+			}),
+		)
 	}
 }
 
@@ -211,10 +214,13 @@ func TestCreateVideoComment(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateVideoComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateVideoComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -327,10 +333,13 @@ func TestCreateVideoGuestComment(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateVideoGuestComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateVideoGuestComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -367,7 +376,9 @@ func TestUpdateVideoComment(t *testing.T) {
 		{
 			name: "failed to update video comment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.VideoComment.EXPECT().Update(ctx, "comment-id", params).Return(assert.AnError)
+				mocks.db.VideoComment.EXPECT().
+					Update(ctx, "comment-id", params).
+					Return(assert.AnError)
 			},
 			input: &media.UpdateVideoCommentInput{
 				CommentID: "comment-id",
@@ -378,9 +389,12 @@ func TestUpdateVideoComment(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateVideoComment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateVideoComment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

@@ -25,7 +25,10 @@ func (s *service) ListExperienceReviews(
 	return reviews, token, internalError(err)
 }
 
-func (s *service) GetExperienceReview(ctx context.Context, in *store.GetExperienceReviewInput) (*entity.ExperienceReview, error) {
+func (s *service) GetExperienceReview(
+	ctx context.Context,
+	in *store.GetExperienceReviewInput,
+) (*entity.ExperienceReview, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -33,7 +36,10 @@ func (s *service) GetExperienceReview(ctx context.Context, in *store.GetExperien
 	return review, internalError(err)
 }
 
-func (s *service) CreateExperienceReview(ctx context.Context, in *store.CreateExperienceReviewInput) (*entity.ExperienceReview, error) {
+func (s *service) CreateExperienceReview(
+	ctx context.Context,
+	in *store.CreateExperienceReviewInput,
+) (*entity.ExperienceReview, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -54,7 +60,10 @@ func (s *service) CreateExperienceReview(ctx context.Context, in *store.CreateEx
 	return review, nil
 }
 
-func (s *service) UpdateExperienceReview(ctx context.Context, in *store.UpdateExperienceReviewInput) error {
+func (s *service) UpdateExperienceReview(
+	ctx context.Context,
+	in *store.UpdateExperienceReviewInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -67,7 +76,10 @@ func (s *service) UpdateExperienceReview(ctx context.Context, in *store.UpdateEx
 	return internalError(err)
 }
 
-func (s *service) DeleteExperienceReview(ctx context.Context, in *store.DeleteExperienceReviewInput) error {
+func (s *service) DeleteExperienceReview(
+	ctx context.Context,
+	in *store.DeleteExperienceReviewInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

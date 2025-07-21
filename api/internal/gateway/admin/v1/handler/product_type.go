@@ -90,7 +90,11 @@ func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTy
 	for i, p := range params {
 		key, ok := types[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
+			return nil, fmt.Errorf(
+				"handler: unknown order key. key=%s: %w",
+				p.Key,
+				errInvalidOrderKey,
+			)
 		}
 		res[i] = &store.ListProductTypesOrder{
 			Key:        key,
@@ -163,7 +167,10 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {
+func (h *handler) multiGetProductTypes(
+	ctx context.Context,
+	productTypeIDs []string,
+) (service.ProductTypes, error) {
 	if len(productTypeIDs) == 0 {
 		return service.ProductTypes{}, nil
 	}
@@ -177,7 +184,10 @@ func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []str
 	return service.NewProductTypes(sproductTypes), nil
 }
 
-func (h *handler) getProductType(ctx context.Context, productTypeID string) (*service.ProductType, error) {
+func (h *handler) getProductType(
+	ctx context.Context,
+	productTypeID string,
+) (*service.ProductType, error) {
 	in := &store.GetProductTypeInput{
 		ProductTypeID: productTypeID,
 	}

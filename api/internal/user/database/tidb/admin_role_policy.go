@@ -41,12 +41,19 @@ func (p *adminRolePolicy) List(
 	return policies, dbError(err)
 }
 
-func (p *adminRolePolicy) Count(ctx context.Context, params *database.ListAdminRolePoliciesParams) (int64, error) {
+func (p *adminRolePolicy) Count(
+	ctx context.Context,
+	params *database.ListAdminRolePoliciesParams,
+) (int64, error) {
 	total, err := p.db.Count(ctx, p.db.DB, &entity.AdminRolePolicy{}, nil)
 	return total, dbError(err)
 }
 
-func (p *adminRolePolicy) Get(ctx context.Context, roleID, policyID string, fields ...string) (*entity.AdminRolePolicy, error) {
+func (p *adminRolePolicy) Get(
+	ctx context.Context,
+	roleID, policyID string,
+	fields ...string,
+) (*entity.AdminRolePolicy, error) {
 	var policy *entity.AdminRolePolicy
 
 	stmt := p.db.Statement(ctx, p.db.DB, adminRolePolicyTable, fields...).

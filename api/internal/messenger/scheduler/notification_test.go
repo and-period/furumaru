@@ -36,7 +36,9 @@ func TestScheduler_executeNotication(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
 				mocks.messenger.EXPECT().NotifyNotification(ctx, in).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(ctx, entity.ScheduleTypeNotification, "notification-id").
+					Return(nil)
 			},
 			schedule:  schedule,
 			expectErr: nil,
@@ -53,9 +55,12 @@ func TestScheduler_executeNotication(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
-			err := scheduler.executeNotification(ctx, tt.schedule)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
+				err := scheduler.executeNotification(ctx, tt.schedule)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }

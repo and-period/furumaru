@@ -152,7 +152,10 @@ func (h *handler) newPaymentRequest(ctx *gin.Context) (*request.PaymentRequest, 
 	return req, nil
 }
 
-func (h *handler) newNotifyPaymentPayload(req *request.PaymentRequest, status entity.PaymentStatus) *store.NotifyPaymentPayload {
+func (h *handler) newNotifyPaymentPayload(
+	req *request.PaymentRequest,
+	status entity.PaymentStatus,
+) *store.NotifyPaymentPayload {
 	return &store.NotifyPaymentPayload{
 		OrderID:   req.Payload.ExternalOrderNumber,
 		PaymentID: req.Payload.ID,

@@ -42,11 +42,19 @@ type Database struct {
  * interface
  */
 type Address interface {
-	List(ctx context.Context, params *ListAddressesParams, fields ...string) (entity.Addresses, error)
+	List(
+		ctx context.Context,
+		params *ListAddressesParams,
+		fields ...string,
+	) (entity.Addresses, error)
 	ListDefault(ctx context.Context, userIDs []string, fields ...string) (entity.Addresses, error)
 	Count(ctx context.Context, params *ListAddressesParams) (int64, error)
 	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
-	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error)
+	MultiGetByRevision(
+		ctx context.Context,
+		revisionIDs []int64,
+		fields ...string,
+	) (entity.Addresses, error)
 	Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error)
 	GetDefault(ctx context.Context, userID string, fields ...string) (*entity.Address, error)
 	Create(ctx context.Context, address *entity.Address) error
@@ -85,8 +93,17 @@ type Admin interface {
 }
 
 type AdminAuthProvider interface {
-	List(ctx context.Context, params *ListAdminAuthProvidersParams, fields ...string) (entity.AdminAuthProviders, error)
-	Get(ctx context.Context, adminID string, providerType entity.AdminAuthProviderType, fields ...string) (*entity.AdminAuthProvider, error)
+	List(
+		ctx context.Context,
+		params *ListAdminAuthProvidersParams,
+		fields ...string,
+	) (entity.AdminAuthProviders, error)
+	Get(
+		ctx context.Context,
+		adminID string,
+		providerType entity.AdminAuthProviderType,
+		fields ...string,
+	) (*entity.AdminAuthProvider, error)
 	Upsert(ctx context.Context, provider *entity.AdminAuthProvider) error
 }
 
@@ -95,7 +112,11 @@ type ListAdminAuthProvidersParams struct {
 }
 
 type AdminGroup interface {
-	List(ctx context.Context, params *ListAdminGroupsParams, fields ...string) (entity.AdminGroups, error)
+	List(
+		ctx context.Context,
+		params *ListAdminGroupsParams,
+		fields ...string,
+	) (entity.AdminGroups, error)
 	Count(ctx context.Context, params *ListAdminGroupsParams) (int64, error)
 	MultiGet(ctx context.Context, groupIDs []string, fields ...string) (entity.AdminGroups, error)
 	Get(ctx context.Context, groupID string, fields ...string) (*entity.AdminGroup, error)
@@ -109,9 +130,17 @@ type ListAdminGroupsParams struct {
 }
 
 type AdminGroupRole interface {
-	List(ctx context.Context, params *ListAdminGroupRolesParams, fields ...string) (entity.AdminGroupRoles, error)
+	List(
+		ctx context.Context,
+		params *ListAdminGroupRolesParams,
+		fields ...string,
+	) (entity.AdminGroupRoles, error)
 	Count(ctx context.Context, params *ListAdminGroupRolesParams) (int64, error)
-	Get(ctx context.Context, groupID, roleID string, fields ...string) (*entity.AdminGroupRole, error)
+	Get(
+		ctx context.Context,
+		groupID, roleID string,
+		fields ...string,
+	) (*entity.AdminGroupRole, error)
 	Upsert(ctx context.Context, role *entity.AdminGroupRole) error
 	Delete(ctx context.Context, groupID, roleID string) error
 }
@@ -122,9 +151,17 @@ type ListAdminGroupRolesParams struct {
 }
 
 type AdminGroupUser interface {
-	List(ctx context.Context, params *ListAdminGroupUsersParams, fields ...string) (entity.AdminGroupUsers, error)
+	List(
+		ctx context.Context,
+		params *ListAdminGroupUsersParams,
+		fields ...string,
+	) (entity.AdminGroupUsers, error)
 	Count(ctx context.Context, params *ListAdminGroupUsersParams) (int64, error)
-	Get(ctx context.Context, groupID, adminID string, fields ...string) (*entity.AdminGroupUser, error)
+	Get(
+		ctx context.Context,
+		groupID, adminID string,
+		fields ...string,
+	) (*entity.AdminGroupUser, error)
 	Upsert(ctx context.Context, user *entity.AdminGroupUser) error
 	Delete(ctx context.Context, groupID, adminID string) error
 }
@@ -135,9 +172,17 @@ type ListAdminGroupUsersParams struct {
 }
 
 type AdminPolicy interface {
-	List(ctx context.Context, params *ListAdminPoliciesParams, fields ...string) (entity.AdminPolicies, error)
+	List(
+		ctx context.Context,
+		params *ListAdminPoliciesParams,
+		fields ...string,
+	) (entity.AdminPolicies, error)
 	Count(ctx context.Context, params *ListAdminPoliciesParams) (int64, error)
-	MultiGet(ctx context.Context, policyIDs []string, fields ...string) (entity.AdminPolicies, error)
+	MultiGet(
+		ctx context.Context,
+		policyIDs []string,
+		fields ...string,
+	) (entity.AdminPolicies, error)
 	Get(ctx context.Context, policyID string, fields ...string) (*entity.AdminPolicy, error)
 }
 
@@ -147,7 +192,11 @@ type ListAdminPoliciesParams struct {
 }
 
 type AdminRole interface {
-	List(ctx context.Context, params *ListAdminRolesParams, fields ...string) (entity.AdminRoles, error)
+	List(
+		ctx context.Context,
+		params *ListAdminRolesParams,
+		fields ...string,
+	) (entity.AdminRoles, error)
 	Count(ctx context.Context, params *ListAdminRolesParams) (int64, error)
 	MultiGet(ctx context.Context, roleIDs []string, fields ...string) (entity.AdminRoles, error)
 	Get(ctx context.Context, roleID string, fields ...string) (*entity.AdminRole, error)
@@ -159,9 +208,17 @@ type ListAdminRolesParams struct {
 }
 
 type AdminRolePolicy interface {
-	List(ctx context.Context, params *ListAdminRolePoliciesParams, fields ...string) (entity.AdminRolePolicies, error)
+	List(
+		ctx context.Context,
+		params *ListAdminRolePoliciesParams,
+		fields ...string,
+	) (entity.AdminRolePolicies, error)
 	Count(ctx context.Context, params *ListAdminRolePoliciesParams) (int64, error)
-	Get(ctx context.Context, roleID, policyID string, fields ...string) (*entity.AdminRolePolicy, error)
+	Get(
+		ctx context.Context,
+		roleID, policyID string,
+		fields ...string,
+	) (*entity.AdminRolePolicy, error)
 }
 
 type ListAdminRolePoliciesParams struct {
@@ -170,11 +227,27 @@ type ListAdminRolePoliciesParams struct {
 }
 
 type Administrator interface {
-	List(ctx context.Context, params *ListAdministratorsParams, fields ...string) (entity.Administrators, error)
+	List(
+		ctx context.Context,
+		params *ListAdministratorsParams,
+		fields ...string,
+	) (entity.Administrators, error)
 	Count(ctx context.Context, params *ListAdministratorsParams) (int64, error)
-	MultiGet(ctx context.Context, administratorIDs []string, fields ...string) (entity.Administrators, error)
-	Get(ctx context.Context, administratorID string, fields ...string) (*entity.Administrator, error)
-	Create(ctx context.Context, administrator *entity.Administrator, auth func(ctx context.Context) error) error
+	MultiGet(
+		ctx context.Context,
+		administratorIDs []string,
+		fields ...string,
+	) (entity.Administrators, error)
+	Get(
+		ctx context.Context,
+		administratorID string,
+		fields ...string,
+	) (*entity.Administrator, error)
+	Create(
+		ctx context.Context,
+		administrator *entity.Administrator,
+		auth func(ctx context.Context) error,
+	) error
 	Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error
 	Delete(ctx context.Context, administratorID string, auth func(ctx context.Context) error) error
 }
@@ -193,13 +266,33 @@ type UpdateAdministratorParams struct {
 }
 
 type Coordinator interface {
-	List(ctx context.Context, params *ListCoordinatorsParams, fields ...string) (entity.Coordinators, error)
+	List(
+		ctx context.Context,
+		params *ListCoordinatorsParams,
+		fields ...string,
+	) (entity.Coordinators, error)
 	Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error)
-	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
-	MultiGetWithDeleted(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
+	MultiGet(
+		ctx context.Context,
+		coordinatorIDs []string,
+		fields ...string,
+	) (entity.Coordinators, error)
+	MultiGetWithDeleted(
+		ctx context.Context,
+		coordinatorIDs []string,
+		fields ...string,
+	) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
-	GetWithDeleted(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
-	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
+	GetWithDeleted(
+		ctx context.Context,
+		coordinatorID string,
+		fields ...string,
+	) (*entity.Coordinator, error)
+	Create(
+		ctx context.Context,
+		coordinator *entity.Coordinator,
+		auth func(ctx context.Context) error,
+	) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
 }
@@ -260,13 +353,29 @@ type Member interface {
 }
 
 type Producer interface {
-	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
+	List(
+		ctx context.Context,
+		params *ListProducersParams,
+		fields ...string,
+	) (entity.Producers, error)
 	Count(ctx context.Context, params *ListProducersParams) (int64, error)
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
-	MultiGetWithDeleted(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
+	MultiGetWithDeleted(
+		ctx context.Context,
+		producerIDs []string,
+		fields ...string,
+	) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
-	GetWithDeleted(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
-	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
+	GetWithDeleted(
+		ctx context.Context,
+		producerID string,
+		fields ...string,
+	) (*entity.Producer, error)
+	Create(
+		ctx context.Context,
+		producer *entity.Producer,
+		auth func(ctx context.Context) error,
+	) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
@@ -317,7 +426,11 @@ type ListUsersParams struct {
 }
 
 type UserNotification interface {
-	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.UserNotifications, error)
+	MultiGet(
+		ctx context.Context,
+		userIDs []string,
+		fields ...string,
+	) (entity.UserNotifications, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.UserNotification, error)
 	Upsert(ctx context.Context, notification *entity.UserNotification) error
 }

@@ -463,7 +463,10 @@ func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
 		if ok, err := params.coordinator(ctx); err != nil || ok {
 			return err
 		}
-		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)
+		return fmt.Errorf(
+			"handler: this coordinator is unauthenticated: %w",
+			exception.ErrForbidden,
+		)
 	case service.AdminTypeProducer:
 		if params == nil || params.producer == nil {
 			return nil

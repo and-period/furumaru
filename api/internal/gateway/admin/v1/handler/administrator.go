@@ -167,7 +167,10 @@ func (h *handler) DeleteAdministrator(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) getAdministrator(ctx context.Context, administratorID string) (*service.Administrator, error) {
+func (h *handler) getAdministrator(
+	ctx context.Context,
+	administratorID string,
+) (*service.Administrator, error) {
 	in := &user.GetAdministratorInput{
 		AdministratorID: administratorID,
 	}

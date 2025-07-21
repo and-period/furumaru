@@ -44,7 +44,9 @@ func TestGetCart(t *testing.T) {
 		{
 			name: "success first time",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().Get(ctx, &entity.Cart{SessionID: "session-id"}).Return(dynamodb.ErrNotFound)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.Cart{SessionID: "session-id"}).
+					Return(dynamodb.ErrNotFound)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets:   []*entity.CartBasket{},
@@ -88,7 +90,9 @@ func TestGetCart(t *testing.T) {
 						return nil
 					})
 				products := entity.Products{product("product-id", 1)}
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(products, nil)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets: []*entity.CartBasket{
@@ -187,7 +191,9 @@ func TestGetCart(t *testing.T) {
 		{
 			name: "failed to get cart",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().Get(ctx, &entity.Cart{SessionID: "session-id"}).Return(assert.AnError)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.Cart{SessionID: "session-id"}).
+					Return(assert.AnError)
 			},
 			input: &store.GetCartInput{
 				SessionID: "session-id",
@@ -198,7 +204,9 @@ func TestGetCart(t *testing.T) {
 		{
 			name: "failed to create cart",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().Get(ctx, &entity.Cart{SessionID: "session-id"}).Return(dynamodb.ErrNotFound)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.Cart{SessionID: "session-id"}).
+					Return(dynamodb.ErrNotFound)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets:   []*entity.CartBasket{},
@@ -255,7 +263,9 @@ func TestGetCart(t *testing.T) {
 						cart.UpdatedAt = now.AddDate(0, 0, -2)
 						return nil
 					})
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(entity.Products{}, nil)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets:   []*entity.CartBasket{},
@@ -274,11 +284,14 @@ func TestGetCart(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetCart(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetCart(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -399,9 +412,15 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().
+					GetByCode(gomock.Any(), "code1234").
+					Return(promotion, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(products(30), nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -426,8 +445,12 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(shipping, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(products(30), nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -458,7 +481,9 @@ func TestCalcCart(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -476,8 +501,12 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, assert.AnError)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().
+					GetByCode(gomock.Any(), "code1234").
+					Return(promotion, nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -495,8 +524,12 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(nil, assert.AnError)
+				mocks.db.Promotion.EXPECT().
+					GetByCode(gomock.Any(), "code1234").
+					Return(promotion, nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -514,8 +547,12 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().
+					GetByCode(gomock.Any(), "code1234").
+					Return(nil, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -533,9 +570,15 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, assert.AnError)
+				mocks.db.Shipping.EXPECT().
+					GetByCoordinatorID(gomock.Any(), "coordinator-id").
+					Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().
+					GetByCode(gomock.Any(), "code1234").
+					Return(promotion, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(entity.Products{}, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
@@ -550,12 +593,15 @@ func TestCalcCart(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			cart, summary, err := service.CalcCart(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expectCart, cart)
-			assert.Equal(t, tt.expectSummary, summary)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				cart, summary, err := service.CalcCart(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expectCart, cart)
+				assert.Equal(t, tt.expectSummary, summary)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -607,7 +653,9 @@ func TestAddCartItem(t *testing.T) {
 						cart.UpdatedAt = now.AddDate(0, 0, -2)
 						return nil
 					})
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{product}, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(entity.Products{product}, nil)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets: entity.CartBaskets{
@@ -665,7 +713,9 @@ func TestAddCartItem(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				product := product("product-id", 1)
 				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
-				mocks.cache.EXPECT().Get(ctx, &entity.Cart{SessionID: "session-id"}).Return(assert.AnError)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.Cart{SessionID: "session-id"}).
+					Return(assert.AnError)
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
@@ -733,7 +783,9 @@ func TestAddCartItem(t *testing.T) {
 						cart.UpdatedAt = now.AddDate(0, 0, -2)
 						return nil
 					})
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.AddCartItemInput{
 				SessionID: "session-id",
@@ -759,7 +811,9 @@ func TestAddCartItem(t *testing.T) {
 						cart.UpdatedAt = now.AddDate(0, 0, -2)
 						return nil
 					})
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{product}, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(entity.Products{product}, nil)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets: entity.CartBaskets{
@@ -793,10 +847,13 @@ func TestAddCartItem(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.AddCartItem(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.AddCartItem(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -912,7 +969,9 @@ func TestRemoveCartItem(t *testing.T) {
 						return nil
 					})
 				products := entity.Products{product("product-id", 1)}
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(products, nil)
 				cart := &entity.Cart{
 					SessionID: "session-id",
 					Baskets: entity.CartBaskets{
@@ -986,7 +1045,9 @@ func TestRemoveCartItem(t *testing.T) {
 		{
 			name: "failed to get cart",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().Get(ctx, &entity.Cart{SessionID: "session-id"}).Return(assert.AnError)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.Cart{SessionID: "session-id"}).
+					Return(assert.AnError)
 			},
 			input: &store.RemoveCartItemInput{
 				SessionID: "session-id",
@@ -1079,9 +1140,12 @@ func TestRemoveCartItem(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RemoveCartItem(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.RemoveCartItem(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }

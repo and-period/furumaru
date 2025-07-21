@@ -261,7 +261,11 @@ func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	viewerLogIntervalStr := util.GetQuery(ctx, "viewerLogInterval", string(defaultViewerLogInterval))
+	viewerLogIntervalStr := util.GetQuery(
+		ctx,
+		"viewerLogInterval",
+		string(defaultViewerLogInterval),
+	)
 
 	startAt := jst.ParseFromUnix(startAtUnix)
 	endAt := jst.ParseFromUnix(endAtUnix)
@@ -280,7 +284,8 @@ func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
 	}
 
 	res := &response.AnalyzeScheduleResponse{
-		ViewerLogs:   service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+		ViewerLogs: service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).
+			Response(),
 		TotalViewers: totalViewers,
 	}
 	ctx.JSON(http.StatusOK, res)

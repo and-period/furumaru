@@ -255,7 +255,10 @@ func (h *handler) DeleteProducer(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
+func (h *handler) multiGetProducers(
+	ctx context.Context,
+	producerIDs []string,
+) (service.Producers, error) {
 	if len(producerIDs) == 0 {
 		return service.Producers{}, nil
 	}

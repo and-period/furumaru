@@ -15,7 +15,9 @@ const (
 	ExperienceReviewReactionTypeDislike ExperienceReviewReactionType = 2 // いまいち
 )
 
-func NewExperienceReviewReactionType(typ entity.ExperienceReviewReactionType) ExperienceReviewReactionType {
+func NewExperienceReviewReactionType(
+	typ entity.ExperienceReviewReactionType,
+) ExperienceReviewReactionType {
 	switch typ {
 	case entity.ExperienceReviewReactionTypeLike:
 		return ExperienceReviewReactionTypeLike
@@ -81,7 +83,10 @@ func (r *ExperienceReview) Response() *response.ExperienceReview {
 	return &r.ExperienceReview
 }
 
-func NewExperienceReviews(reviews entity.ExperienceReviews, users map[string]*uentity.User) ExperienceReviews {
+func NewExperienceReviews(
+	reviews entity.ExperienceReviews,
+	users map[string]*uentity.User,
+) ExperienceReviews {
 	res := make(ExperienceReviews, 0, len(reviews))
 	for _, review := range reviews {
 		user, ok := users[review.UserID]
@@ -107,7 +112,9 @@ type ExperienceReviewReaction struct {
 
 type ExperienceReviewReactions []*ExperienceReviewReaction
 
-func NewExperienceReviewReaction(reaction *entity.ExperienceReviewReaction) *ExperienceReviewReaction {
+func NewExperienceReviewReaction(
+	reaction *entity.ExperienceReviewReaction,
+) *ExperienceReviewReaction {
 	return &ExperienceReviewReaction{
 		ExperienceReviewReaction: response.ExperienceReviewReaction{
 			ReviewID:     reaction.ReviewID,
@@ -120,7 +127,9 @@ func (r *ExperienceReviewReaction) Response() *response.ExperienceReviewReaction
 	return &r.ExperienceReviewReaction
 }
 
-func NewExperienceReviewReactions(reactions entity.ExperienceReviewReactions) ExperienceReviewReactions {
+func NewExperienceReviewReactions(
+	reactions entity.ExperienceReviewReactions,
+) ExperienceReviewReactions {
 	res := make(ExperienceReviewReactions, len(reactions))
 	for i := range reactions {
 		res[i] = NewExperienceReviewReaction(reactions[i])

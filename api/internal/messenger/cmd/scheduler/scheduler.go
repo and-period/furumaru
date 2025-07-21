@@ -70,7 +70,11 @@ func (a *app) run() error {
 	// Job実行に必要な引数の生成
 	target, err := a.getTarget()
 	if err != nil {
-		a.logger.Error("Failed to parse target datetime", zap.Error(err), zap.String("target", a.TargetDatetime))
+		a.logger.Error(
+			"Failed to parse target datetime",
+			zap.Error(err),
+			zap.String("target", a.TargetDatetime),
+		)
 		return err
 	}
 

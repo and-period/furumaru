@@ -73,14 +73,20 @@ func (a *BroadcastAuth) SetToken(token *oauth2.Token) error {
 
 func (a *BroadcastAuth) GetToken() (*oauth2.Token, error) {
 	if a == nil || a.Token == nil {
-		return nil, fmt.Errorf("entity: broadcast auth token is empty: %w", errInvalidBroadcastToken)
+		return nil, fmt.Errorf(
+			"entity: broadcast auth token is empty: %w",
+			errInvalidBroadcastToken,
+		)
 	}
 	token := &oauth2.Token{}
 	if err := json.Unmarshal(a.Token, token); err != nil {
 		return nil, err
 	}
 	if !token.Valid() {
-		return nil, fmt.Errorf("entity: broadcast auth token is invalid: %w", errInvalidBroadcastToken)
+		return nil, fmt.Errorf(
+			"entity: broadcast auth token is invalid: %w",
+			errInvalidBroadcastToken,
+		)
 	}
 	return token, nil
 }

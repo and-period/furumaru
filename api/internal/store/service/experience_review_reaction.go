@@ -29,7 +29,10 @@ func (s *service) UpsertExperienceReviewReaction(
 	return reaction, nil
 }
 
-func (s *service) DeleteExperienceReviewReaction(ctx context.Context, in *store.DeleteExperienceReviewReactionInput) error {
+func (s *service) DeleteExperienceReviewReaction(
+	ctx context.Context,
+	in *store.DeleteExperienceReviewReactionInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -43,6 +46,10 @@ func (s *service) GetUserExperienceReviewReactions(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	reactions, err := s.db.ExperienceReviewReaction.GetUserReactions(ctx, in.ExperienceID, in.UserID)
+	reactions, err := s.db.ExperienceReviewReaction.GetUserReactions(
+		ctx,
+		in.ExperienceID,
+		in.UserID,
+	)
 	return reactions, internalError(err)
 }

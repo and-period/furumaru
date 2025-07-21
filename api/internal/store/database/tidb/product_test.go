@@ -48,9 +48,36 @@ func TestProduct_List(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 3)
-	internal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	internal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	internal[2] = testProduct("product-id03", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	internal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		1,
+		now(),
+	)
+	internal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		2,
+		now(),
+	)
+	internal[2] = testProduct(
+		"product-id03",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -154,9 +181,36 @@ func TestProduct_Count(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 3)
-	internal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	internal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	internal[2] = testProduct("product-id03", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	internal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		1,
+		now(),
+	)
+	internal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		2,
+		now(),
+	)
+	internal[2] = testProduct(
+		"product-id03",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -241,9 +295,36 @@ func TestProduct_MultiGet(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 3)
-	internal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	internal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	internal[2] = testProduct("product-id03", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	internal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		1,
+		now(),
+	)
+	internal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		2,
+		now(),
+	)
+	internal[2] = testProduct(
+		"product-id03",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -325,9 +406,36 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 3)
-	internal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 1, now())
-	internal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 2, now())
-	internal[2] = testProduct("product-id03", "type-id02", "shop-id", "coordinator-id", "producer-id", productTags.IDs(), 3, now())
+	internal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		1,
+		now(),
+	)
+	internal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		2,
+		now(),
+	)
+	internal[2] = testProduct(
+		"product-id03",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		productTags.IDs(),
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -401,7 +509,16 @@ func TestProduct_Get(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	internal := testProduct(
+		"product-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{"tag-id"},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&internal.ProductRevision).Error
@@ -475,7 +592,16 @@ func TestProduct_Create(t *testing.T) {
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
 
-	internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+	internal := testProduct(
+		"product-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{"tag-id"},
+		1,
+		now(),
+	)
 	p, err := internal.entity()
 	require.NoError(t, err)
 
@@ -504,7 +630,16 @@ func TestProduct_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				err := db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
@@ -575,7 +710,16 @@ func TestProduct_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
@@ -674,7 +818,16 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
@@ -702,7 +855,16 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "already empty",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				internal.Inventory = 0
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
@@ -720,7 +882,16 @@ func TestProduct_DescreaseInventory(t *testing.T) {
 		{
 			name: "less then 0",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				internal.Inventory = 1
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
@@ -792,7 +963,16 @@ func TestProduct_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testProduct("product-id", "type-id", "shop-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				internal := testProduct(
+					"product-id",
+					"type-id",
+					"shop-id",
+					"coordinator-id",
+					"producer-id",
+					[]string{"tag-id"},
+					1,
+					now(),
+				)
 				err = db.DB.Table(productTable).Create(&internal).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&internal.ProductRevision).Error
@@ -822,7 +1002,12 @@ func TestProduct_Delete(t *testing.T) {
 	}
 }
 
-func testProduct(productID, typeID, shopID, coordinatorID, producerID string, tagIDs []string, revisionID int64, now time.Time) *internalProduct {
+func testProduct(
+	productID, typeID, shopID, coordinatorID, producerID string,
+	tagIDs []string,
+	revisionID int64,
+	now time.Time,
+) *internalProduct {
 	product := &entity.Product{
 		ID:              productID,
 		TypeID:          typeID,
@@ -870,7 +1055,11 @@ func testProduct(productID, typeID, shopID, coordinatorID, producerID string, ta
 	return internal
 }
 
-func testProductRevision(revisionID int64, productID string, now time.Time) *entity.ProductRevision {
+func testProductRevision(
+	revisionID int64,
+	productID string,
+	now time.Time,
+) *entity.ProductRevision {
 	return &entity.ProductRevision{
 		ID:        revisionID,
 		ProductID: productID,

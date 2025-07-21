@@ -120,7 +120,11 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(
+		awscfg,
+		tmpStorageParams,
+		storage.WithLogger(params.logger),
+	)
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
@@ -223,7 +227,10 @@ func (a *app) inject(ctx context.Context) error {
 	geolocationParams := &geolocation.Params{
 		APIKey: params.googleMapsPlatformAPIKey,
 	}
-	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	geolocation, err := geolocation.NewClient(
+		geolocationParams,
+		geolocation.WithLogger(params.logger),
+	)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
 	}
@@ -441,7 +448,11 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
+func (a *app) newUserService(
+	p *params,
+	media media.Service,
+	messenger messenger.Service,
+) (user.Service, error) {
 	mysql, err := a.newTiDB("users", p)
 	if err != nil {
 		return nil, err

@@ -360,7 +360,12 @@ func TestShipping_CalcShippingFee(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := tt.shipping.CalcShippingFee(tt.shippingSize, tt.shippingType, tt.total, tt.prefectureCode)
+			actual, err := tt.shipping.CalcShippingFee(
+				tt.shippingSize,
+				tt.shippingType,
+				tt.total,
+				tt.prefectureCode,
+			)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		})

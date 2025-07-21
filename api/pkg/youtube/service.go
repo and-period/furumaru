@@ -57,7 +57,10 @@ func (s *service) ListChannels(ctx context.Context) ([]*youtube.Channel, error) 
 	return out.Items, nil
 }
 
-func (s *service) GetChannnelByHandle(ctx context.Context, handle string) (*youtube.Channel, error) {
+func (s *service) GetChannnelByHandle(
+	ctx context.Context,
+	handle string,
+) (*youtube.Channel, error) {
 	part := []string{"id", "snippet", "contentDetails"}
 	out, err := s.service.Channels.List(part).ForHandle(handle).Context(ctx).Do()
 	if err != nil {
@@ -69,7 +72,10 @@ func (s *service) GetChannnelByHandle(ctx context.Context, handle string) (*yout
 	return out.Items[0], nil
 }
 
-func (s *service) GetLiveBroadcast(ctx context.Context, broadcastID string) (*youtube.LiveBroadcast, error) {
+func (s *service) GetLiveBroadcast(
+	ctx context.Context,
+	broadcastID string,
+) (*youtube.LiveBroadcast, error) {
 	part := []string{"id", "snippet", "contentDetails", "status"}
 	out, err := s.service.LiveBroadcasts.List(part).Id(broadcastID).Context(ctx).Do()
 	if err != nil {
@@ -81,7 +87,10 @@ func (s *service) GetLiveBroadcast(ctx context.Context, broadcastID string) (*yo
 	return out.Items[0], nil
 }
 
-func (s *service) CreateLiveBroadcast(ctx context.Context, params *CreateLiveBroadcastParams) (*youtube.LiveBroadcast, error) {
+func (s *service) CreateLiveBroadcast(
+	ctx context.Context,
+	params *CreateLiveBroadcastParams,
+) (*youtube.LiveBroadcast, error) {
 	privacyStatus := "unlisted"
 	if s.livePublished {
 		privacyStatus = "public"
@@ -133,7 +142,10 @@ func (s *service) GetLiveStream(ctx context.Context, streamID string) (*youtube.
 	return out.Items[0], nil
 }
 
-func (s *service) CreateLiveStream(ctx context.Context, params *CreateLiveStreamParams) (*youtube.LiveStream, error) {
+func (s *service) CreateLiveStream(
+	ctx context.Context,
+	params *CreateLiveStreamParams,
+) (*youtube.LiveStream, error) {
 	in := &youtube.LiveStream{
 		Snippet: &youtube.LiveStreamSnippet{
 			Title: params.Title,

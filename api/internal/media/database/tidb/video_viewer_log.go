@@ -33,7 +33,10 @@ func (l *videoViewerLog) Create(ctx context.Context, log *entity.VideoViewerLog)
 	return dbError(err)
 }
 
-func (l *videoViewerLog) GetTotal(ctx context.Context, params *database.GetVideoTotalViewersParams) (int64, error) {
+func (l *videoViewerLog) GetTotal(
+	ctx context.Context,
+	params *database.GetVideoTotalViewersParams,
+) (int64, error) {
 	var total int64
 
 	const field = "COUNT(DISTINCT(session_id)) AS total"

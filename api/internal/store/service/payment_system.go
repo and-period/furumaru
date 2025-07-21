@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *service) MultiGetPaymentSystems(ctx context.Context, in *store.MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) {
+func (s *service) MultiGetPaymentSystems(
+	ctx context.Context,
+	in *store.MultiGetPaymentSystemsInput,
+) (entity.PaymentSystems, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -15,7 +18,10 @@ func (s *service) MultiGetPaymentSystems(ctx context.Context, in *store.MultiGet
 	return systems, internalError(err)
 }
 
-func (s *service) GetPaymentSystem(ctx context.Context, in *store.GetPaymentSystemInput) (*entity.PaymentSystem, error) {
+func (s *service) GetPaymentSystem(
+	ctx context.Context,
+	in *store.GetPaymentSystemInput,
+) (*entity.PaymentSystem, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -23,7 +29,10 @@ func (s *service) GetPaymentSystem(ctx context.Context, in *store.GetPaymentSyst
 	return system, internalError(err)
 }
 
-func (s *service) UpdatePaymentSystem(ctx context.Context, in *store.UpdatePaymentStatusInput) error {
+func (s *service) UpdatePaymentSystem(
+	ctx context.Context,
+	in *store.UpdatePaymentStatusInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

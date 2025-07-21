@@ -105,9 +105,19 @@ func TestBroadcastViewerLog_GetTotal(t *testing.T) {
 
 	logs := make(entity.BroadcastViewerLogs, 4)
 	logs[0] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now())
-	logs[1] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now().Add(1*time.Minute))
+	logs[1] = testBroadcastViewerLog(
+		"broadcast-id",
+		"session-id01",
+		"user-id01",
+		now().Add(1*time.Minute),
+	)
 	logs[2] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now())
-	logs[3] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now().Add(1*time.Minute))
+	logs[3] = testBroadcastViewerLog(
+		"broadcast-id",
+		"session-id02",
+		"user-id02",
+		now().Add(1*time.Minute),
+	)
 	logs[3].UserAgent = entity.ExcludeUserAgentLogs[0]
 	for _, log := range logs {
 		err = db.DB.Create(&log).Error
@@ -177,9 +187,19 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 
 	logs := make(entity.BroadcastViewerLogs, 4)
 	logs[0] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now())
-	logs[1] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now().Add(1*time.Minute))
+	logs[1] = testBroadcastViewerLog(
+		"broadcast-id",
+		"session-id01",
+		"user-id01",
+		now().Add(1*time.Minute),
+	)
 	logs[2] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now())
-	logs[3] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now().Add(1*time.Minute))
+	logs[3] = testBroadcastViewerLog(
+		"broadcast-id",
+		"session-id02",
+		"user-id02",
+		now().Add(1*time.Minute),
+	)
 	logs[3].UserAgent = entity.ExcludeUserAgentLogs[0]
 	for _, log := range logs {
 		err = db.DB.Create(&log).Error
@@ -214,13 +234,29 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 				logs: entity.AggregatedBroadcastViewerLogs{
 					{
 						BroadcastID: "broadcast-id",
-						ReportedAt:  jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute(), 0, 0),
-						Total:       2,
+						ReportedAt: jst.Date(
+							now().Year(),
+							now().Month(),
+							now().Day(),
+							now().Hour(),
+							now().Minute(),
+							0,
+							0,
+						),
+						Total: 2,
 					},
 					{
 						BroadcastID: "broadcast-id",
-						ReportedAt:  jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute()+1, 0, 0),
-						Total:       1,
+						ReportedAt: jst.Date(
+							now().Year(),
+							now().Month(),
+							now().Day(),
+							now().Hour(),
+							now().Minute()+1,
+							0,
+							0,
+						),
+						Total: 1,
 					},
 				},
 				err: nil,
@@ -243,7 +279,10 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 	}
 }
 
-func testBroadcastViewerLog(broadcastID, sessionID, userID string, now time.Time) *entity.BroadcastViewerLog {
+func testBroadcastViewerLog(
+	broadcastID, sessionID, userID string,
+	now time.Time,
+) *entity.BroadcastViewerLog {
 	return &entity.BroadcastViewerLog{
 		BroadcastID: broadcastID,
 		SessionID:   sessionID,

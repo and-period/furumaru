@@ -31,7 +31,11 @@ func (m *member) Get(ctx context.Context, userID string, fields ...string) (*ent
 	return member, dbError(err)
 }
 
-func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Member, error) {
+func (m *member) GetByCognitoID(
+	ctx context.Context,
+	cognitoID string,
+	fields ...string,
+) (*entity.Member, error) {
 	var member *entity.Member
 
 	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
@@ -43,7 +47,11 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 	return member, nil
 }
 
-func (m *member) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error) {
+func (m *member) GetByEmail(
+	ctx context.Context,
+	email string,
+	fields ...string,
+) (*entity.Member, error) {
 	var member *entity.Member
 
 	if len(fields) == 0 {
@@ -65,7 +73,11 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 	return member, nil
 }
 
-func (m *member) Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error {
+func (m *member) Create(
+	ctx context.Context,
+	user *entity.User,
+	auth func(ctx context.Context) error,
+) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := m.now()
 		user.CreatedAt, user.UpdatedAt = now, now
@@ -165,7 +177,11 @@ func (m *member) UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL st
 	return dbError(err)
 }
 
-func (m *member) Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
+func (m *member) Delete(
+	ctx context.Context,
+	userID string,
+	auth func(ctx context.Context) error,
+) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := m.now()
 		memberParams := map[string]interface{}{
@@ -195,7 +211,12 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 	return dbError(err)
 }
 
-func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.Member, error) {
+func (m *member) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	userID string,
+	fields ...string,
+) (*entity.Member, error) {
 	var member *entity.Member
 
 	stmt := m.db.Statement(ctx, tx, memberTable, fields...).Unscoped().Where("user_id = ?", userID)

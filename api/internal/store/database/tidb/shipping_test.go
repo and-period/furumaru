@@ -958,7 +958,11 @@ func TestShipping_Delete(t *testing.T) {
 	}
 }
 
-func testShipping(shippingID, shopID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
+func testShipping(
+	shippingID, shopID, coordinatorID string,
+	revisionID int64,
+	now time.Time,
+) *entity.Shipping {
 	internal := testShippingRevision(revisionID, shippingID, now)
 	revision, _ := internal.entity()
 	return &entity.Shipping{
@@ -973,7 +977,11 @@ func testShipping(shippingID, shopID, coordinatorID string, revisionID int64, no
 	}
 }
 
-func testShippingRevision(revisionID int64, shippingID string, now time.Time) *internalShippingRevision {
+func testShippingRevision(
+	revisionID int64,
+	shippingID string,
+	now time.Time,
+) *internalShippingRevision {
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],

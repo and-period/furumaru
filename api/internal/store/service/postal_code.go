@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *service) SearchPostalCode(ctx context.Context, in *store.SearchPostalCodeInput) (*entity.PostalCode, error) {
+func (s *service) SearchPostalCode(
+	ctx context.Context,
+	in *store.SearchPostalCodeInput,
+) (*entity.PostalCode, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

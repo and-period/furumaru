@@ -112,7 +112,9 @@ func TestListBroadcasts(t *testing.T) {
 			name: "failed to count broadcasts",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().List(gomock.Any(), params).Return(broadcasts, nil)
-				mocks.db.Broadcast.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &media.ListBroadcastsInput{
 				ScheduleIDs:   []string{"schedule-id"},
@@ -131,12 +133,15 @@ func TestListBroadcasts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListBroadcasts(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListBroadcasts(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -164,7 +169,9 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.GetBroadcastByScheduleIDInput{
 				ScheduleID: "schedule-id",
@@ -182,7 +189,9 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.GetBroadcastByScheduleIDInput{
 				ScheduleID: "schedule-id",
@@ -193,11 +202,14 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetBroadcastByScheduleID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetBroadcastByScheduleID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -253,10 +265,13 @@ func TestCreateBroadcast(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateBroadcast(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateBroadcast(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -289,7 +304,9 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(nil)
 				mocks.batch.EXPECT().SubmitJob(ctx, jobParams).Return(nil)
 			},
@@ -308,7 +325,9 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.UpdateBroadcastArchiveInput{
 				ScheduleID: "schedule-id",
@@ -320,7 +339,9 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "broadcast is enabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.UpdateBroadcastArchiveInput{
 				ScheduleID: "schedule-id",
@@ -331,8 +352,12 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "failed to update broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					Update(ctx, "broadcast-id", dbParams).
+					Return(assert.AnError)
 			},
 			input: &media.UpdateBroadcastArchiveInput{
 				ScheduleID: "schedule-id",
@@ -343,7 +368,9 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "failed to submit job",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", dbParams).Return(nil)
 				mocks.batch.EXPECT().SubmitJob(ctx, jobParams).Return(assert.AnError)
 			},
@@ -355,10 +382,13 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateBroadcastArchive(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateBroadcastArchive(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -388,7 +418,9 @@ func TestPauseBroadcast(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
 			},
 			input: &media.PauseBroadcastInput{
@@ -405,7 +437,9 @@ func TestPauseBroadcast(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.PauseBroadcastInput{
 				ScheduleID: "schedule-id",
@@ -416,7 +450,9 @@ func TestPauseBroadcast(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.PauseBroadcastInput{
 				ScheduleID: "schedule-id",
@@ -426,7 +462,9 @@ func TestPauseBroadcast(t *testing.T) {
 		{
 			name: "failed to activate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
 			},
 			input: &media.PauseBroadcastInput{
@@ -436,10 +474,13 @@ func TestPauseBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.PauseBroadcast(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.PauseBroadcast(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -468,7 +509,9 @@ func TestUnpauseBroadcast(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
 			},
 			input: &media.UnpauseBroadcastInput{
@@ -485,7 +528,9 @@ func TestUnpauseBroadcast(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.UnpauseBroadcastInput{
 				ScheduleID: "schedule-id",
@@ -496,7 +541,9 @@ func TestUnpauseBroadcast(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.UnpauseBroadcastInput{
 				ScheduleID: "schedule-id",
@@ -506,7 +553,9 @@ func TestUnpauseBroadcast(t *testing.T) {
 		{
 			name: "failed to activate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
 			},
 			input: &media.UnpauseBroadcastInput{
@@ -516,10 +565,13 @@ func TestUnpauseBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UnpauseBroadcast(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UnpauseBroadcast(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -549,7 +601,9 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
 			},
 			input: &media.ActivateBroadcastRTMPInput{
@@ -566,7 +620,9 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ActivateBroadcastRTMPInput{
 				ScheduleID: "schedule-id",
@@ -577,7 +633,9 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.ActivateBroadcastRTMPInput{
 				ScheduleID: "schedule-id",
@@ -587,7 +645,9 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 		{
 			name: "failed to activate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
 			},
 			input: &media.ActivateBroadcastRTMPInput{
@@ -597,10 +657,13 @@ func TestActivateBroadcastRTMP(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ActivateBroadcastRTMP(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ActivateBroadcastRTMP(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -631,8 +694,12 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("s3://example.mp4", nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.tmp.EXPECT().
+					ReplaceURLToS3URI("http://example.com/example.mp4").
+					Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
 			},
 			input: &media.ActivateBroadcastMP4Input{
@@ -650,7 +717,9 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ActivateBroadcastMP4Input{
 				ScheduleID: "schedule-id",
@@ -662,7 +731,9 @@ func TestActivateBroadcastMP4(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.ActivateBroadcastMP4Input{
 				ScheduleID: "schedule-id",
@@ -673,8 +744,12 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		{
 			name: "failed to replace s3 uri",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("", assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.tmp.EXPECT().
+					ReplaceURLToS3URI("http://example.com/example.mp4").
+					Return("", assert.AnError)
 			},
 			input: &media.ActivateBroadcastMP4Input{
 				ScheduleID: "schedule-id",
@@ -685,8 +760,12 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		{
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("s3://example.mp4", nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.tmp.EXPECT().
+					ReplaceURLToS3URI("http://example.com/example.mp4").
+					Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
 			},
 			input: &media.ActivateBroadcastMP4Input{
@@ -697,10 +776,13 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ActivateBroadcastMP4(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ActivateBroadcastMP4(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -726,10 +808,16 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
-				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("s3://image.png", nil)
-				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "s3://image.png").Return(nil)
+				mocks.storage.EXPECT().
+					ReplaceURLToS3URI("http://example.com/image.png").
+					Return("s3://image.png", nil)
+				mocks.media.EXPECT().
+					ActivateStaticImage(ctx, "12345678", "s3://image.png").
+					Return(nil)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -745,7 +833,9 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -756,7 +846,9 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -766,7 +858,9 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to get schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
@@ -777,9 +871,13 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to replace s3 uri",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
-				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("", assert.AnError)
+				mocks.storage.EXPECT().
+					ReplaceURLToS3URI("http://example.com/image.png").
+					Return("", assert.AnError)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -789,10 +887,16 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to activate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
-				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("s3://image.png", nil)
-				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "s3://image.png").Return(assert.AnError)
+				mocks.storage.EXPECT().
+					ReplaceURLToS3URI("http://example.com/image.png").
+					Return("s3://image.png", nil)
+				mocks.media.EXPECT().
+					ActivateStaticImage(ctx, "12345678", "s3://image.png").
+					Return(assert.AnError)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -801,10 +905,13 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ActivateBroadcastStaticImage(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ActivateBroadcastStaticImage(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -823,7 +930,9 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().DeactivateStaticImage(ctx, "12345678").Return(nil)
 			},
 			input: &media.DeactivateBroadcastStaticImageInput{
@@ -840,7 +949,9 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.DeactivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -851,7 +962,9 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 			name: "broadcast is disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.DeactivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -861,7 +974,9 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		{
 			name: "failed to deactivate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.media.EXPECT().DeactivateStaticImage(ctx, "12345678").Return(assert.AnError)
 			},
 			input: &media.DeactivateBroadcastStaticImageInput{
@@ -871,10 +986,13 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeactivateBroadcastStaticImage(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeactivateBroadcastStaticImage(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -951,11 +1069,14 @@ func TestGetBroadcastAuth(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			auth, err := service.GetBroadcastAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, auth)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				auth, err := service.GetBroadcastAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, auth)
+			}),
+		)
 	}
 }
 
@@ -994,11 +1115,15 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.cache.EXPECT().Insert(ctx, auth).Return(nil)
 				mocks.youtube.EXPECT().NewAuth().Return(mocks.youtubeAuth)
-				mocks.youtubeAuth.EXPECT().GetAuthCodeURL(sessionID).Return("https://example.com/auth")
+				mocks.youtubeAuth.EXPECT().
+					GetAuthCodeURL(sessionID).
+					Return("https://example.com/auth")
 			},
 			input: &media.AuthYoutubeBroadcastInput{
 				ScheduleID:    "schedule-id",
@@ -1017,7 +1142,9 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.AuthYoutubeBroadcastInput{
 				ScheduleID:    "schedule-id",
@@ -1030,7 +1157,9 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 			name: "broadcast is not disabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.AuthYoutubeBroadcastInput{
 				ScheduleID:    "schedule-id",
@@ -1042,7 +1171,9 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		{
 			name: "failed to get schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
 			},
 			input: &media.AuthYoutubeBroadcastInput{
@@ -1056,7 +1187,9 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 			name: "schedule is not waiting",
 			setup: func(ctx context.Context, mocks *mocks) {
 				schedule := &sentity.Schedule{Status: sentity.ScheduleStatusInProgress}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 			},
 			input: &media.AuthYoutubeBroadcastInput{
@@ -1069,7 +1202,9 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		{
 			name: "failed to insert broadcast auth",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.cache.EXPECT().Insert(ctx, auth).Return(assert.AnError)
 			},
@@ -1082,11 +1217,14 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			authURL, err := service.AuthYoutubeBroadcast(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, authURL)
-		}, withNow(now), withUUID(sessionID)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				authURL, err := service.AuthYoutubeBroadcast(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, authURL)
+			}, withNow(now), withUUID(sessionID)),
+		)
 	}
 }
 
@@ -1355,14 +1493,17 @@ func TestAuthYoutubeBroadcastEvent(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			auth, err := service.AuthYoutubeBroadcastEvent(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			if auth != nil {
-				auth.Token = nil // ignore
-			}
-			assert.Equal(t, tt.expect, auth)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				auth, err := service.AuthYoutubeBroadcastEvent(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				if auth != nil {
+					auth.Token = nil // ignore
+				}
+				assert.Equal(t, tt.expect, auth)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1466,12 +1607,20 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
-				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(nil)
+				mocks.youtubeService.EXPECT().
+					CreateLiveBroadcast(ctx, broadcastParams).
+					Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().
+					CreateLiveStream(ctx, streamParams).
+					Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().
+					BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").
+					Return(nil)
 				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(nil)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
@@ -1554,7 +1703,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1581,7 +1732,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1607,7 +1760,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
@@ -1635,7 +1790,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
@@ -1662,7 +1819,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(nil, assert.AnError)
 			},
@@ -1690,10 +1849,14 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(nil, assert.AnError)
+				mocks.youtubeService.EXPECT().
+					CreateLiveBroadcast(ctx, broadcastParams).
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1719,11 +1882,17 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(nil, assert.AnError)
+				mocks.youtubeService.EXPECT().
+					CreateLiveBroadcast(ctx, broadcastParams).
+					Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().
+					CreateLiveStream(ctx, streamParams).
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1749,12 +1918,20 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
-				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(assert.AnError)
+				mocks.youtubeService.EXPECT().
+					CreateLiveBroadcast(ctx, broadcastParams).
+					Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().
+					CreateLiveStream(ctx, streamParams).
+					Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().
+					BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").
+					Return(assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1780,13 +1957,23 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 						key.UpdatedAt = auth.UpdatedAt
 						return nil
 					})
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
-				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(nil)
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(assert.AnError)
+				mocks.youtubeService.EXPECT().
+					CreateLiveBroadcast(ctx, broadcastParams).
+					Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().
+					CreateLiveStream(ctx, streamParams).
+					Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().
+					BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").
+					Return(nil)
+				mocks.db.Broadcast.EXPECT().
+					Update(ctx, "broadcast-id", updateParams).
+					Return(assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				SessionID:   "session-id",
@@ -1798,9 +1985,12 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CreateYoutubeBroadcast(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CreateYoutubeBroadcast(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }

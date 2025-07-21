@@ -24,7 +24,11 @@ func NewAdminRole(db *mysql.Client) database.AdminRole {
 	}
 }
 
-func (r *adminRole) List(ctx context.Context, params *database.ListAdminRolesParams, fields ...string) (entity.AdminRoles, error) {
+func (r *adminRole) List(
+	ctx context.Context,
+	params *database.ListAdminRolesParams,
+	fields ...string,
+) (entity.AdminRoles, error) {
 	var roles entity.AdminRoles
 
 	stmt := r.db.Statement(ctx, r.db.DB, adminRoleTable, fields...)
@@ -39,12 +43,19 @@ func (r *adminRole) List(ctx context.Context, params *database.ListAdminRolesPar
 	return roles, dbError(err)
 }
 
-func (r *adminRole) Count(ctx context.Context, params *database.ListAdminRolesParams) (int64, error) {
+func (r *adminRole) Count(
+	ctx context.Context,
+	params *database.ListAdminRolesParams,
+) (int64, error) {
 	total, err := r.db.Count(ctx, r.db.DB, &entity.AdminRole{}, nil)
 	return total, dbError(err)
 }
 
-func (r *adminRole) MultiGet(ctx context.Context, roleIDs []string, fields ...string) (entity.AdminRoles, error) {
+func (r *adminRole) MultiGet(
+	ctx context.Context,
+	roleIDs []string,
+	fields ...string,
+) (entity.AdminRoles, error) {
 	var roles entity.AdminRoles
 
 	stmt := r.db.Statement(ctx, r.db.DB, adminRoleTable, fields...).
@@ -54,7 +65,11 @@ func (r *adminRole) MultiGet(ctx context.Context, roleIDs []string, fields ...st
 	return roles, dbError(err)
 }
 
-func (r *adminRole) Get(ctx context.Context, roleID string, fields ...string) (*entity.AdminRole, error) {
+func (r *adminRole) Get(
+	ctx context.Context,
+	roleID string,
+	fields ...string,
+) (*entity.AdminRole, error) {
 	var role *entity.AdminRole
 
 	stmt := r.db.Statement(ctx, r.db.DB, adminRoleTable, fields...).

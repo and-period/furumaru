@@ -84,8 +84,20 @@ func TestShippingRevision_Fill(t *testing.T) {
 		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
 	additional := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: []string{"徳島県", "香川県"}, PrefectureCodes: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: []string{"愛媛県", "高知県"}, PrefectureCodes: pref2},
+		{
+			Number:          1,
+			Name:            "四国(東部)",
+			Price:           250,
+			Prefectures:     []string{"徳島県", "香川県"},
+			PrefectureCodes: pref1,
+		},
+		{
+			Number:          2,
+			Name:            "四国(西部)",
+			Price:           500,
+			Prefectures:     []string{"愛媛県", "高知県"},
+			PrefectureCodes: pref2,
+		},
 	}
 	tests := []struct {
 		name   string
@@ -537,8 +549,20 @@ func TestShippingRates_Fill(t *testing.T) {
 				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 			},
 			expect: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: []string{"徳島県", "香川県"}, PrefectureCodes: pref1},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: []string{"愛媛県", "高知県"}, PrefectureCodes: pref2},
+				{
+					Number:          1,
+					Name:            "四国(東部)",
+					Price:           250,
+					Prefectures:     []string{"徳島県", "香川県"},
+					PrefectureCodes: pref1,
+				},
+				{
+					Number:          2,
+					Name:            "四国(西部)",
+					Price:           500,
+					Prefectures:     []string{"愛媛県", "高知県"},
+					PrefectureCodes: pref2,
+				},
 			},
 		},
 	}
@@ -573,7 +597,9 @@ func TestShippingRates_Marshal(t *testing.T) {
 				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
 				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 			},
-			expect: []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`),
+			expect: []byte(
+				`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`,
+			),
 			hasErr: false,
 		},
 		{

@@ -71,7 +71,10 @@ func (c *sentryCore) With(fields []zap.Field) zapcore.Core {
 	}
 }
 
-func (c *sentryCore) Check(entry zapcore.Entry, centry *zapcore.CheckedEntry) *zapcore.CheckedEntry {
+func (c *sentryCore) Check(
+	entry zapcore.Entry,
+	centry *zapcore.CheckedEntry,
+) *zapcore.CheckedEntry {
 	if entry.Level >= c.sentryLevel {
 		centry = centry.AddCore(entry, c)
 	}

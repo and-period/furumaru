@@ -44,8 +44,26 @@ func TestOrder_List(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -54,8 +72,26 @@ func TestOrder_List(t *testing.T) {
 	}
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now().Add(-time.Hour))
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now().Add(-time.Hour),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -151,8 +187,26 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -165,7 +219,15 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	err = db.DB.Create(&experienceTypes).Error
 	require.NoError(t, err)
 	experiences := make(internalExperiences, 1)
-	experiences[0] = testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	experiences[0] = testExperience(
+		"experience-id",
+		"experience-type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
@@ -174,9 +236,36 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	}
 
 	orders := make(entity.Orders, 3)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
-	orders[2] = testOrder("order-id03", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeExperience, 3, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
+	orders[2] = testOrder(
+		"order-id03",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeExperience,
+		3,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 
@@ -288,8 +377,26 @@ func TestOrder_Count(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -301,8 +408,26 @@ func TestOrder_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -397,8 +522,26 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -409,7 +552,16 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	o := testOrder(
+		"order-id",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -506,8 +658,26 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -518,7 +688,16 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	o := testOrder(
+		"order-id",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -618,8 +797,26 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -630,7 +827,16 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	o := testOrder(
+		"order-id",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -696,7 +902,11 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &order{db: db, now: now}
-			actual, err := db.GetByTransactionIDWithSessionID(ctx, tt.args.sessionID, tt.args.transactionID)
+			actual, err := db.GetByTransactionIDWithSessionID(
+				ctx,
+				tt.args.sessionID,
+				tt.args.transactionID,
+			)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.order, actual)
 		})
@@ -729,8 +939,26 @@ func TestOrder_Create(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -744,7 +972,15 @@ func TestOrder_Create(t *testing.T) {
 	experienceType := testExperienceType("experience-type-id", "体験", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	experience := testExperience("experience-id", "experience-type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	experience := testExperience(
+		"experience-id",
+		"experience-type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&experience).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&experience.ExperienceRevision).Error
@@ -756,13 +992,31 @@ func TestOrder_Create(t *testing.T) {
 	items[0] = testOrderItem("fulfillment-id", 1, "product-order-id", now())
 	items[1] = testOrderItem("fulfillment-id", 2, "product-order-id", now())
 
-	porder := testOrder("product-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	porder := testOrder(
+		"product-order-id",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
 	porder.Type = entity.OrderTypeProduct
 	porder.OrderPayment = *testOrderPayment("product-order-id", 1, "transaction-id", "payment-id", now())
 	porder.OrderFulfillments = fulfillments
 	porder.OrderItems = items
 
-	eorder := testOrder("experience-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeExperience, 2, now())
+	eorder := testOrder(
+		"experience-order-id",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeExperience,
+		2,
+		now(),
+	)
 	eorder.Type = entity.OrderTypeExperience
 	eorder.OrderPayment = *testOrderPayment("experience-order-id", 1, "transaction-id", "payment-id", now())
 	einternal := testOrderExperience("experience-order-id", 1, now())
@@ -820,7 +1074,14 @@ func TestOrder_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -858,8 +1119,26 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -871,7 +1150,16 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -956,7 +1244,14 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -994,8 +1289,26 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1007,7 +1320,16 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -1092,7 +1414,14 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1130,8 +1459,26 @@ func TestOrder_UpdateFailed(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1143,7 +1490,16 @@ func TestOrder_UpdateFailed(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -1231,7 +1587,14 @@ func TestOrder_UpdateFailed(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1269,8 +1632,26 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1282,7 +1663,16 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1389,7 +1779,14 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1427,8 +1824,26 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1440,7 +1855,16 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -1554,7 +1978,14 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1592,8 +2023,26 @@ func TestOrder_Draft(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1605,7 +2054,16 @@ func TestOrder_Draft(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1659,7 +2117,14 @@ func TestOrder_Draft(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1697,8 +2162,26 @@ func TestOrder_Complete(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1710,7 +2193,16 @@ func TestOrder_Complete(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now)
+		order := testOrder(
+			orderID,
+			"user-id",
+			"",
+			"shop-id",
+			"coordinator-id",
+			entity.OrderTypeProduct,
+			1,
+			now,
+		)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1765,7 +2257,14 @@ func TestOrder_Complete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(
+				ctx,
+				orderItemTable,
+				orderFulfillmentTable,
+				orderPaymentTable,
+				orderExperienceTable,
+				orderTable,
+			)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1803,8 +2302,26 @@ func TestOrder_Aggregate(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1816,8 +2333,26 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -1918,8 +2453,26 @@ func TestOrder_AggregateByUser(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -1931,8 +2484,26 @@ func TestOrder_AggregateByUser(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -2035,8 +2606,26 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -2048,8 +2637,26 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -2151,8 +2758,26 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -2167,8 +2792,26 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "promotion-id", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "promotion-id", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"promotion-id",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"promotion-id",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -2269,8 +2912,26 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 2)
-	pinternal[0] = testProduct("product-id01", "type-id01", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id02", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id01",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id02",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -2282,8 +2943,26 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[0] = testOrder(
+		"order-id01",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		1,
+		now(),
+	)
+	orders[1] = testOrder(
+		"order-id02",
+		"user-id",
+		"",
+		"shop-id",
+		"coordinator-id",
+		entity.OrderTypeProduct,
+		2,
+		now(),
+	)
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -2335,7 +3014,15 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 			want: want{
 				orders: entity.AggregatedPeriodOrders{
 					{
-						Period:        jst.Date(now().Year(), now().Month(), now().Day(), 0, 0, 0, 0),
+						Period: jst.Date(
+							now().Year(),
+							now().Month(),
+							now().Day(),
+							0,
+							0,
+							0,
+							0,
+						),
 						OrderCount:    2,
 						UserCount:     1,
 						SalesTotal:    3600,
@@ -2362,7 +3049,12 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 	}
 }
 
-func testOrder(id, userID, promotionID, shopID, coordinatorID string, typ entity.OrderType, mgmtID int64, now time.Time) *entity.Order {
+func testOrder(
+	id, userID, promotionID, shopID, coordinatorID string,
+	typ entity.OrderType,
+	mgmtID int64,
+	now time.Time,
+) *entity.Order {
 	return &entity.Order{
 		ID:            id,
 		SessionID:     "session-id",
@@ -2377,7 +3069,12 @@ func testOrder(id, userID, promotionID, shopID, coordinatorID string, typ entity
 	}
 }
 
-func testOrderPayment(orderID string, addressID int64, transactionID, paymentID string, now time.Time) *entity.OrderPayment {
+func testOrderPayment(
+	orderID string,
+	addressID int64,
+	transactionID, paymentID string,
+	now time.Time,
+) *entity.OrderPayment {
 	return &entity.OrderPayment{
 		OrderID:           orderID,
 		AddressRevisionID: addressID,
@@ -2397,7 +3094,11 @@ func testOrderPayment(orderID string, addressID int64, transactionID, paymentID 
 	}
 }
 
-func testOrderFulfillment(fulfillmentID, orderID string, addressID, boxNumber int64, now time.Time) *entity.OrderFulfillment {
+func testOrderFulfillment(
+	fulfillmentID, orderID string,
+	addressID, boxNumber int64,
+	now time.Time,
+) *entity.OrderFulfillment {
 	return &entity.OrderFulfillment{
 		ID:                fulfillmentID,
 		OrderID:           orderID,
@@ -2413,7 +3114,12 @@ func testOrderFulfillment(fulfillmentID, orderID string, addressID, boxNumber in
 	}
 }
 
-func testOrderItem(fulfillmentID string, productID int64, orderID string, now time.Time) *entity.OrderItem {
+func testOrderItem(
+	fulfillmentID string,
+	productID int64,
+	orderID string,
+	now time.Time,
+) *entity.OrderItem {
 	return &entity.OrderItem{
 		FulfillmentID:     fulfillmentID,
 		ProductRevisionID: productID,
@@ -2424,7 +3130,11 @@ func testOrderItem(fulfillmentID string, productID int64, orderID string, now ti
 	}
 }
 
-func testOrderExperience(orderID string, experienceID int64, now time.Time) *internalOrderExperience {
+func testOrderExperience(
+	orderID string,
+	experienceID int64,
+	now time.Time,
+) *internalOrderExperience {
 	experience := &entity.OrderExperience{
 		OrderID:               orderID,
 		ExperienceRevisionID:  experienceID,

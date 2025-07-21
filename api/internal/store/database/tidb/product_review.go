@@ -57,7 +57,11 @@ func (r *productReview) List(
 	if params.NextToken != "" {
 		nsec, err := strconv.ParseInt(params.NextToken, 10, 64)
 		if err != nil {
-			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
+			return nil, "", fmt.Errorf(
+				"database: failed to parse next token: %s: %w",
+				err.Error(),
+				database.ErrInvalidArgument,
+			)
 		}
 		stmt = stmt.Where("created_at <= ?", time.Unix(0, nsec))
 	}
@@ -77,7 +81,11 @@ func (r *productReview) List(
 	return reviews, nextToken, nil
 }
 
-func (r *productReview) Get(ctx context.Context, reviewID string, fields ...string) (*entity.ProductReview, error) {
+func (r *productReview) Get(
+	ctx context.Context,
+	reviewID string,
+	fields ...string,
+) (*entity.ProductReview, error) {
 	var review *entity.ProductReview
 
 	stmt := r.db.Statement(ctx, r.db.DB, productReviewTable, fields...).
@@ -100,7 +108,11 @@ func (r *productReview) Create(ctx context.Context, review *entity.ProductReview
 	return dbError(err)
 }
 
-func (r *productReview) Update(ctx context.Context, reviewID string, params *database.UpdateProductReviewParams) error {
+func (r *productReview) Update(
+	ctx context.Context,
+	reviewID string,
+	params *database.UpdateProductReviewParams,
+) error {
 	updates := map[string]interface{}{
 		"rate":       params.Rate,
 		"title":      params.Title,
@@ -144,7 +156,11 @@ func (r *productReview) Aggregate(
 	return reviews, dbError(err)
 }
 
-func (r *productReview) fill(ctx context.Context, tx *gorm.DB, reviews ...*entity.ProductReview) error {
+func (r *productReview) fill(
+	ctx context.Context,
+	tx *gorm.DB,
+	reviews ...*entity.ProductReview,
+) error {
 	var reactions entity.AggregatedProductReviewReactions
 
 	ids := entity.ProductReviews(reviews).IDs()

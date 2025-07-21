@@ -59,7 +59,11 @@ func (t *transport) RoundTrip(req *http.Request) (res *http.Response, err error)
 			if res != nil {
 				out, _ = httputil.DumpResponse(res, true)
 			}
-			t.opts.logger.Debug("Send komoju request", zap.String("input", string(in)), zap.String("output", string(out)))
+			t.opts.logger.Debug(
+				"Send komoju request",
+				zap.String("input", string(in)),
+				zap.String("output", string(out)),
+			)
 		}()
 	}
 	res, err = t.base.RoundTrip(req)
@@ -119,7 +123,8 @@ func (c *APIClient) do(ctx context.Context, params *APIParams, out interface{}) 
 }
 
 func (c *APIClient) isRetryable(err error) bool {
-	return errors.Is(err, ErrTooManyRequest) || errors.Is(err, ErrBadGateway) || errors.Is(err, ErrGatewayTimeout)
+	return errors.Is(err, ErrTooManyRequest) || errors.Is(err, ErrBadGateway) ||
+		errors.Is(err, ErrGatewayTimeout)
 }
 
 type ErrorResponse struct {

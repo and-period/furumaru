@@ -276,14 +276,20 @@ func TestTemplateBuilder(t *testing.T) {
 		{
 			name: "order fulfillments is empty",
 			execute: func(builder *TemplateDataBuilder) *TemplateDataBuilder {
-				return builder.OrderFulfillment(sentity.OrderFulfillments{}, map[int64]*uentity.Address{})
+				return builder.OrderFulfillment(
+					sentity.OrderFulfillments{},
+					map[int64]*uentity.Address{},
+				)
 			},
 			expect: map[string]interface{}{},
 		},
 		{
 			name: "addresss is empty",
 			execute: func(builder *TemplateDataBuilder) *TemplateDataBuilder {
-				return builder.OrderFulfillment(order.OrderFulfillments, map[int64]*uentity.Address{0: {}})
+				return builder.OrderFulfillment(
+					order.OrderFulfillments,
+					map[int64]*uentity.Address{0: {}},
+				)
 			},
 			expect: map[string]interface{}{},
 		},

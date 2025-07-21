@@ -135,7 +135,9 @@ func TestListProducts(t *testing.T) {
 			name: "failed to count products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().List(gomock.Any(), params).Return(products, nil)
-				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Product.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductsInput{
 				Name:             "みかん",
@@ -155,12 +157,15 @@ func TestListProducts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListProducts(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListProducts(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -219,7 +224,9 @@ func TestMultiGetProducts(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(products, nil)
 			},
 			input: &store.MultiGetProductsInput{
 				ProductIDs: []string{"product-id"},
@@ -239,7 +246,9 @@ func TestMultiGetProducts(t *testing.T) {
 		{
 			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().
+					MultiGet(ctx, []string{"product-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetProductsInput{
 				ProductIDs: []string{"product-id"},
@@ -250,11 +259,14 @@ func TestMultiGetProducts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetProducts(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetProducts(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -333,7 +345,9 @@ func TestMultiGetProductsByRevision(t *testing.T) {
 		{
 			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(ctx, []int64{1}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetProductsByRevisionInput{
 				ProductRevisionIDs: []int64{1},
@@ -344,11 +358,14 @@ func TestMultiGetProductsByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetProductsByRevision(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetProductsByRevision(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -434,11 +451,14 @@ func TestGetProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetProduct(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -475,7 +495,9 @@ func TestCreateProduct(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -601,9 +623,15 @@ func TestCreateProduct(t *testing.T) {
 		{
 			name: "not found coordinator or producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, database.ErrNotFound)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, exception.ErrNotFound)
+				mocks.db.Shop.EXPECT().
+					Get(gomock.Any(), "shop-id").
+					Return(nil, database.ErrNotFound)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetProducer(gomock.Any(), producerIn).
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateProductInput{
 				ShopID:          "shop-id",
@@ -643,7 +671,9 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, assert.AnError)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateProductInput{
@@ -684,7 +714,9 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, assert.AnError)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateProductInput{
@@ -725,8 +757,12 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetProducer(gomock.Any(), producerIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreateProductInput{
 				ShopID:          "shop-id",
@@ -766,7 +802,9 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to new product",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateProductInput{
@@ -807,7 +845,9 @@ func TestCreateProduct(t *testing.T) {
 			name: "failed to create product",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
@@ -848,10 +888,13 @@ func TestCreateProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateProduct(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1016,7 +1059,9 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "failed to update product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Product.EXPECT().
+					Update(ctx, "product-id", gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
@@ -1053,10 +1098,13 @@ func TestUpdateProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateProduct(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1126,9 +1174,12 @@ func TestDeleteProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteProduct(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

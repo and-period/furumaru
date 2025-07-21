@@ -22,7 +22,10 @@ type DeleteChannelParams struct {
 	Arn string
 }
 
-func (c *client) CreateChannel(ctx context.Context, params *CreateChannelParams) (*ivs.CreateChannelOutput, error) {
+func (c *client) CreateChannel(
+	ctx context.Context,
+	params *CreateChannelParams,
+) (*ivs.CreateChannelOutput, error) {
 	in := &ivs.CreateChannelInput{
 		LatencyMode:               params.LatencyMode,
 		Name:                      aws.String(params.Name),

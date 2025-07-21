@@ -95,7 +95,9 @@ func TestListAddresses(t *testing.T) {
 			name: "failed to count addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Address.EXPECT().List(gomock.Any(), params).Return(addresses, nil)
-				mocks.db.Address.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Address.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &user.ListAddressesInput{
 				UserID: "user-id",
@@ -109,12 +111,15 @@ func TestListAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListAddresses(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListAddresses(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -156,7 +161,9 @@ func TestListDefaultAddresses(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().ListDefault(gomock.Any(), []string{"user-id"}).Return(addresses, nil)
+				mocks.db.Address.EXPECT().
+					ListDefault(gomock.Any(), []string{"user-id"}).
+					Return(addresses, nil)
 			},
 			input: &user.ListDefaultAddressesInput{
 				UserIDs: []string{"user-id"},
@@ -176,7 +183,9 @@ func TestListDefaultAddresses(t *testing.T) {
 		{
 			name: "failed to list addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().ListDefault(gomock.Any(), []string{"user-id"}).Return(nil, assert.AnError)
+				mocks.db.Address.EXPECT().
+					ListDefault(gomock.Any(), []string{"user-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.ListDefaultAddressesInput{
 				UserIDs: []string{"user-id"},
@@ -187,11 +196,14 @@ func TestListDefaultAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListDefaultAddresses(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListDefaultAddresses(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -233,7 +245,9 @@ func TestMultiGetAddresses(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().MultiGet(ctx, []string{"address-id"}).Return(addresses, nil)
+				mocks.db.Address.EXPECT().
+					MultiGet(ctx, []string{"address-id"}).
+					Return(addresses, nil)
 			},
 			input: &user.MultiGetAddressesInput{
 				AddressIDs: []string{"address-id"},
@@ -253,7 +267,9 @@ func TestMultiGetAddresses(t *testing.T) {
 		{
 			name: "failed to get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().MultiGet(ctx, []string{"address-id"}).Return(nil, assert.AnError)
+				mocks.db.Address.EXPECT().
+					MultiGet(ctx, []string{"address-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAddressesInput{
 				AddressIDs: []string{"address-id"},
@@ -264,11 +280,14 @@ func TestMultiGetAddresses(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetAddresses(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetAddresses(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -331,7 +350,9 @@ func TestMultiGetAddressesByRevision(t *testing.T) {
 		{
 			name: "failed to get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(nil, assert.AnError)
+				mocks.db.Address.EXPECT().
+					MultiGetByRevision(ctx, []int64{1}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAddressesByRevisionInput{
 				AddressRevisionIDs: []int64{1},
@@ -342,11 +363,14 @@ func TestMultiGetAddressesByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetAddressesByRevision(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetAddressesByRevision(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -415,11 +439,14 @@ func TestGetDefaultAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetDefaultAddress(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetDefaultAddress(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -530,10 +557,13 @@ func TestCreateAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateAddress(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateAddress(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -587,7 +617,9 @@ func TestUpdateAddress(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("user-id"), nil)
+				mocks.db.Address.EXPECT().
+					Get(ctx, "address-id", "user_id").
+					Return(address("user-id"), nil)
 				mocks.db.Address.EXPECT().Update(ctx, "address-id", "user-id", params).Return(nil)
 			},
 			input: &user.UpdateAddressInput{
@@ -636,7 +668,9 @@ func TestUpdateAddress(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(nil, assert.AnError)
+				mocks.db.Address.EXPECT().
+					Get(ctx, "address-id", "user_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.UpdateAddressInput{
 				AddressID:      "address-id",
@@ -658,7 +692,9 @@ func TestUpdateAddress(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("other-id"), nil)
+				mocks.db.Address.EXPECT().
+					Get(ctx, "address-id", "user_id").
+					Return(address("other-id"), nil)
 			},
 			input: &user.UpdateAddressInput{
 				AddressID:      "address-id",
@@ -680,8 +716,12 @@ func TestUpdateAddress(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("user-id"), nil)
-				mocks.db.Address.EXPECT().Update(ctx, "address-id", "user-id", params).Return(assert.AnError)
+				mocks.db.Address.EXPECT().
+					Get(ctx, "address-id", "user_id").
+					Return(address("user-id"), nil)
+				mocks.db.Address.EXPECT().
+					Update(ctx, "address-id", "user-id", params).
+					Return(assert.AnError)
 			},
 			input: &user.UpdateAddressInput{
 				AddressID:      "address-id",
@@ -703,10 +743,13 @@ func TestUpdateAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateAddress(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateAddress(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -739,7 +782,9 @@ func TestDeleteAddress(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Delete(ctx, "address-id", "user-id").Return(assert.AnError)
+				mocks.db.Address.EXPECT().
+					Delete(ctx, "address-id", "user-id").
+					Return(assert.AnError)
 			},
 			input: &user.DeleteAddressInput{
 				AddressID: "address-id",
@@ -750,9 +795,12 @@ func TestDeleteAddress(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteAddress(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteAddress(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

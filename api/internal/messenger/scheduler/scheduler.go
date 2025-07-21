@@ -86,10 +86,13 @@ func (s *scheduler) Run(ctx context.Context, target time.Time) error {
 
 func (s *scheduler) run(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		Types:    entity.ScheduleTypes,
-		Statuses: []entity.ScheduleStatus{entity.ScheduleStatusWaiting, entity.ScheduleStatusProcessing},
-		Since:    jst.BeginningOfDay(target),
-		Until:    target,
+		Types: entity.ScheduleTypes,
+		Statuses: []entity.ScheduleStatus{
+			entity.ScheduleStatusWaiting,
+			entity.ScheduleStatusProcessing,
+		},
+		Since: jst.BeginningOfDay(target),
+		Until: target,
 	}
 	schedules, err := s.db.Schedule.List(ctx, params)
 	if err != nil {
@@ -126,7 +129,11 @@ func (s *scheduler) dispatch(ctx context.Context, schedule *entity.Schedule) err
 	}
 }
 
-func (s *scheduler) execute(ctx context.Context, schedule *entity.Schedule, fn func(context.Context, *entity.Schedule) error) error {
+func (s *scheduler) execute(
+	ctx context.Context,
+	schedule *entity.Schedule,
+	fn func(context.Context, *entity.Schedule) error,
+) error {
 	now := s.now()
 	// 通知前処理
 	if schedule.ShouldCancel(now) {

@@ -60,14 +60,21 @@ func (t *experienceType) List(
 	return types, dbError(err)
 }
 
-func (t *experienceType) Count(ctx context.Context, params *database.ListExperienceTypesParams) (int64, error) {
+func (t *experienceType) Count(
+	ctx context.Context,
+	params *database.ListExperienceTypesParams,
+) (int64, error) {
 	p := listExperienceTypesParams(*params)
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ExperienceType{}, p.stmt)
 	return total, dbError(err)
 }
 
-func (t *experienceType) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.ExperienceTypes, error) {
+func (t *experienceType) MultiGet(
+	ctx context.Context,
+	experienceIDs []string,
+	fields ...string,
+) (entity.ExperienceTypes, error) {
 	var types entity.ExperienceTypes
 
 	stmt := t.db.Statement(ctx, t.db.DB, experienceTypeTable, fields...).
@@ -77,7 +84,11 @@ func (t *experienceType) MultiGet(ctx context.Context, experienceIDs []string, f
 	return types, dbError(err)
 }
 
-func (t *experienceType) Get(ctx context.Context, experienceID string, fields ...string) (*entity.ExperienceType, error) {
+func (t *experienceType) Get(
+	ctx context.Context,
+	experienceID string,
+	fields ...string,
+) (*entity.ExperienceType, error) {
 	experienceType, err := t.get(ctx, t.db.DB, experienceID, fields...)
 	return experienceType, dbError(err)
 }
@@ -90,7 +101,11 @@ func (t *experienceType) Create(ctx context.Context, experience *entity.Experien
 	return dbError(err)
 }
 
-func (t *experienceType) Update(ctx context.Context, experienceID string, params *database.UpdateExperienceTypeParams) error {
+func (t *experienceType) Update(
+	ctx context.Context,
+	experienceID string,
+	params *database.UpdateExperienceTypeParams,
+) error {
 	updates := map[string]interface{}{
 		"name":       params.Name,
 		"updated_at": t.now(),
@@ -106,7 +121,12 @@ func (t *experienceType) Delete(ctx context.Context, experienceID string) error 
 	return dbError(err)
 }
 
-func (t *experienceType) get(ctx context.Context, db *gorm.DB, experienceID string, fields ...string) (*entity.ExperienceType, error) {
+func (t *experienceType) get(
+	ctx context.Context,
+	db *gorm.DB,
+	experienceID string,
+	fields ...string,
+) (*entity.ExperienceType, error) {
 	var experience *entity.ExperienceType
 
 	stmt := t.db.Statement(ctx, db, experienceTypeTable, fields...).

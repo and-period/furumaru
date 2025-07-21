@@ -33,7 +33,11 @@ type Client interface {
 	// 決済確定
 	Capture(ctx context.Context, transactionID string) (*stripe.PaymentIntent, error)
 	// 決済キャンセル
-	Cancel(ctx context.Context, transactionID string, reason stripe.PaymentIntentCancellationReason) (*stripe.PaymentIntent, error)
+	Cancel(
+		ctx context.Context,
+		transactionID string,
+		reason stripe.PaymentIntentCancellationReason,
+	) (*stripe.PaymentIntent, error)
 	// #############################################
 	// 決済方法 (共通)
 	// #############################################

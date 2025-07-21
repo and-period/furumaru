@@ -183,7 +183,11 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 			name:  "success create",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				provider: testAdminAuthProvider("admin-id", entity.AdminAuthProviderTypeGoogle, now()),
+				provider: testAdminAuthProvider(
+					"admin-id",
+					entity.AdminAuthProviderTypeGoogle,
+					now(),
+				),
 			},
 			want: want{
 				err: nil,
@@ -192,12 +196,20 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 		{
 			name: "success update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				provider := testAdminAuthProvider("admin-id", entity.AdminAuthProviderTypeGoogle, now())
+				provider := testAdminAuthProvider(
+					"admin-id",
+					entity.AdminAuthProviderTypeGoogle,
+					now(),
+				)
 				err = db.DB.WithContext(ctx).Table(adminAuthProviderTable).Create(&provider).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				provider: testAdminAuthProvider("admin-id", entity.AdminAuthProviderTypeGoogle, now()),
+				provider: testAdminAuthProvider(
+					"admin-id",
+					entity.AdminAuthProviderTypeGoogle,
+					now(),
+				),
 			},
 			want: want{
 				err: nil,
@@ -220,7 +232,11 @@ func TestAdminAuthProvider_Upsert(t *testing.T) {
 	}
 }
 
-func testAdminAuthProvider(adminID string, providerType entity.AdminAuthProviderType, now time.Time) *entity.AdminAuthProvider {
+func testAdminAuthProvider(
+	adminID string,
+	providerType entity.AdminAuthProviderType,
+	now time.Time,
+) *entity.AdminAuthProvider {
 	return &entity.AdminAuthProvider{
 		AdminID:      adminID,
 		ProviderType: providerType,

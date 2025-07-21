@@ -24,7 +24,11 @@ func NewReportTemplate(db *mysql.Client) database.ReportTemplate {
 	}
 }
 
-func (t *reportTemplate) Get(ctx context.Context, reportID entity.ReportTemplateID, fields ...string) (*entity.ReportTemplate, error) {
+func (t *reportTemplate) Get(
+	ctx context.Context,
+	reportID entity.ReportTemplateID,
+	fields ...string,
+) (*entity.ReportTemplate, error) {
 	var template *entity.ReportTemplate
 
 	stmt := t.db.Statement(ctx, t.db.DB, reportTemplateTable, fields...).

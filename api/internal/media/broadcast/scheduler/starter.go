@@ -120,14 +120,20 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 			}
 			if broadcast.MediaLiveChannelID == "" {
 				s.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
-				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
+				return fmt.Errorf(
+					"unexpected media live channel arn format. arn=%s",
+					broadcast.MediaLiveChannelArn,
+				)
 			}
 
 			settings := &medialive.CreateScheduleParams{
 				ChannelID: broadcast.MediaLiveChannelID,
 				Settings:  s.newStartScheduleSettings(schedule, broadcast),
 			}
-			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
+			s.logger.Info(
+				"Calling to create media live schedule",
+				zap.String("scheduleId", schedule.ID),
+			)
 			if err := s.media.CreateSchedule(ctx, settings); err != nil {
 				s.logger.Error("Failed to create media live schedule",
 					zap.String("scheduleId", schedule.ID),
@@ -136,11 +142,18 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 					zap.Error(err))
 				return err
 			}
-			s.logger.Info("Succeeded to create media live schedule", zap.String("scheduleId", schedule.ID))
+			s.logger.Info(
+				"Succeeded to create media live schedule",
+				zap.String("scheduleId", schedule.ID),
+			)
 
 			s.logger.Info("Calling to start media live", zap.String("scheduleId", schedule.ID))
 			if err := s.media.StartChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
-				s.logger.Error("Failed to start media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				s.logger.Error(
+					"Failed to start media live",
+					zap.String("scheduleId", schedule.ID),
+					zap.Error(err),
+				)
 				return err
 			}
 			s.logger.Info("Succeeded to start media live", zap.String("scheduleId", schedule.ID))
@@ -154,7 +167,10 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	return eg.Wait()
 }
 
-func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast *entity.Broadcast) []*medialive.ScheduleSetting {
+func (s *starter) newStartScheduleSettings(
+	schedule *sentity.Schedule,
+	broadcast *entity.Broadcast,
+) []*medialive.ScheduleSetting {
 	sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
 	// ライブ配信開始時は一律、オープニング動画再生から始めるようにする
 	return []*medialive.ScheduleSetting{
@@ -221,7 +237,11 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 			}
 			s.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
 			if err := s.sfn.StartExecution(ectx, payload); err != nil {
-				s.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				s.logger.Error(
+					"Failed step function",
+					zap.String("scheduleId", schedule.ID),
+					zap.Error(err),
+				)
 				return err
 			}
 			s.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))

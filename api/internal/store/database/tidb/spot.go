@@ -55,7 +55,11 @@ func (p listSpotsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (s *spot) List(ctx context.Context, params *database.ListSpotsParams, fields ...string) (entity.Spots, error) {
+func (s *spot) List(
+	ctx context.Context,
+	params *database.ListSpotsParams,
+	fields ...string,
+) (entity.Spots, error) {
 	var spots entity.Spots
 
 	prm := listSpotsParams(*params)
@@ -164,7 +168,11 @@ func (s *spot) Delete(ctx context.Context, spotID string) error {
 	return dbError(err)
 }
 
-func (s *spot) Approve(ctx context.Context, spotID string, params *database.ApproveSpotParams) error {
+func (s *spot) Approve(
+	ctx context.Context,
+	spotID string,
+	params *database.ApproveSpotParams,
+) error {
 	updates := map[string]interface{}{
 		"approved":          true,
 		"approved_admin_id": params.ApprovedAdminID,

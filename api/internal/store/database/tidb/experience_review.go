@@ -57,7 +57,11 @@ func (r *experienceReview) List(
 	if params.NextToken != "" {
 		nsec, err := strconv.ParseInt(params.NextToken, 10, 64)
 		if err != nil {
-			return nil, "", fmt.Errorf("database: failed to parse next token: %s: %w", err.Error(), database.ErrInvalidArgument)
+			return nil, "", fmt.Errorf(
+				"database: failed to parse next token: %s: %w",
+				err.Error(),
+				database.ErrInvalidArgument,
+			)
 		}
 		stmt = stmt.Where("created_at <= ?", time.Unix(0, nsec))
 	}
@@ -77,7 +81,11 @@ func (r *experienceReview) List(
 	return reviews, nextToken, nil
 }
 
-func (r *experienceReview) Get(ctx context.Context, reviewID string, fields ...string) (*entity.ExperienceReview, error) {
+func (r *experienceReview) Get(
+	ctx context.Context,
+	reviewID string,
+	fields ...string,
+) (*entity.ExperienceReview, error) {
 	var review *entity.ExperienceReview
 
 	stmt := r.db.Statement(ctx, r.db.DB, experienceReviewTable, fields...).
@@ -100,7 +108,11 @@ func (r *experienceReview) Create(ctx context.Context, review *entity.Experience
 	return dbError(err)
 }
 
-func (r *experienceReview) Update(ctx context.Context, reviewID string, params *database.UpdateExperienceReviewParams) error {
+func (r *experienceReview) Update(
+	ctx context.Context,
+	reviewID string,
+	params *database.UpdateExperienceReviewParams,
+) error {
 	updates := map[string]interface{}{
 		"rate":       params.Rate,
 		"title":      params.Title,
@@ -114,7 +126,9 @@ func (r *experienceReview) Update(ctx context.Context, reviewID string, params *
 }
 
 func (r *experienceReview) Delete(ctx context.Context, experienceReviewID string) error {
-	stmt := r.db.DB.WithContext(ctx).Table(experienceReviewTable).Where("id = ?", experienceReviewID)
+	stmt := r.db.DB.WithContext(ctx).
+		Table(experienceReviewTable).
+		Where("id = ?", experienceReviewID)
 
 	err := stmt.Delete(&entity.ExperienceReview{}).Error
 	return dbError(err)
@@ -144,7 +158,11 @@ func (r *experienceReview) Aggregate(
 	return reviews, dbError(err)
 }
 
-func (r *experienceReview) fill(ctx context.Context, tx *gorm.DB, reviews ...*entity.ExperienceReview) error {
+func (r *experienceReview) fill(
+	ctx context.Context,
+	tx *gorm.DB,
+	reviews ...*entity.ExperienceReview,
+) error {
 	var reactions entity.AggregatedExperienceReviewReactions
 
 	ids := entity.ExperienceReviews(reviews).IDs()

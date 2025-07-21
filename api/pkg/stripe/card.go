@@ -7,7 +7,10 @@ import (
 )
 
 // reference: https://stripe.com/docs/api/payment_methods/customer_list
-func (c *client) ListCards(ctx context.Context, customerID string) ([]*stripe.PaymentMethod, error) {
+func (c *client) ListCards(
+	ctx context.Context,
+	customerID string,
+) ([]*stripe.PaymentMethod, error) {
 	params := &stripe.PaymentMethodListParams{
 		ListParams: stripe.ListParams{Context: ctx},
 		Customer:   stripe.String(customerID),
@@ -25,7 +28,10 @@ func (c *client) ListCards(ctx context.Context, customerID string) ([]*stripe.Pa
 }
 
 // reference: https://stripe.com/docs/api/payment_methods/retrieve
-func (c *client) GetCard(ctx context.Context, customerID, cardID string) (*stripe.PaymentMethod, error) {
+func (c *client) GetCard(
+	ctx context.Context,
+	customerID, cardID string,
+) (*stripe.PaymentMethod, error) {
 	params := &stripe.PaymentMethodParams{
 		Params:   stripe.Params{Context: ctx},
 		Customer: stripe.String(customerID),

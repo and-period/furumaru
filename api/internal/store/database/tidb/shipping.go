@@ -57,7 +57,11 @@ func (p listShippingsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (s *shipping) List(ctx context.Context, params *database.ListShippingsParams, fields ...string) (entity.Shippings, error) {
+func (s *shipping) List(
+	ctx context.Context,
+	params *database.ListShippingsParams,
+	fields ...string,
+) (entity.Shippings, error) {
 	var shippings entity.Shippings
 
 	prm := listShippingsParams(*params)
@@ -75,7 +79,11 @@ func (s *shipping) List(ctx context.Context, params *database.ListShippingsParam
 	return shippings, nil
 }
 
-func (s *shipping) ListByShopIDs(ctx context.Context, shopIDs []string, fields ...string) (entity.Shippings, error) {
+func (s *shipping) ListByShopIDs(
+	ctx context.Context,
+	shopIDs []string,
+	fields ...string,
+) (entity.Shippings, error) {
 	var shippings entity.Shippings
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
@@ -98,7 +106,11 @@ func (s *shipping) Count(ctx context.Context, params *database.ListShippingsPara
 	return total, dbError(err)
 }
 
-func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
+func (s *shipping) MultiGet(
+	ctx context.Context,
+	shippingIDs []string,
+	fields ...string,
+) (entity.Shippings, error) {
 	var shippings entity.Shippings
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
@@ -113,7 +125,11 @@ func (s *shipping) MultiGet(ctx context.Context, shippingIDs []string, fields ..
 	return shippings, nil
 }
 
-func (s *shipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error) {
+func (s *shipping) MultiGetByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+	fields ...string,
+) (entity.Shippings, error) {
 	var internal internalShippingRevisions
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingRevisionTable).
@@ -145,7 +161,11 @@ func (s *shipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, 
 	return res, nil
 }
 
-func (s *shipping) Get(ctx context.Context, shippingID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) Get(
+	ctx context.Context,
+	shippingID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
 
 	stmt := s.db.Statement(ctx, s.db.DB, shippingTable, fields...).
@@ -175,12 +195,20 @@ func (s *shipping) GetDefault(ctx context.Context, fields ...string) (*entity.Sh
 	return shipping, nil
 }
 
-func (s *shipping) GetByShopID(ctx context.Context, shopID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) GetByShopID(
+	ctx context.Context,
+	shopID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	shipping, err := s.getByShopID(ctx, s.db.DB, shopID, fields...)
 	return shipping, dbError(err)
 }
 
-func (s *shipping) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) GetByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	shipping, err := s.getByCoordinatorID(ctx, s.db.DB, coordinatorID, fields...)
 	return shipping, dbError(err)
 }
@@ -232,7 +260,11 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 	return dbError(err)
 }
 
-func (s *shipping) Update(ctx context.Context, shippingID string, params *database.UpdateShippingParams) error {
+func (s *shipping) Update(
+	ctx context.Context,
+	shippingID string,
+	params *database.UpdateShippingParams,
+) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := s.now()
 
@@ -313,7 +345,10 @@ func (s *shipping) UpdateInUse(ctx context.Context, shopID, shippingID string) e
 func (s *shipping) Delete(ctx context.Context, shippingID string) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if shippingID == entity.DefaultShippingID {
-			return fmt.Errorf("tidb: default shipping cannot be deleted: %w", database.ErrPermissionDenied)
+			return fmt.Errorf(
+				"tidb: default shipping cannot be deleted: %w",
+				database.ErrPermissionDenied,
+			)
 		}
 
 		current, err := s.get(ctx, tx, shippingID)
@@ -336,7 +371,12 @@ func (s *shipping) Delete(ctx context.Context, shippingID string) error {
 	return dbError(err)
 }
 
-func (s *shipping) get(ctx context.Context, tx *gorm.DB, shippingID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	shippingID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
 
 	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
@@ -351,7 +391,12 @@ func (s *shipping) get(ctx context.Context, tx *gorm.DB, shippingID string, fiel
 	return shipping, nil
 }
 
-func (s *shipping) getByShopID(ctx context.Context, tx *gorm.DB, shopID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) getByShopID(
+	ctx context.Context,
+	tx *gorm.DB,
+	shopID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
 
 	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
@@ -367,7 +412,12 @@ func (s *shipping) getByShopID(ctx context.Context, tx *gorm.DB, shopID string, 
 	return shipping, nil
 }
 
-func (s *shipping) getByCoordinatorID(ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string) (*entity.Shipping, error) {
+func (s *shipping) getByCoordinatorID(
+	ctx context.Context,
+	tx *gorm.DB,
+	coordinatorID string,
+	fields ...string,
+) (*entity.Shipping, error) {
 	var shipping *entity.Shipping
 
 	stmt := s.db.Statement(ctx, tx, shippingTable, fields...).
@@ -422,7 +472,9 @@ type internalShippingRevision struct {
 
 type internalShippingRevisions []*internalShippingRevision
 
-func newInternalShippingRevision(revision *entity.ShippingRevision) (*internalShippingRevision, error) {
+func newInternalShippingRevision(
+	revision *entity.ShippingRevision,
+) (*internalShippingRevision, error) {
 	box60Rates, err := revision.Box60Rates.Marshal()
 	if err != nil {
 		return nil, fmt.Errorf("tidb: failed to marshal box60 rates: %w", err)

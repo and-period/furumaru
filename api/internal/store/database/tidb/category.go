@@ -72,14 +72,21 @@ func (c *category) List(
 	return categories, dbError(err)
 }
 
-func (c *category) Count(ctx context.Context, params *database.ListCategoriesParams) (int64, error) {
+func (c *category) Count(
+	ctx context.Context,
+	params *database.ListCategoriesParams,
+) (int64, error) {
 	p := listCategoriesParams(*params)
 
 	total, err := c.db.Count(ctx, c.db.DB, &entity.Category{}, p.stmt)
 	return total, dbError(err)
 }
 
-func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.Categories, error) {
+func (c *category) MultiGet(
+	ctx context.Context,
+	categoryIDs []string,
+	fields ...string,
+) (entity.Categories, error) {
 	var categories entity.Categories
 
 	err := c.db.Statement(ctx, c.db.DB, categoryTable, fields...).
@@ -88,7 +95,11 @@ func (c *category) MultiGet(ctx context.Context, categoryIDs []string, fields ..
 	return categories, dbError(err)
 }
 
-func (c *category) Get(ctx context.Context, categoryID string, fields ...string) (*entity.Category, error) {
+func (c *category) Get(
+	ctx context.Context,
+	categoryID string,
+	fields ...string,
+) (*entity.Category, error) {
 	category, err := c.get(ctx, c.db.DB, categoryID, fields...)
 	return category, dbError(err)
 }

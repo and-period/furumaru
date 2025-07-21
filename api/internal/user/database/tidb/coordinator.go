@@ -67,7 +67,10 @@ func (c *coordinator) List(
 	return coordinators, nil
 }
 
-func (c *coordinator) Count(ctx context.Context, params *database.ListCoordinatorsParams) (int64, error) {
+func (c *coordinator) Count(
+	ctx context.Context,
+	params *database.ListCoordinatorsParams,
+) (int64, error) {
 	p := listCoordinatorsParams(*params)
 
 	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, p.stmt)
@@ -173,7 +176,11 @@ func (c *coordinator) Create(
 	return dbError(err)
 }
 
-func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
+func (c *coordinator) Update(
+	ctx context.Context,
+	coordinatorID string,
+	params *database.UpdateCoordinatorParams,
+) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
 		adminParams := map[string]interface{}{
@@ -217,7 +224,11 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 	return dbError(err)
 }
 
-func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
+func (c *coordinator) Delete(
+	ctx context.Context,
+	coordinatorID string,
+	auth func(ctx context.Context) error,
+) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
 		updates := map[string]interface{}{
@@ -248,7 +259,11 @@ func (c *coordinator) get(
 	return coordinator, nil
 }
 
-func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*entity.Coordinator) error {
+func (c *coordinator) fill(
+	ctx context.Context,
+	tx *gorm.DB,
+	coordinators ...*entity.Coordinator,
+) error {
 	var (
 		admins entity.Admins
 		groups entity.AdminGroupUsers

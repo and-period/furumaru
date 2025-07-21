@@ -33,7 +33,10 @@ func (c *VideoComment) Response() *response.VideoComment {
 	return &c.VideoComment
 }
 
-func NewVideoComments(comments mentity.VideoComments, users map[string]*uentity.User) VideoComments {
+func NewVideoComments(
+	comments mentity.VideoComments,
+	users map[string]*uentity.User,
+) VideoComments {
 	res := make(VideoComments, 0, len(comments))
 	for _, comment := range comments {
 		if comment.Disabled {

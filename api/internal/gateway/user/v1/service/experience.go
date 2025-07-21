@@ -113,9 +113,17 @@ func (e *Experience) Calc(params *CalcExperienceParams) (subtotal int64, discoun
 
 	dsub := decimal.Zero
 	dsub = dsub.Add(decimal.NewFromInt(e.PriceAdult).Mul(decimal.NewFromInt(params.AdultCount)))
-	dsub = dsub.Add(decimal.NewFromInt(e.PriceJuniorHighSchool).Mul(decimal.NewFromInt(params.JuniorHighSchoolCount)))
-	dsub = dsub.Add(decimal.NewFromInt(e.PriceElementarySchool).Mul(decimal.NewFromInt(params.ElementarySchoolCount)))
-	dsub = dsub.Add(decimal.NewFromInt(e.PricePreschool).Mul(decimal.NewFromInt(params.PreschoolCount)))
+	dsub = dsub.Add(
+		decimal.NewFromInt(e.PriceJuniorHighSchool).
+			Mul(decimal.NewFromInt(params.JuniorHighSchoolCount)),
+	)
+	dsub = dsub.Add(
+		decimal.NewFromInt(e.PriceElementarySchool).
+			Mul(decimal.NewFromInt(params.ElementarySchoolCount)),
+	)
+	dsub = dsub.Add(
+		decimal.NewFromInt(e.PricePreschool).Mul(decimal.NewFromInt(params.PreschoolCount)),
+	)
 	dsub = dsub.Add(decimal.NewFromInt(e.PriceSenior).Mul(decimal.NewFromInt(params.SeniorCount)))
 	subtotal = dsub.IntPart()
 

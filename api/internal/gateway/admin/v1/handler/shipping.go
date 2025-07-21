@@ -20,7 +20,11 @@ func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 	r.GET("/default", h.GetDefaultShipping)
 	r.PATCH("/default", h.UpdateDefaultShipping)
 
-	cr := rg.Group("/coordinators/:coordinatorId/shippings", h.authentication, h.filterAccessShipping)
+	cr := rg.Group(
+		"/coordinators/:coordinatorId/shippings",
+		h.authentication,
+		h.filterAccessShipping,
+	)
 	cr.GET("", h.ListShippings)
 	cr.POST("", h.CreateShipping)
 	cr.GET("/:shippingId", h.GetShipping)
@@ -81,7 +85,9 @@ func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultShippingRate) []*store.UpdateDefaultShippingRate {
+func (h *handler) newShippingRatesForUpdateDefault(
+	in []*request.UpdateDefaultShippingRate,
+) []*store.UpdateDefaultShippingRate {
 	res := make([]*store.UpdateDefaultShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpdateDefaultShippingRate{
@@ -372,7 +378,9 @@ func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.
 	return service.NewShipping(shipping), nil
 }
 
-func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []*store.CreateShippingRate {
+func (h *handler) newShippingRatesForCreate(
+	in []*request.CreateShippingRate,
+) []*store.CreateShippingRate {
 	res := make([]*store.CreateShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.CreateShippingRate{
@@ -384,7 +392,9 @@ func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []
 	return res
 }
 
-func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []*store.UpdateShippingRate {
+func (h *handler) newShippingRatesForUpdate(
+	in []*request.UpdateShippingRate,
+) []*store.UpdateShippingRate {
 	res := make([]*store.UpdateShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpdateShippingRate{
@@ -396,7 +406,9 @@ func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []
 	return res
 }
 
-func (h *handler) newShippingRatesForUpsert(in []*request.UpsertShippingRate) []*store.UpsertShippingRate {
+func (h *handler) newShippingRatesForUpsert(
+	in []*request.UpsertShippingRate,
+) []*store.UpsertShippingRate {
 	res := make([]*store.UpsertShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpsertShippingRate{

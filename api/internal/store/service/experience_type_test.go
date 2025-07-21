@@ -72,7 +72,9 @@ func TestListExperienceTypes(t *testing.T) {
 		{
 			name: "failed to list experience types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					List(gomock.Any(), params).
+					Return(nil, assert.AnError)
 				mocks.db.ExperienceType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListExperienceTypesInput{
@@ -88,7 +90,9 @@ func TestListExperienceTypes(t *testing.T) {
 			name: "failed to count experience types",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ExperienceType.EXPECT().List(gomock.Any(), params).Return(types, nil)
-				mocks.db.ExperienceType.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListExperienceTypesInput{
 				Name:   "収穫",
@@ -102,12 +106,15 @@ func TestListExperienceTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListExperienceTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListExperienceTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -134,7 +141,9 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().MultiGet(gomock.Any(), []string{"experience-type-id"}).Return(types, nil)
+				mocks.db.ExperienceType.EXPECT().
+					MultiGet(gomock.Any(), []string{"experience-type-id"}).
+					Return(types, nil)
 			},
 			input: &store.MultiGetExperienceTypesInput{
 				ExperienceTypeIDs: []string{"experience-type-id"},
@@ -154,7 +163,9 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 		{
 			name: "failed to multi get experience types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().MultiGet(gomock.Any(), []string{"experience-type-id"}).Return(nil, assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					MultiGet(gomock.Any(), []string{"experience-type-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetExperienceTypesInput{
 				ExperienceTypeIDs: []string{"experience-type-id"},
@@ -165,11 +176,14 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetExperienceTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetExperienceTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -194,7 +208,9 @@ func TestGetExperienceType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().Get(gomock.Any(), "experience-type-id").Return(typ, nil)
+				mocks.db.ExperienceType.EXPECT().
+					Get(gomock.Any(), "experience-type-id").
+					Return(typ, nil)
 			},
 			input: &store.GetExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
@@ -212,7 +228,9 @@ func TestGetExperienceType(t *testing.T) {
 		{
 			name: "failed to get experience type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().Get(gomock.Any(), "experience-type-id").Return(nil, assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					Get(gomock.Any(), "experience-type-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
@@ -223,11 +241,14 @@ func TestGetExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetExperienceType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetExperienceType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -279,10 +300,13 @@ func TestCreateExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateExperienceType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateExperienceType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -302,7 +326,9 @@ func TestUpdateExperienceType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().Update(ctx, "experience-type-id", params).Return(nil)
+				mocks.db.ExperienceType.EXPECT().
+					Update(ctx, "experience-type-id", params).
+					Return(nil)
 			},
 			input: &store.UpdateExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
@@ -319,7 +345,9 @@ func TestUpdateExperienceType(t *testing.T) {
 		{
 			name: "failed to update experience type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().Update(ctx, "experience-type-id", params).Return(assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					Update(ctx, "experience-type-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
@@ -330,10 +358,13 @@ func TestUpdateExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateExperienceType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateExperienceType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -365,7 +396,9 @@ func TestDeleteExperienceType(t *testing.T) {
 		{
 			name: "failed to delete experience type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceType.EXPECT().Delete(ctx, "experience-type-id").Return(assert.AnError)
+				mocks.db.ExperienceType.EXPECT().
+					Delete(ctx, "experience-type-id").
+					Return(assert.AnError)
 			},
 			input: &store.DeleteExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
@@ -375,9 +408,12 @@ func TestDeleteExperienceType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteExperienceType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteExperienceType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

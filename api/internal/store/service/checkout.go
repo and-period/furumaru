@@ -21,7 +21,10 @@ import (
 
 var errDuplicateOrder = errors.New("service: duplicate order")
 
-func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutStateInput) (string, entity.PaymentStatus, error) {
+func (s *service) GetCheckoutState(
+	ctx context.Context,
+	in *store.GetCheckoutStateInput,
+) (string, entity.PaymentStatus, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", entity.PaymentStatusUnknown, internalError(err)
 	}
@@ -44,13 +47,20 @@ func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutSta
 	// 未払い状態の場合、KOMOJUから最新の状態を取得する
 	res, err := s.komoju.Session.Get(ctx, in.TransactionID)
 	if err != nil || res.Payment == nil {
-		s.logger.Warn("Failed to get session state", zap.String("transactionId", in.TransactionID), zap.Error(err))
+		s.logger.Warn(
+			"Failed to get session state",
+			zap.String("transactionId", in.TransactionID),
+			zap.Error(err),
+		)
 		return order.ID, entity.PaymentStatusUnknown, internalError(err)
 	}
 	return order.ID, entity.NewPaymentStatus(res.Payment.Status), nil
 }
 
-func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
+func (s *service) CheckoutCreditCard(
+	ctx context.Context,
+	in *store.CheckoutCreditCardInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -63,7 +73,11 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	}
 	card := entity.NewCreditCard(cardParams)
 	if err := card.Validate(s.now()); err != nil {
-		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return "", fmt.Errorf(
+			"service: invalid credit card: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderCreditCardParams{
@@ -85,7 +99,10 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayInput) (string, error) {
+func (s *service) CheckoutPayPay(
+	ctx context.Context,
+	in *store.CheckoutPayPayInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -103,7 +120,10 @@ func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayIn
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePayInput) (string, error) {
+func (s *service) CheckoutLinePay(
+	ctx context.Context,
+	in *store.CheckoutLinePayInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -121,7 +141,10 @@ func (s *service) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePay
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayInput) (string, error) {
+func (s *service) CheckoutMerpay(
+	ctx context.Context,
+	in *store.CheckoutMerpayInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -139,7 +162,10 @@ func (s *service) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayIn
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutRakutenPay(ctx context.Context, in *store.CheckoutRakutenPayInput) (string, error) {
+func (s *service) CheckoutRakutenPay(
+	ctx context.Context,
+	in *store.CheckoutRakutenPayInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -195,7 +221,10 @@ func (s *service) CheckoutPaidy(ctx context.Context, in *store.CheckoutPaidyInpu
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutBankTransfer(ctx context.Context, in *store.CheckoutBankTransferInput) (string, error) {
+func (s *service) CheckoutBankTransfer(
+	ctx context.Context,
+	in *store.CheckoutBankTransferInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -219,7 +248,10 @@ func (s *service) CheckoutBankTransfer(ctx context.Context, in *store.CheckoutBa
 	return s.checkout(ctx, params)
 }
 
-func (s *service) CheckoutPayEasy(ctx context.Context, in *store.CheckoutPayEasyInput) (string, error) {
+func (s *service) CheckoutPayEasy(
+	ctx context.Context,
+	in *store.CheckoutPayEasyInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -371,12 +403,19 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(shop.ID) {
-		s.logger.Warn("Failed to disable promotion",
-			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
+		s.logger.Warn(
+			"Failed to disable promotion",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("code", params.payload.PromotionCode),
+		)
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 購入する買い物かごのみ取得
-	baskets := cart.Baskets.FilterByCoordinatorID(params.payload.CoordinatorID).FilterByBoxNumber(params.payload.BoxNumber)
+	baskets := cart.Baskets.FilterByCoordinatorID(params.payload.CoordinatorID).
+		FilterByBoxNumber(params.payload.BoxNumber)
 	if len(baskets) == 0 {
 		return "", fmt.Errorf("service: no target baskets: %w", exception.ErrInvalidArgument)
 	}
@@ -389,17 +428,44 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	products = products.FilterBySales()
 	// 商品がすべて販売中かの確認
 	if len(products) > 0 && len(productIDs) != len(products) {
-		s.logger.Warn("Failed because there are products outside the sales period",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
-		return "", fmt.Errorf("service: there are products outside the sales period: %w", exception.ErrFailedPrecondition)
+		s.logger.Warn(
+			"Failed because there are products outside the sales period",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("sessionId", params.payload.SessionID),
+			zap.String(
+				"coordinatorId",
+				params.payload.CoordinatorID,
+			),
+			zap.Int64("boxNumber", params.payload.BoxNumber),
+		)
+		return "", fmt.Errorf(
+			"service: there are products outside the sales period: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	// 在庫の過不足確認
 	if err := baskets.VerifyQuantities(products.Map()); err != nil {
-		s.logger.Warn("Failed to verify quantities in baskets",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
-		return "", fmt.Errorf("service: insufficient stock: %w: %s", exception.ErrFailedPrecondition, err.Error())
+		s.logger.Warn(
+			"Failed to verify quantities in baskets",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("sessionId", params.payload.SessionID),
+			zap.String(
+				"coordinatorId",
+				params.payload.CoordinatorID,
+			),
+			zap.Int64("boxNumber", params.payload.BoxNumber),
+		)
+		return "", fmt.Errorf(
+			"service: insufficient stock: %w: %s",
+			exception.ErrFailedPrecondition,
+			err.Error(),
+		)
 	}
 	// 注文インスタンスの生成
 	oparams := &entity.NewProductOrderParams{
@@ -422,10 +488,24 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	}
 	// チェックサム
 	if params.payload.Total != order.Total {
-		s.logger.Warn("Failed to checksum before checkout",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber),
-			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
+		s.logger.Warn(
+			"Failed to checksum before checkout",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("sessionId", params.payload.SessionID),
+			zap.String(
+				"coordinatorId",
+				params.payload.CoordinatorID,
+			),
+			zap.Int64("boxNumber", params.payload.BoxNumber),
+			zap.Int64(
+				"payload.total",
+				params.payload.Total,
+			),
+			zap.Any("payment", order.OrderPayment),
+		)
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 支払い処理
@@ -507,15 +587,30 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(experience.ShopID) {
-		s.logger.Warn("Failed to disable promotion",
-			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
+		s.logger.Warn(
+			"Failed to disable promotion",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("code", params.payload.PromotionCode),
+		)
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 体験が販売中かの確認
 	if experience.Status != entity.ExperienceStatusAccepting {
-		s.logger.Warn("Failed to checkout because the experience is not accepting",
-			zap.String("userId", params.payload.UserID), zap.String("experienceId", params.payload.ExperienceID))
-		return "", fmt.Errorf("service: the experience is not accepting: %w", exception.ErrFailedPrecondition)
+		s.logger.Warn(
+			"Failed to checkout because the experience is not accepting",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("experienceId", params.payload.ExperienceID),
+		)
+		return "", fmt.Errorf(
+			"service: the experience is not accepting: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	// 注文インスタンスの生成
 	oparams := &entity.NewExperienceOrderParams{
@@ -543,10 +638,24 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	}
 	// チェックサム
 	if params.payload.Total != order.Total {
-		s.logger.Warn("Failed to checksum before checkout",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.String("experienceId", params.payload.ExperienceID),
-			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
+		s.logger.Warn(
+			"Failed to checksum before checkout",
+			zap.String(
+				"userId",
+				params.payload.UserID,
+			),
+			zap.String("sessionId", params.payload.SessionID),
+			zap.String(
+				"coordinatorId",
+				params.payload.CoordinatorID,
+			),
+			zap.String("experienceId", params.payload.ExperienceID),
+			zap.Int64(
+				"payload.total",
+				params.payload.Total,
+			),
+			zap.Any("payment", order.OrderPayment),
+		)
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	var (
@@ -622,7 +731,11 @@ func (s *service) executePaymentOrder(
 	pay, err := params.payFn(ctx, session.ID, cparams)
 	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
 		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
-		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), func(ctx context.Context) {}, errDuplicateOrder
+		return fmt.Sprintf(
+			"%s?session_id=%s",
+			session.ReturnURL,
+			session.ID,
+		), func(ctx context.Context) {}, errDuplicateOrder
 	}
 	if err != nil {
 		return "", nil, internalError(err)
@@ -648,7 +761,10 @@ func (s *service) executeFreeOrder(
 	return redirectURL, afterFn, nil
 }
 
-func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*entity.Shipping, error) {
+func (s *service) getShippingByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+) (*entity.Shipping, error) {
 	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, coordinatorID)
 	if errors.Is(err, database.ErrNotFound) {
 		// 配送設定が完了していないコーディネータの場合、デフォルト設定を使用
@@ -672,7 +788,11 @@ func (s *service) decreaseProductInventories(ctx context.Context, items entity.O
 			}()
 			err := s.decreaseProductInventory(ctx, item.ProductRevisionID, item.Quantity)
 			if err != nil {
-				s.logger.Error("Failed to decrease product inventory", zap.Any("item", item), zap.Error(err))
+				s.logger.Error(
+					"Failed to decrease product inventory",
+					zap.Any("item", item),
+					zap.Error(err),
+				)
 			}
 		}(item)
 	}

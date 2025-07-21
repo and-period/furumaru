@@ -34,7 +34,15 @@ func TestExperienceReviewReaction_Upsert(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -115,7 +123,15 @@ func TestExperienceReviewReaction_Delete(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -188,7 +204,15 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -245,7 +269,10 @@ func TestExperienceReviewReaction_GetUserReactions(t *testing.T) {
 	}
 }
 
-func testExperienceReviewReaction(reviewID, userID string, now time.Time) *entity.ExperienceReviewReaction {
+func testExperienceReviewReaction(
+	reviewID, userID string,
+	now time.Time,
+) *entity.ExperienceReviewReaction {
 	return &entity.ExperienceReviewReaction{
 		ReviewID:     reviewID,
 		UserID:       userID,

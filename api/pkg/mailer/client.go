@@ -28,9 +28,17 @@ var (
 
 type Client interface {
 	// システム通知 (単一宛先)
-	SendFromInfo(ctx context.Context, emailID, toName, toAddress string, substitutions map[string]interface{}) error
+	SendFromInfo(
+		ctx context.Context,
+		emailID, toName, toAddress string,
+		substitutions map[string]interface{},
+	) error
 	// 任意の送信元からの通知 (複数宛先)
-	MultiSend(ctx context.Context, emailID, fromName, fromAddress string, ps []*Personalization) error
+	MultiSend(
+		ctx context.Context,
+		emailID, fromName, fromAddress string,
+		ps []*Personalization,
+	) error
 	// システム通知 (複数宛先)
 	MultiSendFromInfo(ctx context.Context, emailID string, ps []*Personalization) error
 }

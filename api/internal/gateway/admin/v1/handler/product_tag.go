@@ -72,7 +72,11 @@ func (h *handler) newProductTagOrders(ctx *gin.Context) ([]*store.ListProductTag
 	for i, p := range params {
 		key, ok := productTags[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
+			return nil, fmt.Errorf(
+				"handler: unknown order key. key=%s: %w",
+				p.Key,
+				errInvalidOrderKey,
+			)
 		}
 		res[i] = &store.ListProductTagsOrder{
 			Key:        key,
@@ -135,7 +139,10 @@ func (h *handler) DeleteProductTag(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetProductTags(ctx context.Context, productTagIDs []string) (service.ProductTags, error) {
+func (h *handler) multiGetProductTags(
+	ctx context.Context,
+	productTagIDs []string,
+) (service.ProductTags, error) {
 	if len(productTagIDs) == 0 {
 		return service.ProductTags{}, nil
 	}

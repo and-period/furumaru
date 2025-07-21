@@ -66,7 +66,9 @@ func TestSignInAdmin(t *testing.T) {
 		{
 			name: "failed to sign in",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().SignIn(ctx, "username", "password").Return(nil, assert.AnError)
+				mocks.adminAuth.EXPECT().
+					SignIn(ctx, "username", "password").
+					Return(nil, assert.AnError)
 			},
 			input: &user.SignInAdminInput{
 				Key:      "username",
@@ -120,11 +122,14 @@ func TestSignInAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.SignInAdmin(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.SignInAdmin(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -140,7 +145,9 @@ func TestSignOutAdmin(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil)
+				mocks.adminAuth.EXPECT().
+					SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(nil)
 			},
 			input: &user.SignOutAdminInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -158,7 +165,9 @@ func TestSignOutAdmin(t *testing.T) {
 		{
 			name: "failed to sign out",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(assert.AnError)
+				mocks.adminAuth.EXPECT().
+					SignOut(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(assert.AnError)
 			},
 			input: &user.SignOutAdminInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -168,10 +177,13 @@ func TestSignOutAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.SignOutAdmin(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.SignOutAdmin(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -194,7 +206,9 @@ func TestGetAdminAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
+				mocks.adminAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
 			},
 			input: &user.GetAdminAuthInput{
@@ -221,7 +235,9 @@ func TestGetAdminAuth(t *testing.T) {
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("", assert.AnError)
+				mocks.adminAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("", assert.AnError)
 			},
 			input: &user.GetAdminAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -232,7 +248,9 @@ func TestGetAdminAuth(t *testing.T) {
 		{
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return("username", nil)
+				mocks.adminAuth.EXPECT().
+					GetUsername(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(nil, assert.AnError)
 			},
 			input: &user.GetAdminAuthInput{
@@ -244,11 +262,14 @@ func TestGetAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -276,7 +297,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
+				mocks.adminAuth.EXPECT().
+					RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
 				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(nil)
@@ -305,7 +328,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		{
 			name: "failed to sign in",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, assert.AnError)
+				mocks.adminAuth.EXPECT().
+					RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(nil, assert.AnError)
 			},
 			input: &user.RefreshAdminTokenInput{
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
@@ -316,7 +341,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		{
 			name: "failed to get username",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
+				mocks.adminAuth.EXPECT().
+					RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("", assert.AnError)
 			},
 			input: &user.RefreshAdminTokenInput{
@@ -328,7 +355,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		{
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
+				mocks.adminAuth.EXPECT().
+					RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(nil, assert.AnError)
 			},
@@ -341,7 +370,9 @@ func TestRefreshAdminToken(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
+				mocks.adminAuth.EXPECT().
+					RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").
+					Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
 				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username").Return(admin, nil)
 				mocks.db.Admin.EXPECT().UpdateSignInAt(ctx, "admin-id").Return(assert.AnError)
@@ -355,11 +386,14 @@ func TestRefreshAdminToken(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.RefreshAdminToken(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.RefreshAdminToken(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -392,7 +426,9 @@ func TestRegisterAdminDevice(t *testing.T) {
 		{
 			name: "failed to update device",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().UpdateDevice(ctx, "admin-id", "device").Return(assert.AnError)
+				mocks.db.Admin.EXPECT().
+					UpdateDevice(ctx, "admin-id", "device").
+					Return(assert.AnError)
 			},
 			input: &user.RegisterAdminDeviceInput{
 				AdminID: "admin-id",
@@ -403,10 +439,13 @@ func TestRegisterAdminDevice(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RegisterAdminDevice(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.RegisterAdminDevice(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -463,7 +502,9 @@ func TestUpdateAdminEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "email").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().
+					GetByCognitoID(ctx, "username", "email").
+					Return(nil, assert.AnError)
 			},
 			input: &user.UpdateAdminEmailInput{
 				AccessToken: "access-token",
@@ -499,10 +540,13 @@ func TestUpdateAdminEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateAdminEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateAdminEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -529,9 +573,15 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
-				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("test-admin@and-period.jp", nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Admin.EXPECT().
+					GetByCognitoID(ctx, "username", "id", "role").
+					Return(admin, nil)
+				mocks.adminAuth.EXPECT().
+					ConfirmChangeEmail(ctx, params).
+					Return("test-admin@and-period.jp", nil)
+				mocks.db.Admin.EXPECT().
+					UpdateEmail(ctx, "admin-id", "test-admin@and-period.jp").
+					Return(nil)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",
@@ -560,7 +610,9 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to get by cognito id",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().
+					GetByCognitoID(ctx, "username", "id", "role").
+					Return(nil, assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{
 				AccessToken: "access-token",
@@ -572,7 +624,9 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name: "failed to confirm change email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
-				mocks.db.Admin.EXPECT().GetByCognitoID(ctx, "username", "id", "role").Return(admin, nil)
+				mocks.db.Admin.EXPECT().
+					GetByCognitoID(ctx, "username", "id", "role").
+					Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmChangeEmail(ctx, params).Return("", assert.AnError)
 			},
 			input: &user.VerifyAdminEmailInput{
@@ -584,10 +638,13 @@ func TestVerifyAdminEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.VerifyAdminEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.VerifyAdminEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -641,10 +698,13 @@ func TestUpdateAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateAdminPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateAdminPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -705,11 +765,14 @@ func TestListAdminAuthProviders(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListAdminAuthProviders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListAdminAuthProviders(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -746,11 +809,14 @@ func TestInitialGoogleAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.InitialGoogleAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.InitialGoogleAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -785,10 +851,13 @@ func TestConnectGoogleAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ConnectGoogleAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ConnectGoogleAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -825,11 +894,14 @@ func TestInitialLINEAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.InitialLINEAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.InitialLINEAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -864,10 +936,13 @@ func TestConnectLINEAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ConnectLINEAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ConnectLINEAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -879,7 +954,9 @@ func mockInitialAdminAuth(m *mocks, t *testing.T, providerType entity.AdminAuthP
 		RedirectURI:  "http://example.com/auth/external/callback",
 	}
 
-	m.db.AdminAuthProvider.EXPECT().Get(gomock.Any(), "admin-id", providerType).Return(nil, database.ErrNotFound)
+	m.db.AdminAuthProvider.EXPECT().
+		Get(gomock.Any(), "admin-id", providerType).
+		Return(nil, database.ErrNotFound)
 	m.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(nil)
 	m.adminAuth.EXPECT().
 		GenerateAuthURL(gomock.Any(), gomock.Any()).
@@ -910,7 +987,9 @@ func TestInitialAdminAuth(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(nil, database.ErrNotFound)
+				mocks.db.AdminAuthProvider.EXPECT().
+					Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).
+					Return(nil, database.ErrNotFound)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
 				mocks.adminAuth.EXPECT().
 					GenerateAuthURL(ctx, gomock.Any()).
@@ -932,7 +1011,9 @@ func TestInitialAdminAuth(t *testing.T) {
 		{
 			name: "failed to get auth provider",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(nil, assert.AnError)
+				mocks.db.AdminAuthProvider.EXPECT().
+					Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).
+					Return(nil, assert.AnError)
 			},
 			input: &initialAdminAuthParams{
 				adminID:      "admin-id",
@@ -946,7 +1027,9 @@ func TestInitialAdminAuth(t *testing.T) {
 		{
 			name: "alraedy connected",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(&entity.AdminAuthProvider{}, nil)
+				mocks.db.AdminAuthProvider.EXPECT().
+					Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).
+					Return(&entity.AdminAuthProvider{}, nil)
 			},
 			input: &initialAdminAuthParams{
 				adminID:      "admin-id",
@@ -960,7 +1043,9 @@ func TestInitialAdminAuth(t *testing.T) {
 		{
 			name: "failed to insert cache",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(nil, database.ErrNotFound)
+				mocks.db.AdminAuthProvider.EXPECT().
+					Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).
+					Return(nil, database.ErrNotFound)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &initialAdminAuthParams{
@@ -975,9 +1060,13 @@ func TestInitialAdminAuth(t *testing.T) {
 		{
 			name: "failed to generate auth url",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(nil, database.ErrNotFound)
+				mocks.db.AdminAuthProvider.EXPECT().
+					Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).
+					Return(nil, database.ErrNotFound)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
-				mocks.adminAuth.EXPECT().GenerateAuthURL(ctx, gomock.Any()).Return("", assert.AnError)
+				mocks.adminAuth.EXPECT().
+					GenerateAuthURL(ctx, gomock.Any()).
+					Return("", assert.AnError)
 			},
 			input: &initialAdminAuthParams{
 				adminID:      "admin-id",
@@ -991,11 +1080,14 @@ func TestInitialAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.initialAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.initialAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1192,7 +1284,9 @@ func TestConnectAdminAuth(t *testing.T) {
 						return nil
 					})
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
-				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(nil, assert.AnError)
+				mocks.adminAuth.EXPECT().
+					GetAccessToken(ctx, tokenParams).
+					Return(nil, assert.AnError)
 			},
 			input: &connectAdminAuthParams{
 				adminID:     "admin-id",
@@ -1361,9 +1455,12 @@ func TestConnectAdminAuth(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.connectAdminAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.connectAdminAuth(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

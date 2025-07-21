@@ -25,7 +25,10 @@ type GuestOrderParams struct {
 }
 
 // reference: https://stripe.com/docs/api/payment_methods/attach
-func (c *client) AttachPayment(ctx context.Context, customerID, paymentID string) (*stripe.PaymentMethod, error) {
+func (c *client) AttachPayment(
+	ctx context.Context,
+	customerID, paymentID string,
+) (*stripe.PaymentMethod, error) {
 	params := &stripe.PaymentMethodAttachParams{
 		Params:   stripe.Params{Context: ctx},
 		Customer: stripe.String(customerID),
@@ -36,8 +39,15 @@ func (c *client) AttachPayment(ctx context.Context, customerID, paymentID string
 		return err
 	}
 	if err := c.do(ctx, attachFn); err != nil {
-		c.logger.Error("Failed to attach payment",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		c.logger.Error(
+			"Failed to attach payment",
+			zap.String(
+				"customerId",
+				customerID,
+			),
+			zap.String("paymentMethodId", paymentID),
+			zap.Error(err),
+		)
 	}
 	return pm, nil
 }
@@ -48,8 +58,15 @@ func (c *client) DetachPayment(ctx context.Context, customerID, paymentID string
 		Params: stripe.Params{Context: ctx},
 	}
 	if _, err := c.paymentmethod.Detach(paymentID, params); err != nil {
-		c.logger.Error("Failed to detach payment",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		c.logger.Error(
+			"Failed to detach payment",
+			zap.String(
+				"customerId",
+				customerID,
+			),
+			zap.String("paymentMethodId", paymentID),
+			zap.Error(err),
+		)
 		return err
 	}
 	return nil
@@ -64,8 +81,15 @@ func (c *client) UpdateDefaultPayment(ctx context.Context, customerID, paymentID
 		},
 	}
 	if _, err := c.customer.Update(customerID, params); err != nil {
-		c.logger.Error("Failed to update default payment method",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		c.logger.Error(
+			"Failed to update default payment method",
+			zap.String(
+				"customerId",
+				customerID,
+			),
+			zap.String("paymentMethodId", paymentID),
+			zap.Error(err),
+		)
 		return err
 	}
 	return nil
@@ -104,7 +128,10 @@ func (c *client) Order(ctx context.Context, in *OrderParams) (*stripe.PaymentInt
 }
 
 // reference: https://stripe.com/docs/api/payment_intents/create
-func (c *client) GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.PaymentIntent, error) {
+func (c *client) GuestOrder(
+	ctx context.Context,
+	in *GuestOrderParams,
+) (*stripe.PaymentIntent, error) {
 	params := &stripe.PaymentIntentParams{
 		Params: stripe.Params{
 			Context:  ctx,
@@ -144,7 +171,11 @@ func (c *client) Capture(ctx context.Context, transactionID string) (*stripe.Pay
 		return err
 	}
 	if err := c.do(ctx, captureFn); err != nil {
-		c.logger.Error("Failed to capture", zap.String("transactionId", transactionID), zap.Error(err))
+		c.logger.Error(
+			"Failed to capture",
+			zap.String("transactionId", transactionID),
+			zap.Error(err),
+		)
 		return nil, err
 	}
 	return pi, nil
@@ -164,7 +195,11 @@ func (c *client) Cancel(
 		return err
 	}
 	if err := c.do(ctx, cancelFn); err != nil {
-		c.logger.Error("Failed to cancel", zap.String("transactionId", transactionID), zap.Error(err))
+		c.logger.Error(
+			"Failed to cancel",
+			zap.String("transactionId", transactionID),
+			zap.Error(err),
+		)
 		return nil, err
 	}
 	return pi, nil

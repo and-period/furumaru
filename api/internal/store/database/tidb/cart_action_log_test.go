@@ -81,7 +81,11 @@ func TestCartActionLog_Create(t *testing.T) {
 	}
 }
 
-func testCartActionLog(sessionID string, actionType entity.CartActionLogType, now time.Time) *entity.CartActionLog {
+func testCartActionLog(
+	sessionID string,
+	actionType entity.CartActionLogType,
+	now time.Time,
+) *entity.CartActionLog {
 	return &entity.CartActionLog{
 		SessionID: sessionID,
 		Type:      actionType,

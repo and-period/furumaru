@@ -23,7 +23,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (entity.Orders, int64, error) {
+func (s *service) ListOrders(
+	ctx context.Context,
+	in *store.ListOrdersInput,
+) (entity.Orders, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -54,7 +57,10 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 	return orders, total, nil
 }
 
-func (s *service) ListOrderUserIDs(ctx context.Context, in *store.ListOrderUserIDsInput) ([]string, int64, error) {
+func (s *service) ListOrderUserIDs(
+	ctx context.Context,
+	in *store.ListOrderUserIDsInput,
+) ([]string, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -75,7 +81,10 @@ func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entit
 	return order, internalError(err)
 }
 
-func (s *service) GetOrderByTransactionID(ctx context.Context, in *store.GetOrderByTransactionIDInput) (*entity.Order, error) {
+func (s *service) GetOrderByTransactionID(
+	ctx context.Context,
+	in *store.GetOrderByTransactionIDInput,
+) (*entity.Order, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -92,7 +101,10 @@ func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput)
 		return internalError(err)
 	}
 	if !order.Capturable() {
-		return fmt.Errorf("service: this order cannot be capture: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this order cannot be capture: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	_, err = s.komoju.Payment.Capture(ctx, order.PaymentID)
 	return internalError(err)
@@ -116,7 +128,10 @@ func (s *service) DraftOrder(ctx context.Context, in *store.DraftOrderInput) err
 	return internalError(err)
 }
 
-func (s *service) CompleteProductOrder(ctx context.Context, in *store.CompleteProductOrderInput) error {
+func (s *service) CompleteProductOrder(
+	ctx context.Context,
+	in *store.CompleteProductOrderInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -125,7 +140,10 @@ func (s *service) CompleteProductOrder(ctx context.Context, in *store.CompletePr
 		return internalError(err)
 	}
 	if !order.Completable() {
-		return fmt.Errorf("service: this order cannot be complete: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this order cannot be complete: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &database.CompleteOrderParams{
 		ShippingMessage: in.ShippingMessage,
@@ -144,13 +162,20 @@ func (s *service) CompleteProductOrder(ctx context.Context, in *store.CompletePr
 			OrderID: order.ID,
 		}
 		if err := s.messenger.NotifyOrderShipped(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify order shipped", zap.String("orderId", order.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to notify order shipped",
+				zap.String("orderId", order.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
 }
 
-func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.CompleteExperienceOrderInput) error {
+func (s *service) CompleteExperienceOrder(
+	ctx context.Context,
+	in *store.CompleteExperienceOrderInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -159,7 +184,10 @@ func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.Complet
 		return internalError(err)
 	}
 	if !order.Completable() {
-		return fmt.Errorf("service: this order cannot be complete: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this order cannot be complete: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &database.CompleteOrderParams{
 		CompletedAt: s.now(),
@@ -174,7 +202,11 @@ func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.Complet
 			OrderID: order.ID,
 		}
 		if err := s.messenger.NotifyReviewRequest(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify review request", zap.String("orderId", order.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to notify review request",
+				zap.String("orderId", order.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
@@ -189,7 +221,10 @@ func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) e
 		return internalError(err)
 	}
 	if !order.Cancelable() {
-		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this order cannot be canceled: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	_, err = s.komoju.Payment.Cancel(ctx, order.PaymentID)
 	return internalError(err)
@@ -204,7 +239,10 @@ func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) e
 		return internalError(err)
 	}
 	if !order.Refundable() {
-		return fmt.Errorf("service: this order cannot be refund: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this order cannot be refund: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &komoju.RefundParams{
 		PaymentID:   order.PaymentID,
@@ -215,7 +253,10 @@ func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) e
 	return internalError(err)
 }
 
-func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOrderFulfillmentInput) error {
+func (s *service) UpdateOrderFulfillment(
+	ctx context.Context,
+	in *store.UpdateOrderFulfillmentInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -229,7 +270,10 @@ func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOr
 	return internalError(err)
 }
 
-func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (*entity.AggregatedOrder, error) {
+func (s *service) AggregateOrders(
+	ctx context.Context,
+	in *store.AggregateOrdersInput,
+) (*entity.AggregatedOrder, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -242,7 +286,10 @@ func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrders
 	return order, internalError(err)
 }
 
-func (s *service) AggregateOrdersByUser(ctx context.Context, in *store.AggregateOrdersByUserInput) (entity.AggregatedUserOrders, error) {
+func (s *service) AggregateOrdersByUser(
+	ctx context.Context,
+	in *store.AggregateOrdersByUserInput,
+) (entity.AggregatedUserOrders, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

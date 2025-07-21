@@ -99,13 +99,20 @@ func (s *service) CreateAdministrator(
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), administrator.ID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("administratorId", administrator.ID), zap.Error(err))
+			s.logger.Warn(
+				"Failed to notify register admin",
+				zap.String("administratorId", administrator.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return administrator, nil
 }
 
-func (s *service) UpdateAdministrator(ctx context.Context, in *user.UpdateAdministratorInput) error {
+func (s *service) UpdateAdministrator(
+	ctx context.Context,
+	in *user.UpdateAdministratorInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -120,7 +127,10 @@ func (s *service) UpdateAdministrator(ctx context.Context, in *user.UpdateAdmini
 	return internalError(err)
 }
 
-func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateAdministratorEmailInput) error {
+func (s *service) UpdateAdministratorEmail(
+	ctx context.Context,
+	in *user.UpdateAdministratorEmailInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -139,7 +149,10 @@ func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateA
 	return internalError(err)
 }
 
-func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.ResetAdministratorPasswordInput) error {
+func (s *service) ResetAdministratorPassword(
+	ctx context.Context,
+	in *user.ResetAdministratorPasswordInput,
+) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
@@ -173,15 +186,24 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	return nil
 }
 
-func (s *service) DeleteAdministrator(ctx context.Context, in *user.DeleteAdministratorInput) error {
+func (s *service) DeleteAdministrator(
+	ctx context.Context,
+	in *user.DeleteAdministratorInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.Administrator.Delete(ctx, in.AdministratorID, s.deleteCognitoAdmin(in.AdministratorID))
+	err := s.db.Administrator.Delete(
+		ctx,
+		in.AdministratorID,
+		s.deleteCognitoAdmin(in.AdministratorID),
+	)
 	return internalError(err)
 }
 
-func (s *service) createCognitoAdmin(cognitoID, email, password string) func(context.Context) error {
+func (s *service) createCognitoAdmin(
+	cognitoID, email, password string,
+) func(context.Context) error {
 	params := &cognito.AdminCreateUserParams{
 		Username: cognitoID,
 		Email:    email,

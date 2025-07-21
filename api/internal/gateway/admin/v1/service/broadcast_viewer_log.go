@@ -52,7 +52,10 @@ func (i BroadcastViewerLogInterval) MediaEntity() entity.AggregateBroadcastViewe
 	}
 }
 
-func NewBroadcastViewerLog(aggregate *entity.AggregatedBroadcastViewerLog, interval time.Duration) *BroadcastViewerLog {
+func NewBroadcastViewerLog(
+	aggregate *entity.AggregatedBroadcastViewerLog,
+	interval time.Duration,
+) *BroadcastViewerLog {
 	return &BroadcastViewerLog{
 		BroadcastViewerLog: response.BroadcastViewerLog{
 			BroadcastID: aggregate.BroadcastID,
@@ -63,7 +66,11 @@ func NewBroadcastViewerLog(aggregate *entity.AggregatedBroadcastViewerLog, inter
 	}
 }
 
-func newEmptyBroadcastViewerLog(broadcastID string, startAt time.Time, interval time.Duration) *BroadcastViewerLog {
+func newEmptyBroadcastViewerLog(
+	broadcastID string,
+	startAt time.Time,
+	interval time.Duration,
+) *BroadcastViewerLog {
 	aggregate := &entity.AggregatedBroadcastViewerLog{
 		BroadcastID: broadcastID,
 		ReportedAt:  startAt,

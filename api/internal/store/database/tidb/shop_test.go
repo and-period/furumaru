@@ -377,7 +377,13 @@ func TestShop_Create(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop(
+		"shop-id01",
+		"coordinator-id01",
+		[]string{"producer-id01"},
+		[]string{},
+		now(),
+	)
 	s, err := internal.entity()
 	require.NoError(t, err)
 
@@ -406,7 +412,13 @@ func TestShop_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+				internal := testShop(
+					"shop-id01",
+					"coordinator-id01",
+					[]string{"producer-id01"},
+					[]string{},
+					now(),
+				)
 				err = db.DB.Table(shopTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -461,7 +473,13 @@ func TestShop_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+				internal := testShop(
+					"shop-id01",
+					"coordinator-id01",
+					[]string{"producer-id01"},
+					[]string{},
+					now(),
+				)
 				err = db.DB.Table(shopTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -520,7 +538,13 @@ func TestShop_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+				internal := testShop(
+					"shop-id01",
+					"coordinator-id01",
+					[]string{"producer-id01"},
+					[]string{},
+					now(),
+				)
 				err = db.DB.Table(shopTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -574,7 +598,13 @@ func TestShop_RemoveProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{"product-type-id01"}, now())
+				internal := testShop(
+					"shop-id01",
+					"coordinator-id01",
+					[]string{"producer-id01"},
+					[]string{"product-type-id01"},
+					now(),
+				)
 				err = db.DB.Table(shopTable).Create(&internal).Error
 				require.NoError(t, err)
 			},
@@ -679,7 +709,13 @@ func TestShop_RelateProducer(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop(
+		"shop-id01",
+		"coordinator-id01",
+		[]string{"producer-id01"},
+		[]string{},
+		now(),
+	)
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -735,7 +771,13 @@ func TestShop_UnrelateProducer(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	internal := testShop("shop-id01", "coordinator-id01", []string{"producer-id01"}, []string{}, now())
+	internal := testShop(
+		"shop-id01",
+		"coordinator-id01",
+		[]string{"producer-id01"},
+		[]string{},
+		now(),
+	)
 	err = db.DB.Table(shopTable).Create(&internal).Error
 	require.NoError(t, err)
 
@@ -785,7 +827,11 @@ func TestShop_UnrelateProducer(t *testing.T) {
 	}
 }
 
-func testShop(shopID, coordinatorID string, producerIDs, productTypeIDs []string, now time.Time) *internalShop {
+func testShop(
+	shopID, coordinatorID string,
+	producerIDs, productTypeIDs []string,
+	now time.Time,
+) *internalShop {
 	shop := &entity.Shop{
 		ID:             shopID,
 		CoordinatorID:  coordinatorID,

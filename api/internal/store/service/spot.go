@@ -16,7 +16,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListSpots(ctx context.Context, in *store.ListSpotsInput) (entity.Spots, int64, error) {
+func (s *service) ListSpots(
+	ctx context.Context,
+	in *store.ListSpotsInput,
+) (entity.Spots, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -48,7 +51,10 @@ func (s *service) ListSpots(ctx context.Context, in *store.ListSpotsInput) (enti
 	return spots, total, nil
 }
 
-func (s *service) ListSpotsByGeolocation(ctx context.Context, in *store.ListSpotsByGeolocationInput) (entity.Spots, error) {
+func (s *service) ListSpotsByGeolocation(
+	ctx context.Context,
+	in *store.ListSpotsByGeolocationInput,
+) (entity.Spots, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -71,13 +77,19 @@ func (s *service) GetSpot(ctx context.Context, in *store.GetSpotInput) (*entity.
 	return spot, internalError(err)
 }
 
-func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUserInput) (*entity.Spot, error) {
+func (s *service) CreateSpotByUser(
+	ctx context.Context,
+	in *store.CreateSpotByUserInput,
+) (*entity.Spot, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	_, err := s.db.SpotType.Get(ctx, in.TypeID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("service: this spot type is not found: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: this spot type is not found: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -106,7 +118,11 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 	}
 	spot, err := entity.NewSpotByUser(params)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to create spot. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: failed to create spot. err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err := s.db.Spot.Create(ctx, spot); err != nil {
 		return nil, internalError(err)
@@ -114,13 +130,19 @@ func (s *service) CreateSpotByUser(ctx context.Context, in *store.CreateSpotByUs
 	return spot, nil
 }
 
-func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByAdminInput) (*entity.Spot, error) {
+func (s *service) CreateSpotByAdmin(
+	ctx context.Context,
+	in *store.CreateSpotByAdminInput,
+) (*entity.Spot, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	_, err := s.db.SpotType.Get(ctx, in.TypeID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("service: this spot type is not found: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: this spot type is not found: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -142,7 +164,10 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 	case uentity.AdminTypeProducer:
 		userType = entity.SpotUserTypeProducer
 	default:
-		return nil, fmt.Errorf("service: unsupported admin type: %w", exception.ErrFailedPrecondition)
+		return nil, fmt.Errorf(
+			"service: unsupported admin type: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	addressIn := &geolocation.GetAddressInput{
 		Longitude: in.Longitude,
@@ -170,7 +195,11 @@ func (s *service) CreateSpotByAdmin(ctx context.Context, in *store.CreateSpotByA
 	}
 	spot, err := entity.NewSpotByAdmin(params)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to create spot. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: failed to create spot. err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err := s.db.Spot.Create(ctx, spot); err != nil {
 		return nil, internalError(err)

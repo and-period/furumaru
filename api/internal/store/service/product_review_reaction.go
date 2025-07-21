@@ -29,7 +29,10 @@ func (s *service) UpsertProductReviewReaction(
 	return reaction, nil
 }
 
-func (s *service) DeleteProductReviewReaction(ctx context.Context, in *store.DeleteProductReviewReactionInput) error {
+func (s *service) DeleteProductReviewReaction(
+	ctx context.Context,
+	in *store.DeleteProductReviewReactionInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

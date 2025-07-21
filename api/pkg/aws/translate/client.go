@@ -12,9 +12,21 @@ import (
 
 //nolint:lll
 type Client interface {
-	DescribeTextTranslationJob(ctx context.Context, in *translate.DescribeTextTranslationJobInput, opts ...func(*translate.Options)) (*translate.DescribeTextTranslationJobOutput, error)
-	StartTextTranslationJob(ctx context.Context, in *translate.StartTextTranslationJobInput, opts ...func(*translate.Options)) (*translate.StartTextTranslationJobOutput, error)
-	TranslateText(ctx context.Context, params *translate.TranslateTextInput, opts ...func(*translate.Options)) (*translate.TranslateTextOutput, error)
+	DescribeTextTranslationJob(
+		ctx context.Context,
+		in *translate.DescribeTextTranslationJobInput,
+		opts ...func(*translate.Options),
+	) (*translate.DescribeTextTranslationJobOutput, error)
+	StartTextTranslationJob(
+		ctx context.Context,
+		in *translate.StartTextTranslationJobInput,
+		opts ...func(*translate.Options),
+	) (*translate.StartTextTranslationJobOutput, error)
+	TranslateText(
+		ctx context.Context,
+		params *translate.TranslateTextInput,
+		opts ...func(*translate.Options),
+	) (*translate.TranslateTextOutput, error)
 }
 
 type client struct {

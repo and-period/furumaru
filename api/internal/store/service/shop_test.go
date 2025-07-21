@@ -97,12 +97,15 @@ func TestListShops(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListShops(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListShops(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -125,7 +128,9 @@ func TestListShopProducers(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().ListProducers(ctx, params).Return([]string{"producer-id"}, nil)
+				mocks.db.Shop.EXPECT().
+					ListProducers(ctx, params).
+					Return([]string{"producer-id"}, nil)
 			},
 			input: &store.ListShopProducersInput{
 				ShopID: "shop-id",
@@ -158,11 +163,14 @@ func TestListShopProducers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListShopProducers(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListShopProducers(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -213,7 +221,9 @@ func TestMultiGetShops(t *testing.T) {
 		{
 			name: "failed to multi get shops",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().MultiGet(ctx, []string{"shop-id"}).Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().
+					MultiGet(ctx, []string{"shop-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetShopsInput{
 				ShopIDs: []string{"shop-id"},
@@ -224,11 +234,14 @@ func TestMultiGetShops(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetShops(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetShops(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -285,11 +298,14 @@ func TestGetShop(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetShop(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetShop(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -335,7 +351,9 @@ func TestGetShopByCoordinatorID(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Shop.EXPECT().
+					GetByCoordinatorID(ctx, "coordinator-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetShopByCoordinatorIDInput{
 				CoordinatorID: "coordinator-id",
@@ -346,11 +364,14 @@ func TestGetShopByCoordinatorID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetShopByCoordinatorID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetShopByCoordinatorID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -374,7 +395,9 @@ func TestCreateShop(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(productTypes, nil)
 				mocks.db.Shop.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, shop *entity.Shop) error {
@@ -407,7 +430,9 @@ func TestCreateShop(t *testing.T) {
 		{
 			name: "failed to get product types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreateShopInput{
 				CoordinatorID:  "coordinator-id",
@@ -420,7 +445,9 @@ func TestCreateShop(t *testing.T) {
 		{
 			name: "contains invalid product type ids",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(entity.ProductTypes{}, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(entity.ProductTypes{}, nil)
 			},
 			input: &store.CreateShopInput{
 				CoordinatorID:  "coordinator-id",
@@ -433,7 +460,9 @@ func TestCreateShop(t *testing.T) {
 		{
 			name: "failed to create shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(productTypes, nil)
 				mocks.db.Shop.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateShopInput{
@@ -447,10 +476,13 @@ func TestCreateShop(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateShop(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateShop(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -479,7 +511,9 @@ func TestUpdateShop(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(productTypes, nil)
 				mocks.db.Shop.EXPECT().Update(ctx, "shop-id", params).Return(nil)
 			},
 			input: &store.UpdateShopInput{
@@ -499,7 +533,9 @@ func TestUpdateShop(t *testing.T) {
 		{
 			name: "failed to get product types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.UpdateShopInput{
 				ShopID:         "shop-id",
@@ -512,7 +548,9 @@ func TestUpdateShop(t *testing.T) {
 		{
 			name: "contains invalid product type ids",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(entity.ProductTypes{}, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(entity.ProductTypes{}, nil)
 			},
 			input: &store.UpdateShopInput{
 				ShopID:         "shop-id",
@@ -525,7 +563,9 @@ func TestUpdateShop(t *testing.T) {
 		{
 			name: "failed to update shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(productTypes, nil)
 				mocks.db.Shop.EXPECT().Update(ctx, "shop-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateShopInput{
@@ -539,10 +579,13 @@ func TestUpdateShop(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateShop(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateShop(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -584,10 +627,13 @@ func TestDeleteShop(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteShop(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteShop(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -620,7 +666,9 @@ func TestRelateShopProducer(t *testing.T) {
 		{
 			name: "failed to relate shop producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().RelateProducer(ctx, "shop-id", "producer-id").Return(assert.AnError)
+				mocks.db.Shop.EXPECT().
+					RelateProducer(ctx, "shop-id", "producer-id").
+					Return(assert.AnError)
 			},
 			input: &store.RelateShopProducerInput{
 				ShopID:     "shop-id",
@@ -631,10 +679,13 @@ func TestRelateShopProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RelateShopProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.RelateShopProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -667,7 +718,9 @@ func TestUnrelateShopProducer(t *testing.T) {
 		{
 			name: "failed to unrelate shop producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().UnrelateProducer(ctx, "shop-id", "producer-id").Return(assert.AnError)
+				mocks.db.Shop.EXPECT().
+					UnrelateProducer(ctx, "shop-id", "producer-id").
+					Return(assert.AnError)
 			},
 			input: &store.UnrelateShopProducerInput{
 				ShopID:     "shop-id",
@@ -678,9 +731,12 @@ func TestUnrelateShopProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UnrelateShopProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UnrelateShopProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

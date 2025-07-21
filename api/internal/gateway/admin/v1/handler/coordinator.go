@@ -270,7 +270,10 @@ func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {
+func (h *handler) multiGetCoordinators(
+	ctx context.Context,
+	coordinatorIDs []string,
+) (service.Coordinators, error) {
 	if len(coordinatorIDs) == 0 {
 		return service.Coordinators{}, nil
 	}
@@ -291,7 +294,10 @@ func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []str
 	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
-func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {
+func (h *handler) multiGetCoordinatorsWithDeleted(
+	ctx context.Context,
+	coordinatorIDs []string,
+) (service.Coordinators, error) {
 	if len(coordinatorIDs) == 0 {
 		return service.Coordinators{}, nil
 	}
@@ -313,7 +319,10 @@ func (h *handler) multiGetCoordinatorsWithDeleted(ctx context.Context, coordinat
 	return service.NewCoordinators(coordinators, shops.MapByCoordinatorID()), nil
 }
 
-func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
+func (h *handler) getCoordinator(
+	ctx context.Context,
+	coordinatorID string,
+) (*service.Coordinator, error) {
 	in := &user.GetCoordinatorInput{
 		CoordinatorID: coordinatorID,
 	}
@@ -328,7 +337,10 @@ func (h *handler) getCoordinator(ctx context.Context, coordinatorID string) (*se
 	return service.NewCoordinator(coordinator, shop), nil
 }
 
-func (h *handler) getCoordinatorWithDeleted(ctx context.Context, coordinatorID string) (*service.Coordinator, error) {
+func (h *handler) getCoordinatorWithDeleted(
+	ctx context.Context,
+	coordinatorID string,
+) (*service.Coordinator, error) {
 	in := &user.GetCoordinatorInput{
 		CoordinatorID: coordinatorID,
 		WithDeleted:   true,

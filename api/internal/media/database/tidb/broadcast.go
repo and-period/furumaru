@@ -62,7 +62,11 @@ func (p listBroadcastsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsParams, fields ...string) (entity.Broadcasts, error) {
+func (b *broadcast) List(
+	ctx context.Context,
+	params *database.ListBroadcastsParams,
+	fields ...string,
+) (entity.Broadcasts, error) {
 	var internal internalBroadcasts
 
 	p := listBroadcastsParams(*params)
@@ -81,14 +85,21 @@ func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsPar
 	return broadcasts, nil
 }
 
-func (b *broadcast) Count(ctx context.Context, params *database.ListBroadcastsParams) (int64, error) {
+func (b *broadcast) Count(
+	ctx context.Context,
+	params *database.ListBroadcastsParams,
+) (int64, error) {
 	p := listBroadcastsParams(*params)
 
 	total, err := b.db.Count(ctx, b.db.DB, &entity.Broadcast{}, p.stmt)
 	return total, dbError(err)
 }
 
-func (b *broadcast) Get(ctx context.Context, broadcastID string, fields ...string) (*entity.Broadcast, error) {
+func (b *broadcast) Get(
+	ctx context.Context,
+	broadcastID string,
+	fields ...string,
+) (*entity.Broadcast, error) {
 	var internal *internalBroadcast
 
 	stmt := b.db.Statement(ctx, b.db.DB, broadcastTable, fields...).
@@ -135,7 +146,11 @@ func (b *broadcast) Create(ctx context.Context, broadcast *entity.Broadcast) err
 	return dbError(err)
 }
 
-func (b *broadcast) Update(ctx context.Context, broadcastID string, params *database.UpdateBroadcastParams) error {
+func (b *broadcast) Update(
+	ctx context.Context,
+	broadcastID string,
+	params *database.UpdateBroadcastParams,
+) error {
 	updates := map[string]interface{}{
 		"updated_at": b.now(),
 	}

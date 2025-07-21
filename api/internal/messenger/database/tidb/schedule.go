@@ -46,7 +46,11 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (s *schedule) List(ctx context.Context, params *database.ListSchedulesParams, fields ...string) (entity.Schedules, error) {
+func (s *schedule) List(
+	ctx context.Context,
+	params *database.ListSchedulesParams,
+	fields ...string,
+) (entity.Schedules, error) {
 	var schedules entity.Schedules
 
 	p := listSchedulesParams(*params)
@@ -58,7 +62,12 @@ func (s *schedule) List(ctx context.Context, params *database.ListSchedulesParam
 	return schedules, dbError(err)
 }
 
-func (s *schedule) Get(ctx context.Context, messageType entity.ScheduleType, messageID string, fields ...string) (*entity.Schedule, error) {
+func (s *schedule) Get(
+	ctx context.Context,
+	messageType entity.ScheduleType,
+	messageID string,
+	fields ...string,
+) (*entity.Schedule, error) {
 	schedule, err := s.get(ctx, s.db.DB, messageType, messageID, fields...)
 	return schedule, dbError(err)
 }
@@ -73,7 +82,10 @@ func (s *schedule) Upsert(ctx context.Context, schedule *entity.Schedule) error 
 			return err
 		}
 		if current != nil && current.Status != entity.ScheduleStatusWaiting {
-			return fmt.Errorf("database: schedule is already executed: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"database: schedule is already executed: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		updates := map[string]interface{}{
@@ -103,7 +115,10 @@ func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedu
 			return err
 		}
 		if current != nil && !current.Executable(now) {
-			return fmt.Errorf("database: schedule is not executable %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"database: schedule is not executable %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		updates := map[string]interface{}{
@@ -120,14 +135,21 @@ func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedu
 	return dbError(err)
 }
 
-func (s *schedule) UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
+func (s *schedule) UpdateDone(
+	ctx context.Context,
+	messageType entity.ScheduleType,
+	messageID string,
+) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, messageType, messageID, "status")
 		if err != nil {
 			return err
 		}
 		if current.Status == entity.ScheduleStatusDone {
-			return fmt.Errorf("database: schedule is already done: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"database: schedule is already done: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		params := map[string]interface{}{
@@ -144,7 +166,11 @@ func (s *schedule) UpdateDone(ctx context.Context, messageType entity.ScheduleTy
 	return dbError(err)
 }
 
-func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error {
+func (s *schedule) UpdateCancel(
+	ctx context.Context,
+	messageType entity.ScheduleType,
+	messageID string,
+) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := s.get(ctx, tx, messageType, messageID)
 		if err != nil {
@@ -153,7 +179,10 @@ func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.Schedule
 
 		now := s.now()
 		if !current.ShouldCancel(now) {
-			return fmt.Errorf("database: schedule should not cancel: %w", database.ErrFailedPrecondition)
+			return fmt.Errorf(
+				"database: schedule should not cancel: %w",
+				database.ErrFailedPrecondition,
+			)
 		}
 
 		params := map[string]interface{}{
@@ -171,7 +200,11 @@ func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.Schedule
 }
 
 func (s *schedule) get(
-	ctx context.Context, tx *gorm.DB, messageType entity.ScheduleType, messageID string, fields ...string,
+	ctx context.Context,
+	tx *gorm.DB,
+	messageType entity.ScheduleType,
+	messageID string,
+	fields ...string,
 ) (*entity.Schedule, error) {
 	var schedule *entity.Schedule
 

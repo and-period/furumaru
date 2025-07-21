@@ -151,12 +151,15 @@ func TestListOrders(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListOrders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListOrders(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -178,7 +181,9 @@ func TestListOrderUserIDs(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return([]string{"user-id"}, int64(1), nil)
+				mocks.db.Order.EXPECT().
+					ListUserIDs(ctx, params).
+					Return([]string{"user-id"}, int64(1), nil)
 			},
 			input: &store.ListOrderUserIDsInput{
 				ShopID: "shop-id",
@@ -200,7 +205,9 @@ func TestListOrderUserIDs(t *testing.T) {
 		{
 			name: "failed to list user ids",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return(nil, int64(0), assert.AnError)
+				mocks.db.Order.EXPECT().
+					ListUserIDs(ctx, params).
+					Return(nil, int64(0), assert.AnError)
 			},
 			input: &store.ListOrderUserIDsInput{
 				ShopID: "shop-id",
@@ -213,12 +220,15 @@ func TestListOrderUserIDs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListOrderUserIDs(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListOrderUserIDs(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -322,11 +332,14 @@ func TestGetOrder(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -401,7 +414,9 @@ func TestGetOrderByTransactionID(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(order, nil)
+				mocks.db.Order.EXPECT().
+					GetByTransactionID(ctx, "user-id", "transaction-id").
+					Return(order, nil)
 			},
 			input: &store.GetOrderByTransactionIDInput{
 				UserID:        "user-id",
@@ -420,7 +435,9 @@ func TestGetOrderByTransactionID(t *testing.T) {
 		{
 			name: "failed to get order",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().
+					GetByTransactionID(ctx, "user-id", "transaction-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetOrderByTransactionIDInput{
 				UserID:        "user-id",
@@ -432,11 +449,14 @@ func TestGetOrderByTransactionID(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetOrderByTransactionID(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetOrderByTransactionID(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -561,10 +581,13 @@ func TestCaptureOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CaptureOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CaptureOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -693,10 +716,13 @@ func TestDraftOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DraftOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DraftOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -779,7 +805,9 @@ func TestCompleteProductOrder(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderShipped(gomock.Any(), messengerIn).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyOrderShipped(gomock.Any(), messengerIn).
+					Return(assert.AnError)
 			},
 			input: &store.CompleteProductOrderInput{
 				OrderID:         "order-id",
@@ -830,10 +858,13 @@ func TestCompleteProductOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CompleteProductOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CompleteProductOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -894,7 +925,9 @@ func TestCompleteExperienceOrder(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyReviewRequest(gomock.Any(), messengerIn).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyReviewRequest(gomock.Any(), messengerIn).
+					Return(assert.AnError)
 			},
 			input: &store.CompleteExperienceOrderInput{
 				OrderID: "order-id",
@@ -941,10 +974,13 @@ func TestCompleteExperienceOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CompleteExperienceOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CompleteExperienceOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1068,10 +1104,13 @@ func TestCancelOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CancelOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CancelOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -1202,10 +1241,13 @@ func TestRefundOrder(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RefundOrder(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.RefundOrder(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -1227,7 +1269,9 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(nil)
+				mocks.db.Order.EXPECT().
+					UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).
+					Return(nil)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
 				OrderID:         "order-id",
@@ -1246,7 +1290,9 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		{
 			name: "failed to update fulfillment",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().
+					UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
 				OrderID:         "order-id",
@@ -1258,10 +1304,13 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateOrderFulfillment(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateOrderFulfillment(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -1317,11 +1366,14 @@ func TestAggregateOrders(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateOrders(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1385,11 +1437,14 @@ func TestAggregateOrdersByUser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrdersByUser(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateOrdersByUser(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1419,7 +1474,9 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(orders, nil)
+				mocks.db.Order.EXPECT().
+					AggregateByPaymentMethodType(ctx, params).
+					Return(orders, nil)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
 				ShopID: "shop-id",
@@ -1430,7 +1487,9 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().AggregateByPaymentMethodType(ctx, params).Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().
+					AggregateByPaymentMethodType(ctx, params).
+					Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPaymentMethodTypeInput{
 				ShopID: "shop-id",
@@ -1441,11 +1500,14 @@ func TestAggregateOrdersByPaymentMethodType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrdersByPaymentMethodType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateOrdersByPaymentMethodType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1495,7 +1557,9 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().
+					AggregateByPromotion(ctx, params).
+					Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersByPromotionInput{
 				ShopID:       "shop-id",
@@ -1507,11 +1571,14 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1580,11 +1647,14 @@ func TestAggregateOrdersByPeriod(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.AggregateOrdersByPeriod(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.AggregateOrdersByPeriod(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -1728,8 +1798,12 @@ func TestExportOrders(t *testing.T) {
 			name: "success general with body",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
-				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(gomock.Any(), []int64{1}).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), addressesIn).
+					Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
@@ -1757,8 +1831,12 @@ func TestExportOrders(t *testing.T) {
 			name: "success yamato with body",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
-				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(gomock.Any(), []int64{1}).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), addressesIn).
+					Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
@@ -1786,8 +1864,12 @@ func TestExportOrders(t *testing.T) {
 			name: "success sagawa with body",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
-				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(gomock.Any(), []int64{1}).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), addressesIn).
+					Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
@@ -1838,8 +1920,12 @@ func TestExportOrders(t *testing.T) {
 			name: "failed to multi get products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
-				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(nil, assert.AnError)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(gomock.Any(), []int64{1}).
+					Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), addressesIn).
+					Return(addresses, nil)
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
@@ -1853,8 +1939,12 @@ func TestExportOrders(t *testing.T) {
 			name: "failed to multi get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
-				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().
+					MultiGetByRevision(gomock.Any(), []int64{1}).
+					Return(products, nil)
+				mocks.user.EXPECT().
+					MultiGetAddressesByRevision(gomock.Any(), addressesIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.ExportOrdersInput{
 				ShopID:          "shop-id",
@@ -1866,10 +1956,13 @@ func TestExportOrders(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ExportOrders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, string(actual))
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ExportOrders(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, string(actual))
+			}),
+		)
 	}
 }

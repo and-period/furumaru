@@ -96,7 +96,9 @@ func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
 	}
 }
 
-func NewOrderFulfillments(params *NewOrderFulfillmentsParams) (OrderFulfillments, OrderItems, error) {
+func NewOrderFulfillments(
+	params *NewOrderFulfillmentsParams,
+) (OrderFulfillments, OrderItems, error) {
 	fulfillments := make(OrderFulfillments, len(params.Baskets))
 	items := make(OrderItems, 0, len(params.Baskets))
 	for i, basket := range params.Baskets {

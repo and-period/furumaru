@@ -11,7 +11,11 @@ import (
 )
 
 func (h *handler) relatedProducerRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/coordinators/:coordinatorId/producers", h.authentication, h.filterAccessRelatedProducer)
+	r := rg.Group(
+		"/coordinators/:coordinatorId/producers",
+		h.authentication,
+		h.filterAccessRelatedProducer,
+	)
 
 	r.GET("", h.ListRelatedProducers)
 }

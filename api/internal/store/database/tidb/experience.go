@@ -70,7 +70,11 @@ func (p listExperiencesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (e *experience) List(ctx context.Context, params *database.ListExperiencesParams, fields ...string) (entity.Experiences, error) {
+func (e *experience) List(
+	ctx context.Context,
+	params *database.ListExperiencesParams,
+	fields ...string,
+) (entity.Experiences, error) {
 	var internal internalExperiences
 
 	p := listExperiencesParams(*params)
@@ -141,19 +145,30 @@ func (e *experience) ListByGeolocation(
 	return experiences, nil
 }
 
-func (e *experience) Count(ctx context.Context, params *database.ListExperiencesParams) (int64, error) {
+func (e *experience) Count(
+	ctx context.Context,
+	params *database.ListExperiencesParams,
+) (int64, error) {
 	p := listExperiencesParams(*params)
 
 	total, err := e.db.Count(ctx, e.db.DB, &entity.Experience{}, p.stmt)
 	return total, dbError(err)
 }
 
-func (e *experience) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.Experiences, error) {
+func (e *experience) MultiGet(
+	ctx context.Context,
+	experienceIDs []string,
+	fields ...string,
+) (entity.Experiences, error) {
 	experiences, err := e.multiGet(ctx, e.db.DB, experienceIDs, fields...)
 	return experiences, dbError(err)
 }
 
-func (e *experience) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Experiences, error) {
+func (e *experience) MultiGetByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+	fields ...string,
+) (entity.Experiences, error) {
 	var revisions entity.ExperienceRevisions
 
 	stmt := e.db.Statement(ctx, e.db.DB, experienceRevisionTable).
@@ -181,7 +196,11 @@ func (e *experience) MultiGetByRevision(ctx context.Context, revisionIDs []int64
 	return res, nil
 }
 
-func (e *experience) Get(ctx context.Context, experienceID string, fields ...string) (*entity.Experience, error) {
+func (e *experience) Get(
+	ctx context.Context,
+	experienceID string,
+	fields ...string,
+) (*entity.Experience, error) {
 	experience, err := e.get(ctx, e.db.DB, experienceID, fields...)
 	return experience, dbError(err)
 }
@@ -201,12 +220,19 @@ func (e *experience) Create(ctx context.Context, experience *entity.Experience) 
 		if err := tx.WithContext(ctx).Table(experienceTable).Create(&internal).Error; err != nil {
 			return err
 		}
-		return tx.WithContext(ctx).Table(experienceRevisionTable).Create(&internal.ExperienceRevision).Error
+		return tx.WithContext(ctx).
+			Table(experienceRevisionTable).
+			Create(&internal.ExperienceRevision).
+			Error
 	})
 	return dbError(err)
 }
 
-func (e *experience) Update(ctx context.Context, experienceID string, params *database.UpdateExperienceParams) error {
+func (e *experience) Update(
+	ctx context.Context,
+	experienceID string,
+	params *database.UpdateExperienceParams,
+) error {
 	now := e.now()
 	rparams := &entity.NewExperienceRevisionParams{
 		ExperienceID:          experienceID,
@@ -287,7 +313,12 @@ func (e *experience) Delete(ctx context.Context, experienceID string) error {
 	return dbError(err)
 }
 
-func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []string, fields ...string) (entity.Experiences, error) {
+func (e *experience) multiGet(
+	ctx context.Context,
+	tx *gorm.DB,
+	experienceIDs []string,
+	fields ...string,
+) (entity.Experiences, error) {
 	var internal internalExperiences
 
 	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
@@ -307,7 +338,12 @@ func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []
 	return experiences, nil
 }
 
-func (e *experience) get(ctx context.Context, tx *gorm.DB, experienceID string, fields ...string) (*entity.Experience, error) {
+func (e *experience) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	experienceID string,
+	fields ...string,
+) (*entity.Experience, error) {
 	var internal *internalExperience
 
 	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
@@ -327,7 +363,11 @@ func (e *experience) get(ctx context.Context, tx *gorm.DB, experienceID string, 
 	return experience, nil
 }
 
-func (e *experience) fill(ctx context.Context, tx *gorm.DB, experiences ...*entity.Experience) error {
+func (e *experience) fill(
+	ctx context.Context,
+	tx *gorm.DB,
+	experiences ...*entity.Experience,
+) error {
 	var revisions entity.ExperienceRevisions
 
 	ids := entity.Experiences(experiences).IDs()

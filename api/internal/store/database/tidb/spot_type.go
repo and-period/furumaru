@@ -44,7 +44,11 @@ func (p listSpotTypesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (t *spotType) List(ctx context.Context, params *database.ListSpotTypesParams, fields ...string) (entity.SpotTypes, error) {
+func (t *spotType) List(
+	ctx context.Context,
+	params *database.ListSpotTypesParams,
+	fields ...string,
+) (entity.SpotTypes, error) {
 	var types entity.SpotTypes
 
 	p := listSpotTypesParams(*params)
@@ -64,7 +68,11 @@ func (t *spotType) Count(ctx context.Context, params *database.ListSpotTypesPara
 	return total, dbError(err)
 }
 
-func (t *spotType) MultiGet(ctx context.Context, spotTypeIDs []string, fields ...string) (entity.SpotTypes, error) {
+func (t *spotType) MultiGet(
+	ctx context.Context,
+	spotTypeIDs []string,
+	fields ...string,
+) (entity.SpotTypes, error) {
 	var types entity.SpotTypes
 
 	stmt := t.db.Statement(ctx, t.db.DB, spotTypeTable, fields...)
@@ -74,7 +82,11 @@ func (t *spotType) MultiGet(ctx context.Context, spotTypeIDs []string, fields ..
 	return types, dbError(err)
 }
 
-func (t *spotType) Get(ctx context.Context, spotTypeID string, fields ...string) (*entity.SpotType, error) {
+func (t *spotType) Get(
+	ctx context.Context,
+	spotTypeID string,
+	fields ...string,
+) (*entity.SpotType, error) {
 	var spotType *entity.SpotType
 
 	stmt := t.db.Statement(ctx, t.db.DB, spotTypeTable, fields...).Where("id = ?", spotTypeID)
@@ -93,7 +105,11 @@ func (t *spotType) Create(ctx context.Context, spotType *entity.SpotType) error 
 	return dbError(err)
 }
 
-func (t *spotType) Update(ctx context.Context, spotTypeID string, params *database.UpdateSpotTypeParams) error {
+func (t *spotType) Update(
+	ctx context.Context,
+	spotTypeID string,
+	params *database.UpdateSpotTypeParams,
+) error {
 	updates := map[string]interface{}{
 		"name":       params.Name,
 		"updated_at": t.now(),

@@ -30,7 +30,12 @@ func TestBroadcast_List(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := make(internalBroadcasts, 2)
-	internal[0] = testBroadcast("broadcast-id01", "schedule-id01", "coordinator-id", now().AddDate(0, 1, 0))
+	internal[0] = testBroadcast(
+		"broadcast-id01",
+		"schedule-id01",
+		"coordinator-id",
+		now().AddDate(0, 1, 0),
+	)
 	internal[1] = testBroadcast("broadcast-id02", "schedule-id02", "coordinator-id", now())
 	err = db.DB.Table(broadcastTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -113,7 +118,12 @@ func TestBroadcast_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	internal := make(internalBroadcasts, 2)
-	internal[0] = testBroadcast("broadcast-id01", "schedule-id01", "coordinator-id", now().AddDate(0, 1, 0))
+	internal[0] = testBroadcast(
+		"broadcast-id01",
+		"schedule-id01",
+		"coordinator-id",
+		now().AddDate(0, 1, 0),
+	)
 	internal[1] = testBroadcast("broadcast-id02", "schedule-id02", "coordinator-id", now())
 	err = db.DB.Table(broadcastTable).Create(&internal).Error
 	require.NoError(t, err)
@@ -586,7 +596,10 @@ func TestBroadcast_Update(t *testing.T) {
 	}
 }
 
-func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time) *internalBroadcast {
+func testBroadcast(
+	broadcastID, scheduleID, coordinatorID string,
+	now time.Time,
+) *internalBroadcast {
 	broadcast := &entity.Broadcast{
 		ID:              broadcastID,
 		ScheduleID:      scheduleID,

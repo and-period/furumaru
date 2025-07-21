@@ -254,7 +254,10 @@ func (h *handler) ListUserProductReviews(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) getProductReview(ctx context.Context, reviewID string) (*service.ProductReview, error) {
+func (h *handler) getProductReview(
+	ctx context.Context,
+	reviewID string,
+) (*service.ProductReview, error) {
 	in := &store.GetProductReviewInput{
 		ReviewID: reviewID,
 	}
@@ -269,7 +272,10 @@ func (h *handler) getProductReview(ctx context.Context, reviewID string) (*servi
 	return service.NewProductReview(review, user), nil
 }
 
-func (h *handler) aggregateProductRates(ctx context.Context, productIDs ...string) (service.ProductRates, error) {
+func (h *handler) aggregateProductRates(
+	ctx context.Context,
+	productIDs ...string,
+) (service.ProductRates, error) {
 	if len(productIDs) == 0 {
 		return service.ProductRates{}, nil
 	}

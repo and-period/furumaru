@@ -59,7 +59,10 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 }
 
 // NotifyOrderCaptured - 支払い完了
-func (s *service) NotifyOrderCaptured(ctx context.Context, in *messenger.NotifyOrderCapturedInput) error {
+func (s *service) NotifyOrderCaptured(
+	ctx context.Context,
+	in *messenger.NotifyOrderCapturedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -87,7 +90,10 @@ func (s *service) NotifyOrderCaptured(ctx context.Context, in *messenger.NotifyO
 	return internalError(err)
 }
 
-func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newOrderProductCaptured(
+	ctx context.Context,
+	order *sentity.Order,
+) (*entity.WorkerPayload, error) {
 	var (
 		coordinator          *uentity.Coordinator
 		products             sentity.Products
@@ -149,7 +155,10 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 	}, nil
 }
 
-func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newOrderExperienceCaptured(
+	ctx context.Context,
+	order *sentity.Order,
+) (*entity.WorkerPayload, error) {
 	var (
 		coordinator    *uentity.Coordinator
 		experience     *sentity.Experience
@@ -165,7 +174,10 @@ func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity
 		return
 	})
 	eg.Go(func() error {
-		experiences, err := s.multiGetExperiencesByRevision(ectx, []int64{order.ExperienceRevisionID})
+		experiences, err := s.multiGetExperiencesByRevision(
+			ectx,
+			[]int64{order.ExperienceRevisionID},
+		)
 		if err != nil || len(experiences) == 0 {
 			experience = &sentity.Experience{}
 			return err
@@ -212,7 +224,10 @@ func (s *service) newOrderExperienceCaptured(ctx context.Context, order *sentity
 }
 
 // NotifyOrderShipped - 発送完了
-func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOrderShippedInput) error {
+func (s *service) NotifyOrderShipped(
+	ctx context.Context,
+	in *messenger.NotifyOrderShippedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -263,7 +278,10 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 }
 
 // NotifyReviewRequest - レビュー依頼
-func (s *service) NotifyReviewRequest(ctx context.Context, in *messenger.NotifyReviewRequestInput) error {
+func (s *service) NotifyReviewRequest(
+	ctx context.Context,
+	in *messenger.NotifyReviewRequestInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -291,7 +309,10 @@ func (s *service) NotifyReviewRequest(ctx context.Context, in *messenger.NotifyR
 	return internalError(err)
 }
 
-func (s *service) newReviewProductRequest(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newReviewProductRequest(
+	ctx context.Context,
+	order *sentity.Order,
+) (*entity.WorkerPayload, error) {
 	products, err := s.multiGetProductsByRevision(ctx, order.ProductRevisionIDs())
 	if err != nil {
 		return nil, internalError(err)
@@ -313,7 +334,10 @@ func (s *service) newReviewProductRequest(ctx context.Context, order *sentity.Or
 	}, nil
 }
 
-func (s *service) newReviewExperienceRequest(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+func (s *service) newReviewExperienceRequest(
+	ctx context.Context,
+	order *sentity.Order,
+) (*entity.WorkerPayload, error) {
 	experiences, err := s.multiGetExperiencesByRevision(ctx, []int64{order.ExperienceRevisionID})
 	if err != nil || len(experiences) == 0 {
 		return nil, internalError(err)
@@ -336,7 +360,10 @@ func (s *service) newReviewExperienceRequest(ctx context.Context, order *sentity
 }
 
 // NotifyRegisterAdmin - 管理者登録
-func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
+func (s *service) NotifyRegisterAdmin(
+	ctx context.Context,
+	in *messenger.NotifyRegisterAdminInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -360,7 +387,10 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 }
 
 // NotifyResetAdminPassword - 管理者パスワードリセット
-func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.NotifyResetAdminPasswordInput) error {
+func (s *service) NotifyResetAdminPassword(
+	ctx context.Context,
+	in *messenger.NotifyResetAdminPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -384,7 +414,10 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 }
 
 // NotifyNotification - お知らせ発行
-func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
+func (s *service) NotifyNotification(
+	ctx context.Context,
+	in *messenger.NotifyNotificationInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -442,7 +475,10 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	return s.sendMessage(ctx, payload)
 }
 
-func (s *service) notifyUserNotification(ctx context.Context, notification *entity.Notification) error {
+func (s *service) notifyUserNotification(
+	ctx context.Context,
+	notification *entity.Notification,
+) error {
 	if !notification.HasUserTarget() {
 		return nil
 	}
@@ -460,7 +496,10 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 	return s.sendAllUsers(ctx, payload)
 }
 
-func (s *service) notifyAdminNotification(ctx context.Context, notification *entity.Notification) error {
+func (s *service) notifyAdminNotification(
+	ctx context.Context,
+	notification *entity.Notification,
+) error {
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	message := &entity.MessageConfig{
 		TemplateID:  notification.TemplateID(),
@@ -625,7 +664,10 @@ func (s *service) sendAllProducers(ctx context.Context, payload *entity.WorkerPa
 	return s.sendAll(ctx, payload, entity.UserTypeProducer, listFn)
 }
 
-func (s *service) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (sentity.Products, error) {
+func (s *service) multiGetProductsByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (sentity.Products, error) {
 	if len(revisionIDs) == 0 {
 		return sentity.Products{}, nil
 	}
@@ -635,7 +677,10 @@ func (s *service) multiGetProductsByRevision(ctx context.Context, revisionIDs []
 	return s.store.MultiGetProductsByRevision(ctx, in)
 }
 
-func (s *service) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (sentity.Experiences, error) {
+func (s *service) multiGetExperiencesByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (sentity.Experiences, error) {
 	if len(revisionIDs) == 0 {
 		return sentity.Experiences{}, nil
 	}
@@ -645,7 +690,10 @@ func (s *service) multiGetExperiencesByRevision(ctx context.Context, revisionIDs
 	return s.store.MultiGetExperiencesByRevision(ctx, in)
 }
 
-func (s *service) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (uentity.Addresses, error) {
+func (s *service) multiGetAddressesByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (uentity.Addresses, error) {
 	if len(revisionIDs) == 0 {
 		return uentity.Addresses{}, nil
 	}

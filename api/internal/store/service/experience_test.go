@@ -145,7 +145,9 @@ func TestListExperiences(t *testing.T) {
 			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Experience.EXPECT().List(gomock.Any(), params).Return(experiences, nil)
-				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Experience.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListExperiencesInput{
 				Name:            "収穫",
@@ -164,12 +166,15 @@ func TestListExperiences(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListExperiences(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListExperiences(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -281,7 +286,9 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Experience.EXPECT().ListByGeolocation(ctx, params).Return(nil, assert.AnError)
+				mocks.db.Experience.EXPECT().
+					ListByGeolocation(ctx, params).
+					Return(nil, assert.AnError)
 			},
 			input: &store.ListExperiencesByGeolocationInput{
 				ShopID:          "shop-id",
@@ -300,11 +307,14 @@ func TestListExperiencesByGeolocation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListExperiencesByGeolocation(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.ListExperiencesByGeolocation(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}, withNow(now)),
+		)
 	}
 }
 
@@ -373,7 +383,9 @@ func TestMultiGetExperiences(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Experience.EXPECT().MultiGet(ctx, []string{"experience-id"}).Return(experiences, nil)
+				mocks.db.Experience.EXPECT().
+					MultiGet(ctx, []string{"experience-id"}).
+					Return(experiences, nil)
 			},
 			input: &store.MultiGetExperiencesInput{
 				ExperienceIDs: []string{"experience-id"},
@@ -393,7 +405,9 @@ func TestMultiGetExperiences(t *testing.T) {
 		{
 			name: "failed to multi get",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Experience.EXPECT().MultiGet(ctx, []string{"experience-id"}).Return(nil, assert.AnError)
+				mocks.db.Experience.EXPECT().
+					MultiGet(ctx, []string{"experience-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetExperiencesInput{
 				ExperienceIDs: []string{"experience-id"},
@@ -404,11 +418,14 @@ func TestMultiGetExperiences(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetExperiences(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetExperiences(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -477,7 +494,9 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Experience.EXPECT().MultiGetByRevision(ctx, []int64{1, 2}).Return(experiences, nil)
+				mocks.db.Experience.EXPECT().
+					MultiGetByRevision(ctx, []int64{1, 2}).
+					Return(experiences, nil)
 			},
 			input: &store.MultiGetExperiencesByRevisionInput{
 				ExperienceRevisionIDs: []int64{1, 2},
@@ -497,7 +516,9 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 		{
 			name: "failed to multi get by revision",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Experience.EXPECT().MultiGetByRevision(ctx, []int64{1, 2}).Return(nil, assert.AnError)
+				mocks.db.Experience.EXPECT().
+					MultiGetByRevision(ctx, []int64{1, 2}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetExperiencesByRevisionInput{
 				ExperienceRevisionIDs: []int64{1, 2},
@@ -508,11 +529,14 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetExperiencesByRevision(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetExperiencesByRevision(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -608,11 +632,14 @@ func TestGetExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetExperience(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetExperience(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -662,7 +689,9 @@ func TestCreateExperience(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().
@@ -803,8 +832,12 @@ func TestCreateExperience(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(nil, database.ErrNotFound)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.db.Shop.EXPECT().
+					Get(gomock.Any(), "shop-id").
+					Return(nil, database.ErrNotFound)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateExperienceInput{
@@ -848,7 +881,9 @@ func TestCreateExperience(t *testing.T) {
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(nil, exception.ErrNotFound)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateExperienceInput{
@@ -892,8 +927,12 @@ func TestCreateExperience(t *testing.T) {
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetProducer(gomock.Any(), producerIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
 				ShopID:        "shop-id",
@@ -936,7 +975,9 @@ func TestCreateExperience(t *testing.T) {
 			name: "invalid prefecture validation",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 			},
 			input: &store.CreateExperienceInput{
@@ -980,9 +1021,13 @@ func TestCreateExperience(t *testing.T) {
 			name: "failed to get geolocation",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
-				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
+				mocks.geolocation.EXPECT().
+					GetGeolocation(ctx, locationIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
 				ShopID:        "shop-id",
@@ -1025,7 +1070,9 @@ func TestCreateExperience(t *testing.T) {
 			name: "invalid experience validation",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				location := &geolocation.GetGeolocationOutput{
 					Longitude: 270.0,
@@ -1074,7 +1121,9 @@ func TestCreateExperience(t *testing.T) {
 			name: "failed to create experience",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Shop.EXPECT().Get(gomock.Any(), "shop-id").Return(shop, nil)
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().
+					GetCoordinator(gomock.Any(), coordinatorIn).
+					Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
@@ -1119,10 +1168,13 @@ func TestCreateExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateExperience(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateExperience(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1341,7 +1393,9 @@ func TestUpdateExperience(t *testing.T) {
 		{
 			name: "failed to get geolocation",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
+				mocks.geolocation.EXPECT().
+					GetGeolocation(ctx, locationIn).
+					Return(nil, assert.AnError)
 			},
 			input: &store.UpdateExperienceInput{
 				ExperienceID: "experience-id",
@@ -1382,7 +1436,9 @@ func TestUpdateExperience(t *testing.T) {
 			name: "failed to update experience",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
-				mocks.db.Experience.EXPECT().Update(ctx, "experience-id", params).Return(assert.AnError)
+				mocks.db.Experience.EXPECT().
+					Update(ctx, "experience-id", params).
+					Return(assert.AnError)
 			},
 			input: &store.UpdateExperienceInput{
 				ExperienceID: "experience-id",
@@ -1422,10 +1478,13 @@ func TestUpdateExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateExperience(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateExperience(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1495,9 +1554,12 @@ func TestDeleteExperience(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteExperience(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteExperience(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

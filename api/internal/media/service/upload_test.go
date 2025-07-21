@@ -67,7 +67,9 @@ func TestGetUploadEvent(t *testing.T) {
 		{
 			name: "failed to get upload event",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).Return(assert.AnError)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).
+					Return(assert.AnError)
 			},
 			input: &media.GetUploadEventInput{
 				Key: "dir/media.png",
@@ -77,11 +79,14 @@ func TestGetUploadEvent(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetUploadEvent(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetUploadEvent(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -102,7 +107,9 @@ func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				path := fmt.Sprintf(entity.BroadcastArchiveMP4Path, "schedule-id")
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				generateUploadURLMocks(mocks, t, path, "mp4", nil)
 			},
 			input: &media.GenerateBroadcastArchiveMP4UploadInput{
@@ -122,7 +129,9 @@ func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.GenerateBroadcastArchiveMP4UploadInput{
 				GenerateUploadURLInput: media.GenerateUploadURLInput{
@@ -136,7 +145,9 @@ func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 			name: "failed precondition",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 			},
 			input: &media.GenerateBroadcastArchiveMP4UploadInput{
 				GenerateUploadURLInput: media.GenerateUploadURLInput{
@@ -148,10 +159,13 @@ func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetBroadcastArchiveMP4UploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetBroadcastArchiveMP4UploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -175,10 +189,13 @@ func TestGetBroadcastLiveMP4UploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetBroadcastLiveMP4UploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetBroadcastLiveMP4UploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -202,10 +219,13 @@ func TestGetVideoThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetVideoThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetVideoThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -229,10 +249,13 @@ func TestGetVideoFileUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetVideoFileUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetVideoFileUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -256,10 +279,13 @@ func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -283,10 +309,13 @@ func TestGetCoordinatorHeaderUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetCoordinatorHeaderUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetCoordinatorHeaderUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -310,10 +339,13 @@ func TestGetCoordinatorPromotionVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetCoordinatorPromotionVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetCoordinatorPromotionVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -337,10 +369,13 @@ func TestGetCoordinatorBonusVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetCoordinatorBonusVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetCoordinatorBonusVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -364,10 +399,13 @@ func TestGetProducerThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProducerThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProducerThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -391,10 +429,13 @@ func TestGetProducerHeaderUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProducerHeaderUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProducerHeaderUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -418,10 +459,13 @@ func TestGetProducerPromotionVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProducerPromotionVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProducerPromotionVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -445,10 +489,13 @@ func TestGetProducerBonusVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProducerBonusVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProducerBonusVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -472,10 +519,13 @@ func TestGetUserThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetUserThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetUserThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -499,10 +549,13 @@ func TestGetProductMediaImageUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProductMediaImageUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProductMediaImageUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -526,10 +579,13 @@ func TestGetProductMediaVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProductMediaVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProductMediaVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -553,10 +609,13 @@ func TestGetProductTypeIconUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetProductTypeIconUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetProductTypeIconUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -580,10 +639,13 @@ func TestGetScheduleThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetScheduleThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetScheduleThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -607,10 +669,13 @@ func TestGetScheduleImageUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetScheduleImageUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetScheduleImageUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -634,10 +699,13 @@ func TestGetScheduleOpeningVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetScheduleOpeningVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetScheduleOpeningVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -661,10 +729,13 @@ func TestGetExperienceMediaImageUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetExperienceMediaImageUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetExperienceMediaImageUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -688,10 +759,13 @@ func TestGetExperienceMediaVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetExperienceMediaVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetExperienceMediaVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -715,10 +789,13 @@ func TestGetExperiencePromotionVideoUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetExperiencePromotionVideoUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetExperiencePromotionVideoUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -759,10 +836,13 @@ func TestGetSpotThumbnailUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.GetSpotThumbnailUploadURL(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.GetSpotThumbnailUploadURL(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -780,7 +860,9 @@ func TestGenerateUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
+				mocks.tmp.EXPECT().
+					GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					Return("http://example.com", nil)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
 			},
 			input: &media.GenerateUploadURLInput{
@@ -820,7 +902,9 @@ func TestGenerateUploadURL(t *testing.T) {
 		{
 			name: "failed to generate presign upload uri",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("", assert.AnError)
+				mocks.tmp.EXPECT().
+					GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					Return("", assert.AnError)
 			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
@@ -832,7 +916,9 @@ func TestGenerateUploadURL(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
+				mocks.tmp.EXPECT().
+					GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					Return("http://example.com", nil)
 				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.GenerateUploadURLInput{
@@ -844,14 +930,17 @@ func TestGenerateUploadURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.generateUploadURL(ctx, tt.input, tt.regulation)
-			assert.ErrorIs(t, err, tt.expectErr)
-			if err != nil {
-				return
-			}
-			actual.Key = "" // ignore
-			assert.Equal(t, tt.expect, actual)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.generateUploadURL(ctx, tt.input, tt.regulation)
+				assert.ErrorIs(t, err, tt.expectErr)
+				if err != nil {
+					return
+				}
+				actual.Key = "" // ignore
+				assert.Equal(t, tt.expect, actual)
+			}, withNow(now)),
+		)
 	}
 }

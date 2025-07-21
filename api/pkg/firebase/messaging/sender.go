@@ -27,7 +27,11 @@ func (c *client) Send(ctx context.Context, msg *Message, token string) error {
 	return c.sendError(err)
 }
 
-func (c *client) MultiSend(ctx context.Context, msg *Message, tokens ...string) (int64, int64, error) {
+func (c *client) MultiSend(
+	ctx context.Context,
+	msg *Message,
+	tokens ...string,
+) (int64, int64, error) {
 	message := &messaging.MulticastMessage{
 		Tokens: tokens,
 		Data:   msg.Data,

@@ -10,7 +10,9 @@ import (
 )
 
 var (
-	ErrNotificationAlreadyPublished    = errors.New("entity: this notification is already published")
+	ErrNotificationAlreadyPublished = errors.New(
+		"entity: this notification is already published",
+	)
 	ErrNotificationDuplicatedTargets   = errors.New("entity: duplicated notification targets")
 	ErrNotificationIncorrectTargets    = errors.New("entity: incorrect notification targets")
 	ErrNotificationRequiredPromotionID = errors.New("entity: required promotion id")

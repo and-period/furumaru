@@ -65,7 +65,11 @@ func (a *admin) GetByCognitoID(
 	return admin, nil
 }
 
-func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Admin, error) {
+func (a *admin) GetByEmail(
+	ctx context.Context,
+	email string,
+	fields ...string,
+) (*entity.Admin, error) {
 	var admin *entity.Admin
 
 	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
@@ -130,7 +134,12 @@ func (a *admin) UpdateSignInAt(ctx context.Context, adminID string) error {
 	return dbError(err)
 }
 
-func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...string) (*entity.Admin, error) {
+func (a *admin) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	adminID string,
+	fields ...string,
+) (*entity.Admin, error) {
 	var admin *entity.Admin
 
 	stmt := a.db.Statement(ctx, tx, adminTable, fields...).

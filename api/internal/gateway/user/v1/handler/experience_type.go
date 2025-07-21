@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) multiGetExperienceTypes(ctx context.Context, experienceTypeIDs []string) (service.ExperienceTypes, error) {
+func (h *handler) multiGetExperienceTypes(
+	ctx context.Context,
+	experienceTypeIDs []string,
+) (service.ExperienceTypes, error) {
 	if len(experienceTypeIDs) == 0 {
 		return service.ExperienceTypes{}, nil
 	}
@@ -21,7 +24,10 @@ func (h *handler) multiGetExperienceTypes(ctx context.Context, experienceTypeIDs
 	return service.NewExperienceTypes(experienceTypes), nil
 }
 
-func (h *handler) getExperienceType(ctx context.Context, experienceTypeID string) (*service.ExperienceType, error) {
+func (h *handler) getExperienceType(
+	ctx context.Context,
+	experienceTypeID string,
+) (*service.ExperienceType, error) {
 	in := &store.GetExperienceTypeInput{
 		ExperienceTypeID: experienceTypeID,
 	}

@@ -11,13 +11,20 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
-func (s *service) CreateContactRead(ctx context.Context, in *messenger.CreateContactReadInput) (*entity.ContactRead, error) {
+func (s *service) CreateContactRead(
+	ctx context.Context,
+	in *messenger.CreateContactReadInput,
+) (*entity.ContactRead, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	_, err := s.db.Contact.Get(ctx, in.ContactID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("service: invalid contact id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: invalid contact id: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)

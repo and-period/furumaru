@@ -10,7 +10,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-func (s *service) ListVideoComments(ctx context.Context, in *media.ListVideoCommentsInput) (entity.VideoComments, string, error) {
+func (s *service) ListVideoComments(
+	ctx context.Context,
+	in *media.ListVideoCommentsInput,
+) (entity.VideoComments, string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, "", internalError(err)
 	}
@@ -26,7 +29,10 @@ func (s *service) ListVideoComments(ctx context.Context, in *media.ListVideoComm
 	return comments, token, internalError(err)
 }
 
-func (s *service) CreateVideoComment(ctx context.Context, in *media.CreateVideoCommentInput) (*entity.VideoComment, error) {
+func (s *service) CreateVideoComment(
+	ctx context.Context,
+	in *media.CreateVideoCommentInput,
+) (*entity.VideoComment, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -35,7 +41,10 @@ func (s *service) CreateVideoComment(ctx context.Context, in *media.CreateVideoC
 		return nil, internalError(err)
 	}
 	if !video.Published() {
-		return nil, fmt.Errorf("service: this video is not published: %w", exception.ErrFailedPrecondition)
+		return nil, fmt.Errorf(
+			"service: this video is not published: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &entity.NewVideoCommentParams{
 		VideoID: in.VideoID,
@@ -49,7 +58,10 @@ func (s *service) CreateVideoComment(ctx context.Context, in *media.CreateVideoC
 	return comment, nil
 }
 
-func (s *service) CreateVideoGuestComment(ctx context.Context, in *media.CreateVideoGuestCommentInput) (*entity.VideoComment, error) {
+func (s *service) CreateVideoGuestComment(
+	ctx context.Context,
+	in *media.CreateVideoGuestCommentInput,
+) (*entity.VideoComment, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -58,7 +70,10 @@ func (s *service) CreateVideoGuestComment(ctx context.Context, in *media.CreateV
 		return nil, internalError(err)
 	}
 	if !video.Published() {
-		return nil, fmt.Errorf("service: this video is not published: %w", exception.ErrFailedPrecondition)
+		return nil, fmt.Errorf(
+			"service: this video is not published: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &entity.NewVideoCommentParams{
 		VideoID: in.VideoID,

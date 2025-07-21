@@ -13,7 +13,10 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
+func (s *service) SignInAdmin(
+	ctx context.Context,
+	in *user.SignInAdminInput,
+) (*entity.AdminAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -39,7 +42,10 @@ func (s *service) SignOutAdmin(ctx context.Context, in *user.SignOutAdminInput) 
 	return internalError(err)
 }
 
-func (s *service) GetAdminAuth(ctx context.Context, in *user.GetAdminAuthInput) (*entity.AdminAuth, error) {
+func (s *service) GetAdminAuth(
+	ctx context.Context,
+	in *user.GetAdminAuthInput,
+) (*entity.AdminAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -68,7 +74,10 @@ func (s *service) RefreshAdminToken(
 	return auth, internalError(err)
 }
 
-func (s *service) RegisterAdminDevice(ctx context.Context, in *user.RegisterAdminDeviceInput) error {
+func (s *service) RegisterAdminDevice(
+	ctx context.Context,
+	in *user.RegisterAdminDeviceInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -89,7 +98,10 @@ func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmai
 		return internalError(err)
 	}
 	if admin.Email == in.Email {
-		return fmt.Errorf("this admin does not need to be changed email: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"this admin does not need to be changed email: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
@@ -126,7 +138,10 @@ func (s *service) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmai
 	return internalError(err)
 }
 
-func (s *service) UpdateAdminPassword(ctx context.Context, in *user.UpdateAdminPasswordInput) error {
+func (s *service) UpdateAdminPassword(
+	ctx context.Context,
+	in *user.UpdateAdminPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -139,7 +154,10 @@ func (s *service) UpdateAdminPassword(ctx context.Context, in *user.UpdateAdminP
 	return internalError(err)
 }
 
-func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*entity.AdminAuth, error) {
+func (s *service) getAdminAuth(
+	ctx context.Context,
+	rs *cognito.AuthResult,
+) (*entity.AdminAuth, error) {
 	username, err := s.adminAuth.GetUsername(ctx, rs.AccessToken)
 	if err != nil {
 		return nil, err
@@ -152,7 +170,10 @@ func (s *service) getAdminAuth(ctx context.Context, rs *cognito.AuthResult) (*en
 	return auth, nil
 }
 
-func (s *service) ListAdminAuthProviders(ctx context.Context, in *user.ListAdminAuthProvidersInput) (entity.AdminAuthProviders, error) {
+func (s *service) ListAdminAuthProviders(
+	ctx context.Context,
+	in *user.ListAdminAuthProvidersInput,
+) (entity.AdminAuthProviders, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -163,7 +184,10 @@ func (s *service) ListAdminAuthProviders(ctx context.Context, in *user.ListAdmin
 	return providers, internalError(err)
 }
 
-func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGoogleAdminAuthInput) (string, error) {
+func (s *service) InitialGoogleAdminAuth(
+	ctx context.Context,
+	in *user.InitialGoogleAdminAuthInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -179,7 +203,10 @@ func (s *service) InitialGoogleAdminAuth(ctx context.Context, in *user.InitialGo
 	return s.initialAdminAuth(ctx, params)
 }
 
-func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGoogleAdminAuthInput) error {
+func (s *service) ConnectGoogleAdminAuth(
+	ctx context.Context,
+	in *user.ConnectGoogleAdminAuthInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -195,7 +222,10 @@ func (s *service) ConnectGoogleAdminAuth(ctx context.Context, in *user.ConnectGo
 	return s.connectAdminAuth(ctx, params)
 }
 
-func (s *service) InitialLINEAdminAuth(ctx context.Context, in *user.InitialLINEAdminAuthInput) (string, error) {
+func (s *service) InitialLINEAdminAuth(
+	ctx context.Context,
+	in *user.InitialLINEAdminAuthInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -211,7 +241,10 @@ func (s *service) InitialLINEAdminAuth(ctx context.Context, in *user.InitialLINE
 	return s.initialAdminAuth(ctx, params)
 }
 
-func (s *service) ConnectLINEAdminAuth(ctx context.Context, in *user.ConnectLINEAdminAuthInput) error {
+func (s *service) ConnectLINEAdminAuth(
+	ctx context.Context,
+	in *user.ConnectLINEAdminAuthInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -234,13 +267,19 @@ type initialAdminAuthParams struct {
 	redirectURI  string
 }
 
-func (s *service) initialAdminAuth(ctx context.Context, params *initialAdminAuthParams) (string, error) {
+func (s *service) initialAdminAuth(
+	ctx context.Context,
+	params *initialAdminAuthParams,
+) (string, error) {
 	provider, err := s.db.AdminAuthProvider.Get(ctx, params.adminID, params.providerType)
 	if err != nil && !errors.Is(err, database.ErrNotFound) {
 		return "", internalError(err)
 	}
 	if provider != nil {
-		return "", fmt.Errorf("this admin has already connected: %w", exception.ErrFailedPrecondition)
+		return "", fmt.Errorf(
+			"this admin has already connected: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	eventParams := &entity.AdminAuthEventParams{
 		AdminID:      params.adminID,
@@ -307,7 +346,10 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	}
 	provider, err := entity.NewAdminAuthProvider(providerParams)
 	if errors.Is(err, entity.ErrInvalidAdminAuthUsername) {
-		return fmt.Errorf("service: invalid admin auth provider type: %w", exception.ErrAlreadyExists)
+		return fmt.Errorf(
+			"service: invalid admin auth provider type: %w",
+			exception.ErrAlreadyExists,
+		)
 	}
 	if errors.Is(err, entity.ErrInvalidAdminAuthProviderType) {
 		return fmt.Errorf("service: invalid admin auth username: %w", exception.ErrForbidden)

@@ -13,7 +13,11 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *uploader) uploadConvertFile(ctx context.Context, event *entity.UploadEvent, reg *entity.Regulation) (string, error) {
+func (u *uploader) uploadConvertFile(
+	ctx context.Context,
+	event *entity.UploadEvent,
+	reg *entity.Regulation,
+) (string, error) {
 	if reg.ConversionType == entity.ConversionTypeNone {
 		u.logger.Debug("No need to convert", zap.String("key", event.Key))
 		return event.Key, nil // 変換不要
@@ -22,12 +26,20 @@ func (u *uploader) uploadConvertFile(ctx context.Context, event *entity.UploadEv
 	case entity.ConversionTypeJPEGToPNG:
 		return u.convertJPEGToPNG(ctx, event, reg)
 	default:
-		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("conversionType", int32(reg.ConversionType)))
+		u.logger.Warn(
+			"Unsupported convert type",
+			zap.String("key", event.Key),
+			zap.Int32("conversionType", int32(reg.ConversionType)),
+		)
 		return event.Key, nil // 変換できないファイルに対してはエラーにせず元ファイルをそのまま利用する
 	}
 }
 
-func (u *uploader) convertJPEGToPNG(ctx context.Context, event *entity.UploadEvent, reg *entity.Regulation) (string, error) {
+func (u *uploader) convertJPEGToPNG(
+	ctx context.Context,
+	event *entity.UploadEvent,
+	reg *entity.Regulation,
+) (string, error) {
 	f, err := u.tmp.Download(ctx, event.Key)
 	if err != nil {
 		return "", fmt.Errorf("uploader: failed to download file: %w", err)

@@ -42,7 +42,11 @@ func (a *auth) GetAuthCodeURL(state string) string {
 	return a.AuthCodeURL(state, opts...)
 }
 
-func (a *auth) GetToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
+func (a *auth) GetToken(
+	ctx context.Context,
+	code string,
+	opts ...oauth2.AuthCodeOption,
+) (*oauth2.Token, error) {
 	token, err := a.Exchange(ctx, code, opts...)
 	if err != nil {
 		return nil, a.internalError(err)

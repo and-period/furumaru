@@ -27,7 +27,10 @@ func (c *client) GetStream(ctx context.Context, params *GetStreamParams) (*types
 	return out.Stream, nil
 }
 
-func (c *client) GetStreamKey(ctx context.Context, params *GetStreamKeyParams) (*types.StreamKey, error) {
+func (c *client) GetStreamKey(
+	ctx context.Context,
+	params *GetStreamKeyParams,
+) (*types.StreamKey, error) {
 	in := &ivs.GetStreamKeyInput{
 		Arn: aws.String(params.StreamKeyArn),
 	}

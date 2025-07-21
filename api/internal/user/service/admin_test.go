@@ -102,11 +102,14 @@ func TestMultiGetAdmins(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetAdmins(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetAdmins(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -132,7 +135,9 @@ func TestMultiGetAdminDevices(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(admins, nil)
+				mocks.db.Admin.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}, "device").
+					Return(admins, nil)
 			},
 			input: &user.MultiGetAdminDevicesInput{
 				AdminIDs: []string{"admin-id"},
@@ -152,7 +157,9 @@ func TestMultiGetAdminDevices(t *testing.T) {
 		{
 			name: "failed to multi get admin auths",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().MultiGet(ctx, []string{"admin-id"}, "device").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}, "device").
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetAdminDevicesInput{
 				AdminIDs: []string{"admin-id"},
@@ -163,11 +170,14 @@ func TestMultiGetAdminDevices(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetAdminDevices(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetAdminDevices(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -230,11 +240,14 @@ func TestGetAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetAdmin(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetAdmin(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -252,7 +265,9 @@ func TestForgotAdminPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(admin, nil)
 				mocks.adminAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.ForgotAdminPasswordInput{
@@ -269,7 +284,9 @@ func TestForgotAdminPassword(t *testing.T) {
 		{
 			name: "failed to forgot password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.ForgotAdminPasswordInput{
 				Email: "test-admin@and-period.jp",
@@ -279,7 +296,9 @@ func TestForgotAdminPassword(t *testing.T) {
 		{
 			name: "failed to forgot password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(admin, nil)
 				mocks.adminAuth.EXPECT().ForgotPassword(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.ForgotAdminPasswordInput{
@@ -290,10 +309,13 @@ func TestForgotAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ForgotAdminPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ForgotAdminPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -318,7 +340,9 @@ func TestVerifyAdminPassword(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
 			},
 			input: &user.VerifyAdminPasswordInput{
@@ -338,7 +362,9 @@ func TestVerifyAdminPassword(t *testing.T) {
 		{
 			name: "failed to forgot password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(nil, assert.AnError)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.VerifyAdminPasswordInput{
 				Email:                "test-admin@and-period.jp",
@@ -351,7 +377,9 @@ func TestVerifyAdminPassword(t *testing.T) {
 		{
 			name: "failed to forgot password",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Admin.EXPECT().GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").Return(admin, nil)
+				mocks.db.Admin.EXPECT().
+					GetByEmail(ctx, "test-admin@and-period.jp", "cognito_id").
+					Return(admin, nil)
 				mocks.adminAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(assert.AnError)
 			},
 			input: &user.VerifyAdminPasswordInput{
@@ -365,9 +393,12 @@ func TestVerifyAdminPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.VerifyAdminPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.VerifyAdminPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

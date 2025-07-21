@@ -21,13 +21,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsInput) (entity.Broadcasts, int64, error) {
+func (s *service) ListBroadcasts(
+	ctx context.Context,
+	in *media.ListBroadcastsInput,
+) (entity.Broadcasts, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
 	orders, err := s.newListBroadcastsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list broadcasts orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list broadcasts orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListBroadcastsParams{
 		ScheduleIDs:   in.ScheduleIDs,
@@ -56,7 +63,9 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 	return broadcasts, total, nil
 }
 
-func (s *service) newListBroadcastsOrders(in []*media.ListBroadcastsOrder) ([]*database.ListBroadcastsOrder, error) {
+func (s *service) newListBroadcastsOrders(
+	in []*media.ListBroadcastsOrder,
+) ([]*database.ListBroadcastsOrder, error) {
 	res := make([]*database.ListBroadcastsOrder, len(in))
 	for i := range in {
 		var key database.ListBroadcastsOrderKey
@@ -74,7 +83,10 @@ func (s *service) newListBroadcastsOrders(in []*media.ListBroadcastsOrder) ([]*d
 	return res, nil
 }
 
-func (s *service) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {
+func (s *service) GetBroadcastByScheduleID(
+	ctx context.Context,
+	in *media.GetBroadcastByScheduleIDInput,
+) (*entity.Broadcast, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -82,7 +94,10 @@ func (s *service) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBro
 	return broadcast, internalError(err)
 }
 
-func (s *service) CreateBroadcast(ctx context.Context, in *media.CreateBroadcastInput) (*entity.Broadcast, error) {
+func (s *service) CreateBroadcast(
+	ctx context.Context,
+	in *media.CreateBroadcastInput,
+) (*entity.Broadcast, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -97,7 +112,10 @@ func (s *service) CreateBroadcast(ctx context.Context, in *media.CreateBroadcast
 	return broadcast, nil
 }
 
-func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBroadcastArchiveInput) error {
+func (s *service) UpdateBroadcastArchive(
+	ctx context.Context,
+	in *media.UpdateBroadcastArchiveInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -106,17 +124,26 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusDisabled {
-		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcast is not disabled: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
-	params := &database.UpdateBroadcastParams{UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-		ArchiveURL:   in.ArchiveURL,
-		ArchiveFixed: true, // ライブ配信時のコメントとの対応が取れなくなるため、編集済みにする
-	}}
+	params := &database.UpdateBroadcastParams{
+		UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+			ArchiveURL:   in.ArchiveURL,
+			ArchiveFixed: true, // ライブ配信時のコメントとの対応が取れなくなるため、編集済みにする
+		},
+	}
 	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
 		return internalError(err)
 	}
 	job := &batch.SubmitJobParams{
-		JobName:       fmt.Sprintf("media-update-archive-%s-%s", broadcast.ID, jst.Format(s.now(), "20060102150405")),
+		JobName: fmt.Sprintf(
+			"media-update-archive-%s-%s",
+			broadcast.ID,
+			jst.Format(s.now(), "20060102150405"),
+		),
 		JobDefinition: s.batchUpdateArchiveDefinition,
 		JobQueue:      s.batchUpdateArchiveQueue,
 		Command:       s.batchUpdateArchiveCommand(broadcast.ID),
@@ -136,7 +163,10 @@ func (s *service) PauseBroadcast(ctx context.Context, in *media.PauseBroadcastIn
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	settings := []*medialive.ScheduleSetting{{
 		Name:       fmt.Sprintf("%s immediate-pause", jst.Format(s.now(), time.DateTime)),
@@ -161,7 +191,10 @@ func (s *service) UnpauseBroadcast(ctx context.Context, in *media.UnpauseBroadca
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	settings := []*medialive.ScheduleSetting{{
 		Name:       fmt.Sprintf("%s immediate-unpause", jst.Format(s.now(), time.DateTime)),
@@ -176,7 +209,10 @@ func (s *service) UnpauseBroadcast(ctx context.Context, in *media.UnpauseBroadca
 	return internalError(err)
 }
 
-func (s *service) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateBroadcastRTMPInput) error {
+func (s *service) ActivateBroadcastRTMP(
+	ctx context.Context,
+	in *media.ActivateBroadcastRTMPInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -185,7 +221,10 @@ func (s *service) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateB
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	settings := []*medialive.ScheduleSetting{{
 		Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(s.now(), time.DateTime)),
@@ -201,7 +240,10 @@ func (s *service) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateB
 	return internalError(err)
 }
 
-func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBroadcastMP4Input) error {
+func (s *service) ActivateBroadcastMP4(
+	ctx context.Context,
+	in *media.ActivateBroadcastMP4Input,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -210,7 +252,10 @@ func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBr
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	videoURI, err := s.tmp.ReplaceURLToS3URI(in.InputURL)
 	if err != nil {
@@ -231,7 +276,10 @@ func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBr
 	return internalError(err)
 }
 
-func (s *service) ActivateBroadcastStaticImage(ctx context.Context, in *media.ActivateBroadcastStaticImageInput) error {
+func (s *service) ActivateBroadcastStaticImage(
+	ctx context.Context,
+	in *media.ActivateBroadcastStaticImageInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -240,7 +288,10 @@ func (s *service) ActivateBroadcastStaticImage(ctx context.Context, in *media.Ac
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	scheduleIn := &store.GetScheduleInput{
 		ScheduleID: in.ScheduleID,
@@ -257,7 +308,10 @@ func (s *service) ActivateBroadcastStaticImage(ctx context.Context, in *media.Ac
 	return internalError(err)
 }
 
-func (s *service) DeactivateBroadcastStaticImage(ctx context.Context, in *media.DeactivateBroadcastStaticImageInput) error {
+func (s *service) DeactivateBroadcastStaticImage(
+	ctx context.Context,
+	in *media.DeactivateBroadcastStaticImageInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -266,13 +320,19 @@ func (s *service) DeactivateBroadcastStaticImage(ctx context.Context, in *media.
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusActive {
-		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcase is not activated: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	err = s.media.DeactivateStaticImage(ctx, broadcast.MediaLiveChannelID)
 	return internalError(err)
 }
 
-func (s *service) GetBroadcastAuth(ctx context.Context, in *media.GetBroadcastAuthInput) (*entity.BroadcastAuth, error) {
+func (s *service) GetBroadcastAuth(
+	ctx context.Context,
+	in *media.GetBroadcastAuthInput,
+) (*entity.BroadcastAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -287,7 +347,10 @@ func (s *service) GetBroadcastAuth(ctx context.Context, in *media.GetBroadcastAu
 	return auth, nil
 }
 
-func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutubeBroadcastInput) (string, error) {
+func (s *service) AuthYoutubeBroadcast(
+	ctx context.Context,
+	in *media.AuthYoutubeBroadcastInput,
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
@@ -299,7 +362,10 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 		return "", internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusDisabled {
-		return "", fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+		return "", fmt.Errorf(
+			"service: this broadcast is not disabled: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	scheduleIn := &store.GetScheduleInput{
 		ScheduleID: broadcast.ScheduleID,
@@ -309,7 +375,10 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 		return "", internalError(err)
 	}
 	if schedule.Status != sentity.ScheduleStatusWaiting {
-		return "", fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
+		return "", fmt.Errorf(
+			"service: this schedule is not waiting: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	sessionID := s.generateID()
 	params := &entity.BroadcastAuthParams{
@@ -326,7 +395,10 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 	return s.youtube.NewAuth().GetAuthCodeURL(sessionID), nil
 }
 
-func (s *service) AuthYoutubeBroadcastEvent(ctx context.Context, in *media.AuthYoutubeBroadcastEventInput) (*entity.BroadcastAuth, error) {
+func (s *service) AuthYoutubeBroadcastEvent(
+	ctx context.Context,
+	in *media.AuthYoutubeBroadcastEventInput,
+) (*entity.BroadcastAuth, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -365,7 +437,10 @@ func (s *service) AuthYoutubeBroadcastEvent(ctx context.Context, in *media.AuthY
 	return auth, nil
 }
 
-func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYoutubeBroadcastInput) error {
+func (s *service) CreateYoutubeBroadcast(
+	ctx context.Context,
+	in *media.CreateYoutubeBroadcastInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -379,14 +454,21 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	}
 	token, err := auth.GetToken()
 	if err != nil {
-		return fmt.Errorf("service: invalid youtube token. err=%s: %w", err.Error(), exception.ErrUnauthenticated)
+		return fmt.Errorf(
+			"service: invalid youtube token. err=%s: %w",
+			err.Error(),
+			exception.ErrUnauthenticated,
+		)
 	}
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
 	if err != nil {
 		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusDisabled {
-		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this broadcast is not disabled: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	scheduleIn := &store.GetScheduleInput{
 		ScheduleID: broadcast.ScheduleID,
@@ -396,7 +478,10 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return internalError(err)
 	}
 	if schedule.Status != sentity.ScheduleStatusWaiting {
-		return fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: this schedule is not waiting: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	service, err := s.youtube.NewService(ctx, token)
 	if err != nil {
@@ -423,14 +508,16 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if err := service.BindLiveBroadcast(ctx, liveBroadcast.Id, stream.Id); err != nil {
 		return internalError(err)
 	}
-	params := &database.UpdateBroadcastParams{UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
-		YoutubeAccount:     auth.Account,
-		YoutubeBroadcastID: liveBroadcast.Id,
-		YoutubeStreamID:    stream.Id,
-		YoutubeStreamURL:   stream.Cdn.IngestionInfo.IngestionAddress,
-		YoutubeStreamKey:   stream.Cdn.IngestionInfo.StreamName,
-		YoutubeBackupURL:   stream.Cdn.IngestionInfo.BackupIngestionAddress,
-	}}
+	params := &database.UpdateBroadcastParams{
+		UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
+			YoutubeAccount:     auth.Account,
+			YoutubeBroadcastID: liveBroadcast.Id,
+			YoutubeStreamID:    stream.Id,
+			YoutubeStreamURL:   stream.Cdn.IngestionInfo.IngestionAddress,
+			YoutubeStreamKey:   stream.Cdn.IngestionInfo.StreamName,
+			YoutubeBackupURL:   stream.Cdn.IngestionInfo.BackupIngestionAddress,
+		},
+	}
 	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)
 }

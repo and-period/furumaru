@@ -64,7 +64,10 @@ func (e *OrderExperience) Response() *response.OrderExperience {
 	return &e.OrderExperience
 }
 
-func NewOrderExperiences(items entity.OrderExperiences, experiences map[int64]*Experience) OrderExperiences {
+func NewOrderExperiences(
+	items entity.OrderExperiences,
+	experiences map[int64]*Experience,
+) OrderExperiences {
 	res := make(OrderExperiences, 0, len(items))
 	for _, v := range items {
 		experience := NewOrderExperience(v, experiences[v.ExperienceRevisionID])

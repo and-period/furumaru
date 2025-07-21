@@ -67,7 +67,10 @@ func NewAdminAuthProvider(params *AdminAuthProviderParams) (*AdminAuthProvider, 
 	}, nil
 }
 
-func findAdminAuthIdentity(user *cognito.AuthUser, providerType AdminAuthProviderType) *cognito.AuthUserIdentity {
+func findAdminAuthIdentity(
+	user *cognito.AuthUser,
+	providerType AdminAuthProviderType,
+) *cognito.AuthUserIdentity {
 	target := providerType.ToCognito()
 	for _, identity := range user.Identities {
 		if identity.ProviderType == target {

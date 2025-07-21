@@ -9,7 +9,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListExperienceTypes(ctx context.Context, in *store.ListExperienceTypesInput) (entity.ExperienceTypes, int64, error) {
+func (s *service) ListExperienceTypes(
+	ctx context.Context,
+	in *store.ListExperienceTypesInput,
+) (entity.ExperienceTypes, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -37,7 +40,10 @@ func (s *service) ListExperienceTypes(ctx context.Context, in *store.ListExperie
 	return types, total, nil
 }
 
-func (s *service) MultiGetExperienceTypes(ctx context.Context, in *store.MultiGetExperienceTypesInput) (entity.ExperienceTypes, error) {
+func (s *service) MultiGetExperienceTypes(
+	ctx context.Context,
+	in *store.MultiGetExperienceTypesInput,
+) (entity.ExperienceTypes, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -45,7 +51,10 @@ func (s *service) MultiGetExperienceTypes(ctx context.Context, in *store.MultiGe
 	return types, internalError(err)
 }
 
-func (s *service) GetExperienceType(ctx context.Context, in *store.GetExperienceTypeInput) (*entity.ExperienceType, error) {
+func (s *service) GetExperienceType(
+	ctx context.Context,
+	in *store.GetExperienceTypeInput,
+) (*entity.ExperienceType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -53,7 +62,10 @@ func (s *service) GetExperienceType(ctx context.Context, in *store.GetExperience
 	return typ, internalError(err)
 }
 
-func (s *service) CreateExperienceType(ctx context.Context, in *store.CreateExperienceTypeInput) (*entity.ExperienceType, error) {
+func (s *service) CreateExperienceType(
+	ctx context.Context,
+	in *store.CreateExperienceTypeInput,
+) (*entity.ExperienceType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -67,7 +79,10 @@ func (s *service) CreateExperienceType(ctx context.Context, in *store.CreateExpe
 	return typ, nil
 }
 
-func (s *service) UpdateExperienceType(ctx context.Context, in *store.UpdateExperienceTypeInput) error {
+func (s *service) UpdateExperienceType(
+	ctx context.Context,
+	in *store.UpdateExperienceTypeInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -78,7 +93,10 @@ func (s *service) UpdateExperienceType(ctx context.Context, in *store.UpdateExpe
 	return internalError(err)
 }
 
-func (s *service) DeleteExperienceType(ctx context.Context, in *store.DeleteExperienceTypeInput) error {
+func (s *service) DeleteExperienceType(
+	ctx context.Context,
+	in *store.DeleteExperienceTypeInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

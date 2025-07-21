@@ -90,7 +90,10 @@ type createSessionAddress struct {
 	StreetAddress2 string `json:"street_address2,omitempty"` // ビル名・号室など
 }
 
-func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams) (*komoju.SessionResponse, error) {
+func (c *client) Create(
+	ctx context.Context,
+	params *komoju.CreateSessionParams,
+) (*komoju.SessionResponse, error) {
 	const path = "/api/v1/sessions"
 	types := make([]string, len(params.PaymentTypes))
 	for i := range params.PaymentTypes {
@@ -179,7 +182,10 @@ type creditCardDetails struct {
 	ThreeDSecure      bool   `json:"three_d_secure,omitempty"`     // 3Dセキュアの有効化
 }
 
-func (c *client) OrderCreditCard(ctx context.Context, params *komoju.OrderCreditCardParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderCreditCard(
+	ctx context.Context,
+	params *komoju.OrderCreditCardParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderCreditCardRequest{
 		Capture: string(c.captureMode),
@@ -223,7 +229,10 @@ type bankTransferDetails struct {
 	GivenNameKana  string `json:"given_name_kana,omitempty"`  // 氏名（名：カナ）
 }
 
-func (c *client) OrderBankTransfer(ctx context.Context, params *komoju.OrderBankTransferParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderBankTransfer(
+	ctx context.Context,
+	params *komoju.OrderBankTransferParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderBankTransferRequest{
 		Capture: string(c.captureMode),
@@ -263,7 +272,10 @@ type konbiniDetails struct {
 	PhoneNumber string `json:"phone,omitempty"` // 顧客電話番号
 }
 
-func (c *client) OrderKonbini(ctx context.Context, params *komoju.OrderKonbiniParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderKonbini(
+	ctx context.Context,
+	params *komoju.OrderKonbiniParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderKonbiniRequest{
 		Capture: string(c.captureMode),
@@ -298,7 +310,10 @@ type paypayDetails struct {
 	ScannedCode         string `json:"scanned_code,omitempty"`          // バーコード
 }
 
-func (c *client) OrderPayPay(ctx context.Context, params *komoju.OrderPayPayParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderPayPay(
+	ctx context.Context,
+	params *komoju.OrderPayPayParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderPayPayRequest{
 		Capture: string(c.captureMode),
@@ -331,7 +346,10 @@ type linePayDetails struct {
 	ScannedCode string `json:"scanned_code,omitempty"` // バーコード
 }
 
-func (c *client) OrderLinePay(ctx context.Context, params *komoju.OrderLinePayParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderLinePay(
+	ctx context.Context,
+	params *komoju.OrderLinePayParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderLinePayRequest{
 		Capture: string(c.captureMode),
@@ -362,7 +380,10 @@ type merpayDetails struct {
 	Type string `json:"type"` // 決済種別
 }
 
-func (c *client) OrderMerpay(ctx context.Context, params *komoju.OrderMerpayParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderMerpay(
+	ctx context.Context,
+	params *komoju.OrderMerpayParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderMerpayRequest{
 		Capture: string(c.captureMode),
@@ -393,7 +414,10 @@ type rakutenPayDetails struct {
 	Type string `json:"type"` // 決済種別
 }
 
-func (c *client) OrderRakutenPay(ctx context.Context, params *komoju.OrderRakutenPayParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderRakutenPay(
+	ctx context.Context,
+	params *komoju.OrderRakutenPayParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderMerpayRequest{
 		Capture: string(c.captureMode),
@@ -425,7 +449,10 @@ type auPayDetails struct {
 	ScannedCode string `json:"scanned_code,omitempty"` // バーコード
 }
 
-func (c *client) OrderAUPay(ctx context.Context, params *komoju.OrderAUPayParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderAUPay(
+	ctx context.Context,
+	params *komoju.OrderAUPayParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderAUPayRequest{
 		Capture: string(c.captureMode),
@@ -458,7 +485,10 @@ type paidyDetails struct {
 	Email        string `json:"email,omitempty"` // 顧客メールアドレス
 }
 
-func (c *client) OrderPaidy(ctx context.Context, params *komoju.OrderPaidyParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderPaidy(
+	ctx context.Context,
+	params *komoju.OrderPaidyParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderPaidyRequest{
 		Capture: string(c.captureMode),
@@ -497,7 +527,10 @@ type payEasyDetails struct {
 	GivenNameKana  string `json:"given_name_kana,omitempty"`  // 氏名（名：カナ）
 }
 
-func (c *client) OrderPayEasy(ctx context.Context, params *komoju.OrderPayEasyParams) (*komoju.OrderSessionResponse, error) {
+func (c *client) OrderPayEasy(
+	ctx context.Context,
+	params *komoju.OrderPayEasyParams,
+) (*komoju.OrderSessionResponse, error) {
 	const path = "/api/v1/sessions/%s/pay"
 	body := &orderPayEasyRequest{
 		Capture: string(c.captureMode),

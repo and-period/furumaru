@@ -8,7 +8,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-func (s *service) ListProductReviews(ctx context.Context, in *store.ListProductReviewsInput) (entity.ProductReviews, string, error) {
+func (s *service) ListProductReviews(
+	ctx context.Context,
+	in *store.ListProductReviewsInput,
+) (entity.ProductReviews, string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, "", internalError(err)
 	}
@@ -23,7 +26,10 @@ func (s *service) ListProductReviews(ctx context.Context, in *store.ListProductR
 	return reviews, token, internalError(err)
 }
 
-func (s *service) GetProductReview(ctx context.Context, in *store.GetProductReviewInput) (*entity.ProductReview, error) {
+func (s *service) GetProductReview(
+	ctx context.Context,
+	in *store.GetProductReviewInput,
+) (*entity.ProductReview, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -31,7 +37,10 @@ func (s *service) GetProductReview(ctx context.Context, in *store.GetProductRevi
 	return review, internalError(err)
 }
 
-func (s *service) CreateProductReview(ctx context.Context, in *store.CreateProductReviewInput) (*entity.ProductReview, error) {
+func (s *service) CreateProductReview(
+	ctx context.Context,
+	in *store.CreateProductReviewInput,
+) (*entity.ProductReview, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -52,7 +61,10 @@ func (s *service) CreateProductReview(ctx context.Context, in *store.CreateProdu
 	return review, nil
 }
 
-func (s *service) UpdateProductReview(ctx context.Context, in *store.UpdateProductReviewInput) error {
+func (s *service) UpdateProductReview(
+	ctx context.Context,
+	in *store.UpdateProductReviewInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -65,7 +77,10 @@ func (s *service) UpdateProductReview(ctx context.Context, in *store.UpdateProdu
 	return internalError(err)
 }
 
-func (s *service) DeleteProductReview(ctx context.Context, in *store.DeleteProductReviewInput) error {
+func (s *service) DeleteProductReview(
+	ctx context.Context,
+	in *store.DeleteProductReviewInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

@@ -136,7 +136,8 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 
 	res := &response.OrdersResponse{
-		Orders:       service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()).Response(),
+		Orders: service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()).
+			Response(),
 		Users:        users.Response(),
 		Coordinators: coordinators.Response(),
 		Promotions:   promotions.Response(),
@@ -145,14 +146,24 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, []sentity.OrderType, error) {
+func (h *handler) newOrderFileters(
+	ctx *gin.Context,
+) ([]sentity.OrderStatus, []sentity.OrderType, error) {
 	sparams, err := util.GetQueryInt32s(ctx, "status")
 	if err != nil {
-		return nil, nil, fmt.Errorf("handler: failed to get status query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, nil, fmt.Errorf(
+			"handler: failed to get status query params: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	tparams, err := util.GetQueryInt32s(ctx, "type")
 	if err != nil {
-		return nil, nil, fmt.Errorf("handler: failed to get type query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, nil, fmt.Errorf(
+			"handler: failed to get type query params: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 
 	statuses := make([]sentity.OrderStatus, len(sparams))
@@ -397,11 +408,19 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 		if order.ExperienceRevisionID == 0 {
 			return
 		}
-		experiences, err = h.multiGetExperiencesByRevision(ectx, []int64{order.ExperienceRevisionID})
+		experiences, err = h.multiGetExperiencesByRevision(
+			ectx,
+			[]int64{order.ExperienceRevisionID},
+		)
 		return
 	})
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()), nil
+	return service.NewOrder(
+		order,
+		addresses.MapByRevision(),
+		products.MapByRevision(),
+		experiences.MapByRevision(),
+	), nil
 }

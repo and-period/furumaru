@@ -44,7 +44,9 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastViewerLog.EXPECT().Create(ctx, log).Return(nil)
 			},
 			input: &media.CreateBroadcastViewerLogInput{
@@ -65,7 +67,9 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.CreateBroadcastViewerLogInput{
 				ScheduleID: "schedule-id",
@@ -79,7 +83,9 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 		{
 			name: "failed to create broadacast viewer log",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
 				mocks.db.BroadcastViewerLog.EXPECT().Create(ctx, log).Return(assert.AnError)
 			},
 			input: &media.CreateBroadcastViewerLogInput{
@@ -93,10 +99,13 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CreateBroadcastViewerLog(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CreateBroadcastViewerLog(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -142,9 +151,15 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.BroadcastViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(logs, nil)
-				mocks.db.BroadcastViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(3), nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(logs, nil)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(3), nil)
 			},
 			input: &media.AggregateBroadcastViewerLogsInput{
 				ScheduleID:   "schedule-id",
@@ -166,7 +181,9 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(nil, assert.AnError)
 			},
 			input: &media.AggregateBroadcastViewerLogsInput{
 				ScheduleID:   "schedule-id",
@@ -181,9 +198,15 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 		{
 			name: "failed to aggregate viewer logs",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.BroadcastViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(nil, assert.AnError)
-				mocks.db.BroadcastViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(3), nil)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(nil, assert.AnError)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(3), nil)
 			},
 			input: &media.AggregateBroadcastViewerLogsInput{
 				ScheduleID:   "schedule-id",
@@ -198,9 +221,15 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 		{
 			name: "failed to aggregate viewer logs",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.db.BroadcastViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(logs, nil)
-				mocks.db.BroadcastViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(0), assert.AnError)
+				mocks.db.Broadcast.EXPECT().
+					GetByScheduleID(ctx, "schedule-id").
+					Return(broadcast, nil)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(logs, nil)
+				mocks.db.BroadcastViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(0), assert.AnError)
 			},
 			input: &media.AggregateBroadcastViewerLogsInput{
 				ScheduleID:   "schedule-id",
@@ -214,11 +243,14 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.AggregateBroadcastViewerLogs(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.AggregateBroadcastViewerLogs(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }

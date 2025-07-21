@@ -103,7 +103,9 @@ func TestListCoordinators(t *testing.T) {
 			name: "failed to count coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().List(gomock.Any(), params).Return(coordinators, nil)
-				mocks.db.Coordinator.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &user.ListCoordinatorsInput{
 				Limit:  30,
@@ -116,12 +118,15 @@ func TestListCoordinators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListCoordinators(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListCoordinators(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -169,7 +174,9 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(coordinators, nil)
+				mocks.db.Coordinator.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(coordinators, nil)
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
@@ -180,7 +187,9 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			name: "success with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(coordinators, nil)
+				mocks.db.Coordinator.EXPECT().
+					MultiGetWithDeleted(ctx, []string{"admin-id"}).
+					Return(coordinators, nil)
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
@@ -201,7 +210,9 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			name: "failed to multi get coordinators",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
@@ -212,7 +223,9 @@ func TestMultiGetCoordinators(t *testing.T) {
 		{
 			name: "failed to multi get coordinators with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					MultiGetWithDeleted(ctx, []string{"admin-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
@@ -224,11 +237,14 @@ func TestMultiGetCoordinators(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetCoordinators(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetCoordinators(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -285,7 +301,9 @@ func TestGetCoordinator(t *testing.T) {
 		{
 			name: "success with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().GetWithDeleted(ctx, "admin-id").Return(coordinator, nil)
+				mocks.db.Coordinator.EXPECT().
+					GetWithDeleted(ctx, "admin-id").
+					Return(coordinator, nil)
 			},
 			input: &user.GetCoordinatorInput{
 				CoordinatorID: "admin-id",
@@ -315,7 +333,9 @@ func TestGetCoordinator(t *testing.T) {
 		{
 			name: "failed to get coordinator with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().GetWithDeleted(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					GetWithDeleted(ctx, "admin-id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.GetCoordinatorInput{
 				CoordinatorID: "admin-id",
@@ -327,11 +347,14 @@ func TestGetCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetCoordinator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetCoordinator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -381,7 +404,9 @@ func TestCreateCoordinator(t *testing.T) {
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
 				}
-				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
+				mocks.store.EXPECT().
+					MultiGetProductTypes(ctx, productTypesIn).
+					Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().
 					Create(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error {
@@ -391,8 +416,12 @@ func TestCreateCoordinator(t *testing.T) {
 						assert.Equal(t, expectCoordinator, coordinator)
 						return nil
 					})
-				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					CreateShop(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyRegisterAdmin(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -422,8 +451,12 @@ func TestCreateCoordinator(t *testing.T) {
 			name: "success without notify register admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.store.EXPECT().CreateShop(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					CreateShop(gomock.Any(), gomock.Any()).
+					Return(nil, assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyRegisterAdmin(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -456,7 +489,9 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "failed to multi get product types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					MultiGetProductTypes(ctx, productTypesIn).
+					Return(nil, assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -485,7 +520,9 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "failed to unmatch product types length",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(sentity.ProductTypes{}, nil)
+				mocks.store.EXPECT().
+					MultiGetProductTypes(ctx, productTypesIn).
+					Return(sentity.ProductTypes{}, nil)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -539,7 +576,9 @@ func TestCreateCoordinator(t *testing.T) {
 		{
 			name: "failed to create admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -566,10 +605,13 @@ func TestCreateCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, _, err := service.CreateCoordinator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, _, err := service.CreateCoordinator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -663,7 +705,9 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to update coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					Update(ctx, "coordinator-id", params).
+					Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:  "coordinator-id",
@@ -689,10 +733,13 @@ func TestUpdateCoordinator(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateCoordinator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateCoordinator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -744,7 +791,9 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(nil)
+				mocks.db.Admin.EXPECT().
+					UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").
+					Return(nil)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -786,7 +835,9 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").Return(assert.AnError)
+				mocks.db.Admin.EXPECT().
+					UpdateEmail(ctx, "coordinator-id", "test-admin@and-period.jp").
+					Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorEmailInput{
 				CoordinatorID: "coordinator-id",
@@ -797,10 +848,13 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateCoordinatorEmail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateCoordinatorEmail(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -857,7 +911,9 @@ func TestResetCoordinatorPassword(t *testing.T) {
 						assert.Equal(t, params, expect)
 						return nil
 					})
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.messenger.EXPECT().
+					NotifyResetAdminPassword(gomock.Any(), gomock.Any()).
+					Return(nil)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -869,7 +925,9 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().
+					NotifyResetAdminPassword(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -896,7 +954,9 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			name: "failed to admin change password",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.adminAuth.EXPECT().
+					AdminChangePassword(ctx, gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
@@ -906,10 +966,13 @@ func TestResetCoordinatorPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ResetCoordinatorPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ResetCoordinatorPassword(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -941,7 +1004,9 @@ func TestDeleteCoordinator(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
-				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(nil)
+				mocks.db.Coordinator.EXPECT().
+					Delete(ctx, "coordinator-id", gomock.Any()).
+					Return(nil)
 				mocks.store.EXPECT().DeleteShop(gomock.Any(), deleteShopIn).Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
@@ -958,7 +1023,9 @@ func TestDeleteCoordinator(t *testing.T) {
 		{
 			name: "failed to get shop",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().
+					GetShopByCoordinatorID(ctx, getShopIn).
+					Return(nil, assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",
@@ -969,7 +1036,9 @@ func TestDeleteCoordinator(t *testing.T) {
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, getShopIn).Return(shop, nil)
-				mocks.db.Coordinator.EXPECT().Delete(ctx, "coordinator-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Coordinator.EXPECT().
+					Delete(ctx, "coordinator-id", gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",
@@ -978,10 +1047,13 @@ func TestDeleteCoordinator(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteCoordinator(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteCoordinator(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -1000,7 +1072,9 @@ func TestAggregateRelatedProducers(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).Return(total, nil)
+				mocks.db.Producer.EXPECT().
+					AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).
+					Return(total, nil)
 			},
 			input: &user.AggregateRealatedProducersInput{
 				CoordinatorIDs: []string{"coordinator-id"},
@@ -1019,7 +1093,9 @@ func TestAggregateRelatedProducers(t *testing.T) {
 		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).Return(nil, assert.AnError)
+				mocks.db.Producer.EXPECT().
+					AggregateByCoordinatorID(ctx, []string{"coordinator-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.AggregateRealatedProducersInput{
 				CoordinatorIDs: []string{"coordinator-id"},
@@ -1028,10 +1104,13 @@ func TestAggregateRelatedProducers(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			res, err := service.AggregateRealatedProducers(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, res)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				res, err := service.AggregateRealatedProducers(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, res)
+			}),
+		)
 	}
 }

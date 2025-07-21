@@ -15,25 +15,55 @@ type Service interface {
 	UpdateContact(ctx context.Context, in *UpdateContactInput) error                         // 更新
 	DeleteContact(ctx context.Context, in *DeleteContactInput) error                         // 削除
 	// ContactCategory - お問い合わせ種別
-	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)         // 一覧取得
-	MultiGetContactCategories(ctx context.Context, in *MultiGetContactCategoriesInput) (entity.ContactCategories, error) // 一覧取得(ID指定)
-	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)                // １件取得
+	ListContactCategories(
+		ctx context.Context,
+		in *ListContactCategoriesInput,
+	) (entity.ContactCategories, error) // 一覧取得
+	MultiGetContactCategories(
+		ctx context.Context,
+		in *MultiGetContactCategoriesInput,
+	) (entity.ContactCategories, error) // 一覧取得(ID指定)
+	GetContactCategory(
+		ctx context.Context,
+		in *GetContactCategoryInput,
+	) (*entity.ContactCategory, error) // １件取得
 	// ContactRead - お問い合わせ既読管理
-	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error) // 登録
+	CreateContactRead(
+		ctx context.Context,
+		in *CreateContactReadInput,
+	) (*entity.ContactRead, error) // 登録
 	// Message - メッセージ
 	ListMessages(ctx context.Context, in *ListMessagesInput) (entity.Messages, int64, error) // 一覧取得
 	GetMessage(ctx context.Context, in *GetMessageInput) (*entity.Message, error)            // １件取得
 	// Notification - お知らせ
-	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error) // 一覧取得
-	GetNotification(ctx context.Context, in *GetNotificationInput) (*entity.Notification, error)            // １件取得
-	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)      // 登録
-	UpdateNotification(ctx context.Context, in *UpdateNotificationInput) error                              // 更新
-	DeleteNotification(ctx context.Context, in *DeleteNotificationInput) error                              // 削除
+	ListNotifications(
+		ctx context.Context,
+		in *ListNotificationsInput,
+	) (entity.Notifications, int64, error) // 一覧取得
+	GetNotification(
+		ctx context.Context,
+		in *GetNotificationInput,
+	) (*entity.Notification, error) // １件取得
+	CreateNotification(
+		ctx context.Context,
+		in *CreateNotificationInput,
+	) (*entity.Notification, error) // 登録
+	UpdateNotification(
+		ctx context.Context,
+		in *UpdateNotificationInput,
+	) error // 更新
+	DeleteNotification(
+		ctx context.Context,
+		in *DeleteNotificationInput,
+	) error // 削除
 	// Notify - 通知関連(共通)
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error // お知らせ通知
 	// NotifyAdmin - 通知関連(管理者宛)
-	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error           // 登録通知
-	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error // パスワードリセット通知
+	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error // 登録通知
+	NotifyResetAdminPassword(
+		ctx context.Context,
+		in *NotifyResetAdminPasswordInput,
+	) error // パスワードリセット通知
 	// NotifyUser - 通知関連(利用者宛)
 	NotifyStartLive(ctx context.Context, in *NotifyStartLiveInput) error         // ライブ配信開始通知
 	NotifyOrderCaptured(ctx context.Context, in *NotifyOrderCapturedInput) error // 支払い完了通知

@@ -84,7 +84,10 @@ func (b *TemplateDataBuilder) Contact(title, body string) *TemplateDataBuilder {
 	return b
 }
 
-func (b *TemplateDataBuilder) Live(title, coordinator string, startAt, endAt time.Time) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) Live(
+	title, coordinator string,
+	startAt, endAt time.Time,
+) *TemplateDataBuilder {
 	b.data["タイトル"] = title
 	b.data["コーディネータ名"] = coordinator
 	b.data["開催日"] = startAt.Format(time.DateOnly)
@@ -110,7 +113,10 @@ func (b *TemplateDataBuilder) OrderBilling(address *uentity.Address) *TemplateDa
 	return b
 }
 
-func (b *TemplateDataBuilder) OrderFulfillment(fulfillments sentity.OrderFulfillments, addresses map[int64]*uentity.Address) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) OrderFulfillment(
+	fulfillments sentity.OrderFulfillments,
+	addresses map[int64]*uentity.Address,
+) *TemplateDataBuilder {
 	if len(fulfillments) == 0 || len(addresses) == 0 {
 		return b
 	}
@@ -124,7 +130,10 @@ func (b *TemplateDataBuilder) OrderFulfillment(fulfillments sentity.OrderFulfill
 	return b
 }
 
-func (b *TemplateDataBuilder) OrderItems(items sentity.OrderItems, products map[int64]*sentity.Product) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) OrderItems(
+	items sentity.OrderItems,
+	products map[int64]*sentity.Product,
+) *TemplateDataBuilder {
 	data := make([]map[string]string, 0, len(items))
 	for _, item := range items {
 		product, ok := products[item.ProductRevisionID]
@@ -137,7 +146,10 @@ func (b *TemplateDataBuilder) OrderItems(items sentity.OrderItems, products map[
 	return b
 }
 
-func (b *TemplateDataBuilder) OrderExperience(item *sentity.OrderExperience, experience *sentity.Experience) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) OrderExperience(
+	item *sentity.OrderExperience,
+	experience *sentity.Experience,
+) *TemplateDataBuilder {
 	b.data["体験概要"] = experience.Title
 	b.data["サムネイルURL"] = experience.ThumbnailURL
 	b.data["大人人数"] = strconv.FormatInt(item.AdultCount, 10)
@@ -153,7 +165,11 @@ func (b *TemplateDataBuilder) Shipped(message string) *TemplateDataBuilder {
 	return b
 }
 
-func (b *TemplateDataBuilder) ReviewItems(items sentity.OrderItems, products map[int64]*sentity.Product, maker *UserURLMaker) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) ReviewItems(
+	items sentity.OrderItems,
+	products map[int64]*sentity.Product,
+	maker *UserURLMaker,
+) *TemplateDataBuilder {
 	data := make([]map[string]string, 0, len(items))
 	for _, item := range items {
 		product, ok := products[item.ProductRevisionID]
@@ -166,11 +182,15 @@ func (b *TemplateDataBuilder) ReviewItems(items sentity.OrderItems, products map
 	return b
 }
 
-func (b *TemplateDataBuilder) ReviewExperience(experience *sentity.Experience, maker *UserURLMaker) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) ReviewExperience(
+	experience *sentity.Experience,
+	maker *UserURLMaker,
+) *TemplateDataBuilder {
 	b.data["体験名"] = experience.Title
 	b.data["サムネイルURL"] = experience.ThumbnailURL
 	b.data["レビューURL"] = maker.ExperienceReview(experience.ID)
-	if strings.HasSuffix(experience.ThumbnailURL, ".jpg") || strings.HasSuffix(experience.ThumbnailURL, ".png") {
+	if strings.HasSuffix(experience.ThumbnailURL, ".jpg") ||
+		strings.HasSuffix(experience.ThumbnailURL, ".png") {
 		b.data["サムネイルURL"] = experience.ThumbnailURL
 	}
 	return b
@@ -216,7 +236,8 @@ func newOrderItem(item *sentity.OrderItem, product *sentity.Product) map[string]
 
 func newReviewItem(product *sentity.Product, maker *UserURLMaker) map[string]string {
 	var thumbnailURL string
-	if strings.HasSuffix(product.ThumbnailURL, ".jpg") || strings.HasSuffix(product.ThumbnailURL, ".png") {
+	if strings.HasSuffix(product.ThumbnailURL, ".jpg") ||
+		strings.HasSuffix(product.ThumbnailURL, ".png") {
 		thumbnailURL = product.ThumbnailURL
 	}
 	return map[string]string{

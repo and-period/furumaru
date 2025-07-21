@@ -33,7 +33,10 @@ func (l *broadcastViewerLog) Create(ctx context.Context, log *entity.BroadcastVi
 	return dbError(err)
 }
 
-func (l *broadcastViewerLog) GetTotal(ctx context.Context, params *database.GetBroadcastTotalViewersParams) (int64, error) {
+func (l *broadcastViewerLog) GetTotal(
+	ctx context.Context,
+	params *database.GetBroadcastTotalViewersParams,
+) (int64, error) {
 	var total int64
 
 	const field = "COUNT(DISTINCT(session_id)) AS total"

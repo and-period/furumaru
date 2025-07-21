@@ -126,12 +126,15 @@ func TestListSpots(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			spots, total, err := service.ListSpots(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, spots)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				spots, total, err := service.ListSpots(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, spots)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -215,11 +218,14 @@ func TestListSpotsByGeolocation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			spots, err := service.ListSpotsByGeolocation(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, spots)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				spots, err := service.ListSpotsByGeolocation(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, spots)
+			}),
+		)
 	}
 }
 
@@ -288,11 +294,14 @@ func TestGetSpot(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			spot, err := service.GetSpot(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, spot)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				spot, err := service.GetSpot(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, spot)
+			}),
+		)
 	}
 }
 
@@ -444,10 +453,13 @@ func TestCreateSpotByUser(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateSpotByUser(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateSpotByUser(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -494,7 +506,9 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().
 					Create(ctx, gomock.Any()).
@@ -609,7 +623,9 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to unsppoted",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeAdministrator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeAdministrator), nil)
 			},
 			input: &store.CreateSpotByAdminInput{
 				TypeID:       "type-id",
@@ -626,7 +642,9 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateSpotByAdminInput{
@@ -644,7 +662,9 @@ func TestCreateSpotByAdmin(t *testing.T) {
 			name: "failed to create spot",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.SpotType.EXPECT().Get(ctx, "type-id").Return(spotType, nil)
-				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin(uentity.AdminTypeCoordinator), nil)
+				mocks.user.EXPECT().
+					GetAdmin(ctx, adminIn).
+					Return(admin(uentity.AdminTypeCoordinator), nil)
 				mocks.geolocation.EXPECT().GetAddress(ctx, addressIn).Return(addressOut, nil)
 				mocks.db.Spot.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
@@ -662,10 +682,13 @@ func TestCreateSpotByAdmin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateSpotByAdmin(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateSpotByAdmin(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -806,10 +829,13 @@ func TestUpdateSpot(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateSpot(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateSpot(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -851,10 +877,13 @@ func TestDeleteSpot(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteSpot(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteSpot(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -905,9 +934,12 @@ func TestApproveSpot(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ApproveSpot(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.ApproveSpot(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

@@ -605,7 +605,12 @@ func TestUser_UpdateAccountID(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				users := make(entity.Users, 2)
 				users[0] = testUser("user-id", "test-user01@and-period.jp", "+810000000001", now())
-				users[1] = testUser("account-id", "test-user02@and-period.jp", "+810000000002", now())
+				users[1] = testUser(
+					"account-id",
+					"test-user02@and-period.jp",
+					"+810000000002",
+					now(),
+				)
 				err = db.DB.Create(&users).Error
 				require.NoError(t, err)
 				for i := range users {

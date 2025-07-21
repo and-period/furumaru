@@ -32,7 +32,9 @@ func TestCreateMessages(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(template, nil)
+				mocks.db.MessageTemplate.EXPECT().
+					Get(ctx, entity.MessageTemplateIDNotificationLive).
+					Return(template, nil)
 				mocks.db.Message.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, messages entity.Messages) error {
@@ -71,7 +73,9 @@ func TestCreateMessages(t *testing.T) {
 		{
 			name: "failed to get message template",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(nil, assert.AnError)
+				mocks.db.MessageTemplate.EXPECT().
+					Get(ctx, entity.MessageTemplateIDNotificationLive).
+					Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -91,7 +95,9 @@ func TestCreateMessages(t *testing.T) {
 		{
 			name: "failed to multi create messages",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(template, nil)
+				mocks.db.MessageTemplate.EXPECT().
+					Get(ctx, entity.MessageTemplateIDNotificationLive).
+					Return(template, nil)
 				mocks.db.Message.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -112,9 +118,12 @@ func TestCreateMessages(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.createMessages(ctx, tt.payload)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.createMessages(ctx, tt.payload)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

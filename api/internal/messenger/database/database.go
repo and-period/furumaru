@@ -63,8 +63,16 @@ type UpdateContactParams struct {
 
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
-	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
-	MultiGet(ctx context.Context, categoryIDs []string, fields ...string) (entity.ContactCategories, error)
+	List(
+		ctx context.Context,
+		params *ListContactCategoriesParams,
+		fields ...string,
+	) (entity.ContactCategories, error)
+	MultiGet(
+		ctx context.Context,
+		categoryIDs []string,
+		fields ...string,
+	) (entity.ContactCategories, error)
 	Create(ctx context.Context, category *entity.ContactCategory) error
 }
 
@@ -74,7 +82,11 @@ type ListContactCategoriesParams struct {
 }
 
 type ContactRead interface {
-	GetByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error)
+	GetByContactIDAndUserID(
+		ctx context.Context,
+		contactID, userID string,
+		fields ...string,
+	) (*entity.ContactRead, error)
 	Create(ctx context.Context, contactRead *entity.ContactRead) error
 	Update(ctx context.Context, params *UpdateContactReadParams) error
 }
@@ -107,11 +119,19 @@ type ListMessagesOrder struct {
 }
 
 type MessageTemplate interface {
-	Get(ctx context.Context, messageID entity.MessageTemplateID, fields ...string) (*entity.MessageTemplate, error)
+	Get(
+		ctx context.Context,
+		messageID entity.MessageTemplateID,
+		fields ...string,
+	) (*entity.MessageTemplate, error)
 }
 
 type Notification interface {
-	List(ctx context.Context, params *ListNotificationsParams, fields ...string) (entity.Notifications, error)
+	List(
+		ctx context.Context,
+		params *ListNotificationsParams,
+		fields ...string,
+	) (entity.Notifications, error)
 	Count(ctx context.Context, params *ListNotificationsParams) (int64, error)
 	Get(ctx context.Context, notificationID string, fields ...string) (*entity.Notification, error)
 	Create(ctx context.Context, notification *entity.Notification) error
@@ -149,22 +169,44 @@ type UpdateNotificationParams struct {
 }
 
 type PushTemplate interface {
-	Get(ctx context.Context, pushID entity.PushTemplateID, fields ...string) (*entity.PushTemplate, error)
+	Get(
+		ctx context.Context,
+		pushID entity.PushTemplateID,
+		fields ...string,
+	) (*entity.PushTemplate, error)
 }
 
 type ReceivedQueue interface {
-	Get(ctx context.Context, queueID string, typ entity.NotifyType, fields ...string) (*entity.ReceivedQueue, error)
+	Get(
+		ctx context.Context,
+		queueID string,
+		typ entity.NotifyType,
+		fields ...string,
+	) (*entity.ReceivedQueue, error)
 	MultiCreate(ctx context.Context, queues ...*entity.ReceivedQueue) error
 	UpdateDone(ctx context.Context, queueID string, typ entity.NotifyType, done bool) error
 }
 
 type ReportTemplate interface {
-	Get(ctx context.Context, reportID entity.ReportTemplateID, fields ...string) (*entity.ReportTemplate, error)
+	Get(
+		ctx context.Context,
+		reportID entity.ReportTemplateID,
+		fields ...string,
+	) (*entity.ReportTemplate, error)
 }
 
 type Schedule interface {
-	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
-	Get(ctx context.Context, messageType entity.ScheduleType, messageID string, fields ...string) (*entity.Schedule, error)
+	List(
+		ctx context.Context,
+		params *ListSchedulesParams,
+		fields ...string,
+	) (entity.Schedules, error)
+	Get(
+		ctx context.Context,
+		messageType entity.ScheduleType,
+		messageID string,
+		fields ...string,
+	) (*entity.Schedule, error)
 	Upsert(ctx context.Context, schedule *entity.Schedule) error
 	UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error
 	UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error

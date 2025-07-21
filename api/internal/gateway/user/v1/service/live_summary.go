@@ -31,7 +31,11 @@ func (l *LiveSummary) Response() *response.LiveSummary {
 	return &l.LiveSummary
 }
 
-func NewLiveSummaries(schedules entity.Schedules, lives entity.Lives, products entity.Products) LiveSummaries {
+func NewLiveSummaries(
+	schedules entity.Schedules,
+	lives entity.Lives,
+	products entity.Products,
+) LiveSummaries {
 	livesMap := lives.GroupByScheduleID()
 	res := make(LiveSummaries, len(schedules))
 	for i := range schedules {

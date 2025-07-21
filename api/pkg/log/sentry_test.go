@@ -63,7 +63,11 @@ func TestLoggerWithSentry(t *testing.T) {
 				mock.EXPECT().ReportMessage(gomock.Any(), gomock.Any(), gomock.Any())
 			},
 			exec: func(logger *zap.Logger) {
-				logger.Error("some message", zap.String("string", "str"), zap.Any("sentry", sentry.WithTag("key", "value")))
+				logger.Error(
+					"some message",
+					zap.String("string", "str"),
+					zap.Any("sentry", sentry.WithTag("key", "value")),
+				)
 			},
 		},
 		{

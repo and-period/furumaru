@@ -197,7 +197,12 @@ func (c *Client) Transaction(ctx context.Context, f func(tx *gorm.DB) error) (er
 }
 
 // Statement - セレクトクエリの生成
-func (c *Client) Statement(ctx context.Context, tx *gorm.DB, table string, fields ...string) *gorm.DB {
+func (c *Client) Statement(
+	ctx context.Context,
+	tx *gorm.DB,
+	table string,
+	fields ...string,
+) *gorm.DB {
 	stmt := tx.WithContext(ctx).Table(table)
 	if len(fields) == 0 {
 		stmt = stmt.Select("*")
@@ -208,7 +213,12 @@ func (c *Client) Statement(ctx context.Context, tx *gorm.DB, table string, field
 }
 
 // Statement - カウントクエリの生成
-func (c *Client) Count(ctx context.Context, tx *gorm.DB, model interface{}, fn func(*gorm.DB) *gorm.DB) (int64, error) {
+func (c *Client) Count(
+	ctx context.Context,
+	tx *gorm.DB,
+	model interface{},
+	fn func(*gorm.DB) *gorm.DB,
+) (int64, error) {
 	var total int64
 
 	stmt := tx.WithContext(ctx).Model(model).Select("COUNT(*)")

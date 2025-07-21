@@ -90,7 +90,9 @@ func TestListProductTags(t *testing.T) {
 			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ProductTag.EXPECT().List(gomock.Any(), params).Return(productTags, nil)
-				mocks.db.ProductTag.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.ProductTag.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductTagsInput{
 				Name:   "野菜",
@@ -107,12 +109,15 @@ func TestListProductTags(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListProductTags(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListProductTags(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -139,7 +144,9 @@ func TestMultiGetProductTags(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductTag.EXPECT().MultiGet(ctx, []string{"product-tag-id"}).Return(productTags, nil)
+				mocks.db.ProductTag.EXPECT().
+					MultiGet(ctx, []string{"product-tag-id"}).
+					Return(productTags, nil)
 			},
 			input: &store.MultiGetProductTagsInput{
 				ProductTagIDs: []string{"product-tag-id"},
@@ -159,7 +166,9 @@ func TestMultiGetProductTags(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductTag.EXPECT().MultiGet(ctx, []string{"product-tag-id"}).Return(nil, assert.AnError)
+				mocks.db.ProductTag.EXPECT().
+					MultiGet(ctx, []string{"product-tag-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetProductTagsInput{
 				ProductTagIDs: []string{"product-tag-id"},
@@ -170,11 +179,14 @@ func TestMultiGetProductTags(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetProductTags(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetProductTags(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -228,11 +240,14 @@ func TestGetProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetProductTag(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetProductTag(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -283,10 +298,13 @@ func TestCreateProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateProductTag(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateProductTag(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -319,7 +337,9 @@ func TestUpdateProductTag(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductTag.EXPECT().Update(ctx, "product-tag-id", "野菜").Return(assert.AnError)
+				mocks.db.ProductTag.EXPECT().
+					Update(ctx, "product-tag-id", "野菜").
+					Return(assert.AnError)
 			},
 			input: &store.UpdateProductTagInput{
 				ProductTagID: "product-tag-id",
@@ -330,10 +350,13 @@ func TestUpdateProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProductTag(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateProductTag(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -401,9 +424,12 @@ func TestDeleteProductTag(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteProductTag(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteProductTag(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

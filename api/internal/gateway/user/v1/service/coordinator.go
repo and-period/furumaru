@@ -38,7 +38,10 @@ func (c *Coordinator) Response() *response.Coordinator {
 	return &c.Coordinator
 }
 
-func NewCoordinators(coordinators uentity.Coordinators, shops map[string]*sentity.Shop) Coordinators {
+func NewCoordinators(
+	coordinators uentity.Coordinators,
+	shops map[string]*sentity.Shop,
+) Coordinators {
 	res := make(Coordinators, len(coordinators))
 	for i := range coordinators {
 		res[i] = NewCoordinator(coordinators[i], shops[coordinators[i].ID])

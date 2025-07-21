@@ -42,12 +42,19 @@ func (u *adminGroupUser) List(
 	return users, dbError(err)
 }
 
-func (u *adminGroupUser) Count(ctx context.Context, params *database.ListAdminGroupUsersParams) (int64, error) {
+func (u *adminGroupUser) Count(
+	ctx context.Context,
+	params *database.ListAdminGroupUsersParams,
+) (int64, error) {
 	total, err := u.db.Count(ctx, u.db.DB, &entity.AdminGroupUser{}, nil)
 	return total, dbError(err)
 }
 
-func (u *adminGroupUser) Get(ctx context.Context, groupID, adminID string, fields ...string) (*entity.AdminGroupUser, error) {
+func (u *adminGroupUser) Get(
+	ctx context.Context,
+	groupID, adminID string,
+	fields ...string,
+) (*entity.AdminGroupUser, error) {
 	var user *entity.AdminGroupUser
 
 	stmt := u.db.Statement(ctx, u.db.DB, adminGroupUserTable, fields...).

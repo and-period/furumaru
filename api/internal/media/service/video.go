@@ -14,7 +14,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (entity.Videos, int64, error) {
+func (s *service) ListVideos(
+	ctx context.Context,
+	in *media.ListVideosInput,
+) (entity.Videos, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -47,7 +50,10 @@ func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (en
 	return videos, total, nil
 }
 
-func (s *service) ListProductVideos(ctx context.Context, in *media.ListProductVideosInput) (entity.Videos, error) {
+func (s *service) ListProductVideos(
+	ctx context.Context,
+	in *media.ListProductVideosInput,
+) (entity.Videos, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -55,7 +61,10 @@ func (s *service) ListProductVideos(ctx context.Context, in *media.ListProductVi
 	return videos, internalError(err)
 }
 
-func (s *service) ListExperienceVideos(ctx context.Context, in *media.ListExperienceVideosInput) (entity.Videos, error) {
+func (s *service) ListExperienceVideos(
+	ctx context.Context,
+	in *media.ListExperienceVideosInput,
+) (entity.Videos, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -71,7 +80,10 @@ func (s *service) GetVideo(ctx context.Context, in *media.GetVideoInput) (*entit
 	return video, internalError(err)
 }
 
-func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (*entity.Video, error) {
+func (s *service) CreateVideo(
+	ctx context.Context,
+	in *media.CreateVideoInput,
+) (*entity.Video, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -117,7 +129,11 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("service: related data not found: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return nil, fmt.Errorf(
+			"service: related data not found: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -183,7 +199,11 @@ func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) e
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("service: related data not found: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return fmt.Errorf(
+			"service: related data not found: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	if err != nil {
 		return internalError(err)

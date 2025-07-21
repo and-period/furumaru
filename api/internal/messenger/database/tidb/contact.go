@@ -25,7 +25,11 @@ func NewContact(db *mysql.Client) database.Contact {
 	}
 }
 
-func (c *contact) List(ctx context.Context, params *database.ListContactsParams, fields ...string) (entity.Contacts, error) {
+func (c *contact) List(
+	ctx context.Context,
+	params *database.ListContactsParams,
+	fields ...string,
+) (entity.Contacts, error) {
 	var contacts entity.Contacts
 
 	stmt := c.db.Statement(ctx, c.db.DB, contactTable, fields...)
@@ -45,7 +49,11 @@ func (c *contact) Count(ctx context.Context) (int64, error) {
 	return total, dbError(err)
 }
 
-func (c *contact) Get(ctx context.Context, contactID string, fields ...string) (*entity.Contact, error) {
+func (c *contact) Get(
+	ctx context.Context,
+	contactID string,
+	fields ...string,
+) (*entity.Contact, error) {
 	contact, err := c.get(ctx, c.db.DB, contactID, fields...)
 	return contact, dbError(err)
 }
@@ -58,7 +66,11 @@ func (c *contact) Create(ctx context.Context, contact *entity.Contact) error {
 	return dbError(err)
 }
 
-func (c *contact) Update(ctx context.Context, contactID string, params *database.UpdateContactParams) error {
+func (c *contact) Update(
+	ctx context.Context,
+	contactID string,
+	params *database.UpdateContactParams,
+) error {
 	updates := map[string]interface{}{
 		"title":        params.Title,
 		"category_id":  params.CategoryID,
@@ -92,7 +104,12 @@ func (c *contact) Delete(ctx context.Context, contactID string) error {
 	return dbError(err)
 }
 
-func (c *contact) get(ctx context.Context, tx *gorm.DB, contactID string, fields ...string) (*entity.Contact, error) {
+func (c *contact) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	contactID string,
+	fields ...string,
+) (*entity.Contact, error) {
 	var contact *entity.Contact
 
 	stmt := c.db.Statement(ctx, tx, contactTable, fields...).

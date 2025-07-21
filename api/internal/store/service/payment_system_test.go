@@ -64,11 +64,14 @@ func TestMultiGetPaymentSystems(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetPaymentSystems(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetPaymentSystems(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -91,7 +94,9 @@ func TestGetPaymentSystem(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.PaymentSystem.EXPECT().Get(ctx, entity.PaymentMethodTypeCreditCard).Return(system, nil)
+				mocks.db.PaymentSystem.EXPECT().
+					Get(ctx, entity.PaymentMethodTypeCreditCard).
+					Return(system, nil)
 			},
 			input: &store.GetPaymentSystemInput{
 				MethodType: entity.PaymentMethodTypeCreditCard,
@@ -110,7 +115,9 @@ func TestGetPaymentSystem(t *testing.T) {
 		{
 			name: "failed to get payment system",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.PaymentSystem.EXPECT().Get(ctx, entity.PaymentMethodTypeCreditCard).Return(nil, assert.AnError)
+				mocks.db.PaymentSystem.EXPECT().
+					Get(ctx, entity.PaymentMethodTypeCreditCard).
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetPaymentSystemInput{
 				MethodType: entity.PaymentMethodTypeCreditCard,
@@ -120,11 +127,14 @@ func TestGetPaymentSystem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetPaymentSystem(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetPaymentSystem(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -171,9 +181,12 @@ func TestUpdatePaymentSystem(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdatePaymentSystem(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdatePaymentSystem(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

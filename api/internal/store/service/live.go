@@ -13,7 +13,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListLives(ctx context.Context, in *store.ListLivesInput) (entity.Lives, int64, error) {
+func (s *service) ListLives(
+	ctx context.Context,
+	in *store.ListLivesInput,
+) (entity.Lives, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -146,14 +149,19 @@ func (s *service) validateLive(ctx context.Context, live *entity.Live) error {
 		return nil
 	})
 	err := eg.Wait()
-	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
+	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) ||
+		errors.Is(err, errUnmatchProducts) {
 		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)
 	}
 	if err := live.Validate(schedule, lives); err != nil {
-		return fmt.Errorf("api: invalid live schedule: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid live schedule: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	return nil
 }

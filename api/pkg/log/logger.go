@@ -94,7 +94,11 @@ func newLogger(opts *options) (*zap.Logger, error) {
 
 	// 標準出力設定
 	level := getLogLevel(opts.logLevel)
-	consoleCore := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(os.Stdout), level)
+	consoleCore := zapcore.NewCore(
+		zapcore.NewJSONEncoder(encoderConfig),
+		zapcore.AddSync(os.Stdout),
+		level,
+	)
 
 	// Path==""のとき、標準出力のみ
 	if opts.outputPath == "" {

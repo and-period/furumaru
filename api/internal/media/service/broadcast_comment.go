@@ -31,7 +31,10 @@ func (s *service) ListBroadcastComments(
 	return comments, token, internalError(err)
 }
 
-func (s *service) CreateBroadcastComment(ctx context.Context, in *media.CreateBroadcastCommentInput) (*entity.BroadcastComment, error) {
+func (s *service) CreateBroadcastComment(
+	ctx context.Context,
+	in *media.CreateBroadcastCommentInput,
+) (*entity.BroadcastComment, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -72,7 +75,10 @@ func (s *service) CreateBroadcastGuestComment(
 	return comment, nil
 }
 
-func (s *service) UpdateBroadcastComment(ctx context.Context, in *media.UpdateBroadcastCommentInput) error {
+func (s *service) UpdateBroadcastComment(
+	ctx context.Context,
+	in *media.UpdateBroadcastCommentInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

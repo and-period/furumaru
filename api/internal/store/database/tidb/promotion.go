@@ -65,7 +65,11 @@ func (p listPromotionsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (p *promotion) List(ctx context.Context, params *database.ListPromotionsParams, fields ...string) (entity.Promotions, error) {
+func (p *promotion) List(
+	ctx context.Context,
+	params *database.ListPromotionsParams,
+	fields ...string,
+) (entity.Promotions, error) {
 	var promotions entity.Promotions
 
 	prm := listPromotionsParams(*params)
@@ -81,14 +85,21 @@ func (p *promotion) List(ctx context.Context, params *database.ListPromotionsPar
 	return promotions, nil
 }
 
-func (p *promotion) Count(ctx context.Context, params *database.ListPromotionsParams) (int64, error) {
+func (p *promotion) Count(
+	ctx context.Context,
+	params *database.ListPromotionsParams,
+) (int64, error) {
 	prm := listPromotionsParams(*params)
 
 	total, err := p.db.Count(ctx, p.db.DB, &entity.Promotion{}, prm.stmt)
 	return total, dbError(err)
 }
 
-func (p *promotion) MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error) {
+func (p *promotion) MultiGet(
+	ctx context.Context,
+	promotionIDs []string,
+	fields ...string,
+) (entity.Promotions, error) {
 	var promotions entity.Promotions
 
 	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...).
@@ -101,12 +112,20 @@ func (p *promotion) MultiGet(ctx context.Context, promotionIDs []string, fields 
 	return promotions, nil
 }
 
-func (p *promotion) Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error) {
+func (p *promotion) Get(
+	ctx context.Context,
+	promotionID string,
+	fields ...string,
+) (*entity.Promotion, error) {
 	promotion, err := p.get(ctx, p.db.DB, promotionID, fields...)
 	return promotion, dbError(err)
 }
 
-func (p *promotion) GetByCode(ctx context.Context, code string, fields ...string) (*entity.Promotion, error) {
+func (p *promotion) GetByCode(
+	ctx context.Context,
+	code string,
+	fields ...string,
+) (*entity.Promotion, error) {
 	var promotion *entity.Promotion
 
 	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...).
@@ -127,7 +146,11 @@ func (p *promotion) Create(ctx context.Context, promotion *entity.Promotion) err
 	return dbError(err)
 }
 
-func (p *promotion) Update(ctx context.Context, promotionID string, params *database.UpdatePromotionParams) error {
+func (p *promotion) Update(
+	ctx context.Context,
+	promotionID string,
+	params *database.UpdatePromotionParams,
+) error {
 	updates := map[string]interface{}{
 		"title":         params.Title,
 		"description":   params.Description,

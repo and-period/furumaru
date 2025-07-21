@@ -10,7 +10,10 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
 
-func (s *service) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInput) (entity.Admins, error) {
+func (s *service) MultiGetAdmins(
+	ctx context.Context,
+	in *user.MultiGetAdminsInput,
+) (entity.Admins, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -18,7 +21,10 @@ func (s *service) MultiGetAdmins(ctx context.Context, in *user.MultiGetAdminsInp
 	return admins, internalError(err)
 }
 
-func (s *service) MultiGetAdminDevices(ctx context.Context, in *user.MultiGetAdminDevicesInput) ([]string, error) {
+func (s *service) MultiGetAdminDevices(
+	ctx context.Context,
+	in *user.MultiGetAdminDevicesInput,
+) ([]string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -37,7 +43,10 @@ func (s *service) GetAdmin(ctx context.Context, in *user.GetAdminInput) (*entity
 	return admin, internalError(err)
 }
 
-func (s *service) ForgotAdminPassword(ctx context.Context, in *user.ForgotAdminPasswordInput) error {
+func (s *service) ForgotAdminPassword(
+	ctx context.Context,
+	in *user.ForgotAdminPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -51,7 +60,10 @@ func (s *service) ForgotAdminPassword(ctx context.Context, in *user.ForgotAdminP
 	return nil
 }
 
-func (s *service) VerifyAdminPassword(ctx context.Context, in *user.VerifyAdminPasswordInput) error {
+func (s *service) VerifyAdminPassword(
+	ctx context.Context,
+	in *user.VerifyAdminPasswordInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

@@ -148,7 +148,9 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNotificationsOrder, error) {
+func (h *handler) newNotificationOrders(
+	ctx *gin.Context,
+) ([]*messenger.ListNotificationsOrder, error) {
 	notifications := map[string]messenger.ListNotificationsOrderKey{
 		"title":       messenger.ListNotificationsOrderByTitle,
 		"publishedAt": messenger.ListNotificationsOrderByPublishedAt,
@@ -164,7 +166,11 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 	for i, p := range params {
 		key, ok := notifications[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
+			return nil, fmt.Errorf(
+				"handler: unknown order key. key=%s: %w",
+				p.Key,
+				errInvalidOrderKey,
+			)
 		}
 		res[i] = &messenger.ListNotificationsOrder{
 			Key:        key,

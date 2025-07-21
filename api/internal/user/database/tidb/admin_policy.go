@@ -24,7 +24,11 @@ func NewAdminPolicy(db *mysql.Client) database.AdminPolicy {
 	}
 }
 
-func (p *adminPolicy) List(ctx context.Context, params *database.ListAdminPoliciesParams, fields ...string) (entity.AdminPolicies, error) {
+func (p *adminPolicy) List(
+	ctx context.Context,
+	params *database.ListAdminPoliciesParams,
+	fields ...string,
+) (entity.AdminPolicies, error) {
 	var policies entity.AdminPolicies
 
 	stmt := p.db.Statement(ctx, p.db.DB, adminPolicyTable, fields...)
@@ -39,12 +43,19 @@ func (p *adminPolicy) List(ctx context.Context, params *database.ListAdminPolici
 	return policies, dbError(err)
 }
 
-func (p *adminPolicy) Count(ctx context.Context, params *database.ListAdminPoliciesParams) (int64, error) {
+func (p *adminPolicy) Count(
+	ctx context.Context,
+	params *database.ListAdminPoliciesParams,
+) (int64, error) {
 	total, err := p.db.Count(ctx, p.db.DB, &entity.AdminPolicy{}, nil)
 	return total, dbError(err)
 }
 
-func (p *adminPolicy) MultiGet(ctx context.Context, policyIDs []string, fields ...string) (entity.AdminPolicies, error) {
+func (p *adminPolicy) MultiGet(
+	ctx context.Context,
+	policyIDs []string,
+	fields ...string,
+) (entity.AdminPolicies, error) {
 	var policies entity.AdminPolicies
 
 	stmt := p.db.Statement(ctx, p.db.DB, adminPolicyTable, fields...).
@@ -54,7 +65,11 @@ func (p *adminPolicy) MultiGet(ctx context.Context, policyIDs []string, fields .
 	return policies, dbError(err)
 }
 
-func (p *adminPolicy) Get(ctx context.Context, policyID string, fields ...string) (*entity.AdminPolicy, error) {
+func (p *adminPolicy) Get(
+	ctx context.Context,
+	policyID string,
+	fields ...string,
+) (*entity.AdminPolicy, error) {
 	var policy *entity.AdminPolicy
 
 	stmt := p.db.Statement(ctx, p.db.DB, adminPolicyTable, fields...).

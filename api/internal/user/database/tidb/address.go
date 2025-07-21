@@ -50,7 +50,11 @@ func (p listAddressesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (a *address) List(ctx context.Context, params *database.ListAddressesParams, fields ...string) (entity.Addresses, error) {
+func (a *address) List(
+	ctx context.Context,
+	params *database.ListAddressesParams,
+	fields ...string,
+) (entity.Addresses, error) {
 	var addresses entity.Addresses
 
 	p := listAddressesParams(*params)
@@ -68,7 +72,11 @@ func (a *address) List(ctx context.Context, params *database.ListAddressesParams
 	return addresses, nil
 }
 
-func (a *address) ListDefault(ctx context.Context, userIDs []string, fields ...string) (entity.Addresses, error) {
+func (a *address) ListDefault(
+	ctx context.Context,
+	userIDs []string,
+	fields ...string,
+) (entity.Addresses, error) {
 	var addresses entity.Addresses
 
 	stmt := a.db.Statement(ctx, a.db.DB, addressTable, fields...).
@@ -91,12 +99,20 @@ func (a *address) Count(ctx context.Context, params *database.ListAddressesParam
 	return total, dbError(err)
 }
 
-func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
+func (a *address) MultiGet(
+	ctx context.Context,
+	addressIDs []string,
+	fields ...string,
+) (entity.Addresses, error) {
 	addresses, err := a.multiGet(ctx, a.db.DB, addressIDs, fields...)
 	return addresses, dbError(err)
 }
 
-func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error) {
+func (a *address) MultiGetByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+	fields ...string,
+) (entity.Addresses, error) {
 	var revisions entity.AddressRevisions
 
 	stmt := a.db.Statement(ctx, a.db.DB, addressRevisionTable).
@@ -125,12 +141,20 @@ func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 	return res, nil
 }
 
-func (a *address) Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error) {
+func (a *address) Get(
+	ctx context.Context,
+	addressID string,
+	fields ...string,
+) (*entity.Address, error) {
 	address, err := a.get(ctx, a.db.DB, addressID, fields...)
 	return address, dbError(err)
 }
 
-func (a *address) GetDefault(ctx context.Context, userID string, fields ...string) (*entity.Address, error) {
+func (a *address) GetDefault(
+	ctx context.Context,
+	userID string,
+	fields ...string,
+) (*entity.Address, error) {
 	var address *entity.Address
 
 	stmt := a.db.Statement(ctx, a.db.DB, addressTable, fields...).
@@ -170,12 +194,19 @@ func (a *address) Create(ctx context.Context, address *entity.Address) error {
 		if err := tx.WithContext(ctx).Table(addressTable).Create(&address).Error; err != nil {
 			return err
 		}
-		return tx.WithContext(ctx).Table(addressRevisionTable).Create(&address.AddressRevision).Error
+		return tx.WithContext(ctx).
+			Table(addressRevisionTable).
+			Create(&address.AddressRevision).
+			Error
 	})
 	return dbError(err)
 }
 
-func (a *address) Update(ctx context.Context, addressID, userID string, params *database.UpdateAddressParams) error {
+func (a *address) Update(
+	ctx context.Context,
+	addressID, userID string,
+	params *database.UpdateAddressParams,
+) error {
 	now := a.now()
 	rparams := &entity.NewAddressRevisionParams{
 		AddressID:      addressID,
@@ -192,7 +223,11 @@ func (a *address) Update(ctx context.Context, addressID, userID string, params *
 	}
 	revision, err := entity.NewAddressRevision(rparams)
 	if err != nil {
-		return fmt.Errorf("mysql: failed to new address revision: %w: %s", database.ErrInvalidArgument, err.Error())
+		return fmt.Errorf(
+			"mysql: failed to new address revision: %w: %s",
+			database.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 
 	err = a.db.Transaction(ctx, func(tx *gorm.DB) error {
@@ -248,10 +283,17 @@ func (a *address) Delete(ctx context.Context, addressID, userID string) error {
 	return dbError(err)
 }
 
-func (a *address) multiGet(ctx context.Context, tx *gorm.DB, addressIDs []string, fields ...string) (entity.Addresses, error) {
+func (a *address) multiGet(
+	ctx context.Context,
+	tx *gorm.DB,
+	addressIDs []string,
+	fields ...string,
+) (entity.Addresses, error) {
 	var addresses entity.Addresses
 
-	stmt := a.db.Statement(ctx, tx, addressTable, fields...).Unscoped().Where("id IN (?)", addressIDs)
+	stmt := a.db.Statement(ctx, tx, addressTable, fields...).
+		Unscoped().
+		Where("id IN (?)", addressIDs)
 
 	if err := stmt.Find(&addresses).Error; err != nil {
 		return nil, dbError(err)
@@ -262,7 +304,12 @@ func (a *address) multiGet(ctx context.Context, tx *gorm.DB, addressIDs []string
 	return addresses, nil
 }
 
-func (a *address) get(ctx context.Context, tx *gorm.DB, addressID string, fields ...string) (*entity.Address, error) {
+func (a *address) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	addressID string,
+	fields ...string,
+) (*entity.Address, error) {
 	var address *entity.Address
 
 	stmt := a.db.Statement(ctx, tx, addressTable, fields...).

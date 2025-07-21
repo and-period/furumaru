@@ -20,7 +20,11 @@ func (s *service) ListCategories(
 	}
 	orders, err := s.newListCategoriesOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list caterogies orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list caterogies orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListCategoriesParams{
 		Name:   in.Name,
@@ -47,7 +51,9 @@ func (s *service) ListCategories(
 	return categories, total, nil
 }
 
-func (s *service) newListCategoriesOrders(in []*store.ListCategoriesOrder) ([]*database.ListCategoriesOrder, error) {
+func (s *service) newListCategoriesOrders(
+	in []*store.ListCategoriesOrder,
+) ([]*database.ListCategoriesOrder, error) {
 	res := make([]*database.ListCategoriesOrder, len(in))
 	for i := range in {
 		var key database.ListCategoriesOrderKey
@@ -75,7 +81,10 @@ func (s *service) MultiGetCategories(
 	return categories, internalError(err)
 }
 
-func (s *service) GetCategory(ctx context.Context, in *store.GetCategoryInput) (*entity.Category, error) {
+func (s *service) GetCategory(
+	ctx context.Context,
+	in *store.GetCategoryInput,
+) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -83,7 +92,10 @@ func (s *service) GetCategory(ctx context.Context, in *store.GetCategoryInput) (
 	return category, internalError(err)
 }
 
-func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
+func (s *service) CreateCategory(
+	ctx context.Context,
+	in *store.CreateCategoryInput,
+) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -117,7 +129,10 @@ func (s *service) DeleteCategory(ctx context.Context, in *store.DeleteCategoryIn
 		return internalError(err)
 	}
 	if total > 0 {
-		return fmt.Errorf("service: associated with product type: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"service: associated with product type: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	err = s.db.Category.Delete(ctx, in.CategoryID)
 	return internalError(err)

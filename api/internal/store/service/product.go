@@ -15,13 +15,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput) (entity.Products, int64, error) {
+func (s *service) ListProducts(
+	ctx context.Context,
+	in *store.ListProductsInput,
+) (entity.Products, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
 	orders, err := s.newListProductsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list products orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list products orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListProductsParams{
 		Name:           in.Name,
@@ -56,7 +63,9 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 	return products, total, nil
 }
 
-func (s *service) newListProductsOrders(in []*store.ListProductsOrder) ([]*database.ListProductsOrder, error) {
+func (s *service) newListProductsOrders(
+	in []*store.ListProductsOrder,
+) ([]*database.ListProductsOrder, error) {
 	res := make([]*database.ListProductsOrder, len(in))
 	for i := range in {
 		var key database.ListProductsOrderKey
@@ -110,7 +119,10 @@ func (s *service) MultiGetProductsByRevision(
 	return products, internalError(err)
 }
 
-func (s *service) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {
+func (s *service) GetProduct(
+	ctx context.Context,
+	in *store.GetProductInput,
+) (*entity.Product, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -118,7 +130,10 @@ func (s *service) GetProduct(ctx context.Context, in *store.GetProductInput) (*e
 	return product, internalError(err)
 }
 
-func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInput) (*entity.Product, error) {
+func (s *service) CreateProduct(
+	ctx context.Context,
+	in *store.CreateProductInput,
+) (*entity.Product, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -127,7 +142,11 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid media format: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -150,7 +169,11 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) || errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid admin id: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -187,7 +210,11 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	}
 	product, err := entity.NewProduct(params)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to new product: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return nil, fmt.Errorf(
+			"service: failed to new product: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	if err := s.db.Product.Create(ctx, product); err != nil {
 		return nil, internalError(err)
@@ -200,14 +227,22 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		return internalError(err)
 	}
 	if _, err := codes.ToPrefectureJapanese(in.OriginPrefectureCode); err != nil {
-		return fmt.Errorf("service: invalid prefecture: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return fmt.Errorf(
+			"service: invalid prefecture: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	media := make(entity.MultiProductMedia, len(in.Media))
 	for i, m := range in.Media {
 		media[i] = entity.NewProductMedia(m.URL, m.IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid media format: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.UpdateProductParams{
 		TypeID:               in.TypeID,

@@ -30,7 +30,13 @@ func TestVideoViewerLog_Create(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	video := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
@@ -99,7 +105,13 @@ func TestVideoViewerLog_GetTotal(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	video := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
@@ -171,7 +183,13 @@ func TestVideoViewerLog_Aggregate(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
-	video := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	video := testVideo(
+		"video-id",
+		"coordinator-id",
+		[]string{"product-id"},
+		[]string{"experience-id"},
+		now(),
+	)
 	err = db.DB.Create(&video).Error
 	require.NoError(t, err)
 
@@ -213,14 +231,30 @@ func TestVideoViewerLog_Aggregate(t *testing.T) {
 			want: want{
 				logs: entity.AggregatedVideoViewerLogs{
 					{
-						VideoID:    "video-id",
-						ReportedAt: jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute(), 0, 0),
-						Total:      2,
+						VideoID: "video-id",
+						ReportedAt: jst.Date(
+							now().Year(),
+							now().Month(),
+							now().Day(),
+							now().Hour(),
+							now().Minute(),
+							0,
+							0,
+						),
+						Total: 2,
 					},
 					{
-						VideoID:    "video-id",
-						ReportedAt: jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute()+1, 0, 0),
-						Total:      1,
+						VideoID: "video-id",
+						ReportedAt: jst.Date(
+							now().Year(),
+							now().Month(),
+							now().Day(),
+							now().Hour(),
+							now().Minute()+1,
+							0,
+							0,
+						),
+						Total: 1,
 					},
 				},
 				err: nil,

@@ -19,12 +19,20 @@ func (w *worker) multiSendMail(ctx context.Context, payload *entity.WorkerPayloa
 	return w.sendMail(ctx, payload.Email.TemplateID, ps...)
 }
 
-func (w *worker) sendMail(ctx context.Context, templateID entity.EmailTemplateID, ps ...*mailer.Personalization) error {
+func (w *worker) sendMail(
+	ctx context.Context,
+	templateID entity.EmailTemplateID,
+	ps ...*mailer.Personalization,
+) error {
 	if len(ps) == 0 {
 		w.logger.Debug("Personalizations is empty", zap.String("templateId", string(templateID)))
 		return nil
 	}
-	w.logger.Debug("Send email", zap.String("templateId", string(templateID)), zap.Any("personalizations", ps))
+	w.logger.Debug(
+		"Send email",
+		zap.String("templateId", string(templateID)),
+		zap.Any("personalizations", ps),
+	)
 	sendFn := func() error {
 		return w.mailer.MultiSendFromInfo(ctx, string(templateID), ps)
 	}
@@ -74,7 +82,11 @@ func (w *worker) newPersonalizations(
 	return ps, nil
 }
 
-func (w *worker) fetchAdmins(ctx context.Context, adminIDs []string, execute func(name, email string)) error {
+func (w *worker) fetchAdmins(
+	ctx context.Context,
+	adminIDs []string,
+	execute func(name, email string),
+) error {
 	in := &user.MultiGetAdminsInput{
 		AdminIDs: adminIDs,
 	}
@@ -124,7 +136,11 @@ func (w *worker) fetchProducers(_ context.Context, _ []string, _ func(name, emai
 	return nil // 生産者は認証機能を持たないためメール送信もしない
 }
 
-func (w *worker) fetchUsers(ctx context.Context, userIDs []string, execute func(name, email string)) error {
+func (w *worker) fetchUsers(
+	ctx context.Context,
+	userIDs []string,
+	execute func(name, email string),
+) error {
 	in := &user.MultiGetUsersInput{
 		UserIDs: userIDs,
 	}

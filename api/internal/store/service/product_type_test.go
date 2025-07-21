@@ -95,7 +95,9 @@ func TestListProductTypes(t *testing.T) {
 			name: "failed to count",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ProductType.EXPECT().List(gomock.Any(), params).Return(productTypes, nil)
-				mocks.db.ProductType.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductTypesInput{
 				Name:       "じゃがいも",
@@ -113,12 +115,15 @@ func TestListProductTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListProductTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListProductTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -147,7 +152,9 @@ func TestMultiGetProductTypes(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(productTypes, nil)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(productTypes, nil)
 			},
 			input: &store.MultiGetProductTypesInput{
 				ProductTypeIDs: []string{"product-type-id"},
@@ -167,7 +174,9 @@ func TestMultiGetProductTypes(t *testing.T) {
 		{
 			name: "failed to list",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().MultiGet(ctx, []string{"product-type-id"}).Return(nil, assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					MultiGet(ctx, []string{"product-type-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &store.MultiGetProductTypesInput{
 				ProductTypeIDs: []string{"product-type-id"},
@@ -178,11 +187,14 @@ func TestMultiGetProductTypes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetProductTypes(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetProductTypes(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -227,7 +239,9 @@ func TestGetProductType(t *testing.T) {
 		{
 			name: "failed to get product type",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(nil, assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					Get(ctx, "product-type-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -238,11 +252,14 @@ func TestGetProductType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetProductType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetProductType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -299,10 +316,13 @@ func TestCreateProductType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateProductType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateProductType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -318,7 +338,9 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://tmp.and-period.jp/icon.png").Return(nil)
+				mocks.db.ProductType.EXPECT().
+					Update(ctx, "product-type-id", "さつまいも", "https://tmp.and-period.jp/icon.png").
+					Return(nil)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -336,7 +358,9 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(assert.AnError)
+				mocks.db.ProductType.EXPECT().
+					Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").
+					Return(assert.AnError)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -348,10 +372,13 @@ func TestUpdateProductType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProductType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateProductType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -408,7 +435,9 @@ func TestDeleteProductType(t *testing.T) {
 			name: "failed to remove from shop",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
-				mocks.db.Shop.EXPECT().RemoveProductType(ctx, "product-type-id").Return(assert.AnError)
+				mocks.db.Shop.EXPECT().
+					RemoveProductType(ctx, "product-type-id").
+					Return(assert.AnError)
 			},
 			input: &store.DeleteProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -430,9 +459,12 @@ func TestDeleteProductType(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteProductType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteProductType(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

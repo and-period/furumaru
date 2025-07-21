@@ -57,7 +57,11 @@ func (p *listMessagesParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (m *message) List(ctx context.Context, params *database.ListMessagesParams, fields ...string) (entity.Messages, error) {
+func (m *message) List(
+	ctx context.Context,
+	params *database.ListMessagesParams,
+	fields ...string,
+) (entity.Messages, error) {
 	var messages entity.Messages
 
 	p := listMessagesParams(*params)
@@ -77,7 +81,11 @@ func (m *message) Count(ctx context.Context, params *database.ListMessagesParams
 	return total, dbError(err)
 }
 
-func (m *message) Get(ctx context.Context, messageID string, fields ...string) (*entity.Message, error) {
+func (m *message) Get(
+	ctx context.Context,
+	messageID string,
+	fields ...string,
+) (*entity.Message, error) {
 	message, err := m.get(ctx, m.db.DB, messageID, fields...)
 	return message, dbError(err)
 }
@@ -106,7 +114,12 @@ func (m *message) UpdateRead(ctx context.Context, messageID string) error {
 	return dbError(err)
 }
 
-func (m *message) get(ctx context.Context, tx *gorm.DB, messageID string, fields ...string) (*entity.Message, error) {
+func (m *message) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	messageID string,
+	fields ...string,
+) (*entity.Message, error) {
 	var message *entity.Message
 
 	stmt := m.db.Statement(ctx, tx, messageTable, fields...).

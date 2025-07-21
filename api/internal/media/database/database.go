@@ -30,10 +30,18 @@ type Database struct {
 }
 
 type Broadcast interface {
-	List(ctx context.Context, params *ListBroadcastsParams, fields ...string) (entity.Broadcasts, error)
+	List(
+		ctx context.Context,
+		params *ListBroadcastsParams,
+		fields ...string,
+	) (entity.Broadcasts, error)
 	Count(ctx context.Context, params *ListBroadcastsParams) (int64, error)
 	Get(ctx context.Context, broadcastID string, fields ...string) (*entity.Broadcast, error)
-	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
+	GetByScheduleID(
+		ctx context.Context,
+		scheduleID string,
+		fields ...string,
+	) (*entity.Broadcast, error)
 	Create(ctx context.Context, broadcast *entity.Broadcast) error
 	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
@@ -99,7 +107,11 @@ type UpsertYoutubeBroadcastParams struct {
 }
 
 type BroadcastComment interface {
-	List(ctx context.Context, params *ListBroadcastCommentsParams, fields ...string) (entity.BroadcastComments, string, error)
+	List(
+		ctx context.Context,
+		params *ListBroadcastCommentsParams,
+		fields ...string,
+	) (entity.BroadcastComments, string, error)
 	Create(ctx context.Context, comment *entity.BroadcastComment) error
 	Update(ctx context.Context, commentID string, params *UpdateBroadcastCommentParams) error
 }
@@ -120,7 +132,10 @@ type UpdateBroadcastCommentParams struct {
 type BroadcastViewerLog interface {
 	Create(ctx context.Context, log *entity.BroadcastViewerLog) error
 	GetTotal(ctx context.Context, params *GetBroadcastTotalViewersParams) (int64, error)
-	Aggregate(ctx context.Context, params *AggregateBroadcastViewerLogsParams) (entity.AggregatedBroadcastViewerLogs, error)
+	Aggregate(
+		ctx context.Context,
+		params *AggregateBroadcastViewerLogsParams,
+	) (entity.AggregatedBroadcastViewerLogs, error)
 }
 
 type GetBroadcastTotalViewersParams struct {
@@ -139,7 +154,11 @@ type AggregateBroadcastViewerLogsParams struct {
 type Video interface {
 	List(ctx context.Context, params *ListVideosParams, fields ...string) (entity.Videos, error)
 	ListByProductID(ctx context.Context, productID string, fields ...string) (entity.Videos, error)
-	ListByExperienceID(ctx context.Context, experienceID string, fields ...string) (entity.Videos, error)
+	ListByExperienceID(
+		ctx context.Context,
+		experienceID string,
+		fields ...string,
+	) (entity.Videos, error)
 	Count(ctx context.Context, params *ListVideosParams) (int64, error)
 	Get(ctx context.Context, videoID string, fields ...string) (*entity.Video, error)
 	Create(ctx context.Context, video *entity.Video) error
@@ -173,7 +192,11 @@ type UpdateVideoParams struct {
 }
 
 type VideoComment interface {
-	List(ctx context.Context, params *ListVideoCommentsParams, fields ...string) (entity.VideoComments, string, error)
+	List(
+		ctx context.Context,
+		params *ListVideoCommentsParams,
+		fields ...string,
+	) (entity.VideoComments, string, error)
 	Create(ctx context.Context, comment *entity.VideoComment) error
 	Update(ctx context.Context, commentID string, params *UpdateVideoCommentParams) error
 }
@@ -194,7 +217,10 @@ type UpdateVideoCommentParams struct {
 type VideoViewerLog interface {
 	Create(ctx context.Context, log *entity.VideoViewerLog) error
 	GetTotal(ctx context.Context, params *GetVideoTotalViewersParams) (int64, error)
-	Aggregate(ctx context.Context, params *AggregateVideoViewerLogsParams) (entity.AggregatedVideoViewerLogs, error)
+	Aggregate(
+		ctx context.Context,
+		params *AggregateVideoViewerLogsParams,
+	) (entity.AggregatedVideoViewerLogs, error)
 }
 
 type GetVideoTotalViewersParams struct {

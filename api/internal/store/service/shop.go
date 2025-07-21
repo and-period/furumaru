@@ -11,7 +11,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListShops(ctx context.Context, in *store.ListShopsInput) (entity.Shops, int64, error) {
+func (s *service) ListShops(
+	ctx context.Context,
+	in *store.ListShopsInput,
+) (entity.Shops, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -40,7 +43,10 @@ func (s *service) ListShops(ctx context.Context, in *store.ListShopsInput) (enti
 	return shops, total, nil
 }
 
-func (s *service) ListShopProducers(ctx context.Context, in *store.ListShopProducersInput) ([]string, error) {
+func (s *service) ListShopProducers(
+	ctx context.Context,
+	in *store.ListShopProducersInput,
+) ([]string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -53,7 +59,10 @@ func (s *service) ListShopProducers(ctx context.Context, in *store.ListShopProdu
 	return producerIDs, internalError(err)
 }
 
-func (s *service) MultiGetShops(ctx context.Context, in *store.MultiGetShopsInput) (entity.Shops, error) {
+func (s *service) MultiGetShops(
+	ctx context.Context,
+	in *store.MultiGetShopsInput,
+) (entity.Shops, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -69,7 +78,10 @@ func (s *service) GetShop(ctx context.Context, in *store.GetShopInput) (*entity.
 	return shop, internalError(err)
 }
 
-func (s *service) GetShopByCoordinatorID(ctx context.Context, in *store.GetShopByCoordinatorIDInput) (*entity.Shop, error) {
+func (s *service) GetShopByCoordinatorID(
+	ctx context.Context,
+	in *store.GetShopByCoordinatorIDInput,
+) (*entity.Shop, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -86,7 +98,10 @@ func (s *service) CreateShop(ctx context.Context, in *store.CreateShopInput) (*e
 		return nil, internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return nil, fmt.Errorf("service: contains invalid product type ids: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"service: contains invalid product type ids: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &entity.ShopParams{
 		CoordinatorID:  in.CoordinatorID,
@@ -110,7 +125,10 @@ func (s *service) UpdateShop(ctx context.Context, in *store.UpdateShopInput) err
 		return internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return fmt.Errorf("service: contains invalid product type ids: %w", exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"service: contains invalid product type ids: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.UpdateShopParams{
 		Name:           in.Name,
@@ -137,7 +155,10 @@ func (s *service) RelateShopProducer(ctx context.Context, in *store.RelateShopPr
 	return internalError(err)
 }
 
-func (s *service) UnrelateShopProducer(ctx context.Context, in *store.UnrelateShopProducerInput) error {
+func (s *service) UnrelateShopProducer(
+	ctx context.Context,
+	in *store.UnrelateShopProducerInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

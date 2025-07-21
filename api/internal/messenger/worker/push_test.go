@@ -44,8 +44,12 @@ func TestMultiSendPush(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(template, nil)
-				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(1), int64(0), nil)
+				mocks.db.PushTemplate.EXPECT().
+					Get(ctx, entity.PushTemplateIDContact).
+					Return(template, nil)
+				mocks.messaging.EXPECT().
+					MultiSend(gomock.Any(), message, devices).
+					Return(int64(1), int64(0), nil)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -95,7 +99,9 @@ func TestMultiSendPush(t *testing.T) {
 			name: "failed to get push template",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(nil, assert.AnError)
+				mocks.db.PushTemplate.EXPECT().
+					Get(ctx, entity.PushTemplateIDContact).
+					Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -112,8 +118,12 @@ func TestMultiSendPush(t *testing.T) {
 			name: "failed to multi send push",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(template, nil)
-				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(0), int64(0), assert.AnError)
+				mocks.db.PushTemplate.EXPECT().
+					Get(ctx, entity.PushTemplateIDContact).
+					Return(template, nil)
+				mocks.messaging.EXPECT().
+					MultiSend(gomock.Any(), message, devices).
+					Return(int64(0), int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
@@ -129,10 +139,13 @@ func TestMultiSendPush(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.multiSendPush(ctx, tt.payload)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				err := worker.multiSendPush(ctx, tt.payload)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -238,10 +251,13 @@ func TestFetchTokens(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			actual, err := worker.fetchTokens(ctx, tt.payload)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
+				actual, err := worker.fetchTokens(ctx, tt.payload)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }

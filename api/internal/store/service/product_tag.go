@@ -20,7 +20,11 @@ func (s *service) ListProductTags(
 	}
 	orders, err := s.newListProductTagsOrders(in.Orders)
 	if err != nil {
-		return nil, 0, fmt.Errorf("service: invalid list product tags orders: err=%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"service: invalid list product tags orders: err=%s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	params := &database.ListProductTagsParams{
 		Name:   in.Name,
@@ -47,7 +51,9 @@ func (s *service) ListProductTags(
 	return productTags, total, nil
 }
 
-func (s *service) newListProductTagsOrders(in []*store.ListProductTagsOrder) ([]*database.ListProductTagsOrder, error) {
+func (s *service) newListProductTagsOrders(
+	in []*store.ListProductTagsOrder,
+) ([]*database.ListProductTagsOrder, error) {
 	res := make([]*database.ListProductTagsOrder, len(in))
 	for i := range in {
 		var key database.ListProductTagsOrderKey
@@ -75,7 +81,10 @@ func (s *service) MultiGetProductTags(
 	return productTags, internalError(err)
 }
 
-func (s *service) GetProductTag(ctx context.Context, in *store.GetProductTagInput) (*entity.ProductTag, error) {
+func (s *service) GetProductTag(
+	ctx context.Context,
+	in *store.GetProductTagInput,
+) (*entity.ProductTag, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -83,7 +92,10 @@ func (s *service) GetProductTag(ctx context.Context, in *store.GetProductTagInpu
 	return productTag, internalError(err)
 }
 
-func (s *service) CreateProductTag(ctx context.Context, in *store.CreateProductTagInput) (*entity.ProductTag, error) {
+func (s *service) CreateProductTag(
+	ctx context.Context,
+	in *store.CreateProductTagInput,
+) (*entity.ProductTag, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

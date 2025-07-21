@@ -32,7 +32,10 @@ func (s *service) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.
 	return cart, nil
 }
 
-func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) {
+func (s *service) CalcCart(
+	ctx context.Context,
+	in *store.CalcCartInput,
+) (*entity.Cart, *entity.OrderPaymentSummary, error) {
 	s.logger.Debug("calc cart", zap.Any("input", in))
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, internalError(err)
@@ -66,7 +69,11 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 		if promotion.IsEnabled(shop.ID) {
 			return
 		}
-		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("code", in.PromotionCode))
+		s.logger.Warn(
+			"Failed to disable promotion",
+			zap.String("sessionId", in.SessionID),
+			zap.String("code", in.PromotionCode),
+		)
 		promotion = nil
 		return
 	})
@@ -114,7 +121,11 @@ func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) e
 		return internalError(err)
 	}
 	if err := cart.Baskets.VerifyQuantity(in.Quantity, product); err != nil {
-		return fmt.Errorf("service: out of stock: %w: %s", exception.ErrFailedPrecondition, err.Error())
+		return fmt.Errorf(
+			"service: out of stock: %w: %s",
+			exception.ErrFailedPrecondition,
+			err.Error(),
+		)
 	}
 	// カートに商品を追加し、買い物かご内を整理
 	cart.AddItem(in.ProductID, in.Quantity)

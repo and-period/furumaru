@@ -9,7 +9,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) CreateBroadcastViewerLog(ctx context.Context, in *media.CreateBroadcastViewerLogInput) error {
+func (s *service) CreateBroadcastViewerLog(
+	ctx context.Context,
+	in *media.CreateBroadcastViewerLogInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

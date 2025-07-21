@@ -50,7 +50,10 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) multiGetPromotion(ctx context.Context, promotionIDs []string) (service.Promotions, error) {
+func (h *handler) multiGetPromotion(
+	ctx context.Context,
+	promotionIDs []string,
+) (service.Promotions, error) {
 	if len(promotionIDs) == 0 {
 		return service.Promotions{}, nil
 	}
@@ -64,7 +67,10 @@ func (h *handler) multiGetPromotion(ctx context.Context, promotionIDs []string) 
 	return service.NewPromotions(promotions), nil
 }
 
-func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
+func (h *handler) getPromotion(
+	ctx context.Context,
+	promotionID string,
+) (*service.Promotion, error) {
 	in := &store.GetPromotionInput{
 		PromotionID: promotionID,
 	}
@@ -75,7 +81,10 @@ func (h *handler) getPromotion(ctx context.Context, promotionID string) (*servic
 	return service.NewPromotion(promotion), nil
 }
 
-func (h *handler) getEnabledPromotion(ctx context.Context, code string) (*service.Promotion, error) {
+func (h *handler) getEnabledPromotion(
+	ctx context.Context,
+	code string,
+) (*service.Promotion, error) {
 	in := &store.GetPromotionByCodeInput{
 		PromotionCode: code,
 		OnlyEnabled:   true,

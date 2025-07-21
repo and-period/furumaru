@@ -25,7 +25,11 @@ func NewGuest(db *mysql.Client) database.Guest {
 	}
 }
 
-func (g *guest) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error) {
+func (g *guest) GetByEmail(
+	ctx context.Context,
+	email string,
+	fields ...string,
+) (*entity.Guest, error) {
 	var guest *entity.Guest
 
 	stmt := g.db.Statement(ctx, g.db.DB, guestTable, fields...).Where("email = ?", email)
@@ -49,7 +53,11 @@ func (g *guest) Create(ctx context.Context, user *entity.User) error {
 	return dbError(err)
 }
 
-func (g *guest) Update(ctx context.Context, userID string, params *database.UpdateGuestParams) error {
+func (g *guest) Update(
+	ctx context.Context,
+	userID string,
+	params *database.UpdateGuestParams,
+) error {
 	updates := map[string]interface{}{
 		"lastname":       params.Lastname,
 		"firstname":      params.Firstname,

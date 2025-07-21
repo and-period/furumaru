@@ -182,7 +182,8 @@ func (h *handler) newExperiencesResponse(
 	}
 
 	res := &response.ExperiencesResponse{
-		Experiences:     service.NewExperiences(experiences, experienceRates.MapByExperienceID()).Response(),
+		Experiences: service.NewExperiences(experiences, experienceRates.MapByExperienceID()).
+			Response(),
 		Coordinators:    coordinators.Response(),
 		Producers:       producers.Response(),
 		ExperienceTypes: experienceTypes.Response(),
@@ -230,7 +231,10 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) listExperiences(ctx context.Context, in *store.ListExperiencesInput) (service.Experiences, error) {
+func (h *handler) listExperiences(
+	ctx context.Context,
+	in *store.ListExperiencesInput,
+) (service.Experiences, error) {
 	experiences, _, err := h.store.ListExperiences(ctx, in)
 	if err != nil || len(experiences) == 0 {
 		return service.Experiences{}, err
@@ -243,7 +247,10 @@ func (h *handler) listExperiences(ctx context.Context, in *store.ListExperiences
 	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
 }
 
-func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []string) (service.Experiences, error) {
+func (h *handler) multiGetExperiences(
+	ctx context.Context,
+	experienceIDs []string,
+) (service.Experiences, error) {
 	if len(experienceIDs) == 0 {
 		return service.Experiences{}, nil
 	}
@@ -262,7 +269,10 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
 }
 
-func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (service.Experiences, error) {
+func (h *handler) multiGetExperiencesByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (service.Experiences, error) {
 	if len(revisionIDs) == 0 {
 		return service.Experiences{}, nil
 	}
@@ -281,7 +291,10 @@ func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs
 	return service.NewExperiences(experiences, rates.MapByExperienceID()), nil
 }
 
-func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
+func (h *handler) getExperience(
+	ctx context.Context,
+	experienceID string,
+) (*service.Experience, error) {
 	in := &store.GetExperienceInput{
 		ExperienceID: experienceID,
 	}

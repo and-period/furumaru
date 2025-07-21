@@ -36,16 +36,34 @@ func TestExperienceReview_List(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
 	require.NoError(t, err)
 
 	reviews := make(entity.ExperienceReviews, 3)
-	reviews[0] = testExperienceReview("review-id01", "experience-id", "user-id01", now().Add(-time.Hour))
+	reviews[0] = testExperienceReview(
+		"review-id01",
+		"experience-id",
+		"user-id01",
+		now().Add(-time.Hour),
+	)
 	reviews[1] = testExperienceReview("review-id02", "experience-id", "user-id02", now())
-	reviews[2] = testExperienceReview("review-id03", "experience-id", "user-id03", now().Add(time.Hour))
+	reviews[2] = testExperienceReview(
+		"review-id03",
+		"experience-id",
+		"user-id03",
+		now().Add(time.Hour),
+	)
 	err = db.DB.Create(&reviews).Error
 	require.NoError(t, err)
 
@@ -115,7 +133,15 @@ func TestExperienceReview_Get(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -195,7 +221,15 @@ func TestExperienceReview_Create(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -272,7 +306,15 @@ func TestExperienceReview_Update(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -345,7 +387,15 @@ func TestExperienceReview_Delete(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error
@@ -412,7 +462,15 @@ func TestExperienceReview_Aggregate(t *testing.T) {
 	experienceType := testExperienceType("type-id", "野菜", now())
 	err = db.DB.Create(&experienceType).Error
 	require.NoError(t, err)
-	p := testExperience("experience-id", "type-id", "shop-id", "coordinator-id", "producer-id", 1, now())
+	p := testExperience(
+		"experience-id",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		1,
+		now(),
+	)
 	err = db.DB.Table(experienceTable).Create(&p).Error
 	require.NoError(t, err)
 	err = db.DB.Create(&p.ExperienceRevision).Error

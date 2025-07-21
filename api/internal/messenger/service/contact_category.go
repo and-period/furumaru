@@ -8,7 +8,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
-func (s *service) ListContactCategories(ctx context.Context, in *messenger.ListContactCategoriesInput) (entity.ContactCategories, error) {
+func (s *service) ListContactCategories(
+	ctx context.Context,
+	in *messenger.ListContactCategoriesInput,
+) (entity.ContactCategories, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -30,7 +33,10 @@ func (s *service) MultiGetContactCategories(
 	return categories, internalError(err)
 }
 
-func (s *service) GetContactCategory(ctx context.Context, in *messenger.GetContactCategoryInput) (*entity.ContactCategory, error) {
+func (s *service) GetContactCategory(
+	ctx context.Context,
+	in *messenger.GetContactCategoryInput,
+) (*entity.ContactCategory, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}

@@ -37,7 +37,9 @@ func TestScheduler_executeStartLive(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().UpsertProcessing(ctx, schedule).Return(nil)
 				mocks.messenger.EXPECT().NotifyStartLive(ctx, in).Return(nil)
-				mocks.db.Schedule.EXPECT().UpdateDone(ctx, entity.ScheduleTypeStartLive, "schedule-id").Return(nil)
+				mocks.db.Schedule.EXPECT().
+					UpdateDone(ctx, entity.ScheduleTypeStartLive, "schedule-id").
+					Return(nil)
 			},
 			schedule:  schedule,
 			expectErr: nil,
@@ -54,9 +56,12 @@ func TestScheduler_executeStartLive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
-			err := scheduler.executeStartLive(ctx, tt.schedule)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}, withNow(now)))
+		t.Run(
+			tt.name,
+			testScheduler(tt.setup, func(ctx context.Context, t *testing.T, scheduler *scheduler) {
+				err := scheduler.executeStartLive(ctx, tt.schedule)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}, withNow(now)),
+		)
 	}
 }

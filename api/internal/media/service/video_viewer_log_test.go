@@ -131,10 +131,13 @@ func TestCreateVideoViewerLog(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.CreateVideoViewerLog(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.CreateVideoViewerLog(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expect)
+			}),
+		)
 	}
 }
 
@@ -172,8 +175,12 @@ func TestAggregateVideoViewerLogs(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.VideoViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(logs, nil)
-				mocks.db.VideoViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(3), nil)
+				mocks.db.VideoViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(logs, nil)
+				mocks.db.VideoViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(3), nil)
 			},
 			input: &media.AggregateVideoViewerLogsInput{
 				VideoID:      "video-id",
@@ -195,8 +202,12 @@ func TestAggregateVideoViewerLogs(t *testing.T) {
 		{
 			name: "failed to aggregate viewer logs",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.VideoViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(nil, assert.AnError)
-				mocks.db.VideoViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(3), nil)
+				mocks.db.VideoViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(nil, assert.AnError)
+				mocks.db.VideoViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(3), nil)
 			},
 			input: &media.AggregateVideoViewerLogsInput{
 				VideoID:      "video-id",
@@ -211,8 +222,12 @@ func TestAggregateVideoViewerLogs(t *testing.T) {
 		{
 			name: "failed to aggregate viewer logs",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.VideoViewerLog.EXPECT().Aggregate(gomock.Any(), aggregateParams).Return(logs, nil)
-				mocks.db.VideoViewerLog.EXPECT().GetTotal(gomock.Any(), totalParams).Return(int64(0), assert.AnError)
+				mocks.db.VideoViewerLog.EXPECT().
+					Aggregate(gomock.Any(), aggregateParams).
+					Return(logs, nil)
+				mocks.db.VideoViewerLog.EXPECT().
+					GetTotal(gomock.Any(), totalParams).
+					Return(int64(0), assert.AnError)
 			},
 			input: &media.AggregateVideoViewerLogsInput{
 				VideoID:      "video-id",
@@ -227,11 +242,14 @@ func TestAggregateVideoViewerLogs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.AggregateVideoViewerLogs(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.AggregateVideoViewerLogs(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }

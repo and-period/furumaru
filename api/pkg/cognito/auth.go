@@ -152,7 +152,10 @@ func (c *client) RefreshToken(ctx context.Context, refreshToken string) (*AuthRe
 	return auth, nil
 }
 
-func (c *client) GenerateAuthURL(ctx context.Context, params *GenerateAuthURLParams) (string, error) {
+func (c *client) GenerateAuthURL(
+	ctx context.Context,
+	params *GenerateAuthURLParams,
+) (string, error) {
 	const format = "https://%s/oauth2/authorize"
 	authURL, err := url.Parse(fmt.Sprintf(format, c.authDomain))
 	if err != nil {
@@ -182,7 +185,10 @@ type getAccessTokenResponse struct {
 	ExpiresIn    int32  `json:"expires_in"`    // トークン有効期限
 }
 
-func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParams) (*AuthResult, error) {
+func (c *client) GetAccessToken(
+	ctx context.Context,
+	params *GetAccessTokenParams,
+) (*AuthResult, error) {
 	const format = "https://%s/oauth2/token"
 	authURL, err := url.Parse(fmt.Sprintf(format, c.authDomain))
 	if err != nil {
@@ -210,8 +216,15 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 
 	if res.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(res.Body)
-		c.logger.Error("Failed to get access token", zap.Int("status", res.StatusCode), zap.String("body", string(body)))
-		return nil, fmt.Errorf("cognito: failed to get access token: status code=%d", res.StatusCode)
+		c.logger.Error(
+			"Failed to get access token",
+			zap.Int("status", res.StatusCode),
+			zap.String("body", string(body)),
+		)
+		return nil, fmt.Errorf(
+			"cognito: failed to get access token: status code=%d",
+			res.StatusCode,
+		)
 	}
 
 	out := &getAccessTokenResponse{}

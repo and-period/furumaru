@@ -38,7 +38,10 @@ func (p listShopsParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("coordinator_id IN (?)", p.CoordinatorIDs)
 	}
 	if len(p.ProducerIDs) > 0 {
-		stmt = stmt.Where("id IN (SELECT DISTINCT(shop_id) FROM shop_producers WHERE producer_id IN (?))", p.ProducerIDs)
+		stmt = stmt.Where(
+			"id IN (SELECT DISTINCT(shop_id) FROM shop_producers WHERE producer_id IN (?))",
+			p.ProducerIDs,
+		)
 	}
 	return stmt
 }
@@ -53,7 +56,11 @@ func (p listShopsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (s *shop) List(ctx context.Context, params *database.ListShopsParams, fields ...string) (entity.Shops, error) {
+func (s *shop) List(
+	ctx context.Context,
+	params *database.ListShopsParams,
+	fields ...string,
+) (entity.Shops, error) {
 	var internal internalShops
 
 	p := listShopsParams(*params)
@@ -83,7 +90,11 @@ func (s *shop) Count(ctx context.Context, params *database.ListShopsParams) (int
 	return total, dbError(err)
 }
 
-func (s *shop) MultiGet(ctx context.Context, shopIDs []string, fields ...string) (entity.Shops, error) {
+func (s *shop) MultiGet(
+	ctx context.Context,
+	shopIDs []string,
+	fields ...string,
+) (entity.Shops, error) {
 	var internal internalShops
 
 	stmt := s.db.Statement(ctx, s.db.DB, shopTable, fields...).Where("id IN (?)", shopIDs)
@@ -107,7 +118,11 @@ func (s *shop) Get(ctx context.Context, shopID string, fields ...string) (*entit
 	return shop, dbError(err)
 }
 
-func (s *shop) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shop, error) {
+func (s *shop) GetByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+	fields ...string,
+) (*entity.Shop, error) {
 	var internal *internalShop
 
 	stmt := s.db.Statement(ctx, s.db.DB, shopTable, fields...).
@@ -175,7 +190,10 @@ func (s *shop) Delete(ctx context.Context, shopID string) error {
 }
 
 func (s *shop) RemoveProductType(ctx context.Context, productTypeID string) error {
-	sub := gorm.Expr("JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))", productTypeID)
+	sub := gorm.Expr(
+		"JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))",
+		productTypeID,
+	)
 
 	stmt := s.db.DB.WithContext(ctx).
 		Table(shopTable).
@@ -185,7 +203,10 @@ func (s *shop) RemoveProductType(ctx context.Context, productTypeID string) erro
 	return dbError(err)
 }
 
-func (s *shop) ListProducers(ctx context.Context, params *database.ListShopProducersParams) ([]string, error) {
+func (s *shop) ListProducers(
+	ctx context.Context,
+	params *database.ListShopProducersParams,
+) ([]string, error) {
 	var producerIDs []string
 
 	fields := []string{
@@ -234,7 +255,12 @@ func (s *shop) UnrelateProducer(ctx context.Context, shopID, producerID string) 
 	return dbError(err)
 }
 
-func (s *shop) get(ctx context.Context, tx *gorm.DB, shopID string, fields ...string) (*entity.Shop, error) {
+func (s *shop) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	shopID string,
+	fields ...string,
+) (*entity.Shop, error) {
 	var internal *internalShop
 
 	stmt := s.db.Statement(ctx, tx, shopTable, fields...).Where("id = ?", shopID)

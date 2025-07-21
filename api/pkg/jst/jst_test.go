@@ -15,7 +15,19 @@ func TestNow(t *testing.T) {
 func TestDate(t *testing.T) {
 	t.Parallel()
 	now := Now()
-	assert.Equal(t, now, Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond()))
+	assert.Equal(
+		t,
+		now,
+		Date(
+			now.Year(),
+			now.Month(),
+			now.Day(),
+			now.Hour(),
+			now.Minute(),
+			now.Second(),
+			now.Nanosecond(),
+		),
+	)
 }
 
 func TestToTime(t *testing.T) {
@@ -42,7 +54,11 @@ func TestToTime(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expectBeginningOfDay, BeginningOfDay(tt.now))
-			assert.Equal(t, tt.expectBeginningOfMonth, BeginningOfMonth(tt.now.Year(), int(tt.now.Month())))
+			assert.Equal(
+				t,
+				tt.expectBeginningOfMonth,
+				BeginningOfMonth(tt.now.Year(), int(tt.now.Month())),
+			)
 			assert.Equal(t, tt.expectEndOfDay, EndOfDay(tt.now))
 			assert.Equal(t, tt.expectEndOfMonth, EndOfMonth(tt.now.Year(), int(tt.now.Month())))
 		})

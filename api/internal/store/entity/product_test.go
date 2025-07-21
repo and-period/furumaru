@@ -1289,9 +1289,18 @@ func TestMultiProductMedia_MapByURL(t *testing.T) {
 				{URL: "https://and-period.jp/thumbnail03.png", IsThumbnail: false},
 			},
 			expect: map[string]*ProductMedia{
-				"https://and-period.jp/thumbnail01.png": {URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-				"https://and-period.jp/thumbnail02.png": {URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
-				"https://and-period.jp/thumbnail03.png": {URL: "https://and-period.jp/thumbnail03.png", IsThumbnail: false},
+				"https://and-period.jp/thumbnail01.png": {
+					URL:         "https://and-period.jp/thumbnail01.png",
+					IsThumbnail: true,
+				},
+				"https://and-period.jp/thumbnail02.png": {
+					URL:         "https://and-period.jp/thumbnail02.png",
+					IsThumbnail: false,
+				},
+				"https://and-period.jp/thumbnail03.png": {
+					URL:         "https://and-period.jp/thumbnail03.png",
+					IsThumbnail: false,
+				},
 			},
 		},
 	}

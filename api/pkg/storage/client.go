@@ -53,9 +53,18 @@ type Bucket interface {
 	// S3 Bucketからオブジェクトを取得と書き込み
 	DownloadAndWrite(ctx context.Context, url string, w io.Writer) error
 	// S3 Bucketへオブジェクトをアップロード
-	Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error)
+	Upload(
+		ctx context.Context,
+		path string,
+		body io.Reader,
+		metadata map[string]string,
+	) (string, error)
 	// S3 Bucketへ他バケットからオブジェクトをコピーする
-	Copy(ctx context.Context, srcBucket, srcKey, dstKey string, metadata map[string]string) (string, error)
+	Copy(
+		ctx context.Context,
+		srcBucket, srcKey, dstKey string,
+		metadata map[string]string,
+	) (string, error)
 	// S3 Bucket URLが自身のバケット用URLかの判定
 	IsMyHost(url string) bool
 }
@@ -143,7 +152,11 @@ func (b *bucket) GeneratePresignUploadURI(key string, expiresIn time.Duration) (
 		Bucket: aws.String(*b.name),
 		Key:    b.trimKeyPrefix(key),
 	}
-	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(expiresIn))
+	request, err := b.presigner.PresignPutObject(
+		context.Background(),
+		in,
+		s3.WithPresignExpires(expiresIn),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -255,7 +268,12 @@ func (b *bucket) DownloadAndWrite(ctx context.Context, url string, w io.Writer) 
 	return err
 }
 
-func (b *bucket) Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error) {
+func (b *bucket) Upload(
+	ctx context.Context,
+	path string,
+	body io.Reader,
+	metadata map[string]string,
+) (string, error) {
 	in := &s3.PutObjectInput{
 		Bucket:   b.name,
 		Key:      b.trimKeyPrefix(path),
@@ -269,7 +287,11 @@ func (b *bucket) Upload(ctx context.Context, path string, body io.Reader, metada
 	return b.GenerateObjectURL(path)
 }
 
-func (b *bucket) Copy(ctx context.Context, srcBucket, srcKey, dstKey string, metadata map[string]string) (string, error) {
+func (b *bucket) Copy(
+	ctx context.Context,
+	srcBucket, srcKey, dstKey string,
+	metadata map[string]string,
+) (string, error) {
 	source := strings.Join([]string{srcBucket, srcKey}, "/")
 	in := &s3.CopyObjectInput{
 		Bucket:     b.name,

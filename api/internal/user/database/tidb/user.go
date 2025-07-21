@@ -54,7 +54,11 @@ func (p listUsersParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (u *user) List(ctx context.Context, params *database.ListUsersParams, fields ...string) (entity.Users, error) {
+func (u *user) List(
+	ctx context.Context,
+	params *database.ListUsersParams,
+	fields ...string,
+) (entity.Users, error) {
 	var users entity.Users
 
 	p := listUsersParams(*params)
@@ -79,10 +83,16 @@ func (u *user) Count(ctx context.Context, params *database.ListUsersParams) (int
 	return total, dbError(err)
 }
 
-func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
+func (u *user) MultiGet(
+	ctx context.Context,
+	userIDs []string,
+	fields ...string,
+) (entity.Users, error) {
 	var users entity.Users
 
-	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...).Unscoped().Where("id IN (?)", userIDs)
+	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...).
+		Unscoped().
+		Where("id IN (?)", userIDs)
 
 	if err := stmt.Find(&users).Error; err != nil {
 		return nil, dbError(err)
@@ -112,7 +122,12 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 	return dbError(err)
 }
 
-func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.User, error) {
+func (u *user) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	userID string,
+	fields ...string,
+) (*entity.User, error) {
 	var user *entity.User
 
 	err := u.db.Statement(ctx, tx, userTable, fields...).
@@ -149,7 +164,11 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 	return nil
 }
 
-func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Members, error) {
+func (u *user) fetchMembers(
+	ctx context.Context,
+	tx *gorm.DB,
+	userIDs []string,
+) (entity.Members, error) {
 	var members entity.Members
 
 	stmt := u.db.Statement(ctx, tx, memberTable).Where("user_id IN (?)", userIDs)
@@ -158,7 +177,11 @@ func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) 
 	return members, err
 }
 
-func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
+func (u *user) fetchGuests(
+	ctx context.Context,
+	tx *gorm.DB,
+	userIDs []string,
+) (entity.Guests, error) {
 	var guests entity.Guests
 
 	err := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs).Find(&guests).Error

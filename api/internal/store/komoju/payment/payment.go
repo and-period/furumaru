@@ -85,7 +85,10 @@ type refundRequest struct {
 	Description string `json:"description,omitempty"`
 }
 
-func (c *client) Refund(ctx context.Context, params *komoju.RefundParams) (*komoju.PaymentResponse, error) {
+func (c *client) Refund(
+	ctx context.Context,
+	params *komoju.RefundParams,
+) (*komoju.PaymentResponse, error) {
 	const path = "/api/v1/payments/%s/refund"
 	body := &refundRequest{
 		Amount:      params.Amount,
@@ -118,7 +121,10 @@ type refundRequestRequest struct {
 	Description             string `json:"description"`
 }
 
-func (c *client) RefundRequest(ctx context.Context, params *komoju.RefundRequestParams) (*komoju.PaymentResponse, error) {
+func (c *client) RefundRequest(
+	ctx context.Context,
+	params *komoju.RefundRequestParams,
+) (*komoju.PaymentResponse, error) {
 	const path = "/api/v1/payments/%s/refund_request"
 	body := &refundRequestRequest{
 		Amount:                  params.Amount,

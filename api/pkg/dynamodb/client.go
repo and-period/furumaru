@@ -217,7 +217,11 @@ func (c *client) dbError(err error) error {
 		return fmt.Errorf("%w: %s", ErrOutOfRange, err.Error())
 	case errors.As(err, &tee):
 		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
-	case errors.As(err, &rue), errors.As(err, &tue), errors.As(err, &tae), errors.As(err, &tce), errors.As(err, &tpe):
+	case errors.As(err, &rue),
+		errors.As(err, &tue),
+		errors.As(err, &tae),
+		errors.As(err, &tce),
+		errors.As(err, &tpe):
 		return fmt.Errorf("%w: %s", ErrAborted, err.Error())
 	default:
 		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())

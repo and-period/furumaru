@@ -82,7 +82,10 @@ func (n *notification) List(
 	return notifications, nil
 }
 
-func (n *notification) Count(ctx context.Context, params *database.ListNotificationsParams) (int64, error) {
+func (n *notification) Count(
+	ctx context.Context,
+	params *database.ListNotificationsParams,
+) (int64, error) {
 	p := listNotificationsParams(*params)
 
 	total, err := n.db.Count(ctx, n.db.DB, &entity.Notification{}, p.stmt)
@@ -109,7 +112,11 @@ func (n *notification) Create(ctx context.Context, notification *entity.Notifica
 	return dbError(err)
 }
 
-func (n *notification) Update(ctx context.Context, notificationID string, params *database.UpdateNotificationParams) error {
+func (n *notification) Update(
+	ctx context.Context,
+	notificationID string,
+	params *database.UpdateNotificationParams,
+) error {
 	err := n.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := n.get(ctx, tx, notificationID)
 		if err != nil {

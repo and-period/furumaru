@@ -164,7 +164,11 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 	for i, p := range params {
 		key, ok := products[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
+			return nil, fmt.Errorf(
+				"handler: unknown order key. key=%s: %w",
+				p.Key,
+				errInvalidOrderKey,
+			)
 		}
 		res[i] = &store.ListProductsOrder{
 			Key:        key,
@@ -301,25 +305,29 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	}
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
-		ShopID:               shop.ID,
-		CoordinatorID:        req.CoordinatorID,
-		ProducerID:           req.ProducerID,
-		TypeID:               req.TypeID,
-		TagIDs:               req.TagIDs,
-		Name:                 req.Name,
-		Description:          req.Description,
-		Public:               req.Public,
-		Inventory:            req.Inventory,
-		Weight:               weight,
-		WeightUnit:           weightUnit,
-		Item:                 1, // 1固定
-		ItemUnit:             req.ItemUnit,
-		ItemDescription:      req.ItemDescription,
-		Media:                productMedia,
-		Price:                req.Price,
-		Cost:                 req.Cost,
-		ExpirationDate:       req.ExpirationDate,
-		RecommendedPoints:    h.newProductPoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		ShopID:          shop.ID,
+		CoordinatorID:   req.CoordinatorID,
+		ProducerID:      req.ProducerID,
+		TypeID:          req.TypeID,
+		TagIDs:          req.TagIDs,
+		Name:            req.Name,
+		Description:     req.Description,
+		Public:          req.Public,
+		Inventory:       req.Inventory,
+		Weight:          weight,
+		WeightUnit:      weightUnit,
+		Item:            1, // 1固定
+		ItemUnit:        req.ItemUnit,
+		ItemDescription: req.ItemDescription,
+		Media:           productMedia,
+		Price:           req.Price,
+		Cost:            req.Cost,
+		ExpirationDate:  req.ExpirationDate,
+		RecommendedPoints: h.newProductPoints(
+			req.RecommendedPoint1,
+			req.RecommendedPoint2,
+			req.RecommendedPoint3,
+		),
 		StorageMethodType:    service.StorageMethodType(req.StorageMethodType).StoreEntity(),
 		DeliveryType:         service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:            req.Box60Rate,
@@ -391,23 +399,27 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	}
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
-		ProductID:            util.GetParam(ctx, "productId"),
-		TypeID:               req.TypeID,
-		TagIDs:               req.TagIDs,
-		Name:                 req.Name,
-		Description:          req.Description,
-		Public:               req.Public,
-		Inventory:            req.Inventory,
-		Weight:               weight,
-		WeightUnit:           weightUnit,
-		Item:                 1, // 1固定
-		ItemUnit:             req.ItemUnit,
-		ItemDescription:      req.ItemDescription,
-		Media:                productMedia,
-		Price:                req.Price,
-		Cost:                 req.Cost,
-		ExpirationDate:       req.ExpirationDate,
-		RecommendedPoints:    h.newProductPoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		ProductID:       util.GetParam(ctx, "productId"),
+		TypeID:          req.TypeID,
+		TagIDs:          req.TagIDs,
+		Name:            req.Name,
+		Description:     req.Description,
+		Public:          req.Public,
+		Inventory:       req.Inventory,
+		Weight:          weight,
+		WeightUnit:      weightUnit,
+		Item:            1, // 1固定
+		ItemUnit:        req.ItemUnit,
+		ItemDescription: req.ItemDescription,
+		Media:           productMedia,
+		Price:           req.Price,
+		Cost:            req.Cost,
+		ExpirationDate:  req.ExpirationDate,
+		RecommendedPoints: h.newProductPoints(
+			req.RecommendedPoint1,
+			req.RecommendedPoint2,
+			req.RecommendedPoint3,
+		),
 		StorageMethodType:    service.StorageMethodType(req.StorageMethodType).StoreEntity(),
 		DeliveryType:         service.DeliveryType(req.DeliveryType).StoreEntity(),
 		Box60Rate:            req.Box60Rate,
@@ -449,7 +461,10 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
+func (h *handler) multiGetProducts(
+	ctx context.Context,
+	productIDs []string,
+) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil
 	}
@@ -463,7 +478,10 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	return service.NewProducts(products), nil
 }
 
-func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
+func (h *handler) multiGetProductsByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+) (service.Products, error) {
 	if len(revisionIDs) == 0 {
 		return service.Products{}, nil
 	}

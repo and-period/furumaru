@@ -137,7 +137,11 @@ func (vs Videos) ExperienceIDs() []string {
 	return res.Slice()
 }
 
-func (vs Videos) Fill(products map[string]VideoProducts, experiences map[string]VideoExperiences, now time.Time) {
+func (vs Videos) Fill(
+	products map[string]VideoProducts,
+	experiences map[string]VideoExperiences,
+	now time.Time,
+) {
 	for i := range vs {
 		vs[i].Fill(products[vs[i].ID], experiences[vs[i].ID], now)
 	}

@@ -76,7 +76,9 @@ func TestUpsertExperienceReviewReaction(t *testing.T) {
 			name: "failed to upsert experience review reaction",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.ExperienceReview.EXPECT().Get(ctx, review.ID).Return(review, nil)
-				mocks.db.ExperienceReviewReaction.EXPECT().Upsert(ctx, reaction).Return(assert.AnError)
+				mocks.db.ExperienceReviewReaction.EXPECT().
+					Upsert(ctx, reaction).
+					Return(assert.AnError)
 			},
 			input: &store.UpsertExperienceReviewReactionInput{
 				ReviewID:     review.ID,
@@ -89,11 +91,14 @@ func TestUpsertExperienceReviewReaction(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UpsertExperienceReviewReaction(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.UpsertExperienceReviewReaction(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -109,7 +114,9 @@ func TestDeleteExperienceReviewReaction(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReviewReaction.EXPECT().Delete(ctx, "preview-id", "user-id").Return(nil)
+				mocks.db.ExperienceReviewReaction.EXPECT().
+					Delete(ctx, "preview-id", "user-id").
+					Return(nil)
 			},
 			input: &store.DeleteExperienceReviewReactionInput{
 				ReviewID: "preview-id",
@@ -126,7 +133,9 @@ func TestDeleteExperienceReviewReaction(t *testing.T) {
 		{
 			name: "failed to delete experience review reaction",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReviewReaction.EXPECT().Delete(ctx, "preview-id", "user-id").Return(assert.AnError)
+				mocks.db.ExperienceReviewReaction.EXPECT().
+					Delete(ctx, "preview-id", "user-id").
+					Return(assert.AnError)
 			},
 			input: &store.DeleteExperienceReviewReactionInput{
 				ReviewID: "preview-id",
@@ -137,10 +146,13 @@ func TestDeleteExperienceReviewReaction(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteExperienceReviewReaction(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteExperienceReviewReaction(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -168,7 +180,9 @@ func TestGetUserExperienceReviewReactions(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReviewReaction.EXPECT().GetUserReactions(ctx, "experience-id", "user-id").Return(reactions, nil)
+				mocks.db.ExperienceReviewReaction.EXPECT().
+					GetUserReactions(ctx, "experience-id", "user-id").
+					Return(reactions, nil)
 			},
 			input: &store.GetUserExperienceReviewReactionsInput{
 				ExperienceID: "experience-id",
@@ -187,7 +201,9 @@ func TestGetUserExperienceReviewReactions(t *testing.T) {
 		{
 			name: "failed to get user experience review reactions",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ExperienceReviewReaction.EXPECT().GetUserReactions(ctx, "experience-id", "user-id").Return(nil, assert.AnError)
+				mocks.db.ExperienceReviewReaction.EXPECT().
+					GetUserReactions(ctx, "experience-id", "user-id").
+					Return(nil, assert.AnError)
 			},
 			input: &store.GetUserExperienceReviewReactionsInput{
 				ExperienceID: "experience-id",
@@ -199,10 +215,13 @@ func TestGetUserExperienceReviewReactions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetUserExperienceReviewReactions(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetUserExperienceReviewReactions(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }

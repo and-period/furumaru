@@ -16,12 +16,19 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyPaymentAuthorizedInput) error {
+func (s *service) NotifyPaymentAuthorized(
+	ctx context.Context,
+	in *store.NotifyPaymentAuthorizedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
 	if in.Status != entity.PaymentStatusAuthorized {
-		return fmt.Errorf("this status is not authorized. status=%d: %w", in.Status, exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"this status is not authorized. status=%d: %w",
+			in.Status,
+			exception.ErrInvalidArgument,
+		)
 	}
 
 	order, err := s.db.Order.Get(ctx, in.OrderID)
@@ -45,15 +52,27 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 
 	payment, err := s.komoju.Payment.Show(ctx, in.PaymentID)
 	if err != nil {
-		s.logger.Error("Failed to get payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		s.logger.Error(
+			"Failed to get payment",
+			zap.String("paymentId", in.PaymentID),
+			zap.Error(err),
+		)
 		return internalError(err)
 	}
 	if payment.Status != komoju.PaymentStatusAuthorized {
-		s.logger.Warn("Payment status is not authorized", zap.String("paymentId", in.PaymentID), zap.String("status", string(payment.Status)))
+		s.logger.Warn(
+			"Payment status is not authorized",
+			zap.String("paymentId", in.PaymentID),
+			zap.String("status", string(payment.Status)),
+		)
 		return nil
 	}
 	if _, err := s.komoju.Payment.Capture(ctx, in.PaymentID); err != nil {
-		s.logger.Error("Failed to capture payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		s.logger.Error(
+			"Failed to capture payment",
+			zap.String("paymentId", in.PaymentID),
+			zap.Error(err),
+		)
 		return internalError(err)
 	}
 
@@ -65,18 +84,29 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 			return
 		}
 		if err := s.removeCartItemByOrder(ctx, order); err != nil {
-			s.logger.Error("Failed to remove cart item by order", zap.String("orderId", in.OrderID), zap.Error(err))
+			s.logger.Error(
+				"Failed to remove cart item by order",
+				zap.String("orderId", in.OrderID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
 }
 
-func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPaymentCapturedInput) error {
+func (s *service) NotifyPaymentCaptured(
+	ctx context.Context,
+	in *store.NotifyPaymentCapturedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
 	if in.Status != entity.PaymentStatusCaptured {
-		return fmt.Errorf("this status is not captured. status=%d: %w", in.Status, exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"this status is not captured. status=%d: %w",
+			in.Status,
+			exception.ErrInvalidArgument,
+		)
 	}
 
 	order, err := s.db.Order.Get(ctx, in.OrderID)
@@ -90,7 +120,11 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	}
 	err = s.db.Order.UpdateCaptured(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be captured", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		s.logger.Warn(
+			"Order can't be captured",
+			zap.String("orderId", in.OrderID),
+			zap.Time("issuedAt", in.IssuedAt),
+		)
 		return nil
 	}
 	if err != nil {
@@ -101,18 +135,29 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	go func() {
 		defer s.waitGroup.Done()
 		if err := s.notifyPaymentCompleted(context.Background(), order); err != nil {
-			s.logger.Error("Failed to notify payment completed", zap.String("orderId", in.OrderID), zap.Error(err))
+			s.logger.Error(
+				"Failed to notify payment completed",
+				zap.String("orderId", in.OrderID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
 }
 
-func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPaymentFailedInput) error {
+func (s *service) NotifyPaymentFailed(
+	ctx context.Context,
+	in *store.NotifyPaymentFailedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
 	if !slices.Contains(entity.PaymentFailedStatuses, in.Status) {
-		return fmt.Errorf("this status is not failed. status=%d: %w", in.Status, exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"this status is not failed. status=%d: %w",
+			in.Status,
+			exception.ErrInvalidArgument,
+		)
 	}
 
 	order, err := s.db.Order.Get(ctx, in.OrderID)
@@ -127,7 +172,11 @@ func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPayme
 	}
 	err = s.db.Order.UpdateFailed(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be failed", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		s.logger.Warn(
+			"Order can't be failed",
+			zap.String("orderId", in.OrderID),
+			zap.Time("issuedAt", in.IssuedAt),
+		)
 		return nil
 	}
 	if err != nil {
@@ -143,7 +192,10 @@ func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPayme
 	return nil
 }
 
-func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPaymentRefundedInput) error {
+func (s *service) NotifyPaymentRefunded(
+	ctx context.Context,
+	in *store.NotifyPaymentRefundedInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -156,7 +208,11 @@ func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPay
 	}
 	err := s.db.Order.UpdateRefunded(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be refunded", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		s.logger.Warn(
+			"Order can't be refunded",
+			zap.String("orderId", in.OrderID),
+			zap.Time("issuedAt", in.IssuedAt),
+		)
 		return nil
 	}
 	return internalError(err)
@@ -212,7 +268,11 @@ func (s *service) increaseProductInventories(ctx context.Context, items entity.O
 			}()
 			err := s.decreaseProductInventory(ctx, item.ProductRevisionID, -item.Quantity)
 			if err != nil {
-				s.logger.Error("Failed to increase product inventory", zap.Any("item", item), zap.Error(err))
+				s.logger.Error(
+					"Failed to increase product inventory",
+					zap.Any("item", item),
+					zap.Error(err),
+				)
 			}
 		}(item)
 	}

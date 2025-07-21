@@ -97,7 +97,10 @@ func (s *service) CreateCoordinator(
 		return nil, "", internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return nil, "", fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
+		return nil, "", fmt.Errorf(
+			"api: invalid product type ids: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
@@ -130,13 +133,21 @@ func (s *service) CreateCoordinator(
 	}
 	coordinator, err := entity.NewCoordinator(params)
 	if err != nil {
-		return nil, "", fmt.Errorf("service: failed to new coordinator: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return nil, "", fmt.Errorf(
+			"service: failed to new coordinator: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
 		return nil, "", internalError(err)
 	}
-	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
+	s.logger.Debug(
+		"Create coordinator",
+		zap.String("coordinatorId", coordinator.ID),
+		zap.String("password", password),
+	)
 	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
@@ -156,14 +167,22 @@ func (s *service) CreateCoordinator(
 			backoff.WithRetryablel(exception.IsRetryable),
 		}
 		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to create shop", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
+			s.logger.Warn(
+				"Failed to create shop",
+				zap.String("coordinatorId", coordinator.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
+			s.logger.Warn(
+				"Failed to notify register admin",
+				zap.String("coordinatorId", coordinator.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return coordinator, password, nil
@@ -174,7 +193,11 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		return internalError(err)
 	}
 	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
-		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return fmt.Errorf(
+			"service: invalid prefecture code: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	params := &database.UpdateCoordinatorParams{
 		Lastname:          in.Lastname,
@@ -200,7 +223,10 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	return internalError(err)
 }
 
-func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoordinatorEmailInput) error {
+func (s *service) UpdateCoordinatorEmail(
+	ctx context.Context,
+	in *user.UpdateCoordinatorEmailInput,
+) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -219,7 +245,10 @@ func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoo
 	return internalError(err)
 }
 
-func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCoordinatorPasswordInput) error {
+func (s *service) ResetCoordinatorPassword(
+	ctx context.Context,
+	in *user.ResetCoordinatorPasswordInput,
+) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
@@ -298,7 +327,10 @@ func (s *service) AggregateRealatedProducers(
 	return res, internalError(err)
 }
 
-func (s *service) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (sentity.ProductTypes, error) {
+func (s *service) multiGetProductTypes(
+	ctx context.Context,
+	productTypeIDs []string,
+) (sentity.ProductTypes, error) {
 	if len(productTypeIDs) == 0 {
 		return sentity.ProductTypes{}, nil
 	}

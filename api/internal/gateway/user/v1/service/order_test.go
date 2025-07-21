@@ -332,7 +332,11 @@ func TestOrder(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products, tt.experiences))
+			assert.Equal(
+				t,
+				tt.expect,
+				NewOrder(tt.order, tt.addresses, tt.products, tt.experiences),
+			)
 		})
 	}
 }

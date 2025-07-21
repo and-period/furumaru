@@ -120,7 +120,8 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 
 	res := &response.OrdersResponse{
-		Order:        service.NewOrders(orders, addresses.MapByRevision(), oproducts.MapByRevision(), experiences.MapByRevision()).Response(),
+		Order: service.NewOrders(orders, addresses.MapByRevision(), oproducts.MapByRevision(), experiences.MapByRevision()).
+			Response(),
 		Coordinators: coordinators.Response(),
 		Promotions:   promotions.Response(),
 		Products:     cproducts.Response(),
@@ -191,7 +192,11 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 	}
 	if userID != order.UserID {
 		// 不正の疑いがあるため、リクエスト情報をログ出力しておく
-		h.logger.Warn("UserId does not match order information", zap.String("userId", userID), zap.String("orderId", orderID))
+		h.logger.Warn(
+			"UserId does not match order information",
+			zap.String("userId", userID),
+			zap.String("orderId", orderID),
+		)
 		return nil, fmt.Errorf("%w: %w", exception.ErrNotFound, errNotFoundOrder)
 	}
 	var (
@@ -219,5 +224,10 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()), nil
+	return service.NewOrder(
+		order,
+		addresses.MapByRevision(),
+		products.MapByRevision(),
+		experiences.MapByRevision(),
+	), nil
 }

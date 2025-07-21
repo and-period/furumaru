@@ -34,7 +34,9 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+			if service.PromotionTargetType(
+				promotion.TargetType,
+			) == service.PromotionTargetTypeAllShop {
 				return true, nil
 			}
 			shop, err := h.getShop(ctx, getShopID(ctx))
@@ -48,7 +50,9 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+			if service.PromotionTargetType(
+				promotion.TargetType,
+			) == service.PromotionTargetTypeAllShop {
 				return true, nil
 			}
 			shop, err := h.getShop(ctx, promotion.ID)
@@ -172,7 +176,11 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 	for i, p := range params {
 		key, ok := categories[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
+			return nil, fmt.Errorf(
+				"handler: unknown order key. key=%s: %w",
+				p.Key,
+				errInvalidOrderKey,
+			)
 		}
 		res[i] = &store.ListPromotionsOrder{
 			Key:        key,
@@ -289,7 +297,10 @@ func (h *handler) DeletePromotion(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetPromotions(ctx context.Context, promotionIDs []string) (service.Promotions, error) {
+func (h *handler) multiGetPromotions(
+	ctx context.Context,
+	promotionIDs []string,
+) (service.Promotions, error) {
 	if len(promotionIDs) == 0 {
 		return service.Promotions{}, nil
 	}
@@ -307,7 +318,10 @@ func (h *handler) multiGetPromotions(ctx context.Context, promotionIDs []string)
 	return service.NewPromotions(promotions, aggregates), nil
 }
 
-func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
+func (h *handler) getPromotion(
+	ctx context.Context,
+	promotionID string,
+) (*service.Promotion, error) {
 	in := &store.GetPromotionInput{
 		PromotionID: promotionID,
 	}

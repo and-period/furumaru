@@ -16,7 +16,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, int64, error) {
+func (s *service) ListProducers(
+	ctx context.Context,
+	in *user.ListProducersInput,
+) (entity.Producers, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -45,7 +48,10 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 	return producers, total, nil
 }
 
-func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {
+func (s *service) MultiGetProducers(
+	ctx context.Context,
+	in *user.MultiGetProducersInput,
+) (entity.Producers, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -61,7 +67,10 @@ func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProduc
 	return producers, internalError(err)
 }
 
-func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
+func (s *service) GetProducer(
+	ctx context.Context,
+	in *user.GetProducerInput,
+) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -77,7 +86,10 @@ func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*
 	return producer, internalError(err)
 }
 
-func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
+func (s *service) CreateProducer(
+	ctx context.Context,
+	in *user.CreateProducerInput,
+) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -125,7 +137,11 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	}
 	producer, err := entity.NewProducer(params)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to new producer: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return nil, fmt.Errorf(
+			"service: failed to new producer: %w: %s",
+			exception.ErrInvalidArgument,
+			err.Error(),
+		)
 	}
 	auth := func(_ context.Context) error {
 		return nil // 生産者は認証機能を持たないため何もしない
@@ -149,8 +165,15 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 			backoff.WithRetryablel(exception.IsRetryable),
 		}
 		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to relate shop producer",
-				zap.String("shopId", shop.ID), zap.String("producerId", producer.ID), zap.Error(err))
+			s.logger.Warn(
+				"Failed to relate shop producer",
+				zap.String(
+					"shopId",
+					shop.ID,
+				),
+				zap.String("producerId", producer.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return producer, nil
@@ -162,7 +185,11 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	}
 	if in.PrefectureCode > 0 {
 		if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
-			return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+			return fmt.Errorf(
+				"service: invalid prefecture code: %w: %s",
+				exception.ErrInvalidArgument,
+				err.Error(),
+			)
 		}
 	}
 	params := &database.UpdateProducerParams{

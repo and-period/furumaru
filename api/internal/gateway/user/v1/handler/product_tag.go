@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) multiGetProductTags(ctx context.Context, productTagIDs []string) (service.ProductTags, error) {
+func (h *handler) multiGetProductTags(
+	ctx context.Context,
+	productTagIDs []string,
+) (service.ProductTags, error) {
 	if len(productTagIDs) == 0 {
 		return service.ProductTags{}, nil
 	}

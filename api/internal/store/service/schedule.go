@@ -18,7 +18,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInput) (entity.Schedules, int64, error) {
+func (s *service) ListSchedules(
+	ctx context.Context,
+	in *store.ListSchedulesInput,
+) (entity.Schedules, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -52,7 +55,10 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 	return schedules, total, nil
 }
 
-func (s *service) MultiGetSchedules(ctx context.Context, in *store.MultiGetSchedulesInput) (entity.Schedules, error) {
+func (s *service) MultiGetSchedules(
+	ctx context.Context,
+	in *store.MultiGetSchedulesInput,
+) (entity.Schedules, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -60,7 +66,10 @@ func (s *service) MultiGetSchedules(ctx context.Context, in *store.MultiGetSched
 	return schedules, internalError(err)
 }
 
-func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (*entity.Schedule, error) {
+func (s *service) GetSchedule(
+	ctx context.Context,
+	in *store.GetScheduleInput,
+) (*entity.Schedule, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -68,13 +77,20 @@ func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (
 	return schedule, internalError(err)
 }
 
-func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleInput) (*entity.Schedule, error) {
+func (s *service) CreateSchedule(
+	ctx context.Context,
+	in *store.CreateScheduleInput,
+) (*entity.Schedule, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	shop, err := s.db.Shop.Get(ctx, in.ShopID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid request: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -84,13 +100,20 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	}
 	coordinator, err := s.user.GetCoordinator(ctx, coordinatorIn)
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid request: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return nil, internalError(err)
 	}
 	if shop.CoordinatorID != coordinator.ID {
-		return nil, fmt.Errorf("api: invalid request: coordinator does not belong to the shop: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf(
+			"api: invalid request: coordinator does not belong to the shop: %w",
+			exception.ErrInvalidArgument,
+		)
 	}
 	sparams := &entity.NewScheduleParams{
 		ShopID:          in.ShopID,
@@ -123,7 +146,11 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		}
 		retry := backoff.NewExponentialBackoff(maxRetries)
 		if err := backoff.Retry(ctx, retry, createFn, backoff.WithRetryablel(s.isRetryable)); err != nil {
-			s.logger.Error("Failed to create broadcast", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to create broadcast",
+				zap.String("scheduleId", schedule.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	go func() {
@@ -132,7 +159,11 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 			ScheduleID: schedule.ID,
 		}
 		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to reserve start live",
+				zap.String("scheduleId", schedule.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return schedule, nil
@@ -165,7 +196,11 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 			ScheduleID: schedule.ID,
 		}
 		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to reserve start live",
+				zap.String("scheduleId", schedule.ID),
+				zap.Error(err),
+			)
 		}
 	}()
 	return nil
@@ -187,7 +222,10 @@ func (s *service) DeleteSchedule(ctx context.Context, in *store.DeleteScheduleIn
 		return internalError(err)
 	}
 	if broadcast != nil && broadcast.Status != mentity.BroadcastStatusDisabled {
-		return fmt.Errorf("api: invalid request: broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf(
+			"api: invalid request: broadcast is not disabled: %w",
+			exception.ErrFailedPrecondition,
+		)
 	}
 	err = s.db.Schedule.Delete(ctx, in.ScheduleID)
 	return internalError(err)

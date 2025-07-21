@@ -134,12 +134,19 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 
 			if broadcast.MediaLiveChannelID == "" {
 				c.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
-				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
+				return fmt.Errorf(
+					"unexpected media live channel arn format. arn=%s",
+					broadcast.MediaLiveChannelArn,
+				)
 			}
 
 			c.logger.Info("Calling to stop media live", zap.String("scheduleId", schedule.ID))
 			if err := c.media.StopChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
-				c.logger.Error("Failed to stop media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				c.logger.Error(
+					"Failed to stop media live",
+					zap.String("scheduleId", schedule.ID),
+					zap.Error(err),
+				)
 				return err
 			}
 			c.logger.Info("Succeeded to stop media live", zap.String("scheduleId", schedule.ID))
@@ -185,7 +192,11 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 
 			c.logger.Info("Calling to create convert job", zap.String("scheduleId", schedule.ID))
 			if err := c.convert.CreateJob(ectx, c.jobTemplate, c.newMediaConvertJobSettings(broadcast)); err != nil {
-				c.logger.Error("Failed to create convert job", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				c.logger.Error(
+					"Failed to create convert job",
+					zap.String("scheduleId", schedule.ID),
+					zap.Error(err),
+				)
 				return err
 			}
 			c.logger.Info("Succeeded to create convert job", zap.String("scheduleId", schedule.ID))
@@ -197,13 +208,20 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			}
 			c.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
 			if err := c.sfn.StartExecution(ectx, payload); err != nil {
-				c.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				c.logger.Error(
+					"Failed step function",
+					zap.String("scheduleId", schedule.ID),
+					zap.Error(err),
+				)
 				return err
 			}
 			c.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))
 
 			archiveURL := c.storageURL()
-			archiveURL.Path = filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename)
+			archiveURL.Path = filepath.Join(
+				newArchiveMP4Path(broadcast.ScheduleID),
+				archiveFilename,
+			)
 
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusDisabled,
@@ -218,7 +236,9 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 }
 
 func (c *closer) newMediaConvertJobSettings(broadcast *entity.Broadcast) *types.JobSettings {
-	src := c.storage.GenerateS3URI(filepath.Join(newArchiveHLSPath(broadcast.ScheduleID), playlistFilename))
+	src := c.storage.GenerateS3URI(
+		filepath.Join(newArchiveHLSPath(broadcast.ScheduleID), playlistFilename),
+	)
 	dst := c.storage.GenerateS3URI(newArchiveMP4Path(broadcast.ScheduleID))
 
 	return &types.JobSettings{

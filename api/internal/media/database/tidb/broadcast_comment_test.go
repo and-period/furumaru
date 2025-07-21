@@ -35,7 +35,12 @@ func TestBroadcastComment_List(t *testing.T) {
 	require.NoError(t, err)
 
 	comments := make(entity.BroadcastComments, 2)
-	comments[0] = testBroadcastComment("comment-id01", "broadcast-id", "user-id", now().Add(-time.Minute))
+	comments[0] = testBroadcastComment(
+		"comment-id01",
+		"broadcast-id",
+		"user-id",
+		now().Add(-time.Minute),
+	)
 	comments[1] = testBroadcastComment("comment-id02", "broadcast-id", "user-id", now())
 	err = db.DB.Create(&comments).Error
 	require.NoError(t, err)
@@ -242,7 +247,10 @@ func TestBroadcastComment_Update(t *testing.T) {
 	}
 }
 
-func testBroadcastComment(commentID, broadcastID, userID string, now time.Time) *entity.BroadcastComment {
+func testBroadcastComment(
+	commentID, broadcastID, userID string,
+	now time.Time,
+) *entity.BroadcastComment {
 	return &entity.BroadcastComment{
 		ID:          commentID,
 		BroadcastID: broadcastID,

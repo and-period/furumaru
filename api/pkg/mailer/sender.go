@@ -41,12 +41,19 @@ func (c *client) MultiSend(
 	return c.sendEmail(ctx, emailID, fromName, fromAddress, "", nil, ps)
 }
 
-func (c *client) MultiSendFromInfo(ctx context.Context, emailID string, ps []*Personalization) error {
+func (c *client) MultiSendFromInfo(
+	ctx context.Context,
+	emailID string,
+	ps []*Personalization,
+) error {
 	return c.sendEmail(ctx, emailID, c.fromName, c.fromAddress, "", nil, ps)
 }
 
 func (c *client) sendEmail(
-	ctx context.Context, emailID, fromName, fromAddress, subject string, cs []*Content, ps []*Personalization,
+	ctx context.Context,
+	emailID, fromName, fromAddress, subject string,
+	cs []*Content,
+	ps []*Personalization,
 ) error {
 	msg := c.newMessage(emailID, fromName, fromAddress, subject, cs, ps)
 	resp, err := c.client.SendWithContext(ctx, msg)
@@ -59,7 +66,11 @@ func (c *client) sendEmail(
 	}
 	var out *SendGridError
 	if err = json.Unmarshal([]byte(resp.Body), out); err != nil {
-		c.logger.Error("failed to unmarshal response", zap.String("body", resp.Body), zap.Error(err))
+		c.logger.Error(
+			"failed to unmarshal response",
+			zap.String("body", resp.Body),
+			zap.Error(err),
+		)
 		return c.mailError(err)
 	}
 	return c.mailError(err)

@@ -33,7 +33,10 @@ func (c *LiveComment) Response() *response.LiveComment {
 	return &c.LiveComment
 }
 
-func NewLiveComments(comments mentity.BroadcastComments, users map[string]*uentity.User) LiveComments {
+func NewLiveComments(
+	comments mentity.BroadcastComments,
+	users map[string]*uentity.User,
+) LiveComments {
 	res := make(LiveComments, 0, len(comments))
 	for _, comment := range comments {
 		if comment.Disabled {

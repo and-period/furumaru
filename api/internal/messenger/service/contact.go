@@ -13,7 +13,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
+func (s *service) ListContacts(
+	ctx context.Context,
+	in *messenger.ListContactsInput,
+) (entity.Contacts, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -41,7 +44,10 @@ func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsIn
 	return contacts, total, nil
 }
 
-func (s *service) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {
+func (s *service) GetContact(
+	ctx context.Context,
+	in *messenger.GetContactInput,
+) (*entity.Contact, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -49,7 +55,10 @@ func (s *service) GetContact(ctx context.Context, in *messenger.GetContactInput)
 	return contact, internalError(err)
 }
 
-func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContactInput) (*entity.Contact, error) {
+func (s *service) CreateContact(
+	ctx context.Context,
+	in *messenger.CreateContactInput,
+) (*entity.Contact, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -99,7 +108,11 @@ func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContact
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"api: invalid user id format: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return internalError(err)

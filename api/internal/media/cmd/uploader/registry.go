@@ -66,7 +66,11 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(
+		awscfg,
+		tmpStorageParams,
+		storage.WithLogger(params.logger),
+	)
 
 	// Amazon DynamoDBの設定
 	dbParams := &dynamodb.Params{

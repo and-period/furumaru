@@ -20,7 +20,11 @@ func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) 
 	if err != nil {
 		return err
 	}
-	w.logger.Debug("Send report", zap.String("templateId", string(payload.Report.TemplateID)), zap.Any("message", container))
+	w.logger.Debug(
+		"Send report",
+		zap.String("templateId", string(payload.Report.TemplateID)),
+		zap.Any("message", container),
+	)
 	sendFn := func() error {
 		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
 	}

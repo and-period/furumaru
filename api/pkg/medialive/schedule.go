@@ -59,7 +59,9 @@ type ScheduleSetting struct {
 func (c *client) CreateSchedule(ctx context.Context, params *CreateScheduleParams) error {
 	in := &medialive.BatchUpdateScheduleInput{
 		ChannelId: aws.String(params.ChannelID),
-		Creates:   &types.BatchScheduleActionCreateRequest{ScheduleActions: c.newScheduleActions(params.Settings)},
+		Creates: &types.BatchScheduleActionCreateRequest{
+			ScheduleActions: c.newScheduleActions(params.Settings),
+		},
 	}
 	_, err := c.media.BatchUpdateSchedule(ctx, in)
 	return err
@@ -75,7 +77,9 @@ func (c *client) ActivateStaticImage(ctx context.Context, channelID, imageURL st
 	}}
 	in := &medialive.BatchUpdateScheduleInput{
 		ChannelId: aws.String(channelID),
-		Creates:   &types.BatchScheduleActionCreateRequest{ScheduleActions: c.newScheduleActions(settings)},
+		Creates: &types.BatchScheduleActionCreateRequest{
+			ScheduleActions: c.newScheduleActions(settings),
+		},
 	}
 	_, err := c.media.BatchUpdateSchedule(ctx, in)
 	return err
@@ -90,7 +94,9 @@ func (c *client) DeactivateStaticImage(ctx context.Context, channelID string) er
 	}}
 	in := &medialive.BatchUpdateScheduleInput{
 		ChannelId: aws.String(channelID),
-		Creates:   &types.BatchScheduleActionCreateRequest{ScheduleActions: c.newScheduleActions(settings)},
+		Creates: &types.BatchScheduleActionCreateRequest{
+			ScheduleActions: c.newScheduleActions(settings),
+		},
 	}
 	_, err := c.media.BatchUpdateSchedule(ctx, in)
 	return err

@@ -106,7 +106,10 @@ func (t PromotionTargetType) Response() int32 {
 	return int32(t)
 }
 
-func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrderPromotion) *Promotion {
+func NewPromotion(
+	promotion *entity.Promotion,
+	aggregate *entity.AggregatedOrderPromotion,
+) *Promotion {
 	var usedCount, usedAmount int64
 	if aggregate != nil {
 		usedCount = aggregate.OrderCount
@@ -141,7 +144,10 @@ func (p *Promotion) Response() *response.Promotion {
 	return &p.Promotion
 }
 
-func NewPromotions(promotions entity.Promotions, aggregates map[string]*entity.AggregatedOrderPromotion) Promotions {
+func NewPromotions(
+	promotions entity.Promotions,
+	aggregates map[string]*entity.AggregatedOrderPromotion,
+) Promotions {
 	res := make(Promotions, len(promotions))
 	for i, p := range promotions {
 		res[i] = NewPromotion(promotions[i], aggregates[p.ID])

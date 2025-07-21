@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) multiGetCategories(ctx context.Context, categoryIDs []string) (service.Categories, error) {
+func (h *handler) multiGetCategories(
+	ctx context.Context,
+	categoryIDs []string,
+) (service.Categories, error) {
 	if len(categoryIDs) == 0 {
 		return service.Categories{}, nil
 	}

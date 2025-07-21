@@ -133,7 +133,10 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) listProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
+func (h *handler) listProducersByCoordinatorID(
+	ctx context.Context,
+	coordinatorID string,
+) (service.Producers, error) {
 	if coordinatorID == "" {
 		return service.Producers{}, nil
 	}
@@ -159,7 +162,10 @@ func (h *handler) listProducersByCoordinatorID(ctx context.Context, coordinatorI
 	return service.NewProducers(producers, shops.GroupByProducerID()), nil
 }
 
-func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
+func (h *handler) multiGetProducers(
+	ctx context.Context,
+	producerIDs []string,
+) (service.Producers, error) {
 	if len(producerIDs) == 0 {
 		return service.Producers{}, nil
 	}

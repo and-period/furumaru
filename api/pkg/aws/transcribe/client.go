@@ -12,8 +12,16 @@ import (
 
 //nolint:lll
 type Client interface {
-	GetTranscriptionJob(ctx context.Context, in *transcribe.GetTranscriptionJobInput, opts ...func(*transcribe.Options)) (*transcribe.GetTranscriptionJobOutput, error)
-	StartTranscriptionJob(ctx context.Context, in *transcribe.StartTranscriptionJobInput, opts ...func(*transcribe.Options)) (*transcribe.StartTranscriptionJobOutput, error)
+	GetTranscriptionJob(
+		ctx context.Context,
+		in *transcribe.GetTranscriptionJobInput,
+		opts ...func(*transcribe.Options),
+	) (*transcribe.GetTranscriptionJobOutput, error)
+	StartTranscriptionJob(
+		ctx context.Context,
+		in *transcribe.StartTranscriptionJobInput,
+		opts ...func(*transcribe.Options),
+	) (*transcribe.StartTranscriptionJobOutput, error)
 }
 
 type client struct {

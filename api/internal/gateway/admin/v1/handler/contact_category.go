@@ -64,7 +64,10 @@ func (h *handler) GetContactCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) multiGetContactCategories(ctx context.Context, categoryIDs []string) (service.ContactCategories, error) {
+func (h *handler) multiGetContactCategories(
+	ctx context.Context,
+	categoryIDs []string,
+) (service.ContactCategories, error) {
 	if len(categoryIDs) == 0 {
 		return service.ContactCategories{}, nil
 	}
@@ -78,7 +81,10 @@ func (h *handler) multiGetContactCategories(ctx context.Context, categoryIDs []s
 	return service.NewContactCategories(categories), nil
 }
 
-func (h *handler) getContactCategory(ctx context.Context, contactCategoryID string) (*service.ContactCategory, error) {
+func (h *handler) getContactCategory(
+	ctx context.Context,
+	contactCategoryID string,
+) (*service.ContactCategory, error) {
 	in := &messenger.GetContactCategoryInput{
 		CategoryID: contactCategoryID,
 	}

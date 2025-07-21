@@ -154,7 +154,11 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to multi send mail", zap.String("queueId", payload.QueueID), zap.Error(err))
+		w.logger.Error(
+			"Failed to multi send mail",
+			zap.String("queueId", payload.QueueID),
+			zap.Error(err),
+		)
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -168,7 +172,11 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to create messages", zap.String("queueId", payload.QueueID), zap.Error(err))
+		w.logger.Error(
+			"Failed to create messages",
+			zap.String("queueId", payload.QueueID),
+			zap.Error(err),
+		)
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -182,7 +190,11 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to multi send push", zap.String("queueId", payload.QueueID), zap.Error(err))
+		w.logger.Error(
+			"Failed to multi send push",
+			zap.String("queueId", payload.QueueID),
+			zap.Error(err),
+		)
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -196,7 +208,11 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to send report", zap.String("queueId", payload.QueueID), zap.Error(err))
+		w.logger.Error(
+			"Failed to send report",
+			zap.String("queueId", payload.QueueID),
+			zap.Error(err),
+		)
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -216,7 +232,11 @@ func (w *worker) execute(
 		return fmt.Errorf("worker: failed to get received queue: %w", err)
 	}
 	if queue.Done {
-		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID), zap.Int32("notifyType", int32(notifyType)))
+		w.logger.Info(
+			"This queue is already done",
+			zap.String("queueId", payload.QueueID),
+			zap.Int32("notifyType", int32(notifyType)),
+		)
 		return nil
 	}
 	if err := sendFn(ctx, payload); err != nil {

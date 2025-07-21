@@ -35,7 +35,16 @@ func TestLive_List(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(internalProducts, 1)
-	products[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[0] = testProduct(
+		"product-id01",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -49,7 +58,13 @@ func TestLive_List(t *testing.T) {
 
 	productIDs := []string{"product-id01"}
 	lives := make(entity.Lives, 3)
-	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now().Add(-time.Hour))
+	lives[0] = testLive(
+		"live-id01",
+		"schedule-id",
+		"producer-id",
+		productIDs,
+		now().Add(-time.Hour),
+	)
 	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
 	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now().Add(time.Hour))
 	err = db.DB.Create(&lives).Error
@@ -126,7 +141,16 @@ func TestLive_Count(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	products := make(internalProducts, 1)
-	products[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[0] = testProduct(
+		"product-id01",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&products).Error
 	require.NoError(t, err)
 	for i := range products {
@@ -216,7 +240,16 @@ func TestLive_Get(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	internal := make(internalProducts, 1)
-	internal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
+	internal[0] = testProduct(
+		"product-id01",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&internal).Error
 	require.NoError(t, err)
 	for i := range internal {
@@ -309,9 +342,36 @@ func TestLive_Update(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 3)
-	pinternal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	pinternal[2] = testProduct("product-id03", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
+	pinternal[2] = testProduct(
+		"product-id03",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -339,7 +399,13 @@ func TestLive_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
+				live := testLive(
+					"live-id",
+					"schedule-id",
+					"producer-id",
+					[]string{"product-id01", "product-id02"},
+					now(),
+				)
 				err = db.DB.Create(&live).Error
 				require.NoError(t, err)
 			},
@@ -395,9 +461,36 @@ func TestLive_Delete(t *testing.T) {
 	err = db.DB.Create(&productType).Error
 	require.NoError(t, err)
 	pinternal := make(internalProducts, 3)
-	pinternal[0] = testProduct("product-id01", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 1, now())
-	pinternal[1] = testProduct("product-id02", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 2, now())
-	pinternal[2] = testProduct("product-id03", "type-id", "shop-id", "coordinator-id", "producer-id", []string{}, 3, now())
+	pinternal[0] = testProduct(
+		"product-id01",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		1,
+		now(),
+	)
+	pinternal[1] = testProduct(
+		"product-id02",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		2,
+		now(),
+	)
+	pinternal[2] = testProduct(
+		"product-id03",
+		"type-id",
+		"shop-id",
+		"coordinator-id",
+		"producer-id",
+		[]string{},
+		3,
+		now(),
+	)
 	err = db.DB.Table(productTable).Create(&pinternal).Error
 	require.NoError(t, err)
 	for i := range pinternal {
@@ -424,7 +517,13 @@ func TestLive_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				live := testLive("live-id", "schedule-id", "producer-id", []string{"product-id01", "product-id02"}, now())
+				live := testLive(
+					"live-id",
+					"schedule-id",
+					"producer-id",
+					[]string{"product-id01", "product-id02"},
+					now(),
+				)
 				err = db.DB.Create(&live).Error
 				require.NoError(t, err)
 			},
@@ -452,7 +551,11 @@ func TestLive_Delete(t *testing.T) {
 	}
 }
 
-func testLive(liveID, scheduleID, producerID string, productIDs []string, now time.Time) *entity.Live {
+func testLive(
+	liveID, scheduleID, producerID string,
+	productIDs []string,
+	now time.Time,
+) *entity.Live {
 	products := make(entity.LiveProducts, len(productIDs))
 	for i := range productIDs {
 		products[i] = testLiveProduct(liveID, productIDs[i], now)

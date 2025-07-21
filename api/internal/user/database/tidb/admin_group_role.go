@@ -42,12 +42,19 @@ func (r *adminGroupRole) List(
 	return roles, dbError(err)
 }
 
-func (r *adminGroupRole) Count(ctx context.Context, params *database.ListAdminGroupRolesParams) (int64, error) {
+func (r *adminGroupRole) Count(
+	ctx context.Context,
+	params *database.ListAdminGroupRolesParams,
+) (int64, error) {
 	total, err := r.db.Count(ctx, r.db.DB, &entity.AdminGroupRole{}, nil)
 	return total, dbError(err)
 }
 
-func (r *adminGroupRole) Get(ctx context.Context, groupID, roleID string, fields ...string) (*entity.AdminGroupRole, error) {
+func (r *adminGroupRole) Get(
+	ctx context.Context,
+	groupID, roleID string,
+	fields ...string,
+) (*entity.AdminGroupRole, error) {
 	var role *entity.AdminGroupRole
 
 	stmt := r.db.Statement(ctx, r.db.DB, adminGroupRoleTable, fields...).

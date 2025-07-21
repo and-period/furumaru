@@ -26,7 +26,11 @@ func (s *service) ReserveStartLive(ctx context.Context, in *messenger.ReserveSta
 	}
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("service: not found schedule: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"service: not found schedule: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return internalError(err)
@@ -40,14 +44,21 @@ func (s *service) ReserveStartLive(ctx context.Context, in *messenger.ReserveSta
 	return s.upsertSchedule(ctx, params)
 }
 
-func (s *service) ReserveNotification(ctx context.Context, in *messenger.ReserveNotificationInput) error {
+func (s *service) ReserveNotification(
+	ctx context.Context,
+	in *messenger.ReserveNotificationInput,
+) error {
 	const messageType = entity.ScheduleTypeNotification
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
 	if errors.Is(err, database.ErrNotFound) {
-		return fmt.Errorf("service: not found notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf(
+			"service: not found notification: %s: %w",
+			err.Error(),
+			exception.ErrInvalidArgument,
+		)
 	}
 	if err != nil {
 		return internalError(err)

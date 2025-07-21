@@ -102,7 +102,9 @@ func TestListProducers(t *testing.T) {
 			name: "failed to count producers",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Producer.EXPECT().List(gomock.Any(), params).Return(producers, nil)
-				mocks.db.Producer.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+				mocks.db.Producer.EXPECT().
+					Count(gomock.Any(), params).
+					Return(int64(0), assert.AnError)
 			},
 			input: &user.ListProducersInput{
 				Limit:  30,
@@ -115,12 +117,15 @@ func TestListProducers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, total, err := service.ListProducers(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-			assert.Equal(t, tt.expectTotal, total)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, total, err := service.ListProducers(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+				assert.Equal(t, tt.expectTotal, total)
+			}),
+		)
 	}
 }
 
@@ -169,7 +174,9 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(producers, nil)
+				mocks.db.Producer.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(producers, nil)
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
@@ -180,7 +187,9 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			name: "success with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(producers, nil)
+				mocks.db.Producer.EXPECT().
+					MultiGetWithDeleted(ctx, []string{"admin-id"}).
+					Return(producers, nil)
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
@@ -201,7 +210,9 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			name: "failed to multi get producers",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+				mocks.db.Producer.EXPECT().
+					MultiGet(ctx, []string{"admin-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
@@ -212,7 +223,9 @@ func TestMultiGetProducers(t *testing.T) {
 		{
 			name: "failed to multi get producers with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+				mocks.db.Producer.EXPECT().
+					MultiGetWithDeleted(ctx, []string{"admin-id"}).
+					Return(nil, assert.AnError)
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
@@ -224,11 +237,14 @@ func TestMultiGetProducers(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.MultiGetProducers(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.MultiGetProducers(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.ElementsMatch(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -316,7 +332,9 @@ func TestGetProducer(t *testing.T) {
 		{
 			name: "failed to get producer with deleted",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().GetWithDeleted(ctx, "admin-id").Return(nil, assert.AnError)
+				mocks.db.Producer.EXPECT().
+					GetWithDeleted(ctx, "admin-id").
+					Return(nil, assert.AnError)
 			},
 			input: &user.GetProducerInput{
 				ProducerID:  "admin-id",
@@ -328,11 +346,14 @@ func TestGetProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				actual, err := service.GetProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+				assert.Equal(t, tt.expect, actual)
+			}),
+		)
 	}
 }
 
@@ -423,7 +444,9 @@ func TestCreateProducer(t *testing.T) {
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
-				mocks.store.EXPECT().RelateShopProducer(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.store.EXPECT().
+					RelateShopProducer(gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -482,7 +505,9 @@ func TestCreateProducer(t *testing.T) {
 		{
 			name: "not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, exception.ErrNotFound)
+				mocks.db.Coordinator.EXPECT().
+					Get(ctx, "coordinator-id").
+					Return(nil, exception.ErrNotFound)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -564,7 +589,9 @@ func TestCreateProducer(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().GetShopByCoordinatorID(ctx, shopIn).Return(shop, nil)
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Producer.EXPECT().
+					Create(ctx, gomock.Any(), gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -590,10 +617,13 @@ func TestCreateProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			_, err := service.CreateProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				_, err := service.CreateProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -713,10 +743,13 @@ func TestUpdateProducer(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.UpdateProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }
 
@@ -792,7 +825,9 @@ func TestDeleteProducer(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().ListShops(ctx, shopsIn).Return(shops, int64(1), nil)
 				mocks.store.EXPECT().UnrelateShopProducer(ctx, deleteIn).Return(nil)
-				mocks.db.Producer.EXPECT().Delete(ctx, "producer-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Producer.EXPECT().
+					Delete(ctx, "producer-id", gomock.Any()).
+					Return(assert.AnError)
 			},
 			input: &user.DeleteProducerInput{
 				ProducerID: "producer-id",
@@ -801,9 +836,12 @@ func TestDeleteProducer(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.DeleteProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		t.Run(
+			tt.name,
+			testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+				err := service.DeleteProducer(ctx, tt.input)
+				assert.ErrorIs(t, err, tt.expectErr)
+			}),
+		)
 	}
 }

@@ -148,7 +148,11 @@ func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
 	h.checkout(ctx, params)
 }
 
-func (h *handler) createGuestForCheckout(ctx context.Context, email string, address *request.GuestCheckoutAddress) (string, string, error) {
+func (h *handler) createGuestForCheckout(
+	ctx context.Context,
+	email string,
+	address *request.GuestCheckoutAddress,
+) (string, string, error) {
 	// ゲストユーザー登録
 	guestIn := &user.UpsertGuestInput{
 		Lastname:      address.Lastname,

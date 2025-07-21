@@ -87,7 +87,11 @@ func (p listProductsParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (p *product) List(ctx context.Context, params *database.ListProductsParams, fields ...string) (entity.Products, error) {
+func (p *product) List(
+	ctx context.Context,
+	params *database.ListProductsParams,
+	fields ...string,
+) (entity.Products, error) {
 	var internal internalProducts
 
 	prm := listProductsParams(*params)
@@ -117,12 +121,20 @@ func (p *product) Count(ctx context.Context, params *database.ListProductsParams
 	return total, dbError(err)
 }
 
-func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error) {
+func (p *product) MultiGet(
+	ctx context.Context,
+	productIDs []string,
+	fields ...string,
+) (entity.Products, error) {
 	products, err := p.multiGet(ctx, p.db.DB, productIDs, fields...)
 	return products, dbError(err)
 }
 
-func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error) {
+func (p *product) MultiGetByRevision(
+	ctx context.Context,
+	revisionIDs []int64,
+	fields ...string,
+) (entity.Products, error) {
 	var revisions entity.ProductRevisions
 
 	stmt := p.db.Statement(ctx, p.db.DB, productRevisionTable).
@@ -150,7 +162,11 @@ func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 	return res, nil
 }
 
-func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {
+func (p *product) Get(
+	ctx context.Context,
+	productID string,
+	fields ...string,
+) (*entity.Product, error) {
 	product, err := p.get(ctx, p.db.DB, productID, fields...)
 	return product, dbError(err)
 }
@@ -170,12 +186,19 @@ func (p *product) Create(ctx context.Context, product *entity.Product) error {
 		if err := tx.WithContext(ctx).Table(productTable).Create(&internal).Error; err != nil {
 			return err
 		}
-		return tx.WithContext(ctx).Table(productRevisionTable).Create(&internal.ProductRevision).Error
+		return tx.WithContext(ctx).
+			Table(productRevisionTable).
+			Create(&internal.ProductRevision).
+			Error
 	})
 	return dbError(err)
 }
 
-func (p *product) Update(ctx context.Context, productID string, params *database.UpdateProductParams) error {
+func (p *product) Update(
+	ctx context.Context,
+	productID string,
+	params *database.UpdateProductParams,
+) error {
 	now := p.now()
 	rparams := &entity.NewProductRevisionParams{
 		ProductID: productID,
@@ -283,10 +306,17 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 	return dbError(err)
 }
 
-func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string, fields ...string) (entity.Products, error) {
+func (p *product) multiGet(
+	ctx context.Context,
+	tx *gorm.DB,
+	productIDs []string,
+	fields ...string,
+) (entity.Products, error) {
 	var internal internalProducts
 
-	stmt := p.db.Statement(ctx, tx, productTable, fields...).Unscoped().Where("id IN (?)", productIDs)
+	stmt := p.db.Statement(ctx, tx, productTable, fields...).
+		Unscoped().
+		Where("id IN (?)", productIDs)
 
 	if err := stmt.Find(&internal).Error; err != nil {
 		return nil, err
@@ -302,7 +332,12 @@ func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string
 	return products, nil
 }
 
-func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {
+func (p *product) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	productID string,
+	fields ...string,
+) (*entity.Product, error) {
 	var internal *internalProduct
 
 	stmt := p.db.Statement(ctx, tx, productTable, fields...).Unscoped().Where("id = ?", productID)

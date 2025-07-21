@@ -72,7 +72,10 @@ func (t *productTag) List(
 	return tags, dbError(err)
 }
 
-func (t *productTag) Count(ctx context.Context, params *database.ListProductTagsParams) (int64, error) {
+func (t *productTag) Count(
+	ctx context.Context,
+	params *database.ListProductTagsParams,
+) (int64, error) {
 	p := listProductTagsParams(*params)
 
 	total, err := t.db.Count(ctx, t.db.DB, &entity.ProductTag{}, p.stmt)
@@ -90,7 +93,11 @@ func (t *productTag) MultiGet(
 	return tags, dbError(err)
 }
 
-func (t *productTag) Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error) {
+func (t *productTag) Get(
+	ctx context.Context,
+	productTagID string,
+	fields ...string,
+) (*entity.ProductTag, error) {
 	tag, err := t.get(ctx, t.db.DB, productTagID, fields...)
 	return tag, dbError(err)
 }

@@ -14,7 +14,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListMessages(ctx context.Context, in *messenger.ListMessagesInput) (entity.Messages, int64, error) {
+func (s *service) ListMessages(
+	ctx context.Context,
+	in *messenger.ListMessagesInput,
+) (entity.Messages, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -51,7 +54,10 @@ func (s *service) ListMessages(ctx context.Context, in *messenger.ListMessagesIn
 	return messages, total, nil
 }
 
-func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput) (*entity.Message, error) {
+func (s *service) GetMessage(
+	ctx context.Context,
+	in *messenger.GetMessageInput,
+) (*entity.Message, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -73,7 +79,11 @@ func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput)
 	go func(message *entity.Message) {
 		defer s.waitGroup.Done()
 		if err := s.updateMessageRead(context.Background(), message.ID); err != nil {
-			s.logger.Error("Failed to update message read", zap.String("messageId", message.ID), zap.Error(err))
+			s.logger.Error(
+				"Failed to update message read",
+				zap.String("messageId", message.ID),
+				zap.Error(err),
+			)
 		}
 	}(message)
 	message.Read = true

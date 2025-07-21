@@ -125,7 +125,11 @@ func (a *app) run() error {
 		if r := recover(); r != nil {
 			stackTrace := make([]byte, 1024)
 			runtime.Stack(stackTrace, true)
-			a.logger.Error("Occurred panic", zap.Any("value", r), zap.String("stackTrace", string(stackTrace)))
+			a.logger.Error(
+				"Occurred panic",
+				zap.Any("value", r),
+				zap.String("stackTrace", string(stackTrace)),
+			)
 		}
 	}()
 

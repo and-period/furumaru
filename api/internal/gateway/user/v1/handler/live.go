@@ -18,7 +18,10 @@ type listLiveSummariesParams struct {
 	noLimit    bool
 }
 
-func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummariesParams) (service.LiveSummaries, int64, error) {
+func (h *handler) listLiveSummaries(
+	ctx context.Context,
+	params *listLiveSummariesParams,
+) (service.LiveSummaries, int64, error) {
 	in := &store.ListSchedulesInput{
 		ShopID:        params.shopID,
 		ProducerID:    params.producerID,
@@ -60,7 +63,10 @@ type listArchiveSummariesParams struct {
 	noLimit    bool
 }
 
-func (h *handler) listArchiveSummaries(ctx context.Context, params *listArchiveSummariesParams) (service.ArchiveSummaries, int64, error) {
+func (h *handler) listArchiveSummaries(
+	ctx context.Context,
+	params *listArchiveSummariesParams,
+) (service.ArchiveSummaries, int64, error) {
 	in := &store.ListSchedulesInput{
 		ShopID:        params.shopID,
 		ProducerID:    params.producerID,

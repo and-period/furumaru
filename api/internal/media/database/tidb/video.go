@@ -65,7 +65,11 @@ func (p listVideosParams) pagination(stmt *gorm.DB) *gorm.DB {
 	return stmt
 }
 
-func (v *video) List(ctx context.Context, params *database.ListVideosParams, fields ...string) (entity.Videos, error) {
+func (v *video) List(
+	ctx context.Context,
+	params *database.ListVideosParams,
+	fields ...string,
+) (entity.Videos, error) {
 	var videos entity.Videos
 
 	p := listVideosParams(*params)
@@ -83,7 +87,11 @@ func (v *video) List(ctx context.Context, params *database.ListVideosParams, fie
 	return videos, nil
 }
 
-func (v *video) ListByProductID(ctx context.Context, productID string, fields ...string) (entity.Videos, error) {
+func (v *video) ListByProductID(
+	ctx context.Context,
+	productID string,
+	fields ...string,
+) (entity.Videos, error) {
 	var videos entity.Videos
 
 	sub := v.db.DB.
@@ -103,7 +111,11 @@ func (v *video) ListByProductID(ctx context.Context, productID string, fields ..
 	return videos, nil
 }
 
-func (v *video) ListByExperienceID(ctx context.Context, experienceID string, fields ...string) (entity.Videos, error) {
+func (v *video) ListByExperienceID(
+	ctx context.Context,
+	experienceID string,
+	fields ...string,
+) (entity.Videos, error) {
 	var videos entity.Videos
 
 	sub := v.db.DB.
@@ -157,7 +169,11 @@ func (v *video) Create(ctx context.Context, video *entity.Video) error {
 	return dbError(err)
 }
 
-func (v *video) Update(ctx context.Context, videoID string, params *database.UpdateVideoParams) error {
+func (v *video) Update(
+	ctx context.Context,
+	videoID string,
+	params *database.UpdateVideoParams,
+) error {
 	err := v.db.Transaction(ctx, func(tx *gorm.DB) error {
 		products := entity.NewVideoProducts(videoID, params.ProductIDs)
 		experiences := entity.NewVideoExperiences(videoID, params.ExperienceIDs)
@@ -196,7 +212,12 @@ func (v *video) Delete(ctx context.Context, videoID string) error {
 	return dbError(err)
 }
 
-func (v *video) get(ctx context.Context, tx *gorm.DB, videoID string, fields ...string) (*entity.Video, error) {
+func (v *video) get(
+	ctx context.Context,
+	tx *gorm.DB,
+	videoID string,
+	fields ...string,
+) (*entity.Video, error) {
 	var video *entity.Video
 
 	stmt := v.db.Statement(ctx, tx, videoTable, fields...).Where("id = ?", videoID)
@@ -234,7 +255,12 @@ func (v *video) fill(ctx context.Context, tx *gorm.DB, videos ...*entity.Video) 
 	return nil
 }
 
-func (v *video) replaceProducts(ctx context.Context, tx *gorm.DB, videoID string, products entity.VideoProducts) error {
+func (v *video) replaceProducts(
+	ctx context.Context,
+	tx *gorm.DB,
+	videoID string,
+	products entity.VideoProducts,
+) error {
 	// 不要なレコードを削除
 	stmt := tx.WithContext(ctx).Where("video_id = ?", videoID)
 	if len(products.ProductIDs()) > 0 {
@@ -266,7 +292,12 @@ func (v *video) replaceProducts(ctx context.Context, tx *gorm.DB, videoID string
 	return nil
 }
 
-func (v *video) replaceExperiences(ctx context.Context, tx *gorm.DB, videoID string, experiences entity.VideoExperiences) error {
+func (v *video) replaceExperiences(
+	ctx context.Context,
+	tx *gorm.DB,
+	videoID string,
+	experiences entity.VideoExperiences,
+) error {
 	// 不要なレコードを削除
 	stmt := tx.WithContext(ctx).Where("video_id = ?", videoID)
 	if len(experiences.ExperienceIDs()) > 0 {

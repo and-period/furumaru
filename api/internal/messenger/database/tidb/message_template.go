@@ -24,7 +24,11 @@ func NewMessageTemplate(db *mysql.Client) database.MessageTemplate {
 	}
 }
 
-func (t *messageTemplate) Get(ctx context.Context, messageID entity.MessageTemplateID, fields ...string) (*entity.MessageTemplate, error) {
+func (t *messageTemplate) Get(
+	ctx context.Context,
+	messageID entity.MessageTemplateID,
+	fields ...string,
+) (*entity.MessageTemplate, error) {
 	var template *entity.MessageTemplate
 
 	stmt := t.db.Statement(ctx, t.db.DB, messageTemplateTable, fields...).

@@ -151,7 +151,10 @@ type TopOrderSalesTrend struct {
 
 type TopOrderSalesTrends []*TopOrderSalesTrend
 
-func NewTopOrderSalesTrend(aggregated *entity.AggregatedPeriodOrder, periodType TopOrderPeriodType) *TopOrderSalesTrend {
+func NewTopOrderSalesTrend(
+	aggregated *entity.AggregatedPeriodOrder,
+	periodType TopOrderPeriodType,
+) *TopOrderSalesTrend {
 	return &TopOrderSalesTrend{
 		TopOrderSalesTrend: response.TopOrderSalesTrend{
 			Period:     periodType.String(aggregated.Period),

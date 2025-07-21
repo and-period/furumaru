@@ -123,7 +123,11 @@ func (h *handler) getVideo(ctx context.Context, videoID string) (*service.Video,
 		return nil, err
 	}
 	if !video.Published() {
-		return nil, fmt.Errorf("handler: video is not published. video=%s: %w", videoID, exception.ErrNotFound)
+		return nil, fmt.Errorf(
+			"handler: video is not published. video=%s: %w",
+			videoID,
+			exception.ErrNotFound,
+		)
 	}
 	return service.NewVideo(video), nil
 }
@@ -145,7 +149,10 @@ type listVideoSummariesParams struct {
 	noLimit       bool
 }
 
-func (h *handler) listVideoSummaries(ctx context.Context, params *listVideoSummariesParams) (service.VideoSummaries, int64, error) {
+func (h *handler) listVideoSummaries(
+	ctx context.Context,
+	params *listVideoSummariesParams,
+) (service.VideoSummaries, int64, error) {
 	in := &media.ListVideosInput{
 		Name:           params.name,
 		CoordinatorID:  params.coordinatorID,
@@ -162,7 +169,11 @@ func (h *handler) listVideoSummaries(ctx context.Context, params *listVideoSumma
 	case videoCategoryExperience:
 		in.OnlyDisplayExperience = true
 	default:
-		return nil, 0, fmt.Errorf("handler: invalid category. category=%s: %w", params.category, exception.ErrInvalidArgument)
+		return nil, 0, fmt.Errorf(
+			"handler: invalid category. category=%s: %w",
+			params.category,
+			exception.ErrInvalidArgument,
+		)
 	}
 	videos, total, err := h.media.ListVideos(ctx, in)
 	if err != nil {
