@@ -1,6 +1,10 @@
 package service
 
 import (
+	"fmt"
+	"html"
+	"net/url"
+
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/format"
@@ -320,6 +324,113 @@ func (rs ProductRates) Response() []*response.ProductRate {
 	res := make([]*response.ProductRate, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
+	}
+	return res
+}
+
+type MerchantCenterItem struct {
+	response.MerchantCenterItem
+}
+
+type MerchantCenterItems []*MerchantCenterItem
+
+type NewMerchantCenterItemParams struct {
+	Product     *Product
+	Coordinator *Coordinator
+	ProductType *ProductType
+	Category    *Category
+	WebURL      func() *url.URL
+}
+
+type NewMerchantCenterItemsParams struct {
+	Products     Products
+	Coordinators map[string]*Coordinator
+	Details      *ProductDetailsParams
+	WebURL       func() *url.URL
+}
+
+func NewMerchantCenterItem(params *NewMerchantCenterItemParams) *MerchantCenterItem {
+	const condition = "new"
+
+	var (
+		description     string
+		coordinatorName string
+		productTypeName string
+		categoryName    string
+		availability    string
+	)
+
+	if params.Product.Description == "" {
+		description = params.Product.Name
+	} else {
+		description = params.Product.Description
+	}
+	if len(description) > 5000 {
+		description = description[:4997] + "..."
+	}
+
+	if params.Coordinator != nil {
+		coordinatorName = params.Coordinator.Username
+	}
+
+	if params.ProductType != nil {
+		productTypeName = params.ProductType.Name
+	}
+
+	if params.Category != nil {
+		categoryName = params.Category.Name
+	}
+
+	if params.Product.Inventory > 0 {
+		availability = "in_stock"
+	} else {
+		availability = "out_of_stock"
+	}
+
+	link := params.WebURL()
+	link.Path = fmt.Sprintf("/products/%s", params.Product.ID)
+
+	return &MerchantCenterItem{
+		MerchantCenterItem: response.MerchantCenterItem{
+			ID:                    params.Product.ID,
+			Title:                 params.Product.Name,
+			Description:           html.EscapeString(description),
+			Link:                  link.String(),
+			ImageLink:             params.Product.ThumbnailURL,
+			Condition:             condition,
+			Availability:          availability,
+			Price:                 fmt.Sprintf("%.0f JPY", float64(params.Product.Price)),
+			Brand:                 coordinatorName,
+			GoogleProductCategory: categoryName,
+			ProductType:           productTypeName,
+			ShippingWeight:        fmt.Sprintf("%.0f g", params.Product.Weight),
+		},
+	}
+}
+
+func (i *MerchantCenterItem) Response() *response.MerchantCenterItem {
+	return &i.MerchantCenterItem
+}
+
+func NewMerchantCenterItems(params *NewMerchantCenterItemsParams) MerchantCenterItems {
+	res := make(MerchantCenterItems, len(params.Products))
+	for i, product := range params.Products {
+		p := &NewMerchantCenterItemParams{
+			Product:     product,
+			Coordinator: params.Coordinators[product.CoordinatorID],
+			ProductType: params.Details.ProductTypes[product.ProductTypeID],
+			Category:    params.Details.Categories[product.CategoryID],
+			WebURL:      params.WebURL,
+		}
+		res[i] = NewMerchantCenterItem(p)
+	}
+	return res
+}
+
+func (is MerchantCenterItems) Response() []*response.MerchantCenterItem {
+	res := make([]*response.MerchantCenterItem, len(is))
+	for i := range is {
+		res[i] = is[i].Response()
 	}
 	return res
 }
