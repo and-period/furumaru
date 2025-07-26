@@ -290,7 +290,6 @@ func (h *handler) getProductDetails(ctx context.Context, productIDs ...string) (
 
 func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 	const (
-		limit       = 10000
 		title       = "ふるマル - 全国ふるさとマルシェ"
 		description = "地域・地方の特産品を扱うECマーケットプレイス"
 		version     = "2.0"
@@ -299,13 +298,12 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 	)
 
 	in := &store.ListProductsInput{
-		Limit:            limit,
-		Offset:           0,
+		NoLimit:          true,
 		OnlyPublished:    true,
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
 		Orders: []*store.ListProductsOrder{
-			{Key: store.ListProductsOrderByStartAt, OrderByASC: false},
+			{Key: store.ListProductsOrderByUpdatedAt, OrderByASC: false},
 		},
 	}
 	products, _, err := h.store.ListProducts(ctx, in)
