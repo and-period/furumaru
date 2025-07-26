@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.0.8](https://github.com/and-period/furumaru/compare/v5.0.7...v5.0.8) - 2025-07-26
+- fix(gateway): Google Merchant Center用のAPIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2891
+
 ## [v5.0.7](https://github.com/and-period/furumaru/compare/v5.0.6...v5.0.7) - 2025-07-26
 - docs: Add Claude Code configuration and project documentation by @taba2424 in https://github.com/and-period/furumaru/pull/2868
 - build(deps): bump the dependencies group across 1 directory with 55 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2865
