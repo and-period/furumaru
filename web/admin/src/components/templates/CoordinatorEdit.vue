@@ -278,11 +278,12 @@ const onClickSearchAddress = (): void => {
 </script>
 
 <template>
-  <v-alert
-    v-show="props.isAlert"
-    :type="props.alertType"
-    v-text="props.alertText"
-  />
+  <div class="mb-16">
+    <v-alert
+      v-show="props.isAlert"
+      :type="props.alertType"
+      v-text="props.alertText"
+    />
 
   <v-card class="mb-4">
     <v-card-title>コーディネーター詳細</v-card-title>
@@ -345,4 +346,5 @@ const onClickSearchAddress = (): void => {
       />
     </v-window-item>
   </v-window>
+  </div>
 </template>

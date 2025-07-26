@@ -147,10 +147,13 @@ const onSubmit = async (): Promise<void> => {
     v-text="props.alertText"
   />
 
-  <v-card>
+  <v-card class="mb-16">
     <v-card-title>セール情報登録</v-card-title>
 
-    <v-form @submit.prevent="onSubmit">
+    <v-form
+      id="create-promotion-form"
+      @submit.prevent="onSubmit"
+    >
       <v-card-text>
         <v-text-field
           v-model="formDataValidate.title.$model"
@@ -245,18 +248,6 @@ const onSubmit = async (): Promise<void> => {
           color="primary"
         />
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
-        >
-          登録
-        </v-btn>
-      </v-card-actions>
     </v-form>
   </v-card>
 </template>

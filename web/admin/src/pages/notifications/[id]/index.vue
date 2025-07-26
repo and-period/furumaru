@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
-import { NotificationType } from '~/types/api'
+import { AdminType, NotificationType } from '~/types/api'
 import type { UpdateNotificationRequest } from '~/types/api'
 
 const route = useRoute()
@@ -72,6 +72,10 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
+const isEditable = (): boolean => {
+  return adminType.value === AdminType.ADMINISTRATOR
+}
+
 try {
   await fetchState.execute()
 }
@@ -81,16 +85,40 @@ catch (err) {
 </script>
 
 <template>
-  <templates-notification-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :admin-type="adminType"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :notification="notification"
-    :promotion="promotion"
-    :admin="admin"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-notification-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :admin-type="adminType"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :notification="notification"
+      :promotion="promotion"
+      :admin="admin"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          v-show="isEditable()"
+          color="primary"
+          variant="outlined"
+          type="submit"
+          form="update-notification-form"
+        >
+          更新
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

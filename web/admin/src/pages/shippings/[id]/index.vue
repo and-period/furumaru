@@ -110,10 +110,32 @@ const handleSubmit = async (): Promise<void> => {
     </v-card-title>
     <organisms-shipping-form
       v-model="formData"
-      :loading=" status === 'pending' "
+      :loading="status === 'pending'"
       form-type="update"
       :submitting="submitting"
       @submit="handleSubmit"
     />
+    
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          @click="handleSubmit"
+          :loading="submitting"
+        >
+          更新
+        </v-btn>
+      </div>
+    </div>
   </div>
 </template>

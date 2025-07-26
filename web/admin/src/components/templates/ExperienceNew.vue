@@ -201,9 +201,10 @@ const onSubmit = async (): Promise<void> => {
     v-text="props.alertText"
   />
 
-  <v-card-title>体験登録</v-card-title>
-
-  <v-row>
+  <v-card class="mb-16">
+    <v-card-title>体験登録</v-card-title>
+    <v-card-text>
+      <v-row>
     <v-col
       sm="12"
       md="12"
@@ -529,19 +530,8 @@ const onSubmit = async (): Promise<void> => {
       </v-card>
     </v-col>
   </v-row>
-
-  <v-btn
-    :loading="loading"
-    block
-    variant="outlined"
-    @click="onSubmit"
-  >
-    <v-icon
-      start
-      :icon="mdiPlus"
-    />
-    登録
-  </v-btn>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style lang="scss">
