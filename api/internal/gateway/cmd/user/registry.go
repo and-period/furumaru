@@ -261,11 +261,12 @@ func (a *app) inject(ctx context.Context) error {
 
 	// Handlerの設定
 	v1Params := &v1.Params{
-		WaitGroup: params.waitGroup,
-		User:      userService,
-		Store:     storeService,
-		Messenger: messengerService,
-		Media:     mediaService,
+		WaitGroup:  params.waitGroup,
+		UserWebURL: params.userWebURL,
+		User:       userService,
+		Store:      storeService,
+		Messenger:  messengerService,
+		Media:      mediaService,
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),

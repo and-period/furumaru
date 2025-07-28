@@ -18,6 +18,7 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListProducts)
 	r.GET("/:productId", h.GetProduct)
+	r.GET("/merchant-feed", h.GetMerchantCenterFeed)
 }
 
 func (h *handler) ListProducts(ctx *gin.Context) {
@@ -285,4 +286,74 @@ func (h *handler) getProductDetails(ctx context.Context, productIDs ...string) (
 		ProductRates: productRates.MapByProductID(),
 	}
 	return res, nil
+}
+
+func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
+	const (
+		title       = "ふるマル - 全国ふるさとマルシェ"
+		description = "地域・地方の特産品を扱うECマーケットプレイス"
+		version     = "2.0"
+		xmlns       = "http://base.google.com/ns/1.0"
+		contentType = "application/xml; charset=utf-8"
+	)
+
+	in := &store.ListProductsInput{
+		NoLimit:          true,
+		OnlyPublished:    true,
+		ExcludeOutOfSale: true,
+		ExcludeDeleted:   true,
+		Orders: []*store.ListProductsOrder{
+			{Key: store.ListProductsOrderByUpdatedAt, OrderByASC: false},
+		},
+	}
+	products, _, err := h.store.ListProducts(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.MerchantCenterFeedResponse{
+		Version: version,
+		Xmlns:   xmlns,
+		Channel: &response.MerchantCenterChannel{
+			Title:       title,
+			Link:        h.userWebURL().String(),
+			Description: description,
+			Items:       []*response.MerchantCenterItem{},
+		},
+	}
+	if len(products) == 0 {
+		ctx.Header("Content-Type", contentType)
+		ctx.XML(http.StatusOK, res)
+		return
+	}
+
+	var (
+		details      *service.ProductDetailsParams
+		coordinators service.Coordinators
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		details, err = h.getProductDetails(ectx, products.IDs()...)
+		return
+	})
+	eg.Go(func() (err error) {
+		coordinators, err = h.multiGetCoordinators(ectx, products.CoordinatorIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	params := &service.NewMerchantCenterItemsParams{
+		Products:     service.NewProducts(products, details),
+		Coordinators: coordinators.Map(),
+		Details:      details,
+		WebURL:       h.userWebURL,
+	}
+	res.Channel.Items = service.NewMerchantCenterItems(params).Response()
+
+	ctx.Header("Content-Type", contentType)
+	ctx.XML(http.StatusOK, res)
 }

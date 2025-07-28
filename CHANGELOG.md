@@ -1,5 +1,24 @@
 # Changelog
 
+## [v5.0.8](https://github.com/and-period/furumaru/compare/v5.0.7...v5.0.8) - 2025-07-26
+- fix(gateway): Google Merchant Center用のAPIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2891
+
+## [v5.0.7](https://github.com/and-period/furumaru/compare/v5.0.6...v5.0.7) - 2025-07-26
+- docs: Add Claude Code configuration and project documentation by @taba2424 in https://github.com/and-period/furumaru/pull/2868
+- build(deps): bump the dependencies group across 1 directory with 55 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2865
+- build(deps): bump the dependencies group across 1 directory with 5 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2866
+- build(deps): bump the dependencies group across 1 directory with 68 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2867
+- build(deps): bump the dependencies group in /api with 19 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2870
+- LINEの友達追加のバナー追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2872
+- Add: when text is url change to link by @hamachans in https://github.com/and-period/furumaru/pull/2873
+- 管理者画面の商品管理における編集ボタンの改善 - 固定フッターへの移動 by @Copilot in https://github.com/and-period/furumaru/pull/2877
+- Fix map marker display for experiences with identical coordinates by @Copilot in https://github.com/and-period/furumaru/pull/2879
+- fix(web/admin): resolve Nuxt v4 startup errors and update Git workflow docs by @taba2424 in https://github.com/and-period/furumaru/pull/2882
+- LIFFアプリのひな型の配置 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2884
+- feat(api): add Google Merchant Center product feed endpoint by @taba2424 in https://github.com/and-period/furumaru/pull/2888
+- build(deps): bump the dependencies group across 1 directory with 67 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2889
+- build(deps): bump the dependencies group across 1 directory with 159 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2890
+
 ## [v5.0.6](https://github.com/and-period/furumaru/compare/v5.0.5...v5.0.6) - 2025-06-24
 - Fix/web/admin/order detail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2862
 
