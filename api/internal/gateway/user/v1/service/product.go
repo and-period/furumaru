@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"html"
 	"net/url"
+	"strings"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/format"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
 )
@@ -118,6 +121,9 @@ func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 type Product struct {
 	response.Product
 	revisionID int64
+	cost       int64
+	status     ProductStatus
+	media      MultiProductMedia
 }
 
 type Products []*Product
@@ -145,6 +151,7 @@ func NewProduct(product *entity.Product, category *Category, rate *ProductRate) 
 	if category != nil {
 		categoryID = category.ID
 	}
+	media := NewMultiProductMedia(product.Media)
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
@@ -161,7 +168,7 @@ func NewProduct(product *entity.Product, category *Category, rate *ProductRate) 
 			ItemUnit:          product.ItemUnit,
 			ItemDescription:   product.ItemDescription,
 			ThumbnailURL:      product.ThumbnailURL,
-			Media:             NewMultiProductMedia(product.Media).Response(),
+			Media:             media.Response(),
 			Price:             product.Price,
 			ExpirationDate:    product.ExpirationDate,
 			RecommendedPoint1: point1,
@@ -179,6 +186,32 @@ func NewProduct(product *entity.Product, category *Category, rate *ProductRate) 
 			EndAt:             product.EndAt.Unix(),
 		},
 		revisionID: product.ProductRevision.ID,
+		status:     NewProductStatus(product.Status),
+		cost:       product.ProductRevision.Cost,
+		media:      media,
+	}
+}
+
+func (p *Product) MediaURLs() []string {
+	return p.media.URLs()
+}
+
+func (p *Product) MerchantCenterItemCondition() string {
+	switch p.status {
+	case ProductStatusPresale:
+		if p.Inventory > 0 {
+			return "preorder"
+		}
+		return "out_of_stock"
+	case ProductStatusForSale:
+		if p.Inventory > 0 {
+			return "in_stock"
+		}
+		return "out_of_stock"
+	case ProductStatusOutOfSale:
+		return "out_of_stock"
+	default:
+		return "new"
 	}
 }
 
@@ -244,6 +277,14 @@ func NewMultiProductMedia(media entity.MultiProductMedia) MultiProductMedia {
 	res := make(MultiProductMedia, len(media))
 	for i := range media {
 		res[i] = NewProductMedia(media[i])
+	}
+	return res
+}
+
+func (m MultiProductMedia) URLs() []string {
+	res := make([]string, 0, len(m))
+	for _, media := range m {
+		res = append(res, media.URL)
 	}
 	return res
 }
@@ -339,6 +380,7 @@ type NewMerchantCenterItemParams struct {
 	Coordinator *Coordinator
 	ProductType *ProductType
 	Category    *Category
+	Now         time.Time
 	WebURL      func() *url.URL
 }
 
@@ -346,18 +388,23 @@ type NewMerchantCenterItemsParams struct {
 	Products     Products
 	Coordinators map[string]*Coordinator
 	Details      *ProductDetailsParams
+	Now          time.Time
 	WebURL       func() *url.URL
 }
 
 func NewMerchantCenterItem(params *NewMerchantCenterItemParams) *MerchantCenterItem {
-	const condition = "new"
+	const (
+		dateFormat   = time.RFC3339 // 日付形式（ISO 8601）
+		priceFormat  = "%.0f JPY"   // 金額形式（ISO 4217）
+		weightFormat = "%.0f kg"    // 重量形式（キログラム単位）
+		pathFormat   = "/items/%s"  // 商品リンクのパス形式
+	)
 
 	var (
 		description     string
 		coordinatorName string
 		productTypeName string
-		categoryName    string
-		availability    string
+		expirationDate  string
 	)
 
 	if params.Product.Description == "" {
@@ -373,37 +420,50 @@ func NewMerchantCenterItem(params *NewMerchantCenterItemParams) *MerchantCenterI
 		coordinatorName = params.Coordinator.Username
 	}
 
-	if params.ProductType != nil {
+	switch {
+	case params.ProductType != nil && params.Category != nil:
+		productTypeName = strings.Join([]string{params.Category.Name, params.ProductType.Name}, " > ")
+	case params.Category != nil:
+		productTypeName = params.Category.Name
+	case params.ProductType != nil:
 		productTypeName = params.ProductType.Name
 	}
 
-	if params.Category != nil {
-		categoryName = params.Category.Name
-	}
-
-	if params.Product.Inventory > 0 {
-		availability = "in_stock"
-	} else {
-		availability = "out_of_stock"
+	expiration := jst.ParseFromUnix(params.Product.EndAt).Sub(params.Now)
+	if params.Product.EndAt != 0 && expiration > 0 && expiration < 30*24*time.Hour { // 30日以内の有効期限
+		expirationDate = jst.ParseFromUnix(params.Product.EndAt).Format(dateFormat)
 	}
 
 	link := params.WebURL()
-	link.Path = fmt.Sprintf("/products/%s", params.Product.ID)
+	link.Path = fmt.Sprintf(pathFormat, params.Product.ID)
 
 	return &MerchantCenterItem{
 		MerchantCenterItem: response.MerchantCenterItem{
-			ID:                    params.Product.ID,
-			Title:                 params.Product.Name,
-			Description:           html.EscapeString(description),
-			Link:                  link.String(),
-			ImageLink:             params.Product.ThumbnailURL,
-			Condition:             condition,
-			Availability:          availability,
-			Price:                 fmt.Sprintf("%.0f JPY", float64(params.Product.Price)),
-			Brand:                 coordinatorName,
-			GoogleProductCategory: categoryName,
-			ProductType:           productTypeName,
-			ShippingWeight:        fmt.Sprintf("%.0f g", params.Product.Weight),
+			// 商品基本情報
+			ID:                   params.Product.ID,
+			Title:                params.Product.Name,
+			Description:          html.EscapeString(description),
+			Link:                 link.String(),
+			ImageLink:            params.Product.ThumbnailURL,
+			AdditionalImageLinks: params.Product.MediaURLs(),
+			// 価格と在庫状況
+			Availability:       params.Product.MerchantCenterItemCondition(),
+			AvailabilityDate:   jst.ParseFromUnix(params.Product.StartAt).Format(dateFormat),
+			CostOfGoodsSold:    fmt.Sprintf(priceFormat, float64(params.Product.cost)),
+			ExpirationDate:     expirationDate,
+			Price:              fmt.Sprintf(priceFormat, float64(params.Product.Price)),
+			UnitPricingMeasure: "ct", // 個数単位
+			// 商品カテゴリ
+			ProductType: productTypeName,
+			// 商品 ID
+			Brand: coordinatorName,
+			// 詳細な商品説明
+			Condition:        "new", // 新品
+			ProductWeight:    fmt.Sprintf(weightFormat, params.Product.Weight),
+			ProductHighlight: params.Product.RecommendedPoint1,
+			// 送料
+			ShippingWeight:   fmt.Sprintf(weightFormat, params.Product.Weight),
+			ShipsFromCountry: "JP", // 日本からの発送
 		},
 	}
 }
