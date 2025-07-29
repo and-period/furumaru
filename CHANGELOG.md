@@ -1,5 +1,8 @@
 # Changelog
 
+## [v5.0.9](https://github.com/and-period/furumaru/compare/v5.0.8...v5.0.9) - 2025-07-29
+- test(gateway): Google Merchant Center用APIのテストコード追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2893
+
 ## [v5.0.8](https://github.com/and-period/furumaru/compare/v5.0.7...v5.0.8) - 2025-07-26
 - fix(gateway): Google Merchant Center用のAPIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2891
 
