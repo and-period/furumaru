@@ -83,20 +83,66 @@ type MerchantCenterChannel struct {
 	Items       []*MerchantCenterItem `xml:"item"`
 }
 
+// Google Merchant Center 商品データ仕様
+// https://support.google.com/merchants/answer/7052112?visit_id=638891829957746964-3945530472&hl=ja
 type MerchantCenterItem struct {
-	ID                    string `xml:"g:id"`
-	Title                 string `xml:"g:title"`
-	Description           string `xml:"g:description"`
-	Link                  string `xml:"g:link"`
-	ImageLink             string `xml:"g:image_link"`
-	Condition             string `xml:"g:condition"`
-	Availability          string `xml:"g:availability"`
-	Price                 string `xml:"g:price"`
-	Brand                 string `xml:"g:brand"`
-	GTIN                  string `xml:"g:gtin,omitempty"`
-	MPN                   string `xml:"g:mpn,omitempty"`
-	GoogleProductCategory string `xml:"g:google_product_category,omitempty"`
-	ProductType           string `xml:"g:product_type,omitempty"`
-	ItemGroupID           string `xml:"g:item_group_id,omitempty"`
-	ShippingWeight        string `xml:"g:shipping_weight,omitempty"`
+	// 商品基本情報
+	ID                   string   `xml:"g:id"`                              // 商品ID
+	Title                string   `xml:"g:title"`                           // タイトル
+	Description          string   `xml:"g:description"`                     // 商品説明
+	Link                 string   `xml:"g:link"`                            // 商品リンク
+	ImageLink            string   `xml:"g:image_link"`                      // 商品画像リンク
+	AdditionalImageLinks []string `xml:"g:additional_image_link,omitempty"` // 追加の商品画像リンク
+	// 価格と在庫状況
+	Availability           string `xml:"g:availability"`                        // 在庫状況
+	AvailabilityDate       string `xml:"g:availability_date,omitempty"`         // 入荷予定日
+	CostOfGoodsSold        string `xml:"g:cost_of_goods_sold,omitempty"`        // 商品原価
+	ExpirationDate         string `xml:"g:expiration_date,omitempty"`           // 有効期限
+	Price                  string `xml:"g:price"`                               // 価格
+	SalePrice              string `xml:"g:sale_price,omitempty"`                // セール価格
+	SalePriceEffectiveDate string `xml:"g:sale_price_effective_date,omitempty"` // セール価格有効期間
+	UnitPricingMeasure     string `xml:"g:unit_pricing_measure,omitempty"`      // 価格の計量単位
+	UnitPricingBaseMeasure string `xml:"g:unit_pricing_base_measure,omitempty"` // 価格の基準計量単位
+	SubscriptionCost       string `xml:"g:subscription_cost,omitempty"`         // 定期購入の費用
+	// 商品カテゴリ
+	GoogleProductCategory string `xml:"g:google_product_category,omitempty"` // Google商品カテゴリ
+	ProductType           string `xml:"g:product_type,omitempty"`            // 商品カテゴリ
+	// 商品ID
+	Brand            string `xml:"g:brand"`                       // ブランド
+	GTIN             string `xml:"g:gtin,omitempty"`              // GTIN
+	MPN              string `xml:"g:mpn,omitempty"`               // MPN
+	IdentifierExists string `xml:"g:identifier_exists,omitempty"` // IDの存在
+	// 詳細な商品説明
+	Condition        string `xml:"g:condition"`                   // 状態
+	IsBundle         bool   `xml:"g:is_bundle,omitempty"`         // 一括販売商品
+	AgeGroup         string `xml:"g:age_group,omitempty"`         // 年齢層
+	Gender           string `xml:"g:gender,omitempty"`            // 性別
+	ItemGroupID      string `xml:"g:item_group_id,omitempty"`     // 商品グループID
+	ProductLength    string `xml:"g:product_length,omitempty"`    // 商品の奥行
+	ProductWidth     string `xml:"g:product_width,omitempty"`     // 商品の幅
+	ProductHeight    string `xml:"g:product_height,omitempty"`    // 商品の高さ
+	ProductWeight    string `xml:"g:product_weight,omitempty"`    // 商品の重量
+	ProductDetail    string `xml:"g:product_detail,omitempty"`    // 商品の詳細
+	ProductHighlight string `xml:"g:product_highlight,omitempty"` // 商品に関する情報
+	// ショッピング キャンペーンなどの設定
+	CustomLabel0 string `xml:"g:custom_label_0,omitempty"` // カスタムラベル0
+	CustomLabel1 string `xml:"g:custom_label_1,omitempty"` // カスタムラベル1
+	CustomLabel2 string `xml:"g:custom_label_2,omitempty"` // カスタムラベル2
+	CustomLabel3 string `xml:"g:custom_label_3,omitempty"` // カスタムラベル3
+	CustomLabel4 string `xml:"g:custom_label_4,omitempty"` // カスタムラベル4
+	PromotionID  string `xml:"g:promotion_id,omitempty"`   // プロモーションID
+	// 掲載先
+	ExcludedDestination string `xml:"g:excluded_destination,omitempty"` // 非掲載先
+	IncludedDestination string `xml:"g:included_destination,omitempty"` // 掲載先
+	// 送料
+	Shipping              string `xml:"g:shipping,omitempty"`                // 送料
+	ShippingLabel         string `xml:"g:shipping_label,omitempty"`          // 送料ラベル
+	ShippingWeight        string `xml:"g:shipping_weight,omitempty"`         // 搬送重量
+	ShipsFromCountry      string `xml:"g:ships_from_country,omitempty"`      // 発送元の国
+	MaxHandlingTime       string `xml:"g:max_handling_time,omitempty"`       // 最長発送準備期間
+	MinHandlingTime       string `xml:"g:min_handling_time,omitempty"`       // 最短発送準備期間
+	FreeShippingThreshold string `xml:"g:free_shipping_threshold,omitempty"` // 無料配送の基準額
+	// 税金
+	Tax         string `xml:"g:tax,omitempty"`          // 税金
+	TaxCategory string `xml:"g:tax_category,omitempty"` // 税金カテゴリ
 }
