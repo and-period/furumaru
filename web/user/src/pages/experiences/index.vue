@@ -91,7 +91,7 @@ const handleClickSpot = (id: string) => {
 // 同一座標の体験に小さなオフセットを追加して個別に表示する
 const experiencesWithOffset = computed(() => {
   const coordGroups = new Map<string, Array<{ experience: any, index: number }>>()
-  
+
   // 同一座標の体験をグループ化
   experiences.value.forEach((experience, index) => {
     const coordKey = `${experience.hostLatitude},${experience.hostLongitude}`
@@ -100,26 +100,26 @@ const experiencesWithOffset = computed(() => {
     }
     coordGroups.get(coordKey)!.push({ experience, index })
   })
-  
+
   // オフセットを適用
   return experiences.value.map((experience) => {
     const coordKey = `${experience.hostLatitude},${experience.hostLongitude}`
     const group = coordGroups.get(coordKey)!
-    
+
     if (group.length === 1) {
       // 単独の場合はオフセットなし
       return experience
     }
-    
+
     // 複数の場合は円形にオフセットを配置
     const itemIndex = group.findIndex(item => item.experience.id === experience.id)
     const angleStep = (2 * Math.PI) / group.length
     const radius = 0.0005 // 約50メートルのオフセット
     const angle = angleStep * itemIndex
-    
+
     const offsetLat = radius * Math.cos(angle)
     const offsetLng = radius * Math.sin(angle)
-    
+
     return {
       ...experience,
       hostLatitude: experience.hostLatitude + offsetLat,

@@ -15,8 +15,6 @@
 
 import * as runtime from '../runtime';
 import type {
-  AuthGoogleAccountResponse,
-  AuthLineAccountResponse,
   AuthResponse,
   CreateAuthUserWithGoogleRequest,
   CreateAuthUserWithLineRequest,
@@ -28,10 +26,6 @@ import type {
   UpdateAuthPasswordRequest,
 } from '../models/index';
 import {
-    AuthGoogleAccountResponseFromJSON,
-    AuthGoogleAccountResponseToJSON,
-    AuthLineAccountResponseFromJSON,
-    AuthLineAccountResponseToJSON,
     AuthResponseFromJSON,
     AuthResponseToJSON,
     CreateAuthUserWithGoogleRequestFromJSON,
@@ -51,16 +45,6 @@ import {
     UpdateAuthPasswordRequestFromJSON,
     UpdateAuthPasswordRequestToJSON,
 } from '../models/index';
-
-export interface V1AuthGoogleAccountRequest {
-    state: string;
-    redirectUri?: string;
-}
-
-export interface V1AuthLineAccountRequest {
-    state: string;
-    redirectUri?: string;
-}
 
 export interface V1CreateAuthUserWithGoogleRequest {
     body: CreateAuthUserWithGoogleRequest;
@@ -94,88 +78,6 @@ export interface V1UpdateUserPasswordRequest {
  * 
  */
 export class AuthApi extends runtime.BaseAPI {
-
-    /**
-     * Google認証用URLの発行
-     */
-    async v1AuthGoogleAccountRaw(requestParameters: V1AuthGoogleAccountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthGoogleAccountResponse>> {
-        if (requestParameters['state'] == null) {
-            throw new runtime.RequiredError(
-                'state',
-                'Required parameter "state" was null or undefined when calling v1AuthGoogleAccount().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters['state'] != null) {
-            queryParameters['state'] = requestParameters['state'];
-        }
-
-        if (requestParameters['redirectUri'] != null) {
-            queryParameters['redirectUri'] = requestParameters['redirectUri'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/v1/users/me/google`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthGoogleAccountResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Google認証用URLの発行
-     */
-    async v1AuthGoogleAccount(requestParameters: V1AuthGoogleAccountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthGoogleAccountResponse> {
-        const response = await this.v1AuthGoogleAccountRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * LINE認証用URLの発行
-     */
-    async v1AuthLineAccountRaw(requestParameters: V1AuthLineAccountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthLineAccountResponse>> {
-        if (requestParameters['state'] == null) {
-            throw new runtime.RequiredError(
-                'state',
-                'Required parameter "state" was null or undefined when calling v1AuthLineAccount().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters['state'] != null) {
-            queryParameters['state'] = requestParameters['state'];
-        }
-
-        if (requestParameters['redirectUri'] != null) {
-            queryParameters['redirectUri'] = requestParameters['redirectUri'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/v1/users/me/line`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthLineAccountResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * LINE認証用URLの発行
-     */
-    async v1AuthLineAccount(requestParameters: V1AuthLineAccountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthLineAccountResponse> {
-        const response = await this.v1AuthLineAccountRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * Googleアカウントの連携
