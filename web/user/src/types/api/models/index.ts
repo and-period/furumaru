@@ -140,8 +140,6 @@ export * from './UpsertExperienceReviewReactionRequest';
 export * from './UpsertProductReviewReactionRequest';
 export * from './UserExperienceReviewsResponse';
 export * from './UserProductReviewsResponse';
-export * from './V1AuthGoogleAccountResponse';
-export * from './V1AuthLineAccountResponse';
 export * from './VerifyAuthUserEmailRequest';
 export * from './VerifyAuthUserRequest';
 export * from './Video';
