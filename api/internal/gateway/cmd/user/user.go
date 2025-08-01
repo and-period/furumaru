@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/pkg/http"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/kelseyhightower/envconfig"
@@ -27,7 +27,7 @@ type app struct {
 	waitGroup                    *sync.WaitGroup
 	slack                        slack.Client
 	newRelic                     *newrelic.Application
-	v1                           v1.Handler
+	v1                           gateway.Handler
 	AppName                      string  `default:"user-gateway"   envconfig:"APP_NAME"`
 	Environment                  string  `default:"none"           envconfig:"ENV"`
 	Port                         int64   `default:"8080"           envconfig:"PORT"`

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -39,10 +40,6 @@ var (
  * handler
  * ###############################################
  */
-type Handler interface {
-	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
-}
-
 type Params struct {
 	WaitGroup  *sync.WaitGroup
 	UserWebURL *url.URL
@@ -109,7 +106,7 @@ func WithSentry(sentry sentry.Client) Option {
 	}
 }
 
-func NewHandler(params *Params, opts ...Option) Handler {
+func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
 		appName:          "user-gateway",
 		env:              "",
@@ -142,6 +139,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		messenger:   params.Messenger,
 		media:       params.Media,
 	}
+}
+
+func (h *handler) Setup(ctx context.Context) error {
+	return nil
+}
+
+func (h *handler) Sync(ctx context.Context) error {
+	return nil
 }
 
 /**

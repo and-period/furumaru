@@ -10,8 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/pkg/http"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/kelseyhightower/envconfig"
@@ -28,8 +27,8 @@ type app struct {
 	waitGroup                         *sync.WaitGroup
 	slack                             slack.Client
 	newRelic                          *newrelic.Application
-	v1                                v1.Handler
-	komoju                            khandler.Handler
+	v1                                gateway.Handler
+	komoju                            gateway.Handler
 	AppName                           string   `default:"admin-gateway"  envconfig:"APP_NAME"`
 	Environment                       string   `default:"none"           envconfig:"ENV"`
 	Port                              int64    `default:"8080"           envconfig:"PORT"`

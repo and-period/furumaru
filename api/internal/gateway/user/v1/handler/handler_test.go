@@ -16,6 +16,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
@@ -67,7 +68,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 	}
 }
 
-func newHandler(mocks *mocks, opts *testOptions) Handler {
+func newHandler(mocks *mocks, opts *testOptions) gateway.Handler {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		User:      mocks.user,
@@ -79,7 +80,7 @@ func newHandler(mocks *mocks, opts *testOptions) Handler {
 	return handler
 }
 
-func newRoutes(h Handler, r *gin.Engine) {
+func newRoutes(h gateway.Handler, r *gin.Engine) {
 	h.Routes(r.Group(""))
 }
 
