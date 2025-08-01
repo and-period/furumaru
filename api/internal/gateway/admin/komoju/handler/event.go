@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/and-period/furumaru/api/internal/gateway/komoju/request"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/request"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

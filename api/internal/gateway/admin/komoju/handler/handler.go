@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -14,10 +15,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-type Handler interface {
-	Routes(rg *gin.RouterGroup) // エンドポイント一覧の定義
-}
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
@@ -67,7 +64,7 @@ func WithSentry(sentry sentry.Client) Option {
 	}
 }
 
-func NewHandler(params *Params, opts ...Option) Handler {
+func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
 		appName: "komoju-gateway",
 		env:     "",
@@ -86,6 +83,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		waitGroup: params.WaitGroup,
 		store:     params.Store,
 	}
+}
+
+func (h *handler) Setup(ctx context.Context) error {
+	return nil
+}
+
+func (h *handler) Sync(ctx context.Context) error {
+	return nil
 }
 
 /**

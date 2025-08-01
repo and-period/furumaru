@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
+	khandler "github.com/and-period/furumaru/api/internal/gateway/admin/komoju/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
