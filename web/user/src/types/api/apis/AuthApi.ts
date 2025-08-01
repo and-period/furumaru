@@ -119,7 +119,7 @@ export class AuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/users/me/google`,
+            path: `/v1/auth/google`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -160,7 +160,7 @@ export class AuthApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/users/me/line`,
+            path: `/v1/auth/line`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

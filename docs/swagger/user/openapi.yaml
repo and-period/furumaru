@@ -63,6 +63,10 @@ paths:
     $ref: './paths/v1/auth/forgot-password/index.yaml'
   /v1/auth/forgot-password/verified:
     $ref: './paths/v1/auth/forgot-password/verified.yaml'
+  /v1/auth/google:
+    $ref: './paths/v1/auth/google.yaml'
+  /v1/auth/line:
+    $ref: './paths/v1/auth/line.yaml'
   # AuthUser
   /v1/users/me:
     $ref: './paths/v1/users/me/index.yaml'
