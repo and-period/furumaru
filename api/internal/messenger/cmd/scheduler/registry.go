@@ -115,7 +115,6 @@ func (a *app) inject(ctx context.Context) error {
 		Messenger: messengerService,
 	}
 	a.job = scheduler.NewScheduler(jobParams, scheduler.WithLogger(params.logger))
-	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }

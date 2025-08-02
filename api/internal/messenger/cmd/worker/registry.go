@@ -168,7 +168,6 @@ func (a *app) inject(ctx context.Context) error {
 		User:           userService,
 	}
 	a.worker = worker.NewWorker(workerParams, worker.WithLogger(params.logger))
-	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }

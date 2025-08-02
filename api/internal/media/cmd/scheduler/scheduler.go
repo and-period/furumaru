@@ -3,20 +3,20 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/broadcast/scheduler"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 type app struct {
 	*cobra.Command
-	logger                  *zap.Logger
 	waitGroup               *sync.WaitGroup
 	job                     scheduler.Scheduler
 	AppName                 string `default:"media-scheduler" envconfig:"APP_NAME"`
@@ -64,21 +64,34 @@ func (a *app) run() error {
 		return fmt.Errorf("scheduler: failed to load environment: %w", err)
 	}
 
+	// ログの設定
+	logOpts := []log.Option{
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryDSN(a.SentryDsn),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	}
+	logFlush, err := log.Start(ctx, logOpts...)
+	if err != nil {
+		return fmt.Errorf("user: failed to start logger: %w", err)
+	}
+	defer logFlush()
+
 	// 依存関係の解決
 	if err := a.inject(ctx); err != nil {
 		return fmt.Errorf("scheduler: failed to new registry: %w", err)
 	}
-	defer a.logger.Sync() //nolint:errcheck
 
 	// Job実行に必要な引数の生成
 	target, err := a.getTarget()
 	if err != nil {
-		a.logger.Error("Failed to parse target datetime", zap.Error(err), zap.String("target", a.TargetDatetime))
+		slog.ErrorContext(ctx, "Failed to parse target datetime", log.Error(err), slog.String("target", a.TargetDatetime))
 		return err
 	}
 
 	// Jobの起動
-	a.logger.Info("Started")
+	slog.Info("Started")
 	switch a.RunMethod {
 	case "lambda":
 		lambda.StartWithOptions(a.job.Lambda, lambda.WithContext(ctx))
@@ -86,7 +99,7 @@ func (a *app) run() error {
 		err = a.job.Run(ctx, target)
 	}
 
-	defer a.logger.Info("Finished...")
+	defer slog.Info("Finished...")
 	a.waitGroup.Wait()
 	return err
 }

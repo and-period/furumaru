@@ -122,7 +122,6 @@ func (a *app) inject(ctx context.Context) error {
 	default:
 		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
-	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }

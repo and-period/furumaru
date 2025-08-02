@@ -274,7 +274,6 @@ func (a *app) inject(ctx context.Context) error {
 		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),
 	)
-	a.logger = params.logger
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack
