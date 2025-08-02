@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -28,10 +29,14 @@ export default defineConfig({
       }
     }
   },
-  plugins: [vue(), dts({
-    include: ['src/**/**.ts', 'src/**/**.vue'],
-    tsconfigPath: './tsconfig.app.json'
-  })],
+  plugins: [
+    vue(),
+    dts({
+      include: ['src/**/**.ts', 'src/**/**.vue'],
+      tsconfigPath: './tsconfig.app.json',
+    }),
+    tailwindcss(),
+  ],
   test: {
     projects: [{
       extends: true,
