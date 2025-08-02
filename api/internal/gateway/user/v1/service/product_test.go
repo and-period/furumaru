@@ -3,6 +3,7 @@ package service
 import (
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -224,14 +225,14 @@ func TestProduct(t *testing.T) {
 				Item:            1,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+				ThumbnailURL:    "https://example.com/thumbnail01.png",
 				Media: entity.MultiProductMedia{
 					{
-						URL:         "https://and-period.jp/thumbnail01.png",
+						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 					{
-						URL:         "https://and-period.jp/thumbnail02.png",
+						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
@@ -292,14 +293,14 @@ func TestProduct(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+					ThumbnailURL:    "https://example.com/thumbnail01.png",
 					Media: []*response.ProductMedia{
 						{
-							URL:         "https://and-period.jp/thumbnail01.png",
+							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 						{
-							URL:         "https://and-period.jp/thumbnail02.png",
+							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
 					},
@@ -329,6 +330,22 @@ func TestProduct(t *testing.T) {
 					EndAt:   1640962800,
 				},
 				revisionID: 1,
+				cost:       300,
+				status:     ProductStatusForSale,
+				media: MultiProductMedia{
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail01.png",
+							IsThumbnail: true,
+						},
+					},
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail02.png",
+							IsThumbnail: false,
+						},
+					},
+				},
 			},
 		},
 		{
@@ -349,14 +366,14 @@ func TestProduct(t *testing.T) {
 				Item:            1,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+				ThumbnailURL:    "https://example.com/thumbnail01.png",
 				Media: entity.MultiProductMedia{
 					{
-						URL:         "https://and-period.jp/thumbnail01.png",
+						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 					{
-						URL:         "https://and-period.jp/thumbnail02.png",
+						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
@@ -399,14 +416,14 @@ func TestProduct(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+					ThumbnailURL:    "https://example.com/thumbnail01.png",
 					Media: []*response.ProductMedia{
 						{
-							URL:         "https://and-period.jp/thumbnail01.png",
+							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 						{
-							URL:         "https://and-period.jp/thumbnail02.png",
+							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
 					},
@@ -436,6 +453,22 @@ func TestProduct(t *testing.T) {
 					EndAt:   1640962800,
 				},
 				revisionID: 1,
+				cost:       300,
+				status:     ProductStatusForSale,
+				media: MultiProductMedia{
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail01.png",
+							IsThumbnail: true,
+						},
+					},
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail02.png",
+							IsThumbnail: false,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -443,6 +476,128 @@ func TestProduct(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProduct(tt.product, tt.category, tt.rate))
+		})
+	}
+}
+
+func TestProduct_MediaURLs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  []string
+	}{
+		{
+			name: "success",
+			product: &Product{
+				media: MultiProductMedia{
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail01.png",
+							IsThumbnail: true,
+						},
+					},
+					{
+						ProductMedia: response.ProductMedia{
+							URL:         "https://example.com/thumbnail02.png",
+							IsThumbnail: false,
+						},
+					},
+				},
+			},
+			expect: []string{
+				"https://example.com/thumbnail01.png",
+				"https://example.com/thumbnail02.png",
+			},
+		},
+		{
+			name: "empty media",
+			product: &Product{
+				media: MultiProductMedia{},
+			},
+			expect: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.product.MediaURLs())
+		})
+	}
+}
+
+func TestProduct_MerchantCenterItemCondition(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  string
+	}{
+		{
+			name: "presale with inventory",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 100,
+				},
+				status: ProductStatusPresale,
+			},
+			expect: "preorder",
+		},
+		{
+			name: "presale without inventory",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 0,
+				},
+				status: ProductStatusPresale,
+			},
+			expect: "out_of_stock",
+		},
+		{
+			name: "for sale with inventory",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 100,
+				},
+				status: ProductStatusForSale,
+			},
+			expect: "in_stock",
+		},
+		{
+			name: "for sale without inventory",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 0,
+				},
+				status: ProductStatusForSale,
+			},
+			expect: "out_of_stock",
+		},
+		{
+			name: "out of sale",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 100,
+				},
+				status: ProductStatusOutOfSale,
+			},
+			expect: "out_of_stock",
+		},
+		{
+			name: "unknown status",
+			product: &Product{
+				Product: response.Product{
+					Inventory: 100,
+				},
+				status: ProductStatusUnknown,
+			},
+			expect: "new",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.product.MerchantCenterItemCondition())
 		})
 	}
 }
@@ -472,11 +627,11 @@ func TestProduct_Response(t *testing.T) {
 					ItemDescription: "1袋あたり100gのじゃがいも",
 					Media: []*response.ProductMedia{
 						{
-							URL:         "https://and-period.jp/thumbnail01.png",
+							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 						{
-							URL:         "https://and-period.jp/thumbnail02.png",
+							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
 					},
@@ -506,11 +661,11 @@ func TestProduct_Response(t *testing.T) {
 				ItemDescription: "1袋あたり100gのじゃがいも",
 				Media: []*response.ProductMedia{
 					{
-						URL:         "https://and-period.jp/thumbnail01.png",
+						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 					{
-						URL:         "https://and-period.jp/thumbnail02.png",
+						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
@@ -560,14 +715,14 @@ func TestProducts(t *testing.T) {
 					Item:            1,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+					ThumbnailURL:    "https://example.com/thumbnail01.png",
 					Media: entity.MultiProductMedia{
 						{
-							URL:         "https://and-period.jp/thumbnail01.png",
+							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 						{
-							URL:         "https://and-period.jp/thumbnail02.png",
+							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
 					},
@@ -642,14 +797,14 @@ func TestProducts(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+						ThumbnailURL:    "https://example.com/thumbnail01.png",
 						Media: []*response.ProductMedia{
 							{
-								URL:         "https://and-period.jp/thumbnail01.png",
+								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
 							},
 							{
-								URL:         "https://and-period.jp/thumbnail02.png",
+								URL:         "https://example.com/thumbnail02.png",
 								IsThumbnail: false,
 							},
 						},
@@ -675,6 +830,22 @@ func TestProducts(t *testing.T) {
 						EndAt:   1640962800,
 					},
 					revisionID: 1,
+					cost:       300,
+					status:     ProductStatusForSale,
+					media: MultiProductMedia{
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail01.png",
+								IsThumbnail: true,
+							},
+						},
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail02.png",
+								IsThumbnail: false,
+							},
+						},
+					},
 				},
 			},
 		},
@@ -712,8 +883,8 @@ func TestProducts_IDs(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
 						DeliveryType: int32(DeliveryTypeNormal),
@@ -760,8 +931,8 @@ func TestProducts_MapByRevision(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
 						DeliveryType: int32(DeliveryTypeNormal),
@@ -788,8 +959,8 @@ func TestProducts_MapByRevision(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
 						DeliveryType: int32(DeliveryTypeNormal),
@@ -835,10 +1006,10 @@ func TestProducts_Response(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+						ThumbnailURL:    "https://example.com/thumbnail01.png",
 						Media: []*response.ProductMedia{
-							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:            400,
 						DeliveryType:     int32(DeliveryTypeNormal),
@@ -867,10 +1038,10 @@ func TestProducts_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+					ThumbnailURL:    "https://example.com/thumbnail01.png",
 					Media: []*response.ProductMedia{
-						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 					},
 					Price:            400,
 					DeliveryType:     int32(DeliveryTypeNormal),
@@ -903,12 +1074,12 @@ func TestProductMedia(t *testing.T) {
 		{
 			name: "success",
 			media: &entity.ProductMedia{
-				URL:         "https://and-period.jp/thumbnail01.png",
+				URL:         "https://example.com/thumbnail01.png",
 				IsThumbnail: true,
 			},
 			expect: &ProductMedia{
 				ProductMedia: response.ProductMedia{
-					URL:         "https://and-period.jp/thumbnail01.png",
+					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
 			},
@@ -933,12 +1104,12 @@ func TestProductMedia_Response(t *testing.T) {
 			name: "success",
 			media: &ProductMedia{
 				ProductMedia: response.ProductMedia{
-					URL:         "https://and-period.jp/thumbnail01.png",
+					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
 			},
 			expect: &response.ProductMedia{
-				URL:         "https://and-period.jp/thumbnail01.png",
+				URL:         "https://example.com/thumbnail01.png",
 				IsThumbnail: true,
 			},
 		},
@@ -962,24 +1133,24 @@ func TestMultiProductMedia(t *testing.T) {
 			name: "success",
 			media: entity.MultiProductMedia{
 				{
-					URL:         "https://and-period.jp/thumbnail01.png",
+					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
 				{
-					URL:         "https://and-period.jp/thumbnail02.png",
+					URL:         "https://example.com/thumbnail02.png",
 					IsThumbnail: false,
 				},
 			},
 			expect: MultiProductMedia{
 				{
 					ProductMedia: response.ProductMedia{
-						URL:         "https://and-period.jp/thumbnail01.png",
+						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
 					ProductMedia: response.ProductMedia{
-						URL:         "https://and-period.jp/thumbnail02.png",
+						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
@@ -990,6 +1161,48 @@ func TestMultiProductMedia(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewMultiProductMedia(tt.media))
+		})
+	}
+}
+
+func TestMultiProductMedia_URLs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		media  MultiProductMedia
+		expect []string
+	}{
+		{
+			name: "success",
+			media: MultiProductMedia{
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://example.com/thumbnail01.png",
+						IsThumbnail: true,
+					},
+				},
+				{
+					ProductMedia: response.ProductMedia{
+						URL:         "https://example.com/thumbnail02.png",
+						IsThumbnail: false,
+					},
+				},
+			},
+			expect: []string{
+				"https://example.com/thumbnail01.png",
+				"https://example.com/thumbnail02.png",
+			},
+		},
+		{
+			name:   "empty media",
+			media:  MultiProductMedia{},
+			expect: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.media.URLs())
 		})
 	}
 }
@@ -1006,24 +1219,24 @@ func TestMultiProductMedia_Response(t *testing.T) {
 			media: MultiProductMedia{
 				{
 					ProductMedia: response.ProductMedia{
-						URL:         "https://and-period.jp/thumbnail01.png",
+						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
 					ProductMedia: response.ProductMedia{
-						URL:         "https://and-period.jp/thumbnail02.png",
+						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
 			},
 			expect: []*response.ProductMedia{
 				{
-					URL:         "https://and-period.jp/thumbnail01.png",
+					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
 				{
-					URL:         "https://and-period.jp/thumbnail02.png",
+					URL:         "https://example.com/thumbnail02.png",
 					IsThumbnail: false,
 				},
 			},
@@ -1188,6 +1401,11 @@ func TestProductRates_Response(t *testing.T) {
 
 func TestNewMerchantCenterItem(t *testing.T) {
 	t.Parallel()
+	now := jst.Date(2025, 1, 15, 18, 30, 0, 0)
+	webURL := func() *url.URL {
+		u, _ := url.Parse("https://example.com")
+		return u
+	}
 	tests := []struct {
 		name   string
 		params *NewMerchantCenterItemParams
@@ -1198,16 +1416,35 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
 					Product: response.Product{
-						ID:              "product-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-						Price:           400,
-						Inventory:       100,
-						Weight:          1.3,
-						CategoryID:      "category-id",
-						ProductTypeID:   "product-type-id",
-						CoordinatorID:   "coordinator-id",
+						ID:                "product-id",
+						Name:              "新鮮なじゃがいも",
+						Description:       "新鮮なじゃがいもをお届けします。",
+						ThumbnailURL:      "https://example.com/thumbnail01.png",
+						Price:             400,
+						Inventory:         100,
+						Weight:            1.3,
+						CategoryID:        "category-id",
+						ProductTypeID:     "product-type-id",
+						CoordinatorID:     "coordinator-id",
+						RecommendedPoint1: "ポイント1",
+						StartAt:           jst.Date(2025, 1, 1, 0, 0, 0, 0).Unix(),
+						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
+					},
+					cost:   300,
+					status: ProductStatusForSale,
+					media: MultiProductMedia{
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail01.png",
+								IsThumbnail: true,
+							},
+						},
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail02.png",
+								IsThumbnail: false,
+							},
+						},
 					},
 				},
 				Coordinator: &Coordinator{
@@ -1225,25 +1462,30 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						Name: "野菜",
 					},
 				},
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:    now,
+				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
 				MerchantCenterItem: response.MerchantCenterItem{
-					ID:                    "product-id",
-					Title:                 "新鮮なじゃがいも",
-					Description:           "新鮮なじゃがいもをお届けします。",
-					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
-					Condition:             "new",
-					Availability:          "in_stock",
-					Price:                 "400 JPY",
-					Brand:                 "コーディネータ名",
-					GoogleProductCategory: "野菜",
-					ProductType:           "じゃがいも",
-					ShippingWeight:        "1 g",
+					ID:                   "product-id",
+					Title:                "新鮮なじゃがいも",
+					Description:          "新鮮なじゃがいもをお届けします。",
+					Link:                 "https://example.com/items/product-id",
+					ImageLink:            "https://example.com/thumbnail01.png",
+					AdditionalImageLinks: []string{"https://example.com/thumbnail01.png", "https://example.com/thumbnail02.png"},
+					Availability:         "in_stock",
+					AvailabilityDate:     "2025-01-01T00:00:00+09:00",
+					CostOfGoodsSold:      "300 JPY",
+					ExpirationDate:       "2025-02-01T00:00:00+09:00",
+					Price:                "400 JPY",
+					UnitPricingMeasure:   "ct",
+					ProductType:          "野菜 > じゃがいも",
+					Brand:                "コーディネータ名",
+					Condition:            "new",
+					ProductWeight:        "1 kg",
+					ProductHighlight:     "ポイント1",
+					ShippingWeight:       "1 kg",
+					ShipsFromCountry:     "JP",
 				},
 			},
 		},
@@ -1252,16 +1494,35 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
 					Product: response.Product{
-						ID:              "product-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-						Price:           400,
-						Inventory:       100,
-						Weight:          1.3,
-						CategoryID:      "category-id",
-						ProductTypeID:   "product-type-id",
-						CoordinatorID:   "coordinator-id",
+						ID:                "product-id",
+						Name:              "新鮮なじゃがいも",
+						Description:       "",
+						ThumbnailURL:      "https://example.com/thumbnail01.png",
+						Price:             400,
+						Inventory:         100,
+						Weight:            1.3,
+						CategoryID:        "category-id",
+						ProductTypeID:     "product-type-id",
+						CoordinatorID:     "coordinator-id",
+						RecommendedPoint1: "ポイント1",
+						StartAt:           jst.Date(2025, 1, 1, 0, 0, 0, 0).Unix(),
+						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
+					},
+					cost:   300,
+					status: ProductStatusForSale,
+					media: MultiProductMedia{
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail01.png",
+								IsThumbnail: true,
+							},
+						},
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail02.png",
+								IsThumbnail: false,
+							},
+						},
 					},
 				},
 				Coordinator: &Coordinator{
@@ -1279,25 +1540,30 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						Name: "野菜",
 					},
 				},
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:    now,
+				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
 				MerchantCenterItem: response.MerchantCenterItem{
-					ID:                    "product-id",
-					Title:                 "新鮮なじゃがいも",
-					Description:           "新鮮なじゃがいも",
-					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
-					Condition:             "new",
-					Availability:          "in_stock",
-					Price:                 "400 JPY",
-					Brand:                 "コーディネータ名",
-					GoogleProductCategory: "野菜",
-					ProductType:           "じゃがいも",
-					ShippingWeight:        "1 g",
+					ID:                   "product-id",
+					Title:                "新鮮なじゃがいも",
+					Description:          "新鮮なじゃがいも",
+					Link:                 "https://example.com/items/product-id",
+					ImageLink:            "https://example.com/thumbnail01.png",
+					AdditionalImageLinks: []string{"https://example.com/thumbnail01.png", "https://example.com/thumbnail02.png"},
+					Availability:         "in_stock",
+					AvailabilityDate:     "2025-01-01T00:00:00+09:00",
+					CostOfGoodsSold:      "300 JPY",
+					ExpirationDate:       "2025-02-01T00:00:00+09:00",
+					Price:                "400 JPY",
+					UnitPricingMeasure:   "ct",
+					ProductType:          "野菜 > じゃがいも",
+					Brand:                "コーディネータ名",
+					Condition:            "new",
+					ProductWeight:        "1 kg",
+					ProductHighlight:     "ポイント1",
+					ShippingWeight:       "1 kg",
+					ShipsFromCountry:     "JP",
 				},
 			},
 		},
@@ -1306,17 +1572,20 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
 					Product: response.Product{
-						ID:              "product-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-						Price:           400,
-						Inventory:       0,
-						Weight:          1.3,
-						CategoryID:      "category-id",
-						ProductTypeID:   "product-type-id",
-						CoordinatorID:   "coordinator-id",
+						ID:            "product-id",
+						Name:          "新鮮なじゃがいも",
+						Description:   "新鮮なじゃがいもをお届けします。",
+						ThumbnailURL:  "https://example.com/thumbnail01.png",
+						Price:         400,
+						Inventory:     0,
+						Weight:        1.3,
+						CategoryID:    "category-id",
+						ProductTypeID: "product-type-id",
+						CoordinatorID: "coordinator-id",
 					},
+					cost:   300,
+					status: ProductStatusForSale,
+					media:  MultiProductMedia{},
 				},
 				Coordinator: &Coordinator{
 					Coordinator: response.Coordinator{
@@ -1333,25 +1602,29 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						Name: "野菜",
 					},
 				},
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:    now,
+				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
 				MerchantCenterItem: response.MerchantCenterItem{
-					ID:                    "product-id",
-					Title:                 "新鮮なじゃがいも",
-					Description:           "新鮮なじゃがいもをお届けします。",
-					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
-					Condition:             "new",
-					Availability:          "out_of_stock",
-					Price:                 "400 JPY",
-					Brand:                 "コーディネータ名",
-					GoogleProductCategory: "野菜",
-					ProductType:           "じゃがいも",
-					ShippingWeight:        "1 g",
+					ID:                   "product-id",
+					Title:                "新鮮なじゃがいも",
+					Description:          "新鮮なじゃがいもをお届けします。",
+					Link:                 "https://example.com/items/product-id",
+					ImageLink:            "https://example.com/thumbnail01.png",
+					AdditionalImageLinks: []string{},
+					Availability:         "out_of_stock",
+					AvailabilityDate:     "0001-01-01T09:00:00+09:00",
+					CostOfGoodsSold:      "300 JPY",
+					Price:                "400 JPY",
+					UnitPricingMeasure:   "ct",
+					ProductType:          "野菜 > じゃがいも",
+					Brand:                "コーディネータ名",
+					Condition:            "new",
+					ProductWeight:        "1 kg",
+					ProductHighlight:     "",
+					ShippingWeight:       "1 kg",
+					ShipsFromCountry:     "JP",
 				},
 			},
 		},
@@ -1360,40 +1633,47 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
 					Product: response.Product{
-						ID:              "product-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     "新鮮なじゃがいもをお届けします。",
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-						Price:           400,
-						Inventory:       100,
-						Weight:          1.3,
-						CategoryID:      "category-id",
-						ProductTypeID:   "product-type-id",
-						CoordinatorID:   "coordinator-id",
+						ID:            "product-id",
+						Name:          "新鮮なじゃがいも",
+						Description:   "新鮮なじゃがいもをお届けします。",
+						ThumbnailURL:  "https://example.com/thumbnail01.png",
+						Price:         400,
+						Inventory:     100,
+						Weight:        1.3,
+						CategoryID:    "category-id",
+						ProductTypeID: "product-type-id",
+						CoordinatorID: "coordinator-id",
 					},
+					cost:   0,
+					status: ProductStatusUnknown,
+					media:  MultiProductMedia{},
 				},
 				Coordinator: nil,
 				ProductType: nil,
 				Category:    nil,
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:         now,
+				WebURL:      webURL,
 			},
 			expect: &MerchantCenterItem{
 				MerchantCenterItem: response.MerchantCenterItem{
-					ID:                    "product-id",
-					Title:                 "新鮮なじゃがいも",
-					Description:           "新鮮なじゃがいもをお届けします。",
-					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
-					Condition:             "new",
-					Availability:          "in_stock",
-					Price:                 "400 JPY",
-					Brand:                 "",
-					GoogleProductCategory: "",
-					ProductType:           "",
-					ShippingWeight:        "1 g",
+					ID:                   "product-id",
+					Title:                "新鮮なじゃがいも",
+					Description:          "新鮮なじゃがいもをお届けします。",
+					Link:                 "https://example.com/items/product-id",
+					ImageLink:            "https://example.com/thumbnail01.png",
+					AdditionalImageLinks: []string{},
+					Availability:         "new",
+					AvailabilityDate:     "0001-01-01T09:00:00+09:00",
+					CostOfGoodsSold:      "0 JPY",
+					Price:                "400 JPY",
+					UnitPricingMeasure:   "ct",
+					ProductType:          "",
+					Brand:                "",
+					Condition:            "new",
+					ProductWeight:        "1 kg",
+					ProductHighlight:     "",
+					ShippingWeight:       "1 kg",
+					ShipsFromCountry:     "JP",
 				},
 			},
 		},
@@ -1402,16 +1682,28 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
 					Product: response.Product{
-						ID:              "product-id",
-						Name:            "新鮮なじゃがいも",
-						Description:     string(make([]byte, 5010)),
-						ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-						Price:           400,
-						Inventory:       100,
-						Weight:          1.3,
-						CategoryID:      "category-id",
-						ProductTypeID:   "product-type-id",
-						CoordinatorID:   "coordinator-id",
+						ID:            "product-id",
+						Name:          "新鮮なじゃがいも",
+						Description:   string(make([]byte, 5010)),
+						ThumbnailURL:  "https://example.com/thumbnail01.png",
+						Price:         400,
+						Inventory:     100,
+						Weight:        1.3,
+						StartAt:       now.Add(-time.Hour * 24 * 30).Unix(), // 30日前
+						EndAt:         now.Add(time.Hour * 24 * 14).Unix(),  // 14日後
+						CategoryID:    "category-id",
+						ProductTypeID: "product-type-id",
+						CoordinatorID: "coordinator-id",
+					},
+					cost:   300,
+					status: ProductStatusForSale,
+					media: MultiProductMedia{
+						{
+							ProductMedia: response.ProductMedia{
+								URL:         "https://example.com/thumbnail01.png",
+								IsThumbnail: true,
+							},
+						},
 					},
 				},
 				Coordinator: &Coordinator{
@@ -1429,25 +1721,30 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						Name: "野菜",
 					},
 				},
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:    now,
+				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
 				MerchantCenterItem: response.MerchantCenterItem{
-					ID:                    "product-id",
-					Title:                 "新鮮なじゃがいも",
-					Description:           string(make([]byte, 4997)) + "...",
-					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
-					Condition:             "new",
-					Availability:          "in_stock",
-					Price:                 "400 JPY",
-					Brand:                 "コーディネータ名",
-					GoogleProductCategory: "野菜",
-					ProductType:           "じゃがいも",
-					ShippingWeight:        "1 g",
+					ID:                   "product-id",
+					Title:                "新鮮なじゃがいも",
+					Description:          string(make([]byte, 4997)) + "...",
+					Link:                 "https://example.com/items/product-id",
+					ImageLink:            "https://example.com/thumbnail01.png",
+					AdditionalImageLinks: []string{"https://example.com/thumbnail01.png"},
+					Availability:         "in_stock",
+					AvailabilityDate:     "2024-12-16T18:30:00+09:00",
+					CostOfGoodsSold:      "300 JPY",
+					ExpirationDate:       "2025-01-29T18:30:00+09:00",
+					Price:                "400 JPY",
+					UnitPricingMeasure:   "ct",
+					ProductType:          "野菜 > じゃがいも",
+					Brand:                "コーディネータ名",
+					Condition:            "new",
+					ProductWeight:        "1 kg",
+					ProductHighlight:     "",
+					ShippingWeight:       "1 kg",
+					ShipsFromCountry:     "JP",
 				},
 			},
 		},
@@ -1463,6 +1760,11 @@ func TestNewMerchantCenterItem(t *testing.T) {
 
 func TestNewMerchantCenterItems(t *testing.T) {
 	t.Parallel()
+	now := jst.Date(2025, 1, 15, 18, 30, 0, 0)
+	webURL := func() *url.URL {
+		u, _ := url.Parse("https://example.com")
+		return u
+	}
 	tests := []struct {
 		name   string
 		params *NewMerchantCenterItemsParams
@@ -1474,30 +1776,56 @@ func TestNewMerchantCenterItems(t *testing.T) {
 				Products: Products{
 					{
 						Product: response.Product{
-							ID:              "product-id-1",
-							Name:            "新鮮なじゃがいも",
-							Description:     "新鮮なじゃがいもをお届けします。",
-							ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-							Price:           400,
-							Inventory:       100,
-							Weight:          1.3,
-							CategoryID:      "category-id",
-							ProductTypeID:   "product-type-id",
-							CoordinatorID:   "coordinator-id",
+							ID:            "product-id-1",
+							Name:          "新鮮なじゃがいも",
+							Description:   "新鮮なじゃがいもをお届けします。",
+							ThumbnailURL:  "https://example.com/thumbnail01.png",
+							Price:         400,
+							Inventory:     100,
+							Weight:        1.3,
+							CategoryID:    "category-id",
+							ProductTypeID: "product-type-id",
+							CoordinatorID: "coordinator-id",
+						},
+						cost:   300,
+						status: ProductStatusForSale,
+						media: MultiProductMedia{
+							{
+								ProductMedia: response.ProductMedia{
+									URL:         "https://example.com/thumbnail01.png",
+									IsThumbnail: true,
+								},
+							},
 						},
 					},
 					{
 						Product: response.Product{
-							ID:              "product-id-2",
-							Name:            "新鮮な人参",
-							Description:     "新鮮な人参をお届けします。",
-							ThumbnailURL:    "https://and-period.jp/thumbnail02.png",
-							Price:           300,
-							Inventory:       0,
-							Weight:          0.5,
-							CategoryID:      "category-id",
-							ProductTypeID:   "product-type-id-2",
-							CoordinatorID:   "coordinator-id-2",
+							ID:            "product-id-2",
+							Name:          "新鮮な人参",
+							Description:   "新鮮な人参をお届けします。",
+							ThumbnailURL:  "https://example.com/thumbnail02.png",
+							Price:         300,
+							Inventory:     0,
+							Weight:        0.5,
+							CategoryID:    "category-id",
+							ProductTypeID: "product-type-id-2",
+							CoordinatorID: "coordinator-id-2",
+						},
+						cost:   150,
+						status: ProductStatusForSale,
+						media: MultiProductMedia{
+							{
+								ProductMedia: response.ProductMedia{
+									URL:         "https://example.com/thumbnail02.png",
+									IsThumbnail: true,
+								},
+							},
+							{
+								ProductMedia: response.ProductMedia{
+									URL:         "https://example.com/thumbnail03.png",
+									IsThumbnail: false,
+								},
+							},
 						},
 					},
 				},
@@ -1534,42 +1862,52 @@ func TestNewMerchantCenterItems(t *testing.T) {
 						},
 					},
 				},
-				WebURL: func() *url.URL {
-					u, _ := url.Parse("https://example.com")
-					return u
-				},
+				Now:    now,
+				WebURL: webURL,
 			},
 			expect: MerchantCenterItems{
 				{
 					MerchantCenterItem: response.MerchantCenterItem{
-						ID:                    "product-id-1",
-						Title:                 "新鮮なじゃがいも",
-						Description:           "新鮮なじゃがいもをお届けします。",
-						Link:                  "https://example.com/products/product-id-1",
-						ImageLink:             "https://and-period.jp/thumbnail01.png",
-						Condition:             "new",
-						Availability:          "in_stock",
-						Price:                 "400 JPY",
-						Brand:                 "コーディネータ名1",
-						GoogleProductCategory: "野菜",
-						ProductType:           "じゃがいも",
-						ShippingWeight:        "1 g",
+						ID:                   "product-id-1",
+						Title:                "新鮮なじゃがいも",
+						Description:          "新鮮なじゃがいもをお届けします。",
+						Link:                 "https://example.com/items/product-id-1",
+						ImageLink:            "https://example.com/thumbnail01.png",
+						AdditionalImageLinks: []string{"https://example.com/thumbnail01.png"},
+						Availability:         "in_stock",
+						AvailabilityDate:     "0001-01-01T09:00:00+09:00",
+						CostOfGoodsSold:      "300 JPY",
+						Price:                "400 JPY",
+						UnitPricingMeasure:   "ct",
+						ProductType:          "野菜 > じゃがいも",
+						Brand:                "コーディネータ名1",
+						Condition:            "new",
+						ProductWeight:        "1 kg",
+						ProductHighlight:     "",
+						ShippingWeight:       "1 kg",
+						ShipsFromCountry:     "JP",
 					},
 				},
 				{
 					MerchantCenterItem: response.MerchantCenterItem{
-						ID:                    "product-id-2",
-						Title:                 "新鮮な人参",
-						Description:           "新鮮な人参をお届けします。",
-						Link:                  "https://example.com/products/product-id-2",
-						ImageLink:             "https://and-period.jp/thumbnail02.png",
-						Condition:             "new",
-						Availability:          "out_of_stock",
-						Price:                 "300 JPY",
-						Brand:                 "コーディネータ名2",
-						GoogleProductCategory: "野菜",
-						ProductType:           "人参",
-						ShippingWeight:        "0 g",
+						ID:                   "product-id-2",
+						Title:                "新鮮な人参",
+						Description:          "新鮮な人参をお届けします。",
+						Link:                 "https://example.com/items/product-id-2",
+						ImageLink:            "https://example.com/thumbnail02.png",
+						AdditionalImageLinks: []string{"https://example.com/thumbnail02.png", "https://example.com/thumbnail03.png"},
+						Availability:         "out_of_stock",
+						AvailabilityDate:     "0001-01-01T09:00:00+09:00",
+						CostOfGoodsSold:      "150 JPY",
+						Price:                "300 JPY",
+						UnitPricingMeasure:   "ct",
+						ProductType:          "野菜 > 人参",
+						Brand:                "コーディネータ名2",
+						Condition:            "new",
+						ProductWeight:        "0 kg",
+						ProductHighlight:     "",
+						ShippingWeight:       "0 kg",
+						ShipsFromCountry:     "JP",
 					},
 				},
 			},
@@ -1615,7 +1953,7 @@ func TestMerchantCenterItem_Response(t *testing.T) {
 					Title:                 "新鮮なじゃがいも",
 					Description:           "新鮮なじゃがいもをお届けします。",
 					Link:                  "https://example.com/products/product-id",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
+					ImageLink:             "https://example.com/thumbnail01.png",
 					Condition:             "new",
 					Availability:          "in_stock",
 					Price:                 "400 JPY",
@@ -1630,7 +1968,7 @@ func TestMerchantCenterItem_Response(t *testing.T) {
 				Title:                 "新鮮なじゃがいも",
 				Description:           "新鮮なじゃがいもをお届けします。",
 				Link:                  "https://example.com/products/product-id",
-				ImageLink:             "https://and-period.jp/thumbnail01.png",
+				ImageLink:             "https://example.com/thumbnail01.png",
 				Condition:             "new",
 				Availability:          "in_stock",
 				Price:                 "400 JPY",
@@ -1666,7 +2004,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 						Title:                 "新鮮なじゃがいも",
 						Description:           "新鮮なじゃがいもをお届けします。",
 						Link:                  "https://example.com/products/product-id-1",
-						ImageLink:             "https://and-period.jp/thumbnail01.png",
+						ImageLink:             "https://example.com/thumbnail01.png",
 						Condition:             "new",
 						Availability:          "in_stock",
 						Price:                 "400 JPY",
@@ -1682,7 +2020,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 						Title:                 "新鮮な人参",
 						Description:           "新鮮な人参をお届けします。",
 						Link:                  "https://example.com/products/product-id-2",
-						ImageLink:             "https://and-period.jp/thumbnail02.png",
+						ImageLink:             "https://example.com/thumbnail02.png",
 						Condition:             "new",
 						Availability:          "out_of_stock",
 						Price:                 "300 JPY",
@@ -1699,7 +2037,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 					Title:                 "新鮮なじゃがいも",
 					Description:           "新鮮なじゃがいもをお届けします。",
 					Link:                  "https://example.com/products/product-id-1",
-					ImageLink:             "https://and-period.jp/thumbnail01.png",
+					ImageLink:             "https://example.com/thumbnail01.png",
 					Condition:             "new",
 					Availability:          "in_stock",
 					Price:                 "400 JPY",
@@ -1713,7 +2051,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 					Title:                 "新鮮な人参",
 					Description:           "新鮮な人参をお届けします。",
 					Link:                  "https://example.com/products/product-id-2",
-					ImageLink:             "https://and-period.jp/thumbnail02.png",
+					ImageLink:             "https://example.com/thumbnail02.png",
 					Condition:             "new",
 					Availability:          "out_of_stock",
 					Price:                 "300 JPY",

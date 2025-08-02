@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/and-period/furumaru/api/internal/gateway/komoju/request"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/request"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"

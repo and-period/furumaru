@@ -4,18 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/messenger/worker"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 type app struct {
 	*cobra.Command
-	logger                       *zap.Logger
 	waitGroup                    *sync.WaitGroup
 	worker                       worker.Worker
 	AppName                      string `default:"messenger-worker" envconfig:"APP_NAME"`
@@ -69,14 +69,27 @@ func (a *app) run() error {
 		return fmt.Errorf("worker: failed to load environment: %w", err)
 	}
 
+	// ログの設定
+	logOpts := []log.Option{
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryDSN(a.SentryDsn),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	}
+	logFlush, err := log.Start(ctx, logOpts...)
+	if err != nil {
+		return fmt.Errorf("user: failed to start logger: %w", err)
+	}
+	defer logFlush()
+
 	// 依存関係の解決
 	if err := a.inject(ctx); err != nil {
 		return fmt.Errorf("worker: failed to new registry: %w", err)
 	}
-	defer a.logger.Sync() //nolint:errcheck
 
 	// Workerの起動
-	a.logger.Info("Started")
+	slog.Info("Started")
 	switch a.RunMethod {
 	case "lambda":
 		lambda.StartWithOptions(a.worker.Lambda, lambda.WithContext(ctx))
@@ -85,7 +98,7 @@ func (a *app) run() error {
 	}
 
 	// Workerの停止
-	a.logger.Info("Shutdown...")
+	slog.Info("Shutdown...")
 	a.waitGroup.Wait()
 	return nil
 }

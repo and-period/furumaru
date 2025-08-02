@@ -21,6 +21,8 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.PATCH("/password", h.authentication, h.UpdateAuthPassword)
 	r.POST("/forgot-password", h.ForgotAuthPassword)
 	r.POST("/forgot-password/verified", h.ResetAuthPassword)
+	r.GET("/google", h.AuthGoogleAccount)
+	r.GET("/line", h.AuthLINEAccount)
 }
 
 func (h *handler) GetAuth(ctx *gin.Context) {
@@ -170,4 +172,42 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
+	in := &user.AuthMemberWithGoogleInput{
+		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
+			SessionID:   h.getSessionID(ctx),
+			State:       util.GetQuery(ctx, "state", ""),
+			RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
+		},
+	}
+	authURL, err := h.user.AuthMemberWithGoogle(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthGoogleAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) AuthLINEAccount(ctx *gin.Context) {
+	in := &user.AuthMemberWithLINEInput{
+		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
+			SessionID:   h.getSessionID(ctx),
+			State:       util.GetQuery(ctx, "state", ""),
+			RedirectURI: util.GetQuery(ctx, "redirectUri", ""),
+		},
+	}
+	authURL, err := h.user.AuthMemberWithLINE(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthLINEAccountResponse{
+		URL: authURL,
+	}
+	ctx.JSON(http.StatusOK, res)
 }

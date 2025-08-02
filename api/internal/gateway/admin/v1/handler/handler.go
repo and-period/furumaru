@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -45,12 +46,6 @@ var (
  * handler
  * ###############################################
  */
-type Handler interface {
-	Routes(rg *gin.RouterGroup)      // エンドポイント一覧の定義
-	Setup(ctx context.Context) error // 初期化処理
-	Sync(ctx context.Context) error  // 定期的な同期処理
-}
-
 type Params struct {
 	WaitGroup *sync.WaitGroup
 	User      user.Service
@@ -124,7 +119,7 @@ func WithSyncMaxRetries(retries int64) Option {
 	}
 }
 
-func NewHandler(params *Params, opts ...Option) Handler {
+func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
 		appName:        "admin-gateway",
 		env:            "",

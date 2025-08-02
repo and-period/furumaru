@@ -3,6 +3,7 @@ package admin
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"runtime"
@@ -10,26 +11,24 @@ import (
 	"syscall"
 	"time"
 
-	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
+	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/pkg/http"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type app struct {
 	*cobra.Command
 	debugMode                         bool
-	logger                            *zap.Logger
 	waitGroup                         *sync.WaitGroup
 	slack                             slack.Client
 	newRelic                          *newrelic.Application
-	v1                                v1.Handler
-	komoju                            khandler.Handler
+	v1                                gateway.Handler
+	komoju                            gateway.Handler
 	AppName                           string   `default:"admin-gateway"  envconfig:"APP_NAME"`
 	Environment                       string   `default:"none"           envconfig:"ENV"`
 	Port                              int64    `default:"8080"           envconfig:"PORT"`
@@ -105,11 +104,24 @@ func (a *app) run() error {
 		return fmt.Errorf("admin: failed to load environment: %w", err)
 	}
 
+	// ログの設定
+	logOpts := []log.Option{
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryDSN(a.SentryDsn),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	}
+	logFlush, err := log.Start(ctx, logOpts...)
+	if err != nil {
+		return fmt.Errorf("user: failed to start logger: %w", err)
+	}
+	defer logFlush()
+
 	// 依存関係の解決
 	if err := a.inject(ctx); err != nil {
 		return fmt.Errorf("admin: failed to new registry: %w", err)
 	}
-	defer a.logger.Sync() //nolint:errcheck
 
 	if err := a.v1.Setup(ctx); err != nil {
 		return fmt.Errorf("admin: failed to setup http server: %w", err)
@@ -126,28 +138,28 @@ func (a *app) run() error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if err = ms.Serve(); err != nil {
-			a.logger.Warn("Failed to run metrics server", zap.Error(err))
+			slog.Warn("Failed to run metrics server", log.Error(err))
 		}
 		return
 	})
 	eg.Go(func() (err error) {
 		if err = hs.Serve(); err != nil {
-			a.logger.Warn("Failed to run http server", zap.Error(err))
+			slog.Warn("Failed to run http server", log.Error(err))
 		}
 		return
 	})
 	eg.Go(func() (err error) {
 		if err = a.v1.Sync(ectx); err != nil {
-			a.logger.Warn("Failed to sync v1 handler", zap.Error(err))
+			slog.Warn("Failed to sync v1 handler", log.Error(err))
 		}
 		return
 	})
-	a.logger.Info("Started server", zap.Int64("port", a.Port))
+	slog.Info("Started server", slog.Int64("port", a.Port))
 	defer func() {
 		if r := recover(); r != nil {
 			stackTrace := make([]byte, 1024)
 			runtime.Stack(stackTrace, true)
-			a.logger.Error("Occurred panic", zap.Any("value", r), zap.String("stackTrace", string(stackTrace)))
+			slog.Error("Occurred panic", slog.Any("value", r), slog.String("stackTrace", string(stackTrace)))
 		}
 	}()
 
@@ -156,22 +168,22 @@ func (a *app) run() error {
 	signal.Notify(signalCh, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case <-ectx.Done():
-		a.logger.Warn("Done context", zap.Error(ectx.Err()))
+		slog.Warn("Done context", log.Error(ectx.Err()))
 	case signal := <-signalCh:
-		a.logger.Info("Received signal", zap.Any("signal", signal))
+		slog.Info("Received signal", slog.Any("signal", signal))
 		delay := time.Duration(a.ShutdownDelaySec) * time.Second
-		a.logger.Info("Pre-shutdown", zap.Duration("delay", delay))
+		slog.Info("Pre-shutdown", slog.Duration("delay", delay))
 		time.Sleep(delay)
 	}
 
 	// Serverの停止
-	a.logger.Info("Shutdown...")
+	slog.Info("Shutdown...")
 	if err := hs.Stop(ectx); err != nil {
-		a.logger.Error("Failed to stopeed http server", zap.Error(err))
+		slog.Error("Failed to stopeed http server", log.Error(err))
 		return err
 	}
 	if err := ms.Stop(ectx); err != nil {
-		a.logger.Error("Failed to stopeed metrics server", zap.Error(err))
+		slog.Error("Failed to stopeed metrics server", log.Error(err))
 		return err
 	}
 	a.waitGroup.Wait()

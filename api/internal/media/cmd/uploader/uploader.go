@@ -4,18 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/media/uploader"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 type app struct {
 	*cobra.Command
-	logger           *zap.Logger
 	waitGroup        *sync.WaitGroup
 	uploader         uploader.Uploader
 	AppName          string `default:"media-uploader" envconfig:"APP_NAME"`
@@ -53,14 +53,27 @@ func (a *app) run() error {
 		return fmt.Errorf("updater: failed to load environment: %w", err)
 	}
 
+	// ログの設定
+	logOpts := []log.Option{
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryDSN(a.SentryDsn),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	}
+	logFlush, err := log.Start(ctx, logOpts...)
+	if err != nil {
+		return fmt.Errorf("user: failed to start logger: %w", err)
+	}
+	defer logFlush()
+
 	// 依存関係の解決
 	if err := a.inject(ctx); err != nil {
 		return fmt.Errorf("updater: failed to new registry: %w", err)
 	}
-	defer a.logger.Sync() //nolint:errcheck
 
 	// Jobの起動
-	a.logger.Info("Started")
+	slog.Info("Started")
 	switch a.RunMethod {
 	case "lambda":
 		lambda.StartWithOptions(a.uploader.Lambda, lambda.WithContext(ctx))
@@ -68,7 +81,7 @@ func (a *app) run() error {
 		return errors.New("not implemented")
 	}
 
-	defer a.logger.Info("Finished...")
+	defer slog.Info("Finished...")
 	a.waitGroup.Wait()
 	return nil
 }

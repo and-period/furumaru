@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,14 +14,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	ginzip "github.com/gin-contrib/gzip"
 	ginpprof "github.com/gin-contrib/pprof"
-	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/slack-go/slack"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 func (a *app) newRouter() *gin.Engine {
@@ -29,7 +28,7 @@ func (a *app) newRouter() *gin.Engine {
 	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
-	opts = append(opts, ginzap.RecoveryWithZap(a.logger, true))
+	opts = append(opts, gin.Recovery())
 
 	rt := gin.New()
 	rt.Use(opts...)
@@ -122,46 +121,46 @@ func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter
 	endAt := jst.Now()
 	status := ctx.Writer.Status()
 
-	fields := []zapcore.Field{
-		zap.Int("status", status),
-		zap.String("method", method),
-		zap.String("path", path),
-		zap.String("query", ctx.Request.URL.RawQuery),
-		zap.String("route", ctx.FullPath()),
-		zap.String("ip", ctx.ClientIP()),
-		zap.String("userAgent", ctx.Request.UserAgent()),
-		zap.String("referer", ctx.GetHeader("Referer")),
-		zap.Int64("latency", endAt.Sub(startAt).Milliseconds()),
-		zap.String("requestedAt", startAt.Format(time.RFC3339Nano)),
-		zap.String("responsedAt", endAt.Format(time.RFC3339Nano)),
-		zap.String("userId", ctx.GetHeader("adminId")),
+	fields := []any{
+		slog.Int("status", status),
+		slog.String("method", method),
+		slog.String("path", path),
+		slog.String("query", ctx.Request.URL.RawQuery),
+		slog.String("route", ctx.FullPath()),
+		slog.String("ip", ctx.ClientIP()),
+		slog.String("userAgent", ctx.Request.UserAgent()),
+		slog.String("referer", ctx.GetHeader("Referer")),
+		slog.Int64("latency", endAt.Sub(startAt).Milliseconds()),
+		slog.String("requestedAt", startAt.Format(time.RFC3339Nano)),
+		slog.String("responsedAt", endAt.Format(time.RFC3339Nano)),
+		slog.String("userId", ctx.GetHeader("adminId")),
 	}
 	if a.enableDebugMode(ctx) {
 		str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
-		fields = append(fields, zap.String("request", str))
+		fields = append(fields, slog.String("request", str))
 	}
 
 	// ~ 399
 	if status < 400 {
-		a.logger.Info(msg, fields...)
+		slog.InfoContext(ctx, msg, fields...)
 		return
 	}
 
 	res, err := w.errorResponse()
 	if err != nil {
-		a.logger.Error("Failed to parse http response", zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to parse http response", log.Error(err))
 	}
-	fields = append(fields, zap.Any("response", res))
+	fields = append(fields, slog.Any("response", res))
 
 	// 400 ~ 499
 	if status < 500 {
-		a.logger.Warn(msg, fields...)
+		slog.WarnContext(ctx, msg, fields...)
 		return
 	}
 
 	// 500 ~
-	fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
-	a.logger.Warn(msg, fields...)
+	fields = append(fields, log.Strings("errors", ctx.Errors.Errors()))
+	slog.ErrorContext(ctx, msg, fields...)
 
 	if a.slack == nil {
 		return
@@ -169,7 +168,7 @@ func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter
 
 	details, err := json.Marshal(res)
 	if err != nil {
-		a.logger.Error("Failed to marshal response", zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to marshal response", log.Error(err))
 	}
 	params := &alertMessageParams{
 		title:   "ふるまる APIアラート",
@@ -185,7 +184,7 @@ func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter
 	go func(msg slack.MsgOption) {
 		defer a.waitGroup.Done()
 		if err := a.slack.SendMessage(ctx, msg); err != nil {
-			a.logger.Error("Failed to alert message", zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to alert message", log.Error(err))
 		}
 	}(newAlertMessage(params))
 }

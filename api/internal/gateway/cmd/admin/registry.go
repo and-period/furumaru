@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
+	khandler "github.com/and-period/furumaru/api/internal/gateway/admin/komoju/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
@@ -321,7 +321,6 @@ func (a *app) inject(ctx context.Context) error {
 		khandler.WithLogger(params.logger),
 		khandler.WithSentry(params.sentry),
 	)
-	a.logger = params.logger
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack
