@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.0.10](https://github.com/and-period/furumaru/compare/v5.0.9...v5.0.10) - 2025-08-02
+- build(deps): bump aws-actions/amazon-ecs-deploy-task-definition from 2.3.3 to 2.3.4 in the dependencies group by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2895
+- fix(gateway): OAuth関連エンドポイントのpathを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2898
+- refactor(gateway): ファイル構成を変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2900
+- feat(*): 起動時処理でslogを初期化するように by @taba2424 in https://github.com/and-period/furumaru/pull/2901
+
 ## [v5.0.9](https://github.com/and-period/furumaru/compare/v5.0.8...v5.0.9) - 2025-07-29
 - test(gateway): Google Merchant Center用APIのテストコード追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2893
 
