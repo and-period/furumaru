@@ -23,10 +23,10 @@ require (
 	github.com/casbin/casbin/v2 v2.110.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/dlclark/regexp2 v1.11.5
-	github.com/getsentry/sentry-go v0.34.1
+	github.com/getsentry/sentry-go v0.35.0
+	github.com/getsentry/sentry-go/slog v0.35.0
 	github.com/gin-contrib/gzip v1.2.3
 	github.com/gin-contrib/pprof v1.5.3
-	github.com/gin-contrib/zap v1.1.5
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/go-sql-driver/mysql v1.9.3
@@ -44,6 +44,7 @@ require (
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.11.1
 	github.com/rs/cors/wrapper/gin v0.0.0-20240830163046-1084d89a1692
+	github.com/samber/slog-multi v1.4.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.16.1+incompatible
 	github.com/shopspring/decimal v1.4.0
@@ -207,6 +208,8 @@ require (
 	github.com/ryancurrah/gomodguard v1.4.1 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.5.1 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
+	github.com/samber/lo v1.51.0 // indirect
+	github.com/samber/slog-common v0.19.0 // indirect
 	github.com/sanposhiho/wastedassign/v2 v2.1.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
 	github.com/sashamelentyev/interfacebloat v1.1.0 // indirect

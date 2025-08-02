@@ -12,6 +12,7 @@ import (
 type options struct {
 	logLevel           string
 	outputPath         string
+	sentryDSN          string
 	sentryServerName   string
 	sentryEnvironment  string
 	sentryLevel        string
@@ -24,6 +25,7 @@ func buildOptions(opts ...Option) *options {
 	dopts := &options{
 		logLevel:           "info",
 		outputPath:         "",
+		sentryDSN:          "",
 		sentryServerName:   "",
 		sentryEnvironment:  "",
 		sentryLevel:        "warn",
@@ -38,6 +40,12 @@ func buildOptions(opts ...Option) *options {
 func WithLogLevel(level string) Option {
 	return func(opts *options) {
 		opts.logLevel = level
+	}
+}
+
+func WithSentryDSN(dsn string) Option {
+	return func(opts *options) {
+		opts.sentryDSN = dsn
 	}
 }
 
