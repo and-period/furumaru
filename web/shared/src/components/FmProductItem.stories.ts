@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
 
-import FurumaruItem from './FurumaruItem.vue';
+import FmProductItem from './FmProductItem.vue';
 
 const meta: Meta = {
 	title: 'FurumaruItem',
-	component: FurumaruItem,
+	component: FmProductItem,
 	tags: ['autodocs'],
 	argTypes: {},
 	args: {},
-} satisfies Meta<typeof FurumaruItem>;
+} satisfies Meta<typeof FmProductItem>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
