@@ -46,7 +46,7 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 	slog.Debug("Received event", slog.Any("payload", payload))
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, payload.ScheduleID)
 	if err != nil {
-		slog.Error("Not found broadcast", slog.Error(err), slog.String("scheduleId", payload.ScheduleID))
+		slog.Error("Not found broadcast", log.Error(err), slog.String("scheduleId", payload.ScheduleID))
 		return nil
 	}
 	dir := fmt.Sprintf(entity.BroadcastArchiveHLSPath, payload.ScheduleID)
