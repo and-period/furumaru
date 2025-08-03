@@ -4,14 +4,24 @@ import { computed, ref } from 'vue';
 interface Props {
 	name: string;
 	price: number
+  thumbnailUrl: string
+  stoke: number
+  soldOutText?: string
 	addToCartButtonText?: string;
 	selectLabelText?: string
 }
 
+interface Emits {
+  (e: 'click:addCart', quantity: number): void
+}
+
 const props = withDefaults(defineProps<Props>(), {
 	addToCartButtonText: 'カゴに入れる',
-	selectLabelText: '数量'
+	selectLabelText: '数量',
+  soldOutText: '在庫なし',
 });
+
+const emits = defineEmits<Emits>()
 
 const quantity = ref<number>(1)
 
@@ -22,24 +32,108 @@ const priceString = computed<string>(() => {
   }).format(props.price)
 })
 
-const stokeValues = computed<number>(() => {
-	return 10
+/**
+ * 商品をカートに追加できるかを示す
+ */
+const canAddCart = computed<boolean>(() => {
+  if (props.stoke > 0) {
+    return true
+  }
+  return false
 })
+
+/**
+ * 数量の選択肢を生成する
+ * 在庫が0の場合は1を返す
+ * 在庫が10以上の場合は10を返す
+ * それ以外は在庫数を返す
+ */
+const stokeValues = computed<number>(() => {
+  if (props.stoke == 0) {
+    return 1
+  }
+  if (props.stoke > 10) {
+    return 10
+  }
+	return props.stoke
+})
+
+/**
+ * サムネイルのURLが動画かどうかを判定する
+ * 動画の場合はtrue、画像の場合はfalseを返す
+ */
+const thumbnailIsVideo = computed<boolean>(() => {
+  const url = new URL(props.thumbnailUrl)
+  // クエリパラメータとハッシュを削除
+  url.search = ''
+  url.hash = ''
+
+  return url.toString().endsWith('.mp4')
+})
+
+/**
+ * カートに追加するボタンをクリックしたときのイベントハンドラ
+ */
+const handleClickAddCartButton = () => {
+  emits('click:addCart', quantity.value)
+}
 </script>
 
 <template>
   <div class="flex flex-col text-main w-full font-semibold gap-2">
-    <p>
+    <div 
+      class="relative"
+    >
+      <div 
+        v-if="!canAddCart"
+        class="absolute inset-0 flex items-center justify-center bg-black/50"
+      >
+        <p class="text-lg font-semibold text-white">
+          {{ soldOutText }}
+        </p>
+      </div>
+      <div class="block w-full">
+        <template v-if="thumbnailIsVideo">
+          <video
+            :src="thumbnailUrl"
+            class="aspect-square w-full"
+            autoplay
+            muted
+            webkit-playsinline
+            playsinline
+            loop
+          />
+        </template>
+        <template v-else>
+          <div class="aspect-square">
+            <img
+              class="w-full h-full object-contain"
+              :src="thumbnailUrl"
+            >
+          </div>
+        </template> 
+      </div>
+    </div>
+    <p
+      class="line-clamp-3 grow text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
+    >
       {{ name }}
     </p>
 
-    <p>
+    <p
+      class="text-[16px] tracking-[1.6px] md:text-[20px] md:tracking-[2.0px]"
+    >
       {{ priceString }}
     </p>
 
-    <div class="inline-flex gap-2 text-xs items-center">
+    <div class="inline-flex gap-2 text-xs items-center w-full">
       <div class="inline-flex gap-1 items-center">
-        <label for="select">{{ selectLabelText }}</label>
+        <label
+          for="select"
+          class="text-nowrap"
+        >
+          {{ selectLabelText }}
+        </label>
         <select
           id="select"
           v-model="quantity"
@@ -55,7 +149,11 @@ const stokeValues = computed<number>(() => {
           </template>
         </select>
       </div>
-      <button class="bg-orange text-white py-1 px-2">
+      <button
+        class="bg-orange text-white py-1 px-2 w-full disabled:bg-main/60 disabled:cursor-not-allowed cursor-pointer"
+        :disabled="!canAddCart"
+        @click="handleClickAddCartButton"
+      >
         {{ addToCartButtonText }}
       </button>
     </div>
