@@ -9,15 +9,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/uploader"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"go.uber.org/zap"
 )
 
 type params struct {
-	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
 	secret     secret.Client
 	storage    storage.Bucket
@@ -29,7 +26,6 @@ type params struct {
 
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -45,18 +41,6 @@ func (a *app) inject(ctx context.Context) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
-
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -83,7 +67,6 @@ func (a *app) inject(ctx context.Context) error {
 		Cache:     params.cache,
 	}
 	uploaderOpts := []uploader.Option{
-		uploader.WithLogger(params.logger),
 		uploader.WithStorageURL(a.CDNURL),
 	}
 	a.uploader = uploader.NewUploader(uploaderParams, uploaderOpts...)

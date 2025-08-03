@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/url"
 	"sync"
 	"time"
@@ -11,9 +12,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-lambda-go/events"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
@@ -31,7 +32,6 @@ type Params struct {
 
 type uploader struct {
 	now         func() time.Time
-	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	cache       dynamodb.Client
 	tmp         storage.Bucket
@@ -41,18 +41,11 @@ type uploader struct {
 }
 
 type options struct {
-	logger      *zap.Logger
 	concurrency int64
 	storageURL  *url.URL
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithConcurrency(concurrency int64) Option {
 	return func(opts *options) {
@@ -73,7 +66,6 @@ func WithStorageURL(storageURL string) Option {
 func NewUploader(params *Params, opts ...Option) Uploader {
 	defaultURL, _ := params.Storage.GetHost()
 	dopts := &options{
-		logger:      zap.NewNop(),
 		concurrency: 1,
 		storageURL:  defaultURL,
 	}
@@ -86,7 +78,6 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 	}
 	return &uploader{
 		now:         jst.Now,
-		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		cache:       params.Cache,
 		tmp:         params.Tmp,
@@ -97,9 +88,9 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 }
 
 func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err error) {
-	u.logger.Debug("Started Lambda function", zap.Time("now", u.now()))
+	slog.Debug("Started Lambda function", slog.Time("now", u.now()))
 	defer func() {
-		u.logger.Debug("Finished Lambda function", zap.Time("now", u.now()), zap.Error(err))
+		slog.Debug("Finished Lambda function", slog.Time("now", u.now()), log.Error(err))
 	}()
 
 	sm := semaphore.NewWeighted(u.concurrency)
@@ -120,7 +111,7 @@ func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err erro
 func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error {
 	payload := &events.S3Event{}
 	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
-		u.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
+		slog.Error("Failed to unmarshall sqs event", slog.Any("event", record), log.Error(err))
 		return nil // リトライ不要なためnilで返す
 	}
 	for i := range payload.Records {
@@ -128,7 +119,7 @@ func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error
 		if err == nil {
 			return nil
 		}
-		u.logger.Error("Failed to upload object", zap.Error(err))
+		slog.Error("Failed to upload object", log.Error(err))
 		if u.isRetryable(err) {
 			return err
 		}
@@ -143,38 +134,38 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 			return
 		}
 		if err := u.cache.Insert(ctx, event); err != nil {
-			u.logger.Error("Failed to update upload event", zap.Any("event", event), zap.Error(err))
+			slog.Error("Failed to update upload event", slog.Any("event", event), log.Error(err))
 		}
 	}()
-	u.logger.Debug("Dispatch", zap.Any("record", record))
+	slog.Debug("Dispatch", slog.Any("record", record))
 	// 画像のメタデータ取得
 	key := record.S3.Object.URLDecodedKey
 	metadata, err := u.tmp.GetMetadata(ctx, key)
 	if err != nil {
-		u.logger.Error("Failed to get metadata", zap.String("key", key), zap.Error(err))
+		slog.Error("Failed to get metadata", slog.String("key", key), log.Error(err))
 		return err
 	}
 	event.Key = key
 	if err := u.cache.Get(ctx, event); err != nil {
-		u.logger.Error("Failed to get upload event", zap.String("key", key), zap.Error(err))
+		slog.Error("Failed to get upload event", slog.String("key", key), log.Error(err))
 		return err
 	}
 	// バリデーション検証
 	reg, err := event.Reguration()
 	if err != nil {
-		u.logger.Error("Unknown regulation", zap.String("key", key), zap.Error(err))
+		slog.Error("Unknown regulation", slog.String("key", key), log.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}
 	if err := reg.Validate(metadata.ContentType, metadata.ContentLength); err != nil {
-		u.logger.Warn("Failed to check validation", zap.Error(err))
+		slog.Warn("Failed to check validation", log.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}
 	// 参照用S3バケットへコピーする
 	md := u.newObjectMetadata(metadata.ContentType, reg.CacheTTL)
 	if _, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key, md); err != nil {
-		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
+		slog.Error("Failed to copy object", slog.String("key", key), log.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}
@@ -188,7 +179,7 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 	// ファイル変換が必要な場合は変換して保存
 	convertedKey, err := u.uploadConvertFile(ctx, event, reg)
 	if err != nil {
-		u.logger.Error("Failed to upload convert file", zap.String("key", key), zap.Error(err))
+		slog.Error("Failed to upload convert file", slog.String("key", key), log.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}

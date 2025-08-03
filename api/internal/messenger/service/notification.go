@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -11,7 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -132,7 +133,7 @@ func (s *service) CreateNotification(
 			NotificationID: notification.ID,
 		}
 		if err := s.ReserveNotification(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+			slog.Error("Failed to reserve notification", slog.String("notificationId", notification.ID), log.Error(err))
 		}
 	}()
 	return notification, nil
@@ -186,7 +187,7 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 			NotificationID: notification.ID,
 		}
 		if err := s.ReserveNotification(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+			slog.Error("Failed to reserve notification", slog.String("notificationId", notification.ID), log.Error(err))
 		}
 	}()
 	return nil

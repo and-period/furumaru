@@ -21,7 +21,6 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
 )
 
 type mocks struct {
@@ -136,7 +135,7 @@ func testWorker(
 
 func TestWorker(t *testing.T) {
 	t.Parallel()
-	w := NewWorker(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1), WithMaxRetries(3))
+	w := NewWorker(&Params{}, WithConcurrency(1), WithMaxRetries(3))
 	assert.NotNil(t, w)
 }
 

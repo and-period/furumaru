@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 	"net/http/httputil"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/request"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type EventType string
@@ -49,7 +49,7 @@ func (h *handler) ping(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	h.logger.Debug("Received ping event", zap.Any("request", req))
+	slog.Debug("Received ping event", slog.Any("request", req))
 	ctx.Status(http.StatusNoContent)
 }
 
@@ -59,6 +59,6 @@ func (h *handler) unexpected(ctx *gin.Context, event string) {
 		h.badRequest(ctx, err)
 		return
 	}
-	h.logger.Debug("Received unexpected event", zap.String("event", event), zap.Any("request", req))
+	slog.Debug("Received unexpected event", slog.String("event", event), slog.Any("request", req))
 	ctx.Status(http.StatusNoContent)
 }

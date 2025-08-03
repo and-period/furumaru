@@ -22,7 +22,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	govalidator "github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
 
@@ -49,7 +48,6 @@ type Params struct {
 type service struct {
 	now                 func() time.Time
 	generateID          func() string
-	logger              *zap.Logger
 	waitGroup           *sync.WaitGroup
 	sharedGroup         *singleflight.Group
 	validator           validator.Validator
@@ -67,18 +65,11 @@ type service struct {
 }
 
 type options struct {
-	logger              *zap.Logger
 	cartTTL             time.Duration
 	cartRefreshInterval time.Duration
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithCartTTL(ttl time.Duration) Option {
 	return func(opts *options) {
@@ -94,7 +85,6 @@ func WithCartRefreshInterval(interval time.Duration) Option {
 
 func NewService(params *Params, opts ...Option) store.Service {
 	dopts := &options{
-		logger:              zap.NewNop(),
 		cartTTL:             defaultCartTTL,
 		cartRefreshInterval: defaultCartRefreshInterval,
 	}
@@ -106,7 +96,6 @@ func NewService(params *Params, opts ...Option) store.Service {
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
 		},
-		logger:              dopts.logger,
 		waitGroup:           params.WaitGroup,
 		sharedGroup:         &singleflight.Group{},
 		validator:           validator.NewValidator(),

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -12,7 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -30,7 +31,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 	}
 	// KOMOJU側の仕様として、即時決済出ないものは支払い待ちステータスでAuthorizedの通知が来るためスキップさせる
 	if order.IsDeferredPayment() {
-		s.logger.Info("Order is authorized but deferred payment", zap.String("orderId", in.OrderID))
+		slog.InfoContext(ctx, "Order is authorized but deferred payment", slog.String("orderId", in.OrderID))
 		return nil
 	}
 
@@ -45,15 +46,15 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 
 	payment, err := s.komoju.Payment.Show(ctx, in.PaymentID)
 	if err != nil {
-		s.logger.Error("Failed to get payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to get payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
 	}
 	if payment.Status != komoju.PaymentStatusAuthorized {
-		s.logger.Warn("Payment status is not authorized", zap.String("paymentId", in.PaymentID), zap.String("status", string(payment.Status)))
+		slog.WarnContext(ctx, "Payment status is not authorized", slog.String("paymentId", in.PaymentID), slog.String("status", string(payment.Status)))
 		return nil
 	}
 	if _, err := s.komoju.Payment.Capture(ctx, in.PaymentID); err != nil {
-		s.logger.Error("Failed to capture payment", zap.String("paymentId", in.PaymentID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to capture payment", slog.String("paymentId", in.PaymentID), log.Error(err))
 		return internalError(err)
 	}
 
@@ -65,7 +66,7 @@ func (s *service) NotifyPaymentAuthorized(ctx context.Context, in *store.NotifyP
 			return
 		}
 		if err := s.removeCartItemByOrder(ctx, order); err != nil {
-			s.logger.Error("Failed to remove cart item by order", zap.String("orderId", in.OrderID), zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to remove cart item by order", slog.String("orderId", in.OrderID), log.Error(err))
 		}
 	}()
 	return nil
@@ -90,7 +91,7 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	}
 	err = s.db.Order.UpdateCaptured(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be captured", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		slog.WarnContext(ctx, "Order can't be captured", slog.String("orderId", in.OrderID), slog.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
 	if err != nil {
@@ -101,7 +102,7 @@ func (s *service) NotifyPaymentCaptured(ctx context.Context, in *store.NotifyPay
 	go func() {
 		defer s.waitGroup.Done()
 		if err := s.notifyPaymentCompleted(context.Background(), order); err != nil {
-			s.logger.Error("Failed to notify payment completed", zap.String("orderId", in.OrderID), zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to notify payment completed", slog.String("orderId", in.OrderID), log.Error(err))
 		}
 	}()
 	return nil
@@ -127,7 +128,7 @@ func (s *service) NotifyPaymentFailed(ctx context.Context, in *store.NotifyPayme
 	}
 	err = s.db.Order.UpdateFailed(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be failed", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		slog.WarnContext(ctx, "Order can't be failed", slog.String("orderId", in.OrderID), slog.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
 	if err != nil {
@@ -156,7 +157,7 @@ func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPay
 	}
 	err := s.db.Order.UpdateRefunded(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order can't be refunded", zap.String("orderId", in.OrderID), zap.Time("issuedAt", in.IssuedAt))
+		slog.WarnContext(ctx, "Order can't be refunded", slog.String("orderId", in.OrderID), slog.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
 	return internalError(err)
@@ -178,7 +179,7 @@ func (s *service) removeCartItemByOrder(ctx context.Context, order *entity.Order
 		return fmt.Errorf("failed to get cart: %w", err)
 	}
 	if len(cart.Baskets) == 0 {
-		s.logger.Debug("Cart is empty", zap.String("sessionID", order.SessionID))
+		slog.DebugContext(ctx, "Cart is empty", slog.String("sessionID", order.SessionID))
 		return nil
 	}
 	revisionIDs := order.ProductRevisionIDs()
@@ -201,7 +202,7 @@ func (s *service) increaseProductInventories(ctx context.Context, items entity.O
 	sem := semaphore.NewWeighted(3)
 	for _, item := range items {
 		if err := sem.Acquire(ctx, 1); err != nil {
-			s.logger.Error("Failed to acquire semaphore", zap.Any("item", item), zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to acquire semaphore", slog.Any("item", item), log.Error(err))
 			return
 		}
 		s.waitGroup.Add(1)
@@ -212,7 +213,7 @@ func (s *service) increaseProductInventories(ctx context.Context, items entity.O
 			}()
 			err := s.decreaseProductInventory(ctx, item.ProductRevisionID, -item.Quantity)
 			if err != nil {
-				s.logger.Error("Failed to increase product inventory", zap.Any("item", item), zap.Error(err))
+				slog.ErrorContext(ctx, "Failed to increase product inventory", slog.Any("item", item), log.Error(err))
 			}
 		}(item)
 	}

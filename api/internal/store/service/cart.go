@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -33,7 +34,7 @@ func (s *service) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.
 }
 
 func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) {
-	s.logger.Debug("calc cart", zap.Any("input", in))
+	slog.DebugContext(ctx, "calc cart", slog.Any("input", in))
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, internalError(err)
 	}
@@ -66,7 +67,7 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 		if promotion.IsEnabled(shop.ID) {
 			return
 		}
-		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("code", in.PromotionCode))
+		slog.WarnContext(ctx, "Failed to disable promotion", slog.String("sessionId", in.SessionID), slog.String("code", in.PromotionCode))
 		promotion = nil
 		return
 	})
@@ -131,9 +132,9 @@ func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) e
 			ClientIP:  in.ClientIP,
 			ProductID: in.ProductID,
 		}
-		log := entity.NewAddCartItemActionLog(params)
-		if err := s.db.CartActionLog.Create(context.Background(), log); err != nil {
-			s.logger.Warn("Failed to create cart action log", zap.Error(err))
+		actionLog := entity.NewAddCartItemActionLog(params)
+		if err := s.db.CartActionLog.Create(context.Background(), actionLog); err != nil {
+			slog.WarnContext(ctx, "Failed to create cart action log", log.Error(err))
 		}
 	}()
 	return nil
@@ -162,9 +163,9 @@ func (s *service) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemIn
 			ClientIP:  in.ClientIP,
 			ProductID: in.ProductID,
 		}
-		log := entity.NewRemoveCartItemActionLog(params)
-		if err := s.db.CartActionLog.Create(context.Background(), log); err != nil {
-			s.logger.Warn("Failed to create cart action log", zap.Error(err))
+		actionLog := entity.NewRemoveCartItemActionLog(params)
+		if err := s.db.CartActionLog.Create(context.Background(), actionLog); err != nil {
+			slog.WarnContext(ctx, "Failed to create cart action log", log.Error(err))
 		}
 	}()
 	return nil

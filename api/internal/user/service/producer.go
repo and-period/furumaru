@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -12,7 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -149,8 +150,8 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 			backoff.WithRetryablel(exception.IsRetryable),
 		}
 		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to relate shop producer",
-				zap.String("shopId", shop.ID), zap.String("producerId", producer.ID), zap.Error(err))
+			slog.WarnContext(ctx, "Failed to relate shop producer",
+				slog.String("shopId", shop.ID), slog.String("producerId", producer.ID), log.Error(err))
 		}
 	}()
 	return producer, nil

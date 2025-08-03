@@ -5,17 +5,14 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/store/komoju"
-	"go.uber.org/zap"
 )
 
 type client struct {
 	client *komoju.APIClient
-	logger *zap.Logger
 	host   string
 }
 
 type Params struct {
-	Logger       *zap.Logger
 	Host         string // KOMOJU接続用URL
 	ClientID     string // KOMOJU接続時のBasic認証ユーザー名
 	ClientSecret string // KOMOJU接続時のBasic認証パスワード
@@ -24,7 +21,6 @@ type Params struct {
 func NewClient(cli *http.Client, params *Params, opts ...komoju.Option) komoju.Payment {
 	return &client{
 		client: komoju.NewAPIClient(cli, params.ClientID, params.ClientSecret, opts...),
-		logger: params.Logger,
 		host:   params.Host,
 	}
 }

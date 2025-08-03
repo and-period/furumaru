@@ -27,7 +27,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
 )
 
 var (
@@ -200,7 +199,7 @@ func TestService(t *testing.T) {
 	require.NoError(t, err)
 	mocks.storage.EXPECT().GetHost().Return(surl, nil)
 	mocks.tmp.EXPECT().GetHost().Return(turl, nil)
-	srv, err := NewService(params, WithLogger(zap.NewNop()))
+	srv, err := NewService(params)
 	assert.NoError(t, err)
 	assert.NotNil(t, srv)
 }

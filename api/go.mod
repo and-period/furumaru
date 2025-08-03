@@ -54,7 +54,6 @@ require (
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.5.2
-	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.16.0
 	google.golang.org/api v0.243.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250715232539-7130f93afb79
@@ -66,6 +65,8 @@ require (
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.30.0
 )
+
+require go.uber.org/zap v1.27.0 // indirect
 
 require (
 	4d63.com/gocheckcompilerdirectives v1.3.0 // indirect

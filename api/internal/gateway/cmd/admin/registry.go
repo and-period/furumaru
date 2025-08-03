@@ -31,7 +31,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -45,12 +44,10 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
-	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
 	aws                      aws.Config
 	secret                   secret.Client
@@ -93,7 +90,6 @@ type params struct {
 //nolint:funlen,maintidx
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 		debugMode: a.LogLevel == "debug",
@@ -111,18 +107,6 @@ func (a *app) inject(ctx context.Context) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
-
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -234,7 +218,6 @@ func (a *app) inject(ctx context.Context) error {
 		ClientSecret: params.komojuClientPassword,
 	}
 	komojuOpts := []komoju.Option{
-		komoju.WithLogger(logger),
 		komoju.WithDebugMode(params.debugMode),
 	}
 	komojuParams := &komoju.Params{
@@ -313,12 +296,10 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
-		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),
 	)
 	a.komoju = khandler.NewHandler(khandlerParams,
 		khandler.WithEnvironment(a.Environment),
-		khandler.WithLogger(params.logger),
 		khandler.WithSentry(params.sentry),
 	)
 	a.debugMode = params.debugMode
@@ -492,7 +473,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		User:                         user,
 		Store:                        store,
 	}
-	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+	return mediasrv.NewService(params)
 }
 
 func (a *app) newMessengerService(p *params) (messenger.Service, error) {
@@ -517,7 +498,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 		User:        user,
 		Store:       store,
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
+	return messengersrv.NewService(params), nil
 }
 
 func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
@@ -547,7 +528,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		AdminAuthGoogleRedirectURL: a.CognitoAdminGoogleRedirectURL,
 		AdminAuthLINERedirectURL:   a.CognitoAdminLINERedirectURL,
 	}
-	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
+	return usersrv.NewService(params), nil
 }
 
 func (a *app) newStoreService(
@@ -568,5 +549,5 @@ func (a *app) newStoreService(
 		Geolocation: p.geolocation,
 		Komoju:      p.komoju,
 	}
-	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
+	return storesrv.NewService(params), nil
 }

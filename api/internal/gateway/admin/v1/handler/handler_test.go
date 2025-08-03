@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
 func TestHandler(t *testing.T) {
@@ -19,7 +18,6 @@ func TestHandler(t *testing.T) {
 	opts := []Option{
 		WithAppName("app-name"),
 		WithEnvironment("test"),
-		WithLogger(zap.NewNop()),
 		WithSentry(sentry.NewFixedMockClient()),
 	}
 	h := NewHandler(&Params{}, opts...)

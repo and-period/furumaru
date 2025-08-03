@@ -6,23 +6,23 @@ import (
 	"fmt"
 	"image"
 	"image/png"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	"go.uber.org/zap"
 )
 
 func (u *uploader) uploadConvertFile(ctx context.Context, event *entity.UploadEvent, reg *entity.Regulation) (string, error) {
 	if reg.ConversionType == entity.ConversionTypeNone {
-		u.logger.Debug("No need to convert", zap.String("key", event.Key))
+		slog.Debug("No need to convert", slog.String("key", event.Key))
 		return event.Key, nil // 変換不要
 	}
 	switch reg.ConversionType {
 	case entity.ConversionTypeJPEGToPNG:
 		return u.convertJPEGToPNG(ctx, event, reg)
 	default:
-		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("conversionType", int32(reg.ConversionType)))
+		slog.Warn("Unsupported convert type", slog.String("key", event.Key), slog.Int("conversionType", int(reg.ConversionType)))
 		return event.Key, nil // 変換できないファイルに対してはエラーにせず元ファイルをそのまま利用する
 	}
 }

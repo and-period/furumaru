@@ -17,7 +17,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	govalidator "github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 )
 
 type Params struct {
@@ -32,7 +31,6 @@ type Params struct {
 
 type service struct {
 	now         func() time.Time
-	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	validator   validator.Validator
 	adminWebURL func() *url.URL
@@ -43,22 +41,12 @@ type service struct {
 	store       store.Service
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewService(params *Params, opts ...Option) messenger.Service {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
@@ -72,7 +60,6 @@ func NewService(params *Params, opts ...Option) messenger.Service {
 	}
 	return &service{
 		now:         jst.Now,
-		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		validator:   validator.NewValidator(),
 		producer:    params.Producer,
