@@ -20,7 +20,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	govalidator "github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
 
@@ -47,7 +46,6 @@ type Params struct {
 
 type service struct {
 	now                        func() time.Time
-	logger                     *zap.Logger
 	waitGroup                  *sync.WaitGroup
 	sharedGroup                *singleflight.Group
 	validator                  validator.Validator
@@ -68,18 +66,11 @@ type service struct {
 }
 
 type options struct {
-	logger       *zap.Logger
 	adminAuthTTL time.Duration
 	userAuthTTL  time.Duration
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithAdminAuthTTL(ttl time.Duration) Option {
 	return func(opts *options) {
@@ -95,7 +86,6 @@ func WithUserAuthTTL(ttl time.Duration) Option {
 
 func NewService(params *Params, opts ...Option) user.Service {
 	dopts := &options{
-		logger:       zap.NewNop(),
 		adminAuthTTL: defaultAdminAuthTTL,
 		userAuthTTL:  defaultUserAuthTTL,
 	}
@@ -113,7 +103,6 @@ func NewService(params *Params, opts ...Option) user.Service {
 	}
 	return &service{
 		now:                        jst.Now,
-		logger:                     dopts.logger,
 		waitGroup:                  params.WaitGroup,
 		sharedGroup:                &singleflight.Group{},
 		validator:                  validator.NewValidator(vopts...),

@@ -11,7 +11,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 type testAPIRequest struct {
@@ -25,7 +24,6 @@ type testAPIResponse struct {
 func TestAPIClient_Do(t *testing.T) {
 	t.Parallel()
 	opts := []Option{
-		WithLogger(zap.NewNop()),
 		WithMaxRetries(1),
 		WithDebugMode(true),
 	}

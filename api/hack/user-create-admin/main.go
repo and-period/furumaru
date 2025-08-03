@@ -21,13 +21,11 @@ import (
 	database "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
-	"go.uber.org/zap"
 )
 
 const (
@@ -42,7 +40,6 @@ type app struct {
 	user      user.Service
 	messenger messenger.Service
 	waitGroup *sync.WaitGroup
-	logger    *zap.Logger
 }
 
 func main() {
@@ -81,10 +78,6 @@ func run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	app.logger, err = log.NewLogger(log.WithLogLevel("debug"))
-	if err != nil {
-		return err
-	}
 	app.db, err = app.setupDB(dbHost, dbPort, dbUsername, dbPassword, dbEnabledTLS)
 	if err != nil {
 		return err
@@ -118,7 +111,7 @@ func (a *app) newUserService() user.Service {
 		Messenger: a.messenger,
 		WaitGroup: a.waitGroup,
 	}
-	return usersrv.NewService(params, usersrv.WithLogger(a.logger))
+	return usersrv.NewService(params)
 }
 
 func (a *app) newMessengerService() messenger.Service {
@@ -126,7 +119,7 @@ func (a *app) newMessengerService() messenger.Service {
 		WaitGroup: a.waitGroup,
 		Producer:  sqs.NewProducer(a.config, &sqs.Params{}, sqs.WithDryRun(true)),
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(a.logger))
+	return messengersrv.NewService(params)
 }
 
 func (a *app) setupDB(host, port, username, password string, tls bool) (*mysql.Client, error) {
@@ -138,7 +131,7 @@ func (a *app) setupDB(host, port, username, password string, tls bool) (*mysql.C
 		Username: username,
 		Password: password,
 	}
-	return mysql.NewClient(params, mysql.WithTLS(tls), mysql.WithLogger(a.logger))
+	return mysql.NewClient(params, mysql.WithTLS(tls))
 }
 
 func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (aws.Config, error) {
@@ -159,5 +152,5 @@ func (a *app) setupAuth(clientID, poolID string) cognito.Client {
 		UserPoolID:  poolID,
 		AppClientID: clientID,
 	}
-	return cognito.NewClient(a.config, params, cognito.WithLogger(a.logger))
+	return cognito.NewClient(a.config, params)
 }

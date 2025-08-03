@@ -3,12 +3,12 @@ package worker
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
-	"go.uber.org/zap"
 )
 
 func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayload) error {
@@ -17,7 +17,7 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 		return err
 	}
 	if len(tokens) == 0 {
-		w.logger.Debug("Tokens is empty", zap.String("templateId", string(payload.Push.TemplateID)))
+		slog.Debug("Tokens is empty", slog.String("templateId", string(payload.Push.TemplateID)))
 		return nil
 	}
 	template, err := w.db.PushTemplate.Get(ctx, payload.Push.TemplateID)
@@ -34,7 +34,7 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 		ImageURL: template.ImageURL,
 		Data:     payload.Push.Data,
 	}
-	w.logger.Debug("Send push", zap.String("templateId", string(payload.Push.TemplateID)), zap.Any("message", msg))
+	slog.Debug("Send push", slog.String("templateId", string(payload.Push.TemplateID)), slog.Any("message", msg))
 	sendFn := func() error {
 		return w.sendMessaing(ctx, msg, payload.UserType, tokens)
 	}

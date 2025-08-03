@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -11,7 +12,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"go.uber.org/zap"
 )
 
 func (s *service) CreateMember(ctx context.Context, in *user.CreateMemberInput) (string, error) {
@@ -315,7 +315,7 @@ func (s *service) createMemberWithOAuth(ctx context.Context, params *createMembe
 	if err != nil {
 		return nil, internalError(err)
 	}
-	s.logger.Debug("Creating User account", zap.Any("user", cuser))
+	slog.DebugContext(ctx, "Creating User account", slog.Any("user", cuser))
 
 	userParams := &entity.NewUserParams{
 		Registered:    true,

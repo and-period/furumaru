@@ -3,12 +3,10 @@ package sentry
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"go.uber.org/zap/zapcore"
 )
 
 type Client interface {
@@ -20,21 +18,6 @@ type Client interface {
 
 type client struct {
 	client *sentry.Client
-}
-
-func NewZapHookFn(client Client, opts ...ReportOption) func(entry zapcore.Entry) error {
-	return func(entry zapcore.Entry) error {
-		if entry.Level < zapcore.ErrorLevel {
-			return nil
-		}
-		opts = append(opts, WithLevel("error"))
-		msg := entry.Message
-		if len(entry.Stack) > 0 {
-			msg = fmt.Sprintf("%s\n\nstacktrace:\n%s", entry.Message, entry.Stack)
-		}
-		client.ReportMessage(context.Background(), msg, opts...)
-		return nil
-	}
 }
 
 func NewClient(opts ...ClientOption) (Client, error) {

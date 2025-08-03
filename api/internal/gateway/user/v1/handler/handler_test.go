@@ -27,7 +27,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
 )
 
 var (
@@ -250,7 +249,6 @@ func TestHandler(t *testing.T) {
 	opts := []Option{
 		WithAppName("app-name"),
 		WithEnvironment("test"),
-		WithLogger(zap.NewNop()),
 		WithSentry(sentry.NewFixedMockClient()),
 	}
 	h := NewHandler(&Params{}, opts...)

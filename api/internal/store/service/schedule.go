@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -14,7 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -123,7 +124,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		}
 		retry := backoff.NewExponentialBackoff(maxRetries)
 		if err := backoff.Retry(ctx, retry, createFn, backoff.WithRetryablel(s.isRetryable)); err != nil {
-			s.logger.Error("Failed to create broadcast", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			slog.Error("Failed to create broadcast", slog.String("scheduleId", schedule.ID), log.Error(err))
 		}
 	}()
 	go func() {
@@ -132,7 +133,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 			ScheduleID: schedule.ID,
 		}
 		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			slog.Error("Failed to reserve start live", slog.String("scheduleId", schedule.ID), log.Error(err))
 		}
 	}()
 	return schedule, nil
@@ -165,7 +166,7 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 			ScheduleID: schedule.ID,
 		}
 		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
-			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+			slog.Error("Failed to reserve start live", slog.String("scheduleId", schedule.ID), log.Error(err))
 		}
 	}()
 	return nil

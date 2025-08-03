@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -11,17 +12,16 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	"github.com/and-period/furumaru/api/pkg/storage"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
 
 type starter struct {
 	now        func() time.Time
-	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
 	semaphore  *semaphore.Weighted
 	db         *database.Database
@@ -35,7 +35,6 @@ type starter struct {
 
 func NewStarter(params *Params, opts ...Option) Scheduler {
 	dopts := &options{
-		logger:      zap.NewNop(),
 		concurrency: 2,
 	}
 	for i := range opts {
@@ -43,7 +42,6 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 	}
 	return &starter{
 		now:        jst.Now,
-		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
 		semaphore:  semaphore.NewWeighted(dopts.concurrency),
 		db:         params.Database,
@@ -57,9 +55,9 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 }
 
 func (s *starter) Lambda(ctx context.Context) (err error) {
-	s.logger.Debug("Started Lambda function", zap.Time("now", s.now()))
+	slog.Debug("Started Lambda function", slog.Time("now", s.now()))
 	defer func() {
-		s.logger.Debug("Finished Lambda function", zap.Time("now", s.now()), zap.Error(err))
+		slog.Debug("Finished Lambda function", slog.Time("now", s.now()), log.Error(err))
 	}()
 
 	return s.run(ctx, s.now())
@@ -67,7 +65,7 @@ func (s *starter) Lambda(ctx context.Context) (err error) {
 
 func (s *starter) Run(ctx context.Context, target time.Time) error {
 	if err := s.run(ctx, target); err != nil {
-		s.logger.Error("Failed to run", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to run", slog.Time("target", target), log.Error(err))
 		return err
 	}
 	return nil
@@ -76,11 +74,11 @@ func (s *starter) Run(ctx context.Context, target time.Time) error {
 // run - ライブ配信のリソース作成と開始処理
 func (s *starter) run(ctx context.Context, target time.Time) error {
 	if err := s.startChannel(ctx, target); err != nil {
-		s.logger.Error("Failed to start channel", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to start channel", slog.Time("target", target), log.Error(err))
 		return err
 	}
 	if err := s.createChannel(ctx, target); err != nil {
-		s.logger.Error("Failed to create channel", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to create channel", slog.Time("target", target), log.Error(err))
 		return err
 	}
 	return nil
@@ -88,7 +86,7 @@ func (s *starter) run(ctx context.Context, target time.Time) error {
 
 // startChannel - ライブ配信を開始 (5分前)
 func (s *starter) startChannel(ctx context.Context, target time.Time) error {
-	s.logger.Debug("Starting channel...", zap.Time("target", target))
+	slog.Debug("Starting channel...", slog.Time("target", target))
 	in := &store.ListSchedulesInput{
 		StartAtLt: target.Add(15 * time.Minute), // マルシェ開催開始15分前〜
 		EndAtGte:  target,                       // 〜マルシェ開催終了
@@ -98,7 +96,7 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	if err != nil || total == 0 {
 		return err
 	}
-	s.logger.Debug("Got schedules to start", zap.Int64("total", total))
+	slog.Debug("Got schedules to start", slog.Int64("total", total))
 
 	eg, ectx := errgroup.WithContext(ctx)
 	for i := range schedules {
@@ -114,12 +112,12 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 				return err
 			}
 			if broadcast.Status != entity.BroadcastStatusIdle {
-				s.logger.Debug("Channels excluded from start",
-					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
+				slog.Debug("Channels excluded from start",
+					slog.String("scheduleId", schedule.ID), slog.Int("status", int(broadcast.Status)))
 				return nil // 停止中の場合のみ、起動処理を進める
 			}
 			if broadcast.MediaLiveChannelID == "" {
-				s.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
+				slog.Error("Empty media live channel id", slog.String("scheduleId", schedule.ID))
 				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
 			}
 
@@ -127,23 +125,23 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 				ChannelID: broadcast.MediaLiveChannelID,
 				Settings:  s.newStartScheduleSettings(schedule, broadcast),
 			}
-			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling to create media live schedule", slog.String("scheduleId", schedule.ID))
 			if err := s.media.CreateSchedule(ctx, settings); err != nil {
-				s.logger.Error("Failed to create media live schedule",
-					zap.String("scheduleId", schedule.ID),
-					zap.String("channelId", broadcast.MediaLiveChannelID),
-					zap.Any("settings", settings),
-					zap.Error(err))
+				slog.Error("Failed to create media live schedule",
+					slog.String("scheduleId", schedule.ID),
+					slog.String("channelId", broadcast.MediaLiveChannelID),
+					slog.Any("settings", settings),
+					log.Error(err))
 				return err
 			}
-			s.logger.Info("Succeeded to create media live schedule", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded to create media live schedule", slog.String("scheduleId", schedule.ID))
 
-			s.logger.Info("Calling to start media live", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling to start media live", slog.String("scheduleId", schedule.ID))
 			if err := s.media.StartChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
-				s.logger.Error("Failed to start media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				slog.Error("Failed to start media live", slog.String("scheduleId", schedule.ID), log.Error(err))
 				return err
 			}
-			s.logger.Info("Succeeded to start media live", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded to start media live", slog.String("scheduleId", schedule.ID))
 
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusActive,
@@ -170,7 +168,7 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 
 // createChannel - ライブ配信リソースの作成を開始 (30分前)
 func (s *starter) createChannel(ctx context.Context, target time.Time) error {
-	s.logger.Debug("Creating channel...", zap.Time("target", target))
+	slog.Debug("Creating channel...", slog.Time("target", target))
 	in := &store.ListSchedulesInput{
 		StartAtLt: target.Add(30 * time.Minute), // マルシェ開催開始30分前〜
 		EndAtGte:  target,                       // 〜マルシェ開催終了
@@ -180,7 +178,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 	if err != nil || total == 0 {
 		return err
 	}
-	s.logger.Debug("Got schedules to create", zap.Int64("total", total))
+	slog.Debug("Got schedules to create", slog.Int64("total", total))
 
 	eg, ectx := errgroup.WithContext(ctx)
 	for i := range schedules {
@@ -196,8 +194,8 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 				return err
 			}
 			if broadcast.Status != entity.BroadcastStatusDisabled {
-				s.logger.Debug("Channels excluded from creation",
-					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
+				slog.Debug("Channels excluded from creation",
+					slog.String("scheduleId", schedule.ID), slog.Int("status", int(broadcast.Status)))
 				return nil // リソース未作成の場合のみ、作成処理を進める
 			}
 			payload := &CreatePayload{
@@ -219,12 +217,12 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 					Path:       newArchiveHLSPath(schedule.ID),
 				},
 			}
-			s.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling step function", slog.String("scheduleId", schedule.ID))
 			if err := s.sfn.StartExecution(ectx, payload); err != nil {
-				s.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				slog.Error("Failed step function", slog.String("scheduleId", schedule.ID), log.Error(err))
 				return err
 			}
-			s.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded step function", slog.String("scheduleId", schedule.ID))
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusWaiting,
 			}

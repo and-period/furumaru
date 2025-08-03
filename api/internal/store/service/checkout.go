@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -14,7 +15,7 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/japanese"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
@@ -40,11 +41,11 @@ func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutSta
 	if order.OrderPayment.Status != entity.PaymentStatusPending {
 		return order.ID, order.OrderPayment.Status, nil
 	}
-	s.logger.Info("This checkout is pending", zap.String("transactionId", in.TransactionID))
+	slog.InfoContext(ctx, "This checkout is pending", slog.String("transactionId", in.TransactionID))
 	// 未払い状態の場合、KOMOJUから最新の状態を取得する
 	res, err := s.komoju.Session.Get(ctx, in.TransactionID)
 	if err != nil || res.Payment == nil {
-		s.logger.Warn("Failed to get session state", zap.String("transactionId", in.TransactionID), zap.Error(err))
+		slog.WarnContext(ctx, "Failed to get session state", slog.String("transactionId", in.TransactionID), log.Error(err))
 		return order.ID, entity.PaymentStatusUnknown, internalError(err)
 	}
 	return order.ID, entity.NewPaymentStatus(res.Payment.Status), nil
@@ -371,8 +372,8 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(shop.ID) {
-		s.logger.Warn("Failed to disable promotion",
-			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
+		slog.WarnContext(ctx, "Failed to disable promotion",
+			slog.String("userId", params.payload.UserID), slog.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 購入する買い物かごのみ取得
@@ -389,16 +390,16 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	products = products.FilterBySales()
 	// 商品がすべて販売中かの確認
 	if len(products) > 0 && len(productIDs) != len(products) {
-		s.logger.Warn("Failed because there are products outside the sales period",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
+		slog.WarnContext(ctx, "Failed because there are products outside the sales period",
+			slog.String("userId", params.payload.UserID), slog.String("sessionId", params.payload.SessionID),
+			slog.String("coordinatorId", params.payload.CoordinatorID), slog.Int64("boxNumber", params.payload.BoxNumber))
 		return "", fmt.Errorf("service: there are products outside the sales period: %w", exception.ErrFailedPrecondition)
 	}
 	// 在庫の過不足確認
 	if err := baskets.VerifyQuantities(products.Map()); err != nil {
-		s.logger.Warn("Failed to verify quantities in baskets",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
+		slog.WarnContext(ctx, "Failed to verify quantities in baskets",
+			slog.String("userId", params.payload.UserID), slog.String("sessionId", params.payload.SessionID),
+			slog.String("coordinatorId", params.payload.CoordinatorID), slog.Int64("boxNumber", params.payload.BoxNumber))
 		return "", fmt.Errorf("service: insufficient stock: %w: %s", exception.ErrFailedPrecondition, err.Error())
 	}
 	// 注文インスタンスの生成
@@ -422,10 +423,10 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	}
 	// チェックサム
 	if params.payload.Total != order.Total {
-		s.logger.Warn("Failed to checksum before checkout",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber),
-			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
+		slog.WarnContext(ctx, "Failed to checksum before checkout",
+			slog.String("userId", params.payload.UserID), slog.String("sessionId", params.payload.SessionID),
+			slog.String("coordinatorId", params.payload.CoordinatorID), slog.Int64("boxNumber", params.payload.BoxNumber),
+			slog.Int64("payload.total", params.payload.Total), slog.Any("payment", order.OrderPayment))
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 支払い処理
@@ -458,9 +459,9 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		}
 		cart.RemoveBaskets(baskets.BoxNumbers()...)
 		if err := s.refreshCart(context.Background(), cart); err != nil {
-			s.logger.Error("Failed to refresh cart after checkout",
-				zap.Any("payload", params.payload), zap.Any("order", order),
-				zap.Int32("methodType", int32(params.paymentMethodType)), zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to refresh cart after checkout",
+				slog.Any("payload", params.payload), slog.Any("order", order),
+				slog.Int("methodType", int(params.paymentMethodType)), log.Error(err))
 		}
 	}()
 	// 商品の在庫を減算
@@ -507,14 +508,14 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(experience.ShopID) {
-		s.logger.Warn("Failed to disable promotion",
-			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
+		slog.WarnContext(ctx, "Failed to disable promotion",
+			slog.String("userId", params.payload.UserID), slog.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 体験が販売中かの確認
 	if experience.Status != entity.ExperienceStatusAccepting {
-		s.logger.Warn("Failed to checkout because the experience is not accepting",
-			zap.String("userId", params.payload.UserID), zap.String("experienceId", params.payload.ExperienceID))
+		slog.WarnContext(ctx, "Failed to checkout because the experience is not accepting",
+			slog.String("userId", params.payload.UserID), slog.String("experienceId", params.payload.ExperienceID))
 		return "", fmt.Errorf("service: the experience is not accepting: %w", exception.ErrFailedPrecondition)
 	}
 	// 注文インスタンスの生成
@@ -543,10 +544,10 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	}
 	// チェックサム
 	if params.payload.Total != order.Total {
-		s.logger.Warn("Failed to checksum before checkout",
-			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
-			zap.String("coordinatorId", params.payload.CoordinatorID), zap.String("experienceId", params.payload.ExperienceID),
-			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
+		slog.WarnContext(ctx, "Failed to checksum before checkout",
+			slog.String("userId", params.payload.UserID), slog.String("sessionId", params.payload.SessionID),
+			slog.String("coordinatorId", params.payload.CoordinatorID), slog.String("experienceId", params.payload.ExperienceID),
+			slog.Int64("payload.total", params.payload.Total), slog.Any("payment", order.OrderPayment))
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	var (
@@ -641,7 +642,7 @@ func (s *service) executeFreeOrder(
 	// 支払い完了通知
 	afterFn := func(ctx context.Context) {
 		if err := s.notifyPaymentCompleted(ctx, order); err != nil {
-			s.logger.Error("Failed to notify payment completed", zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to notify payment completed", log.Error(err))
 		}
 	}
 	redirectURL := fmt.Sprintf("%s?session_id=%s", params.payload.CallbackURL, order.ID)
@@ -661,7 +662,7 @@ func (s *service) decreaseProductInventories(ctx context.Context, items entity.O
 	sem := semaphore.NewWeighted(3)
 	for _, item := range items {
 		if err := sem.Acquire(ctx, 1); err != nil {
-			s.logger.Error("Failed to semaphore acuire", zap.Any("item", item), zap.Error(err))
+			slog.ErrorContext(ctx, "Failed to semaphore acuire", slog.Any("item", item), log.Error(err))
 			return
 		}
 		s.waitGroup.Add(1)
@@ -672,7 +673,7 @@ func (s *service) decreaseProductInventories(ctx context.Context, items entity.O
 			}()
 			err := s.decreaseProductInventory(ctx, item.ProductRevisionID, item.Quantity)
 			if err != nil {
-				s.logger.Error("Failed to decrease product inventory", zap.Any("item", item), zap.Error(err))
+				slog.ErrorContext(ctx, "Failed to decrease product inventory", slog.Any("item", item), log.Error(err))
 			}
 		}(item)
 	}

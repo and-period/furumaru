@@ -3,11 +3,11 @@ package worker
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
-	"go.uber.org/zap"
 )
 
 func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) error {
@@ -20,7 +20,7 @@ func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) 
 	if err != nil {
 		return err
 	}
-	w.logger.Debug("Send report", zap.String("templateId", string(payload.Report.TemplateID)), zap.Any("message", container))
+	slog.Debug("Send report", slog.String("templateId", string(payload.Report.TemplateID)), slog.Any("message", container))
 	sendFn := func() error {
 		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
 	}

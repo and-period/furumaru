@@ -28,7 +28,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/secret"
@@ -40,13 +39,11 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
 	serviceName              string
-	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
 	aws                      aws.Config
 	secret                   secret.Client
@@ -81,7 +78,6 @@ type params struct {
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
 		serviceName: fmt.Sprintf("%s-%s", a.AppName, a.Environment),
-		logger:      zap.NewNop(),
 		now:         jst.Now,
 		waitGroup:   &sync.WaitGroup{},
 		debugMode:   a.LogLevel == "debug",
@@ -100,18 +96,6 @@ func (a *app) inject(ctx context.Context) error {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
 
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
-
 	// Amazon S3の設定
 	storageParams := &storage.Params{
 		Bucket: a.S3Bucket,
@@ -120,7 +104,7 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
@@ -141,7 +125,7 @@ func (a *app) inject(ctx context.Context) error {
 		TablePrefix: "furumaru",
 		TableSuffix: a.Environment,
 	}
-	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
+	params.cache = dynamodb.NewClient(awscfg, dbParams)
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -191,7 +175,7 @@ func (a *app) inject(ctx context.Context) error {
 			Token:     params.slackToken,
 			ChannelID: params.slackChannelID,
 		}
-		params.slack = slack.NewClient(slackParams, slack.WithLogger(params.logger))
+		params.slack = slack.NewClient(slackParams)
 	}
 
 	// KOMOJUの設定
@@ -207,7 +191,6 @@ func (a *app) inject(ctx context.Context) error {
 		CaptureMode:  komoju.CaptureModeManual,
 	}
 	komojuOpts := []komoju.Option{
-		komoju.WithLogger(params.logger),
 		komoju.WithDebugMode(params.debugMode),
 	}
 	komojuParams := &komoju.Params{
@@ -217,13 +200,13 @@ func (a *app) inject(ctx context.Context) error {
 	params.komoju = komoju.NewKomoju(komojuParams)
 
 	// PostalCodeの設定
-	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
+	params.postalCode = postalcode.NewClient(&http.Client{})
 
 	// Geolocationの設定
 	geolocationParams := &geolocation.Params{
 		APIKey: params.googleMapsPlatformAPIKey,
 	}
-	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	geolocation, err := geolocation.NewClient(geolocationParams)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
 	}
@@ -271,7 +254,6 @@ func (a *app) inject(ctx context.Context) error {
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
 		v1.WithCookieBaseDomain(a.CookieBaseDomain),
-		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),
 	)
 	a.debugMode = params.debugMode
@@ -413,7 +395,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 	}
-	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+	return mediasrv.NewService(params)
 }
 
 func (a *app) newMessengerService(p *params) (messenger.Service, error) {
@@ -438,7 +420,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 		User:        user,
 		Store:       store,
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
+	return messengersrv.NewService(params), nil
 }
 
 func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
@@ -455,7 +437,7 @@ func (a *app) newUserService(p *params, media media.Service, messenger messenger
 		UserAuthGoogleRedirectURL: a.CognitoUserGoogleRedirectURL,
 		UserAuthLINERedirectURL:   a.CognitoUserLINERedirectURL,
 	}
-	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
+	return usersrv.NewService(params), nil
 }
 
 func (a *app) newStoreService(
@@ -476,5 +458,5 @@ func (a *app) newStoreService(
 		Geolocation: p.geolocation,
 		Komoju:      p.komoju,
 	}
-	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
+	return storesrv.NewService(params), nil
 }

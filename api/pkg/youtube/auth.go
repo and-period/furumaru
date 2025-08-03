@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/googleapi"
@@ -17,7 +18,6 @@ import (
 
 type auth struct {
 	*oauth2.Config
-	logger *zap.Logger
 }
 
 func (c *client) NewAuth() Auth {
@@ -30,7 +30,6 @@ func (c *client) NewAuth() Auth {
 	}
 	return &auth{
 		Config: config,
-		logger: c.logger,
 	}
 }
 
@@ -70,7 +69,7 @@ func (a *auth) internalError(err error) error {
 	if err == nil {
 		return nil
 	}
-	a.logger.Error("Failed to oauth2 api", zap.Error(err))
+	slog.Error("Failed to oauth2 api", log.Error(err))
 
 	code := ErrUnknown
 

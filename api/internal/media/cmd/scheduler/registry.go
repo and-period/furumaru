@@ -12,7 +12,6 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -20,12 +19,10 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
-	logger       *zap.Logger
 	waitGroup    *sync.WaitGroup
 	secret       secret.Client
 	now          func() time.Time
@@ -38,7 +35,6 @@ type params struct {
 
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -55,33 +51,21 @@ func (a *app) inject(ctx context.Context) error {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
 
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
-
 	// AWS Step Functionsの設定
 	sfnParams := &sfn.Params{
 		StateMachineARN: a.StepFunctionARN,
 	}
-	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(params.logger))
+	sfnClient := sfn.NewStepFunction(awscfg, sfnParams)
 
 	// AWS Media Liveの設定
-	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
+	mediaLiveClient := medialive.NewMediaLive(awscfg)
 
 	// AWS Media Convertの設定
 	mediaConvertParams := mediaconvert.Params{
 		Endpoint: a.MediaConvertEndpoint,
 		RoleARN:  a.MediaConvertRoleARN,
 	}
-	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(params.logger))
+	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams)
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -116,9 +100,9 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	switch a.RunType {
 	case "START":
-		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(params.logger))
+		a.job = scheduler.NewStarter(jobParams)
 	case "CLOSE":
-		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(params.logger), scheduler.WithStorageURL(a.CDNURL))
+		a.job = scheduler.NewCloser(jobParams, scheduler.WithStorageURL(a.CDNURL))
 	default:
 		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
@@ -191,5 +175,5 @@ func (a *app) newStoreService(p *params) (store.Service, error) {
 		WaitGroup: p.waitGroup,
 		Database:  storedb.NewDatabase(mysql),
 	}
-	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
+	return storesrv.NewService(params), nil
 }

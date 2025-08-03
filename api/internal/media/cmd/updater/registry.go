@@ -11,16 +11,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/broadcast/updater"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
-	logger       *zap.Logger
 	waitGroup    *sync.WaitGroup
 	secret       secret.Client
 	now          func() time.Time
@@ -33,7 +30,6 @@ type params struct {
 
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -49,18 +45,6 @@ func (a *app) inject(ctx context.Context) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
-
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
 
 	// Databaseの設定
 	dbClient, err := a.newTiDB("media", params)
@@ -82,7 +66,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	switch a.RunType {
 	case "START":
-		a.updater = updater.NewStarter(jobParams, updater.WithLogger(params.logger))
+		a.updater = updater.NewStarter(jobParams)
 	case "CLOSE":
 		return errors.New("cmd: not implemented")
 	default:

@@ -18,7 +18,6 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -26,12 +25,10 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
-	logger       *zap.Logger
 	waitGroup    *sync.WaitGroup
 	aws          aws.Config
 	secret       secret.Client
@@ -48,7 +45,6 @@ type params struct {
 
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -65,18 +61,6 @@ func (a *app) inject(ctx context.Context) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
-
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
 
 	// Amazon SQSの設定
 	sqsParams := &sqs.Params{
@@ -114,7 +98,7 @@ func (a *app) inject(ctx context.Context) error {
 		Database:  messengerdb.NewDatabase(dbClient),
 		Messenger: messengerService,
 	}
-	a.job = scheduler.NewScheduler(jobParams, scheduler.WithLogger(params.logger))
+	a.job = scheduler.NewScheduler(jobParams)
 	a.waitGroup = params.waitGroup
 	return nil
 }
@@ -204,7 +188,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 		User:        user,
 		Store:       store,
 	}
-	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
+	return messengersrv.NewService(params), nil
 }
 
 func (a *app) newUserService(p *params) (user.Service, error) {
@@ -216,7 +200,7 @@ func (a *app) newUserService(p *params) (user.Service, error) {
 		WaitGroup: p.waitGroup,
 		Database:  userdb.NewDatabase(mysql),
 	}
-	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
+	return usersrv.NewService(params), nil
 }
 
 func (a *app) newStoreService(p *params) (store.Service, error) {
@@ -228,5 +212,5 @@ func (a *app) newStoreService(p *params) (store.Service, error) {
 		WaitGroup: p.waitGroup,
 		Database:  storedb.NewDatabase(mysql),
 	}
-	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
+	return storesrv.NewService(params), nil
 }

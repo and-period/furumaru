@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"path/filepath"
 	"sync"
@@ -12,20 +13,19 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
 
 type closer struct {
 	now         func() time.Time
-	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	semaphore   *semaphore.Weighted
 	db          *database.Database
@@ -42,7 +42,6 @@ type closer struct {
 func NewCloser(params *Params, opts ...Option) Scheduler {
 	defaultURL, _ := params.Storage.GetHost()
 	dopts := &options{
-		logger:      zap.NewNop(),
 		concurrency: 2,
 		storageURL:  defaultURL,
 	}
@@ -55,7 +54,6 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 	}
 	return &closer{
 		now:         jst.Now,
-		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		semaphore:   semaphore.NewWeighted(dopts.concurrency),
 		db:          params.Database,
@@ -71,9 +69,9 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 }
 
 func (c *closer) Lambda(ctx context.Context) (err error) {
-	c.logger.Debug("Started Lambda function", zap.Time("now", c.now()))
+	slog.Debug("Started Lambda function", slog.Time("now", c.now()))
 	defer func() {
-		c.logger.Debug("Finished Lambda function", zap.Time("now", c.now()), zap.Error(err))
+		slog.Debug("Finished Lambda function", slog.Time("now", c.now()), log.Error(err))
 	}()
 
 	return c.run(ctx, c.now())
@@ -81,7 +79,7 @@ func (c *closer) Lambda(ctx context.Context) (err error) {
 
 func (c *closer) Run(ctx context.Context, target time.Time) error {
 	if err := c.run(ctx, target); err != nil {
-		c.logger.Error("Failed to run", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to run", slog.Time("target", target), log.Error(err))
 		return err
 	}
 	return nil
@@ -90,18 +88,18 @@ func (c *closer) Run(ctx context.Context, target time.Time) error {
 // run - ライブ配信のリソース削除と停止処理
 func (c *closer) run(ctx context.Context, target time.Time) error {
 	if err := c.removeChannel(ctx, target); err != nil {
-		c.logger.Error("Failed to remove channel", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to remove channel", slog.Time("target", target), log.Error(err))
 		return err
 	}
 	if err := c.stopChannel(ctx, target); err != nil {
-		c.logger.Error("Failed to stop channel", zap.Time("target", target), zap.Error(err))
+		slog.Error("Failed to stop channel", slog.Time("target", target), log.Error(err))
 	}
 	return nil
 }
 
 // stopChannel - ライブ配信を停止 (1時間後)
 func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
-	c.logger.Debug("Stopping channel...", zap.Time("target", target))
+	slog.Debug("Stopping channel...", slog.Time("target", target))
 	in := &store.ListSchedulesInput{
 		EndAtGte: target.AddDate(0, 0, -7),   // 〜マルシェ開催終了7日経過
 		EndAtLt:  target.Add(-1 * time.Hour), // マルシェ開催終了1時間経過〜
@@ -111,7 +109,7 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 	if err != nil || total == 0 {
 		return err
 	}
-	c.logger.Debug("Got schedules to stop", zap.Int64("total", total))
+	slog.Debug("Got schedules to stop", slog.Int64("total", total))
 
 	eg, ectx := errgroup.WithContext(ctx)
 	for i := range schedules {
@@ -127,22 +125,22 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 				return err
 			}
 			if broadcast.Status != entity.BroadcastStatusActive {
-				c.logger.Debug("Channels excluded from stop",
-					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
+				slog.Debug("Channels excluded from stop",
+					slog.String("scheduleId", schedule.ID), slog.Int("status", int(broadcast.Status)))
 				return nil // 起動中の場合のみ、停止処理を進める
 			}
 
 			if broadcast.MediaLiveChannelID == "" {
-				c.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
+				slog.Error("Empty media live channel id", slog.String("scheduleId", schedule.ID))
 				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
 			}
 
-			c.logger.Info("Calling to stop media live", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling to stop media live", slog.String("scheduleId", schedule.ID))
 			if err := c.media.StopChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
-				c.logger.Error("Failed to stop media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				slog.Error("Failed to stop media live", slog.String("scheduleId", schedule.ID), log.Error(err))
 				return err
 			}
-			c.logger.Info("Succeeded to stop media live", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded to stop media live", slog.String("scheduleId", schedule.ID))
 
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusIdle,
@@ -164,7 +162,7 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 	if err != nil || total == 0 {
 		return err
 	}
-	c.logger.Debug("Got schedules to remove", zap.Int64("total", total))
+	slog.Debug("Got schedules to remove", slog.Int64("total", total))
 
 	eg, ectx := errgroup.WithContext(ctx)
 	for i := range schedules {
@@ -183,24 +181,24 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 				return nil // 停止中の場合のみ、削除処理を進める
 			}
 
-			c.logger.Info("Calling to create convert job", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling to create convert job", slog.String("scheduleId", schedule.ID))
 			if err := c.convert.CreateJob(ectx, c.jobTemplate, c.newMediaConvertJobSettings(broadcast)); err != nil {
-				c.logger.Error("Failed to create convert job", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				slog.Error("Failed to create convert job", slog.String("scheduleId", schedule.ID), log.Error(err))
 				return err
 			}
-			c.logger.Info("Succeeded to create convert job", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded to create convert job", slog.String("scheduleId", schedule.ID))
 
 			payload := &RemovePayload{
 				CloudFrontDistributionARN: broadcast.CloudFrontDistributionArn,
 				MediaLiveChannelID:        broadcast.MediaLiveChannelID,
 				MediaStoreContainerARN:    broadcast.MediaStoreContainerArn,
 			}
-			c.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
+			slog.Info("Calling step function", slog.String("scheduleId", schedule.ID))
 			if err := c.sfn.StartExecution(ectx, payload); err != nil {
-				c.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				slog.Error("Failed step function", slog.String("scheduleId", schedule.ID), log.Error(err))
 				return err
 			}
-			c.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))
+			slog.Info("Succeeded step function", slog.String("scheduleId", schedule.ID))
 
 			archiveURL := c.storageURL()
 			archiveURL.Path = filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename)

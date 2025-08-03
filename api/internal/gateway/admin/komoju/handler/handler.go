@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,7 +24,6 @@ type handler struct {
 	appName   string
 	env       string
 	now       func() time.Time
-	logger    *zap.Logger
 	sentry    sentry.Client
 	waitGroup *sync.WaitGroup
 	store     store.Service
@@ -34,7 +32,6 @@ type handler struct {
 type options struct {
 	appName string
 	env     string
-	logger  *zap.Logger
 	sentry  sentry.Client
 }
 
@@ -52,12 +49,6 @@ func WithEnvironment(env string) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func WithSentry(sentry sentry.Client) Option {
 	return func(opts *options) {
 		opts.sentry = sentry
@@ -68,7 +59,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
 		appName: "komoju-gateway",
 		env:     "",
-		logger:  zap.NewNop(),
 		sentry:  sentry.NewFixedMockClient(),
 	}
 	for i := range opts {
@@ -78,7 +68,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		appName:   dopts.appName,
 		env:       dopts.env,
 		now:       jst.Now,
-		logger:    dopts.logger,
 		sentry:    dopts.sentry,
 		waitGroup: params.WaitGroup,
 		store:     params.Store,

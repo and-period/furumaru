@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -12,7 +13,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -191,7 +191,7 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 	}
 	if userID != order.UserID {
 		// 不正の疑いがあるため、リクエスト情報をログ出力しておく
-		h.logger.Warn("UserId does not match order information", zap.String("userId", userID), zap.String("orderId", orderID))
+		slog.WarnContext(ctx, "UserId does not match order information", slog.String("userId", userID), slog.String("orderId", orderID))
 		return nil, fmt.Errorf("%w: %w", exception.ErrNotFound, errNotFoundOrder)
 	}
 	var (

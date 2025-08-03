@@ -16,21 +16,18 @@ import (
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/line"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/option"
 	yaml "gopkg.in/yaml.v2"
 )
 
 type params struct {
-	logger                   *zap.Logger
 	waitGroup                *sync.WaitGroup
 	mailer                   mailer.Client
 	line                     line.Client
@@ -54,7 +51,6 @@ type params struct {
 
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -70,18 +66,6 @@ func (a *app) inject(ctx context.Context) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
-
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn,
-		log.WithLogLevel(a.LogLevel),
-		log.WithSentryServerName(a.AppName),
-		log.WithSentryEnvironment(a.Environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
-	}
-	params.logger = logger
 
 	// Databaseの設定
 	dbClient, err := a.newTiDB("messengers", params)
@@ -111,7 +95,7 @@ func (a *app) inject(ctx context.Context) error {
 		FromAddress: a.MailFromAddress,
 		TemplateMap: params.sendGridTemplateMap,
 	}
-	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(params.logger))
+	params.mailer = mailer.NewClient(mailParams)
 
 	// LINEの設定
 	lineParams := &line.Params{
@@ -119,7 +103,7 @@ func (a *app) inject(ctx context.Context) error {
 		Secret: params.lineSecret,
 		RoomID: params.lineRoomID,
 	}
-	linebot, err := line.NewClient(lineParams, line.WithLogger(params.logger))
+	linebot, err := line.NewClient(lineParams)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create line client: %w", err)
 	}
@@ -132,7 +116,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Firebase Cloud Messagingの設定（管理者用）
-	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(params.logger))
+	amessaging, err := messaging.NewClient(ctx, afbapp)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase messaging client for admin: %w", err)
 	}
@@ -145,7 +129,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Firebase Cloud Messagingの設定（利用者用）
-	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(params.logger))
+	umessaging, err := messaging.NewClient(ctx, ufbapp)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase messaging client for user: %w", err)
 	}
@@ -167,7 +151,7 @@ func (a *app) inject(ctx context.Context) error {
 		UserMessaging:  params.userMessaging,
 		User:           userService,
 	}
-	a.worker = worker.NewWorker(workerParams, worker.WithLogger(params.logger))
+	a.worker = worker.NewWorker(workerParams)
 	a.waitGroup = params.waitGroup
 	return nil
 }
@@ -312,5 +296,5 @@ func (a *app) newUserService(p *params) (user.Service, error) {
 		WaitGroup: p.waitGroup,
 		Database:  userdb.NewDatabase(mysql),
 	}
-	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
+	return usersrv.NewService(params), nil
 }

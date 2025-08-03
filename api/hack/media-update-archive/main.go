@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -19,7 +20,6 @@ import (
 	transcribe "github.com/and-period/furumaru/api/pkg/aws/transcribe"
 	translate "github.com/and-period/furumaru/api/pkg/aws/translate"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -28,7 +28,6 @@ import (
 	awstranscribe "github.com/aws/aws-sdk-go-v2/service/transcribe"
 	transcribetype "github.com/aws/aws-sdk-go-v2/service/transcribe/types"
 	awstranslate "github.com/aws/aws-sdk-go-v2/service/translate"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -60,7 +59,6 @@ var (
 )
 
 type app struct {
-	logger     *zap.Logger
 	db         *database.Database
 	s3         storage.Bucket
 	transcribe transcribe.Client
@@ -156,17 +154,6 @@ func setup(ctx context.Context) (*app, error) {
 		return nil, fmt.Errorf("failed to get secrets: %w", err)
 	}
 
-	// Loggerの設定
-	logger, err := log.NewSentryLogger(sentryDSN,
-		log.WithLogLevel(logLevel),
-		log.WithSentryServerName(appName),
-		log.WithSentryEnvironment(environment),
-		log.WithSentryLevel("error"),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create sentry logger: %w", err)
-	}
-
 	// TiDBの設定
 	db, err := mysql.NewTiDBClient(&mysql.Params{
 		Host:     tidbHost,
@@ -180,33 +167,30 @@ func setup(ctx context.Context) (*app, error) {
 	}
 
 	// Storageの設定
-	storage := storage.NewBucket(awscfg, &storage.Params{
-		Bucket: s3Bucket,
-	}, storage.WithLogger(logger))
+	storage := storage.NewBucket(awscfg, &storage.Params{Bucket: s3Bucket})
 
 	app := &app{
-		logger:     logger,
 		db:         tidb.NewDatabase(db),
 		s3:         storage,
-		transcribe: transcribe.NewClient(awscfg, transcribe.WithLogger(logger)),
-		translate:  translate.NewClient(awscfg, translate.WithLogger(logger)),
+		transcribe: transcribe.NewClient(awscfg),
+		translate:  translate.NewClient(awscfg),
 	}
 	return app, nil
 }
 
 func (a *app) run(ctx context.Context) error {
-	a.logger.Info("start", zap.String("broadcastId", broadcastID))
+	slog.Info("start", slog.String("broadcastId", broadcastID))
 
 	broadcast, err := a.db.Broadcast.Get(ctx, broadcastID)
 	if errors.Is(err, database.ErrNotFound) {
-		a.logger.Warn("broadcast not found", zap.String("broadcastId", broadcastID))
+		slog.Warn("broadcast not found", slog.String("broadcastId", broadcastID))
 		return nil
 	}
 	if err != nil {
 		return fmt.Errorf("failed to get broadcast: %w", err)
 	}
 
-	a.logger.Info("archive url", zap.String("broadcastId", broadcastID), zap.String("archiveUrl", broadcast.ArchiveURL))
+	slog.Info("archive url", slog.String("broadcastId", broadcastID), slog.String("archiveUrl", broadcast.ArchiveURL))
 
 	u, err := url.Parse(broadcast.ArchiveURL)
 	if err != nil {
@@ -221,23 +205,23 @@ func (a *app) run(ctx context.Context) error {
 		return fmt.Errorf("invalid content type: %s", metadata.ContentType)
 	}
 
-	a.logger.Info("start execute transcibe", zap.String("broadcastId", broadcastID))
+	slog.Info("start execute transcibe", slog.String("broadcastId", broadcastID))
 
 	japaneseTextURL, err := a.executeTranscribe(ctx, broadcast)
 	if err != nil {
 		return fmt.Errorf("failed to execute transcribe: %w", err)
 	}
 
-	a.logger.Info("finished execute transcribe", zap.String("broadcastId", broadcastID), zap.String("japaneseTextUrl", japaneseTextURL))
-	a.logger.Info("start execute translate", zap.String("broadcastId", broadcastID))
+	slog.Info("finished execute transcribe", slog.String("broadcastId", broadcastID), slog.String("japaneseTextUrl", japaneseTextURL))
+	slog.Info("start execute translate", slog.String("broadcastId", broadcastID))
 
 	englishTextURL, err := a.executeTranslate(ctx, broadcast)
 	if err != nil {
 		return fmt.Errorf("failed to execute translate: %w", err)
 	}
 
-	a.logger.Info("finished execute translate", zap.String("broadcastId", broadcastID), zap.String("englishTextUrl", englishTextURL))
-	a.logger.Info("start update archive", zap.String("broadcastId", broadcastID))
+	slog.Info("finished execute translate", slog.String("broadcastId", broadcastID), slog.String("englishTextUrl", englishTextURL))
+	slog.Info("start update archive", slog.String("broadcastId", broadcastID))
 
 	params := &database.UpdateBroadcastParams{
 		UpdateBroadcastArchiveParams: &database.UpdateBroadcastArchiveParams{
@@ -254,7 +238,7 @@ func (a *app) run(ctx context.Context) error {
 		return fmt.Errorf("failed to update broadcast: %w", err)
 	}
 
-	a.logger.Info("updated archive", zap.String("broadcastId", broadcastID))
+	slog.Info("updated archive", slog.String("broadcastId", broadcastID))
 	return nil
 }
 
@@ -280,7 +264,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 	}
 	current, err := a.transcribe.GetTranscriptionJob(ctx, currentIn)
 	if err == nil && current.TranscriptionJob.TranscriptionJobStatus == transcribetype.TranscriptionJobStatusCompleted {
-		a.logger.Info("transcription job already completed", zap.String("broadcastId", broadcast.ID))
+		slog.Info("transcription job already completed", slog.String("broadcastId", broadcast.ID))
 		return outputURL, nil
 	}
 
@@ -304,7 +288,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 	if err != nil {
 		return "", fmt.Errorf("failed to start transcription job: %w", err)
 	}
-	a.logger.Info("started transcription job", zap.String("broadcastId", broadcast.ID), zap.String("jobName", jobName))
+	slog.Info("started transcription job", slog.String("broadcastId", broadcast.ID), slog.String("jobName", jobName))
 
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Minute)
 	defer cancel()
@@ -339,7 +323,7 @@ func (a *app) executeTranscribe(ctx context.Context, broadcast *entity.Broadcast
 				return "", fmt.Errorf("transcription job failed: reason=%s", aws.ToString(out.TranscriptionJob.FailureReason))
 			}
 
-			a.logger.Info("translation job in progress", zap.String("broadcastId", broadcast.ID), zap.String("jobName", jobName))
+			slog.Info("translation job in progress", slog.String("broadcastId", broadcast.ID), slog.String("jobName", jobName))
 		}
 	}
 }
@@ -362,7 +346,7 @@ func (a *app) executeTranslate(ctx context.Context, broadcast *entity.Broadcast)
 
 	current, err := a.s3.GetMetadata(ctx, englishTextKey)
 	if err == nil && current.ContentType == textFormat {
-		a.logger.Info("text translation already completed", zap.String("broadcastId", broadcast.ID))
+		slog.Info("text translation already completed", slog.String("broadcastId", broadcast.ID))
 		return outputURL, nil
 	}
 

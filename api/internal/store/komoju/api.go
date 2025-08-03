@@ -8,29 +8,23 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 )
 
 const defaultMaxRetries = 3
 
 type options struct {
-	logger     *zap.Logger
 	maxRetries int64
 	debugMode  bool
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithMaxRetries(maxRetries int64) Option {
 	return func(opts *options) {
@@ -59,7 +53,7 @@ func (t *transport) RoundTrip(req *http.Request) (res *http.Response, err error)
 			if res != nil {
 				out, _ = httputil.DumpResponse(res, true)
 			}
-			t.opts.logger.Debug("Send komoju request", zap.String("input", string(in)), zap.String("output", string(out)))
+			slog.Debug("Send komoju request", slog.String("input", string(in)), slog.String("output", string(out)))
 		}()
 	}
 	res, err = t.base.RoundTrip(req)
@@ -74,7 +68,6 @@ type APIClient struct {
 
 func NewAPIClient(client *http.Client, basicID, secret string, opts ...Option) *APIClient {
 	dopts := &options{
-		logger:     zap.NewNop(),
 		maxRetries: defaultMaxRetries,
 		debugMode:  false,
 	}
@@ -147,13 +140,13 @@ func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	if err := c.bind(out, res); err != nil {
 		return err
 	}
-	c.opts.logger.Info("Received komoju error",
-		zap.Int("status", res.StatusCode),
-		zap.String("method", res.Request.Method),
-		zap.String("path", res.Request.URL.Path),
-		zap.String("param", out.Data.Param),
-		zap.String("code", out.Data.Code),
-		zap.String("detail", out.Data.Message),
+	slog.Info("Received komoju error",
+		slog.Int("status", res.StatusCode),
+		slog.String("method", res.Request.Method),
+		slog.String("path", res.Request.URL.Path),
+		slog.String("param", out.Data.Param),
+		slog.String("code", out.Data.Code),
+		slog.String("detail", out.Data.Message),
 	)
 	return &Error{
 		Method:  params.Method,
@@ -191,12 +184,12 @@ func (c *APIClient) bind(out interface{}, res *http.Response) error {
 		return nil
 	}
 	body, _ := io.ReadAll(res.Body)
-	c.opts.logger.Error("Failed to decode komoju response body",
-		zap.Int("status", res.StatusCode),
-		zap.String("method", res.Request.Method),
-		zap.String("path", res.Request.URL.Path),
-		zap.String("body", string(body)),
-		zap.Error(err),
+	slog.Error("Failed to decode komoju response body",
+		slog.Int("status", res.StatusCode),
+		slog.String("method", res.Request.Method),
+		slog.String("path", res.Request.URL.Path),
+		slog.String("body", string(body)),
+		log.Error(err),
 	)
 	return fmt.Errorf("komoju: failed to decode body: %w", err)
 }

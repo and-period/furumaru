@@ -8,12 +8,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestClient(t *testing.T) {
 	t.Parallel()
-	actual := NewClient(&Params{}, WithLogger(zap.NewNop()))
+	actual := NewClient(&Params{})
 	require.NotNil(t, actual)
 }
 
@@ -94,7 +93,7 @@ func TestMailError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			cli := &client{logger: zap.NewNop()}
+			cli := &client{}
 			assert.ErrorIs(t, cli.mailError(tt.err), tt.expect)
 		})
 	}

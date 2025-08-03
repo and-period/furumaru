@@ -4,13 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"strings"
 
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_ctxzap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"go.uber.org/zap"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -20,28 +18,18 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(opts *options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewGRPCOptions(opts ...Option) []grpc.ServerOption {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
 
-	streamInterceptors := grpcStreamServerInterceptors(dopts.logger)
-	unaryInterceptors := grpcUnaryServerInterceptors(dopts.logger)
+	streamInterceptors := grpcStreamServerInterceptors()
+	unaryInterceptors := grpcUnaryServerInterceptors()
 
 	gopts := []grpc.ServerOption{
 		grpc.ChainStreamInterceptor(streamInterceptors...),
@@ -53,14 +41,9 @@ func NewGRPCOptions(opts ...Option) []grpc.ServerOption {
 /*
  * ServerOptions - StremServerInterceptor
  */
-func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterceptor {
-	opts := []grpc_zap.Option{
-		grpc_zap.WithDecider(shouldLog),
-	}
-
+func grpcStreamServerInterceptors() []grpc.StreamServerInterceptor {
 	interceptors := []grpc.StreamServerInterceptor{
 		grpc_ctxtags.StreamServerInterceptor(),
-		grpc_zap.StreamServerInterceptor(logger, opts...),
 		grpc_recovery.StreamServerInterceptor(),
 	}
 
@@ -70,14 +53,9 @@ func grpcStreamServerInterceptors(logger *zap.Logger) []grpc.StreamServerInterce
 /*
  * ServerOptions - UnaryServerInterceptor
  */
-func grpcUnaryServerInterceptors(logger *zap.Logger) []grpc.UnaryServerInterceptor {
-	opts := []grpc_zap.Option{
-		grpc_zap.WithDecider(shouldLog),
-	}
-
+func grpcUnaryServerInterceptors() []grpc.UnaryServerInterceptor {
 	interceptors := []grpc.UnaryServerInterceptor{
 		grpc_ctxtags.UnaryServerInterceptor(),
-		grpc_zap.UnaryServerInterceptor(logger, opts...),
 		accessLogUnaryServerInterceptor(),
 		grpc_recovery.UnaryServerInterceptor(),
 	}
@@ -128,14 +106,13 @@ func accessLogUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		ds := getErrorDetails(err)
 
-		grpc_ctxzap.AddFields(
-			ctx,
-			zap.String("request.client_ip", clientIP),
-			zap.String("request.request_id", requestID),
-			zap.String("request.user_agent", userAgent),
-			zap.Reflect("request.content", reqParams),
-			zap.Reflect("response.content", resParams),
-			zap.Reflect("error.details", ds),
+		slog.DebugContext(ctx, "request",
+			slog.String("request.client_ip", clientIP),
+			slog.String("request.request_id", requestID),
+			slog.String("request.user_agent", userAgent),
+			slog.Any("request.content", reqParams),
+			slog.Any("response.content", resParams),
+			slog.Any("error.details", ds),
 		)
 
 		return res, err

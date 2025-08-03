@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -20,10 +21,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -58,7 +59,6 @@ type handler struct {
 	appName        string
 	env            string
 	now            func() time.Time
-	logger         *zap.Logger
 	sentry         sentry.Client
 	waitGroup      *sync.WaitGroup
 	sharedGroup    *singleflight.Group
@@ -75,7 +75,6 @@ type handler struct {
 type options struct {
 	appName        string
 	env            string
-	logger         *zap.Logger
 	sentry         sentry.Client
 	syncInterval   time.Duration
 	syncMaxRetries int64
@@ -92,12 +91,6 @@ func WithAppName(name string) Option {
 func WithEnvironment(env string) Option {
 	return func(opts *options) {
 		opts.env = env
-	}
-}
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
 	}
 }
 
@@ -123,7 +116,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
 		appName:        "admin-gateway",
 		env:            "",
-		logger:         zap.NewNop(),
 		sentry:         sentry.NewFixedMockClient(),
 		syncInterval:   defaultSyncInterval,
 		syncMaxRetries: defaultSyncMaxRetries,
@@ -135,7 +127,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		appName:        dopts.appName,
 		env:            dopts.env,
 		now:            jst.Now,
-		logger:         dopts.logger,
 		sentry:         dopts.sentry,
 		waitGroup:      params.WaitGroup,
 		sharedGroup:    &singleflight.Group{},
@@ -218,7 +209,7 @@ func (h *handler) Sync(ctx context.Context) error {
 			return nil
 		case <-ticker.C:
 			if err := h.syncEnforcer(ctx); err != nil {
-				h.logger.Error("Failed to sync enforcer", zap.Error(err))
+				slog.Error("Failed to sync enforcer", log.Error(err))
 			}
 		}
 	}

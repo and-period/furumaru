@@ -16,7 +16,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-	"go.uber.org/zap"
 )
 
 var (
@@ -74,13 +73,11 @@ type bucket struct {
 	presigner *s3.PresignClient
 	name      *string
 	region    string
-	logger    *zap.Logger
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 	region     string
 }
 
@@ -98,17 +95,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 		region:     "ap-northeast-1",
 	}
 	for i := range opts {
@@ -125,7 +115,6 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 		presigner: s3.NewPresignClient(cli),
 		name:      aws.String(params.Bucket),
 		region:    dopts.region,
-		logger:    dopts.logger,
 	}
 }
 

@@ -21,7 +21,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
 )
 
 type mocks struct {
@@ -182,7 +181,7 @@ func TestMain(m *testing.M) {
 
 func TestService(t *testing.T) {
 	t.Parallel()
-	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
+	srv := NewService(&Params{})
 	assert.NotNil(t, srv)
 }
 

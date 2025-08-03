@@ -3,14 +3,15 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -73,7 +74,7 @@ func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput)
 	go func(message *entity.Message) {
 		defer s.waitGroup.Done()
 		if err := s.updateMessageRead(context.Background(), message.ID); err != nil {
-			s.logger.Error("Failed to update message read", zap.String("messageId", message.ID), zap.Error(err))
+			slog.Error("Failed to update message read", slog.String("messageId", message.ID), log.Error(err))
 		}
 	}(message)
 	message.Read = true

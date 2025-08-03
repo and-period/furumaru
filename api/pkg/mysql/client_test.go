@@ -10,7 +10,6 @@ import (
 	dmysql "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -54,7 +53,6 @@ func TestNewClient(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client, err := NewClient(
 				tt.params,
-				WithLogger(zap.NewNop()),
 				WithNow(time.Now),
 				WithLocation(time.UTC),
 				WithCharset("utf8mb4"),
@@ -173,7 +171,6 @@ func TestNewDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:               zap.NewNop(),
 				now:                  time.Now,
 				location:             time.UTC,
 				charset:              "utf8mb4",
@@ -195,7 +192,6 @@ func TestNewDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:               zap.NewNop(),
 				now:                  time.Now,
 				location:             jst,
 				charset:              "utf8mb4",

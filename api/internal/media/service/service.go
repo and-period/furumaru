@@ -23,7 +23,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/and-period/furumaru/api/pkg/youtube"
 	govalidator "github.com/go-playground/validator/v10"
-	"go.uber.org/zap"
 )
 
 const (
@@ -49,7 +48,6 @@ type Params struct {
 }
 
 type service struct {
-	logger                       *zap.Logger
 	waitGroup                    *sync.WaitGroup
 	validator                    validator.Validator
 	db                           *database.Database
@@ -74,18 +72,11 @@ type service struct {
 }
 
 type options struct {
-	logger         *zap.Logger
 	uploadEventTTL time.Duration
 	authYoutubeTTL time.Duration
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithUploadEventTTL(ttl time.Duration) Option {
 	return func(opts *options) {
@@ -101,7 +92,6 @@ func WithAuthYoutubeTTL(ttl time.Duration) Option {
 
 func NewService(params *Params, opts ...Option) (media.Service, error) {
 	dopts := &options{
-		logger:         zap.NewNop(),
 		uploadEventTTL: defaultUploadEventTTL,
 		authYoutubeTTL: defaultAuthYoutubeTTL,
 	}
@@ -125,7 +115,6 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		return &url
 	}
 	return &service{
-		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
 		validator:  validator.NewValidator(),
 		db:         params.Database,

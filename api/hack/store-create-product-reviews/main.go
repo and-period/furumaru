@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -21,7 +22,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"go.uber.org/zap"
 )
 
 var (
@@ -59,9 +59,8 @@ var (
 )
 
 type app struct {
-	logger *zap.Logger
-	store  *sdb.Database
-	user   *udb.Database
+	store *sdb.Database
+	user  *udb.Database
 }
 
 func main() {
@@ -100,12 +99,6 @@ func setup(ctx context.Context) (*app, error) {
 	flag.StringVar(&filepath, "filepath", "", "filepath")
 	flag.BoolVar(&debug, "debug", true, "debug mode")
 	flag.Parse()
-
-	// Loggerの設定
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create logger: %w", err)
-	}
 
 	if dbSecretName != "" {
 		// AWS SDKの設定
@@ -151,9 +144,8 @@ func setup(ctx context.Context) (*app, error) {
 	}
 
 	app := &app{
-		logger: logger,
-		store:  stidb.NewDatabase(storedb),
-		user:   utidb.NewDatabase(userdb),
+		store: stidb.NewDatabase(storedb),
+		user:  utidb.NewDatabase(userdb),
 	}
 	return app, nil
 }
@@ -163,18 +155,18 @@ func (a *app) run(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to create guests: %w", err)
 	}
-	a.logger.Info("created guests", zap.Int("count", len(guests)))
+	slog.Info("created guests", slog.Int("count", len(guests)))
 
 	reviews, err := a.readCSVFile(ctx, guests)
 	if err != nil {
 		return fmt.Errorf("failed to read csv file: %w", err)
 	}
-	a.logger.Info("read csv file", zap.Int("count", len(reviews)))
+	slog.Info("read csv file", slog.Int("count", len(reviews)))
 
 	if err := a.createProductReviews(ctx, reviews); err != nil {
 		return fmt.Errorf("failed to create product reviews: %w", err)
 	}
-	a.logger.Info("created product reviews", zap.Int("count", len(reviews)))
+	slog.Info("created product reviews", slog.Int("count", len(reviews)))
 
 	return nil
 }
@@ -265,11 +257,11 @@ func (a *app) createProductReviews(ctx context.Context, reviews sentity.ProductR
 			return fmt.Errorf("failed to list product reviews: %w", err)
 		}
 		if len(current) > 0 {
-			a.logger.Info("product review already exists", zap.Any("review", review))
+			slog.Info("product review already exists", slog.Any("review", review))
 			continue
 		}
 		if debug {
-			a.logger.Debug("create product review", zap.Any("review", review))
+			slog.Debug("create product review", slog.Any("review", review))
 			continue
 		}
 		if err := a.store.ProductReview.Create(ctx, review); err != nil {

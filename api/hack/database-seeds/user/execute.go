@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/and-period/furumaru/api/hack/database-seeds/common"
@@ -10,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -19,7 +19,6 @@ const database = "users"
 
 type app struct {
 	db     *mysql.Client
-	logger *zap.Logger
 	now    func() time.Time
 	srcDir string
 }
@@ -31,27 +30,26 @@ func NewClient(params *common.Params) (common.Client, error) {
 	}
 	return &app{
 		db:     db,
-		logger: params.Logger,
 		now:    jst.Now,
 		srcDir: params.SrcDir,
 	}, nil
 }
 
 func (a *app) Execute(ctx context.Context) error {
-	a.logger.Info("Executing users database seeds...")
+	slog.Info("Executing users database seeds...")
 	if err := a.executeAdminPolicies(ctx); err != nil {
 		return err
 	}
-	a.logger.Info("Completed admin policies table")
+	slog.Info("Completed admin policies table")
 	if err := a.executeAdminRoles(ctx); err != nil {
 		return err
 	}
-	a.logger.Info("Completed admin roles table")
+	slog.Info("Completed admin roles table")
 	if err := a.executeAdminGroups(ctx); err != nil {
 		return err
 	}
-	a.logger.Info("Completed admin groups table")
-	a.logger.Info("Completed users database seeds")
+	slog.Info("Completed admin groups table")
+	slog.Info("Completed users database seeds")
 	return nil
 }
 

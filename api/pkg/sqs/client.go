@@ -4,8 +4,6 @@ package sqs
 import (
 	"context"
 	"time"
-
-	"go.uber.org/zap"
 )
 
 type Producer interface {
@@ -21,7 +19,6 @@ type options struct {
 	dryRun       bool
 	maxRetries   int
 	interval     time.Duration
-	logger       *zap.Logger
 	delaySeconds int32 // for producer
 	timeout      int32 // for consumer
 }
@@ -43,12 +40,6 @@ func WithMaxRetries(maxRetries int) Option {
 func WithInterval(interval time.Duration) Option {
 	return func(opts *options) {
 		opts.interval = interval
-	}
-}
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
 	}
 }
 

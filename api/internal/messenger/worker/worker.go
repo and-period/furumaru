@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -14,9 +15,9 @@ import (
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/line"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
@@ -39,7 +40,6 @@ type Params struct {
 
 type worker struct {
 	now            func() time.Time
-	logger         *zap.Logger
 	waitGroup      *sync.WaitGroup
 	mailer         mailer.Client
 	line           line.Client
@@ -52,18 +52,11 @@ type worker struct {
 }
 
 type options struct {
-	logger      *zap.Logger
 	concurrency int64
 	maxRetries  int64
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithConcurrency(concurrency int64) Option {
 	return func(opts *options) {
@@ -79,7 +72,6 @@ func WithMaxRetries(maxRetries int64) Option {
 
 func NewWorker(params *Params, opts ...Option) Worker {
 	dopts := &options{
-		logger:      zap.NewNop(),
 		concurrency: 1,
 		maxRetries:  3,
 	}
@@ -88,7 +80,6 @@ func NewWorker(params *Params, opts ...Option) Worker {
 	}
 	return &worker{
 		now:            jst.Now,
-		logger:         dopts.logger,
 		waitGroup:      params.WaitGroup,
 		mailer:         params.Mailer,
 		line:           params.Line,
@@ -102,9 +93,9 @@ func NewWorker(params *Params, opts ...Option) Worker {
 }
 
 func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) (err error) {
-	w.logger.Debug("Started Lambda function", zap.Time("now", w.now()))
+	slog.Debug("Started Lambda function", slog.Time("now", w.now()))
 	defer func() {
-		w.logger.Debug("Finished Lambda function", zap.Time("now", w.now()), zap.Error(err))
+		slog.Debug("Finished Lambda function", slog.Time("now", w.now()), log.Error(err))
 	}()
 
 	sm := semaphore.NewWeighted(w.concurrency)
@@ -125,14 +116,14 @@ func (w *worker) Lambda(ctx context.Context, event events.SQSEvent) (err error) 
 func (w *worker) dispatch(ctx context.Context, record events.SQSMessage) error {
 	payload := &entity.WorkerPayload{}
 	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
-		w.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
+		slog.Error("Failed to unmarshall sqs event", slog.Any("event", record), log.Error(err))
 		return nil // リトライ不要なためnilで返す
 	}
 	err := w.run(ctx, payload)
 	if err == nil {
 		return nil
 	}
-	w.logger.Error("Failed to send message", zap.Error(err))
+	slog.Error("Failed to send message", log.Error(err))
 	if w.isRetryable(err) {
 		return err
 	}
@@ -141,7 +132,7 @@ func (w *worker) dispatch(ctx context.Context, record events.SQSMessage) error {
 
 func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 	const types = 4
-	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
+	slog.Debug("Dispatch", slog.String("queueId", payload.QueueID), slog.Any("payload", payload))
 	var mu sync.Mutex
 	var errs error
 	w.waitGroup.Add(types)
@@ -154,7 +145,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to multi send mail", zap.String("queueId", payload.QueueID), zap.Error(err))
+		slog.Error("Failed to multi send mail", slog.String("queueId", payload.QueueID), log.Error(err))
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -168,7 +159,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to create messages", zap.String("queueId", payload.QueueID), zap.Error(err))
+		slog.Error("Failed to create messages", slog.String("queueId", payload.QueueID), log.Error(err))
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -182,7 +173,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to multi send push", zap.String("queueId", payload.QueueID), zap.Error(err))
+		slog.Error("Failed to multi send push", slog.String("queueId", payload.QueueID), log.Error(err))
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -196,7 +187,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		if err == nil {
 			return
 		}
-		w.logger.Error("Failed to send report", zap.String("queueId", payload.QueueID), zap.Error(err))
+		slog.Error("Failed to send report", slog.String("queueId", payload.QueueID), log.Error(err))
 		mu.Lock()
 		errs = errors.Join(errs, err)
 		mu.Unlock()
@@ -216,7 +207,7 @@ func (w *worker) execute(
 		return fmt.Errorf("worker: failed to get received queue: %w", err)
 	}
 	if queue.Done {
-		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID), zap.Int32("notifyType", int32(notifyType)))
+		slog.Info("This queue is already done", slog.String("queueId", payload.QueueID), slog.Int("notifyType", int(notifyType)))
 		return nil
 	}
 	if err := sendFn(ctx, payload); err != nil {

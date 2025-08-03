@@ -2,9 +2,10 @@ package stripe
 
 import (
 	"context"
+	"log/slog"
 
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/stripe/stripe-go/v73"
-	"go.uber.org/zap"
 )
 
 type OrderParams struct {
@@ -36,8 +37,8 @@ func (c *client) AttachPayment(ctx context.Context, customerID, paymentID string
 		return err
 	}
 	if err := c.do(ctx, attachFn); err != nil {
-		c.logger.Error("Failed to attach payment",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to attach payment",
+			slog.String("customerId", customerID), slog.String("paymentMethodId", paymentID), log.Error(err))
 	}
 	return pm, nil
 }
@@ -48,8 +49,8 @@ func (c *client) DetachPayment(ctx context.Context, customerID, paymentID string
 		Params: stripe.Params{Context: ctx},
 	}
 	if _, err := c.paymentmethod.Detach(paymentID, params); err != nil {
-		c.logger.Error("Failed to detach payment",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to detach payment",
+			slog.String("customerId", customerID), slog.String("paymentMethodId", paymentID), log.Error(err))
 		return err
 	}
 	return nil
@@ -64,8 +65,8 @@ func (c *client) UpdateDefaultPayment(ctx context.Context, customerID, paymentID
 		},
 	}
 	if _, err := c.customer.Update(customerID, params); err != nil {
-		c.logger.Error("Failed to update default payment method",
-			zap.String("customerId", customerID), zap.String("paymentMethodId", paymentID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to update default payment method",
+			slog.String("customerId", customerID), slog.String("paymentMethodId", paymentID), log.Error(err))
 		return err
 	}
 	return nil
@@ -93,11 +94,11 @@ func (c *client) Order(ctx context.Context, in *OrderParams) (*stripe.PaymentInt
 		return err
 	}
 	if err := c.do(ctx, orderFn); err != nil {
-		c.logger.Error("Failed to order",
-			zap.String("customerId", in.CustomerID),
-			zap.String("paymentMethodId", in.PaymentMethodID),
-			zap.String("paymentMethodType", string(in.PaymentMethodType)),
-			zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to order",
+			slog.String("customerId", in.CustomerID),
+			slog.String("paymentMethodId", in.PaymentMethodID),
+			slog.String("paymentMethodType", string(in.PaymentMethodType)),
+			log.Error(err))
 		return nil, err
 	}
 	return pi, nil
@@ -124,10 +125,10 @@ func (c *client) GuestOrder(ctx context.Context, in *GuestOrderParams) (*stripe.
 		return err
 	}
 	if err := c.do(ctx, orderFn); err != nil {
-		c.logger.Error("Failed to guest order",
-			zap.String("email", in.Email),
-			zap.String("paymentMethodType", string(in.PaymentMethodType)),
-			zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to guest order",
+			slog.String("email", in.Email),
+			slog.String("paymentMethodType", string(in.PaymentMethodType)),
+			log.Error(err))
 		return nil, err
 	}
 	return pi, nil
@@ -144,7 +145,7 @@ func (c *client) Capture(ctx context.Context, transactionID string) (*stripe.Pay
 		return err
 	}
 	if err := c.do(ctx, captureFn); err != nil {
-		c.logger.Error("Failed to capture", zap.String("transactionId", transactionID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to capture", slog.String("transactionId", transactionID), log.Error(err))
 		return nil, err
 	}
 	return pi, nil
@@ -164,7 +165,7 @@ func (c *client) Cancel(
 		return err
 	}
 	if err := c.do(ctx, cancelFn); err != nil {
-		c.logger.Error("Failed to cancel", zap.String("transactionId", transactionID), zap.Error(err))
+		slog.ErrorContext(ctx, "Failed to cancel", slog.String("transactionId", transactionID), log.Error(err))
 		return nil, err
 	}
 	return pi, nil

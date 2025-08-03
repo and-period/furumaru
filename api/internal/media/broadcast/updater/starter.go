@@ -3,6 +3,7 @@ package updater
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"sync"
 	"time"
@@ -10,12 +11,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 )
 
 type starter struct {
 	now        func() time.Time
-	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
 	db         *database.Database
 	maxRetries int64
@@ -24,7 +24,6 @@ type starter struct {
 
 func NewStarter(params *Params, opts ...Option) Updater {
 	dopts := &options{
-		logger:     zap.NewNop(),
 		maxRetries: 3,
 	}
 	for i := range opts {
@@ -36,7 +35,6 @@ func NewStarter(params *Params, opts ...Option) Updater {
 	}
 	return &starter{
 		now:        jst.Now,
-		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
 		db:         params.Database,
 		maxRetries: dopts.maxRetries,
@@ -45,10 +43,10 @@ func NewStarter(params *Params, opts ...Option) Updater {
 }
 
 func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
-	s.logger.Debug("Received event", zap.Any("payload", payload))
+	slog.Debug("Received event", slog.Any("payload", payload))
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, payload.ScheduleID)
 	if err != nil {
-		s.logger.Error("Not found broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		slog.Error("Not found broadcast", log.Error(err), slog.String("scheduleId", payload.ScheduleID))
 		return nil
 	}
 	dir := fmt.Sprintf(entity.BroadcastArchiveHLSPath, payload.ScheduleID)
@@ -73,9 +71,9 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 		},
 	}
 	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
-		s.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		slog.Error("Failed to update broadcast", log.Error(err), slog.String("scheduleId", payload.ScheduleID))
 		return err
 	}
-	s.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
+	slog.Info("Succeeded to update broadcast", slog.String("scheduleId", payload.ScheduleID))
 	return nil
 }
