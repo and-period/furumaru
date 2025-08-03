@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"strings"
 	"time"
@@ -13,8 +14,8 @@ import (
 	"github.com/and-period/furumaru/api/hack/database-seeds/common"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -31,7 +32,6 @@ var errInvalidCSVFormat = errors.New("messenger: invalid csv format")
 
 type app struct {
 	db     *mysql.Client
-	logger *zap.Logger
 	now    func() time.Time
 	srcDir string
 }
@@ -43,40 +43,39 @@ func NewClient(params *common.Params) (common.Client, error) {
 	}
 	return &app{
 		db:     db,
-		logger: params.Logger,
 		now:    jst.Now,
 		srcDir: params.SrcDir,
 	}, nil
 }
 
 func (a *app) Execute(ctx context.Context) error {
-	a.logger.Info("Executing messengers database seeds...")
+	slog.Info("Executing messengers database seeds...")
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		if err := a.executeMessageTemplates(ectx); err != nil {
 			return fmt.Errorf("failed to execute message_templates table: %w", err)
 		}
-		a.logger.Info("Completed message_templates table")
+		slog.Info("Completed message_templates table")
 		return nil
 	})
 	eg.Go(func() error {
 		if err := a.executePushTemplates(ectx); err != nil {
 			return fmt.Errorf("failed to execute push_templates table: %w", err)
 		}
-		a.logger.Info("Completed push_templates table")
+		slog.Info("Completed push_templates table")
 		return nil
 	})
 	eg.Go(func() error {
 		if err := a.executeReportTemplates(ectx); err != nil {
 			return fmt.Errorf("failed to execute report_templates table: %w", err)
 		}
-		a.logger.Info("Completed report_templates table")
+		slog.Info("Completed report_templates table")
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
 		return fmt.Errorf("failed to execute messengers database seeds: %w", err)
 	}
-	a.logger.Info("Completed messengers database seeds")
+	slog.Info("Completed messengers database seeds")
 	return nil
 }
 
@@ -197,7 +196,7 @@ func (a *app) executeReportTemplates(ctx context.Context) error {
 			}
 			// 形式）"テンプレートID","テンプレート"
 			if len(records) < 2 {
-				a.logger.Debug("debug", zap.Strings("records", records))
+				slog.Debug("debug", log.Strings("records", records))
 				return errInvalidCSVFormat
 			}
 

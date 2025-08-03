@@ -120,7 +120,7 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
@@ -141,7 +141,7 @@ func (a *app) inject(ctx context.Context) error {
 		TablePrefix: "furumaru",
 		TableSuffix: a.Environment,
 	}
-	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
+	params.cache = dynamodb.NewClient(awscfg, dbParams)
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -191,7 +191,7 @@ func (a *app) inject(ctx context.Context) error {
 			Token:     params.slackToken,
 			ChannelID: params.slackChannelID,
 		}
-		params.slack = slack.NewClient(slackParams, slack.WithLogger(params.logger))
+		params.slack = slack.NewClient(slackParams)
 	}
 
 	// KOMOJUの設定
@@ -217,13 +217,13 @@ func (a *app) inject(ctx context.Context) error {
 	params.komoju = komoju.NewKomoju(komojuParams)
 
 	// PostalCodeの設定
-	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
+	params.postalCode = postalcode.NewClient(&http.Client{})
 
 	// Geolocationの設定
 	geolocationParams := &geolocation.Params{
 		APIKey: params.googleMapsPlatformAPIKey,
 	}
-	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	geolocation, err := geolocation.NewClient(geolocationParams)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
 	}

@@ -7,13 +7,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
 func TestClient(t *testing.T) {
 	t.Parallel()
 	h := &http.Client{}
-	cli := NewClient(h, WithLogger(zap.NewNop()), WithMaxRetries(1))
+	cli := NewClient(h, WithMaxRetries(1))
 	assert.NotNil(t, cli)
 }
 
@@ -73,7 +72,7 @@ func TestError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			cli := &client{logger: zap.NewNop()}
+			cli := &client{}
 			err := cli.newError(tt.err)
 			assert.ErrorIs(t, err, tt.expect)
 		})

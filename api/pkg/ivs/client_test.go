@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestClient(t *testing.T) {
@@ -23,7 +22,6 @@ func TestClient(t *testing.T) {
 	},
 		WithMaxRetries(1),
 		WithInterval(time.Millisecond),
-		WithLogger(zap.NewNop()),
 	)
 	assert.NotNil(t, ivs)
 }
@@ -94,7 +92,7 @@ func TestStreamError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			cli := &client{logger: zap.NewNop()}
+			cli := &client{}
 			err := cli.streamError(tt.err)
 			assert.ErrorIs(t, err, tt.expect)
 		})

@@ -66,14 +66,14 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon DynamoDBの設定
 	dbParams := &dynamodb.Params{
 		TablePrefix: "furumaru",
 		TableSuffix: a.Environment,
 	}
-	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
+	params.cache = dynamodb.NewClient(awscfg, dbParams)
 
 	// Uploaderの設定
 	uploaderParams := &uploader.Params{

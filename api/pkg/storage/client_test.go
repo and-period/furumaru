@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestBucket(t *testing.T) {
@@ -20,7 +19,6 @@ func TestBucket(t *testing.T) {
 	bucket := NewBucket(cfg, &Params{},
 		WithMaxRetries(1),
 		WithInterval(time.Millisecond),
-		WithLogger(zap.NewNop()),
 	)
 	assert.NotNil(t, bucket)
 }
@@ -56,7 +54,6 @@ func TestGenerateObjectURL(t *testing.T) {
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
 				region: "ap-northeast-1",
-				logger: &zap.Logger{},
 			}
 			actual, err := client.GenerateObjectURL(tt.path)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -93,7 +90,6 @@ func TestGenerateS3URI(t *testing.T) {
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
 				region: "ap-northeast-1",
-				logger: &zap.Logger{},
 			}
 			actual := client.GenerateS3URI(tt.path)
 			assert.Equal(t, tt.expect, actual)
@@ -139,7 +135,6 @@ func TestReplaceURLToS3URI(t *testing.T) {
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
 				region: "ap-northeast-1",
-				logger: &zap.Logger{},
 			}
 			actual, err := client.ReplaceURLToS3URI(tt.rawURL)
 			assert.Equal(t, tt.hasErr, err != nil, err)
@@ -179,7 +174,6 @@ func TestGetHost(t *testing.T) {
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
 				region: "ap-northeast-1",
-				logger: &zap.Logger{},
 			}
 			actual, err := client.GetHost()
 			assert.Equal(t, tt.hasErr, err != nil, err)

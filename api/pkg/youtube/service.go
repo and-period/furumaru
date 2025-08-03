@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
@@ -32,7 +31,6 @@ type CreateLiveStreamParams struct {
 
 type service struct {
 	service       *youtube.Service
-	logger        *zap.Logger
 	livePublished bool
 }
 
@@ -44,7 +42,6 @@ func (c *client) NewService(ctx context.Context, token *oauth2.Token) (Service, 
 	}
 	return &service{
 		service: srv,
-		logger:  c.logger,
 	}, nil
 }
 
@@ -156,7 +153,6 @@ func (s *service) internalError(err error) error {
 	if err == nil {
 		return nil
 	}
-	s.logger.Debug("Failed to youtube api", zap.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):

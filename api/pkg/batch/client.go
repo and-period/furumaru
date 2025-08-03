@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/batch"
 	"github.com/aws/aws-sdk-go-v2/service/batch/types"
-	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -24,14 +23,12 @@ type SubmitJobParams struct {
 }
 
 type client struct {
-	batch  *batch.Client
-	logger *zap.Logger
+	batch *batch.Client
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -48,17 +45,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(cfg aws.Config, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -70,8 +60,7 @@ func NewClient(cfg aws.Config, opts ...Option) Client {
 		})
 	})
 	return &client{
-		batch:  cli,
-		logger: dopts.logger,
+		batch: cli,
 	}
 }
 

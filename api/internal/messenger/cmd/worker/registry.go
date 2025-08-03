@@ -111,7 +111,7 @@ func (a *app) inject(ctx context.Context) error {
 		FromAddress: a.MailFromAddress,
 		TemplateMap: params.sendGridTemplateMap,
 	}
-	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(params.logger))
+	params.mailer = mailer.NewClient(mailParams)
 
 	// LINEの設定
 	lineParams := &line.Params{
@@ -119,7 +119,7 @@ func (a *app) inject(ctx context.Context) error {
 		Secret: params.lineSecret,
 		RoomID: params.lineRoomID,
 	}
-	linebot, err := line.NewClient(lineParams, line.WithLogger(params.logger))
+	linebot, err := line.NewClient(lineParams)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create line client: %w", err)
 	}
@@ -132,7 +132,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Firebase Cloud Messagingの設定（管理者用）
-	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(params.logger))
+	amessaging, err := messaging.NewClient(ctx, afbapp)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase messaging client for admin: %w", err)
 	}
@@ -145,7 +145,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Firebase Cloud Messagingの設定（利用者用）
-	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(params.logger))
+	umessaging, err := messaging.NewClient(ctx, ufbapp)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create firebase messaging client for user: %w", err)
 	}

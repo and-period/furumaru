@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-	"go.uber.org/zap"
 )
 
 // SendGridError - エラー構造体
@@ -51,7 +52,7 @@ func (c *client) sendEmail(
 	msg := c.newMessage(emailID, fromName, fromAddress, subject, cs, ps)
 	resp, err := c.client.SendWithContext(ctx, msg)
 	if err != nil {
-		c.logger.Error("failed to send email", zap.Error(err))
+		slog.ErrorContext(ctx, "failed to send email", log.Error(err))
 		return c.mailError(err)
 	}
 	if resp.StatusCode < 400 {
@@ -59,7 +60,7 @@ func (c *client) sendEmail(
 	}
 	var out *SendGridError
 	if err = json.Unmarshal([]byte(resp.Body), out); err != nil {
-		c.logger.Error("failed to unmarshal response", zap.String("body", resp.Body), zap.Error(err))
+		slog.ErrorContext(ctx, "failed to unmarshal response", slog.String("body", resp.Body), log.Error(err))
 		return c.mailError(err)
 	}
 	return c.mailError(err)

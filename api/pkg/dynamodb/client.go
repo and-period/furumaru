@@ -5,15 +5,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"go.uber.org/zap"
 )
 
 const defaultDelimiter = "-"
@@ -49,7 +50,6 @@ type Params struct {
 
 type client struct {
 	db          *dynamodb.Client
-	logger      *zap.Logger
 	tablePrefix string
 	tableSuffix string
 	delimiter   string
@@ -58,7 +58,6 @@ type client struct {
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 	delimiter  string
 }
 
@@ -76,12 +75,6 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func WithDelimiter(delim string) Option {
 	return func(opts *options) {
 		opts.delimiter = delim
@@ -92,7 +85,6 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 		delimiter:  defaultDelimiter,
 	}
 	for i := range opts {
@@ -106,7 +98,6 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	})
 	return &client{
 		db:          cli,
-		logger:      dopts.logger,
 		tablePrefix: params.TablePrefix,
 		tableSuffix: params.TableSuffix,
 		delimiter:   dopts.delimiter,
@@ -179,7 +170,7 @@ func (c *client) dbError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to dynamodb api", zap.Error(err))
+	slog.Debug("Failed to dynamodb api", log.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):

@@ -71,17 +71,17 @@ func (a *app) inject(ctx context.Context) error {
 	sfnParams := &sfn.Params{
 		StateMachineARN: a.StepFunctionARN,
 	}
-	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(params.logger))
+	sfnClient := sfn.NewStepFunction(awscfg, sfnParams)
 
 	// AWS Media Liveの設定
-	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
+	mediaLiveClient := medialive.NewMediaLive(awscfg)
 
 	// AWS Media Convertの設定
 	mediaConvertParams := mediaconvert.Params{
 		Endpoint: a.MediaConvertEndpoint,
 		RoleARN:  a.MediaConvertRoleARN,
 	}
-	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(params.logger))
+	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams)
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{

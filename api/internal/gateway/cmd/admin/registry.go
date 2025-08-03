@@ -132,7 +132,7 @@ func (a *app) inject(ctx context.Context) error {
 	tmpStorageParams := &storage.Params{
 		Bucket: a.S3TmpBucket,
 	}
-	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams)
 
 	// Amazon Cognitoの設定
 	adminAuthParams := &cognito.Params{
@@ -140,12 +140,12 @@ func (a *app) inject(ctx context.Context) error {
 		AppClientID: a.CognitoAdminClientID,
 		AuthDomain:  a.CognitoAdminAuthDomain,
 	}
-	params.adminAuth = cognito.NewClient(awscfg, adminAuthParams, cognito.WithLogger(params.logger))
+	params.adminAuth = cognito.NewClient(awscfg, adminAuthParams)
 	userAuthParams := &cognito.Params{
 		UserPoolID:  a.CognitoUserPoolID,
 		AppClientID: a.CognitoUserClientID,
 	}
-	params.userAuth = cognito.NewClient(awscfg, userAuthParams, cognito.WithLogger(params.logger))
+	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
 	// Amazon SQSの設定
 	messengerSQSParams := &sqs.Params{
@@ -162,13 +162,13 @@ func (a *app) inject(ctx context.Context) error {
 		TablePrefix: "furumaru",
 		TableSuffix: a.Environment,
 	}
-	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
+	params.cache = dynamodb.NewClient(awscfg, dbParams)
 
 	// AWS Batchの設定
-	params.batch = batch.NewClient(awscfg, batch.WithLogger(params.logger))
+	params.batch = batch.NewClient(awscfg)
 
 	// AWS MediaLiveの設定
-	params.medialive = medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
+	params.medialive = medialive.NewMediaLive(awscfg)
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -219,7 +219,7 @@ func (a *app) inject(ctx context.Context) error {
 			Token:     params.slackToken,
 			ChannelID: params.slackChannelID,
 		}
-		params.slack = slack.NewClient(slackParams, slack.WithLogger(params.logger))
+		params.slack = slack.NewClient(slackParams)
 	}
 
 	// KOMOJUの設定
@@ -244,13 +244,13 @@ func (a *app) inject(ctx context.Context) error {
 	params.komoju = komoju.NewKomoju(komojuParams)
 
 	// PostalCodeの設定
-	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
+	params.postalCode = postalcode.NewClient(&http.Client{})
 
 	// Geolocationの設定
 	geolocationParams := &geolocation.Params{
 		APIKey: params.googleMapsPlatformAPIKey,
 	}
-	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	geolocation, err := geolocation.NewClient(geolocationParams)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
 	}
@@ -279,7 +279,7 @@ func (a *app) inject(ctx context.Context) error {
 		ClientSecret:    params.googleClientSecret,
 		AuthCallbackURL: a.YoutubeAuthCallbackURL,
 	}
-	params.youtube = youtube.NewClient(youtubeParams, youtube.WithLogger(params.logger))
+	params.youtube = youtube.NewClient(youtubeParams)
 
 	// Serviceの設定
 	mediaService, err := a.newMediaService(params)

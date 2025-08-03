@@ -6,15 +6,12 @@ import (
 	"time"
 
 	dmysql "github.com/go-sql-driver/mysql"
-	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"moul.io/zapgorm2"
 )
 
 func NewTiDBClient(params *Params, opts ...Option) (*Client, error) {
 	options := &options{
-		logger:           zap.NewNop(),
 		now:              time.Now,
 		location:         time.UTC,
 		maxAllowedPacket: 4194304, // 4MiB
@@ -53,7 +50,6 @@ func newTiDBClient(params *Params, opts *options) (*gorm.DB, error) {
 		return nil, err
 	}
 	conf := &gorm.Config{
-		Logger:  zapgorm2.New(opts.logger),
 		NowFunc: opts.now,
 	}
 	dsn := newTiDBDSN(params, opts)

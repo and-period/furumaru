@@ -12,7 +12,6 @@ import (
 	gmysql "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -44,12 +43,11 @@ func newTestDBClient() (*mysql.Client, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
-	logger, _ := zap.NewDevelopment()
 	switch os.Getenv("DB_DRIVER") {
 	case "mysql":
-		return mysql.NewClient(params, mysql.WithLogger(logger))
+		return mysql.NewClient(params)
 	case "tidb":
-		return mysql.NewTiDBClient(params, mysql.WithLogger(logger))
+		return mysql.NewTiDBClient(params)
 	default:
 		return nil, fmt.Errorf("unsupported driver: %s", os.Getenv("DB_DRIVER"))
 	}

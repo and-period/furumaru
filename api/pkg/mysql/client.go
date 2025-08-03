@@ -10,10 +10,8 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	dmysql "github.com/go-sql-driver/mysql"
-	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"moul.io/zapgorm2"
 )
 
 // Client - DB操作用のクライアント構造体
@@ -32,7 +30,6 @@ type Params struct {
 }
 
 type options struct {
-	logger               *zap.Logger
 	now                  func() time.Time
 	location             *time.Location
 	charset              string
@@ -46,12 +43,6 @@ type options struct {
 }
 
 type Option func(opts *options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithNow(now func() time.Time) Option {
 	return func(opts *options) {
@@ -116,7 +107,6 @@ func WithMaxConnIdleTime(d time.Duration) Option {
 // NewClient - DBクライアントの構造体
 func NewClient(params *Params, opts ...Option) (*Client, error) {
 	dopts := &options{
-		logger:               zap.NewNop(),
 		now:                  time.Now,
 		location:             time.UTC,
 		charset:              "utf8mb4",
@@ -234,7 +224,6 @@ func Retryable(err error) bool {
 
 func newDBClient(params *Params, opts *options) (*gorm.DB, error) {
 	conf := &gorm.Config{
-		Logger:  zapgorm2.New(opts.logger),
 		NowFunc: opts.now,
 	}
 	dsn := newDSN(params, opts)

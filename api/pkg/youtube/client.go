@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	gauth "google.golang.org/api/oauth2/v2"
 	youtube "google.golang.org/api/youtube/v3"
@@ -52,33 +51,21 @@ type Params struct {
 }
 
 type client struct {
-	logger          *zap.Logger
 	clientID        string
 	clientSecret    string
 	authCallbackURL string
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(params *Params, opts ...Option) Youtube {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &client{
-		logger:          dopts.logger,
 		clientID:        params.ClientID,
 		clientSecret:    params.ClientSecret,
 		authCallbackURL: params.AuthCallbackURL,

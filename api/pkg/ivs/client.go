@@ -5,13 +5,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
-	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -51,14 +52,12 @@ type Params struct {
 
 type client struct {
 	ivs                       *ivs.Client
-	logger                    *zap.Logger
 	recordingConfigurationArn *string
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -75,17 +74,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -98,7 +90,6 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	})
 	return &client{
 		ivs:                       cli,
-		logger:                    dopts.logger,
 		recordingConfigurationArn: aws.String(params.RecordingConfigurationArn),
 	}
 }
@@ -107,7 +98,7 @@ func (c *client) streamError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to amazon ivs api", zap.Error(err))
+	slog.Debug("Failed to amazon ivs api", log.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):

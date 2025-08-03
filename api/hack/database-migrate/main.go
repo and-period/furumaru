@@ -13,6 +13,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,7 +25,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	_ "github.com/go-sql-driver/mysql"
-	"go.uber.org/zap"
 )
 
 const (
@@ -55,7 +55,6 @@ var (
 )
 
 type app struct {
-	logger   *zap.Logger
 	host     string
 	port     string
 	username string
@@ -124,14 +123,7 @@ func setup(ctx context.Context) (*app, error) {
 	tidbUsername = secrets["username"]
 	tidbPassword = secrets["password"]
 
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(logLevel))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create logger: %w", err)
-	}
-
 	return &app{
-		logger:   logger,
 		host:     tidbHost,
 		port:     tidbPort,
 		username: tidbUsername,
@@ -176,20 +168,20 @@ func (a *app) run(ctx context.Context) error {
 		return fmt.Errorf("failed to setup. database=%s: %w", migrateDB, err)
 	}
 
-	a.logger.Info("start to apply schema")
+	slog.Info("start to apply schema")
 
 	// データベースごとにDDLを適用
 	for _, database := range databases {
-		a.logger.Info("start to apply schema", zap.String("database", database))
+		slog.Info("start to apply schema", slog.String("database", database))
 
 		if err := a.execute(ctx, migrate, database); err != nil {
 			return fmt.Errorf("failed to execute. database=%s: %w", database, err)
 		}
 
-		a.logger.Info("finish to apply schema", zap.String("database", database))
+		slog.Info("finish to apply schema", slog.String("database", database))
 	}
 
-	a.logger.Info("finish to apply schema")
+	slog.Info("finish to apply schema")
 	return nil
 }
 
@@ -205,7 +197,7 @@ func (a *app) setup(database string) (*mysql.Client, error) {
 		Password: a.password,
 		Database: database,
 	}
-	return mysql.NewTiDBClient(params, mysql.WithLogger(a.logger))
+	return mysql.NewTiDBClient(params)
 }
 
 func (a *app) begin(ctx context.Context, db *mysql.Client) (*sql.Tx, error) {
@@ -261,24 +253,24 @@ func (a *app) execute(ctx context.Context, migrate *mysql.Client, database strin
 	for i := range schemas {
 		isApplied, err := a.getSchema(ctx, migrateTx, schemas[i])
 		if err != nil {
-			a.logger.Error("failed to get schema", zap.Error(err))
+			slog.Error("failed to get schema", log.Error(err))
 			return a.rollback(tx, err)
 		}
 		if isApplied {
-			a.logger.Info("already applied schema", zap.String("filename", schemas[i].filename))
+			slog.Info("already applied schema", slog.String("filename", schemas[i].filename))
 			continue
 		}
 
-		a.logger.Info("applying schema...", zap.String("filename", schemas[i].filename))
+		slog.Info("applying schema...", slog.String("filename", schemas[i].filename))
 		if err := a.applySchema(ctx, migrateTx, tx, schemas[i]); err != nil {
-			a.logger.Error("failed to apply schema", zap.Error(err))
+			slog.Error("failed to apply schema", log.Error(err))
 			return a.rollback(tx, err)
 		}
-		a.logger.Info("applied schema", zap.String("filename", schemas[i].filename))
+		slog.Info("applied schema", slog.String("filename", schemas[i].filename))
 	}
 
 	if err := tx.Commit(); err != nil {
-		a.logger.Error("failed to commit transaction", zap.String("database", database), zap.Error(err))
+		slog.Error("failed to commit transaction", slog.String("database", database), log.Error(err))
 		return a.rollback(tx, err)
 	}
 
@@ -292,7 +284,7 @@ func (a *app) getSchema(ctx context.Context, tx *sql.Tx, schema *schema) (bool, 
 	const format = "SELECT `database`, `version` FROM `%s` WHERE `database` = '%s' AND `version` = '%s' LIMIT 1"
 	stmt := fmt.Sprintf(format, schemaTable, schema.database, schema.version)
 	rs, err := tx.QueryContext(ctx, stmt)
-	a.logger.Debug("get schema", zap.String("stmt", stmt), zap.Error(err))
+	slog.Debug("get schema", slog.String("stmt", stmt), log.Error(err))
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
