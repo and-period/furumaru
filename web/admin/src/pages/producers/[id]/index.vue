@@ -208,24 +208,47 @@ catch (err) {
 </script>
 
 <template>
-  <templates-producer-edit
-    v-model:form-data="formData"
-    :loading="isLoading()"
-    :is-alert="isShow"
-    :alert-type="alertType"
-    :alert-text="alertText"
-    :thumbnail-upload-status="thumbnailUploadStatus"
-    :header-upload-status="headerUploadStatus"
-    :promotion-video-upload-status="promotionVideoUploadStatus"
-    :bonus-video-upload-status="bonusVideoUploadStatus"
-    :search-loading="searchAddress.loading.value"
-    :search-error-message="searchAddress.errorMessage.value"
-    :producer="producer"
-    @click:search-address="handleSearchAddress"
-    @update:thumbnail-file="handleUpdateThumbnail"
-    @update:header-file="handleUpdateHeader"
-    @update:promotion-video="handleUpdatePromotionVideo"
-    @update:bonus-video="handleUpdateBonusVideo"
-    @submit="handleSubmit"
-  />
+  <div>
+    <templates-producer-edit
+      v-model:form-data="formData"
+      :loading="isLoading()"
+      :is-alert="isShow"
+      :alert-type="alertType"
+      :alert-text="alertText"
+      :thumbnail-upload-status="thumbnailUploadStatus"
+      :header-upload-status="headerUploadStatus"
+      :promotion-video-upload-status="promotionVideoUploadStatus"
+      :bonus-video-upload-status="bonusVideoUploadStatus"
+      :search-loading="searchAddress.loading.value"
+      :search-error-message="searchAddress.errorMessage.value"
+      :producer="producer"
+      @click:search-address="handleSearchAddress"
+      @update:thumbnail-file="handleUpdateThumbnail"
+      @update:header-file="handleUpdateHeader"
+      @update:promotion-video="handleUpdatePromotionVideo"
+      @update:bonus-video="handleUpdateBonusVideo"
+      @submit="handleSubmit"
+    />
+    <div
+      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
+    >
+      <div class="d-inline-flex ga-4">
+        <v-btn
+          color="secondary"
+          variant="outlined"
+          @click="$router.back()"
+        >
+          戻る
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          type="submit"
+          form="update-producer-form"
+        >
+          更新
+        </v-btn>
+      </div>
+    </div>
+  </div>
 </template>

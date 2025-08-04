@@ -344,6 +344,8 @@ const onSubmit = async (): Promise<void> => {
     block
     variant="outlined"
     @click="onSubmit"
+    style="display: none;"
+    ref="hiddenSubmitButton"
   >
     保存する
   </v-btn>

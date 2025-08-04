@@ -638,11 +638,12 @@ const onSubmitRefund = (): void => {
 </script>
 
 <template>
-  <v-alert
-    v-show="props.isAlert"
-    :type="props.alertType"
-    v-text="props.alertText"
-  />
+  <div class="mb-16">
+    <v-alert
+      v-show="props.isAlert"
+      :type="props.alertType"
+      v-text="props.alertText"
+    />
 
   <v-dialog
     v-model="cancelDialogValue"
@@ -1121,75 +1122,8 @@ const onSubmitRefund = (): void => {
       md="12"
       lg="8"
     >
-      <v-btn
-        v-show="isPreservable()"
-        :loading="loading"
-        variant="outlined"
-        color="info"
-        class="mr-2"
-        @click="onSubmitSaveDraft()"
-      >
-        <v-icon
-          start
-          :icon="mdiPlus"
-        />
-        下書きを保存
-      </v-btn>
-      <v-btn
-        v-show="isAuthorized()"
-        :loading="loading"
-        variant="outlined"
-        color="primary"
-        class="mr-2"
-        @click="onSubmitCapture()"
-      >
-        <v-icon
-          start
-          :icon="mdiPlus"
-        />
-        注文を確定
-      </v-btn>
-      <v-btn
-        v-show="isCompletable()"
-        :loading="loading"
-        variant="outlined"
-        color="primary"
-        class="mr-2"
-        @click="onSubmitComplete()"
-      >
-        <v-icon
-          start
-          :icon="mdiPlus"
-        />
-        {{ props.order.type === OrderType.PRODUCT ? '発送完了を通知' : 'レビュー依頼を送信' }}
-      </v-btn>
-      <v-btn
-        v-show="isCancelable()"
-        :loading="loading"
-        variant="outlined"
-        color="error"
-        class="mr-2"
-        @click="onClickOpenCancelDialog()"
-      >
-        <v-icon
-          start
-          :icon="mdiDelete"
-        />
-        注文をキャンセル
-      </v-btn>
-      <v-btn
-        v-show="isRefundable()"
-        :loading="loading"
-        variant="outlined"
-        color="error"
-        @click="onClickOpenRefundDialog"
-      >
-        <v-icon
-          start
-          :icon="mdiDelete"
-        />
-        返金
-      </v-btn>
+      <!-- Action buttons moved to page level -->
     </v-col>
   </v-row>
+  </div>
 </template>
