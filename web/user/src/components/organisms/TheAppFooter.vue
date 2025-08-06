@@ -15,6 +15,36 @@ defineProps<Props>()
     </div>
     <div class="bg-green py-5 text-white">
       <the-stack class="gap-y-4">
+        <!-- 会社概要 -->
+        <div class="md:w-[600px] w-full mx-auto">
+          <dl>
+            <div class="grid grid-cols-3 gap-4">
+              <dt class="text-right">
+                【会社名】
+              </dt>
+              <dd class="text-left col-span-2">
+                株式会社アンドピリオド
+              </dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <dt class="text-right">
+                【住所】
+              </dt>
+              <dd class="text-left col-span-2">
+                広島県豊田郡大崎上島町中野5748-2
+              </dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <dt class="text-right">
+                【電話番号】
+              </dt>
+              <dd class="text-left col-span-2">
+                050-3700-7904
+              </dd>
+            </div>
+          </dl>
+        </div>
+
         <p class="text-lg font-bold tracking-widest">
           Follow us !
         </p>

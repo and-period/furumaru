@@ -55,9 +55,9 @@ const circleItems = computed<CircleItem[]>(() => [
       class="flex flex-wrap items-center justify-center gap-x-[120px] pt-[80px] tracking-wider"
     >
       <div class="mb-10 text-main">
-        <p class="mb-12 text-[32px] font-semibold">
+        <h1 class="mb-12 text-[32px] font-semibold whitespace-break-spaces">
           {{ t("leadSentence") }}
-        </p>
+        </h1>
         <p
           class="whitespace-pre-wrap text-xl leading-10"
           v-html="t('description')"
