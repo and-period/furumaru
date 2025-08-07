@@ -1,0 +1,716 @@
+components:
+  schemas:
+    request.AddCartItemRequest:
+      properties:
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 数量
+          minimum: 1
+          type: integer
+      required:
+      - productId
+      type: object
+    request.CheckoutCreditCard:
+      description: クレジットカード決済情報
+      properties:
+        month:
+          description: 有効期限（月）
+          type: integer
+        name:
+          description: カード名義
+          type: string
+        number:
+          description: カード番号
+          type: string
+        verificationValue:
+          description: セキュリティコード
+          type: string
+        year:
+          description: 有効期限（年）
+          type: integer
+      type: object
+    request.CheckoutRequest:
+      properties:
+        boxNumber:
+          description: 箱の通番（箱単位で購入する場合）
+          type: integer
+        callbackUrl:
+          description: 決済完了後のリダイレクト先URL
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        creditCard:
+          $ref: '#/components/schemas/request.CheckoutCreditCard'
+        paymentMethod:
+          description: 支払い方法
+          type: integer
+        promotionCode:
+          description: プロモーションコード
+          type: string
+        requestId:
+          description: 支払いキー(重複判定用)
+          type: string
+        total:
+          description: 支払い合計金額（誤り検出用）
+          type: integer
+      type: object
+    request.CreateAuthUserRequest:
+      properties:
+        authToken:
+          description: LINEの認証トークン
+          type: string
+        firstname:
+          description: 名
+          maxLength: 16
+          type: string
+        firstnameKana:
+          description: 名 かな
+          maxLength: 32
+          type: string
+        lastCheckInAt:
+          description: 最新のチェックイン日時
+          minimum: 0
+          type: integer
+        lastname:
+          description: 姓
+          maxLength: 16
+          type: string
+        lastnameKana:
+          description: 姓 かな
+          maxLength: 32
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+      required:
+      - authToken
+      - firstname
+      - firstnameKana
+      - lastname
+      - lastnameKana
+      - phoneNumber
+      type: object
+    request.SignInRequest:
+      properties:
+        authToken:
+          description: LINEの認証トークン
+          type: string
+      required:
+      - authToken
+      type: object
+    request.UpdateAuthUserCheckInRequest:
+      properties:
+        lastCheckInAt:
+          description: 最新のチェックイン日時
+          minimum: 0
+          type: integer
+      type: object
+    response.AuthResponse:
+      properties:
+        accessToken:
+          description: アクセストークン
+          type: string
+        expiresIn:
+          description: 有効期限
+          type: integer
+        tokenType:
+          description: トークン種別
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+      type: object
+    response.AuthUserResponse:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        id:
+          description: ユーザーID
+          type: string
+        lastCheckInAt:
+          description: 最新のチェックイン日時
+          type: integer
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+      type: object
+    response.Cart:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        items:
+          description: 箱の商品一覧
+          items:
+            $ref: '#/components/schemas/response.CartItem'
+          type: array
+          uniqueItems: false
+        number:
+          description: 箱の通番
+          type: integer
+        rate:
+          description: 箱の占有率
+          type: integer
+        size:
+          description: 箱のサイズ
+          type: integer
+        type:
+          description: 箱の種別
+          type: integer
+      type: object
+    response.CartItem:
+      properties:
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 数量
+          type: integer
+      type: object
+    response.CartResponse:
+      properties:
+        carts:
+          description: カート一覧
+          items:
+            $ref: '#/components/schemas/response.Cart'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+      type: object
+    response.CheckoutResponse:
+      properties:
+        url:
+          description: 遷移先URL
+          type: string
+      type: object
+    response.CheckoutStateResponse:
+      properties:
+        orderId:
+          description: 注文履歴ID
+          type: string
+        status:
+          description: 注文ステータス
+          type: integer
+      type: object
+    response.Coordinator:
+      properties:
+        businessDays:
+          description: 営業曜日(発送可能日)
+          items:
+            type: integer
+          type: array
+          uniqueItems: false
+        city:
+          description: 市区町村
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        id:
+          description: コーディネータID
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          type: string
+        marcheName:
+          description: マルシェ名
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        productTypeIds:
+          description: 取り扱い品目一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        profile:
+          description: 紹介文
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 表示名
+          type: string
+      type: object
+    response.Product:
+      properties:
+        box60Rate:
+          description: 箱の占有率(サイズ:60)
+          type: integer
+        box80Rate:
+          description: 箱の占有率(サイズ:80)
+          type: integer
+        box100Rate:
+          description: 箱の占有率(サイズ:100)
+          type: integer
+        categoryId:
+          description: 商品種別ID
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        deliveryType:
+          description: 配送方法
+          type: integer
+        description:
+          description: 商品説明
+          type: string
+        endAt:
+          description: 販売終了日時
+          type: integer
+        expirationDate:
+          description: 賞味期限(単位:日)
+          type: integer
+        id:
+          description: 商品ID
+          type: string
+        inventory:
+          description: 在庫数
+          type: integer
+        itemDescription:
+          description: 数量単位説明
+          type: string
+        itemUnit:
+          description: 数量単位
+          type: string
+        media:
+          description: メディア一覧
+          items:
+            $ref: '#/components/schemas/response.ProductMedia'
+          type: array
+          uniqueItems: false
+        name:
+          description: 商品名
+          type: string
+        originCity:
+          description: 原産地(市区町村)
+          type: string
+        originPrefecture:
+          description: 原産地(都道府県)
+          type: string
+        price:
+          description: 販売価格(税込)
+          type: integer
+        producerId:
+          description: 生産者ID
+          type: string
+        productTagIds:
+          description: 商品タグID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        productTypeId:
+          description: 品目ID
+          type: string
+        rate:
+          $ref: '#/components/schemas/response.ProductRate'
+        recommendedPoint1:
+          description: おすすめポイント1
+          type: string
+        recommendedPoint2:
+          description: おすすめポイント2
+          type: string
+        recommendedPoint3:
+          description: おすすめポイント3
+          type: string
+        startAt:
+          description: 販売開始日時
+          type: integer
+        status:
+          description: 販売状況
+          type: integer
+        storageMethodType:
+          description: 保存方法
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        weight:
+          description: 重量(kg,少数第一位まで)
+          type: number
+      type: object
+    response.ProductMedia:
+      properties:
+        isThumbnail:
+          description: サムネイルとして使用
+          type: boolean
+        url:
+          description: メディアURL
+          type: string
+      type: object
+    response.ProductRate:
+      description: 商品評価
+      properties:
+        average:
+          description: 平均評価
+          type: number
+        count:
+          description: 合計評価数
+          type: integer
+        detail:
+          additionalProperties:
+            type: integer
+          description: 評価詳細
+          type: object
+      type: object
+    util.ErrorResponse:
+      properties:
+        detail:
+          description: エラー詳細
+          type: string
+        message:
+          description: エラー概要
+          type: string
+        status:
+          description: ステータスコード
+          type: integer
+      type: object
+  securitySchemes:
+    bearerauth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+externalDocs:
+  description: ""
+  url: ""
+info:
+  description: キャンプ予約サイト（源流の里）向けのふるマルAPIです。（公開エンドポイントについてはふるマルAPI - 購入者向けを参照してください）
+  title: ふるマル API - キャンプ予約サイト（源流の里）用
+  version: ""
+openapi: 3.1.0
+paths:
+  /natureresort/auth:
+    delete:
+      description: ふるマルからサインアウトします。
+      responses:
+        "204":
+          description: No Content
+      security:
+      - bearerauth: []
+      summary: サインアウト
+      tags:
+      - Auth
+    post:
+      description: LINEの認証トークンを渡すことで、ふるマルへサインインします。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.SignInRequest'
+        description: サインイン
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 退会済み
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: ユーザーが存在しない
+      summary: サインイン
+      tags:
+      - Auth
+  /natureresort/carts:
+    get:
+      description: カートの内容を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CartResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: カート取得
+      tags:
+      - Cart
+  /natureresort/carts/-/items:
+    post:
+      description: カートに商品を追加します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.AddCartItemRequest'
+        description: カートに追加リクエスト
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: カートに追加
+      tags:
+      - Cart
+  /natureresort/carts/-/items/:productId:
+    delete:
+      description: カートから商品を削除します。
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: カートから削除
+      tags:
+      - Cart
+  /natureresort/checkouts:
+    post:
+      description: 商品を購入します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CheckoutRequest'
+        description: チェックアウト情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      summary: 購入する
+      tags:
+      - Checkout
+  /natureresort/checkouts/{transactionId}:
+    get:
+      description: 支払い状態を取得します。
+      parameters:
+      - description: 取引ID
+        in: path
+        name: transactionId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutStateResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 取引が見つからない
+      security:
+      - bearerauth: []
+      summary: 支払い状態取得
+      tags:
+      - Checkout
+  /natureresort/users/me:
+    get:
+      description: ユーザーの詳細情報を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザー情報取得
+      tags:
+      - AuthUser
+    post:
+      description: ユーザーの詳細情報を登録します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAuthUserRequest'
+        description: ユーザー情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: ユーザーが既に存在する
+      summary: ユーザー情報登録
+      tags:
+      - AuthUser
+  /natureresort/users/me/check-in:
+    put:
+      description: ユーザーの最新のチェックイン日時を更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserCheckInRequest'
+        description: 最新のチェックイン情報
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 更新日時が不正
+      security:
+      - bearerauth: []
+      summary: ユーザー情報更新
+      tags:
+      - AuthUser
+servers:
+- description: 検証環境
+  url: https://api.furumaru-stg.and-period.work
+- description: 本番環境
+  url: https://api.furumaru.and-period.co.jp

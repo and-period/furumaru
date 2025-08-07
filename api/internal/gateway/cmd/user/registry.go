@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	natureresort "github.com/and-period/furumaru/api/internal/gateway/user/natureresort/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
@@ -251,10 +252,17 @@ func (a *app) inject(ctx context.Context) error {
 		Messenger:  messengerService,
 		Media:      mediaService,
 	}
+	natureResortParams := &natureresort.Params{
+		WaitGroup: params.waitGroup,
+	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
 		v1.WithCookieBaseDomain(a.CookieBaseDomain),
 		v1.WithSentry(params.sentry),
+	)
+	a.natureresort = natureresort.NewHandler(natureResortParams,
+		natureresort.WithEnvironment(a.Environment),
+		natureresort.WithSentry(params.sentry),
 	)
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
