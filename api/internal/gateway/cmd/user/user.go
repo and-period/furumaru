@@ -28,6 +28,7 @@ type app struct {
 	slack                        slack.Client
 	newRelic                     *newrelic.Application
 	v1                           gateway.Handler
+	natureresort                 gateway.Handler
 	AppName                      string  `default:"user-gateway"   envconfig:"APP_NAME"`
 	Environment                  string  `default:"none"           envconfig:"ENV"`
 	Port                         int64   `default:"8080"           envconfig:"PORT"`

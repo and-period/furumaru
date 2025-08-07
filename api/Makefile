@@ -14,6 +14,12 @@ mockgen: ## ユニットテストで使用するモックの生成
 	rm -rf ./mock
 	go generate ./...
 
+docs:
+	go tool swag init --v3.1 -d ./internal/gateway/${SERVICE}/handler -g ./handler.go --pd -ot yaml -o ./../docs/swagger/gen/${SERVICE}
+
+docs-all:
+	$(MAKE) docs SERVICE=user/natureresort
+
 fmt:
 	go tool golangci-lint fmt -c .golangci.yaml --diff ./pkg/... ./internal/...
 

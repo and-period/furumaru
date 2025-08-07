@@ -66,7 +66,24 @@ require (
 	gorm.io/gorm v1.30.0
 )
 
-require go.uber.org/zap v1.27.0 // indirect
+require (
+	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
+	github.com/go-openapi/jsonpointer v0.21.0 // indirect
+	github.com/go-openapi/jsonreference v0.20.2 // indirect
+	github.com/go-openapi/spec v0.20.9 // indirect
+	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/josharian/intern v1.0.0 // indirect
+	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/sv-tools/openapi v0.2.1 // indirect
+	github.com/swaggo/swag/v2 v2.0.0-rc4 // indirect
+	github.com/urfave/cli/v2 v2.25.1 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	go.uber.org/zap v1.27.0 // indirect
+	sigs.k8s.io/yaml v1.3.0 // indirect
+)
 
 require (
 	4d63.com/gocheckcompilerdirectives v1.3.0 // indirect
@@ -363,6 +380,7 @@ require (
 tool (
 	github.com/air-verse/air
 	github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+	github.com/swaggo/swag/v2/cmd/swag
 	go.uber.org/mock/mockgen
 	gotest.tools/gotestsum
 	mvdan.cc/gofumpt
