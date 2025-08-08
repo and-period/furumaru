@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { FmProductItem } from '@furumaru/shared';
+
 import liff from '@line/liff';
 // Import runtime config for env variables
 const runtimeConfig = useRuntimeConfig();
@@ -23,6 +25,13 @@ onMounted(async () => {
     <h2 class="mt-6 font-semibold font-inter text-center w-full">
       商品一覧
     </h2>
-    <div />
+    <div class="grid grid-cols-2">
+      <fm-product-item
+        name="商品1"
+        :price="3000"
+        :stoke="15"
+        thumbnail-url="https://assets.furumaru.and-period.co.jp/products/media/image/sUJfjmMoMvGwjht9QgdWZK.jpg"
+      />
+    </div>
   </div>
 </template>
