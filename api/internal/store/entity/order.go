@@ -17,15 +17,6 @@ const (
 	OrderTypeExperience OrderType = 2 // 体験
 )
 
-// AggregateOrderPeriodType - 注文集計期間種別
-type AggregateOrderPeriodType string
-
-const (
-	AggregateOrderPeriodTypeDay   AggregateOrderPeriodType = "day"   // 日
-	AggregateOrderPeriodTypeWeek  AggregateOrderPeriodType = "week"  // 週
-	AggregateOrderPeriodTypeMonth AggregateOrderPeriodType = "month" // 月
-)
-
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -41,26 +32,46 @@ const (
 	OrderStatusFailed    OrderStatus = 8 // 失敗
 )
 
+// OrderShippingType - 発送方法
+type OrderShippingType int32
+
+const (
+	OrderShippingTypeUnknown  OrderShippingType = 0
+	OrderShippingTypeNone     OrderShippingType = 1 // 発送なし
+	OrderShippingTypeStandard OrderShippingType = 2 // 通常配送
+	OrderShippingTypePickup   OrderShippingType = 3 // 店舗受取
+)
+
+// AggregateOrderPeriodType - 注文集計期間種別
+type AggregateOrderPeriodType string
+
+const (
+	AggregateOrderPeriodTypeDay   AggregateOrderPeriodType = "day"   // 日
+	AggregateOrderPeriodTypeWeek  AggregateOrderPeriodType = "week"  // 週
+	AggregateOrderPeriodTypeMonth AggregateOrderPeriodType = "month" // 月
+)
+
 // Order - 注文履歴情報
 type Order struct {
 	OrderPayment      `gorm:"-"`
 	OrderFulfillments `gorm:"-"`
 	OrderItems        `gorm:"-"`
 	OrderExperience   `gorm:"-"`
-	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
-	UserID            string         `gorm:""`                     // ユーザーID
-	SessionID         string         `gorm:""`                     // 注文時セッションID
-	ShopID            string         `gorm:"default:null"`         // 店舗ID
-	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
-	PromotionID       string         `gorm:"default:null"`         // プロモーションID
-	ManagementID      int64          `gorm:""`                     // 管理番号
-	Type              OrderType      `gorm:""`                     // 注文種別
-	Status            OrderStatus    `gorm:""`                     // 注文ステータス
-	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
-	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
-	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
-	CompletedAt       time.Time      `gorm:"default:null"`         // 対応完了日時
-	DeletedAt         gorm.DeletedAt `gorm:"default:null"`         // 削除日時
+	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
+	UserID            string            `gorm:""`                     // ユーザーID
+	SessionID         string            `gorm:""`                     // 注文時セッションID
+	ShopID            string            `gorm:"default:null"`         // 店舗ID
+	CoordinatorID     string            `gorm:""`                     // 注文受付担当者ID
+	PromotionID       string            `gorm:"default:null"`         // プロモーションID
+	ManagementID      int64             `gorm:""`                     // 管理番号
+	Type              OrderType         `gorm:""`                     // 注文種別
+	Status            OrderStatus       `gorm:""`                     // 注文ステータス
+	ShippingMessage   string            `gorm:"default:null"`         // 発送時のメッセージ
+	ShippingType      OrderShippingType `gorm:""`                     // 発送方法
+	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
+	CompletedAt       time.Time         `gorm:"default:null"`         // 対応完了日時
+	DeletedAt         gorm.DeletedAt    `gorm:"default:null"`         // 削除日時
 }
 
 type Orders []*Order
@@ -140,6 +151,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 		PromotionID:       promotionID,
 		Type:              OrderTypeProduct,
 		Status:            OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
+		ShippingType:      OrderShippingTypeStandard,
 		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil
 }
@@ -192,6 +204,7 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 		PromotionID:     promotionID,
 		Type:            OrderTypeExperience,
 		Status:          OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
+		ShippingType:    OrderShippingTypeNone,
 		ShippingMessage: "",
 	}, nil
 }
