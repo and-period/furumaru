@@ -10,6 +10,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"time"
 
@@ -18,10 +19,8 @@ import (
 	"github.com/and-period/furumaru/api/hack/database-seeds/store"
 	"github.com/and-period/furumaru/api/hack/database-seeds/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -39,7 +38,6 @@ var (
 )
 
 type app struct {
-	logger    *zap.Logger
 	messenger common.Client
 	store     common.Client
 	user      common.Client
@@ -101,15 +99,8 @@ func setup(ctx context.Context) (*app, error) {
 	tidbUsername = secrets["username"]
 	tidbPassword = secrets["password"]
 
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(logLevel))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create logger: %w", err)
-	}
-
 	// モジュールごとのクライアント生成
 	params := &common.Params{
-		Logger:     logger,
 		DBHost:     tidbHost,
 		DBPort:     tidbPort,
 		DBUsername: tidbUsername,
@@ -130,7 +121,6 @@ func setup(ctx context.Context) (*app, error) {
 	}
 
 	app := &app{
-		logger:    logger,
 		messenger: messenger,
 		store:     store,
 		user:      user,
@@ -139,7 +129,7 @@ func setup(ctx context.Context) (*app, error) {
 }
 
 func (a *app) run(ctx context.Context) error {
-	a.logger.Info("Database seeds will begin")
+	slog.Info("Database seeds will begin")
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		return a.user.Execute(ectx)
@@ -153,6 +143,6 @@ func (a *app) run(ctx context.Context) error {
 	if err := eg.Wait(); err != nil {
 		return fmt.Errorf("failed to execute database seeds: %w", err)
 	}
-	a.logger.Info("Database seeds has completed")
+	slog.Info("Database seeds has completed")
 	return nil
 }

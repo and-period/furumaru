@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"sync"
@@ -15,10 +16,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -55,7 +56,6 @@ type handler struct {
 	cookieBaseDomain string
 	now              func() time.Time
 	generateID       func() string
-	logger           *zap.Logger
 	sentry           sentry.Client
 	waitGroup        *sync.WaitGroup
 	sharedGroup      *singleflight.Group
@@ -70,7 +70,6 @@ type options struct {
 	appName          string
 	env              string
 	cookieBaseDomain string
-	logger           *zap.Logger
 	sentry           sentry.Client
 }
 
@@ -94,12 +93,6 @@ func WithCookieBaseDomain(domain string) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func WithSentry(sentry sentry.Client) Option {
 	return func(opts *options) {
 		opts.sentry = sentry
@@ -111,7 +104,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		appName:          "user-gateway",
 		env:              "",
 		cookieBaseDomain: "",
-		logger:           zap.NewNop(),
 		sentry:           sentry.NewFixedMockClient(),
 	}
 	for i := range opts {
@@ -129,7 +121,6 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
 		},
-		logger:      dopts.logger,
 		sentry:      dopts.sentry,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
@@ -289,7 +280,7 @@ func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
 	go func() {
 		defer h.waitGroup.Done()
 		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
-			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
+			slog.Error("Failed to create broadcast viewer log", log.Error(err))
 		}
 	}()
 	ctx.Next()
@@ -317,7 +308,7 @@ func (h *handler) createVideoViewerLog(ctx *gin.Context) {
 	go func() {
 		defer h.waitGroup.Done()
 		if err := h.media.CreateVideoViewerLog(context.Background(), in); err != nil {
-			h.logger.Error("Failed to create video viewer log", zap.Error(err))
+			slog.Error("Failed to create video viewer log", log.Error(err))
 		}
 	}()
 	ctx.Next()

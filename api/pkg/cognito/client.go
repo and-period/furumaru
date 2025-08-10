@@ -5,13 +5,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -109,7 +110,6 @@ type Params struct {
 
 type client struct {
 	cognito         *cognito.Client
-	logger          *zap.Logger
 	userPoolID      *string
 	appClientID     *string
 	appClientSecret *string
@@ -119,7 +119,6 @@ type client struct {
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -136,17 +135,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -163,7 +155,6 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 		appClientID:     aws.String(params.AppClientID),
 		appClientSecret: aws.String(params.AppClientSecret),
 		authDomain:      params.AuthDomain,
-		logger:          dopts.logger,
 	}
 }
 
@@ -171,7 +162,7 @@ func (c *client) authError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to cognito api", zap.Error(err))
+	slog.Debug("Failed to cognito api", log.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):

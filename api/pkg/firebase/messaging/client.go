@@ -5,10 +5,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 )
 
 var (
@@ -32,25 +33,14 @@ type Client interface {
 
 type client struct {
 	messageing *messaging.Client
-	logger     *zap.Logger
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(opts *options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(ctx context.Context, app *firebase.App, opts ...Option) (Client, error) {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
@@ -60,7 +50,6 @@ func NewClient(ctx context.Context, app *firebase.App, opts ...Option) (Client, 
 	}
 	return &client{
 		messageing: messaging,
-		logger:     dopts.logger,
 	}, nil
 }
 
@@ -68,7 +57,7 @@ func (c *client) sendError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to firebase cloud messaging api", zap.Error(err))
+	slog.Debug("Failed to firebase cloud messaging api", log.Error(err))
 
 	switch {
 	// For Context

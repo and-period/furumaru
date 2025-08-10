@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -13,9 +14,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/random"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -136,7 +137,7 @@ func (s *service) CreateCoordinator(
 	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
 		return nil, "", internalError(err)
 	}
-	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
+	slog.DebugContext(ctx, "Create coordinator", slog.String("coordinatorId", coordinator.ID), slog.String("password", password))
 	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
@@ -156,14 +157,14 @@ func (s *service) CreateCoordinator(
 			backoff.WithRetryablel(exception.IsRetryable),
 		}
 		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to create shop", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
+			slog.WarnContext(ctx, "Failed to create shop", slog.String("coordinatorId", coordinator.ID), log.Error(err))
 		}
 	}()
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
+			slog.WarnContext(ctx, "Failed to notify register admin", slog.String("coordinatorId", coordinator.ID), log.Error(err))
 		}
 	}()
 	return coordinator, password, nil
@@ -237,16 +238,16 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
 		return internalError(err)
 	}
-	s.logger.Debug("Reset coordinator password",
-		zap.String("coordinatorId", in.CoordinatorID), zap.String("password", password),
+	slog.DebugContext(ctx, "Reset coordinator password",
+		slog.String("coordinatorId", in.CoordinatorID), slog.String("password", password),
 	)
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyResetAdminPassword(context.Background(), in.CoordinatorID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify reset admin password",
-				zap.String("coordinatorId", in.CoordinatorID), zap.Error(err),
+			slog.WarnContext(ctx, "Failed to notify reset admin password",
+				slog.String("coordinatorId", in.CoordinatorID), log.Error(err),
 			)
 		}
 	}()
@@ -282,7 +283,7 @@ func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordina
 			backoff.WithRetryablel(exception.IsRetryable),
 		}
 		if err := backoff.Retry(context.Background(), retry, fn, opts...); err != nil {
-			s.logger.Warn("Failed to delete shop", zap.String("shopId", shop.ID), zap.Error(err))
+			slog.WarnContext(ctx, "Failed to delete shop", slog.String("shopId", shop.ID), log.Error(err))
 		}
 	}()
 	return nil

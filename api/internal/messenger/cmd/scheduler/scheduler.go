@@ -13,7 +13,6 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 type app struct {
@@ -84,7 +83,7 @@ func (a *app) run() error {
 	// Job実行に必要な引数の生成
 	target, err := a.getTarget()
 	if err != nil {
-		slog.Error("Failed to parse target datetime", zap.Error(err), zap.String("target", a.TargetDatetime))
+		slog.Error("Failed to parse target datetime", log.Error(err), slog.String("target", a.TargetDatetime))
 		return err
 	}
 

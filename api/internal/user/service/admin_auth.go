@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	"go.uber.org/zap"
 )
 
 func (s *service) SignInAdmin(ctx context.Context, in *user.SignInAdminInput) (*entity.AdminAuth, error) {
@@ -297,7 +297,7 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	if err != nil {
 		return internalError(err)
 	}
-	s.logger.Debug("Connecting admin account", zap.Any("user", user))
+	slog.DebugContext(ctx, "Connecting admin account", slog.Any("user", user))
 
 	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みの外部アカウントを削除
 	providerParams := &entity.AdminAuthProviderParams{

@@ -5,12 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
-	"go.uber.org/zap"
 )
 
 var (
@@ -41,27 +42,16 @@ type Params struct {
 type client struct {
 	now    func() time.Time
 	client *linebot.Client
-	logger *zap.Logger
 	roomID string
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 // NewClient - LINE API接続用クライアントの生成
 func NewClient(params *Params, opts ...Option) (Client, error) {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
@@ -72,7 +62,6 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 	return &client{
 		now:    jst.Now,
 		client: bot,
-		logger: dopts.logger,
 		roomID: params.RoomID,
 	}, nil
 }
@@ -86,7 +75,7 @@ func (c *client) lineError(e error) error {
 	if e == nil {
 		return nil
 	}
-	c.logger.Error("Failed to send line api", zap.Error(e))
+	slog.Error("Failed to send line api", log.Error(e))
 
 	switch {
 	case errors.Is(e, context.Canceled):

@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestClient(t *testing.T) {
@@ -35,13 +33,4 @@ func TestClient(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, client)
 	})
-}
-
-func TestZapHookFn(t *testing.T) {
-	t.Parallel()
-	client := NewFixedMockClient()
-	logger, err := zap.NewDevelopment(zap.Hooks(NewZapHookFn(client)))
-	require.NoError(t, err)
-	logger.Warn("warn")
-	logger.Error("error")
 }

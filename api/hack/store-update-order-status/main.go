@@ -9,6 +9,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -16,7 +17,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/log"
 	apmysql "github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -28,9 +28,8 @@ var (
 )
 
 type app struct {
-	mysql  *apmysql.Client
-	db     *database.Database
-	logger *zap.Logger
+	mysql *apmysql.Client
+	db    *database.Database
 }
 
 func main() {
@@ -52,12 +51,6 @@ func run() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
 	defer cancel()
 
-	logger, err := log.NewLogger(log.WithLogLevel("debug"))
-	if err != nil {
-		return err
-	}
-	defer logger.Sync()
-
 	params := &apmysql.Params{
 		Socket:   "tcp",
 		Host:     dbhost,
@@ -66,20 +59,19 @@ func run() error {
 		Username: dbusername,
 		Password: dbpassword,
 	}
-	db, err := apmysql.NewClient(params, apmysql.WithLogger(logger))
+	db, err := apmysql.NewClient(params)
 	if err != nil {
 		return err
 	}
 
 	app := &app{
-		mysql:  db,
-		db:     tidb.NewDatabase(db),
-		logger: logger,
+		mysql: db,
+		db:    tidb.NewDatabase(db),
 	}
 
 	orders, err := app.db.Order.List(ctx, &database.ListOrdersParams{})
 	if err != nil {
-		app.logger.Error("Failed to list orders", zap.Error(err))
+		slog.Error("Failed to list orders", log.Error(err))
 		return err
 	}
 	update := func(ctx context.Context, tx *gorm.DB, order *entity.Order) error {
@@ -98,10 +90,10 @@ func run() error {
 		return nil
 	})
 	if err != nil {
-		app.logger.Error("Failed to update order status", zap.Error(err))
+		slog.Error("Failed to update order status", log.Error(err))
 		return err
 	}
-	app.logger.Info("Finished update order status")
+	slog.Info("Finished update order status")
 	return nil
 }
 

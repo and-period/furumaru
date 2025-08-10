@@ -5,11 +5,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strconv"
 	"strings"
 
-	"go.uber.org/zap"
 	"golang.org/x/text/width"
 	"googlemaps.github.io/maps"
 )
@@ -29,29 +29,18 @@ type Client interface {
 
 type client struct {
 	client *maps.Client
-	logger *zap.Logger
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 type Params struct {
 	APIKey string
 }
 
 func NewClient(params *Params, opts ...Option) (Client, error) {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
@@ -61,7 +50,6 @@ func NewClient(params *Params, opts ...Option) (Client, error) {
 	}
 	return &client{
 		client: c,
-		logger: dopts.logger,
 	}, nil
 }
 
@@ -158,7 +146,7 @@ func (c *client) GetGeolocation(ctx context.Context, in *GetGeolocationInput) (*
 		Region:   "JP",
 		Address:  in.String(),
 	}
-	c.logger.Debug("Request geocoding by address", zap.Any("request", req))
+	slog.DebugContext(ctx, "Request geocoding by address", slog.Any("request", req))
 	res, err := c.client.Geocode(ctx, req)
 	if err != nil {
 		return nil, err
@@ -166,7 +154,7 @@ func (c *client) GetGeolocation(ctx context.Context, in *GetGeolocationInput) (*
 	if len(res) == 0 {
 		return nil, ErrNotFound
 	}
-	c.logger.Debug("Received geocoding by address", zap.Any("response", res))
+	slog.DebugContext(ctx, "Received geocoding by address", slog.Any("response", res))
 	out := &GetGeolocationOutput{
 		Latitude:  res[0].Geometry.Location.Lat,
 		Longitude: res[0].Geometry.Location.Lng,
@@ -192,7 +180,7 @@ func (c *client) GetAddress(ctx context.Context, in *GetAddressInput) (*GetAddre
 			Lng: in.Longitude,
 		},
 	}
-	c.logger.Debug("Request geocoding by geolocation", zap.Any("request", req))
+	slog.DebugContext(ctx, "Request geocoding by geolocation", slog.Any("request", req))
 	res, err := c.client.Geocode(ctx, req)
 	if err != nil {
 		return nil, err
@@ -200,7 +188,7 @@ func (c *client) GetAddress(ctx context.Context, in *GetAddressInput) (*GetAddre
 	if len(res) == 0 {
 		return nil, ErrNotFound
 	}
-	c.logger.Debug("Received geocoding by geolocation", zap.Any("response", res))
+	slog.DebugContext(ctx, "Received geocoding by geolocation", slog.Any("response", res))
 	address, err := newAddress(res[0].AddressComponents)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse address: %w", err)

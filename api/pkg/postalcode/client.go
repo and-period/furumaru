@@ -6,9 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 )
 
 type Client interface {
@@ -29,13 +30,11 @@ var (
 
 type client struct {
 	client     *http.Client
-	logger     *zap.Logger
 	maxRetries int
 }
 
 type options struct {
 	maxRetries int
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -46,23 +45,15 @@ func WithMaxRetries(maxRetries int) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(c *http.Client, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: 3,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &client{
 		client:     c,
-		logger:     dopts.logger,
 		maxRetries: dopts.maxRetries,
 	}
 }
@@ -132,7 +123,7 @@ func (c *client) newError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Debug("Failed to postalcode api", zap.Error(err))
+	slog.Debug("Failed to postalcode api", log.Error(err))
 
 	switch {
 	case errors.Is(err, context.Canceled):

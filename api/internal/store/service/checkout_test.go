@@ -32,6 +32,7 @@ func TestGetCheckoutState(t *testing.T) {
 			CoordinatorID:   "coordinator-id",
 			Type:            entity.OrderTypeProduct,
 			Status:          entity.OrderStatusUnpaid,
+			ShippingType:    entity.OrderShippingTypeStandard,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			CreatedAt:       now,
 			UpdatedAt:       now,
@@ -1116,6 +1117,7 @@ func checkoutProductMocks(
 		PromotionID:     "promotion-id",
 		Type:            entity.OrderTypeProduct,
 		Status:          entity.OrderStatusUnpaid,
+		ShippingType:    entity.OrderShippingTypeStandard,
 		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}
 
@@ -1475,6 +1477,7 @@ func TestCheckoutProduct(t *testing.T) {
 			PromotionID:     "promotion-id",
 			Type:            entity.OrderTypeProduct,
 			Status:          entity.OrderStatusUnpaid,
+			ShippingType:    entity.OrderShippingTypeStandard,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 		}
 	}
@@ -2458,6 +2461,7 @@ func TestCheckoutExperience(t *testing.T) {
 			PromotionID:   "promotion-id",
 			Type:          entity.OrderTypeExperience,
 			Status:        entity.OrderStatusUnpaid,
+			ShippingType:  entity.OrderShippingTypeNone,
 		}
 	}
 	ordermocks := func(mocks *mocks, order *entity.Order, err error) {

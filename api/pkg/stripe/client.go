@@ -10,7 +10,6 @@ import (
 	"github.com/stripe/stripe-go/v73/paymentintent"
 	"github.com/stripe/stripe-go/v73/paymentmethod"
 	"github.com/stripe/stripe-go/v73/setupintent"
-	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -65,7 +64,6 @@ type Params struct {
 }
 
 type client struct {
-	logger        *zap.Logger
 	maxRetries    int64
 	customer      customer.Client
 	paymentintent paymentintent.Client
@@ -74,17 +72,10 @@ type client struct {
 }
 
 type options struct {
-	logger     *zap.Logger
 	maxRetries int64
 }
 
 type Option func(opts *options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithMaxRetries(maxRetries int64) Option {
 	return func(opts *options) {
@@ -94,14 +85,12 @@ func WithMaxRetries(maxRetries int64) Option {
 
 func NewClient(params *Params, opts ...Option) Client {
 	dopts := &options{
-		logger:     zap.NewNop(),
 		maxRetries: 3,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &client{
-		logger:     dopts.logger,
 		maxRetries: dopts.maxRetries,
 		customer: customer.Client{
 			B:   stripe.GetBackend(stripe.APIBackend),
@@ -133,19 +122,15 @@ func isRetryable(_ error) bool {
 }
 
 type receiver struct {
-	logger     *zap.Logger
 	webhookKey string
 }
 
 func NewReceiver(params *Params, opts ...Option) Receiver {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &receiver{
-		logger:     dopts.logger,
 		webhookKey: params.WebhookKey,
 	}
 }

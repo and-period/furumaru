@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/sfn"
-	"go.uber.org/zap"
 )
 
 type StepFunction interface {
@@ -22,15 +21,13 @@ type Params struct {
 }
 
 type client struct {
-	sfn    *sfn.Client
-	arn    *string
-	logger *zap.Logger
+	sfn *sfn.Client
+	arn *string
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -47,17 +44,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewStepFunction(cfg aws.Config, params *Params, opts ...Option) StepFunction {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -69,9 +59,8 @@ func NewStepFunction(cfg aws.Config, params *Params, opts ...Option) StepFunctio
 		})
 	})
 	return &client{
-		sfn:    cli,
-		arn:    aws.String(params.StateMachineARN),
-		logger: dopts.logger,
+		sfn: cli,
+		arn: aws.String(params.StateMachineARN),
 	}
 }
 

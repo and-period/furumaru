@@ -14,7 +14,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	"github.com/and-period/furumaru/api/pkg/storage"
-	"go.uber.org/zap"
 )
 
 type Scheduler interface {
@@ -36,18 +35,11 @@ type Params struct {
 }
 
 type options struct {
-	logger      *zap.Logger
 	concurrency int64
 	storageURL  *url.URL
 }
 
 type Option func(*options)
-
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
 
 func WithConcurrency(concurrency int64) Option {
 	return func(opts *options) {

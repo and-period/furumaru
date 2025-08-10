@@ -5,7 +5,6 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"go.uber.org/zap"
 )
 
 type Client interface {
@@ -13,7 +12,6 @@ type Client interface {
 }
 
 type Params struct {
-	Logger     *zap.Logger
 	DBHost     string
 	DBPort     string
 	DBUsername string

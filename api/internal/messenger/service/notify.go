@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -15,7 +16,6 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -32,7 +32,7 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 		return internalError(err)
 	}
 	if !schedule.Published() {
-		s.logger.Warn("This schedule is not published", zap.String("scheduleId", schedule.ID))
+		slog.Warn("This schedule is not published", slog.String("scheduleId", schedule.ID))
 		return nil
 	}
 	coordinatorIn := &user.GetCoordinatorInput{
@@ -77,7 +77,7 @@ func (s *service) NotifyOrderCaptured(ctx context.Context, in *messenger.NotifyO
 	case sentity.OrderTypeExperience:
 		payload, err = s.newOrderExperienceCaptured(ctx, order)
 	default:
-		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
+		slog.Warn("Unknown order type", slog.String("orderId", order.ID))
 		return nil
 	}
 	if err != nil {
@@ -281,7 +281,7 @@ func (s *service) NotifyReviewRequest(ctx context.Context, in *messenger.NotifyR
 	case sentity.OrderTypeExperience:
 		payload, err = s.newReviewExperienceRequest(ctx, order)
 	default:
-		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
+		slog.Warn("Unknown order type", slog.String("orderId", order.ID))
 		return nil
 	}
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"strings"
 	"sync"
@@ -14,8 +15,8 @@ import (
 
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -30,7 +31,6 @@ var (
 
 type app struct {
 	client mailer.Client
-	logger *zap.Logger
 	source string
 	debug  bool
 }
@@ -86,21 +86,15 @@ func setup(_ context.Context) (*app, error) {
 		return nil, fmt.Errorf("source-csv-file is required")
 	}
 
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create logger: %w", err)
-	}
-
 	mailerParams := &mailer.Params{
 		APIKey:      sendgridAPIKey,
 		FromName:    mailFromName,
 		FromAddress: mailFromAddress,
 		TemplateMap: map[string]string{"default": sendgridTemplateID},
 	}
-	mailer := mailer.NewClient(mailerParams, mailer.WithLogger(logger))
+	mailer := mailer.NewClient(mailerParams)
 
 	app := &app{
-		logger: logger,
 		client: mailer,
 		source: sourceCSVFile,
 		debug:  debug,
@@ -109,7 +103,7 @@ func setup(_ context.Context) (*app, error) {
 }
 
 func (a *app) run(ctx context.Context) error {
-	a.logger.Debug("Start to run", zap.Bool("debug", debug))
+	slog.Debug("Start to run", slog.Bool("debug", debug))
 
 	file, err := os.Open(a.source)
 	if err != nil {
@@ -163,7 +157,7 @@ func (a *app) run(ctx context.Context) error {
 
 	mu := sync.Mutex{}
 
-	a.logger.Info("Start to send emails")
+	slog.Info("Start to send emails")
 	for i, builder := range req {
 		company := builder.substitutions["会社名"]
 		name := builder.substitutions["氏名"]
@@ -171,7 +165,7 @@ func (a *app) run(ctx context.Context) error {
 		email := builder.substitutions["メールアドレス"]
 		res := "OK"
 
-		a.logger.Debug("Sending email", zap.Int("index", i), zap.String("name", name), zap.String("email", email))
+		slog.Debug("Sending email", slog.Int("index", i), slog.String("name", name), slog.String("email", email))
 
 		write := func(company, name, sei, email, res string) {
 			mu.Lock()
@@ -179,16 +173,16 @@ func (a *app) run(ctx context.Context) error {
 
 			out := fmt.Sprintf("index=%d: 会社名=%s, 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, company, name, sei, email, res)
 			if _, err := fmt.Fprint(writer, out); err != nil {
-				a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
+				slog.Error("failed to write output", slog.Int("index", i), slog.String("name", name), log.Error(err))
 			}
 		}
 
 		if email == "" {
-			a.logger.Error("email is empty", zap.Int("index", i), zap.String("name", name))
+			slog.Error("email is empty", slog.Int("index", i), slog.String("name", name))
 			write(company, name, sei, email, "Skip for email empty")
 			continue
 		} else if name == "" {
-			a.logger.Error("name is empty", zap.Int("index", i), zap.String("email", email))
+			slog.Error("name is empty", slog.Int("index", i), slog.String("email", email))
 			write(company, name, sei, email, "Skip for name empty")
 			continue
 		}
@@ -202,7 +196,7 @@ func (a *app) run(ctx context.Context) error {
 			err := backoff.Retry(ectx, retry, retryFn, backoff.WithRetryablel(a.isRetryable))
 			if err != nil {
 				res = "NG"
-				a.logger.Error("failed to retry", zap.Int("index", i), zap.String("name", name), zap.Error(err))
+				slog.Error("failed to retry", slog.Int("index", i), slog.String("name", name), log.Error(err))
 			}
 			write(company, name, sei, email, res)
 			return nil
@@ -211,7 +205,7 @@ func (a *app) run(ctx context.Context) error {
 	if err := eg.Wait(); err != nil {
 		return fmt.Errorf("failed to wait: %w", err)
 	}
-	a.logger.Info("Finish to send emails")
+	slog.Info("Finish to send emails")
 
 	return nil
 }
@@ -238,10 +232,10 @@ func (a *app) send(ctx context.Context, builder *builder) error {
 	}
 
 	if a.debug {
-		a.logger.Info("Send email",
-			zap.String("氏名", name),
-			zap.String("アドレス", email),
-			zap.Any("substitutions", substitutions),
+		slog.Info("Send email",
+			slog.String("氏名", name),
+			slog.String("アドレス", email),
+			slog.Any("substitutions", substitutions),
 		)
 		return nil
 	}

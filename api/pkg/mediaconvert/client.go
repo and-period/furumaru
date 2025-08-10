@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert"
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
-	"go.uber.org/zap"
 )
 
 type MediaConvert interface {
@@ -23,14 +22,12 @@ type Params struct {
 
 type client struct {
 	convert *mediaconvert.Client
-	logger  *zap.Logger
 	role    *string
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -47,17 +44,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewMediaConvert(cfg aws.Config, params *Params, opts ...Option) MediaConvert {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -71,7 +61,6 @@ func NewMediaConvert(cfg aws.Config, params *Params, opts ...Option) MediaConver
 	})
 	return &client{
 		convert: cli,
-		logger:  dopts.logger,
 		role:    aws.String(params.RoleARN),
 	}
 }

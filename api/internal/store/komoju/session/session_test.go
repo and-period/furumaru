@@ -14,7 +14,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 const captureMode = "manual"
@@ -35,7 +34,6 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 		defer ts.Close()
 		u, err := url.Parse(ts.URL)
 		require.NoError(t, err)
-		logger := zap.NewNop()
 		host := url.URL{
 			Scheme: u.Scheme,
 			Host:   u.Host,
@@ -43,12 +41,11 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 		require.NoError(t, err)
 		params := &Params{
 			Host:         host.String(),
-			Logger:       logger,
 			ClientID:     "client-id",
 			ClientSecret: "client-secret",
 			CaptureMode:  captureMode,
 		}
-		client := NewClient(ts.Client(), params, komoju.WithLogger(logger))
+		client := NewClient(ts.Client(), params)
 		ctx, cancel := context.WithCancel(t.Context())
 		defer cancel()
 		res, err := fn(ctx, client)
@@ -69,19 +66,16 @@ func testClient(handler handler, expect *testResponse, fn clientCaller) func(t *
 func TestClient(t *testing.T) {
 	t.Parallel()
 	cli := &http.Client{}
-	logger := zap.NewNop()
 	params := &Params{
-		Logger:       logger,
 		Host:         "http://example.com",
 		ClientID:     "client-id",
 		ClientSecret: "client-secret",
 	}
 	expect := &client{
-		client: komoju.NewAPIClient(cli, "client-id", "client-secret", komoju.WithLogger(logger), komoju.WithMaxRetries(1)),
-		logger: logger,
+		client: komoju.NewAPIClient(cli, "client-id", "client-secret", komoju.WithMaxRetries(1)),
 		host:   "http://example.com",
 	}
-	actual := NewClient(cli, params, komoju.WithLogger(logger), komoju.WithMaxRetries(1)).(*client)
+	actual := NewClient(cli, params, komoju.WithMaxRetries(1)).(*client)
 	assert.Equal(t, expect, actual)
 }
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -12,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	cognito "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	"go.uber.org/zap"
 )
 
 type AuthResult struct {
@@ -210,7 +210,7 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 
 	if res.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(res.Body)
-		c.logger.Error("Failed to get access token", zap.Int("status", res.StatusCode), zap.String("body", string(body)))
+		slog.ErrorContext(ctx, "Failed to get access token", slog.Int("status", res.StatusCode), slog.String("body", string(body)))
 		return nil, fmt.Errorf("cognito: failed to get access token: status code=%d", res.StatusCode)
 	}
 

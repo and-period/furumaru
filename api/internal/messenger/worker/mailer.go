@@ -3,12 +3,12 @@ package worker
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
 	"github.com/and-period/furumaru/api/pkg/mailer"
-	"go.uber.org/zap"
 )
 
 func (w *worker) multiSendMail(ctx context.Context, payload *entity.WorkerPayload) error {
@@ -21,10 +21,10 @@ func (w *worker) multiSendMail(ctx context.Context, payload *entity.WorkerPayloa
 
 func (w *worker) sendMail(ctx context.Context, templateID entity.EmailTemplateID, ps ...*mailer.Personalization) error {
 	if len(ps) == 0 {
-		w.logger.Debug("Personalizations is empty", zap.String("templateId", string(templateID)))
+		slog.Debug("Personalizations is empty", slog.String("templateId", string(templateID)))
 		return nil
 	}
-	w.logger.Debug("Send email", zap.String("templateId", string(templateID)), zap.Any("personalizations", ps))
+	slog.Debug("Send email", slog.String("templateId", string(templateID)), slog.Any("personalizations", ps))
 	sendFn := func() error {
 		return w.mailer.MultiSendFromInfo(ctx, string(templateID), ps)
 	}

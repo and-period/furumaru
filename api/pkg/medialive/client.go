@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/medialive"
-	"go.uber.org/zap"
 )
 
 type MediaLive interface {
@@ -20,15 +19,13 @@ type MediaLive interface {
 }
 
 type client struct {
-	media  *medialive.Client
-	logger *zap.Logger
-	now    func() time.Time
+	media *medialive.Client
+	now   func() time.Time
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
-	logger     *zap.Logger
 }
 
 type Option func(*options)
@@ -45,17 +42,10 @@ func WithInterval(interval time.Duration) Option {
 	}
 }
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewMediaLive(cfg aws.Config, opts ...Option) MediaLive {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
-		logger:     zap.NewNop(),
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -67,8 +57,7 @@ func NewMediaLive(cfg aws.Config, opts ...Option) MediaLive {
 		})
 	})
 	return &client{
-		media:  cli,
-		logger: dopts.logger,
-		now:    time.Now,
+		media: cli,
+		now:   time.Now,
 	}
 }

@@ -5,12 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/sendgrid/sendgrid-go"
-	"go.uber.org/zap"
 )
 
 var (
@@ -45,36 +46,24 @@ type Params struct {
 type client struct {
 	now         func() time.Time
 	client      *sendgrid.Client
-	logger      *zap.Logger
 	fromName    string
 	fromAddress string
 	templateMap map[string]string
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 // NewClient - メール送信用クライアントの生成
 func NewClient(params *Params, opts ...Option) Client {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &client{
 		now:         jst.Now,
 		client:      sendgrid.NewSendClient(params.APIKey),
-		logger:      dopts.logger,
 		fromName:    params.FromName,
 		fromAddress: params.FromAddress,
 		templateMap: params.TemplateMap,
@@ -88,7 +77,7 @@ func (c *client) mailError(e error) error {
 	if e == nil {
 		return nil
 	}
-	c.logger.Error("Failed to send mail", zap.Error(e))
+	slog.Error("Failed to send mail", log.Error(e))
 
 	switch {
 	case errors.Is(e, context.Canceled):

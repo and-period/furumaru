@@ -13,7 +13,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -74,7 +73,6 @@ func newScheduler(mocks *mocks, opts ...testOption) *scheduler {
 	}
 	return &scheduler{
 		now:       dopts.now,
-		logger:    zap.NewNop(),
 		waitGroup: &sync.WaitGroup{},
 		semaphore: semaphore.NewWeighted(1),
 		db: &database.Database{
@@ -112,7 +110,7 @@ func testScheduler(
 
 func TestScheduler(t *testing.T) {
 	t.Parallel()
-	s := NewScheduler(&Params{}, WithLogger(zap.NewNop()), WithConcurrency(1))
+	s := NewScheduler(&Params{}, WithConcurrency(1))
 	assert.NotNil(t, s)
 }
 

@@ -5,11 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/slack-go/slack"
-	"go.uber.org/zap"
 )
 
 var (
@@ -33,33 +34,21 @@ type Params struct {
 type client struct {
 	now       func() time.Time
 	client    *slack.Client
-	logger    *zap.Logger
 	channelID string
 }
 
-type options struct {
-	logger *zap.Logger
-}
+type options struct{}
 
 type Option func(*options)
 
-func WithLogger(logger *zap.Logger) Option {
-	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
 func NewClient(params *Params, opts ...Option) Client {
-	dopts := &options{
-		logger: zap.NewNop(),
-	}
+	dopts := &options{}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &client{
 		now:       jst.Now,
 		client:    slack.New(params.Token),
-		logger:    dopts.logger,
 		channelID: params.ChannelID,
 	}
 }
@@ -74,7 +63,7 @@ func (c *client) slackError(err error) error {
 	if err == nil {
 		return nil
 	}
-	c.logger.Error("Failed to send slack api", zap.Error(err))
+	slog.Error("Failed to send slack api", log.Error(err))
 
 	switch {
 	case errors.Is(err, slack.ErrParametersMissing),

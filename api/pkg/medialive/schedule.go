@@ -3,12 +3,12 @@ package medialive
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/medialive"
 	"github.com/aws/aws-sdk-go-v2/service/medialive/types"
-	"go.uber.org/zap"
 )
 
 // ScheduleStartType - 開始タイプ
@@ -113,7 +113,7 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 				Time: aws.String(p.ExecutedAt.UTC().Format(time.RFC3339)),
 			}
 		case ScheduleStartTypeFollow:
-			c.logger.Warn("Not implemented start type", zap.Any("setting", p))
+			slog.Warn("Not implemented start type", slog.Any("setting", p))
 		}
 		// アクションの設定
 		switch p.ActionType {

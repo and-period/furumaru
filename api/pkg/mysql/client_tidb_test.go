@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
 func TestNewTiDBDSN(t *testing.T) {
@@ -28,7 +27,6 @@ func TestNewTiDBDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:               zap.NewNop(),
 				now:                  time.Now,
 				location:             time.UTC,
 				charset:              "utf8mb4",
@@ -50,7 +48,6 @@ func TestNewTiDBDSN(t *testing.T) {
 				Password: "12345678",
 			},
 			options: &options{
-				logger:               zap.NewNop(),
 				now:                  time.Now,
 				location:             jst,
 				charset:              "utf8mb4",

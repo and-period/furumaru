@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -19,7 +20,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
-	"go.uber.org/zap"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -144,7 +145,7 @@ func (s *service) CompleteProductOrder(ctx context.Context, in *store.CompletePr
 			OrderID: order.ID,
 		}
 		if err := s.messenger.NotifyOrderShipped(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify order shipped", zap.String("orderId", order.ID), zap.Error(err))
+			slog.Error("Failed to notify order shipped", slog.String("orderId", order.ID), log.Error(err))
 		}
 	}()
 	return nil
@@ -174,7 +175,7 @@ func (s *service) CompleteExperienceOrder(ctx context.Context, in *store.Complet
 			OrderID: order.ID,
 		}
 		if err := s.messenger.NotifyReviewRequest(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify review request", zap.String("orderId", order.ID), zap.Error(err))
+			slog.Error("Failed to notify review request", slog.String("orderId", order.ID), log.Error(err))
 		}
 	}()
 	return nil

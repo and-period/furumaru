@@ -3,15 +3,16 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/random"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -92,14 +93,14 @@ func (s *service) CreateAdministrator(
 	if err := s.db.Administrator.Create(ctx, administrator, auth); err != nil {
 		return nil, internalError(err)
 	}
-	s.logger.Debug("Create administrator",
-		zap.String("administratorId", administrator.ID), zap.String("password", password))
+	slog.DebugContext(ctx, "Create administrator",
+		slog.String("administratorId", administrator.ID), slog.String("password", password))
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), administrator.ID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("administratorId", administrator.ID), zap.Error(err))
+			slog.WarnContext(ctx, "Failed to notify register admin", slog.String("administratorId", administrator.ID), log.Error(err))
 		}
 	}()
 	return administrator, nil
@@ -157,16 +158,16 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
 		return internalError(err)
 	}
-	s.logger.Debug("Reset administrator password",
-		zap.String("administrator", in.AdministratorID), zap.String("password", password),
+	slog.DebugContext(ctx, "Reset administrator password",
+		slog.String("administrator", in.AdministratorID), slog.String("password", password),
 	)
 	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyResetAdminPassword(context.Background(), in.AdministratorID, password)
 		if err != nil {
-			s.logger.Warn("Failed to notify reset admin password",
-				zap.String("administrator", in.AdministratorID), zap.Error(err),
+			slog.WarnContext(ctx, "Failed to notify reset admin password",
+				slog.String("administrator", in.AdministratorID), log.Error(err),
 			)
 		}
 	}()
