@@ -5,7 +5,7 @@ interface Props {
 	name: string;
 	price: number
   thumbnailUrl: string
-  stoke: number
+  stock: number
   soldOutText?: string
 	addToCartButtonText?: string;
 	selectLabelText?: string
@@ -36,7 +36,7 @@ const priceString = computed<string>(() => {
  * 商品をカートに追加できるかを示す
  */
 const canAddCart = computed<boolean>(() => {
-  if (props.stoke > 0) {
+  if (props.stock > 0) {
     return true
   }
   return false
@@ -49,13 +49,13 @@ const canAddCart = computed<boolean>(() => {
  * それ以外は在庫数を返す
  */
 const stokeValues = computed<number>(() => {
-  if (props.stoke == 0) {
+  if (props.stock == 0) {
     return 1
   }
-  if (props.stoke > 10) {
+  if (props.stock > 10) {
     return 10
   }
-	return props.stoke
+	return props.stock
 })
 
 /**
@@ -63,12 +63,17 @@ const stokeValues = computed<number>(() => {
  * 動画の場合はtrue、画像の場合はfalseを返す
  */
 const thumbnailIsVideo = computed<boolean>(() => {
-  const url = new URL(props.thumbnailUrl)
-  // クエリパラメータとハッシュを削除
-  url.search = ''
-  url.hash = ''
+  try {
+    const url = new URL(props.thumbnailUrl)
 
-  return url.toString().endsWith('.mp4')
+    // クエリパラメータとハッシュを削除
+    url.search = ''
+    url.hash = ''
+
+    return url.toString().endsWith('.mp4')
+  } catch {
+    return false
+  }
 })
 
 /**
@@ -97,6 +102,9 @@ const handleClickAddCartButton = () => {
           <video
             :src="thumbnailUrl"
             class="aspect-square w-full"
+            :alt="`video of ${name}`"
+            :title="name"
+            preload="metadata"
             autoplay
             muted
             webkit-playsinline
@@ -109,6 +117,7 @@ const handleClickAddCartButton = () => {
             <img
               class="w-full h-full object-contain"
               :src="thumbnailUrl"
+              :alt="`thumbnail of ${name}`"
             >
           </div>
         </template> 
