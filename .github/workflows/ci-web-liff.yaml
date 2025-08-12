@@ -5,6 +5,7 @@ on:
     - '.github/actions/setup-node/**'
     - '.github/workflows/ci-web-liff.yaml'
     - 'web/liff/**'
+    - 'web/shared/**'
     - 'infra/docker/web/liff/**'
 
 permissions:
@@ -30,6 +31,17 @@ jobs:
     - name: Check out code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
+
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/liff
@@ -50,6 +62,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -74,6 +97,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:
@@ -102,6 +136,17 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - name: Setup Shared Library
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: shared-web
+
+    - name: Build shared library
+      run: |
+        cd ../shared
+        yarn build
 
     - uses: ./.github/actions/setup-node
       with:

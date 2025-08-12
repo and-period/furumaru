@@ -1,0 +1,91 @@
+name: '[Frontend] Build and Test (Shared Library)'
+on:
+  push:
+    paths:
+    - '.github/actions/setup-node/**'
+    - '.github/workflows/ci-web-shared.yaml'
+    - 'web/shared/**'
+
+permissions:
+  contents: read
+
+env:
+  SERVICE: shared-web
+  TZ: 'Asia/Tokyo'
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/shared
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: ${{ env.SERVICE }}
+
+  lint:
+    name: lint
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/shared
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: ${{ env.SERVICE }}
+
+    - name: Lint
+      run: yarn lint
+
+  build:
+    name: build
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/shared
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - uses: ./.github/actions/setup-node
+      with:
+        working-directory: ./web/shared
+        service: ${{ env.SERVICE }}
+
+    - name: Build
+      run: yarn build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097 # v4.4.2
+      with:
+        name: shared-web-build
+        path: |
+          web/shared/dist/
+        retention-days: 1
