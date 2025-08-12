@@ -1,8 +1,9 @@
 // this import can be removed if you don't need to display the version on the page
 import pkg from './package.json';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: [],
   plugins: [],
   app: {
     head: {
@@ -21,6 +22,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+  css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
       LIFF_ID: process.env.LIFF_ID,
@@ -28,8 +30,7 @@ export default defineNuxtConfig({
     },
   },
   srcDir: 'src',
-  tailwindcss: {
-    exposeConfig: true,
-    viewer: true,
+  vite: {
+    plugins: [tailwindcss()],
   },
 });

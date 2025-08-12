@@ -13,6 +13,9 @@
 		"path": "web/liff"
 	},
 	{
+		"path": "web/shared"
+	},
+	{
 		"path": "api"
 	}
 ],
