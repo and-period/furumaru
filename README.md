@@ -6,3 +6,9 @@
 3. 以下のパスに起動   
    ユーザー側 => localhost:3000  
    管理者・コーディネータ側 => localhost:3010
+
+
+## yarn での起動手順
+1. corepack enable
+2. asdf reshim nodejs
+3. npm install -g yarn
