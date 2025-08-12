@@ -34,7 +34,6 @@ export default defineConfig({
     dts({
       include: ['src/**/**.ts', 'src/**/**.vue'],
       tsconfigPath: './tsconfig.app.json',
-      outDir: 'types',
     }),
     tailwindcss(),
   ],
