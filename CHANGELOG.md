@@ -1,5 +1,10 @@
 # Changelog
 
+## [v5.0.11](https://github.com/and-period/furumaru/compare/v5.0.10...v5.0.11) - 2025-08-12
+- feat(gateway): キャンプ施設向けのAPIハンドラの初期設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2910
+- feat(store): Orderに配送方法をもたせる by @taba2424 in https://github.com/and-period/furumaru/pull/2912
+- 共通UIコンポーネントライブラリの実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2905
+
 ## [v5.0.10](https://github.com/and-period/furumaru/compare/v5.0.9...v5.0.10) - 2025-08-06
 - build(deps): bump aws-actions/amazon-ecs-deploy-task-definition from 2.3.3 to 2.3.4 in the dependencies group by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2895
 - fix(gateway): OAuth関連エンドポイントのpathを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2898
