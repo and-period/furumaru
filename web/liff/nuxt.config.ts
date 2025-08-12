@@ -3,7 +3,7 @@ import pkg from './package.json';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
-  modules: [],
+  modules: ['@pinia/nuxt'],
   plugins: [],
   app: {
     head: {
