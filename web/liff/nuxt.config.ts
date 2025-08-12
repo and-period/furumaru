@@ -3,8 +3,19 @@ import pkg from './package.json';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
-  modules: ['@pinia/nuxt'],
+  modules: [
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: [
+          // automatically imports `defineStore`
+          'defineStore',
+        ],
+      },
+    ],
+  ],
   plugins: [],
+  ssr: true,
   app: {
     head: {
       title: 'ふるまる - LINE連携アプリ',

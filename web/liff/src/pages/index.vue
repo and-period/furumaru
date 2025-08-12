@@ -2,6 +2,9 @@
 import { FmProductItem } from '@furumaru/shared';
 
 import liff from '@line/liff';
+import { storeToRefs } from 'pinia';
+import { useProductStore } from '~/stores/product';
+
 // Import runtime config for env variables
 const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
@@ -18,6 +21,9 @@ onMounted(async () => {
   console.log('LIFF init success');
   console.log('LIFF SDK version', liff.getVersion());
 });
+
+const productStore = useProductStore();
+const { products } = storeToRefs(productStore);
 </script>
 
 <template>
@@ -25,13 +31,22 @@ onMounted(async () => {
     <h2 class="mt-6 font-semibold font-inter text-center w-full">
       商品一覧
     </h2>
-    <div class="grid grid-cols-2">
-      <fm-product-item
-        name="商品1"
-        :price="3000"
-        :stoke="15"
-        thumbnail-url="https://assets.furumaru.and-period.co.jp/products/media/image/sUJfjmMoMvGwjht9QgdWZK.jpg"
-      />
+    <div
+      class="container mx-auto mt-6"
+    >
+      <div class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-4 px-4">
+        <template
+          v-for="product in products"
+          :key="product.id"
+        >
+          <FmProductItem
+            :name="product.name"
+            :price="product.price"
+            :stock="product.inventory"
+            :thumbnail-url="product.thumbnailUrl"
+          />
+        </template>
+      </div>
     </div>
   </div>
 </template>
