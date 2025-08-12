@@ -88,5 +88,4 @@ jobs:
         name: shared-web-build
         path: |
           web/shared/dist/
-          web/shared/types/
         retention-days: 1
