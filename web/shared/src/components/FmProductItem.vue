@@ -2,13 +2,13 @@
 import { computed, ref } from 'vue';
 
 interface Props {
-	name: string;
-	price: number
+  name: string;
+  price: number
   thumbnailUrl: string
   stock: number
   soldOutText?: string
-	addToCartButtonText?: string;
-	selectLabelText?: string
+  addToCartButtonText?: string;
+  selectLabelText?: string
 }
 
 interface Emits {
@@ -16,8 +16,8 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	addToCartButtonText: 'カゴに入れる',
-	selectLabelText: '数量',
+  addToCartButtonText: 'カゴに入れる',
+  selectLabelText: '数量',
   soldOutText: '在庫なし',
 });
 
@@ -55,7 +55,7 @@ const stokeValues = computed<number>(() => {
   if (props.stock > 10) {
     return 10
   }
-	return props.stock
+  return props.stock
 })
 
 /**
