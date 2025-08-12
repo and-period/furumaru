@@ -1,5 +1,20 @@
-# Vue 3 + TypeScript + Vite
+# Furumaru Shared Components
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This package contains shared Vue.js components and utilities used across the Furumaru web applications.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Development
+
+- `yarn dev` - Start development server  
+- `yarn lint` - Run ESLint
+- `yarn build` - Build the library
+- `yarn storybook` - Start Storybook development server
+
+## CI/CD
+
+This package has its own CI pipeline that runs on changes to ensure code quality and successful builds.
+
+---
+
+*This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.*
+
+*Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).*
