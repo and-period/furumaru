@@ -1,5 +1,16 @@
 # Changelog
 
+## [v5.0.12](https://github.com/and-period/furumaru/compare/v5.0.11...v5.0.12) - 2025-08-16
+- build(deps): bump the dependencies group across 1 directory with 67 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2911
+- build(deps): bump the dependencies group across 1 directory with 130 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2908
+- [web] Simplify CI pipeline for web/shared and web/liff dependency handling by @Copilot in https://github.com/and-period/furumaru/pull/2916
+- Update README.md by @hamachans in https://github.com/and-period/furumaru/pull/2917
+- LFF用の商品一覧ページのモック実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2918
+- FmTextInputコンポーネントの実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2919
+- feat(api): add order types, shipping types and metadata functionality by @taba2424 in https://github.com/and-period/furumaru/pull/2924
+- build(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2921
+- build(deps): bump the dependencies group in /web/admin with 33 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2922
+
 ## [v5.0.11](https://github.com/and-period/furumaru/compare/v5.0.10...v5.0.11) - 2025-08-12
 - feat(gateway): キャンプ施設向けのAPIハンドラの初期設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2910
 - feat(store): Orderに配送方法をもたせる by @taba2424 in https://github.com/and-period/furumaru/pull/2912
