@@ -10,56 +10,122 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrderType(t *testing.T) {
+func TestNewOrderType(t *testing.T) {
 	t.Parallel()
-
 	tests := []struct {
 		name     string
 		typ      entity.OrderType
-		str      string
 		expect   OrderType
 		response int32
 	}{
 		{
 			name:     "product",
 			typ:      entity.OrderTypeProduct,
-			str:      "product",
 			expect:   OrderTypeProduct,
 			response: 1,
 		},
 		{
 			name:     "experience",
 			typ:      entity.OrderTypeExperience,
-			str:      "experience",
 			expect:   OrderTypeExperience,
 			response: 2,
 		},
 		{
 			name:     "unknown",
 			typ:      entity.OrderTypeUnknown,
-			str:      "unknown",
 			expect:   OrderTypeUnknown,
 			response: 0,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderType(tt.typ)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, actual, NewOrderTypeFromString(tt.str))
 			assert.Equal(t, tt.response, actual.Response())
 		})
 	}
 }
 
-func TestOrderStatus(t *testing.T) {
+func TestNewOrderTypeFromString(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		typ      string
+		expect   OrderType
+		response int32
+	}{
+		{
+			name:     "product",
+			typ:      "product",
+			expect:   OrderTypeProduct,
+			response: 1,
+		},
+		{
+			name:     "experience",
+			typ:      "experience",
+			expect:   OrderTypeExperience,
+			response: 2,
+		},
+		{
+			name:     "unknown",
+			typ:      "unknown",
+			expect:   OrderTypeUnknown,
+			response: 0,
+		},
+		{
+			name:     "empty",
+			typ:      "",
+			expect:   OrderTypeUnknown,
+			response: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewOrderTypeFromString(tt.typ)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
+func TestOrderType_StoreEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		typ    OrderType
+		expect entity.OrderType
+	}{
+		{
+			name:   "product",
+			typ:    OrderTypeProduct,
+			expect: entity.OrderTypeProduct,
+		},
+		{
+			name:   "experience",
+			typ:    OrderTypeExperience,
+			expect: entity.OrderTypeExperience,
+		},
+		{
+			name:   "unknown",
+			typ:    OrderTypeUnknown,
+			expect: entity.OrderTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.typ.StoreEntity())
+		})
+	}
+}
+
+func TestNewOrderStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name     string
 		status   entity.OrderStatus
-		order    *entity.Order
 		expect   OrderStatus
 		response int32
 	}{
@@ -128,6 +194,49 @@ func TestOrderStatus(t *testing.T) {
 	}
 }
 
+func TestNewOrderShippingType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		typ      entity.OrderShippingType
+		expect   OrderShippingType
+		response int32
+	}{
+		{
+			name:     "none",
+			typ:      entity.OrderShippingTypeNone,
+			expect:   OrderShippingTypeNone,
+			response: 1,
+		},
+		{
+			name:     "standard",
+			typ:      entity.OrderShippingTypeStandard,
+			expect:   OrderShippingTypeStandard,
+			response: 2,
+		},
+		{
+			name:     "pickup",
+			typ:      entity.OrderShippingTypePickup,
+			expect:   OrderShippingTypePickup,
+			response: 3,
+		},
+		{
+			name:     "unknown",
+			typ:      entity.OrderShippingTypeUnknown,
+			expect:   OrderShippingTypeUnknown,
+			response: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewOrderShippingType(tt.typ)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -146,7 +255,9 @@ func TestOrder(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
 				ManagementID:  1,
+				Type:          entity.OrderTypeProduct,
 				Status:        entity.OrderStatusShipped,
+				ShippingType:  entity.OrderShippingTypeStandard,
 				OrderPayment: entity.OrderPayment{
 					OrderID:           "order-id",
 					AddressRevisionID: 1,
@@ -324,9 +435,12 @@ func TestOrder(t *testing.T) {
 					PromotionID:     "promotion-id",
 					ManagementID:    1,
 					ShippingMessage: "",
+					Type:            int32(OrderTypeProduct),
 					Status:          int32(OrderStatusShipped),
+					ShippingType:    int32(OrderShippingTypeStandard),
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
+					CompletedAt:     0,
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -679,6 +793,7 @@ func TestOrders(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        entity.OrderStatusShipped,
+					ShippingType:  entity.OrderShippingTypeStandard,
 					OrderPayment: entity.OrderPayment{
 						OrderID:           "product-order-id",
 						AddressRevisionID: 1,
@@ -735,6 +850,7 @@ func TestOrders(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        entity.OrderStatusShipped,
+					ShippingType:  entity.OrderShippingTypeNone,
 					OrderPayment: entity.OrderPayment{
 						OrderID:           "experience-order-id",
 						AddressRevisionID: 1,
@@ -889,8 +1005,10 @@ func TestOrders(t *testing.T) {
 						ShippingMessage: "",
 						Type:            int32(OrderTypeProduct),
 						Status:          int32(OrderStatusShipped),
+						ShippingType:    int32(OrderShippingTypeStandard),
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
+						CompletedAt:     0,
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -963,8 +1081,10 @@ func TestOrders(t *testing.T) {
 						ShippingMessage: "",
 						Type:            int32(OrderTypeExperience),
 						Status:          int32(OrderStatusShipped),
+						ShippingType:    int32(OrderShippingTypeNone),
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
+						CompletedAt:     0,
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
