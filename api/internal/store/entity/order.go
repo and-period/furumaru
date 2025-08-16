@@ -57,6 +57,7 @@ type Order struct {
 	OrderFulfillments `gorm:"-"`
 	OrderItems        `gorm:"-"`
 	OrderExperience   `gorm:"-"`
+	OrderMetadata     `gorm:"-"`
 	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string            `gorm:""`                     // ユーザーID
 	SessionID         string            `gorm:""`                     // 注文時セッションID
@@ -209,12 +210,21 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 	}, nil
 }
 
-func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems, experience *OrderExperience) {
+func (o *Order) Fill(
+	payment *OrderPayment,
+	fulfillments OrderFulfillments,
+	items OrderItems,
+	experience *OrderExperience,
+	metadata *OrderMetadata,
+) {
 	if payment != nil {
 		o.OrderPayment = *payment
 	}
 	if experience != nil {
 		o.OrderExperience = *experience
+	}
+	if metadata != nil {
+		o.OrderMetadata = *metadata
 	}
 	o.OrderFulfillments = fulfillments
 	o.OrderItems = items
@@ -379,6 +389,7 @@ func (os Orders) Fill(
 	fulfillments map[string]OrderFulfillments,
 	items map[string]OrderItems,
 	experiences map[string]*OrderExperience,
+	metadata map[string]*OrderMetadata,
 ) {
 	for _, o := range os {
 		payment, ok := payments[o.ID]
@@ -389,7 +400,11 @@ func (os Orders) Fill(
 		if !ok {
 			experience = &OrderExperience{}
 		}
-		o.Fill(payment, fulfillments[o.ID], items[o.ID], experience)
+		meta, ok := metadata[o.ID]
+		if !ok {
+			meta = &OrderMetadata{}
+		}
+		o.Fill(payment, fulfillments[o.ID], items[o.ID], experience, meta)
 	}
 }
 

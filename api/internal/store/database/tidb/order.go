@@ -21,6 +21,7 @@ const (
 	orderItemTable        = "order_items"
 	orderPaymentTable     = "order_payments"
 	orderExperienceTable  = "order_experiences"
+	orderMetadataTable    = "order_metadata"
 )
 
 type order struct {
@@ -515,6 +516,7 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		fulfillments entity.OrderFulfillments
 		items        entity.OrderItems
 		experiences  entity.OrderExperiences
+		metadata     entity.MultiOrderMetadata
 	)
 
 	ids := entity.Orders(orders).IDs()
@@ -544,11 +546,21 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		experiences, err = internal.entities()
 		return err
 	})
+	eg.Go(func() (err error) {
+		stmt := o.db.Statement(ectx, tx, orderMetadataTable).Where("order_id IN (?)", ids)
+		return stmt.Find(&metadata).Error
+	})
 	if err := eg.Wait(); err != nil {
 		return err
 	}
 
-	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID(), experiences.MapByOrderID())
+	entity.Orders(orders).Fill(
+		payments.MapByOrderID(),
+		fulfillments.GroupByOrderID(),
+		items.GroupByOrderID(),
+		experiences.MapByOrderID(),
+		metadata.MapByOrderID(),
+	)
 	return nil
 }
 

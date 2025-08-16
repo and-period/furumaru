@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+	--color-placeholder: oklch(0.6633 0 0);
 	--color-main: oklch(0.4335 0.0341 54.63);
 	--color-orange: oklch(0.739 0.1632 59);
 }
