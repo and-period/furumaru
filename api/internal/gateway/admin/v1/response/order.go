@@ -10,6 +10,7 @@ type Order struct {
 	ShippingMessage string              `json:"shippingMessage"` // 発送連絡時のメッセージ
 	Type            int32               `json:"type"`            // 注文種別
 	Status          int32               `json:"status"`          // 注文ステータス
+	ShippingType    int32               `json:"shippingType"`    // 発送方法
 	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
 	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報
 	Fulfillments    []*OrderFulfillment `json:"fulfillments"`    // 配送情報一覧

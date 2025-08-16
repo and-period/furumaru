@@ -7,6 +7,7 @@ type Order struct {
 	PromotionID     string              `json:"promotionId"`     // プロモーションID
 	Type            int32               `json:"type"`            // 注文種別
 	Status          int32               `json:"status"`          // 注文ステータス
+	ShippingType    int32               `json:"shippingType"`    // 配送方法
 	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
 	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報
 	Fulfillments    []*OrderFulfillment `json:"fulfillments"`    // 配送情報一覧
