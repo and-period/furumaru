@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FmTextInput } from '@furumaru/shared';
+import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
 </script>
 
 <template>
@@ -17,6 +17,7 @@ import { FmTextInput } from '@furumaru/shared';
             placeholder="山田"
             required
             class="w-full px-2"
+            :disabled="false"
           />
         </div>
         <div>
@@ -27,6 +28,7 @@ import { FmTextInput } from '@furumaru/shared';
             placeholder="太郎"
             required
             class="w-full px-2"
+            :disabled="false"
           />
         </div>
       </div>
@@ -39,6 +41,7 @@ import { FmTextInput } from '@furumaru/shared';
             placeholder="ヤマダ"
             required
             class="w-full px-2"
+            :disabled="false"
           />
         </div>
         <div>
@@ -49,6 +52,7 @@ import { FmTextInput } from '@furumaru/shared';
             placeholder="タロウ"
             required
             class="w-full px-2"
+            :disabled="false"
           />
         </div>
       </div>
@@ -61,6 +65,7 @@ import { FmTextInput } from '@furumaru/shared';
             required
             class="w-full px-2"
             type="date"
+            :disabled="false"
           />
         </div>
       </div>
@@ -76,6 +81,7 @@ import { FmTextInput } from '@furumaru/shared';
             type="tel"
             pattern="[0-9]*"
             inputmode="tel"
+            :disabled="false"
           />
         </div>
       </div>
