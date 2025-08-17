@@ -11,6 +11,134 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestOrderType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		typ    OrderType
+		expect int32
+	}{
+		{
+			name:   "unknown",
+			typ:    OrderTypeUnknown,
+			expect: 0,
+		},
+		{
+			name:   "product",
+			typ:    OrderTypeProduct,
+			expect: 1,
+		},
+		{
+			name:   "experience",
+			typ:    OrderTypeExperience,
+			expect: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, int32(tt.typ))
+		})
+	}
+}
+
+func TestOrderStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status OrderStatus
+		expect int32
+	}{
+		{
+			name:   "unknown",
+			status: OrderStatusUnknown,
+			expect: 0,
+		},
+		{
+			name:   "unpaid",
+			status: OrderStatusUnpaid,
+			expect: 1,
+		},
+		{
+			name:   "waiting",
+			status: OrderStatusWaiting,
+			expect: 2,
+		},
+		{
+			name:   "preparing",
+			status: OrderStatusPreparing,
+			expect: 3,
+		},
+		{
+			name:   "shipped",
+			status: OrderStatusShipped,
+			expect: 4,
+		},
+		{
+			name:   "completed",
+			status: OrderStatusCompleted,
+			expect: 5,
+		},
+		{
+			name:   "canceled",
+			status: OrderStatusCanceled,
+			expect: 6,
+		},
+		{
+			name:   "refunded",
+			status: OrderStatusRefunded,
+			expect: 7,
+		},
+		{
+			name:   "failed",
+			status: OrderStatusFailed,
+			expect: 8,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, int32(tt.status))
+		})
+	}
+}
+
+func TestOrderShippingType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		shippingType OrderShippingType
+		expect       int32
+	}{
+		{
+			name:         "unknown",
+			shippingType: OrderShippingTypeUnknown,
+			expect:       0,
+		},
+		{
+			name:         "none",
+			shippingType: OrderShippingTypeNone,
+			expect:       1,
+		},
+		{
+			name:         "standard",
+			shippingType: OrderShippingTypeStandard,
+			expect:       2,
+		},
+		{
+			name:         "pickup",
+			shippingType: OrderShippingTypePickup,
+			expect:       3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, int32(tt.shippingType))
+		})
+	}
+}
+
 func TestOrderProduct(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
@@ -146,6 +274,7 @@ func TestOrderProduct(t *testing.T) {
 				},
 				PaymentMethodType: PaymentMethodTypeCreditCard,
 				Promotion: &Promotion{
+					ID:           "promotion-id",
 					Title:        "プロモーションタイトル",
 					Description:  "プロモーションの詳細です。",
 					Public:       true,
@@ -200,7 +329,7 @@ func TestOrderProduct(t *testing.T) {
 				UserID:          "user-id",
 				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
-				PromotionID:     "",
+				PromotionID:     "promotion-id",
 				Type:            OrderTypeProduct,
 				Status:          OrderStatusUnpaid,
 				ShippingType:    OrderShippingTypeStandard,
@@ -1164,7 +1293,7 @@ func TestOrders_Fill(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.orders.Fill(tt.payments, tt.fulfillments, tt.items, tt.experiences)
+			tt.orders.Fill(tt.payments, tt.fulfillments, tt.items, tt.experiences, map[string]*OrderMetadata{})
 			assert.Equal(t, tt.expect, tt.orders)
 		})
 	}
