@@ -1,1 +1,2 @@
 export { default as FmProductItem } from './FmProductItem.vue';
+export { default as FmTextInput } from './FmTextInput.vue';
