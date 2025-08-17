@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
+import { FmTextInput } from '@furumaru/shared';
 </script>
 
 <template>
@@ -10,12 +10,9 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
     <div>
       <div class="grid grid-cols-2 gap-2 mt-8 max-w-md mx-auto">
         <div>
-          <label
-            for="last_name"
-            class="inline-block text-xs px-2"
-          >名前(姓)</label>
           <FmTextInput
             id="last_name"
+            label="名前(姓)"
             name="last_name"
             placeholder="山田"
             required
@@ -23,12 +20,9 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
           />
         </div>
         <div>
-          <label
-            for="first_name"
-            class="inline-block text-xs px-2"
-          >名前(名)</label>
           <FmTextInput
             id="first_name"
+            label="名前(名)"
             name="first_name"
             placeholder="太郎"
             required
@@ -38,12 +32,9 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
       </div>
       <div class="grid grid-cols-2 gap-2 mt-4 max-w-md mx-auto">
         <div>
-          <label
-            for="last_name_kana"
-            class="inline-block text-xs px-2"
-          >フリガナ(姓)</label>
           <FmTextInput
             id="last_name_kana"
+            label="フリガナ(姓)"
             name="last_name_kana"
             placeholder="ヤマダ"
             required
@@ -51,12 +42,9 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
           />
         </div>
         <div>
-          <label
-            for="first_name_kana"
-            class="inline-block text-xs px-2"
-          >フリガナ(名)</label>
           <FmTextInput
             id="first_name_kana"
+            label="フリガナ(名)"
             name="first_name_kana"
             placeholder="タロウ"
             required
@@ -65,28 +53,22 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
         </div>
       </div>
       <div class="mt-4 max-w-md mx-auto">
-        <div class="px-2">
-          <label
-            for="stay_date"
-            class="inline-block text-xs px-2"
-          >宿泊日</label>
-          <input
+        <div>
+          <FmTextInput
             id="stay_date"
+            label="宿泊日"
             name="stay_date"
-            type="date"
             required
-            class="w-full px-2 custom-input"
-          >
+            class="w-full px-2"
+            type="date"
+          />
         </div>
       </div>
       <div class="mt-4 max-w-md mx-auto">
         <div>
-          <label
-            for="phone_number"
-            class="inline-block text-xs px-2"
-          >電話番号</label>
           <FmTextInput
             id="phone_number"
+            label="電話番号"
             name="phone_number"
             placeholder="09012345678"
             required
@@ -108,14 +90,3 @@ import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
     </div>
   </div>
 </template>
-
-<style scoped>
-.custom-input {
-  border-bottom: 1.5px solid #604c3f;
-}
-
-.custom-input:focus {
-  outline: none;
-  box-shadow: none;
-}
-</style>

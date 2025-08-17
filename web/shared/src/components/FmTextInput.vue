@@ -5,7 +5,7 @@ interface Props {
   name: string
   id?: string
   label?: string
-  type?: 'text' | 'password' | 'email' | 'number'
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date'
   placeholder?: string
   required?: boolean
   message?: string
@@ -90,7 +90,7 @@ const viewMessage = computed(() => {
     <div class="w-full text-main">
       <label
         v-if="label"
-        class="inline-block"
+        class="inline-block text-xs"
         :for="id"
       >
         {{ label }}
