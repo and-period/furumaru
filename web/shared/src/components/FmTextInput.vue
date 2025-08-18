@@ -13,6 +13,7 @@ interface Props {
   errorMessage?: string
   pattern?: string
   maxLength?: number
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   errorMessage: '',
   pattern: '',
   maxLength: undefined,
+  disabled: false,
 })
 
 
@@ -105,6 +107,7 @@ const viewMessage = computed(() => {
           :required="required"
           :pattern="pattern || undefined"
           :maxlength="maxLength || undefined"
+          :disabled="disabled"
           :class="{
             'block w-full appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none placeholder:text-placeholder': true,
             'border-b-2 border-orange': hasError,
