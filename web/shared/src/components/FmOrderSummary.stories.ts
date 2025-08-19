@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 import FmOrderSummary from './FmOrderSummary.vue';
 
 const meta = {
-  title: 'Components/FmOrderSummary',
+  title: 'FmOrderSummary',
   component: FmOrderSummary,
   parameters: {
     layout: 'padded',
@@ -12,19 +12,7 @@ const meta = {
     isLoading: {
       control: 'boolean',
     },
-    enableCoupon: {
-      control: 'boolean',
-    },
-    appliedCouponCode: {
-      control: 'text',
-    },
-    invalidCoupon: {
-      control: 'boolean',
-    },
     subtotal: {
-      control: 'number',
-    },
-    discount: {
       control: 'number',
     },
     shippingFee: {
@@ -49,7 +37,7 @@ const mockItems = [
       name: 'たまねぎ 500g',
       price: 3000,
       thumbnail: {
-        url: 'https://via.placeholder.com/56x56/90EE90/000000?text=玉ねぎ',
+        url: 'https://assets.furumaru.and-period.co.jp/products/media/image/tic8TSBKJGWqGbdpi3h5z7.jpg',
         isThumbnail: true,
       },
     },
@@ -62,7 +50,7 @@ const mockItems = [
       name: 'レモン 500g',
       price: 3000,
       thumbnail: {
-        url: 'https://via.placeholder.com/56x56/FFD700/000000?text=レモン',
+        url: 'https://assets.furumaru.and-period.co.jp/products/media/image/tic8TSBKJGWqGbdpi3h5z7.jpg',
         isThumbnail: true,
       },
     },
@@ -75,7 +63,7 @@ const mockItems = [
       name: '卵 500g',
       price: 3000,
       thumbnail: {
-        url: 'https://via.placeholder.com/56x56/F5DEB3/000000?text=卵',
+        url: 'https://assets.furumaru.and-period.co.jp/products/media/image/tic8TSBKJGWqGbdpi3h5z7.jpg',
         isThumbnail: true,
       },
     },
@@ -104,28 +92,10 @@ export const Default: Story = {
     subtotal: 9000,
     discount: 0,
     total: 9000,
-    enableCoupon: true,
     isLoading: false,
   },
 };
 
-// With Applied Coupon
-export const WithAppliedCoupon: Story = {
-  args: {
-    ...Default.args,
-    appliedCouponCode: 'SAVE10',
-    discount: 900,
-    total: 8100,
-  },
-};
-
-// With Invalid Coupon
-export const WithInvalidCoupon: Story = {
-  args: {
-    ...Default.args,
-    invalidCoupon: true,
-  },
-};
 
 // With Shipping Fee
 export const WithShippingFee: Story = {
@@ -144,13 +114,6 @@ export const Loading: Story = {
   },
 };
 
-// Without Coupon Functionality
-export const WithoutCoupon: Story = {
-  args: {
-    ...Default.args,
-    enableCoupon: false,
-  },
-};
 
 // Single Item
 export const SingleItem: Story = {
@@ -161,6 +124,5 @@ export const SingleItem: Story = {
     subtotal: 3000,
     discount: 0,
     total: 3000,
-    enableCoupon: true,
   },
 };
