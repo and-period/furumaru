@@ -1556,6 +1556,10 @@ export const useProductStore = defineStore('product', {
     products: (state) => {
       return state.productsResponse.products;
     },
+    
+    getProductById: (state) => (id: string) => {
+      return state.productsResponse.products.find(product => product.id === id);
+    },
   },
 
   actions: {},

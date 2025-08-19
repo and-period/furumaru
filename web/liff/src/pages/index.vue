@@ -39,12 +39,17 @@ const { products } = storeToRefs(productStore);
           v-for="product in products"
           :key="product.id"
         >
-          <FmProductItem
-            :name="product.name"
-            :price="product.price"
-            :stock="product.inventory"
-            :thumbnail-url="product.thumbnailUrl"
-          />
+          <NuxtLink
+            :to="`/items/${product.id}`"
+            class="block transition-transform hover:scale-105"
+          >
+            <FmProductItem
+              :name="product.name"
+              :price="product.price"
+              :stock="product.inventory"
+              :thumbnail-url="product.thumbnailUrl"
+            />
+          </NuxtLink>
         </template>
       </div>
     </div>
