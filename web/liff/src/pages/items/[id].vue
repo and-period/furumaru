@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FmProductDetail } from '@furumaru/shared';
-import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
 
 const route = useRoute();
@@ -48,11 +47,21 @@ if (!product.value) {
     <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3">
       <div class="flex items-center">
         <button
-          @click="$router.back()"
           class="flex items-center text-gray-600 hover:text-gray-800"
+          @click="$router.back()"
         >
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <svg
+            class="w-6 h-6 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           戻る
         </button>
@@ -92,7 +101,7 @@ if (!product.value) {
           在庫: {{ product.inventory }}個
         </div>
       </div>
-      
+
       <button
         :disabled="product.inventory === 0"
         class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
