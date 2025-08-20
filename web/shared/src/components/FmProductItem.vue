@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Component, computed, ref } from 'vue';
+import { type Component, computed, ref } from 'vue';
 
 interface Props {
   name: string;
