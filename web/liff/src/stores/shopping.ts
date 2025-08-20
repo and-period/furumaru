@@ -4,10 +4,6 @@ import type {
   CartItem as ApiCartItem,
   Product,
   Coordinator,
-  Weekday,
-  ProductStatus,
-  DeliveryType,
-  StorageMethodType,
 } from '~/types/api/models';
 
 export interface CartItem extends ApiCartItem {
