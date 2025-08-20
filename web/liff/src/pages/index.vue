@@ -21,9 +21,11 @@ onMounted(async () => {
   await liff.init({ liffId: liffId });
   console.log('LIFF init success');
   console.log('LIFF SDK version', liff.getVersion());
+});
 
+onMounted(() => {
   // Fetch products after LIFF initialization
-  await productStore.fetchProducts();
+  productStore.fetchProducts();
 });
 
 const productStore = useProductStore();

@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     public: {
       LIFF_ID: process.env.LIFF_ID,
       VERSION: pkg.version || '0.1.0',
-      API_BASE_URL: process.env.NODE_ENV === 'production' ? 'https://api.furumaru.and-period.co.jp' : 'http://localhost:8080',
+      API_BASE_URL: process.env.API_BASE_URL,
     },
   },
   srcDir: 'src',
