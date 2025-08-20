@@ -875,7 +875,7 @@ const onSubmitRefund = (): void => {
             </template>
           </v-data-table>
 
-          <v-list v-if="props.order.type === OrderType.EXPERIENCE">
+          <v-list>
             <v-list-item class="mb-4">
               <v-list-item-subtitle class="mb-2">
                 顧客情報
@@ -883,7 +883,7 @@ const onSubmitRefund = (): void => {
               <div>{{ getCustomerName() }}</div>
               <div>{{ getCustomerNameKana() }}</div>
               <div class="mt-1">
-                &Mu; {{ props.customer.email }}
+                &#128231; {{ props.customer.email }}
               </div>
               <div>&phone; {{ props.customer.phoneNumber }}</div>
             </v-list-item>
@@ -899,7 +899,61 @@ const onSubmitRefund = (): void => {
           予約情報
         </v-card-title>
         <v-card-text>
-          TODO：必要な情報を表示する
+          <v-row>
+            <v-col cols="3">
+              大人:
+            </v-col>
+            <v-col cols="3">
+              {{ props.order.experience.adultCount }}人
+            </v-col>
+            <v-col cols="6">
+              合計: {{ props.order.experience.adultPrice * props.order.experience.adultCount }}円
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              未就学児(3歳〜):
+            </v-col>
+            <v-col cols="3">
+              {{ props.order.experience.preschoolCount }}人
+            </v-col>
+            <v-col cols="6">
+              合計: {{ props.order.experience.preschoolPrice * props.order.experience.preschoolCount }}円
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              小学生:
+            </v-col>
+            <v-col cols="3">
+              {{ props.order.experience.elementarySchoolCount }}人
+            </v-col>
+            <v-col cols="6">
+              合計: {{ props.order.experience.elementarySchoolPrice * props.order.experience.elementarySchoolCount }}円
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              中学生:
+            </v-col>
+            <v-col cols="3">
+              {{ props.order.experience.juniorHighSchoolCount }}人
+            </v-col>
+            <v-col cols="6">
+              合計: {{ props.order.experience.juniorHighSchoolPrice * props.order.experience.juniorHighSchoolCount }}円
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              シニア(65歳〜):
+            </v-col>
+            <v-col cols="3">
+              {{ props.order.experience.seniorCount }}人
+            </v-col>
+            <v-col cols="6">
+              合計: {{ props.order.experience.seniorPrice * props.order.experience.seniorCount }}円
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -922,11 +976,14 @@ const onSubmitRefund = (): void => {
               <div>{{ getCustomerName() }}</div>
               <div>{{ getCustomerNameKana() }}</div>
               <div class="mt-1">
-                &Mu; {{ props.customer.email }}
+                &#128231; {{ props.customer.email }}
               </div>
               <div>&phone; {{ props.customer.phoneNumber }}</div>
             </v-list-item>
-            <v-list-item class="mb-4">
+            <v-list-item
+              v-if="props.order.type !== OrderType.EXPERIENCE"
+              class="mb-4"
+            >
               <v-list-item-subtitle class="pb-2">
                 請求先情報
               </v-list-item-subtitle>
