@@ -116,7 +116,7 @@ const formatPrice = (price: number) => {
                       <p class="text-xs text-gray-600">
                         数量: {{ item.quantity }}{{ item.product?.itemUnit }}
                       </p>
-                      <p class="text-sm font-bold text-blue-600">
+                      <p class="text-sm font-bold text-main">
                         ¥{{ formatPrice((item.product?.price || 0) * item.quantity) }}
                       </p>
                     </div>
@@ -134,13 +134,13 @@ const formatPrice = (price: number) => {
             </div>
             <div class="flex justify-between items-center">
               <span class="text-lg font-bold">合計金額:</span>
-              <span class="text-xl font-bold text-blue-600">¥{{ formatPrice(totalPrice) }}</span>
+              <span class="text-xl font-bold text-main">¥{{ formatPrice(totalPrice) }}</span>
             </div>
           </div>
 
           <!-- アクション -->
           <div class="mt-4 space-y-2">
-            <button class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            <button class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.7] transition-colors">
               レジに進む
             </button>
             <button
