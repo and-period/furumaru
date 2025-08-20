@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { Component, computed, ref } from 'vue';
 
 interface Props {
   name: string;
@@ -8,7 +8,9 @@ interface Props {
   stock: number
   soldOutText?: string
   addToCartButtonText?: string;
-  selectLabelText?: string
+  selectLabelText?: string;
+  linkComponent?: Component;
+  linkComponentProps?: object;
 }
 
 interface Emits {
@@ -19,6 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
   addToCartButtonText: 'カゴに入れる',
   selectLabelText: '数量',
   soldOutText: '在庫なし',
+  linkComponent: undefined,
+  linkComponentProps: undefined
 });
 
 const emits = defineEmits<Emits>()
@@ -97,7 +101,11 @@ const handleClickAddCartButton = () => {
           {{ soldOutText }}
         </p>
       </div>
-      <div class="block w-full">
+      <component
+        :is="linkComponent || 'div'"
+        class="block w-full"
+        v-bind="linkComponentProps"
+      >
         <template v-if="thumbnailIsVideo">
           <video
             :src="thumbnailUrl"
@@ -121,7 +129,7 @@ const handleClickAddCartButton = () => {
             >
           </div>
         </template> 
-      </div>
+      </component>
     </div>
     <p
       class="line-clamp-3 grow text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
