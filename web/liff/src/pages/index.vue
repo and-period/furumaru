@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FmProductItem } from '@furumaru/shared';
 
+import { NuxtLink } from '#components';
 import liff from '@line/liff';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
@@ -39,17 +40,14 @@ const { products } = storeToRefs(productStore);
           v-for="product in products"
           :key="product.id"
         >
-          <NuxtLink
-            :to="`/items/${product.id}`"
-            class="block transition-transform hover:scale-105"
-          >
-            <FmProductItem
-              :name="product.name"
-              :price="product.price"
-              :stock="product.inventory"
-              :thumbnail-url="product.thumbnailUrl"
-            />
-          </NuxtLink>
+          <FmProductItem
+            :name="product.name"
+            :price="product.price"
+            :stock="product.inventory"
+            :thumbnail-url="product.thumbnailUrl"
+            :link-component="NuxtLink"
+            :link-component-props="{ to: `/items/${product.id}`, class: 'block' }"
+          />
         </template>
       </div>
     </div>
