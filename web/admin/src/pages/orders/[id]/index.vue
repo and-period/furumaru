@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useCustomerStore, useOrderStore } from '~/store'
-import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment } from '~/types/api'
+import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment, User } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
 const route = useRoute()
@@ -19,6 +19,7 @@ const { customer } = storeToRefs(customerStore)
 const loading = ref<boolean>(false)
 const cancelDialog = ref<boolean>(false)
 const refundDialog = ref<boolean>(false)
+const userData = ref<User>()
 const completeFormData = ref<CompleteOrderRequest>({
   shippingMessage: '',
 })
@@ -38,6 +39,7 @@ const { data, refresh, status, error } = useAsyncData(`order-${orderId}`, () => 
 watch(data, (newData) => {
   // 注文情報が更新されたら、フォームデータを初期化
   if (newData) {
+    userData.value = newData.user
     completeFormData.value = {
       shippingMessage: newData.order.shippingMessage,
     }
@@ -221,7 +223,7 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
       :alert-text="alertText"
       :order="order"
       :coordinator="coordinator"
-      :customer="customer"
+      :customer="userData"
       :products="products"
       @submit:capture="handleSubmitCapture"
       @submit:draft="handleSubmitDraft"
