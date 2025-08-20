@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.1.1](https://github.com/and-period/furumaru/compare/v5.1.0...v5.1.1) - 2025-08-20
+- [web] 注文内容情報の共用コンポーネントの実装 by @Copilot in https://github.com/and-period/furumaru/pull/2930
+- [web] Implement FmProductDetail shared component for product detail pages by @Copilot in https://github.com/and-period/furumaru/pull/2928
+- [shared] Implement FmCreditCardForm component for reusable credit card input by @Copilot in https://github.com/and-period/furumaru/pull/2936
+- [web] Implement LIFF product detail page using FmProductDetail component by @Copilot in https://github.com/and-period/furumaru/pull/2934
+- Add LIFF API client generation to Swagger build system by @Copilot in https://github.com/and-period/furumaru/pull/2941
+- feat: 買い物カゴのUIパーツの実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2944
+- feat(OrderShow): 顧客情報と予約情報の表示を改善 by @hamachans in https://github.com/and-period/furumaru/pull/2947
+
 ## [v5.1.0](https://github.com/and-period/furumaru/compare/v5.0.11...v5.1.0) - 2025-08-19
 - build(deps): bump the dependencies group across 1 directory with 67 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2911
 - build(deps): bump the dependencies group across 1 directory with 130 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2908
