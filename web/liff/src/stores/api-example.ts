@@ -1,6 +1,7 @@
 // Example of how to use the generated LIFF API client
 import { defineStore } from 'pinia';
-import { ProductApi, Configuration, ProductsResponse } from '@/types/api';
+import type { ProductsResponse } from '@/types/api';
+import { ProductApi, Configuration } from '@/types/api';
 
 // Example configuration for API client
 const apiConfig = new Configuration({
@@ -25,19 +26,21 @@ export const useApiExampleStore = defineStore('apiExample', {
     async fetchProducts() {
       this.isLoading = true;
       this.error = null;
-      
+
       try {
         // Use the generated API client to fetch products
         const response = await productApi.v1ProductsGet({
           limit: 20,
           offset: 0,
         });
-        
+
         this.products = response.products || [];
-      } catch (error) {
+      }
+      catch (error) {
         this.error = error instanceof Error ? error.message : 'Failed to fetch products';
         console.error('Failed to fetch products:', error);
-      } finally {
+      }
+      finally {
         this.isLoading = false;
       }
     },
@@ -45,19 +48,21 @@ export const useApiExampleStore = defineStore('apiExample', {
     async fetchProductById(productId: string) {
       this.isLoading = true;
       this.error = null;
-      
+
       try {
         // Use the generated API client to fetch a specific product
         const response = await productApi.v1ProductsProductIdGet({
           productId,
         });
-        
+
         return response.product;
-      } catch (error) {
+      }
+      catch (error) {
         this.error = error instanceof Error ? error.message : 'Failed to fetch product';
         console.error('Failed to fetch product:', error);
         throw error;
-      } finally {
+      }
+      finally {
         this.isLoading = false;
       }
     },
