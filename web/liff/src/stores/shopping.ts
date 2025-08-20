@@ -4,6 +4,10 @@ import type {
   CartItem as ApiCartItem,
   Product,
   Coordinator,
+  Weekday,
+  ProductStatus,
+  DeliveryType,
+  StorageMethodType,
 } from '~/types/api/models';
 
 export interface CartItem extends ApiCartItem {
@@ -119,28 +123,18 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         coordinators: [
           {
             id: 'coordinator-1',
-            lastname: '田中',
-            firstname: '太郎',
-            lastnameKana: 'タナカ',
-            firstnameKana: 'タロウ',
+            marcheName: '田中マルシェ',
             username: '田中農園',
             profile: 'こだわりの野菜を作っています',
             productTypeIds: ['type-1'],
+            businessDays: [1, 2, 3, 4, 5], // Monday to Friday
             thumbnailUrl: 'https://example.com/coordinator.jpg',
             headerUrl: '',
             promotionVideoUrl: '',
-            bonusVideoUrl: '',
             instagramId: '',
             facebookId: '',
-            email: '',
-            phoneNumber: '',
-            postalCode: '',
             prefecture: '広島県',
             city: '東広島市',
-            addressLine1: '',
-            addressLine2: '',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
           },
         ],
         products: [
@@ -153,7 +147,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             productTagIds: [],
             name: '【瀬戸内の名産】赤土じゃがいも5キロ(40〜50個)',
             description: '瀬戸内海を臨む安芸津町の赤土じゃがいも',
-            status: 2,
+            status: 2, // FOR_SALE
             inventory: 93,
             weight: 5,
             itemUnit: '個',
@@ -170,17 +164,20 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             recommendedPoint1: '地元の名産・安芸津の赤土じゃがいも',
             recommendedPoint2: 'ホクホク＆しっとりで甘い',
             recommendedPoint3: '煮くずれしにくく調理しやすい',
-            storageMethodType: 1,
-            deliveryType: [1],
+            storageMethodType: 1, // NORMAL
+            deliveryType: 1, // NORMAL
             box60Rate: 50,
             box80Rate: 40,
             box100Rate: 30,
-            originPrefectureIds: ['34'],
+            originPrefecture: '広島県',
             originCity: '東広島市',
-            startAt: new Date().toISOString(),
-            endAt: new Date(Date.now() + 86400000 * 30).toISOString(),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            rate: {
+              count: 0,
+              average: 0,
+              detail: {},
+            },
+            startAt: Math.floor(Date.now() / 1000),
+            endAt: Math.floor((Date.now() + 86400000 * 30) / 1000),
           },
         ],
       };

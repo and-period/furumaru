@@ -1,8 +1,25 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useShoppingCartStore } from '~/stores/shopping';
+
 const isExpand = ref<boolean>(false);
+
+// ショッピングカートストアを使用
+const shoppingCartStore = useShoppingCartStore();
+const { shoppingCart, cartIsEmpty, totalPrice, totalQuantity } = storeToRefs(shoppingCartStore);
 
 const toggleExpand = () => {
   isExpand.value = !isExpand.value;
+};
+
+// コンポーネントマウント時にカート情報を取得
+onMounted(async () => {
+  await shoppingCartStore.getCart();
+});
+
+// 価格のフォーマット
+const formatPrice = (price: number) => {
+  return price.toLocaleString('ja-JP');
 };
 </script>
 
@@ -16,15 +33,124 @@ const toggleExpand = () => {
       :class="{ 'h-svh': isExpand, 'h-[56px]': !isExpand }"
     >
       <div class="text-center">
-        <button @click="toggleExpand">
-          カゴの中身を見る
+        <button
+          class="flex items-center justify-center w-full"
+          @click="toggleExpand"
+        >
+          <span v-if="cartIsEmpty">カゴの中身を見る</span>
+          <span v-else>カゴの中身を見る ({{ totalQuantity }}点)</span>
         </button>
       </div>
       <div
         v-if="isExpand"
-        class="w-full border-t border-gray-300 py-4 px-2"
+        class="w-full border-t border-gray-300 py-4 px-2 overflow-y-auto"
       >
-        コンテンツ
+        <!-- カートが空の場合 -->
+        <div
+          v-if="cartIsEmpty"
+          class="text-center py-8"
+        >
+          <p class="text-gray-500 text-lg mb-4">
+            買い物カゴは空です
+          </p>
+        </div>
+
+        <!-- カートに商品がある場合 -->
+        <div
+          v-else
+          class="space-y-4"
+        >
+          <!-- 各カートごとに表示 -->
+          <div
+            v-for="cart in shoppingCart.carts"
+            :key="cart.number"
+            class="mb-6"
+          >
+            <!-- コーディネーター情報 -->
+            <div
+              v-if="cart.coordinator"
+              class="mb-4 p-3 bg-gray-50 rounded-lg"
+            >
+              <h2 class="text-sm font-semibold">
+                {{ cart.coordinator.username }}
+              </h2>
+              <p class="text-xs text-gray-600">
+                {{ cart.coordinator.prefecture }}{{ cart.coordinator.city }}
+              </p>
+            </div>
+
+            <!-- 商品リスト -->
+            <div class="space-y-3">
+              <div
+                v-for="item in cart.items"
+                :key="item.productId"
+                class="border border-gray-200 rounded-lg p-3"
+              >
+                <div class="flex gap-3">
+                  <!-- サムネイル画像 -->
+                  <div class="flex-shrink-0">
+                    <img
+                      v-if="item.product?.thumbnail"
+                      :src="item.product.thumbnail.url"
+                      :alt="item.product.name"
+                      class="w-16 h-16 object-cover rounded-lg"
+                    >
+                    <div
+                      v-else
+                      class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center"
+                    >
+                      <span class="text-gray-400 text-xs">画像なし</span>
+                    </div>
+                  </div>
+
+                  <!-- 商品情報 -->
+                  <div class="flex-grow min-w-0">
+                    <h3 class="font-semibold text-sm mb-1 truncate">
+                      {{ item.product?.name || '商品名不明' }}
+                    </h3>
+
+                    <div class="space-y-1">
+                      <p class="text-xs text-gray-600">
+                        単価: ¥{{ formatPrice(item.product?.price || 0) }}
+                      </p>
+                      <p class="text-xs text-gray-600">
+                        数量: {{ item.quantity }}{{ item.product?.itemUnit }}
+                      </p>
+                      <p class="text-sm font-bold text-blue-600">
+                        ¥{{ formatPrice((item.product?.price || 0) * item.quantity) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 合計金額 -->
+          <div class="border-t border-gray-300 pt-4 mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm">合計商品数:</span>
+              <span class="text-sm font-semibold">{{ totalQuantity }}点</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold">合計金額:</span>
+              <span class="text-xl font-bold text-blue-600">¥{{ formatPrice(totalPrice) }}</span>
+            </div>
+          </div>
+
+          <!-- アクション -->
+          <div class="mt-4 space-y-2">
+            <button class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+              レジに進む
+            </button>
+            <button
+              class="w-full text-center py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              @click="toggleExpand"
+            >
+              買い物を続ける
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
