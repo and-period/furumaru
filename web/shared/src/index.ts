@@ -9,3 +9,4 @@ export type {
   Cart, 
   Promotion 
 } from './components/FmOrderSummary.vue';
+export type { CreditCardData } from './types/index';
