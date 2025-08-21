@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +19,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 // @Summary     カート取得
 // @Description カートの内容を取得します。
 // @Tags        Cart
-// @Router      /natureresort/carts [get]
+// @Router      /facilities/{facilityId}/carts [get]
 // @Security    bearerauth
 // @Produce     json
 // @Success     200 {object} response.CartResponse
@@ -37,7 +37,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 // @Summary     カートに追加
 // @Description カートに商品を追加します。
 // @Tags        Cart
-// @Router      /natureresort/carts/-/items [post]
+// @Router      /facilities/{facilityId}/carts/-/items [post]
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body request.AddCartItemRequest true "カートに追加リクエスト"
@@ -58,7 +58,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 // @Summary     カートから削除
 // @Description カートから商品を削除します。
 // @Tags        Cart
-// @Router      /natureresort/carts/-/items/:productId [delete]
+// @Router      /facilities/{facilityId}/carts/-/items/:productId [delete]
 // @Security    bearerauth
 // @Produce     json
 // @Success     204

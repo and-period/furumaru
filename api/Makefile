@@ -18,7 +18,7 @@ docs:
 	go tool swag init --v3.1 -d ./internal/gateway/${SERVICE}/handler -g ./handler.go --pd -ot yaml -o ./../docs/swagger/gen/${SERVICE}
 
 docs-all:
-	$(MAKE) docs SERVICE=user/natureresort
+	$(MAKE) docs SERVICE=user/facility
 
 fmt:
 	go tool golangci-lint fmt -c .golangci.yaml --diff ./pkg/... ./internal/...

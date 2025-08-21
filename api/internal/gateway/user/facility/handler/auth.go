@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +18,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 // @Summary     サインイン
 // @Description LINEの認証トークンを渡すことで、ふるマルへサインインします。
 // @Tags        Auth
-// @Router      /natureresort/auth [post]
+// @Router      /facilities/{facilityId}/auth [post]
 // @Accept      json
 // @Param       request body request.SignInRequest true "サインイン"
 // @Produce     json
@@ -43,7 +43,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 // @Summary     サインアウト
 // @Description ふるマルからサインアウトします。
 // @Tags        Auth
-// @Router      /natureresort/auth [delete]
+// @Router      /facilities/{facilityId}/auth [delete]
 // @Security    bearerauth
 // @Produce     json
 // @Success     204

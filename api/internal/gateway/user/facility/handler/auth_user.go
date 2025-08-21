@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +19,7 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 // @Summary     ユーザー情報取得
 // @Description ユーザーの詳細情報を取得します。
 // @Tags        AuthUser
-// @Router      /natureresort/users/me [get]
+// @Router      /facilities/{facilityId}/users/me [get]
 // @Security    bearerauth
 // @Produce     json
 // @Success     200 {object} response.AuthUserResponse
@@ -36,7 +36,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Summary     ユーザー情報登録
 // @Description ユーザーの詳細情報を登録します。
 // @Tags        AuthUser
-// @Router      /natureresort/users/me [post]
+// @Router      /facilities/{facilityId}/users/me [post]
 // @Accept      json
 // @Param				request body request.CreateAuthUserRequest true "ユーザー情報"
 // @Produce     json
@@ -60,7 +60,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 // @Summary     ユーザー情報更新
 // @Description ユーザーの最新のチェックイン日時を更新します。
 // @Tags        AuthUser
-// @Router      /natureresort/users/me/check-in [put]
+// @Router      /facilities/{facilityId}/users/me/check-in [put]
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body request.UpdateAuthUserCheckInRequest true "最新のチェックイン情報"

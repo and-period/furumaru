@@ -410,12 +410,12 @@ externalDocs:
   description: ""
   url: ""
 info:
-  description: キャンプ予約サイト（源流の里）向けのふるマルAPIです。（公開エンドポイントについてはふるマルAPI - 購入者向けを参照してください）
-  title: ふるマル API - キャンプ予約サイト（源流の里）用
+  description: 外部宿泊施設向けのふるマルAPIです。（公開エンドポイントについては「ふるマルAPI - 購入者向け」を参照してください）
+  title: ふるマル API - 外部宿泊施設向け
   version: ""
 openapi: 3.1.0
 paths:
-  /natureresort/auth:
+  /facilities/{facilityId}/auth:
     delete:
       description: ふるマルからサインアウトします。
       responses:
@@ -469,7 +469,7 @@ paths:
       summary: サインイン
       tags:
       - Auth
-  /natureresort/carts:
+  /facilities/{facilityId}/carts:
     get:
       description: カートの内容を取得します。
       responses:
@@ -490,7 +490,7 @@ paths:
       summary: カート取得
       tags:
       - Cart
-  /natureresort/carts/-/items:
+  /facilities/{facilityId}/carts/-/items:
     post:
       description: カートに商品を追加します。
       requestBody:
@@ -520,7 +520,7 @@ paths:
       summary: カートに追加
       tags:
       - Cart
-  /natureresort/carts/-/items/:productId:
+  /facilities/{facilityId}/carts/-/items/:productId:
     delete:
       description: カートから商品を削除します。
       responses:
@@ -537,7 +537,7 @@ paths:
       summary: カートから削除
       tags:
       - Cart
-  /natureresort/checkouts:
+  /facilities/{facilityId}/checkouts:
     post:
       description: 商品を購入します。
       requestBody:
@@ -569,7 +569,7 @@ paths:
       summary: 購入する
       tags:
       - Checkout
-  /natureresort/checkouts/{transactionId}:
+  /facilities/{facilityId}/checkouts/{transactionId}:
     get:
       description: 支払い状態を取得します。
       parameters:
@@ -609,7 +609,7 @@ paths:
       summary: 支払い状態取得
       tags:
       - Checkout
-  /natureresort/users/me:
+  /facilities/{facilityId}/users/me:
     get:
       description: ユーザーの詳細情報を取得します。
       responses:
@@ -673,7 +673,7 @@ paths:
       summary: ユーザー情報登録
       tags:
       - AuthUser
-  /natureresort/users/me/check-in:
+  /facilities/{facilityId}/users/me/check-in:
     put:
       description: ユーザーの最新のチェックイン日時を更新します。
       requestBody:
