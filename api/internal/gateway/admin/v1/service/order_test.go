@@ -441,6 +441,10 @@ func TestOrder(t *testing.T) {
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					CompletedAt:     0,
+					Metadata: &response.OrderMetadata{
+						PickupAt:       0,
+						PickupLocation: "",
+					},
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -1009,6 +1013,10 @@ func TestOrders(t *testing.T) {
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,
+						Metadata: &response.OrderMetadata{
+							PickupAt:       0,
+							PickupLocation: "",
+						},
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -1085,6 +1093,10 @@ func TestOrders(t *testing.T) {
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,
+						Metadata: &response.OrderMetadata{
+							PickupAt:       0,
+							PickupLocation: "",
+						},
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),

@@ -91,6 +91,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.authUserRoutes(g)
 	h.cartRoutes(g)
 	h.checkoutRoutes(g)
+	h.orderRoutes(g)
 }
 
 /**

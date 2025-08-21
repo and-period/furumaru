@@ -25,6 +25,8 @@ order:
       $ref: './../../../openapi.yaml#/components/schemas/orderType'
     status:
       $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
+    metadata:
+      $ref: '#/orderMetadata'
     payment:
       $ref: '#/orderPayment'
     refund:
@@ -62,6 +64,7 @@ order:
   - shippingMessage
   - type
   - status
+  - metadata
   - payment
   - refund
   - fulfillments
@@ -79,6 +82,9 @@ order:
     shippingMessage: '購入ありがとうございます'
     type: 1
     status: 5
+    metadata:
+      pickupAt: 1640962800
+      pickupLocation: '店舗名・住所など'
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
       methodType: 2
@@ -147,6 +153,23 @@ order:
     createdAt: 1640962800
     updatedAt: 1640962800
     completedAt: 1640962800
+orderMetadata:
+  type: object
+  description: 注文メタデータ
+  properties:
+    pickupAt:
+      type: integer
+      format: int64
+      description: 受け取り日時
+    pickupLocation:
+      type: string
+      description: 受け取り場所
+  required:
+  - pickupAt
+  - pickupLocation
+  example:
+    pickupAt: 1640962800
+    pickupLocation: '店舗名・住所など'
 orderPayment:
   type: object
   description: 注文決済情報

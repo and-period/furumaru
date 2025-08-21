@@ -220,6 +220,7 @@ components:
           type: integer
       type: object
     response.Coordinator:
+      description: コーディネータ情報
       properties:
         businessDays:
           description: 営業曜日(発送可能日)
@@ -266,6 +267,151 @@ components:
         username:
           description: 表示名
           type: string
+      type: object
+    response.Order:
+      description: 注文履歴情報
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        id:
+          description: 注文履歴ID
+          type: string
+        items:
+          description: 注文商品一覧
+          items:
+            $ref: '#/components/schemas/response.OrderItem'
+          type: array
+          uniqueItems: false
+        payment:
+          $ref: '#/components/schemas/response.OrderPayment'
+        pickupAt:
+          description: 受け取り日時
+          type: integer
+        pickupLocation:
+          description: 受け取り場所
+          type: string
+        promotionId:
+          description: プロモーションID
+          type: string
+        refund:
+          $ref: '#/components/schemas/response.OrderRefund'
+        status:
+          description: 注文ステータス
+          type: integer
+        type:
+          description: 注文種別
+          type: integer
+      type: object
+    response.OrderItem:
+      properties:
+        fulfillmentId:
+          description: 配送情報ID
+          type: string
+        price:
+          description: 購入価格(税込)
+          type: integer
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 購入数量
+          type: integer
+      type: object
+    response.OrderPayment:
+      description: 支払い情報
+      properties:
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        methodType:
+          description: 決済手段種別
+          type: integer
+        orderedAt:
+          description: 注文日時
+          type: integer
+        paidAt:
+          description: 支払日時
+          type: integer
+        shippingFee:
+          description: 配送手数料(税込)
+          type: integer
+        status:
+          description: 支払い状況
+          type: integer
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+        transactionId:
+          description: 取引ID
+          type: string
+      type: object
+    response.OrderRefund:
+      description: 注文キャンセル情報
+      properties:
+        canceled:
+          description: 注文キャンセルフラグ
+          type: boolean
+        canceledAt:
+          description: 注文キャンセル日時
+          type: integer
+        reason:
+          description: 注文キャンセル理由
+          type: string
+        total:
+          description: 返金金額
+          type: integer
+        type:
+          description: 注文キャンセル種別
+          type: integer
+      type: object
+    response.OrderResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        order:
+          $ref: '#/components/schemas/response.Order'
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        promotion:
+          $ref: '#/components/schemas/response.Promotion'
+      type: object
+    response.OrdersResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        orders:
+          description: 注文履歴一覧
+          items:
+            $ref: '#/components/schemas/response.Order'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        promotions:
+          description: プロモーション一覧
+          items:
+            $ref: '#/components/schemas/response.Promotion'
+          type: array
+          uniqueItems: false
+        total:
+          description: 合計数
+          type: integer
       type: object
     response.Product:
       properties:
@@ -388,6 +534,37 @@ components:
             type: integer
           description: 評価詳細
           type: object
+      type: object
+    response.Promotion:
+      description: プロモーション情報
+      properties:
+        code:
+          description: クーポンコード
+          type: string
+        description:
+          description: 詳細説明
+          type: string
+        discountRate:
+          description: 割引額(%/円)
+          type: integer
+        discountType:
+          description: 割引計算方法
+          type: integer
+        endAt:
+          description: クーポン使用可能日時(終了)
+          type: integer
+        id:
+          description: プロモーションID
+          type: string
+        startAt:
+          description: クーポン使用可能日時(開始)
+          type: integer
+        status:
+          description: ステータス
+          type: integer
+        title:
+          description: タイトル
+          type: string
       type: object
     util.ErrorResponse:
       properties:
@@ -609,6 +786,88 @@ paths:
       summary: 支払い状態取得
       tags:
       - Checkout
+  /facilities/{facilityId}/orders:
+    get:
+      description: 注文の一覧を取得します。
+      parameters:
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: 注文ステータス
+        in: query
+        name: types
+        schema:
+          items:
+            type: integer
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.OrdersResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 注文一覧取得
+      tags:
+      - Order
+  /facilities/{facilityId}/orders/{orderId}:
+    get:
+      description: 注文の詳細を取得します。
+      parameters:
+      - description: 注文ID
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.OrderResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 注文が見つからない
+      security:
+      - bearerauth: []
+      summary: 注文詳細取得
+      tags:
+      - Order
   /facilities/{facilityId}/users/me:
     get:
       description: ユーザーの詳細情報を取得します。

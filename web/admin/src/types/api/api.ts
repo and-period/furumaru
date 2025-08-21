@@ -3879,6 +3879,12 @@ export interface Order {
     'status': OrderStatus;
     /**
      * 
+     * @type {OrderMetadata}
+     * @memberof Order
+     */
+    'metadata': OrderMetadata;
+    /**
+     * 
      * @type {OrderPayment}
      * @memberof Order
      */
@@ -4179,6 +4185,25 @@ export interface OrderItem {
      * @memberof OrderItem
      */
     'quantity': number;
+}
+/**
+ * 注文メタデータ
+ * @export
+ * @interface OrderMetadata
+ */
+export interface OrderMetadata {
+    /**
+     * 受け取り日時
+     * @type {number}
+     * @memberof OrderMetadata
+     */
+    'pickupAt': number;
+    /**
+     * 受け取り場所
+     * @type {string}
+     * @memberof OrderMetadata
+     */
+    'pickupLocation': string;
 }
 /**
  * 注文決済情報
