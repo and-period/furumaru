@@ -34,7 +34,7 @@ func (a *app) newRouter() *gin.Engine {
 	rt.Use(opts...)
 
 	a.v1.Routes(rt.Group(""))
-	a.natureresort.Routes(rt.Group(""))
+	a.facility.Routes(rt.Group(""))
 
 	// other routes
 	healthMethods := []string{

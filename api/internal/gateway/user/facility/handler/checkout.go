@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/natureresort/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +20,7 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 // @Summary     購入する
 // @Description 商品を購入します。
 // @Tags        Checkout
-// @Router      /natureresort/checkouts [post]
+// @Router      /facilities/{facilityId}/checkouts [post]
 // @Accept      json
 // @Param				request body request.CheckoutRequest true "チェックアウト情報"
 // @Produce     json
@@ -41,7 +41,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 // @Summary     支払い状態取得
 // @Description 支払い状態を取得します。
 // @Tags        Checkout
-// @Router      /natureresort/checkouts/{transactionId} [get]
+// @Router      /facilities/{facilityId}/checkouts/{transactionId} [get]
 // @Param       transactionId path string true "取引ID"
 // @Security    bearerauth
 // @Produce     json

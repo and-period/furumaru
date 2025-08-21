@@ -14,8 +14,8 @@ import (
 
 const userIDKey = "userId"
 
-// @title               ふるマル API - キャンプ予約サイト（源流の里）用
-// @description         キャンプ予約サイト（源流の里）向けのふるマルAPIです。（公開エンドポイントについてはふるマルAPI - 購入者向けを参照してください）
+// @title               ふるマル API - 外部宿泊施設向け
+// @description         外部宿泊施設向けのふるマルAPIです。（公開エンドポイントについては「ふるマルAPI - 購入者向け」を参照してください）
 // @servers.url         https://api.furumaru-stg.and-period.work
 // @servers.description 検証環境
 // @servers.url				  https://api.furumaru.and-period.co.jp
@@ -60,7 +60,7 @@ func WithSentry(sentry sentry.Client) Option {
 
 func NewHandler(params *Params, opts ...Option) gateway.Handler {
 	dopts := &options{
-		appName: "natureresort-gateway",
+		appName: "facility-gateway",
 		env:     "",
 		sentry:  sentry.NewFixedMockClient(),
 	}
@@ -84,7 +84,7 @@ func (h *handler) Sync(ctx context.Context) error {
 }
 
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	g := rg.Group("/natureresort")
+	g := rg.Group("/facilities/:facilityId")
 	// 公開エンドポイント
 	h.authRoutes(g)
 	// 要認証エンドポイント
