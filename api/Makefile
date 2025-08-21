@@ -14,10 +14,10 @@ mockgen: ## ユニットテストで使用するモックの生成
 	rm -rf ./mock
 	go generate ./...
 
-docs:
+docs: ## API仕様書の生成
 	go tool swag init --v3.1 -d ./internal/gateway/${SERVICE}/handler -g ./handler.go --pd -ot yaml -o ./../docs/swagger/gen/${SERVICE}
 
-docs-all:
+docs-all: ## 全サービスのAPI仕様書の生成
 	$(MAKE) docs SERVICE=user/facility
 
 fmt:

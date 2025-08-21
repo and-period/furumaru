@@ -39,7 +39,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	types, err := util.GetQueryInt32s(ctx, "type")
+	types, err := util.GetQueryInt32s(ctx, "types")
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
