@@ -71,7 +71,7 @@ const products = computed(() => {
 
 // 体験情報の取得
 const experience = computed(() => {
-  return data.value?.experience || null
+  return data.value?.experience || undefined
 })
 
 watch(error, (err) => {

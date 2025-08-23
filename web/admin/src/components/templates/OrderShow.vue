@@ -2,7 +2,6 @@
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
-import type { ExpandProps } from 'vuetify/lib/components/VDataTable/composables/expand.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { findPrefecture, getResizedImages } from '~/lib/helpers'
@@ -116,8 +115,8 @@ const props = defineProps({
     default: () => [],
   },
   experience: {
-    type: Object as PropType<Experience>,
-    default: () => ({}),
+    type: Object as PropType<Experience | null>,
+    default: () => null,
   },
   completeFormData: {
     type: Object as PropType<CompleteOrderRequest>,
