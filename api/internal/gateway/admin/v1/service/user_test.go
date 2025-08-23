@@ -71,6 +71,7 @@ func TestUser(t *testing.T) {
 			name: "success member",
 			user: &uentity.User{
 				ID:         "user-id",
+				Type:       uentity.UserTypeMember,
 				Registered: true,
 				Status:     uentity.UserStatusVerified,
 				Member: uentity.Member{
@@ -151,6 +152,7 @@ func TestUser(t *testing.T) {
 			name: "success guest",
 			user: &uentity.User{
 				ID:         "user-id",
+				Type:       uentity.UserTypeGuest,
 				Registered: false,
 				Status:     uentity.UserStatusGuest,
 				Guest: uentity.Guest{
@@ -218,6 +220,60 @@ func TestUser(t *testing.T) {
 					revisionID: 1,
 				},
 			},
+		},
+		{
+			name: "success facility user",
+			user: &uentity.User{
+				ID:         "user-id",
+				Type:       uentity.UserTypeFacilityUser,
+				Registered: true,
+				Status:     uentity.UserStatusVerified,
+				FacilityUser: uentity.FacilityUser{
+					UserID:        "user-id",
+					Lastname:      "外部",
+					Firstname:     "施設利用者",
+					LastnameKana:  "がいぶ",
+					FirstnameKana: "しせつりようしゃ",
+					Email:         "facility@example.com",
+					PhoneNumber:   "+819087654321",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			address: nil,
+			expect: &User{
+				User: response.User{
+					ID:            "user-id",
+					Status:        int32(UserStatusVerified),
+					Registered:    true,
+					Username:      "外部宿泊施設利用者",
+					AccountID:     "",
+					Lastname:      "外部",
+					Firstname:     "施設利用者",
+					LastnameKana:  "がいぶ",
+					FirstnameKana: "しせつりようしゃ",
+					Email:         "facility@example.com",
+					PhoneNumber:   "+819087654321",
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
+				},
+				address: Address{},
+			},
+		},
+		{
+			name: "nil user",
+			user: &uentity.User{
+				ID:         "user-id",
+				Type:       uentity.UserTypeUnknown,
+				Registered: false,
+				Status:     uentity.UserStatusUnknown,
+				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			address: nil,
+			expect:  nil,
 		},
 	}
 	for _, tt := range tests {
@@ -380,6 +436,7 @@ func TestUsers(t *testing.T) {
 			users: uentity.Users{
 				{
 					ID:         "user-id",
+					Type:       uentity.UserTypeMember,
 					Registered: true,
 					Status:     uentity.UserStatusVerified,
 					Member: uentity.Member{
