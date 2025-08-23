@@ -19,6 +19,7 @@ func (s *service) UpsertGuest(ctx context.Context, in *user.UpsertGuestInput) (s
 	}
 	if guest == nil { // 登録処理
 		params := &entity.NewUserParams{
+			UserType:      entity.UserTypeGuest,
 			Registered:    false, // ゲストとして登録
 			Lastname:      in.Lastname,
 			Firstname:     in.Firstname,

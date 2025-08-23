@@ -104,8 +104,8 @@ func NewOrderExperienceRemarks(params *NewOrderExperienceRemarksParams) (*OrderE
 }
 
 func (r *OrderExperienceRemarks) Marshal() ([]byte, error) {
-	if len(r.Transportation) == 0 {
-		return nil, nil
+	if r == nil {
+		return []byte{}, nil
 	}
 	return json.Marshal(r)
 }

@@ -31,8 +31,9 @@ func (s *service) CreateMember(ctx context.Context, in *user.CreateMemberInput) 
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewUserParams{
+		UserType:      entity.UserTypeMember,
 		Registered:    true,
-		CognitoID:     cognitoID,
+		ExternalID:    cognitoID,
 		Email:         in.Email,
 		ProviderType:  entity.UserAuthProviderTypeEmail,
 		Username:      in.Username,
@@ -318,8 +319,9 @@ func (s *service) createMemberWithOAuth(ctx context.Context, params *createMembe
 	slog.DebugContext(ctx, "Creating User account", slog.Any("user", cuser))
 
 	userParams := &entity.NewUserParams{
+		UserType:      entity.UserTypeMember,
 		Registered:    true,
-		CognitoID:     cuser.Username,
+		ExternalID:    cuser.Username,
 		Email:         cuser.Email,
 		ProviderType:  params.providerType,
 		Username:      params.payload.Username,
