@@ -2,6 +2,7 @@
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { ExpandProps } from 'vuetify/lib/components/VDataTable/composables/expand.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { findPrefecture, getResizedImages } from '~/lib/helpers'
@@ -19,7 +20,7 @@ import {
 
   OrderType,
 } from '~/types/api'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User } from '~/types/api'
+import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User, Experience } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -113,6 +114,10 @@ const props = defineProps({
   products: {
     type: Array<Product>,
     default: () => [],
+  },
+  experience: {
+    type: Object as PropType<Experience>,
+    default: () => ({}),
   },
   completeFormData: {
     type: Object as PropType<CompleteOrderRequest>,
@@ -898,6 +903,10 @@ const onSubmitRefund = (): void => {
         <v-card-title class="pb-4">
           予約情報
         </v-card-title>
+        <div class="px-4 pb-2 font-medium">
+          <p>&#x1F3AB; {{ props.experience.title }}</p>
+          <p>&#x1F4CD; {{ props.experience.hostCity }}{{ props.experience.hostAddressLine1 }}{{ props.experience.hostAddressLine2 }}</p>
+        </div>
         <v-card-text>
           <v-row>
             <v-col cols="3">

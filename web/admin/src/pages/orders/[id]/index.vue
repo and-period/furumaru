@@ -69,6 +69,11 @@ const products = computed(() => {
   return data.value?.products || []
 })
 
+// 体験情報の取得
+const experience = computed(() => {
+  return data.value?.experience || null
+})
+
 watch(error, (err) => {
   // エラーが発生した場合、アラートを表示
   if (err) {
@@ -225,6 +230,7 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
       :coordinator="coordinator"
       :customer="userData"
       :products="products"
+      :experience="experience"
       @submit:capture="handleSubmitCapture"
       @submit:draft="handleSubmitDraft"
       @submit:complete="handleSubmitComplete"
