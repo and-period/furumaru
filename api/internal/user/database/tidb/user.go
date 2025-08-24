@@ -128,24 +128,28 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 		return nil
 	}
 
-	usersMap := entity.Users(users).GroupByRegistered()
+	usersMap := entity.Users(users).GroupByUserType()
 
 	var (
-		members entity.Members
-		guests  entity.Guests
+		members       entity.Members
+		guests        entity.Guests
+		facilityUsers entity.FacilityUsers
 	)
-	for registered, us := range usersMap {
+	for userType, us := range usersMap {
 		var err error
-		if registered {
+		switch userType {
+		case entity.UserTypeMember:
 			members, err = u.fetchMembers(ctx, tx, us.IDs())
-		} else {
+		case entity.UserTypeGuest:
 			guests, err = u.fetchGuests(ctx, tx, us.IDs())
+		case entity.UserTypeFacilityUser:
+			facilityUsers, err = u.fetchFacilityUsers(ctx, tx, us.IDs())
 		}
 		if err != nil {
 			return err
 		}
 	}
-	entity.Users(users).Fill(members.Map(), guests.Map())
+	entity.Users(users).Fill(members.Map(), guests.Map(), facilityUsers.Map())
 	return nil
 }
 
@@ -161,6 +165,17 @@ func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) 
 func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
 	var guests entity.Guests
 
-	err := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs).Find(&guests).Error
+	stmt := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs)
+
+	err := stmt.Find(&guests).Error
 	return guests, err
+}
+
+func (u *user) fetchFacilityUsers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.FacilityUsers, error) {
+	var facilityUsers entity.FacilityUsers
+
+	stmt := u.db.Statement(ctx, tx, facilityUserTable).Where("user_id IN (?)", userIDs)
+
+	err := stmt.Find(&facilityUsers).Error
+	return facilityUsers, err
 }

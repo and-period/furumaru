@@ -46,6 +46,7 @@ func TestUpsertGuest(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, user *entity.User) error {
 						expect := &entity.User{
 							ID:         user.ID, // ignore
+							Type:       entity.UserTypeGuest,
 							Registered: false,
 							Guest: entity.Guest{
 								UserID:        user.ID, // ignore

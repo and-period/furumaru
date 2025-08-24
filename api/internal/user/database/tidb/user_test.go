@@ -274,6 +274,7 @@ func TestUser_Get(t *testing.T) {
 func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:         id,
+		Type:       entity.UserTypeMember,
 		Registered: true,
 		Status:     entity.UserStatusVerified,
 		Member:     *testMember(id, email, phoneNumber, now),
@@ -285,6 +286,7 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 func testGuestUser(id, email string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:         id,
+		Type:       entity.UserTypeGuest,
 		Registered: false,
 		Status:     entity.UserStatusGuest,
 		Guest:      *testGuest(id, email, now),

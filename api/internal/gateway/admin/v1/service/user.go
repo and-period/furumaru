@@ -55,10 +55,16 @@ func NewUser(user *uentity.User, address *uentity.Address) *User {
 	if address == nil {
 		address = &uentity.Address{}
 	}
-	if user.Registered {
+	switch user.Type {
+	case uentity.UserTypeMember:
 		return newMemberUser(user, address)
+	case uentity.UserTypeGuest:
+		return newGuestUser(user, address)
+	case uentity.UserTypeFacilityUser:
+		return newFacilityUser(user, address)
+	default:
+		return nil
 	}
-	return newGuestUser(user, address)
 }
 
 func newMemberUser(user *uentity.User, address *uentity.Address) *User {
@@ -74,7 +80,7 @@ func newMemberUser(user *uentity.User, address *uentity.Address) *User {
 			LastnameKana:  user.Member.LastnameKana,
 			FirstnameKana: user.Member.FirstnameKana,
 			Email:         user.Member.Email,
-			PhoneNumber:   user.PhoneNumber,
+			PhoneNumber:   user.Member.PhoneNumber,
 			ThumbnailURL:  user.ThumbnailURL,
 			CreatedAt:     jst.Unix(user.CreatedAt),
 			UpdatedAt:     jst.Unix(user.UpdatedAt),
@@ -97,10 +103,31 @@ func newGuestUser(user *uentity.User, address *uentity.Address) *User {
 			FirstnameKana: user.Guest.FirstnameKana,
 			Email:         user.Guest.Email,
 			PhoneNumber:   address.PhoneNumber, // 保持していないためアドレス帳の情報を使用
-			CreatedAt:     user.CreatedAt.Unix(),
-			UpdatedAt:     user.UpdatedAt.Unix(),
+			CreatedAt:     jst.Unix(user.CreatedAt),
+			UpdatedAt:     jst.Unix(user.UpdatedAt),
 		},
 		address: *NewAddress(address),
+	}
+}
+
+func newFacilityUser(user *uentity.User, _ *uentity.Address) *User {
+	return &User{
+		User: response.User{
+			ID:            user.ID,
+			Status:        NewUserStatus(user.Status).Response(),
+			Registered:    user.Registered,
+			Username:      "外部宿泊施設利用者",
+			AccountID:     "",
+			Lastname:      user.FacilityUser.Lastname,
+			Firstname:     user.FacilityUser.Firstname,
+			LastnameKana:  user.FacilityUser.LastnameKana,
+			FirstnameKana: user.FacilityUser.FirstnameKana,
+			Email:         user.FacilityUser.Email,
+			PhoneNumber:   user.FacilityUser.PhoneNumber,
+			CreatedAt:     jst.Unix(user.CreatedAt),
+			UpdatedAt:     jst.Unix(user.UpdatedAt),
+		},
+		address: Address{},
 	}
 }
 

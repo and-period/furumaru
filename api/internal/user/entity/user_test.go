@@ -19,8 +19,9 @@ func TestUser(t *testing.T) {
 		{
 			name: "success with member",
 			params: &NewUserParams{
+				UserType:      UserTypeMember,
 				Registered:    true,
-				CognitoID:     "cognito-id",
+				ExternalID:    "cognito-id",
 				Username:      "username",
 				AccountID:     "account-id",
 				Lastname:      "&.",
@@ -32,6 +33,7 @@ func TestUser(t *testing.T) {
 				PhoneNumber:   "+810000000000",
 			},
 			expect: &User{
+				Type:       UserTypeMember,
 				Registered: true,
 				Member: Member{
 					CognitoID:     "cognito-id",
@@ -50,8 +52,9 @@ func TestUser(t *testing.T) {
 		{
 			name: "success with guest",
 			params: &NewUserParams{
+				UserType:      UserTypeGuest,
 				Registered:    false,
-				CognitoID:     "cognito-id",
+				ExternalID:    "cognito-id",
 				Username:      "username",
 				AccountID:     "account-id",
 				Lastname:      "&.",
@@ -63,6 +66,7 @@ func TestUser(t *testing.T) {
 				PhoneNumber:   "+810000000000",
 			},
 			expect: &User{
+				Type:       UserTypeGuest,
 				Registered: false,
 				Guest: Guest{
 					Lastname:      "&.",
@@ -73,15 +77,49 @@ func TestUser(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "success with facility user",
+			params: &NewUserParams{
+				UserType:      UserTypeFacilityUser,
+				Registered:    false,
+				ExternalID:    "external-id",
+				ProducerID:    "producer-id",
+				Username:      "username",
+				AccountID:     "account-id",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				ProviderType:  UserAuthProviderTypeEmail,
+				Email:         "test-user@and-period.jp",
+				PhoneNumber:   "+810000000000",
+			},
+			expect: &User{
+				Type:       UserTypeFacilityUser,
+				Registered: false,
+				FacilityUser: FacilityUser{
+					ExternalID:    "external-id",
+					ProducerID:    "producer-id",
+					Lastname:      "&.",
+					Firstname:     "利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "りようしゃ",
+					ProviderType:  UserAuthProviderTypeEmail,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+810000000000",
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewUser(tt.params)
-			actual.ID = ""            // ignore
-			actual.Member.UserID = "" // ignore
-			actual.Guest.UserID = ""  // ignore
+			actual.ID = ""                  // ignore
+			actual.Member.UserID = ""       // ignore
+			actual.Guest.UserID = ""        // ignore
+			actual.FacilityUser.UserID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -237,11 +275,12 @@ func TestUser_Email(t *testing.T) {
 func TestUser_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		user   *User
-		member *Member
-		guest  *Guest
-		expect *User
+		name         string
+		user         *User
+		member       *Member
+		guest        *Guest
+		facilityUser *FacilityUser
+		expect       *User
 	}{
 		{
 			name: "success",
@@ -252,11 +291,17 @@ func TestUser_Fill(t *testing.T) {
 			guest: &Guest{
 				UserID: "user-id",
 			},
+			facilityUser: &FacilityUser{
+				UserID: "user-id",
+			},
 			expect: &User{
 				Member: Member{
 					UserID: "user-id",
 				},
 				Guest: Guest{
+					UserID: "user-id",
+				},
+				FacilityUser: FacilityUser{
 					UserID: "user-id",
 				},
 				Status: UserStatusGuest,
@@ -266,7 +311,7 @@ func TestUser_Fill(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.user.Fill(tt.member, tt.guest)
+			tt.user.Fill(tt.member, tt.guest, tt.facilityUser)
 			assert.Equal(t, tt.expect, tt.user)
 		})
 	}
@@ -470,11 +515,12 @@ func TestUsers_GroupByRegistered(t *testing.T) {
 func TestUsers_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name    string
-		users   Users
-		members map[string]*Member
-		guests  map[string]*Guest
-		expect  Users
+		name          string
+		users         Users
+		members       map[string]*Member
+		guests        map[string]*Guest
+		facilityUsers map[string]*FacilityUser
+		expect        Users
 	}{
 		{
 			name: "success",
@@ -492,18 +538,25 @@ func TestUsers_Fill(t *testing.T) {
 					UserID: "user-id01",
 				},
 			},
+			facilityUsers: map[string]*FacilityUser{
+				"user-id01": {
+					UserID: "user-id01",
+				},
+			},
 			expect: Users{
 				{
-					ID:     "user-id01",
-					Member: Member{UserID: "user-id01"},
-					Guest:  Guest{UserID: "user-id01"},
-					Status: UserStatusGuest,
+					ID:           "user-id01",
+					Member:       Member{UserID: "user-id01"},
+					Guest:        Guest{UserID: "user-id01"},
+					FacilityUser: FacilityUser{UserID: "user-id01"},
+					Status:       UserStatusGuest,
 				},
 				{
-					ID:     "user-id02",
-					Member: Member{},
-					Guest:  Guest{},
-					Status: UserStatusGuest,
+					ID:           "user-id02",
+					Member:       Member{},
+					Guest:        Guest{},
+					FacilityUser: FacilityUser{},
+					Status:       UserStatusGuest,
 				},
 			},
 		},
@@ -511,7 +564,7 @@ func TestUsers_Fill(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.users.Fill(tt.members, tt.guests)
+			tt.users.Fill(tt.members, tt.guests, tt.facilityUsers)
 			assert.Equal(t, tt.expect, tt.users)
 		})
 	}

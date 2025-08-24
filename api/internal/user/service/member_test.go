@@ -26,6 +26,7 @@ func TestCreateMember(t *testing.T) {
 			name: "success create user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectUser := &entity.User{
+					Type:       entity.UserTypeMember,
 					Registered: true,
 					Member: entity.Member{
 						Username:      "username",
@@ -1206,6 +1207,7 @@ func mockCreateMemberWithOAuth(m *mocks, t *testing.T, providerType entity.UserA
 		},
 	}
 	expectUser := &entity.User{
+		Type:       entity.UserTypeMember,
 		Registered: true,
 		Member: entity.Member{
 			Username:      "username",
@@ -1277,6 +1279,7 @@ func TestCreateMemberWithOAuth(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectUser := &entity.User{
+					Type:       entity.UserTypeMember,
 					Registered: true,
 					Member: entity.Member{
 						Username:      "username",
