@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.1.2](https://github.com/and-period/furumaru/compare/v5.1.1...v5.1.2) - 2025-08-24
+- [liff] Implement API client integration for product listing page by @Copilot in https://github.com/and-period/furumaru/pull/2943
+- [liff] 買い物カゴのUIを共通レイアウトに実装 by @Copilot in https://github.com/and-period/furumaru/pull/2946
+- fix(gateway): path prefixに生産者IDを含めるように by @taba2424 in https://github.com/and-period/furumaru/pull/2949
+- feat(gateway): キャンプ施設向けの注文APIの仕様追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2931
+- fix(gateway): user.goの変更に合わせてテストを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2952
+
 ## [v5.1.1](https://github.com/and-period/furumaru/compare/v5.1.0...v5.1.1) - 2025-08-20
 - [web] 注文内容情報の共用コンポーネントの実装 by @Copilot in https://github.com/and-period/furumaru/pull/2930
 - [web] Implement FmProductDetail shared component for product detail pages by @Copilot in https://github.com/and-period/furumaru/pull/2928
