@@ -165,13 +165,17 @@ func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) 
 func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
 	var guests entity.Guests
 
-	err := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs).Find(&guests).Error
+	stmt := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs)
+
+	err := stmt.Find(&guests).Error
 	return guests, err
 }
 
 func (u *user) fetchFacilityUsers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.FacilityUsers, error) {
 	var facilityUsers entity.FacilityUsers
 
-	err := u.db.Statement(ctx, tx, facilityUserTable).Where("user_id IN (?)", userIDs).Find(&facilityUsers).Error
+	stmt := u.db.Statement(ctx, tx, facilityUserTable).Where("user_id IN (?)", userIDs)
+
+	err := stmt.Find(&facilityUsers).Error
 	return facilityUsers, err
 }

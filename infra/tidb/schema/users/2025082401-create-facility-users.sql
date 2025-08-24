@@ -1,3 +1,5 @@
+ALTER TABLE `users`.`users` ADD COLUMN `type` INT NOT NULL DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS `users`.`facility_users` (
   `user_id`        VARCHAR(22)  NOT NULL,
   `external_id`    VARCHAR(36)  NOT NULL,

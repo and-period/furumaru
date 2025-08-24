@@ -35,7 +35,7 @@ type User struct {
 	Guest        `gorm:"-"`     // ゲスト情報
 	FacilityUser `gorm:"-"`     // 施設利用者情報
 	ID           string         `gorm:"primaryKey;<-:create"` // ユーザーID
-	Type         UserType       `gorm:"-"`                    // 購入者の種別
+	Type         UserType       `gorm:""`                     // 購入者の種別
 	Status       UserStatus     `gorm:"-"`                    // 購入者の状態
 	Registered   bool           `gorm:""`                     // 会員登録フラグ
 	Device       string         `gorm:""`                     // デバイストークン(Push通知用)
