@@ -1,0 +1,230 @@
+package auth
+
+import (
+	"context"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"time"
+
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+type Auth struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    int32
+}
+
+type JWTGenerator interface {
+	Generate(ctx context.Context, sub, facilityID string) (*Auth, error)
+	GenerateAccessToken(sub, facilityID string) (string, error)
+	GenerateRefreshToken(ctx context.Context, sub, facilityID string) (string, error)
+	RefreshAccessToken(ctx context.Context, refreshToken string) (string, error)
+}
+
+type JWTGeneratorParams struct {
+	Cache  dynamodb.Client
+	Issuer string
+	Secret []byte
+}
+
+type jwtGenerator struct {
+	issuer          string
+	secret          *rsa.PrivateKey
+	signingMethod   *jwt.SigningMethodRSA
+	accessTokenTTL  time.Duration
+	refreshTokenTTL time.Duration
+	cache           dynamodb.Client
+	now             func() time.Time
+	generateID      func() string
+}
+
+func NewJWTGenerator(params *JWTGeneratorParams, opts ...Option) (JWTGenerator, error) {
+	dopts := buildOptions(opts...)
+	secret, err := parseRSAPrivateKeyFromPEM(params.Secret)
+	if err != nil {
+		return nil, err
+	}
+	client := &jwtGenerator{
+		issuer:          params.Issuer,
+		secret:          secret,
+		signingMethod:   jwt.SigningMethodRS256,
+		accessTokenTTL:  dopts.accessTokenTTL,
+		refreshTokenTTL: dopts.refreshTokenTTL,
+		cache:           params.Cache,
+		now:             dopts.now,
+		generateID:      dopts.generateID,
+	}
+	return client, nil
+}
+
+func (g *jwtGenerator) Generate(ctx context.Context, sub, facilityID string) (*Auth, error) {
+	accessToken, err := g.GenerateAccessToken(sub, facilityID)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to generate access token: %w", err)
+	}
+	refreshToken, err := g.GenerateRefreshToken(ctx, sub, facilityID)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to generate refresh token: %w", err)
+	}
+	res := &Auth{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresIn:    int32(g.accessTokenTTL.Seconds()),
+	}
+	return res, nil
+}
+
+func (g *jwtGenerator) GenerateAccessToken(sub, facilityID string) (string, error) {
+	claims := &Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    g.issuer,
+			Subject:   sub,
+			IssuedAt:  jwt.NewNumericDate(g.now()),
+			ExpiresAt: jwt.NewNumericDate(g.now().Add(g.accessTokenTTL)),
+			ID:        g.generateID(),
+		},
+		FacilityID: facilityID,
+	}
+	token, err := jwt.NewWithClaims(g.signingMethod, claims).SignedString(g.secret)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
+func (g *jwtGenerator) GenerateRefreshToken(ctx context.Context, sub, facilityID string) (string, error) {
+	params := &RefreshTokenParams{
+		UserID:     sub,
+		FacilityID: facilityID,
+		Now:        g.now(),
+		TTL:        g.refreshTokenTTL,
+	}
+	token, err := NewRefreshToken(params)
+	if err != nil {
+		return "", fmt.Errorf("auth: failed to create auth token: %w", err)
+	}
+	if err := g.cache.Insert(ctx, token); err != nil {
+		return "", fmt.Errorf("auth: failed to insert auth token into cache: %w", err)
+	}
+	return token.RefreshToken, nil
+}
+
+func (g *jwtGenerator) RefreshAccessToken(ctx context.Context, refreshToken string) (string, error) {
+	if refreshToken == "" {
+		return "", ErrInvalidRefreshToken
+	}
+	hashedToken, err := hashRefreshToken(refreshToken)
+	if err != nil {
+		return "", fmt.Errorf("auth: failed to hash refresh token: %w", err)
+	}
+	token := &RefreshToken{
+		HashedToken: hashedToken,
+	}
+	if err := g.cache.Get(ctx, token); err != nil {
+		return "", fmt.Errorf("auth: failed to get auth token from cache: %w", err)
+	}
+	return g.GenerateAccessToken(token.UserID, token.FacilityID)
+}
+
+type Claims struct {
+	jwt.RegisteredClaims
+	FacilityID string `json:"facilityId,omitempty"`
+}
+
+type JWTVerifier interface {
+	VerifyAccessToken(accessToken string) (*Claims, error)
+	VerifyRefreshToken(ctx context.Context, refreshToken string) (*RefreshToken, error)
+}
+
+type JWTVerifierParams struct {
+	Cache  dynamodb.Client
+	Issuer string
+	Secret []byte
+}
+
+type jwtVerifier struct {
+	issuer        string
+	secret        *rsa.PublicKey
+	signingMethod *jwt.SigningMethodRSA
+	cache         dynamodb.Client
+	now           func() time.Time
+}
+
+func NewJWTVerifier(params *JWTVerifierParams, opts ...Option) (JWTVerifier, error) {
+	dopts := buildOptions(opts...)
+	secret, err := parseRSAPublicKeyFromPEM(params.Secret)
+	if err != nil {
+		return nil, err
+	}
+	client := &jwtVerifier{
+		issuer:        params.Issuer,
+		secret:        secret,
+		signingMethod: dopts.signingMethod,
+		cache:         params.Cache,
+		now:           dopts.now,
+	}
+	return client, nil
+}
+
+func (v *jwtVerifier) VerifyAccessToken(accessToken string) (*Claims, error) {
+	parser := jwt.NewParser(
+		jwt.WithValidMethods([]string{v.signingMethod.Alg()}),
+		jwt.WithIssuer(v.issuer),
+		jwt.WithIssuedAt(),
+	)
+	claims := &Claims{}
+	keyFunc := func(token *jwt.Token) (any, error) {
+		return v.secret, nil
+	}
+	token, err := parser.ParseWithClaims(accessToken, claims, keyFunc)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to parse access token: %w", err)
+	}
+	if !token.Valid {
+		return nil, ErrInvalidAccessToken
+	}
+	return claims, nil
+}
+
+func (v *jwtVerifier) VerifyRefreshToken(ctx context.Context, refreshToken string) (*RefreshToken, error) {
+	hashedToken, err := hashRefreshToken(refreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to hash refresh token: %w", err)
+	}
+	token := &RefreshToken{
+		HashedToken: hashedToken,
+	}
+	if err := v.cache.Get(ctx, token); err != nil {
+		return nil, fmt.Errorf("auth: failed to get auth token from cache: %w", err)
+	}
+	if err := token.Verify(refreshToken); err != nil {
+		return nil, fmt.Errorf("auth: invalid refresh token: %w", err)
+	}
+	if v.now().After(token.ExpiredAt) {
+		return nil, ErrRefreshTokenExpired
+	}
+	return token, nil
+}
+
+func parseRSAPublicKeyFromPEM(pemBytes []byte) (*rsa.PublicKey, error) {
+	block, _ := pem.Decode(pemBytes)
+	if block == nil {
+		return nil, ErrNoPemBlock
+	}
+
+	if key, err := x509.ParsePKCS1PublicKey(block.Bytes); err == nil {
+		return key, nil
+	}
+	if keyAny, err := x509.ParsePKIXPublicKey(block.Bytes); err == nil {
+		if rsaKey, ok := keyAny.(*rsa.PublicKey); ok {
+			return rsaKey, nil
+		}
+		return nil, ErrNotRSAPrivateKey
+	}
+
+	return nil, ErrNotRSAPrivateKey
+}
