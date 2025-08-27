@@ -268,6 +268,12 @@ components:
           description: 表示名
           type: string
       type: object
+    response.CreateAuthUserResponse:
+      properties:
+        id:
+          description: ユーザーID
+          type: string
+      type: object
     response.Order:
       description: 注文履歴情報
       properties:
@@ -868,6 +874,44 @@ paths:
       summary: 注文詳細取得
       tags:
       - Order
+  /facilities/{facilityId}/users:
+    post:
+      description: ユーザーの詳細情報を登録します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAuthUserRequest'
+        description: ユーザー情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CreateAuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: ユーザーが既に存在する
+      summary: ユーザー情報登録
+      tags:
+      - AuthUser
   /facilities/{facilityId}/users/me:
     get:
       description: ユーザーの詳細情報を取得します。
@@ -893,43 +937,6 @@ paths:
       security:
       - bearerauth: []
       summary: ユーザー情報取得
-      tags:
-      - AuthUser
-    post:
-      description: ユーザーの詳細情報を登録します。
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/request.CreateAuthUserRequest'
-        description: ユーザー情報
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/response.AuthUserResponse'
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
-          description: バリデーションエラー
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
-          description: 認証エラー
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
-          description: ユーザーが既に存在する
-      summary: ユーザー情報登録
       tags:
       - AuthUser
   /facilities/{facilityId}/users/me/check-in:

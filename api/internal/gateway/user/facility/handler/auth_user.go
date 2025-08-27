@@ -9,10 +9,10 @@ import (
 // @tag.name        AuthUser
 // @tag.description 認証済みユーザー関連
 func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/users/me", h.authentication)
+	r := rg.Group("/users", h.authentication)
 
-	r.GET("", h.GetAuthUser)
 	r.POST("", h.CreateAuthUser)
+	r.GET("/me", h.GetAuthUser)
 	r.PUT("/check-in", h.UpdateAuthUserCheckIn)
 }
 
@@ -36,7 +36,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Summary     ユーザー情報登録
 // @Description ユーザーの詳細情報を登録します。
 // @Tags        AuthUser
-// @Router      /facilities/{facilityId}/users/me [post]
+// @Router      /facilities/{facilityId}/users [post]
 // @Accept      json
 // @Param				request body request.CreateAuthUserRequest true "ユーザー情報"
 // @Produce     json
@@ -51,9 +51,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 		return
 	}
 	// TODO: 詳細の実装
-	res := &response.AuthUserResponse{
-		AuthUser: &response.AuthUser{},
-	}
+	res := &response.AuthUserResponse{}
 	ctx.JSON(200, res)
 }
 

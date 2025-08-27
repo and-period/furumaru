@@ -294,3 +294,15 @@ func testGuestUser(id, email string, now time.Time) *entity.User {
 		UpdatedAt:  now,
 	}
 }
+
+func testFacilityUser(id, producerID, email string, now time.Time) *entity.User {
+	return &entity.User{
+		ID:           id,
+		Type:         entity.UserTypeFacilityUser,
+		Registered:   false,
+		Status:       entity.UserStatusGuest,
+		FacilityUser: *testFacility(id, producerID, email, now),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
+}
