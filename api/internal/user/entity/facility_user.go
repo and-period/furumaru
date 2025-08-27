@@ -14,6 +14,7 @@ type FacilityUser struct {
 	ProviderType  UserAuthProviderType `gorm:""`                     // 認証方法
 	Email         string               `gorm:""`                     // メールアドレス
 	PhoneNumber   string               `gorm:""`                     // 電話番号
+	LastCheckInAt time.Time            `gorm:""`                     // 最新のチェックイン日時
 	CreatedAt     time.Time            `gorm:"<-:create"`            // 登録日時
 	UpdatedAt     time.Time            `gorm:""`                     // 更新日時
 }
