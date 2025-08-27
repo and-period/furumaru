@@ -69,6 +69,7 @@ func deleteAll(ctx context.Context) error {
 		coordinatorTable,
 		administratorTable,
 		adminTable,
+		facilityUserTable,
 		guestTable,
 		memberTable,
 		userNotificationTable,

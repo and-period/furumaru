@@ -322,12 +322,11 @@ type CreateFacilityUserInput struct {
  * Guest - ゲスト
  */
 type UpsertGuestInput struct {
-	Lastname      string    `validate:"required,max=16"`
-	Firstname     string    `validate:"required,max=16"`
-	LastnameKana  string    `validate:"required,max=32,hiragana"`
-	FirstnameKana string    `validate:"required,max=32,hiragana"`
-	Email         string    `validate:"required,max=256,email"`
-	LastCheckinAt time.Time `validate:"required"`
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	Email         string `validate:"required,max=256,email"`
 }
 
 /**
