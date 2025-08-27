@@ -10,6 +10,7 @@ import { useProductStore } from '~/stores/product';
 const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
 
+const isLogin = ref<boolean>(false);
 const accessToken = ref<string>('');
 
 // Init LIFF when DOM is mounted
@@ -30,9 +31,10 @@ onMounted(async () => {
   }
 
   if (!liff.isLoggedIn()) {
-    liff.login();
+    // liff.login();
   }
   else {
+    isLogin.value = true;
     const liffAccessToken = liff.getAccessToken();
     if (liffAccessToken) {
       accessToken.value = liffAccessToken;
@@ -56,6 +58,7 @@ const { products, isLoading, error } = storeToRefs(productStore);
       商品一覧
     </h2>
     <div class="text-center">
+      {{ isLogin ? 'ログイン済み' : '未ログイン' }} /
       {{ accessToken || 'アクセストークンの取得に失敗しました' }}
     </div>
 
