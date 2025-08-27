@@ -22,6 +22,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/translate v1.29.5
 	github.com/casbin/casbin/v2 v2.110.0
 	github.com/cenkalti/backoff/v4 v4.3.0
+	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/dlclark/regexp2 v1.11.5
 	github.com/getsentry/sentry-go v0.35.0
 	github.com/getsentry/sentry-go/slog v0.35.0
@@ -30,6 +31,7 @@ require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/go-sql-driver/mysql v1.9.3
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
