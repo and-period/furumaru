@@ -58,6 +58,8 @@ type Service interface {
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error                         // パスワードリセット
 	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error) // 担当生産者数の取得
 	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error                                       // 退会
+	// FacilityUser - 施設利用者
+	CreateFacilityUser(ctx context.Context, in *CreateFacilityUserInput) (*entity.User, error) // 登録
 	// Guest - ゲスト
 	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error) // ゲスト登録・更新
 	// Member - 会員

@@ -31,6 +31,7 @@ type Database struct {
 	AdminRolePolicy   AdminRolePolicy
 	Administrator     Administrator
 	Coordinator       Coordinator
+	FacilityUser      FacilityUser
 	Guest             Guest
 	Member            Member
 	Producer          Producer
@@ -230,6 +231,10 @@ type UpdateCoordinatorParams struct {
 	City              string
 	AddressLine1      string
 	AddressLine2      string
+}
+
+type FacilityUser interface {
+	Create(ctx context.Context, user *entity.User) error
 }
 
 type Guest interface {

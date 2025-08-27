@@ -2,6 +2,8 @@ package user
 
 import (
 	"time"
+
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 /**
@@ -301,14 +303,31 @@ type AggregateRealatedProducersInput struct {
 }
 
 /**
+ * FacilityUser - 施設利用者
+ */
+type CreateFacilityUserInput struct {
+	ProducerID    string                      `validate:"required"`
+	ProviderType  entity.UserAuthProviderType `validate:"required,oneof=3"`
+	ProviderID    string                      `validate:"required"`
+	Lastname      string                      `validate:"required,max=16"`
+	Firstname     string                      `validate:"required,max=16"`
+	LastnameKana  string                      `validate:"required,max=32,hiragana"`
+	FirstnameKana string                      `validate:"required,max=32,hiragana"`
+	Email         string                      `validate:"required,max=256,email"`
+	PhoneNumber   string                      `validate:"required,e164"`
+	LastCheckInAt time.Time                   `validate:"required"`
+}
+
+/**
  * Guest - ゲスト
  */
 type UpsertGuestInput struct {
-	Lastname      string `validate:"required,max=16"`
-	Firstname     string `validate:"required,max=16"`
-	LastnameKana  string `validate:"required,max=32,hiragana"`
-	FirstnameKana string `validate:"required,max=32,hiragana"`
-	Email         string `validate:"required,max=256,email"`
+	Lastname      string    `validate:"required,max=16"`
+	Firstname     string    `validate:"required,max=16"`
+	LastnameKana  string    `validate:"required,max=32,hiragana"`
+	FirstnameKana string    `validate:"required,max=32,hiragana"`
+	Email         string    `validate:"required,max=256,email"`
+	LastCheckinAt time.Time `validate:"required"`
 }
 
 /**

@@ -60,6 +60,7 @@ type NewUserParams struct {
 	ProviderType  UserAuthProviderType
 	Email         string
 	PhoneNumber   string
+	LastCheckInAt time.Time
 }
 
 func NewUser(params *NewUserParams) *User {
@@ -100,6 +101,7 @@ func NewUser(params *NewUserParams) *User {
 		facilityUser.ProviderType = params.ProviderType
 		facilityUser.Email = params.Email
 		facilityUser.PhoneNumber = params.PhoneNumber
+		facilityUser.LastCheckInAt = params.LastCheckInAt
 	}
 	return &User{
 		ID:           userID,
