@@ -89,11 +89,12 @@ func TestFacilityUser_Create(t *testing.T) {
 
 func testFacility(id, producerID, email string, now time.Time) *entity.FacilityUser {
 	return &entity.FacilityUser{
-		UserID:       id,
-		ProducerID:   producerID,
-		ProviderType: entity.UserAuthProviderTypeLINE,
-		Email:        email,
-		CreatedAt:    now,
-		UpdatedAt:    now,
+		UserID:        id,
+		ProducerID:    producerID,
+		ProviderType:  entity.UserAuthProviderTypeLINE,
+		Email:         email,
+		LastCheckInAt: now.AddDate(0, 0, 1),
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }
