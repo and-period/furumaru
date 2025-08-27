@@ -10,6 +10,8 @@ import { useProductStore } from '~/stores/product';
 const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
 
+const accessToken = ref<string>('');
+
 // Init LIFF when DOM is mounted
 // https://vuejs.org/api/composition-api-lifecycle.html#onmounted
 onMounted(async () => {
@@ -18,9 +20,25 @@ onMounted(async () => {
     return;
   };
 
-  await liff.init({ liffId: liffId });
-  console.log('LIFF init success');
-  console.log('LIFF SDK version', liff.getVersion());
+  try {
+    await liff.init({ liffId: liffId });
+    console.log('LIFF init success');
+    console.log('LIFF SDK version', liff.getVersion());
+  }
+  catch (error) {
+    console.error('LIFF init failed', error);
+  }
+
+  if (!liff.isLoggedIn()) {
+    liff.login();
+  }
+  else {
+    const liffAccessToken = liff.getAccessToken();
+    if (liffAccessToken) {
+      accessToken.value = liffAccessToken;
+      console.log('LIFF access token:', accessToken.value);
+    }
+  }
 });
 
 onMounted(() => {
@@ -37,6 +55,9 @@ const { products, isLoading, error } = storeToRefs(productStore);
     <h2 class="mt-6 font-semibold font-inter text-center w-full">
       商品一覧
     </h2>
+    <div class="text-center">
+      {{ accessToken || 'アクセストークンの取得に失敗しました' }}
+    </div>
 
     <!-- Loading state -->
     <div
