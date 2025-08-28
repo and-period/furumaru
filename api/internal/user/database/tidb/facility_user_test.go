@@ -170,6 +170,7 @@ func testFacility(id, producerID, email string, now time.Time) *entity.FacilityU
 		UserID:        id,
 		ProducerID:    producerID,
 		ProviderType:  entity.UserAuthProviderTypeLINE,
+		ExternalID:    id,
 		Email:         email,
 		LastCheckInAt: now.AddDate(0, 0, 1),
 		CreatedAt:     now,
