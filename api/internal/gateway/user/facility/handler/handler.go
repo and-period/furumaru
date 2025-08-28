@@ -2,17 +2,33 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"sync"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-const userIDKey = "userId"
+const (
+	userIDKey     = "userId"
+	facilityKey   = "facility"
+	facilityIDKey = "facilityId"
+)
+
+var (
+	errNotFoundFacility     = errors.New("handler: not found facility")
+	errFailedToCastFacility = errors.New("handler: failed to cast facility")
+)
 
 // @title               ふるマル API - 外部宿泊施設向け
 // @description         外部宿泊施設向けのふるマルAPIです。（公開エンドポイントについては「ふるマルAPI - 購入者向け」を参照してください）
@@ -22,14 +38,21 @@ const userIDKey = "userId"
 // @servers.description 本番環境
 // @securitydefinitions.bearerauth
 type handler struct {
-	appName   string
-	env       string
-	sentry    sentry.Client
-	waitGroup *sync.WaitGroup
+	appName      string
+	env          string
+	sentry       sentry.Client
+	lineVerifier auth.OIDCVerifier
+	jwtGenerator auth.JWTGenerator
+	jwtVerifier  auth.JWTVerifier
+	waitGroup    *sync.WaitGroup
+	user         user.Service
+	store        store.Service
 }
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
+	User      user.Service
+	Store     store.Service
 }
 
 type options struct {
@@ -72,6 +95,8 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		env:       dopts.env,
 		sentry:    dopts.sentry,
 		waitGroup: params.WaitGroup,
+		user:      params.User,
+		store:     params.Store,
 	}
 }
 
@@ -84,7 +109,7 @@ func (h *handler) Sync(ctx context.Context) error {
 }
 
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	g := rg.Group("/facilities/:facilityId")
+	g := rg.Group("/facilities/:facilityId", h.prerequest)
 	// 公開エンドポイント
 	h.authRoutes(g)
 	// 要認証エンドポイント
@@ -160,6 +185,30 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
  * other
  * ###############################################
  */
+func (h *handler) prerequest(ctx *gin.Context) {
+	if err := h.setFacility(ctx); err != nil {
+		h.notFound(ctx, err)
+		return
+	}
+	ctx.Next()
+}
+
+func (h *handler) setFacility(ctx *gin.Context) error {
+	facilityID := ctx.Param(facilityIDKey)
+	if facilityID == "" {
+		return errNotFoundFacility
+	}
+	facility, err := h.getProducer(ctx, facilityID)
+	if errors.Is(err, exception.ErrNotFound) {
+		return errNotFoundFacility
+	}
+	if err != nil {
+		return fmt.Errorf("handler: failed to get producer: %w", err)
+	}
+	ctx.Set(facilityKey, facility)
+	return nil
+}
+
 func (h *handler) authentication(ctx *gin.Context) {
 	if err := h.setAuth(ctx); err != nil {
 		h.unauthorized(ctx, err)
@@ -172,7 +221,28 @@ func (h *handler) setAuth(ctx *gin.Context) error {
 	if _, ok := ctx.Get(userIDKey); ok {
 		return nil // すでに設定済みの場合はスキップする
 	}
-	// TODO: 詳細の実装
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		return err
+	}
+	claims, err := h.jwtVerifier.VerifyAccessToken(token)
+	if err != nil {
+		return err
+	}
+	if claims.FacilityID != ctx.GetHeader(facilityIDKey) {
+		return errNotFoundFacility
+	}
+	in := &user.GetUserInput{
+		UserID: claims.Subject,
+	}
+	auth, err := h.user.GetUser(ctx, in)
+	if err != nil {
+		return err
+	}
+	if claims.FacilityID != auth.FacilityUser.ProducerID {
+		return errNotFoundFacility
+	}
+	ctx.Request.Header.Set(userIDKey, auth.ID)
 	return nil
 }
 
@@ -184,4 +254,24 @@ func (h *handler) getUserID(ctx *gin.Context) string {
 	// ユーザーIDが取得できない場合、認証処理を行いヘッダーへ詰め直す
 	h.setAuth(ctx) //nolint:errcheck
 	return ctx.GetHeader(userIDKey)
+}
+
+func (h *handler) getProducerID(ctx *gin.Context) string {
+	facility, err := h.getFacility(ctx)
+	if err != nil {
+		return ""
+	}
+	return facility.ID
+}
+
+func (h *handler) getFacility(ctx *gin.Context) (*service.Producer, error) {
+	facility, ok := ctx.Get(facilityKey)
+	if !ok {
+		return nil, errNotFoundFacility
+	}
+	producer, ok := facility.(*service.Producer)
+	if !ok {
+		return nil, errNotFoundFacility
+	}
+	return producer, nil
 }

@@ -305,6 +305,12 @@ type AggregateRealatedProducersInput struct {
 /**
  * FacilityUser - 施設利用者
  */
+type GetFacilityUserInput struct {
+	ProducerID   string                      `validate:"required"`
+	ProviderType entity.UserAuthProviderType `validate:"required,oneof=3"`
+	ProviderID   string                      `validate:"required"`
+}
+
 type CreateFacilityUserInput struct {
 	ProducerID    string                      `validate:"required"`
 	ProviderType  entity.UserAuthProviderType `validate:"required,oneof=3"`

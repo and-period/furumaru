@@ -13,6 +13,78 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestFacilityUser_GetByExternalID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+	err := deleteAll(t.Context())
+	require.NoError(t, err)
+
+	u := testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now())
+	err = db.DB.Create(&u).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&u.FacilityUser).Error
+	require.NoError(t, err)
+
+	type args struct {
+		providerType entity.UserAuthProviderType
+		externalID   string
+		producerID   string
+	}
+	type want struct {
+		facilityUser *entity.FacilityUser
+		err          error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				providerType: entity.UserAuthProviderTypeLINE,
+				externalID:   "user-id",
+				producerID:   "producer-id",
+			},
+			want: want{
+				facilityUser: &u.FacilityUser,
+				err:          nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args:  args{},
+			want: want{
+				facilityUser: nil,
+				err:          database.ErrNotFound,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := t.Context()
+			err := delete(ctx, facilityUserTable, userTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &facilityUser{db: db, now: now}
+			actual, err := db.GetByExternalID(ctx, tt.args.providerType, tt.args.externalID, tt.args.producerID)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.facilityUser, actual)
+		})
+	}
+}
+
 func TestFacilityUser_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

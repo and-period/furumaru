@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +31,7 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 func (h *handler) ListOrders(ctx *gin.Context) {
 	// TODO: 詳細の実装
 	res := &response.OrdersResponse{}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
 
 // @Summary     注文詳細取得
@@ -45,5 +47,5 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 func (h *handler) GetOrder(ctx *gin.Context) {
 	// TODO: 詳細の実装
 	res := &response.OrderResponse{}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
