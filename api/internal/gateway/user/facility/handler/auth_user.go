@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
@@ -70,7 +72,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 	}
 	email, err := h.lineVerifier.GetEmail(token)
 	if err != nil {
-		h.unauthorized(ctx, err)
+		h.httpError(ctx, fmt.Errorf("auth: failed to get email from id token. err=%s: %w", err.Error(), exception.ErrUnprocessableEntity))
 		return
 	}
 	in := &user.CreateFacilityUserInput{

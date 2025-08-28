@@ -53,7 +53,7 @@ func (v *lineVerifier) GetEmail(token *oidc.IDToken) (string, error) {
 		return "", ErrEmailNotFound
 	}
 	if !claims.EmailVerified {
-		return "", ErrEmailNotFoundVerified
+		return "", ErrEmailUnverified
 	}
 	return claims.Email, nil
 }

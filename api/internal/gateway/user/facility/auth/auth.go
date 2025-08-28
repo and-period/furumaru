@@ -17,13 +17,13 @@ import (
 )
 
 var (
-	ErrInvalidAccessToken    = errors.New("auth: invalid access token")
-	ErrInvalidRefreshToken   = errors.New("auth: invalid refresh token")
-	ErrNoPemBlock            = errors.New("auth: no pem block found")
-	ErrNotRSAPrivateKey      = errors.New("auth: not rsa private key")
-	ErrRefreshTokenExpired   = errors.New("auth: refresh token expired")
-	ErrEmailNotFound         = errors.New("auth: email not found in claims")
-	ErrEmailNotFoundVerified = errors.New("auth: email not verified in claims")
+	ErrInvalidAccessToken  = errors.New("auth: invalid access token")
+	ErrInvalidRefreshToken = errors.New("auth: invalid refresh token")
+	ErrNoPemBlock          = errors.New("auth: no pem block found")
+	ErrNotRSAPrivateKey    = errors.New("auth: not rsa private key")
+	ErrRefreshTokenExpired = errors.New("auth: refresh token expired")
+	ErrEmailNotFound       = errors.New("auth: email not found in claims")
+	ErrEmailUnverified     = errors.New("auth: email not verified in claims")
 )
 
 type options struct {

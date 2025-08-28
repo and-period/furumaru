@@ -24,6 +24,15 @@ func TestFacilityUser_GetByExternalID(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	// Create producer first to satisfy foreign key constraint
+	producer := map[string]interface{}{
+		"admin_id":   "producer-id",
+		"created_at": now(),
+		"updated_at": now(),
+	}
+	err = db.DB.Table("producers").Create(&producer).Error
+	require.NoError(t, err)
+
 	u := testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now())
 	err = db.DB.Create(&u).Error
 	require.NoError(t, err)
@@ -117,8 +126,17 @@ func TestFacilityUser_Create(t *testing.T) {
 		want  want
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				// Create producer first to satisfy foreign key constraint
+				producer := map[string]interface{}{
+					"admin_id":   "producer-id",
+					"created_at": now(),
+					"updated_at": now(),
+				}
+				err := db.DB.Table("producers").Create(&producer).Error
+				require.NoError(t, err)
+			},
 			args: args{
 				user: testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now()),
 			},
@@ -129,8 +147,17 @@ func TestFacilityUser_Create(t *testing.T) {
 		{
 			name: "duplicate user entity",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				// Create producer first to satisfy foreign key constraint
+				producer := map[string]interface{}{
+					"admin_id":   "producer-id",
+					"created_at": now(),
+					"updated_at": now(),
+				}
+				err := db.DB.Table("producers").Create(&producer).Error
+				require.NoError(t, err)
+				
 				u := testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now())
-				err := db.DB.Create(&u).Error
+				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&u.FacilityUser).Error
 				require.NoError(t, err)
