@@ -80,8 +80,6 @@ func TestFacilityUser_GetByExternalID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, facilityUserTable, userTable)
-			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
@@ -125,17 +123,8 @@ func TestFacilityUser_Create(t *testing.T) {
 		want  want
 	}{
 		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				// Create producer first to satisfy foreign key constraint
-				producer := map[string]interface{}{
-					"admin_id":   "producer-id",
-					"created_at": now(),
-					"updated_at": now(),
-				}
-				err := db.DB.Table("producers").Create(&producer).Error
-				require.NoError(t, err)
-			},
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				user: testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now()),
 			},
