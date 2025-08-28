@@ -234,6 +234,7 @@ type UpdateCoordinatorParams struct {
 }
 
 type FacilityUser interface {
+	GetByExternalID(ctx context.Context, providerType entity.UserAuthProviderType, externalID, producerID string, fields ...string) (*entity.FacilityUser, error)
 	Create(ctx context.Context, user *entity.User) error
 }
 

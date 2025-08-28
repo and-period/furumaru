@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
@@ -31,7 +33,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		Coordinators: []*response.Coordinator{},
 		Products:     []*response.Product{},
 	}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
 
 // @Summary     カートに追加
@@ -52,7 +54,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		return
 	}
 	// TODO: 詳細の実装
-	ctx.Status(204)
+	ctx.Status(http.StatusNoContent)
 }
 
 // @Summary     カートから削除
@@ -65,5 +67,5 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RemoveCartItem(ctx *gin.Context) {
 	// TODO: 詳細の実装
-	ctx.Status(204)
+	ctx.Status(http.StatusNoContent)
 }

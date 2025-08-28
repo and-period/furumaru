@@ -23,6 +23,25 @@ func NewFacilityUser(db *mysql.Client) *facilityUser {
 	}
 }
 
+func (f *facilityUser) GetByExternalID(
+	ctx context.Context,
+	providerType entity.UserAuthProviderType,
+	externalID, producerID string,
+	fields ...string,
+) (*entity.FacilityUser, error) {
+	var facilityUser *entity.FacilityUser
+
+	stmt := f.db.Statement(ctx, f.db.DB, facilityUserTable, fields...).
+		Where("provider_type = ?", providerType).
+		Where("external_id = ?", externalID).
+		Where("producer_id = ?", producerID)
+
+	if err := stmt.First(&facilityUser).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return facilityUser, nil
+}
+
 func (f *facilityUser) Create(ctx context.Context, user *entity.User) error {
 	err := f.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := f.now()

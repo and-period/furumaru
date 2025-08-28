@@ -9,6 +9,18 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
+func (s *service) GetFacilityUser(ctx context.Context, in *user.GetFacilityUserInput) (*entity.User, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	fuser, err := s.db.FacilityUser.GetByExternalID(ctx, in.ProviderType, in.ProviderID, in.ProducerID)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	user, err := s.db.User.Get(ctx, fuser.UserID)
+	return user, internalError(err)
+}
+
 func (s *service) CreateFacilityUser(ctx context.Context, in *user.CreateFacilityUserInput) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

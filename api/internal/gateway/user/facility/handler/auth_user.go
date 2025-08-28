@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
@@ -12,8 +14,8 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/users", h.authentication)
 
 	r.POST("", h.CreateAuthUser)
-	r.GET("/me", h.GetAuthUser)
-	r.PUT("/check-in", h.UpdateAuthUserCheckIn)
+	r.GET("/me", h.authentication, h.GetAuthUser)
+	r.PUT("/check-in", h.authentication, h.UpdateAuthUserCheckIn)
 }
 
 // @Summary     ユーザー情報取得
@@ -30,7 +32,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 	res := &response.AuthUserResponse{
 		AuthUser: &response.AuthUser{},
 	}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
 
 // @Summary     ユーザー情報登録
@@ -52,7 +54,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 	}
 	// TODO: 詳細の実装
 	res := &response.AuthUserResponse{}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
 
 // @Summary     ユーザー情報更新
@@ -74,5 +76,5 @@ func (h *handler) UpdateAuthUserCheckIn(ctx *gin.Context) {
 		return
 	}
 	// TODO: 詳細の実装
-	ctx.Status(204)
+	ctx.Status(http.StatusNoContent)
 }
