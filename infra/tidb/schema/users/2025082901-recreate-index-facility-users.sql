@@ -5,7 +5,7 @@ ALTER TABLE `users`.`facility_users` DROP FOREIGN KEY `fk_guests_producer_id`;
 
 ALTER TABLE `users`.`facility_users`
   ADD UNIQUE KEY `ui_facility_users_provider_type_external_id_producer_id`
-    (`exists` DESC, `producer_type`, `external_id`, `producer_id`),
+    (`exists` DESC, `provider_type`, `external_id`, `producer_id`),
   ADD CONSTRAINT `fk_facility_users_user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `users`.`users` (`id`)
