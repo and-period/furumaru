@@ -5,6 +5,10 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,9 +32,16 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuthUser(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &user.GetUserInput{
+		UserID: h.getUserID(ctx),
+	}
+	user, err := h.user.GetUser(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	res := &response.AuthUserResponse{
-		AuthUser: &response.AuthUser{},
+		AuthUser: service.NewAuthUser(user).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -44,7 +55,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} response.AuthUserResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
-// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー。不正なトークン"
 // @Failure     409 {object} util.ErrorResponse "ユーザーが既に存在する"
 func (h *handler) CreateAuthUser(ctx *gin.Context) {
 	req := &request.CreateAuthUserRequest{}
@@ -52,8 +63,36 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
-	res := &response.AuthUserResponse{}
+	token, err := h.lineVerifier.VerifyIDToken(ctx, req.AuthToken, "")
+	if err != nil {
+		h.unauthorized(ctx, err)
+		return
+	}
+	email, err := h.lineVerifier.GetEmail(token)
+	if err != nil {
+		h.unauthorized(ctx, err)
+		return
+	}
+	in := &user.CreateFacilityUserInput{
+		ProducerID:    h.getProducerID(ctx),
+		ProviderType:  entity.UserAuthProviderTypeLINE,
+		ProviderID:    token.Subject,
+		Lastname:      req.Lastname,
+		Firstname:     req.Firstname,
+		LastnameKana:  req.LastnameKana,
+		FirstnameKana: req.FirstnameKana,
+		Email:         email,
+		PhoneNumber:   req.PhoneNumber,
+		LastCheckInAt: jst.ParseFromUnix(req.LastCheckInAt),
+	}
+	user, err := h.user.CreateFacilityUser(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthUserResponse{
+		AuthUser: service.NewAuthUser(user).Response(),
+	}
 	ctx.JSON(http.StatusOK, res)
 }
 
