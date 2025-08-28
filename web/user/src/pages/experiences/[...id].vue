@@ -542,7 +542,7 @@ useSeoMeta({
                 {{ dt("estimatedTime") }}
               </p>
               <p class="col-span-3 md:col-span-4">
-                {{ data.experience.duration }}分
+                {{ data.experience.duration }}時間
               </p>
             </div>
             <div class="grid grid-cols-5 py-4">
