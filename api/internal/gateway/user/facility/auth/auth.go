@@ -22,6 +22,8 @@ var (
 	ErrNoPemBlock          = errors.New("auth: no pem block found")
 	ErrNotRSAPrivateKey    = errors.New("auth: not rsa private key")
 	ErrRefreshTokenExpired = errors.New("auth: refresh token expired")
+	ErrEmailNotFound       = errors.New("auth: email not found in claims")
+	ErrEmailUnverified     = errors.New("auth: email not verified in claims")
 )
 
 type options struct {

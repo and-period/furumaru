@@ -74,6 +74,8 @@ func internalError(err error) (int, bool) {
 		s = http.StatusConflict
 	case errors.Is(err, exception.ErrFailedPrecondition):
 		s = http.StatusPreconditionFailed
+	case errors.Is(err, exception.ErrUnprocessableEntity):
+		s = http.StatusUnprocessableEntity
 	case errors.Is(err, exception.ErrResourceExhausted):
 		s = http.StatusTooManyRequests
 	case errors.Is(err, exception.ErrCanceled):

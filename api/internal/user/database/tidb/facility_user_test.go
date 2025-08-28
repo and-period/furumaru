@@ -24,6 +24,14 @@ func TestFacilityUser_GetByExternalID(t *testing.T) {
 	err := deleteAll(t.Context())
 	require.NoError(t, err)
 
+	admin := testAdmin("producer-id", "cognito-id", "test-admin01@and-period.jp", now())
+	err = db.DB.Create(&admin).Error
+	require.NoError(t, err)
+	p := testProducer("producer-id", "", now())
+	p.Admin = *admin
+	err = db.DB.Create(&p).Error
+	require.NoError(t, err)
+
 	u := testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now())
 	err = db.DB.Create(&u).Error
 	require.NoError(t, err)
@@ -72,8 +80,6 @@ func TestFacilityUser_GetByExternalID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, facilityUserTable, userTable)
-			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
@@ -130,7 +136,7 @@ func TestFacilityUser_Create(t *testing.T) {
 			name: "duplicate user entity",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testFacilityUser("user-id", "producer-id", "test-user@and-period.jp", now())
-				err := db.DB.Create(&u).Error
+				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&u.FacilityUser).Error
 				require.NoError(t, err)
@@ -164,6 +170,7 @@ func testFacility(id, producerID, email string, now time.Time) *entity.FacilityU
 		UserID:        id,
 		ProducerID:    producerID,
 		ProviderType:  entity.UserAuthProviderTypeLINE,
+		ExternalID:    id,
 		Email:         email,
 		LastCheckInAt: now.AddDate(0, 0, 1),
 		CreatedAt:     now,
