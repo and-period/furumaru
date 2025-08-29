@@ -21,6 +21,7 @@ docs: ## API仕様書の生成
 
 docs-all: ## 全サービスのAPI仕様書の生成
 	$(MAKE) docs SERVICE=user/facility
+	$(MAKE) docs SERVICE=user/v1
 
 fmt:
 	go tool golangci-lint fmt -c .golangci.yaml --diff ./pkg/... ./internal/...

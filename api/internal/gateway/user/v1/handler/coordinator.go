@@ -13,6 +13,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Coordinator
+// @tag.description コーディネータ関連
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/coordinators")
 
@@ -20,6 +22,15 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	r.GET("/:coordinatorId", h.GetCoordinator)
 }
 
+// @Summary     コーディネータ一覧取得
+// @Description コーディネータの一覧を取得します。
+// @Tags        Coordinator
+// @Router      /coordinators [get]
+// @Param       limit query int64 false "取得件数" default(20)
+// @Param       offset query int64 false "取得開始位置" default(0)
+// @Produce     json
+// @Success     200 {object} response.CoordinatorsResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListCoordinators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -74,6 +85,14 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     コーディネータ詳細取得
+// @Description コーディネータの詳細情報を取得します。
+// @Tags        Coordinator
+// @Router      /coordinators/{coordinatorId} [get]
+// @Param       coordinatorId path string true "コーディネータID"
+// @Produce     json
+// @Success     200 {object} response.CoordinatorResponse
+// @Failure     404 {object} util.ErrorResponse "コーディネータが見つからない"
 func (h *handler) GetCoordinator(ctx *gin.Context) {
 	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
 	if err != nil {

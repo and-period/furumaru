@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        ExperienceReview
+// @tag.description 体験レビュー関連
 func (h *handler) experienceReviewRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/experiences/:experienceId/reviews")
 
@@ -29,6 +31,16 @@ func (h *handler) experienceReviewRoutes(rg *gin.RouterGroup) {
 	auth.GET("", h.ListUserExperienceReviews)
 }
 
+// @Summary     体験レビュー一覧取得
+// @Description 指定した体験のレビュー一覧を取得します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews [get]
+// @Param       experienceId path string true "体験ID"
+// @Param       limit query int64 false "取得件数" default(20)
+// @Param       offset query int64 false "取得開始位置" default(0)
+// @Produce     json
+// @Success     200 {object} response.ExperienceReviewsResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 	const defaultLimit = 20
 	rates, err := util.GetQueryInt64s(ctx, "rates")
@@ -75,6 +87,15 @@ func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験レビュー詳細取得
+// @Description 体験レビューの詳細情報を取得します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews/{reviewId} [get]
+// @Param       experienceId path string true "体験ID"
+// @Param       reviewId path string true "レビューID"
+// @Produce     json
+// @Success     200 {object} response.ExperienceReviewResponse
+// @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) GetExperienceReview(ctx *gin.Context) {
 	review, err := h.getExperienceReview(ctx, util.GetParam(ctx, "reviewId"))
 	if err != nil {
@@ -91,6 +112,17 @@ func (h *handler) GetExperienceReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験レビュー作成
+// @Description 体験のレビューを作成します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews [post]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID"
+// @Accept      json
+// @Param       request body request.CreateExperienceReviewRequest true "レビュー作成"
+// @Success     204 "作成成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) CreateExperienceReview(ctx *gin.Context) {
 	req := &request.CreateExperienceReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -120,6 +152,20 @@ func (h *handler) CreateExperienceReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験レビュー更新
+// @Description 体験レビューの内容を更新します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews/{reviewId} [patch]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID"
+// @Param       reviewId path string true "レビューID"
+// @Accept      json
+// @Param       request body request.UpdateExperienceReviewRequest true "レビュー更新"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) UpdateExperienceReview(ctx *gin.Context) {
 	req := &request.UpdateExperienceReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -168,6 +214,19 @@ func (h *handler) DeleteExperienceReview(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     体験レビューリアクション登録/更新
+// @Description 体験レビューに対するリアクション（いいねなど）を登録または更新します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews/{reviewId}/reactions [post]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID"
+// @Param       reviewId path string true "レビューID"
+// @Accept      json
+// @Param       request body request.UpsertExperienceReviewReactionRequest true "リアクション登録/更新"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpsertExperienceReviewReaction(ctx *gin.Context) {
 	req := &request.UpsertExperienceReviewReactionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -191,6 +250,16 @@ func (h *handler) UpsertExperienceReviewReaction(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     体験レビューリアクション削除
+// @Description 体験レビューに対するリアクションを削除します。
+// @Tags        ExperienceReview
+// @Router      /experiences/{experienceId}/reviews/{reviewId}/reactions [delete]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID"
+// @Param       reviewId path string true "レビューID"
+// @Produce     json
+// @Success     204
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) DeleteExperienceReviewReaction(ctx *gin.Context) {
 	in := &store.DeleteExperienceReviewReactionInput{
 		ReviewID: util.GetParam(ctx, "reviewId"),
@@ -203,6 +272,15 @@ func (h *handler) DeleteExperienceReviewReaction(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     ユーザー体験レビュー一覧取得
+// @Description ログイン中のユーザーが投稿した体験レビューの一覧を取得します。
+// @Tags        ExperienceReview
+// @Router      /users/me/experiences/{experienceId}/reviews [get]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID"
+// @Produce     json
+// @Success     200 {object} response.ExperienceReviewsResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListUserExperienceReviews(ctx *gin.Context) {
 	experienceID := util.GetParam(ctx, "experienceId")
 

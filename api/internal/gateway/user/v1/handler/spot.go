@@ -18,6 +18,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Spot
+// @tag.description スポット関連
 func (h *handler) spotRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/spots")
 
@@ -28,6 +30,16 @@ func (h *handler) spotRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:spotId", h.authentication, h.DeleteSpot)
 }
 
+// @Summary     スポット一覧取得
+// @Description 指定された位置情報周辺のスポット一覧を取得します。
+// @Tags        Spot
+// @Router      /spots [get]
+// @Param       latitude query number true "緯度"
+// @Param       longitude query number true "経度"
+// @Param       radius query int64 false "検索半径（km）" default(20)
+// @Produce     json
+// @Success     200 {object} response.SpotsResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListSpots(ctx *gin.Context) {
 	const defaultRadius = 20
 
@@ -134,6 +146,14 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット詳細取得
+// @Description 指定されたIDのスポット詳細を取得します。
+// @Tags        Spot
+// @Router      /spots/{spotId} [get]
+// @Param       spotId path string true "スポットID"
+// @Produce     json
+// @Success     200 {object} response.SpotResponse
+// @Failure     404 {object} util.ErrorResponse "スポットが見つかりません"
 func (h *handler) GetSpot(ctx *gin.Context) {
 	spot, err := h.getSpot(ctx, util.GetParam(ctx, "spotId"))
 	if err != nil {
@@ -152,6 +172,17 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット登録
+// @Description 新しいスポットを登録します。
+// @Tags        Spot
+// @Router      /spots [post]
+// @Security    bearerauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.CreateSpotRequest true "スポット情報"
+// @Success     200 {object} response.SpotResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateSpot(ctx *gin.Context) {
 	req := &request.CreateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -189,6 +220,19 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット更新
+// @Description 指定されたIDのスポット情報を更新します。
+// @Tags        Spot
+// @Router      /spots/{spotId} [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       spotId path string true "スポットID"
+// @Param       body body request.UpdateSpotRequest true "更新するスポット情報"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がありません"
+// @Failure     404 {object} util.ErrorResponse "スポットが見つかりません"
 func (h *handler) UpdateSpot(ctx *gin.Context) {
 	req := &request.UpdateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -220,6 +264,16 @@ func (h *handler) UpdateSpot(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     スポット削除
+// @Description 指定されたIDのスポットを削除します。
+// @Tags        Spot
+// @Router      /spots/{spotId} [delete]
+// @Security    bearerauth
+// @Param       spotId path string true "スポットID"
+// @Success     204 "削除成功"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がありません"
+// @Failure     404 {object} util.ErrorResponse "スポットが見つかりません"
 func (h *handler) DeleteSpot(ctx *gin.Context) {
 	spot, err := h.getSpot(ctx, util.GetParam(ctx, "spotId"))
 	if err != nil {

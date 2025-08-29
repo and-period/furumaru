@@ -11,12 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Status
+// @tag.description ステータス関連
 func (h *handler) statusRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/statuses")
 
 	r.GET("/payments", h.ListPaymentStatuses)
 }
 
+// @Summary     支払手段一覧取得
+// @Description 利用可能な支払手段の一覧を取得します。
+// @Tags        Status
+// @Router      /statuses/payments [get]
+// @Produce     json
+// @Success     200 {object} response.PaymentSystemsResponse
 func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 	methodTypes := []entity.PaymentMethodType{
 		entity.PaymentMethodTypeCash,

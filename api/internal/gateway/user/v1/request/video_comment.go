@@ -1,5 +1,5 @@
 package request
 
 type CreateVideoCommentRequest struct {
-	Comment string `json:"comment,omitempty"` // コメント
+	Comment string `json:"comment"` // コメント
 }

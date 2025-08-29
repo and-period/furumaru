@@ -13,6 +13,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Producer
+// @tag.description 生産者関連
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/producers")
 
@@ -20,6 +22,15 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	r.GET("/:producerId", h.GetProducer)
 }
 
+// @Summary     生産者一覧取得
+// @Description 生産者の一覧を取得します。
+// @Tags        Producer
+// @Router      /producers [get]
+// @Param       limit query int64 false "取得件数" default(20)
+// @Param       offset query int64 false "取得開始位置" default(0)
+// @Produce     json
+// @Success     200 {object} response.ProducersResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProducers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -67,6 +78,14 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     生産者詳細取得
+// @Description 生産者の詳細情報を取得します。
+// @Tags        Producer
+// @Router      /producers/{producerId} [get]
+// @Param       producerId path string true "生産者ID"
+// @Produce     json
+// @Success     200 {object} response.ProducerResponse
+// @Failure     404 {object} util.ErrorResponse "生産者が見つからない"
 func (h *handler) GetProducer(ctx *gin.Context) {
 	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
 	if err != nil {

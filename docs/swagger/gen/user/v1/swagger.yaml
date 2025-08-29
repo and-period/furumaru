@@ -1,0 +1,5327 @@
+components:
+  schemas:
+    request.AddCartItemRequest:
+      properties:
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 数量
+          type: integer
+      type: object
+    request.CheckoutCreditCard:
+      description: クレジットカード決済情報
+      properties:
+        month:
+          description: 有効期限（月）
+          type: integer
+        name:
+          description: カード名義
+          type: string
+        number:
+          description: カード番号
+          type: string
+        verificationValue:
+          description: セキュリティコード
+          type: string
+        year:
+          description: 有効期限（年）
+          type: integer
+      type: object
+    request.CheckoutExperienceRequest:
+      properties:
+        adultCount:
+          description: 大人人数
+          type: integer
+        billingAddressId:
+          description: 請求先住所ID
+          type: string
+        callbackUrl:
+          description: 決済完了後のリダイレクト先URL
+          type: string
+        creditCard:
+          $ref: '#/components/schemas/request.CheckoutCreditCard'
+        elementarySchoolCount:
+          description: 小学生人数
+          type: integer
+        juniorHighSchoolCount:
+          description: 中学生人数
+          type: integer
+        paymentMethod:
+          description: 支払い方法
+          type: integer
+        preschoolCount:
+          description: 幼児人数
+          type: integer
+        promotionCode:
+          description: プロモーションコード
+          type: string
+        requestId:
+          description: 支払いキー(重複判定用)
+          type: string
+        requestedDate:
+          description: 体験希望日
+          type: string
+        requestedTime:
+          description: 体験希望時間
+          type: string
+        seniorCount:
+          description: シニア人数
+          type: integer
+        total:
+          description: 支払い合計金額（誤り検出用）
+          type: integer
+        transportation:
+          description: 交通手段
+          type: string
+      type: object
+    request.CheckoutProductRequest:
+      properties:
+        billingAddressId:
+          description: 請求先住所ID
+          type: string
+        boxNumber:
+          description: 箱の通番（箱単位で購入する場合）
+          type: integer
+        callbackUrl:
+          description: 決済完了後のリダイレクト先URL
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        creditCard:
+          $ref: '#/components/schemas/request.CheckoutCreditCard'
+        paymentMethod:
+          description: 支払い方法
+          type: integer
+        promotionCode:
+          description: プロモーションコード
+          type: string
+        requestId:
+          description: 支払いキー(重複判定用)
+          type: string
+        shippingAddressId:
+          description: 配送先住所ID
+          type: string
+        total:
+          description: 支払い合計金額（誤り検出用）
+          type: integer
+      type: object
+    request.CreateAddressRequest:
+      properties:
+        addressLine1:
+          description: 町名・番地
+          type: string
+        addressLine2:
+          description: ビル名・号室など
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        isDefault:
+          description: デフォルト設定フラグ
+          type: boolean
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        postalCode:
+          description: 郵便番号
+          type: string
+        prefectureCode:
+          description: 都道府県
+          type: integer
+      type: object
+    request.CreateAuthUserRequest:
+      properties:
+        accountId:
+          description: ユーザーID(検索名)
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        password:
+          description: パスワード
+          type: string
+        passwordConfirmation:
+          description: パスワード (確認用)
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        username:
+          description: ユーザー名(表示名)
+          type: string
+      type: object
+    request.CreateAuthUserWithGoogleRequest:
+      properties:
+        accountId:
+          description: ユーザーID(検索名)
+          type: string
+        code:
+          description: 認証コード
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        nonce:
+          description: セキュア文字列（リプレイアタック対策）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        redirectUri:
+          description: リダイレクトURI
+          type: string
+        username:
+          description: ユーザー名(表示名)
+          type: string
+      type: object
+    request.CreateAuthUserWithLINERequest:
+      properties:
+        accountId:
+          description: ユーザーID(検索名)
+          type: string
+        code:
+          description: 認証コード
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        nonce:
+          description: セキュア文字列（リプレイアタック対策）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        redirectUri:
+          description: リダイレクトURI
+          type: string
+        username:
+          description: ユーザー名(表示名)
+          type: string
+      type: object
+    request.CreateExperienceReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+        rate:
+          description: 評価
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
+    request.CreateGuestLiveCommentRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+      type: object
+    request.CreateGuestVideoCommentRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+      type: object
+    request.CreateLiveCommentRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+      type: object
+    request.CreateProductReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+        rate:
+          description: 評価
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
+    request.CreateSpotRequest:
+      properties:
+        description:
+          description: 説明
+          type: string
+        latitude:
+          description: 緯度
+          type: number
+        longitude:
+          description: 経度
+          type: number
+        name:
+          description: スポット名
+          type: string
+        spotTypeId:
+          description: スポット種別ID
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+      type: object
+    request.CreateVideoCommentRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+      type: object
+    request.ForgotAuthPasswordRequest:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+      type: object
+    request.GetUploadURLRequest:
+      properties:
+        fileType:
+          description: ファイル種別
+          type: string
+      type: object
+    request.GuestCheckoutAddress:
+      description: 請求先住所
+      properties:
+        addressLine1:
+          description: 町名・番地
+          type: string
+        addressLine2:
+          description: ビル名・号室など
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        postalCode:
+          description: 郵便番号
+          type: string
+        prefectureCode:
+          description: 都道府県
+          type: integer
+      type: object
+    request.GuestCheckoutExperienceRequest:
+      properties:
+        adultCount:
+          description: 大人人数
+          type: integer
+        billingAddress:
+          $ref: '#/components/schemas/request.GuestCheckoutAddress'
+        callbackUrl:
+          description: 決済完了後のリダイレクト先URL
+          type: string
+        creditCard:
+          $ref: '#/components/schemas/request.CheckoutCreditCard'
+        elementarySchoolCount:
+          description: 小学生人数
+          type: integer
+        email:
+          description: メールアドレス
+          type: string
+        juniorHighSchoolCount:
+          description: 中学生人数
+          type: integer
+        paymentMethod:
+          description: 支払い方法
+          type: integer
+        preschoolCount:
+          description: 幼児人数
+          type: integer
+        promotionCode:
+          description: プロモーションコード
+          type: string
+        requestId:
+          description: 支払いキー(重複判定用)
+          type: string
+        requestedDate:
+          description: 体験希望日
+          type: string
+        requestedTime:
+          description: 体験希望時間
+          type: string
+        seniorCount:
+          description: シニア人数
+          type: integer
+        total:
+          description: 支払い合計金額（誤り検出用）
+          type: integer
+        transportation:
+          description: 交通手段
+          type: string
+      type: object
+    request.GuestCheckoutProductRequest:
+      properties:
+        billingAddress:
+          $ref: '#/components/schemas/request.GuestCheckoutAddress'
+        boxNumber:
+          description: 箱の通番（箱単位で購入する場合）
+          type: integer
+        callbackUrl:
+          description: 決済完了後のリダイレクト先URL
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        creditCard:
+          $ref: '#/components/schemas/request.CheckoutCreditCard'
+        email:
+          description: メールアドレス
+          type: string
+        isSameAddress:
+          description: 配送先住所を請求先住所と同一にする
+          type: boolean
+        paymentMethod:
+          description: 支払い方法
+          type: integer
+        promotionCode:
+          description: プロモーションコード
+          type: string
+        requestId:
+          description: 支払いキー(重複判定用)
+          type: string
+        shippingAddress:
+          $ref: '#/components/schemas/request.GuestCheckoutAddress'
+        total:
+          description: 支払い合計金額（誤り検出用）
+          type: integer
+      type: object
+    request.RefreshAuthTokenRequest:
+      properties:
+        refreshToken:
+          description: 更新トークン
+          type: string
+      type: object
+    request.ResetAuthPasswordRequest:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+        password:
+          description: パスワード
+          type: string
+        passwordConfirmation:
+          description: パスワード (確認用)
+          type: string
+        verifyCode:
+          description: 検証コード
+          type: string
+      type: object
+    request.SignInRequest:
+      properties:
+        password:
+          description: パスワード
+          type: string
+        username:
+          description: ユーザー名 (メールアドレス,電話番号)
+          type: string
+      type: object
+    request.UpdateAddressRequest:
+      properties:
+        addressLine1:
+          description: 町名・番地
+          type: string
+        addressLine2:
+          description: ビル名・号室など
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        isDefault:
+          description: デフォルト設定フラグ
+          type: boolean
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        postalCode:
+          description: 郵便番号
+          type: string
+        prefectureCode:
+          description: 都道府県
+          type: integer
+      type: object
+    request.UpdateAuthPasswordRequest:
+      properties:
+        newPassword:
+          description: 新しいパスワード
+          type: string
+        oldPassword:
+          description: 現在のパスワード
+          type: string
+        passwordConfirmation:
+          description: パスワード (確認用)
+          type: string
+      type: object
+    request.UpdateAuthUserAccountIDRequest:
+      properties:
+        accountId:
+          description: ユーザーID(検索名)
+          type: string
+      type: object
+    request.UpdateAuthUserEmailRequest:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+      type: object
+    request.UpdateAuthUserNotificationRequest:
+      properties:
+        enabled:
+          description: 通知の有効化設定
+          type: boolean
+      type: object
+    request.UpdateAuthUserThumbnailRequest:
+      properties:
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+      type: object
+    request.UpdateAuthUserUsernameRequest:
+      properties:
+        username:
+          description: ユーザー名(表示名)
+          type: string
+      type: object
+    request.UpdateExperienceReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+        rate:
+          description: 評価
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
+    request.UpdateProductReviewRequest:
+      properties:
+        comment:
+          description: コメント
+          type: string
+        rate:
+          description: 評価
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
+    request.UpdateSpotRequest:
+      properties:
+        description:
+          description: 説明
+          type: string
+        latitude:
+          description: 緯度
+          type: number
+        longitude:
+          description: 経度
+          type: number
+        name:
+          description: スポット名
+          type: string
+        spotTypeId:
+          description: スポット種別ID
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+      type: object
+    request.UpsertExperienceReviewReactionRequest:
+      properties:
+        reactionType:
+          description: リアクション種別
+          type: integer
+      type: object
+    request.UpsertProductReviewReactionRequest:
+      properties:
+        reactionType:
+          description: リアクション種別
+          type: integer
+      type: object
+    request.VerifyAuthUserEmailRequest:
+      properties:
+        verifyCode:
+          description: 検証コード
+          type: string
+      type: object
+    request.VerifyAuthUserRequest:
+      properties:
+        id:
+          description: ユーザーID
+          type: string
+        verifyCode:
+          description: 検証コード
+          type: string
+      type: object
+    response.Address:
+      description: アドレス情報
+      properties:
+        addressLine1:
+          description: 町名・番地
+          type: string
+        addressLine2:
+          description: ビル名・号室など
+          type: string
+        city:
+          description: 市区町村
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        id:
+          description: アドレス帳ID
+          type: string
+        isDefault:
+          description: デフォルト設定フラグ
+          type: boolean
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        postalCode:
+          description: 郵便番号
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        prefectureCode:
+          description: 都道府県コード
+          type: integer
+      type: object
+    response.AddressResponse:
+      properties:
+        address:
+          $ref: '#/components/schemas/response.Address'
+      type: object
+    response.AddressesResponse:
+      properties:
+        addresses:
+          description: アドレス一覧
+          items:
+            $ref: '#/components/schemas/response.Address'
+          type: array
+          uniqueItems: false
+        total:
+          description: 合計数
+          type: integer
+      type: object
+    response.ArchiveSchedulesResponse:
+      properties:
+        archives:
+          description: 過去のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.ArchiveSummary'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        total:
+          description: 過去のマルシェ合計数
+          type: integer
+      type: object
+    response.ArchiveSummary:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        endAt:
+          description: 開催終了日時
+          type: integer
+        scheduleId:
+          description: 開催スケジュールID
+          type: string
+        startAt:
+          description: 開催開始日時
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.AuthGoogleAccountResponse:
+      properties:
+        url:
+          description: Googleアカウント連携URL
+          type: string
+      type: object
+    response.AuthLINEAccountResponse:
+      properties:
+        url:
+          description: LINEアカウント連携URL
+          type: string
+      type: object
+    response.AuthResponse:
+      properties:
+        accessToken:
+          description: アクセストークン
+          type: string
+        expiresIn:
+          description: 有効期限
+          type: integer
+        refreshToken:
+          description: 更新トークン
+          type: string
+        tokenType:
+          description: トークン種別
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+      type: object
+    response.AuthUserResponse:
+      properties:
+        accountId:
+          description: ユーザー名 (検索用)
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        id:
+          description: ユーザーID
+          type: string
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        notificationEnabled:
+          description: 通知の有効化設定
+          type: boolean
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: ユーザー名 (表示名)
+          type: string
+      type: object
+    response.CalcCartResponse:
+      properties:
+        carts:
+          description: カート一覧
+          items:
+            $ref: '#/components/schemas/response.Cart'
+          type: array
+          uniqueItems: false
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        items:
+          description: カート内の商品一覧(集計結果)
+          items:
+            $ref: '#/components/schemas/response.CartItem'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        promotion:
+          $ref: '#/components/schemas/response.Promotion'
+        requestId:
+          description: 支払い時にAPIへ送信するキー(重複判定用)
+          type: string
+        shippingFee:
+          description: 配送手数料(税込)
+          type: integer
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+      type: object
+    response.Cart:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        items:
+          description: 箱の商品一覧
+          items:
+            $ref: '#/components/schemas/response.CartItem'
+          type: array
+          uniqueItems: false
+        number:
+          description: 箱の通番
+          type: integer
+        rate:
+          description: 箱の占有率
+          type: integer
+        size:
+          description: 箱のサイズ
+          type: integer
+        type:
+          description: 箱の種別
+          type: integer
+      type: object
+    response.CartItem:
+      properties:
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 数量
+          type: integer
+      type: object
+    response.CartResponse:
+      properties:
+        carts:
+          description: カート一覧
+          items:
+            $ref: '#/components/schemas/response.Cart'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+      type: object
+    response.Category:
+      description: 商品種別情報
+      properties:
+        id:
+          description: 商品種別ID
+          type: string
+        name:
+          description: 商品種別名
+          type: string
+      type: object
+    response.CheckoutResponse:
+      properties:
+        url:
+          description: 遷移先URL
+          type: string
+      type: object
+    response.CheckoutStateResponse:
+      properties:
+        orderId:
+          description: 注文履歴ID
+          type: string
+        status:
+          description: 注文ステータス
+          type: integer
+      type: object
+    response.Coordinator:
+      description: コーディネータ情報
+      properties:
+        businessDays:
+          description: 営業曜日(発送可能日)
+          items:
+            $ref: '#/components/schemas/time.Weekday'
+          type: array
+          uniqueItems: false
+        city:
+          description: 市区町村
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        id:
+          description: コーディネータID
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          type: string
+        marcheName:
+          description: マルシェ名
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        productTypeIds:
+          description: 取り扱い品目一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        profile:
+          description: 紹介文
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 表示名
+          type: string
+      type: object
+    response.CoordinatorResponse:
+      properties:
+        archives:
+          description: 過去のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.ArchiveSummary'
+          type: array
+          uniqueItems: false
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        experiences:
+          description: コーディネータに関連する体験一覧
+          items:
+            $ref: '#/components/schemas/response.Experience'
+          type: array
+          uniqueItems: false
+        lives:
+          description: 配信中・配信予定のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.LiveSummary'
+          type: array
+          uniqueItems: false
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/response.Producer'
+          type: array
+          uniqueItems: false
+        productTypes:
+          description: 品目一覧
+          items:
+            $ref: '#/components/schemas/response.ProductType'
+          type: array
+          uniqueItems: false
+        products:
+          description: コーディネータに関連する商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        shipping:
+          $ref: '#/components/schemas/response.Shipping'
+      type: object
+    response.CoordinatorsResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        productTypes:
+          description: 品目一覧
+          items:
+            $ref: '#/components/schemas/response.ProductType'
+          type: array
+          uniqueItems: false
+        total:
+          description: コーディネータ合計数
+          type: integer
+      type: object
+    response.CreateAuthUserResponse:
+      properties:
+        id:
+          description: ユーザーID
+          type: string
+      type: object
+    response.Experience:
+      description: 体験情報
+      properties:
+        businessCloseTime:
+          description: 営業終了時間
+          type: string
+        businessOpenTime:
+          description: 営業開始時間
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        description:
+          description: 説明
+          type: string
+        direction:
+          description: アクセス方法
+          type: string
+        duration:
+          description: 体験時間(分)
+          type: integer
+        endAt:
+          description: 募集終了日時
+          type: integer
+        experienceTypeId:
+          description: 体験種別ID
+          type: string
+        hostAddressLine1:
+          description: 開催場所(住所1)
+          type: string
+        hostAddressLine2:
+          description: 開催場所(住所2)
+          type: string
+        hostCity:
+          description: 開催場所(市区町村)
+          type: string
+        hostLatitude:
+          description: 開催場所(座標情報:緯度)
+          type: number
+        hostLongitude:
+          description: 開催場所(座標情報:経度)
+          type: number
+        hostPostalCode:
+          description: 開催場所(郵便番号)
+          type: string
+        hostPrefecture:
+          description: 開催場所(都道府県)
+          type: string
+        id:
+          description: 体験ID
+          type: string
+        media:
+          description: メディア一覧
+          items:
+            $ref: '#/components/schemas/response.ExperienceMedia'
+          type: array
+          uniqueItems: false
+        priceAdult:
+          description: 大人料金
+          type: integer
+        priceElementarySchool:
+          description: 小学生料金
+          type: integer
+        priceJuniorHighSchool:
+          description: 中学生料金
+          type: integer
+        pricePreschool:
+          description: 幼児料金
+          type: integer
+        priceSenior:
+          description: シニア料金
+          type: integer
+        producerId:
+          description: プロデューサーID
+          type: string
+        promotionVideoUrl:
+          description: 紹介動画URL
+          type: string
+        rate:
+          $ref: '#/components/schemas/response.ExperienceRate'
+        recommendedPoint1:
+          description: おすすめポイント1
+          type: string
+        recommendedPoint2:
+          description: おすすめポイント2
+          type: string
+        recommendedPoint3:
+          description: おすすめポイント3
+          type: string
+        startAt:
+          description: 募集開始日時
+          type: integer
+        status:
+          description: 販売状況
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.ExperienceMedia:
+      properties:
+        isThumbnail:
+          description: サムネイルとして使用
+          type: boolean
+        url:
+          description: メディアURL
+          type: string
+      type: object
+    response.ExperienceRate:
+      description: 体験評価
+      properties:
+        average:
+          description: 平均評価
+          type: number
+        count:
+          description: 合計評価数
+          type: integer
+        detail:
+          additionalProperties:
+            type: integer
+          description: 評価詳細
+          type: object
+      type: object
+    response.ExperienceResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        experience:
+          $ref: '#/components/schemas/response.Experience'
+        experienceType:
+          $ref: '#/components/schemas/response.ExperienceType'
+        producer:
+          $ref: '#/components/schemas/response.Producer'
+      type: object
+    response.ExperienceReview:
+      description: 体験レビュー
+      properties:
+        accountId:
+          description: アカウントID
+          type: string
+        comment:
+          description: コメント
+          type: string
+        dislikeTotal:
+          description: いまいち数
+          type: integer
+        experienceId:
+          description: 体験ID
+          type: string
+        id:
+          description: 体験レビューID
+          type: string
+        likeTotal:
+          description: いいね数
+          type: integer
+        publishedAt:
+          description: 投稿日時
+          type: integer
+        rate:
+          description: 評価
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+        username:
+          description: ユーザー名
+          type: string
+      type: object
+    response.ExperienceReviewResponse:
+      properties:
+        review:
+          $ref: '#/components/schemas/response.ExperienceReview'
+      type: object
+    response.ExperienceReviewsResponse:
+      properties:
+        nextToken:
+          description: 次の取得開始位置
+          type: string
+        reviews:
+          description: 体験レビュー一覧
+          items:
+            $ref: '#/components/schemas/response.ExperienceReview'
+          type: array
+          uniqueItems: false
+      type: object
+    response.ExperienceType:
+      description: 体験種別情報
+      properties:
+        id:
+          description: 体験種別ID
+          type: string
+        name:
+          description: 体験種別名
+          type: string
+      type: object
+    response.ExperiencesResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        experienceTypes:
+          description: 体験種別一覧
+          items:
+            $ref: '#/components/schemas/response.ExperienceType'
+          type: array
+          uniqueItems: false
+        experiences:
+          description: 体験一覧
+          items:
+            $ref: '#/components/schemas/response.Experience'
+          type: array
+          uniqueItems: false
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/response.Producer'
+          type: array
+          uniqueItems: false
+        total:
+          description: 体験合計数
+          type: integer
+      type: object
+    response.Live:
+      properties:
+        comment:
+          description: コメント
+          type: string
+        endAt:
+          description: ライブ配信終了日時
+          type: integer
+        producerId:
+          description: 生産者ID
+          type: string
+        productIds:
+          description: 商品ID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        scheduleId:
+          description: マルシェ開催スケジュールID
+          type: string
+        startAt:
+          description: ライブ配信開始日時
+          type: integer
+      type: object
+    response.LiveComment:
+      properties:
+        accountId:
+          description: アカウントID
+          type: string
+        comment:
+          description: コメント
+          type: string
+        publishedAt:
+          description: 投稿日時
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+        username:
+          description: ユーザー名
+          type: string
+      type: object
+    response.LiveCommentsResponse:
+      properties:
+        comments:
+          description: コメント一覧
+          items:
+            $ref: '#/components/schemas/response.LiveComment'
+          type: array
+          uniqueItems: false
+        nextToken:
+          description: 次の取得開始位置
+          type: string
+      type: object
+    response.LiveProduct:
+      properties:
+        id:
+          description: 商品ID
+          type: string
+        inventory:
+          description: 在庫数
+          type: integer
+        name:
+          description: 商品名
+          type: string
+        price:
+          description: 販売価格(税込)
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+      type: object
+    response.LiveSchedulesResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        lives:
+          description: 配信中・配信予定のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.LiveSummary'
+          type: array
+          uniqueItems: false
+        total:
+          description: 配信中・配信予定のマルシェ合計数
+          type: integer
+      type: object
+    response.LiveSummary:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        endAt:
+          description: 開催終了日時
+          type: integer
+        products:
+          description: 販売商品一覧
+          items:
+            $ref: '#/components/schemas/response.LiveProduct'
+          type: array
+          uniqueItems: false
+        scheduleId:
+          description: 開催スケジュールID
+          type: string
+        startAt:
+          description: 開催開始日時
+          type: integer
+        status:
+          description: 開催状況
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.Order:
+      description: 注文履歴情報
+      properties:
+        billingAddress:
+          $ref: '#/components/schemas/response.Address'
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        experience:
+          $ref: '#/components/schemas/response.OrderExperience'
+        fulfillments:
+          description: 配送情報一覧
+          items:
+            $ref: '#/components/schemas/response.OrderFulfillment'
+          type: array
+          uniqueItems: false
+        id:
+          description: 注文履歴ID
+          type: string
+        items:
+          description: 注文商品一覧
+          items:
+            $ref: '#/components/schemas/response.OrderItem'
+          type: array
+          uniqueItems: false
+        payment:
+          $ref: '#/components/schemas/response.OrderPayment'
+        promotionId:
+          description: プロモーションID
+          type: string
+        refund:
+          $ref: '#/components/schemas/response.OrderRefund'
+        shippingAddress:
+          $ref: '#/components/schemas/response.Address'
+        shippingType:
+          description: 配送方法
+          type: integer
+        status:
+          description: 注文ステータス
+          type: integer
+        type:
+          description: 注文種別
+          type: integer
+      type: object
+    response.OrderExperience:
+      description: 注文体験情報
+      properties:
+        adultCount:
+          description: 大人人数
+          type: integer
+        adultPrice:
+          description: 大人価格
+          type: integer
+        elementarySchoolCount:
+          description: 小学生人数
+          type: integer
+        elementarySchoolPrice:
+          description: 小学生価格
+          type: integer
+        experienceId:
+          description: 体験ID
+          type: string
+        juniorHighSchoolCount:
+          description: 中学生人数
+          type: integer
+        juniorHighSchoolPrice:
+          description: 中学生価格
+          type: integer
+        preschoolCount:
+          description: 幼児人数
+          type: integer
+        preschoolPrice:
+          description: 幼児価格
+          type: integer
+        requestedDate:
+          description: 体験希望日
+          type: string
+        requestedTime:
+          description: 体験希望時間
+          type: string
+        seniorCount:
+          description: シニア人数
+          type: integer
+        seniorPrice:
+          description: シニア価格
+          type: integer
+        transportation:
+          description: 交通手段
+          type: string
+      type: object
+    response.OrderFulfillment:
+      properties:
+        boxNumber:
+          description: 箱の通番
+          type: integer
+        boxRate:
+          description: 箱の占有率
+          type: integer
+        boxSize:
+          description: 箱の大きさ
+          type: integer
+        fulfillmentId:
+          description: 配送情報ID
+          type: string
+        shippedAt:
+          description: 配送日時
+          type: integer
+        shippingCarrier:
+          description: 配送会社
+          type: integer
+        shippingType:
+          description: 配送方法
+          type: integer
+        status:
+          description: 配送状況
+          type: integer
+        trackingNumber:
+          description: 伝票番号
+          type: string
+      type: object
+    response.OrderItem:
+      properties:
+        fulfillmentId:
+          description: 配送情報ID
+          type: string
+        price:
+          description: 購入価格(税込)
+          type: integer
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 購入数量
+          type: integer
+      type: object
+    response.OrderPayment:
+      description: 支払い情報
+      properties:
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        methodType:
+          description: 決済手段種別
+          type: integer
+        orderedAt:
+          description: 注文日時
+          type: integer
+        paidAt:
+          description: 支払日時
+          type: integer
+        shippingFee:
+          description: 配送手数料(税込)
+          type: integer
+        status:
+          description: 支払い状況
+          type: integer
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+        transactionId:
+          description: 取引ID
+          type: string
+      type: object
+    response.OrderRefund:
+      description: 注文キャンセル情報
+      properties:
+        canceled:
+          description: 注文キャンセルフラグ
+          type: boolean
+        canceledAt:
+          description: 注文キャンセル日時
+          type: integer
+        reason:
+          description: 注文キャンセル理由
+          type: string
+        total:
+          description: 返金金額
+          type: integer
+        type:
+          description: 注文キャンセル種別
+          type: integer
+      type: object
+    response.OrderResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        experience:
+          $ref: '#/components/schemas/response.Experience'
+        order:
+          $ref: '#/components/schemas/response.Order'
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        promotion:
+          $ref: '#/components/schemas/response.Promotion'
+      type: object
+    response.OrdersResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        experiences:
+          description: 体験一覧
+          items:
+            $ref: '#/components/schemas/response.Experience'
+          type: array
+          uniqueItems: false
+        orders:
+          description: 注文履歴一覧
+          items:
+            $ref: '#/components/schemas/response.Order'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        promotions:
+          description: プロモーション一覧
+          items:
+            $ref: '#/components/schemas/response.Promotion'
+          type: array
+          uniqueItems: false
+        total:
+          description: 合計数
+          type: integer
+      type: object
+    response.PaymentSystem:
+      properties:
+        methodType:
+          description: 決済システム種別
+          type: integer
+        status:
+          description: 決済システム状態
+          type: integer
+      type: object
+    response.PaymentSystemsResponse:
+      properties:
+        systems:
+          description: 決済システム一覧
+          items:
+            $ref: '#/components/schemas/response.PaymentSystem'
+          type: array
+          uniqueItems: false
+      type: object
+    response.PostalCodeResponse:
+      properties:
+        city:
+          description: 市区町村名
+          type: string
+        postalCode:
+          description: 郵便番号
+          type: string
+        prefecture:
+          description: 都道府県名
+          type: string
+        prefectureCode:
+          description: 都道府県コード
+          type: integer
+        town:
+          description: 町域名
+          type: string
+      type: object
+    response.PreCheckoutExperienceResponse:
+      properties:
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        experience:
+          $ref: '#/components/schemas/response.Experience'
+        promotion:
+          $ref: '#/components/schemas/response.Promotion'
+        requestId:
+          description: 支払い時にAPIへ送信するキー(重複判定用)
+          type: string
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+      type: object
+    response.Producer:
+      description: 生産者情報
+      properties:
+        city:
+          description: 市区町村
+          type: string
+        coordinatorId:
+          description: 担当コーディネータID
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        id:
+          description: 生産者ID
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        profile:
+          description: 紹介文
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 生産者名
+          type: string
+      type: object
+    response.ProducerResponse:
+      properties:
+        archives:
+          description: 過去のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.ArchiveSummary'
+          type: array
+          uniqueItems: false
+        experiences:
+          description: 体験一覧
+          items:
+            $ref: '#/components/schemas/response.Experience'
+          type: array
+          uniqueItems: false
+        lives:
+          description: 配信中・配信予定のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.LiveSummary'
+          type: array
+          uniqueItems: false
+        producer:
+          $ref: '#/components/schemas/response.Producer'
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+      type: object
+    response.ProducersResponse:
+      properties:
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/response.Producer'
+          type: array
+          uniqueItems: false
+        total:
+          description: 生産者合計数
+          type: integer
+      type: object
+    response.Product:
+      description: 商品情報
+      properties:
+        box60Rate:
+          description: 箱の占有率(サイズ:60)
+          type: integer
+        box80Rate:
+          description: 箱の占有率(サイズ:80)
+          type: integer
+        box100Rate:
+          description: 箱の占有率(サイズ:100)
+          type: integer
+        categoryId:
+          description: 商品種別ID
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        deliveryType:
+          description: 配送方法
+          type: integer
+        description:
+          description: 商品説明
+          type: string
+        endAt:
+          description: 販売終了日時
+          type: integer
+        expirationDate:
+          description: 賞味期限(単位:日)
+          type: integer
+        id:
+          description: 商品ID
+          type: string
+        inventory:
+          description: 在庫数
+          type: integer
+        itemDescription:
+          description: 数量単位説明
+          type: string
+        itemUnit:
+          description: 数量単位
+          type: string
+        media:
+          description: メディア一覧
+          items:
+            $ref: '#/components/schemas/response.ProductMedia'
+          type: array
+          uniqueItems: false
+        name:
+          description: 商品名
+          type: string
+        originCity:
+          description: 原産地(市区町村)
+          type: string
+        originPrefecture:
+          description: 原産地(都道府県)
+          type: string
+        price:
+          description: 販売価格(税込)
+          type: integer
+        producerId:
+          description: 生産者ID
+          type: string
+        productTagIds:
+          description: 商品タグID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        productTypeId:
+          description: 品目ID
+          type: string
+        rate:
+          $ref: '#/components/schemas/response.ProductRate'
+        recommendedPoint1:
+          description: おすすめポイント1
+          type: string
+        recommendedPoint2:
+          description: おすすめポイント2
+          type: string
+        recommendedPoint3:
+          description: おすすめポイント3
+          type: string
+        startAt:
+          description: 販売開始日時
+          type: integer
+        status:
+          description: 販売状況
+          type: integer
+        storageMethodType:
+          description: 保存方法
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        weight:
+          description: 重量(kg,少数第一位まで)
+          type: number
+      type: object
+    response.ProductMedia:
+      properties:
+        isThumbnail:
+          description: サムネイルとして使用
+          type: boolean
+        url:
+          description: メディアURL
+          type: string
+      type: object
+    response.ProductRate:
+      description: 商品評価
+      properties:
+        average:
+          description: 平均評価
+          type: number
+        count:
+          description: 合計評価数
+          type: integer
+        detail:
+          additionalProperties:
+            type: integer
+          description: 評価詳細
+          type: object
+      type: object
+    response.ProductResponse:
+      properties:
+        category:
+          $ref: '#/components/schemas/response.Category'
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        producer:
+          $ref: '#/components/schemas/response.Producer'
+        product:
+          $ref: '#/components/schemas/response.Product'
+        productTags:
+          description: 商品タグ一覧
+          items:
+            $ref: '#/components/schemas/response.ProductTag'
+          type: array
+          uniqueItems: false
+        productType:
+          $ref: '#/components/schemas/response.ProductType'
+      type: object
+    response.ProductReview:
+      description: 商品レビュー
+      properties:
+        accountId:
+          description: アカウントID
+          type: string
+        comment:
+          description: コメント
+          type: string
+        dislikeTotal:
+          description: いまいち数
+          type: integer
+        id:
+          description: 商品レビューID
+          type: string
+        likeTotal:
+          description: いいね数
+          type: integer
+        productId:
+          description: 商品ID
+          type: string
+        publishedAt:
+          description: 投稿日時
+          type: integer
+        rate:
+          description: 評価
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+        username:
+          description: ユーザー名
+          type: string
+      type: object
+    response.ProductReviewResponse:
+      properties:
+        review:
+          $ref: '#/components/schemas/response.ProductReview'
+      type: object
+    response.ProductReviewsResponse:
+      properties:
+        nextToken:
+          description: 次の取得開始位置
+          type: string
+        reviews:
+          description: 商品レビュー一覧
+          items:
+            $ref: '#/components/schemas/response.ProductReview'
+          type: array
+          uniqueItems: false
+      type: object
+    response.ProductTag:
+      properties:
+        id:
+          description: 商品タグID
+          type: string
+        name:
+          description: 商品タグ名
+          type: string
+      type: object
+    response.ProductType:
+      description: 品目情報
+      properties:
+        categoryId:
+          description: 商品種別ID
+          type: string
+        iconUrl:
+          description: アイコンURL
+          type: string
+        id:
+          description: 品目ID
+          type: string
+        name:
+          description: 品目名
+          type: string
+      type: object
+    response.ProductsResponse:
+      properties:
+        categories:
+          description: 商品種別一覧
+          items:
+            $ref: '#/components/schemas/response.Category'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/response.Producer'
+          type: array
+          uniqueItems: false
+        productTags:
+          description: 商品タグ一覧
+          items:
+            $ref: '#/components/schemas/response.ProductTag'
+          type: array
+          uniqueItems: false
+        productTypes:
+          description: 品目一覧
+          items:
+            $ref: '#/components/schemas/response.ProductType'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        total:
+          description: 商品合計数
+          type: integer
+      type: object
+    response.Promotion:
+      description: プロモーション情報
+      properties:
+        code:
+          description: クーポンコード
+          type: string
+        description:
+          description: 詳細説明
+          type: string
+        discountRate:
+          description: 割引額(%/円)
+          type: integer
+        discountType:
+          description: 割引計算方法
+          type: integer
+        endAt:
+          description: クーポン使用可能日時(終了)
+          type: integer
+        id:
+          description: プロモーションID
+          type: string
+        startAt:
+          description: クーポン使用可能日時(開始)
+          type: integer
+        status:
+          description: ステータス
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.PromotionResponse:
+      properties:
+        promotion:
+          $ref: '#/components/schemas/response.Promotion'
+      type: object
+    response.Schedule:
+      description: マルシェ開催情報
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        description:
+          description: 説明
+          type: string
+        distributionMedatada:
+          $ref: '#/components/schemas/response.ScheduleDistributionMetadata'
+        distributionUrl:
+          description: 映像配信URL
+          type: string
+        endAt:
+          description: 配信終了日時
+          type: integer
+        id:
+          description: スケジュールID
+          type: string
+        startAt:
+          description: 配信開始日時
+          type: integer
+        status:
+          description: 開催状況
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.ScheduleDistributionMetadata:
+      description: 映像メタデータ
+      properties:
+        subtitles:
+          additionalProperties:
+            type: string
+          description: 字幕情報
+          type: object
+      type: object
+    response.ScheduleResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        lives:
+          description: ライブ配信一覧
+          items:
+            $ref: '#/components/schemas/response.Live'
+          type: array
+          uniqueItems: false
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/response.Producer'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        schedule:
+          $ref: '#/components/schemas/response.Schedule'
+      type: object
+    response.Shipping:
+      description: 配送設定
+      properties:
+        box60Frozen:
+          description: 箱サイズ60の追加（冷凍便）追加配送料(税込)
+          type: integer
+        box60Rates:
+          description: 箱サイズ60の通常（常温・冷蔵便）配送料一覧
+          items:
+            $ref: '#/components/schemas/response.ShippingRate'
+          type: array
+          uniqueItems: false
+        box80Frozen:
+          description: 箱サイズ80の追加（冷凍便）追加配送料(税込)
+          type: integer
+        box80Rates:
+          description: 箱サイズ80の通常（常温・冷蔵便）配送料一覧
+          items:
+            $ref: '#/components/schemas/response.ShippingRate'
+          type: array
+          uniqueItems: false
+        box100Frozen:
+          description: 箱サイズ100の追加（冷凍便）追加配送料(税込)
+          type: integer
+        box100Rates:
+          description: 箱サイズ100の通常（常温・冷蔵便）配送料一覧
+          items:
+            $ref: '#/components/schemas/response.ShippingRate'
+          type: array
+          uniqueItems: false
+        freeShippingRates:
+          description: 送料無料になる金額(税込)
+          type: integer
+        hasFreeShipping:
+          description: 送料無料オプションの有無
+          type: boolean
+        id:
+          description: 配送設定ID
+          type: string
+      type: object
+    response.ShippingRate:
+      properties:
+        name:
+          description: 配送料金設定名
+          type: string
+        number:
+          description: No.
+          type: integer
+        prefectureCodes:
+          description: 対象都道府県一覧
+          items:
+            type: integer
+          type: array
+          uniqueItems: false
+        prefectures:
+          description: 対象都道府県名
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        price:
+          description: 配送料金(税込)
+          type: integer
+      type: object
+    response.Spot:
+      description: スポット情報
+      properties:
+        createdAt:
+          description: 登録日時
+          type: integer
+        description:
+          description: 説明
+          type: string
+        id:
+          description: スポットID
+          type: string
+        latitude:
+          description: 座標情報:緯度
+          type: number
+        longitude:
+          description: 座標情報:経度
+          type: number
+        name:
+          description: スポット名
+          type: string
+        spotTypeId:
+          description: スポット種別ID
+          type: string
+        thumbnailUrl:
+          description: サムネイル画像URL
+          type: string
+        updatedAt:
+          description: 更新日時
+          type: integer
+        userId:
+          description: 投稿者のユーザーID
+          type: string
+        userName:
+          description: 投稿者名
+          type: string
+        userThumbnailUrl:
+          description: 投稿者のサムネイルURL
+          type: string
+        userType:
+          description: 投稿者の種別
+          type: integer
+      type: object
+    response.SpotResponse:
+      properties:
+        spot:
+          $ref: '#/components/schemas/response.Spot'
+        spotType:
+          $ref: '#/components/schemas/response.SpotType'
+      type: object
+    response.SpotType:
+      description: スポット種別情報
+      properties:
+        id:
+          description: 体験種別ID
+          type: string
+        name:
+          description: 体験種別名
+          type: string
+      type: object
+    response.SpotTypesResponse:
+      properties:
+        spotTypes:
+          description: 体験種別一覧
+          items:
+            $ref: '#/components/schemas/response.SpotType'
+          type: array
+          uniqueItems: false
+        total:
+          description: 体験種別合計数
+          type: integer
+      type: object
+    response.SpotsResponse:
+      properties:
+        spotTypes:
+          description: スポット種別一覧
+          items:
+            $ref: '#/components/schemas/response.SpotType'
+          type: array
+          uniqueItems: false
+        spots:
+          description: スポット一覧
+          items:
+            $ref: '#/components/schemas/response.Spot'
+          type: array
+          uniqueItems: false
+      type: object
+    response.TopCommonResponse:
+      properties:
+        archives:
+          description: 過去のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.ArchiveSummary'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        experienceVideos:
+          description: 体験動画一覧
+          items:
+            $ref: '#/components/schemas/response.VideoSummary'
+          type: array
+          uniqueItems: false
+        lives:
+          description: 配信中・配信予定のマルシェ一覧
+          items:
+            $ref: '#/components/schemas/response.LiveSummary'
+          type: array
+          uniqueItems: false
+        productVideos:
+          description: 商品動画一覧
+          items:
+            $ref: '#/components/schemas/response.VideoSummary'
+          type: array
+          uniqueItems: false
+      type: object
+    response.UploadStateResponse:
+      properties:
+        status:
+          description: アップロード結果
+          type: integer
+        url:
+          description: 参照先URL
+          type: string
+      type: object
+    response.UploadURLResponse:
+      properties:
+        key:
+          description: アップロード後の状態参照用キー
+          type: string
+        url:
+          description: アップロード用の署名付きURL
+          type: string
+      type: object
+    response.Video:
+      description: オンデマンド動画情報
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        description:
+          description: 説明
+          type: string
+        experienceIds:
+          description: 体験ID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        id:
+          description: オンデマンド動画ID
+          type: string
+        productIds:
+          description: 商品ID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        publishedAt:
+          description: 公開日時
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+        videoUrl:
+          description: 動画URL
+          type: string
+      type: object
+    response.VideoComment:
+      properties:
+        accountId:
+          description: アカウントID
+          type: string
+        comment:
+          description: コメント
+          type: string
+        publishedAt:
+          description: 投稿日時
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+        username:
+          description: ユーザー名
+          type: string
+      type: object
+    response.VideoCommentsResponse:
+      properties:
+        comments:
+          description: コメント一覧
+          items:
+            $ref: '#/components/schemas/response.VideoComment'
+          type: array
+          uniqueItems: false
+        nextToken:
+          description: 次の取得開始位置
+          type: string
+      type: object
+    response.VideoResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/response.Coordinator'
+        experiences:
+          description: 体験一覧
+          items:
+            $ref: '#/components/schemas/response.Experience'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/response.Product'
+          type: array
+          uniqueItems: false
+        video:
+          $ref: '#/components/schemas/response.Video'
+      type: object
+    response.VideoSummary:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        id:
+          description: オンデマンド動画ID
+          type: string
+        publishedAt:
+          description: 公開日時
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        title:
+          description: タイトル
+          type: string
+      type: object
+    response.VideosResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/response.Coordinator'
+          type: array
+          uniqueItems: false
+        total:
+          description: オンデマンド動画合計数
+          type: integer
+        videos:
+          description: オンデマンド動画一覧
+          items:
+            $ref: '#/components/schemas/response.VideoSummary'
+          type: array
+          uniqueItems: false
+      type: object
+    time.Weekday:
+      type: integer
+      x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+    util.ErrorResponse:
+      properties:
+        detail:
+          description: エラー詳細
+          type: string
+        message:
+          description: エラー概要
+          type: string
+        status:
+          description: ステータスコード
+          type: integer
+      type: object
+  securitySchemes:
+    bearerauth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+externalDocs:
+  description: ""
+  url: ""
+info:
+  description: 購入者向けのふるマルAPIです。
+  title: ふるマル API - 購入者向け
+  version: ""
+openapi: 3.1.0
+paths:
+  /addresses:
+    get:
+      description: ユーザーの登録済み住所一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AddressesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 住所一覧取得
+      tags:
+      - Address
+    post:
+      description: 新しい住所を登録します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAddressRequest'
+        description: 住所情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AddressResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 住所登録
+      tags:
+      - Address
+  /addresses/{addressId}:
+    delete:
+      description: 指定されたIDの住所を削除します。
+      parameters:
+      - description: 住所ID
+        in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: 削除成功
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 他のユーザーのアドレス情報
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アドレスが存在しない
+      security:
+      - bearerauth: []
+      summary: 住所削除
+      tags:
+      - Address
+    get:
+      description: 指定されたIDの住所詳細を取得します。
+      parameters:
+      - description: 住所ID
+        in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AddressResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 他のユーザーのアドレス情報
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アドレスが存在しない
+      security:
+      - bearerauth: []
+      summary: 住所詳細取得
+      tags:
+      - Address
+    patch:
+      description: 指定されたIDの住所情報を更新します。
+      parameters:
+      - description: 住所ID
+        in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAddressRequest'
+        description: 更新する住所情報
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 他のユーザーのアドレス情報
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アドレスが存在しない
+      security:
+      - bearerauth: []
+      summary: 住所更新
+      tags:
+      - Address
+  /auth:
+    delete:
+      description: ふるマルからサインアウトします。
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: サインアウト
+      tags:
+      - Auth
+    get:
+      description: 認証トークンを検証し、認証情報を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: トークン検証
+      tags:
+      - Auth
+    post:
+      description: ユーザー名/メールアドレスとパスワードでサインインします。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.SignInRequest'
+        description: サインイン
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      summary: サインイン
+      tags:
+      - Auth
+  /auth/forgot-password:
+    post:
+      description: パスワード再設定のための検証コードをメールで送信します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.ForgotAuthPasswordRequest'
+        description: パスワード再設定リクエスト
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: パスワード再設定リクエスト
+      tags:
+      - Auth
+  /auth/forgot-password/verified:
+    post:
+      description: 検証コードを使用してパスワードを再設定します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.ResetAuthPasswordRequest'
+        description: パスワード再設定実行
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: パスワード再設定実行
+      tags:
+      - Auth
+  /auth/google:
+    get:
+      description: Google OAuth認証のための認証URLを取得します。
+      parameters:
+      - description: ステート
+        in: query
+        name: state
+        schema:
+          type: string
+      - description: リダイレクトURI
+        in: query
+        name: redirectUri
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthGoogleAccountResponse'
+          description: OK
+      security:
+      - cookieauth: []
+      summary: Google認証URL取得
+      tags:
+      - Auth
+  /auth/line:
+    get:
+      description: LINE OAuth認証のための認証URLを取得します。
+      parameters:
+      - description: ステート
+        in: query
+        name: state
+        schema:
+          type: string
+      - description: リダイレクトURI
+        in: query
+        name: redirectUri
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthLINEAccountResponse'
+          description: OK
+      security:
+      - cookieauth: []
+      summary: LINE認証URL取得
+      tags:
+      - Auth
+  /auth/password:
+    patch:
+      description: 現在のパスワードを使用して新しいパスワードに変更します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthPasswordRequest'
+        description: パスワード変更
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: パスワード変更
+      tags:
+      - Auth
+  /auth/refresh-token:
+    post:
+      description: リフレッシュトークンを使用してアクセストークンを更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.RefreshAuthTokenRequest'
+        description: トークンリフレッシュ
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      summary: トークンリフレッシュ
+      tags:
+      - Auth
+  /carts:
+    get:
+      description: 買い物かごの内容を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CartResponse'
+          description: OK
+      security:
+      - cookieauth: []
+      summary: 買い物かご取得
+      tags:
+      - Cart
+  /carts/-/items:
+    post:
+      description: 買い物かごに商品を追加します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.AddCartItemRequest'
+        description: 商品追加
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品が非公開になっている
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品が存在しない
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品在庫が不足している
+      security:
+      - cookieauth: []
+      summary: 買い物かごに商品追加
+      tags:
+      - Cart
+  /carts/-/items/{productId}:
+    delete:
+      description: 買い物かごから商品を削除します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: 箱数
+        in: query
+        name: number
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      security:
+      - cookieauth: []
+      summary: 買い物かごから商品削除
+      tags:
+      - Cart
+  /carts/{coordinatorId}:
+    get:
+      description: 指定されたコーディネータの買い物かごの送料や合計金額を計算します。
+      parameters:
+      - description: コーディネータID
+        in: path
+        name: coordinatorId
+        required: true
+        schema:
+          type: string
+      - description: 箱数
+        in: query
+        name: number
+        schema:
+          type: integer
+      - description: 都道府県コード
+        in: query
+        name: prefecture
+        schema:
+          type: integer
+      - description: プロモーションコード
+        in: query
+        name: promotion
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CalcCartResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      security:
+      - cookieauth: []
+      summary: 買い物かご計算
+      tags:
+      - Cart
+  /checkouts/{transactionId}:
+    get:
+      description: 決済トランザクションの状態を取得します。
+      parameters:
+      - description: トランザクションID
+        in: path
+        name: transactionId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutStateResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: トランザクションが見つからない
+      security:
+      - bearerauth: []
+      - cookieauth: []
+      summary: 決済状態取得
+      tags:
+      - Checkout
+  /checkouts/experiences/{experienceId}:
+    get:
+      description: 体験を決済する前に必要な情報を取得します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.PreCheckoutExperienceResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 体験が見つからない
+      security:
+      - bearerauth: []
+      - cookieauth: []
+      summary: 体験事前決済情報取得
+      tags:
+      - Checkout
+    post:
+      description: 体験の決済を実行し、予約を作成します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CheckoutExperienceRequest'
+        description: 体験決済
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      - cookieauth: []
+      summary: 体験決済
+      tags:
+      - Checkout
+  /checkouts/products:
+    post:
+      description: 商品の決済を実行し、注文を作成します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CheckoutProductRequest'
+        description: 商品決済
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 決済システムがメンテナンス中 もしくは 店舗が利用停止中
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 前提条件エラー(商品在庫が不足、無効なプロモーションなど...)
+      security:
+      - bearerauth: []
+      - cookieauth: []
+      summary: 商品決済
+      tags:
+      - Checkout
+  /coordinators:
+    get:
+      description: コーディネータの一覧を取得します。
+      parameters:
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CoordinatorsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: コーディネータ一覧取得
+      tags:
+      - Coordinator
+  /coordinators/{coordinatorId}:
+    get:
+      description: コーディネータの詳細情報を取得します。
+      parameters:
+      - description: コーディネータID
+        in: path
+        name: coordinatorId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CoordinatorResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: コーディネータが見つからない
+      summary: コーディネータ詳細取得
+      tags:
+      - Coordinator
+  /experiences:
+    get:
+      description: 体験の一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: 都道府県コード
+        in: query
+        name: prefectureCode
+        schema:
+          default: 0
+          type: integer
+      - description: コーディネーターID
+        in: query
+        name: coordinatorId
+        schema:
+          type: string
+      - description: 生産者ID
+        in: query
+        name: producerId
+        schema:
+          type: string
+      - description: 体験名（部分一致検索）
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperiencesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 体験一覧取得
+      tags:
+      - Experience
+  /experiences/{experienceId}:
+    get:
+      description: 指定されたIDの体験詳細を取得します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperienceResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 体験が見つかりません
+      summary: 体験詳細取得
+      tags:
+      - Experience
+  /experiences/{experienceId}/reviews:
+    get:
+      description: 指定した体験のレビュー一覧を取得します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperienceReviewsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 体験レビュー一覧取得
+      tags:
+      - ExperienceReview
+    post:
+      description: 体験のレビューを作成します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateExperienceReviewRequest'
+        description: レビュー作成
+        required: true
+      responses:
+        "204":
+          description: 作成成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 体験が存在しない
+      security:
+      - bearerauth: []
+      summary: 体験レビュー作成
+      tags:
+      - ExperienceReview
+  /experiences/{experienceId}/reviews/{reviewId}:
+    get:
+      description: 体験レビューの詳細情報を取得します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperienceReviewResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: レビューが見つからない
+      summary: 体験レビュー詳細取得
+      tags:
+      - ExperienceReview
+    patch:
+      description: 体験レビューの内容を更新します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateExperienceReviewRequest'
+        description: レビュー更新
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: レビューが見つからない
+      security:
+      - bearerauth: []
+      summary: 体験レビュー更新
+      tags:
+      - ExperienceReview
+  /experiences/{experienceId}/reviews/{reviewId}/reactions:
+    delete:
+      description: 体験レビューに対するリアクションを削除します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 体験レビューリアクション削除
+      tags:
+      - ExperienceReview
+    post:
+      description: 体験レビューに対するリアクション（いいねなど）を登録または更新します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpsertExperienceReviewReactionRequest'
+        description: リアクション登録/更新
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 体験レビューリアクション登録/更新
+      tags:
+      - ExperienceReview
+  /experiences/geolocation:
+    get:
+      description: 指定された位置情報周辺の体験一覧を取得します。
+      parameters:
+      - description: 緯度
+        in: query
+        name: latitude
+        required: true
+        schema:
+          type: number
+      - description: 経度
+        in: query
+        name: longitude
+        required: true
+        schema:
+          type: number
+      - description: 検索半径（km）
+        in: query
+        name: radius
+        schema:
+          default: 20
+          type: integer
+      - description: コーディネーターID
+        in: query
+        name: coordinatorId
+        schema:
+          type: string
+      - description: 生産者ID
+        in: query
+        name: producerId
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperiencesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 位置情報による体験一覧取得
+      tags:
+      - Experience
+  /guests/checkouts/{transactionId}:
+    get:
+      description: ゲストユーザーの決済トランザクション状態を取得します。
+      parameters:
+      - description: トランザクションID
+        in: path
+        name: transactionId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutStateResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: トランザクションが見つからない
+      security:
+      - cookieauth: []
+      summary: ゲスト決済状態取得
+      tags:
+      - GuestCheckout
+  /guests/checkouts/experiences/{experienceId}:
+    post:
+      description: ゲストユーザーとして体験の決済を実行し、予約を作成します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GuestCheckoutExperienceRequest'
+        description: ゲスト体験決済
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      security:
+      - cookieauth: []
+      summary: ゲスト体験決済
+      tags:
+      - GuestCheckout
+  /guests/checkouts/products:
+    post:
+      description: ゲストユーザーとして商品の決済を実行し、注文を作成します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GuestCheckoutProductRequest'
+        description: ゲスト商品決済
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CheckoutResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 決済システムがメンテナンス中
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 前提条件エラー(商品在庫が不足、無効なプロモーションなど...)
+      security:
+      - cookieauth: []
+      summary: ゲスト商品決済
+      tags:
+      - GuestCheckout
+  /guests/schedules/{scheduleId}/comments:
+    post:
+      description: ゲストユーザーとしてライブ配信にコメントを投稿します。
+      parameters:
+      - description: スケジュールID
+        in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateGuestLiveCommentRequest'
+        description: ゲストライブコメント作成
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: ゲストライブコメント作成
+      tags:
+      - GuestLiveComment
+  /guests/videos/{videoId}/comments:
+    post:
+      description: ゲストユーザーとして動画にコメントを投稿します。
+      parameters:
+      - description: 動町ID
+        in: path
+        name: videoId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateGuestVideoCommentRequest'
+        description: ゲスト動画コメント作成
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: ゲスト動画コメント作成
+      tags:
+      - GuestVideoComment
+  /orders:
+    get:
+      description: 注文の一覧を取得します。
+      parameters:
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: 注文ステータス
+        in: query
+        name: types
+        schema:
+          items:
+            type: integer
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.OrdersResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 注文一覧取得
+      tags:
+      - Order
+  /orders/{orderId}:
+    get:
+      description: 注文の詳細情報を取得します。
+      parameters:
+      - description: 注文ID
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.OrderResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 注文が見つからない
+      security:
+      - bearerauth: []
+      summary: 注文詳細取得
+      tags:
+      - Order
+  /postal-codes/{postalCode}:
+    get:
+      description: 郵便番号から住所情報を検索します。
+      parameters:
+      - description: 郵便番号（ハイフンなし7桁）
+        in: path
+        name: postalCode
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.PostalCodeResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 郵便番号が見つかりません
+      summary: 郵便番号検索
+      tags:
+      - PostalCode
+  /producers:
+    get:
+      description: 生産者の一覧を取得します。
+      parameters:
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProducersResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 生産者一覧取得
+      tags:
+      - Producer
+  /producers/{producerId}:
+    get:
+      description: 生産者の詳細情報を取得します。
+      parameters:
+      - description: 生産者ID
+        in: path
+        name: producerId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProducerResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 生産者が見つからない
+      summary: 生産者詳細取得
+      tags:
+      - Producer
+  /products:
+    get:
+      description: 商品の一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: コーディネータID
+        in: query
+        name: coordinatorId
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProductsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 商品一覧取得
+      tags:
+      - Product
+  /products/{productId}:
+    get:
+      description: 商品の詳細情報を取得します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProductResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品が見つからない
+      summary: 商品詳細取得
+      tags:
+      - Product
+  /products/{productId}/reviews:
+    get:
+      description: 指定した商品のレビュー一覧を取得します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProductReviewsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 商品レビュー一覧取得
+      tags:
+      - ProductReview
+    post:
+      description: 商品のレビューを作成します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateProductReviewRequest'
+        description: レビュー作成
+        required: true
+      responses:
+        "204":
+          description: 作成成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品が存在しない
+      security:
+      - bearerauth: []
+      summary: 商品レビュー作成
+      tags:
+      - ProductReview
+  /products/{productId}/reviews/{reviewId}:
+    get:
+      description: 商品レビューの詳細情報を取得します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProductReviewResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: レビューが見つからない
+      summary: 商品レビュー詳細取得
+      tags:
+      - ProductReview
+    patch:
+      description: 商品レビューの内容を更新します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateProductReviewRequest'
+        description: レビュー更新
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: レビューが見つからない
+      security:
+      - bearerauth: []
+      summary: 商品レビュー更新
+      tags:
+      - ProductReview
+  /products/{productId}/reviews/{reviewId}/reactions:
+    delete:
+      description: 商品レビューに対するリアクションを削除します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 商品レビューリアクション削除
+      tags:
+      - ProductReview
+    post:
+      description: 商品レビューに対するリアクション（いいねなど）を登録または更新します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      - description: レビューID
+        in: path
+        name: reviewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpsertProductReviewReactionRequest'
+        description: リアクション登録/更新
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 商品レビューリアクション登録/更新
+      tags:
+      - ProductReview
+  /products/merchant-feed:
+    get:
+      description: Google Merchant Center用の商品フィードをXML形式で取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: object
+          description: XML形式の商品フィード
+      summary: Merchant Centerフィード取得
+      tags:
+      - Product
+  /promotions/{code}:
+    get:
+      description: プロモーションコードから割引情報を取得します。
+      parameters:
+      - description: プロモーションコード
+        in: path
+        name: code
+        required: true
+        schema:
+          type: string
+      - description: コーディネーターID
+        in: query
+        name: coordinatorId
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.PromotionResponse'
+          description: OK
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: プロモーションが利用できません
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: プロモーションが見つかりません
+      summary: プロモーション詳細取得
+      tags:
+      - Promotion
+  /schedules/{scheduleId}:
+    get:
+      description: 指定されたIDのスケジュール詳細を取得します。
+      parameters:
+      - description: スケジュールID
+        in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ScheduleResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: スケジュールが見つかりません
+      summary: スケジュール詳細取得
+      tags:
+      - Schedule
+  /schedules/{scheduleId}/comments:
+    get:
+      description: ライブ配信のコメント一覧を取得します。
+      parameters:
+      - description: スケジュールID
+        in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.LiveCommentsResponse'
+          description: OK
+      summary: ライブコメント一覧取得
+      tags:
+      - LiveComment
+    post:
+      description: ライブ配信にコメントを投稿します。
+      parameters:
+      - description: スケジュールID
+        in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateLiveCommentRequest'
+        description: ライブコメント作成
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ライブコメント作成
+      tags:
+      - LiveComment
+  /schedules/archives:
+    get:
+      description: 過去の配信アーカイブスケジュール一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: コーディネーターID
+        in: query
+        name: coordinator
+        schema:
+          type: string
+      - description: 生産者ID
+        in: query
+        name: producer
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ArchiveSchedulesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: アーカイブスケジュール一覧取得
+      tags:
+      - Schedule
+  /schedules/lives:
+    get:
+      description: 現在配信中または配信予定のライブスケジュール一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: コーディネーターID
+        in: query
+        name: coordinator
+        schema:
+          type: string
+      - description: 生産者ID
+        in: query
+        name: producer
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.LiveSchedulesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: ライブ配信スケジュール一覧取得
+      tags:
+      - Schedule
+  /spot-types:
+    get:
+      description: スポットタイプの一覧を取得します。
+      parameters:
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.SpotTypesResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: スポットタイプ一覧取得
+      tags:
+      - SpotType
+  /spots:
+    get:
+      description: 指定された位置情報周辺のスポット一覧を取得します。
+      parameters:
+      - description: 緯度
+        in: query
+        name: latitude
+        required: true
+        schema:
+          type: number
+      - description: 経度
+        in: query
+        name: longitude
+        required: true
+        schema:
+          type: number
+      - description: 検索半径（km）
+        in: query
+        name: radius
+        schema:
+          default: 20
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.SpotsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: スポット一覧取得
+      tags:
+      - Spot
+    post:
+      description: 新しいスポットを登録します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateSpotRequest'
+        description: スポット情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.SpotResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: スポット登録
+      tags:
+      - Spot
+  /spots/{spotId}:
+    delete:
+      description: 指定されたIDのスポットを削除します。
+      parameters:
+      - description: スポットID
+        in: path
+        name: spotId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: 削除成功
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アクセス権限がありません
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: スポットが見つかりません
+      security:
+      - bearerauth: []
+      summary: スポット削除
+      tags:
+      - Spot
+    get:
+      description: 指定されたIDのスポット詳細を取得します。
+      parameters:
+      - description: スポットID
+        in: path
+        name: spotId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.SpotResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: スポットが見つかりません
+      summary: スポット詳細取得
+      tags:
+      - Spot
+    patch:
+      description: 指定されたIDのスポット情報を更新します。
+      parameters:
+      - description: スポットID
+        in: path
+        name: spotId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateSpotRequest'
+        description: 更新するスポット情報
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アクセス権限がありません
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: スポットが見つかりません
+      security:
+      - bearerauth: []
+      summary: スポット更新
+      tags:
+      - Spot
+  /statuses/payments:
+    get:
+      description: 利用可能な支払手段の一覧を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.PaymentSystemsResponse'
+          description: OK
+      summary: 支払手段一覧取得
+      tags:
+      - Status
+  /top/common:
+    get:
+      description: トップページに表示する共通データ（ライブ配信、アーカイブ、動画など）を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.TopCommonResponse'
+          description: OK
+      summary: トップページ共通データ取得
+      tags:
+      - Top
+  /upload/spots/thumbnail:
+    post:
+      description: スポットサムネイルをアップロードするためのURLを取得します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GetUploadURLRequest'
+        description: ファイル情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.UploadURLResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: スポットサムネイルアップロードURL取得
+      tags:
+      - Upload
+  /upload/state:
+    get:
+      description: アップロードファイルの処理状態を取得します。
+      parameters:
+      - description: アップロードキー
+        in: query
+        name: key
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.UploadStateResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: アップロードファイルが見つかりません
+      summary: アップロード状態取得
+      tags:
+      - Upload
+  /upload/users/thumbnail:
+    post:
+      description: ユーザーサムネイルをアップロードするためのURLを取得します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GetUploadURLRequest'
+        description: ファイル情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.UploadURLResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザーサムネイルアップロードURL取得
+      tags:
+      - Upload
+  /users/me:
+    delete:
+      description: ユーザーアカウントを削除します。
+      responses:
+        "204":
+          description: 削除成功
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザー削除
+      tags:
+      - AuthUser
+    get:
+      description: ログイン中のユーザー情報を取得します。
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthUserResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 認証ユーザー情報取得
+      tags:
+      - AuthUser
+    post:
+      description: 新しいユーザーを登録します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAuthUserRequest'
+        description: ユーザー情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.CreateAuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: すでに存在するメールアドレス
+      summary: ユーザー登録
+      tags:
+      - AuthUser
+  /users/me/account-id:
+    patch:
+      description: ユーザーのアカウントIDを更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserAccountIDRequest'
+        description: アカウントID
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: アカウントID更新
+      tags:
+      - AuthUser
+  /users/me/email:
+    patch:
+      description: ユーザーのメールアドレスを更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserEmailRequest'
+        description: メールアドレス
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: すでに存在するメールアドレス
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 変更後のメールアドレスが変更前と同じ
+      security:
+      - bearerauth: []
+      summary: メールアドレス更新
+      tags:
+      - AuthUser
+  /users/me/email/verified:
+    post:
+      description: メールアドレス更新時に送信される確認コードで更新を確定します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.VerifyAuthUserEmailRequest'
+        description: 確認コード
+        required: true
+      responses:
+        "204":
+          description: 確認成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: メールアドレス更新確認
+      tags:
+      - AuthUser
+  /users/me/experiences/{experienceId}/reviews:
+    get:
+      description: ログイン中のユーザーが投稿した体験レビューの一覧を取得します。
+      parameters:
+      - description: 体験ID
+        in: path
+        name: experienceId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ExperienceReviewsResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザー体験レビュー一覧取得
+      tags:
+      - ExperienceReview
+  /users/me/google:
+    post:
+      description: Googleアカウントを使用してユーザー登録を行います。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAuthUserWithGoogleRequest'
+        description: Googleアカウント情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      security:
+      - cookieauth: []
+      summary: Googleアカウントでユーザー登録
+      tags:
+      - AuthUser
+  /users/me/line:
+    post:
+      description: LINEアカウントを使用してユーザー登録を行います。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateAuthUserWithLINERequest'
+        description: LINEアカウント情報
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthUserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      security:
+      - cookieauth: []
+      summary: LINEアカウントでユーザー登録
+      tags:
+      - AuthUser
+  /users/me/notification:
+    patch:
+      description: ユーザーの通知設定を更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserNotificationRequest'
+        description: 通知設定
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: 通知設定更新
+      tags:
+      - AuthUser
+  /users/me/products/{productId}/reviews:
+    get:
+      description: ログイン中のユーザーが投稿した商品レビューの一覧を取得します。
+      parameters:
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.ProductReviewsResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザー商品レビュー一覧取得
+      tags:
+      - ProductReview
+  /users/me/thumbnail:
+    patch:
+      description: ユーザーのサムネイル画像を更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserThumbnailRequest'
+        description: サムネイルURL
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: サムネイル更新
+      tags:
+      - AuthUser
+  /users/me/username:
+    patch:
+      description: ユーザーの表示名を更新します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.UpdateAuthUserUsernameRequest'
+        description: ユーザー名
+        required: true
+      responses:
+        "204":
+          description: 更新成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: ユーザー名更新
+      tags:
+      - AuthUser
+  /users/me/verified:
+    post:
+      description: ユーザー登録時に送信される確認コードで登録を確定します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.VerifyAuthUserRequest'
+        description: 確認コード
+        required: true
+      responses:
+        "204":
+          description: 確認成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: ユーザー登録確認
+      tags:
+      - AuthUser
+  /videos:
+    get:
+      description: 動画の一覧を取得します。
+      parameters:
+      - description: 取得上限数(max:200)
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置(min:0)
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      - description: カテゴリ（all, product, experience）
+        in: query
+        name: category
+        schema:
+          default: '"all"'
+          type: string
+      - description: コーディネーターID
+        in: query
+        name: coordinatorId
+        schema:
+          type: string
+      - description: 動画名（部分一致検索）
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.VideosResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 動画一覧取得
+      tags:
+      - Video
+  /videos/{videoId}:
+    get:
+      description: 指定されたIDの動画詳細を取得します。
+      parameters:
+      - description: 動画ID
+        in: path
+        name: videoId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.VideoResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 動画が見つかりません
+      summary: 動画詳細取得
+      tags:
+      - Video
+  /videos/{videoId}/comments:
+    get:
+      description: 動画のコメント一覧を取得します。
+      parameters:
+      - description: 動町ID
+        in: path
+        name: videoId
+        required: true
+        schema:
+          type: string
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.VideoCommentsResponse'
+          description: OK
+      summary: 動画コメント一覧取得
+      tags:
+      - VideoComment
+    post:
+      description: 動画にコメントを投稿します。
+      parameters:
+      - description: 動町ID
+        in: path
+        name: videoId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.CreateVideoCommentRequest'
+        description: 動画コメント作成
+        required: true
+      responses:
+        "204":
+          description: 作成成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: オンデマンド配信が存在しない
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: オンデマンド配信が公開されていない
+      security:
+      - bearerauth: []
+      summary: 動画コメント作成
+      tags:
+      - VideoComment
+servers:
+- description: 検証環境
+  url: https://api.furumaru-stg.and-period.work
+- description: 本番環境
+  url: https://api.furumaru.and-period.co.jp

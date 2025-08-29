@@ -17,6 +17,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// @tag.name        Checkout
+// @tag.description 決済・注文関連
 func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/checkouts", h.authentication)
 
@@ -26,6 +28,20 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 	r.GET("/:transactionId", h.GetCheckoutState)
 }
 
+// @Summary     商品決済
+// @Description 商品の決済を実行し、注文を作成します。
+// @Tags        Checkout
+// @Router      /checkouts/products [post]
+// @Security    bearerauth
+// @Security    cookieauth
+// @Accept      json
+// @Param       request body request.CheckoutProductRequest true "商品決済"
+// @Produce     json
+// @Success     200 {object} response.CheckoutResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "決済システムがメンテナンス中 もしくは 店舗が利用停止中"
+// @Failure     412 {object} util.ErrorResponse "前提条件エラー(商品在庫が不足、無効なプロモーションなど...)"
 func (h *handler) CheckoutProduct(ctx *gin.Context) {
 	req := &request.CheckoutProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -59,6 +75,17 @@ func (h *handler) CheckoutProduct(ctx *gin.Context) {
 	h.checkout(ctx, params)
 }
 
+// @Summary     体験事前決済情報取得
+// @Description 体験を決済する前に必要な情報を取得します。
+// @Tags        Checkout
+// @Router      /checkouts/experiences/{experienceId} [get]
+// @Security    bearerauth
+// @Security    cookieauth
+// @Param       experienceId path string true "体験ID"
+// @Produce     json
+// @Success     200 {object} response.PreCheckoutExperienceResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     404 {object} util.ErrorResponse "体験が見つからない"
 func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
 	adultCount, err := util.GetQueryInt64(ctx, "adult", 0)
 	if err != nil {
@@ -132,6 +159,19 @@ func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験決済
+// @Description 体験の決済を実行し、予約を作成します。
+// @Tags        Checkout
+// @Router      /checkouts/experiences/{experienceId} [post]
+// @Security    bearerauth
+// @Security    cookieauth
+// @Param       experienceId path string true "体験ID"
+// @Accept      json
+// @Param       request body request.CheckoutExperienceRequest true "体験決済"
+// @Produce     json
+// @Success     200 {object} response.CheckoutResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CheckoutExperience(ctx *gin.Context) {
 	req := &request.CheckoutExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -271,6 +311,17 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     決済状態取得
+// @Description 決済トランザクションの状態を取得します。
+// @Tags        Checkout
+// @Router      /checkouts/{transactionId} [get]
+// @Security    bearerauth
+// @Security    cookieauth
+// @Param       transactionId path string true "トランザクションID"
+// @Produce     json
+// @Success     200 {object} response.CheckoutStateResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     404 {object} util.ErrorResponse "トランザクションが見つからない"
 func (h *handler) GetCheckoutState(ctx *gin.Context) {
 	in := &store.GetCheckoutStateInput{
 		UserID:        h.getUserID(ctx),
