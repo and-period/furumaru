@@ -254,6 +254,8 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	facilityParams := &facility.Params{
 		WaitGroup: params.waitGroup,
+		User:      userService,
+		Store:     storeService,
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
