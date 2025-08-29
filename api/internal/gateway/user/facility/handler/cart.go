@@ -22,6 +22,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 // @Description カートの内容を取得します。
 // @Tags        Cart
 // @Router      /facilities/{facilityId}/carts [get]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     200 {object} response.CartResponse
@@ -40,6 +41,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 // @Description カートに商品を追加します。
 // @Tags        Cart
 // @Router      /facilities/{facilityId}/carts/-/items [post]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body request.AddCartItemRequest true "カートに追加リクエスト"

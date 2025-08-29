@@ -18,15 +18,16 @@ type lineVerifier struct {
 	verifier *oidc.IDTokenVerifier
 }
 
-func NewLineVerifier(ctx context.Context, channelID string) (OIDCVerifier, error) {
+func NewLineVerifier(ctx context.Context) (OIDCVerifier, error) {
 	const issuer = "https://access.line.me"
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err != nil {
 		return nil, fmt.Errorf("verifier: failed to line verifier: %w", err)
 	}
 	v := provider.Verifier(&oidc.Config{
-		ClientID:        channelID,
-		SkipExpiryCheck: false,
+		SkipClientIDCheck: true,
+		SkipExpiryCheck:   false,
+		SkipIssuerCheck:   false,
 	})
 	client := &lineVerifier{
 		verifier: v,

@@ -50,9 +50,12 @@ type handler struct {
 }
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	User      user.Service
-	Store     store.Service
+	WaitGroup    *sync.WaitGroup
+	LineVerifier auth.OIDCVerifier
+	JWTGenerator auth.JWTGenerator
+	JWTVerifier  auth.JWTVerifier
+	User         user.Service
+	Store        store.Service
 }
 
 type options struct {
@@ -91,12 +94,15 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		opts[i](dopts)
 	}
 	return &handler{
-		appName:   dopts.appName,
-		env:       dopts.env,
-		sentry:    dopts.sentry,
-		waitGroup: params.WaitGroup,
-		user:      params.User,
-		store:     params.Store,
+		appName:      dopts.appName,
+		env:          dopts.env,
+		sentry:       dopts.sentry,
+		lineVerifier: params.LineVerifier,
+		jwtGenerator: params.JWTGenerator,
+		jwtVerifier:  params.JWTVerifier,
+		waitGroup:    params.WaitGroup,
+		user:         params.User,
+		store:        params.Store,
 	}
 }
 

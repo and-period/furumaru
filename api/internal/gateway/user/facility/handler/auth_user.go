@@ -28,6 +28,7 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 // @Description ユーザーの詳細情報を取得します。
 // @Tags        AuthUser
 // @Router      /facilities/{facilityId}/users/me [get]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     200 {object} response.AuthUserResponse
@@ -52,6 +53,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Description ユーザーの詳細情報を登録します。
 // @Tags        AuthUser
 // @Router      /facilities/{facilityId}/users [post]
+// @Param       facilityId path string true "施設ID"
 // @Accept      json
 // @Param				request body request.CreateAuthUserRequest true "ユーザー情報"
 // @Produce     json
@@ -102,6 +104,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 // @Description ユーザーの最新のチェックイン日時を更新します。
 // @Tags        AuthUser
 // @Router      /facilities/{facilityId}/users/me/check-in [put]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body request.UpdateAuthUserCheckInRequest true "最新のチェックイン情報"

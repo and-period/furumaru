@@ -20,6 +20,7 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 // @Description 注文の一覧を取得します。
 // @Tags        Order
 // @Router      /facilities/{facilityId}/orders [get]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
@@ -38,6 +39,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 // @Description 注文の詳細を取得します。
 // @Tags        Order
 // @Router      /facilities/{facilityId}/orders/{orderId} [get]
+// @Param       facilityId path string true "施設ID"
 // @Param       orderId path string true "注文ID"
 // @Security    bearerauth
 // @Produce     json

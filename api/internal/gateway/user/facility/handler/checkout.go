@@ -21,6 +21,7 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 // @Description 商品を購入します。
 // @Tags        Checkout
 // @Router      /facilities/{facilityId}/checkouts [post]
+// @Param       facilityId path string true "施設ID"
 // @Accept      json
 // @Param				request body request.CheckoutRequest true "チェックアウト情報"
 // @Produce     json
@@ -42,6 +43,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 // @Description 支払い状態を取得します。
 // @Tags        Checkout
 // @Router      /facilities/{facilityId}/checkouts/{transactionId} [get]
+// @Param       facilityId path string true "施設ID"
 // @Param       transactionId path string true "取引ID"
 // @Security    bearerauth
 // @Produce     json

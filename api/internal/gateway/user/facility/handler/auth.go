@@ -24,6 +24,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 // @Description LINEの認証トークンを渡すことで、ふるマルへサインインします。
 // @Tags        Auth
 // @Router      /facilities/{facilityId}/auth [post]
+// @Param       facilityId path string true "施設ID"
 // @Accept      json
 // @Param       request body request.SignInRequest true "サインイン"
 // @Produce     json
@@ -50,7 +51,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 	}
 	user, err := h.user.GetFacilityUser(ctx, in)
 	if err != nil {
-		h.unauthorized(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if user.Status == entity.UserStatusDeactivated {
@@ -72,6 +73,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 // @Description ふるマルからサインアウトします。
 // @Tags        Auth
 // @Router      /facilities/{facilityId}/auth [delete]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     204
