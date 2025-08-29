@@ -8,7 +8,7 @@
     "generate": "make build",
     "generate:admin": "make build-admin",
     "generate:user": "make build-user",
-    "generate:html": "make build-html",
+    "generate:user-facility": "make build-user-facility",
     "generate:yaml": "make build-yaml",
     "generate:typescript": "make build-typescript",
     "lint": "make lint",

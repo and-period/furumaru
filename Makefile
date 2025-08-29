@@ -66,6 +66,7 @@ swagger: ## API仕様書の生成
 	docker-compose run --rm swagger_generator make build
 	cd ./web/admin && yarn format
 	cd ./web/user && yarn format
+	cd ./web/liff && yarn format
 
 migrate: ## データベースにDDLを適用
 	docker compose up -d mysql
