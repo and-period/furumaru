@@ -36,6 +36,7 @@ type Client interface {
 	Count(ctx context.Context, entity Entity) (int64, error)
 	Get(ctx context.Context, entity Entity) error
 	Insert(ctx context.Context, entity Entity) error
+	Delete(ctx context.Context, entity Entity) error
 }
 
 type Entity interface {
@@ -143,6 +144,19 @@ func (c *client) Insert(ctx context.Context, e Entity) error {
 		Item:      item,
 	}
 	_, err = c.db.PutItem(ctx, in)
+	return c.dbError(err)
+}
+
+func (c *client) Delete(ctx context.Context, e Entity) error {
+	key, err := c.keys(e.PrimaryKey())
+	if err != nil {
+		return c.dbError(err)
+	}
+	in := &dynamodb.DeleteItemInput{
+		TableName: c.tableName(e),
+		Key:       key,
+	}
+	_, err = c.db.DeleteItem(ctx, in)
 	return c.dbError(err)
 }
 

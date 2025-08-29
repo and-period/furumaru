@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.1.3](https://github.com/and-period/furumaru/compare/v5.1.2...v5.1.3) - 2025-08-28
+- feat(api): キャンプ施設向けJWT認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2953
+- feat(api): キャンプ施設ユーザーのチェックイン機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2956
+- setup: liffのアクセストークンを表示する by @wf-yamaday in https://github.com/and-period/furumaru/pull/2957
+- fix: ログイン状態の表示を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2958
+- build(deps): bump the dependencies group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2959
+- build(deps): bump the dependencies group across 1 directory with 58 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2961
+- test(gateway): キャンプ施設ログイン機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2962
+- fix: 所用時間のラベルを所要時間に変更し、表示を分から時間に修正 by @hamachans in https://github.com/and-period/furumaru/pull/2964
+
 ## [v5.1.2](https://github.com/and-period/furumaru/compare/v5.1.1...v5.1.2) - 2025-08-24
 - [liff] Implement API client integration for product listing page by @Copilot in https://github.com/and-period/furumaru/pull/2943
 - [liff] 買い物カゴのUIを共通レイアウトに実装 by @Copilot in https://github.com/and-period/furumaru/pull/2946

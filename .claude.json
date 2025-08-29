@@ -1,0 +1,43 @@
+{
+  "commands": {
+    "load-rules": {
+      "description": "Load project rules and knowledge from .claude directory",
+      "action": "read_files",
+      "files": [
+        ".claude/rules/**/*.md",
+        ".claude/knowledge/**/*.md",
+        ".claude/commands/**/*.md",
+        "CLAUDE.md"
+      ],
+      "message": "プロジェクトルールと知識ベースを読み込み、作業に反映します。"
+    },
+    "learn": {
+      "description": "Update project knowledge when new insights are gained",
+      "action": "reference",
+      "reference": ".claude/commands/learn.md",
+      "message": "新しい知見を適切なナレッジファイルに記録する方法を確認します。"
+    },
+    "push": {
+      "description": "Create a new branch and push changes with PR",
+      "action": "reference",
+      "reference": ".claude/commands/push.md",
+      "message": "変更を新しいブランチにプッシュし、PRを作成します。"
+    }
+  },
+  "settings": {
+    "auto_logging": {
+      "debug_dir": ".claude/debug",
+      "knowledge_dir": ".claude/knowledge",
+      "session_log_format": "YYYY-MM-DD_session.md"
+    },
+    "knowledge_management": {
+      "auto_save": true,
+      "categories": [
+        "architecture",
+        "business-logic",
+        "entities",
+        "patterns"
+      ]
+    }
+  }
+}

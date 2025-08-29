@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/gin-gonic/gin"
@@ -20,6 +22,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 // @Description カートの内容を取得します。
 // @Tags        Cart
 // @Router      /facilities/{facilityId}/carts [get]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     200 {object} response.CartResponse
@@ -31,13 +34,14 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		Coordinators: []*response.Coordinator{},
 		Products:     []*response.Product{},
 	}
-	ctx.JSON(200, res)
+	ctx.JSON(http.StatusOK, res)
 }
 
 // @Summary     カートに追加
 // @Description カートに商品を追加します。
 // @Tags        Cart
 // @Router      /facilities/{facilityId}/carts/-/items [post]
+// @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body request.AddCartItemRequest true "カートに追加リクエスト"
@@ -52,18 +56,20 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		return
 	}
 	// TODO: 詳細の実装
-	ctx.Status(204)
+	ctx.Status(http.StatusNoContent)
 }
 
 // @Summary     カートから削除
 // @Description カートから商品を削除します。
 // @Tags        Cart
-// @Router      /facilities/{facilityId}/carts/-/items/:productId [delete]
+// @Router      /facilities/{facilityId}/carts/-/items/{productId} [delete]
+// @Param       facilityId path string true "施設ID"
+// @Param       productId  path string true "商品ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     204
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RemoveCartItem(ctx *gin.Context) {
 	// TODO: 詳細の実装
-	ctx.Status(204)
+	ctx.Status(http.StatusNoContent)
 }

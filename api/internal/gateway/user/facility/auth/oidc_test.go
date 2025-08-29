@@ -69,26 +69,23 @@ func TestNewLineVerifier(t *testing.T) {
 	serverURL = server.URL
 
 	tests := []struct {
-		name      string
-		ctx       context.Context
-		channelID string
-		wantErr   bool
+		name    string
+		ctx     context.Context
+		wantErr bool
 	}{
 		{
-			name:      "successful connection",
-			ctx:       context.Background(),
-			channelID: "test-channel-id",
-			wantErr:   false, // LINE provider is publicly accessible
+			name:    "successful connection",
+			ctx:     context.Background(),
+			wantErr: false, // LINE provider is publicly accessible
 		},
 		{
-			name:      "context canceled",
+			name: "context canceled",
 			ctx: func() context.Context {
 				ctx, cancel := context.WithCancel(context.Background())
 				cancel()
 				return ctx
 			}(),
-			channelID: "test-channel-id",
-			wantErr:   true,
+			wantErr: true,
 		},
 	}
 
@@ -96,7 +93,7 @@ func TestNewLineVerifier(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			verifier, err := NewLineVerifier(tt.ctx, tt.channelID)
+			verifier, err := NewLineVerifier(tt.ctx)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, verifier)
@@ -130,12 +127,12 @@ func TestLineVerifier_VerifyIDToken(t *testing.T) {
 		errContains string
 	}{
 		{
-			name:       "invalid nonce",
-			idToken:    "test-token",
-			nonce:      "expected-nonce",
-			tokenNonce: "different-nonce",
-			verifyErr:  nil,
-			wantErr:    true,
+			name:        "invalid nonce",
+			idToken:     "test-token",
+			nonce:       "expected-nonce",
+			tokenNonce:  "different-nonce",
+			verifyErr:   nil,
+			wantErr:     true,
 			errContains: "invalid nonce",
 		},
 		{
@@ -171,12 +168,12 @@ func TestLineVerifier_VerifyIDToken(t *testing.T) {
 			// without connecting to LINE's actual OIDC endpoints,
 			// we'll skip the actual invocation which would cause nil pointer
 			// This test primarily demonstrates the test structure
-			
+
 			// In a real implementation, you would:
 			// 1. Use dependency injection to make the verifier mockable
 			// 2. Create an interface for the OIDC verifier
 			// 3. Mock the interface in tests
-			
+
 			// For now, we just assert the test structure is correct
 			assert.NotEmpty(t, tt.idToken)
 			if tt.nonce != "" {

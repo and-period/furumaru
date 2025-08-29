@@ -240,7 +240,7 @@ const onSubmit = async (): Promise<void> => {
               :min="0"
               :reverse="false"
               control-variant="default"
-              label="所用時間"
+              label="所要時間"
               :hide-input="false"
               :inset="true"
             />

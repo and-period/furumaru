@@ -13,6 +13,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Product
+// @tag.description 商品関連
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/products")
 
@@ -21,6 +23,16 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	r.GET("/merchant-feed", h.GetMerchantCenterFeed)
 }
 
+// @Summary     商品一覧取得
+// @Description 商品の一覧を取得します。
+// @Tags        Product
+// @Router      /products [get]
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Param       coordinatorId query string false "コーディネータID"
+// @Produce     json
+// @Success     200 {object} response.ProductsResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProducts(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -135,6 +147,14 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品詳細取得
+// @Description 商品の詳細情報を取得します。
+// @Tags        Product
+// @Router      /products/{productId} [get]
+// @Param       productId path string true "商品ID"
+// @Produce     json
+// @Success     200 {object} response.ProductResponse
+// @Failure     404 {object} util.ErrorResponse "商品が見つからない"
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 	if err != nil {
@@ -288,6 +308,12 @@ func (h *handler) getProductDetails(ctx context.Context, productIDs ...string) (
 	return res, nil
 }
 
+// @Summary     Merchant Centerフィード取得
+// @Description Google Merchant Center用の商品フィードをXML形式で取得します。
+// @Tags        Product
+// @Router      /products/merchant-feed [get]
+// @Produce     xml
+// @Success     200 {string} string "XML形式の商品フィード"
 func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 	const (
 		title       = "ふるマル - 全国ふるさとマルシェ"

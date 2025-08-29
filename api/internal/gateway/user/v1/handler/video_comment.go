@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        VideoComment
+// @tag.description 動画コメント関連
 func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/videos/:videoId/comments")
 
@@ -19,6 +21,14 @@ func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
 	r.POST("", h.authentication, h.createVideoViewerLog, h.CreateVideoComment)
 }
 
+// @Summary     動画コメント一覧取得
+// @Description 動画のコメント一覧を取得します。
+// @Tags        VideoComment
+// @Router      /videos/{videoId}/comments [get]
+// @Param       videoId path string true "動町ID"
+// @Param       limit query int64 false "取得件数" default(20)
+// @Produce     json
+// @Success     200 {object} response.VideoCommentsResponse
 func (h *handler) ListVideoComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -76,6 +86,19 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画コメント作成
+// @Description 動画にコメントを投稿します。
+// @Tags        VideoComment
+// @Router      /videos/{videoId}/comments [post]
+// @Security    bearerauth
+// @Param       videoId path string true "動町ID"
+// @Accept      json
+// @Param       request body request.CreateVideoCommentRequest true "動画コメント作成"
+// @Success     204 "作成成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     404 {object} util.ErrorResponse "オンデマンド配信が存在しない"
+// @Failure     412 {object} util.ErrorResponse "オンデマンド配信が公開されていない"
 func (h *handler) CreateVideoComment(ctx *gin.Context) {
 	req := &request.CreateVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {

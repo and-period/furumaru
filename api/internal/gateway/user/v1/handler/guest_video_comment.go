@@ -9,12 +9,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        GuestVideoComment
+// @tag.description ゲスト動画コメント関連
 func (h *handler) guestVideoCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/guests/videos/:videoId/comments")
 
 	r.POST("", h.createVideoViewerLog, h.CreateGuestVideoComment)
 }
 
+// @Summary     ゲスト動画コメント作成
+// @Description ゲストユーザーとして動画にコメントを投稿します。
+// @Tags        GuestVideoComment
+// @Router      /guests/videos/{videoId}/comments [post]
+// @Param       videoId path string true "動町ID"
+// @Accept      json
+// @Param       request body request.CreateGuestVideoCommentRequest true "ゲスト動画コメント作成"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateGuestVideoComment(ctx *gin.Context) {
 	req := &request.CreateGuestVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {

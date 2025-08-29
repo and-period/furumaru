@@ -15,6 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        GuestCheckout
+// @tag.description ゲストチェックアウト関連
 func (h *handler) guestCheckoutRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/guests/checkouts")
 
@@ -24,6 +26,18 @@ func (h *handler) guestCheckoutRoutes(rg *gin.RouterGroup) {
 	r.GET("/:transactionId", h.GetGuestCheckoutState)
 }
 
+// @Summary     ゲスト商品決済
+// @Description ゲストユーザーとして商品の決済を実行し、注文を作成します。
+// @Tags        GuestCheckout
+// @Router      /guests/checkouts/products [post]
+// @Security    cookieauth
+// @Accept      json
+// @Param       request body request.GuestCheckoutProductRequest true "ゲスト商品決済"
+// @Produce     json
+// @Success     200 {object} response.CheckoutResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "決済システムがメンテナンス中"
+// @Failure     412 {object} util.ErrorResponse "前提条件エラー(商品在庫が不足、無効なプロモーションなど...)"
 func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
 	req := &request.GuestCheckoutProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -98,6 +112,17 @@ func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
 	h.checkout(ctx, params)
 }
 
+// @Summary     ゲスト体験決済
+// @Description ゲストユーザーとして体験の決済を実行し、予約を作成します。
+// @Tags        GuestCheckout
+// @Router      /guests/checkouts/experiences/{experienceId} [post]
+// @Security    cookieauth
+// @Param       experienceId path string true "体験ID"
+// @Accept      json
+// @Param       request body request.GuestCheckoutExperienceRequest true "ゲスト体験決済"
+// @Produce     json
+// @Success     200 {object} response.CheckoutResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
 	req := &request.GuestCheckoutExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -183,6 +208,15 @@ func (h *handler) createGuestForCheckout(ctx context.Context, email string, addr
 	return userID, baddress.ID, nil
 }
 
+// @Summary     ゲスト決済状態取得
+// @Description ゲストユーザーの決済トランザクション状態を取得します。
+// @Tags        GuestCheckout
+// @Router      /guests/checkouts/{transactionId} [get]
+// @Security    cookieauth
+// @Param       transactionId path string true "トランザクションID"
+// @Produce     json
+// @Success     200 {object} response.CheckoutStateResponse
+// @Failure     404 {object} util.ErrorResponse "トランザクションが見つからない"
 func (h *handler) GetGuestCheckoutState(ctx *gin.Context) {
 	in := &store.GetCheckoutStateInput{
 		SessionID:     h.getSessionID(ctx),

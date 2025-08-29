@@ -1,5 +1,466 @@
 components:
   schemas:
+    AuthResponse:
+      properties:
+        accessToken:
+          description: アクセストークン
+          type: string
+        expiresIn:
+          description: 有効期限
+          type: integer
+        refreshToken:
+          description: 更新トークン
+          type: string
+        tokenType:
+          description: トークン種別
+          type: string
+        userId:
+          description: ユーザーID
+          type: string
+      type: object
+    AuthUserResponse:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+        firstname:
+          description: 名
+          type: string
+        firstnameKana:
+          description: 名（かな）
+          type: string
+        id:
+          description: ユーザーID
+          type: string
+        lastCheckInAt:
+          description: 最新のチェックイン日時
+          type: integer
+        lastname:
+          description: 姓
+          type: string
+        lastnameKana:
+          description: 姓（かな）
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+      type: object
+    Cart:
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        items:
+          description: 箱の商品一覧
+          items:
+            $ref: '#/components/schemas/CartItem'
+          type: array
+          uniqueItems: false
+        number:
+          description: 箱の通番
+          type: integer
+        rate:
+          description: 箱の占有率
+          type: integer
+        size:
+          description: 箱のサイズ
+          type: integer
+        type:
+          description: 箱の種別
+          type: integer
+      type: object
+    CartItem:
+      properties:
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 数量
+          type: integer
+      type: object
+    CartResponse:
+      properties:
+        carts:
+          description: カート一覧
+          items:
+            $ref: '#/components/schemas/Cart'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/Coordinator'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+          uniqueItems: false
+      type: object
+    CheckoutResponse:
+      properties:
+        url:
+          description: 遷移先URL
+          type: string
+      type: object
+    CheckoutStateResponse:
+      properties:
+        orderId:
+          description: 注文履歴ID
+          type: string
+        status:
+          description: 注文ステータス
+          type: integer
+      type: object
+    Coordinator:
+      description: コーディネータ情報
+      properties:
+        businessDays:
+          description: 営業曜日(発送可能日)
+          items:
+            $ref: '#/components/schemas/time.Weekday'
+          type: array
+          uniqueItems: false
+        city:
+          description: 市区町村
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        id:
+          description: コーディネータID
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          type: string
+        marcheName:
+          description: マルシェ名
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        productTypeIds:
+          description: 取り扱い品目一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        profile:
+          description: 紹介文
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 表示名
+          type: string
+      type: object
+    Order:
+      description: 注文履歴情報
+      properties:
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        id:
+          description: 注文履歴ID
+          type: string
+        items:
+          description: 注文商品一覧
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          type: array
+          uniqueItems: false
+        payment:
+          $ref: '#/components/schemas/OrderPayment'
+        pickupAt:
+          description: 受け取り日時
+          type: integer
+        pickupLocation:
+          description: 受け取り場所
+          type: string
+        promotionId:
+          description: プロモーションID
+          type: string
+        refund:
+          $ref: '#/components/schemas/OrderRefund'
+        status:
+          description: 注文ステータス
+          type: integer
+        type:
+          description: 注文種別
+          type: integer
+      type: object
+    OrderItem:
+      properties:
+        fulfillmentId:
+          description: 配送情報ID
+          type: string
+        price:
+          description: 購入価格(税込)
+          type: integer
+        productId:
+          description: 商品ID
+          type: string
+        quantity:
+          description: 購入数量
+          type: integer
+      type: object
+    OrderPayment:
+      description: 支払い情報
+      properties:
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        methodType:
+          description: 決済手段種別
+          type: integer
+        orderedAt:
+          description: 注文日時
+          type: integer
+        paidAt:
+          description: 支払日時
+          type: integer
+        shippingFee:
+          description: 配送手数料(税込)
+          type: integer
+        status:
+          description: 支払い状況
+          type: integer
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+        transactionId:
+          description: 取引ID
+          type: string
+      type: object
+    OrderRefund:
+      description: 注文キャンセル情報
+      properties:
+        canceled:
+          description: 注文キャンセルフラグ
+          type: boolean
+        canceledAt:
+          description: 注文キャンセル日時
+          type: integer
+        reason:
+          description: 注文キャンセル理由
+          type: string
+        total:
+          description: 返金金額
+          type: integer
+        type:
+          description: 注文キャンセル種別
+          type: integer
+      type: object
+    OrderResponse:
+      properties:
+        coordinator:
+          $ref: '#/components/schemas/Coordinator'
+        order:
+          $ref: '#/components/schemas/Order'
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+          uniqueItems: false
+        promotion:
+          $ref: '#/components/schemas/Promotion'
+      type: object
+    OrdersResponse:
+      properties:
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/Coordinator'
+          type: array
+          uniqueItems: false
+        orders:
+          description: 注文履歴一覧
+          items:
+            $ref: '#/components/schemas/Order'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+          uniqueItems: false
+        promotions:
+          description: プロモーション一覧
+          items:
+            $ref: '#/components/schemas/Promotion'
+          type: array
+          uniqueItems: false
+        total:
+          description: 合計数
+          type: integer
+      type: object
+    Product:
+      properties:
+        box60Rate:
+          description: 箱の占有率(サイズ:60)
+          type: integer
+        box80Rate:
+          description: 箱の占有率(サイズ:80)
+          type: integer
+        box100Rate:
+          description: 箱の占有率(サイズ:100)
+          type: integer
+        categoryId:
+          description: 商品種別ID
+          type: string
+        coordinatorId:
+          description: コーディネータID
+          type: string
+        deliveryType:
+          description: 配送方法
+          type: integer
+        description:
+          description: 商品説明
+          type: string
+        endAt:
+          description: 販売終了日時
+          type: integer
+        expirationDate:
+          description: 賞味期限(単位:日)
+          type: integer
+        id:
+          description: 商品ID
+          type: string
+        inventory:
+          description: 在庫数
+          type: integer
+        itemDescription:
+          description: 数量単位説明
+          type: string
+        itemUnit:
+          description: 数量単位
+          type: string
+        media:
+          description: メディア一覧
+          items:
+            $ref: '#/components/schemas/ProductMedia'
+          type: array
+          uniqueItems: false
+        name:
+          description: 商品名
+          type: string
+        originCity:
+          description: 原産地(市区町村)
+          type: string
+        originPrefecture:
+          description: 原産地(都道府県)
+          type: string
+        price:
+          description: 販売価格(税込)
+          type: integer
+        producerId:
+          description: 生産者ID
+          type: string
+        productTagIds:
+          description: 商品タグID一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        productTypeId:
+          description: 品目ID
+          type: string
+        rate:
+          $ref: '#/components/schemas/ProductRate'
+        recommendedPoint1:
+          description: おすすめポイント1
+          type: string
+        recommendedPoint2:
+          description: おすすめポイント2
+          type: string
+        recommendedPoint3:
+          description: おすすめポイント3
+          type: string
+        startAt:
+          description: 販売開始日時
+          type: integer
+        status:
+          description: 販売状況
+          type: integer
+        storageMethodType:
+          description: 保存方法
+          type: integer
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        weight:
+          description: 重量(kg,少数第一位まで)
+          type: number
+      type: object
+    ProductMedia:
+      properties:
+        isThumbnail:
+          description: サムネイルとして使用
+          type: boolean
+        url:
+          description: メディアURL
+          type: string
+      type: object
+    ProductRate:
+      description: 商品評価
+      properties:
+        average:
+          description: 平均評価
+          type: number
+        count:
+          description: 合計評価数
+          type: integer
+        detail:
+          additionalProperties:
+            type: integer
+          description: 評価詳細
+          type: object
+      type: object
+    Promotion:
+      description: プロモーション情報
+      properties:
+        code:
+          description: クーポンコード
+          type: string
+        description:
+          description: 詳細説明
+          type: string
+        discountRate:
+          description: 割引額(%/円)
+          type: integer
+        discountType:
+          description: 割引計算方法
+          type: integer
+        endAt:
+          description: クーポン使用可能日時(終了)
+          type: integer
+        id:
+          description: プロモーションID
+          type: string
+        startAt:
+          description: クーポン使用可能日時(開始)
+          type: integer
+        status:
+          description: ステータス
+          type: integer
+        title:
+          description: タイトル
+          type: string
+      type: object
     request.AddCartItemRequest:
       properties:
         productId:
@@ -108,470 +569,23 @@ components:
           minimum: 0
           type: integer
       type: object
-    response.AuthResponse:
-      properties:
-        accessToken:
-          description: アクセストークン
-          type: string
-        expiresIn:
-          description: 有効期限
-          type: integer
-        tokenType:
-          description: トークン種別
-          type: string
-        userId:
-          description: ユーザーID
-          type: string
-      type: object
-    response.AuthUserResponse:
-      properties:
-        email:
-          description: メールアドレス
-          type: string
-        firstname:
-          description: 名
-          type: string
-        firstnameKana:
-          description: 名（かな）
-          type: string
-        id:
-          description: ユーザーID
-          type: string
-        lastCheckInAt:
-          description: 最新のチェックイン日時
-          type: integer
-        lastname:
-          description: 姓
-          type: string
-        lastnameKana:
-          description: 姓（かな）
-          type: string
-        phoneNumber:
-          description: 電話番号
-          type: string
-      type: object
-    response.Cart:
-      properties:
-        coordinatorId:
-          description: コーディネータID
-          type: string
-        items:
-          description: 箱の商品一覧
-          items:
-            $ref: '#/components/schemas/response.CartItem'
-          type: array
-          uniqueItems: false
-        number:
-          description: 箱の通番
-          type: integer
-        rate:
-          description: 箱の占有率
-          type: integer
-        size:
-          description: 箱のサイズ
-          type: integer
-        type:
-          description: 箱の種別
-          type: integer
-      type: object
-    response.CartItem:
-      properties:
-        productId:
-          description: 商品ID
-          type: string
-        quantity:
-          description: 数量
-          type: integer
-      type: object
-    response.CartResponse:
-      properties:
-        carts:
-          description: カート一覧
-          items:
-            $ref: '#/components/schemas/response.Cart'
-          type: array
-          uniqueItems: false
-        coordinators:
-          description: コーディネータ一覧
-          items:
-            $ref: '#/components/schemas/response.Coordinator'
-          type: array
-          uniqueItems: false
-        products:
-          description: 商品一覧
-          items:
-            $ref: '#/components/schemas/response.Product'
-          type: array
-          uniqueItems: false
-      type: object
-    response.CheckoutResponse:
-      properties:
-        url:
-          description: 遷移先URL
-          type: string
-      type: object
-    response.CheckoutStateResponse:
-      properties:
-        orderId:
-          description: 注文履歴ID
-          type: string
-        status:
-          description: 注文ステータス
-          type: integer
-      type: object
-    response.Coordinator:
-      description: コーディネータ情報
-      properties:
-        businessDays:
-          description: 営業曜日(発送可能日)
-          items:
-            type: integer
-          type: array
-          uniqueItems: false
-        city:
-          description: 市区町村
-          type: string
-        facebookId:
-          description: Facebookアカウント
-          type: string
-        headerUrl:
-          description: ヘッダー画像URL
-          type: string
-        id:
-          description: コーディネータID
-          type: string
-        instagramId:
-          description: Instagramアカウント
-          type: string
-        marcheName:
-          description: マルシェ名
-          type: string
-        prefecture:
-          description: 都道府県
-          type: string
-        productTypeIds:
-          description: 取り扱い品目一覧
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        profile:
-          description: 紹介文
-          type: string
-        promotionVideoUrl:
-          description: 紹介映像URL
-          type: string
-        thumbnailUrl:
-          description: サムネイルURL
-          type: string
-        username:
-          description: 表示名
-          type: string
-      type: object
-    response.CreateAuthUserResponse:
-      properties:
-        id:
-          description: ユーザーID
-          type: string
-      type: object
-    response.Order:
-      description: 注文履歴情報
-      properties:
-        coordinatorId:
-          description: コーディネータID
-          type: string
-        id:
-          description: 注文履歴ID
-          type: string
-        items:
-          description: 注文商品一覧
-          items:
-            $ref: '#/components/schemas/response.OrderItem'
-          type: array
-          uniqueItems: false
-        payment:
-          $ref: '#/components/schemas/response.OrderPayment'
-        pickupAt:
-          description: 受け取り日時
-          type: integer
-        pickupLocation:
-          description: 受け取り場所
-          type: string
-        promotionId:
-          description: プロモーションID
-          type: string
-        refund:
-          $ref: '#/components/schemas/response.OrderRefund'
-        status:
-          description: 注文ステータス
-          type: integer
-        type:
-          description: 注文種別
-          type: integer
-      type: object
-    response.OrderItem:
-      properties:
-        fulfillmentId:
-          description: 配送情報ID
-          type: string
-        price:
-          description: 購入価格(税込)
-          type: integer
-        productId:
-          description: 商品ID
-          type: string
-        quantity:
-          description: 購入数量
-          type: integer
-      type: object
-    response.OrderPayment:
-      description: 支払い情報
-      properties:
-        discount:
-          description: 割引金額(税込)
-          type: integer
-        methodType:
-          description: 決済手段種別
-          type: integer
-        orderedAt:
-          description: 注文日時
-          type: integer
-        paidAt:
-          description: 支払日時
-          type: integer
-        shippingFee:
-          description: 配送手数料(税込)
-          type: integer
-        status:
-          description: 支払い状況
-          type: integer
-        subtotal:
-          description: 購入金額(税込)
-          type: integer
-        total:
-          description: 合計金額(税込)
-          type: integer
-        transactionId:
-          description: 取引ID
-          type: string
-      type: object
-    response.OrderRefund:
-      description: 注文キャンセル情報
-      properties:
-        canceled:
-          description: 注文キャンセルフラグ
-          type: boolean
-        canceledAt:
-          description: 注文キャンセル日時
-          type: integer
-        reason:
-          description: 注文キャンセル理由
-          type: string
-        total:
-          description: 返金金額
-          type: integer
-        type:
-          description: 注文キャンセル種別
-          type: integer
-      type: object
-    response.OrderResponse:
-      properties:
-        coordinator:
-          $ref: '#/components/schemas/response.Coordinator'
-        order:
-          $ref: '#/components/schemas/response.Order'
-        products:
-          description: 商品一覧
-          items:
-            $ref: '#/components/schemas/response.Product'
-          type: array
-          uniqueItems: false
-        promotion:
-          $ref: '#/components/schemas/response.Promotion'
-      type: object
-    response.OrdersResponse:
-      properties:
-        coordinators:
-          description: コーディネータ一覧
-          items:
-            $ref: '#/components/schemas/response.Coordinator'
-          type: array
-          uniqueItems: false
-        orders:
-          description: 注文履歴一覧
-          items:
-            $ref: '#/components/schemas/response.Order'
-          type: array
-          uniqueItems: false
-        products:
-          description: 商品一覧
-          items:
-            $ref: '#/components/schemas/response.Product'
-          type: array
-          uniqueItems: false
-        promotions:
-          description: プロモーション一覧
-          items:
-            $ref: '#/components/schemas/response.Promotion'
-          type: array
-          uniqueItems: false
-        total:
-          description: 合計数
-          type: integer
-      type: object
-    response.Product:
-      properties:
-        box60Rate:
-          description: 箱の占有率(サイズ:60)
-          type: integer
-        box80Rate:
-          description: 箱の占有率(サイズ:80)
-          type: integer
-        box100Rate:
-          description: 箱の占有率(サイズ:100)
-          type: integer
-        categoryId:
-          description: 商品種別ID
-          type: string
-        coordinatorId:
-          description: コーディネータID
-          type: string
-        deliveryType:
-          description: 配送方法
-          type: integer
-        description:
-          description: 商品説明
-          type: string
-        endAt:
-          description: 販売終了日時
-          type: integer
-        expirationDate:
-          description: 賞味期限(単位:日)
-          type: integer
-        id:
-          description: 商品ID
-          type: string
-        inventory:
-          description: 在庫数
-          type: integer
-        itemDescription:
-          description: 数量単位説明
-          type: string
-        itemUnit:
-          description: 数量単位
-          type: string
-        media:
-          description: メディア一覧
-          items:
-            $ref: '#/components/schemas/response.ProductMedia'
-          type: array
-          uniqueItems: false
-        name:
-          description: 商品名
-          type: string
-        originCity:
-          description: 原産地(市区町村)
-          type: string
-        originPrefecture:
-          description: 原産地(都道府県)
-          type: string
-        price:
-          description: 販売価格(税込)
-          type: integer
-        producerId:
-          description: 生産者ID
-          type: string
-        productTagIds:
-          description: 商品タグID一覧
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        productTypeId:
-          description: 品目ID
-          type: string
-        rate:
-          $ref: '#/components/schemas/response.ProductRate'
-        recommendedPoint1:
-          description: おすすめポイント1
-          type: string
-        recommendedPoint2:
-          description: おすすめポイント2
-          type: string
-        recommendedPoint3:
-          description: おすすめポイント3
-          type: string
-        startAt:
-          description: 販売開始日時
-          type: integer
-        status:
-          description: 販売状況
-          type: integer
-        storageMethodType:
-          description: 保存方法
-          type: integer
-        thumbnailUrl:
-          description: サムネイルURL
-          type: string
-        weight:
-          description: 重量(kg,少数第一位まで)
-          type: number
-      type: object
-    response.ProductMedia:
-      properties:
-        isThumbnail:
-          description: サムネイルとして使用
-          type: boolean
-        url:
-          description: メディアURL
-          type: string
-      type: object
-    response.ProductRate:
-      description: 商品評価
-      properties:
-        average:
-          description: 平均評価
-          type: number
-        count:
-          description: 合計評価数
-          type: integer
-        detail:
-          additionalProperties:
-            type: integer
-          description: 評価詳細
-          type: object
-      type: object
-    response.Promotion:
-      description: プロモーション情報
-      properties:
-        code:
-          description: クーポンコード
-          type: string
-        description:
-          description: 詳細説明
-          type: string
-        discountRate:
-          description: 割引額(%/円)
-          type: integer
-        discountType:
-          description: 割引計算方法
-          type: integer
-        endAt:
-          description: クーポン使用可能日時(終了)
-          type: integer
-        id:
-          description: プロモーションID
-          type: string
-        startAt:
-          description: クーポン使用可能日時(開始)
-          type: integer
-        status:
-          description: ステータス
-          type: integer
-        title:
-          description: タイトル
-          type: string
-      type: object
+    time.Weekday:
+      type: integer
+      x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     util.ErrorResponse:
       properties:
         detail:
@@ -601,6 +615,13 @@ paths:
   /facilities/{facilityId}/auth:
     delete:
       description: ふるマルからサインアウトします。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           description: No Content
@@ -611,6 +632,13 @@ paths:
       - Auth
     post:
       description: LINEの認証トークンを渡すことで、ふるマルへサインインします。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -623,7 +651,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.AuthResponse'
+                $ref: '#/components/schemas/AuthResponse'
           description: OK
         "400":
           content:
@@ -655,12 +683,19 @@ paths:
   /facilities/{facilityId}/carts:
     get:
       description: カートの内容を取得します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.CartResponse'
+                $ref: '#/components/schemas/CartResponse'
           description: OK
         "401":
           content:
@@ -676,6 +711,13 @@ paths:
   /facilities/{facilityId}/carts/-/items:
     post:
       description: カートに商品を追加します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -703,9 +745,22 @@ paths:
       summary: カートに追加
       tags:
       - Cart
-  /facilities/{facilityId}/carts/-/items/:productId:
+  /facilities/{facilityId}/carts/-/items/{productId}:
     delete:
       description: カートから商品を削除します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           description: No Content
@@ -723,6 +778,13 @@ paths:
   /facilities/{facilityId}/checkouts:
     post:
       description: 商品を購入します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -735,7 +797,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.CheckoutResponse'
+                $ref: '#/components/schemas/CheckoutResponse'
           description: OK
         "400":
           content:
@@ -756,6 +818,12 @@ paths:
     get:
       description: 支払い状態を取得します。
       parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       - description: 取引ID
         in: path
         name: transactionId
@@ -767,7 +835,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.CheckoutStateResponse'
+                $ref: '#/components/schemas/CheckoutStateResponse'
           description: OK
         "400":
           content:
@@ -796,6 +864,12 @@ paths:
     get:
       description: 注文の一覧を取得します。
       parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       - description: 取得件数
         in: query
         name: limit
@@ -821,7 +895,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.OrdersResponse'
+                $ref: '#/components/schemas/OrdersResponse'
           description: OK
         "400":
           content:
@@ -844,6 +918,12 @@ paths:
     get:
       description: 注文の詳細を取得します。
       parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       - description: 注文ID
         in: path
         name: orderId
@@ -855,7 +935,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.OrderResponse'
+                $ref: '#/components/schemas/OrderResponse'
           description: OK
         "401":
           content:
@@ -877,6 +957,13 @@ paths:
   /facilities/{facilityId}/users:
     post:
       description: ユーザーの詳細情報を登録します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -889,7 +976,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.CreateAuthUserResponse'
+                $ref: '#/components/schemas/AuthUserResponse'
           description: OK
         "400":
           content:
@@ -902,7 +989,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/util.ErrorResponse'
-          description: 認証エラー
+          description: 認証エラー。不正なトークン
         "409":
           content:
             application/json:
@@ -915,12 +1002,19 @@ paths:
   /facilities/{facilityId}/users/me:
     get:
       description: ユーザーの詳細情報を取得します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.AuthUserResponse'
+                $ref: '#/components/schemas/AuthUserResponse'
           description: OK
         "400":
           content:
@@ -942,6 +1036,13 @@ paths:
   /facilities/{facilityId}/users/me/check-in:
     put:
       description: ユーザーの最新のチェックイン日時を更新します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:

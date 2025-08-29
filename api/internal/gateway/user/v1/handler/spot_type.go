@@ -11,12 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        SpotType
+// @tag.description スポットタイプ関連
 func (h *handler) spotTypeRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/spot-types")
 
 	r.GET("", h.ListSpotTypes)
 }
 
+// @Summary     スポットタイプ一覧取得
+// @Description スポットタイプの一覧を取得します。
+// @Tags        SpotType
+// @Router      /spot-types [get]
+// @Param       limit query int64 false "取得件数" default(20)
+// @Param       offset query int64 false "取得開始位置" default(0)
+// @Produce     json
+// @Success     200 {object} response.SpotTypesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20

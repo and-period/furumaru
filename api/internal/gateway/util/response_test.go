@@ -162,6 +162,16 @@ func TestErrorResponse_InternalError(t *testing.T) {
 			expectStatus: http.StatusPreconditionFailed,
 		},
 		{
+			name: "unprocessable entity",
+			err:  exception.ErrUnprocessableEntity,
+			expect: &ErrorResponse{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Unprocessable Entity",
+				Detail:  exception.ErrUnprocessableEntity.Error(),
+			},
+			expectStatus: http.StatusUnprocessableEntity,
+		},
+		{
 			name: "too many requests",
 			err:  exception.ErrResourceExhausted,
 			expect: &ErrorResponse{

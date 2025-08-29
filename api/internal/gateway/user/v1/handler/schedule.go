@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Schedule
+// @tag.description スケジュール関連
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules")
 
@@ -23,6 +25,17 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r.GET("/:scheduleId", h.createBroadcastViewerLog, h.GetSchedule)
 }
 
+// @Summary     ライブ配信スケジュール一覧取得
+// @Description 現在配信中または配信予定のライブスケジュール一覧を取得します。
+// @Tags        Schedule
+// @Router      /schedules/lives [get]
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Param       coordinator query string false "コーディネーターID"
+// @Param       producer query string false "生産者ID"
+// @Produce     json
+// @Success     200 {object} response.LiveSchedulesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -74,6 +87,17 @@ func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     アーカイブスケジュール一覧取得
+// @Description 過去の配信アーカイブスケジュール一覧を取得します。
+// @Tags        Schedule
+// @Router      /schedules/archives [get]
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Param       coordinator query string false "コーディネーターID"
+// @Param       producer query string false "生産者ID"
+// @Produce     json
+// @Success     200 {object} response.ArchiveSchedulesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -125,6 +149,14 @@ func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スケジュール詳細取得
+// @Description 指定されたIDのスケジュール詳細を取得します。
+// @Tags        Schedule
+// @Router      /schedules/{scheduleId} [get]
+// @Param       scheduleId path string true "スケジュールID"
+// @Produce     json
+// @Success     200 {object} response.ScheduleResponse
+// @Failure     404 {object} util.ErrorResponse "スケジュールが見つかりません"
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
 	if err != nil {
