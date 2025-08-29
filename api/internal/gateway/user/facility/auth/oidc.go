@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 )
@@ -38,6 +39,7 @@ func (v *lineVerifier) VerifyIDToken(ctx context.Context, idToken, nonce string)
 	if err != nil {
 		return nil, fmt.Errorf("verifier: failed to verify line id token: %w", err)
 	}
+	slog.DebugContext(ctx, "Verified ID token", slog.Any("token", token))
 	if nonce != "" && nonce != token.Nonce {
 		return nil, errors.New("verifier: invalid nonce")
 	}
@@ -49,6 +51,7 @@ func (v *lineVerifier) GetEmail(token *oidc.IDToken) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	slog.Debug("Extracted claims", slog.Any("claims", claims))
 	if claims.Email == "" {
 		return "", ErrEmailNotFound
 	}

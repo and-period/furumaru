@@ -17,7 +17,7 @@ import (
 // @tag.name        AuthUser
 // @tag.description 認証済みユーザー関連
 func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/users", h.authentication)
+	r := rg.Group("/users")
 
 	r.POST("", h.CreateAuthUser)
 	r.GET("/me", h.authentication, h.GetAuthUser)
