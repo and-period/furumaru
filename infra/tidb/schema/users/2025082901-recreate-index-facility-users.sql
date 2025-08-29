@@ -1,4 +1,4 @@
-ALTER TABLE `users`.`facility_users` DROP INDEX `ui_guests_email_producer_id`;
+ALTER TABLE `users`.`facility_users` DROP UNIQUE KEY `ui_guests_email_producer_id`;
 
 ALTER TABLE `users`.`facility_users` DROP FOREIGN KEY `fk_guests_user_id`;
 ALTER TABLE `users`.`facility_users` DROP FOREIGN KEY `fk_guests_producer_id`;
