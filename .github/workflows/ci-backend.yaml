@@ -82,6 +82,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+    env:
+      GOCACHE: /tmp/go-build-cache
+      GOFLAGS: -buildvcs=false
 
     steps:
     - name: Check out code
@@ -112,6 +115,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+    env:
+      GOCACHE: /tmp/go-test-cache
+      GOFLAGS: -buildvcs=false
 
     steps:
     - name: Check out code
@@ -133,8 +139,12 @@ jobs:
           -db-username=${DB_USERNAME} \
           -db-password=${DB_PASSWORD}
 
-    - name: Test
-      run: make test
+    - name: Test with cache
+      run: |
+        # テストキャッシュディレクトリを作成
+        mkdir -p /tmp/go-test-cache
+        # テストを実行（キャッシュが利用可能な場合は自動的に使用される）
+        make test
 
     - uses: codecov/codecov-action@fdcc8476540edceab3de004e990f80d881c6cc00 # v5.5.0
       with:

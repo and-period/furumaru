@@ -20,7 +20,7 @@ runs:
       go-version-file: ${{ inputs.working-directory }}/go.mod
       cache: false
 
-  - name: Cache go modules
+  - name: Cache go modules and build cache
     id: modules-cache
     uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
     with:
@@ -28,6 +28,19 @@ runs:
         ~/.cache/go-build
         ~/go/pkg/mod
       key: ${{ inputs.service }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      restore-keys: |
+        ${{ inputs.service }}-${{ runner.os }}-go-
+
+  - name: Cache go test results
+    uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+    with:
+      path: |
+        ~/.cache/go-build
+        /tmp/go-test-cache
+      key: ${{ inputs.service }}-${{ runner.os }}-go-test-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/*.go') }}
+      restore-keys: |
+        ${{ inputs.service }}-${{ runner.os }}-go-test-${{ hashFiles('**/go.sum') }}-
+        ${{ inputs.service }}-${{ runner.os }}-go-test-
 
   - name: Download modules
     if: steps.modules-cache.outputs.cache-hit != 'true'
