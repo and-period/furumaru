@@ -17,11 +17,11 @@ mockgen: ## ユニットテストで使用するモックの生成
 docs: ## API仕様書の生成
 	go tool swag init --v3.1 -d ./internal/gateway/${SERVICE}/handler -g ./handler.go --pd -ot yaml -o ./../docs/swagger/gen/${SERVICE}
 	@echo "Simplifying component names..."
-	@go run ./hack/simplify-openapi-components/main.go ../docs/swagger/gen/${SERVICE}/swagger.yaml
+	@go run ./hack/simplify-openapi-components/main.go $(if $(ADD_COOKIE_AUTH),-add-cookie-auth) ../docs/swagger/gen/${SERVICE}/swagger.yaml
 
 docs-all: ## 全サービスのAPI仕様書の生成
 	$(MAKE) docs SERVICE=user/facility
-	$(MAKE) docs SERVICE=user/v1
+	$(MAKE) docs SERVICE=user/v1 ADD_COOKIE_AUTH=true
 
 fmt:
 	go tool golangci-lint fmt -c .golangci.yaml --diff ./pkg/... ./internal/...

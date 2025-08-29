@@ -56,6 +56,7 @@ type Params struct {
 // @servers.description 検証環境
 // @servers.url				  https://api.furumaru.and-period.co.jp
 // @servers.description 本番環境
+// @securitydefinitions.cookieauth
 // @securitydefinitions.bearerauth
 type handler struct {
 	appName          string

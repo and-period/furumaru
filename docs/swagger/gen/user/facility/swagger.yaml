@@ -579,6 +579,13 @@ components:
       - Thursday
       - Friday
       - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     util.ErrorResponse:
       properties:
         detail:
