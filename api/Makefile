@@ -1,4 +1,4 @@
-.PHONY: help install mockgen fmt fmt-fix lint lint-fix test build build-hack build-dev start-dev
+.PHONY: help install mockgen docs docs-all fmt fmt-fix lint lint-fix test build build-hack build-dev start-dev
 
 BUILD_DIR := $(CURDIR)
 TEST_PACKAGES := $(shell go list $(CURDIR)/internal/... $(CURDIR)/pkg/...)
@@ -16,6 +16,8 @@ mockgen: ## ユニットテストで使用するモックの生成
 
 docs: ## API仕様書の生成
 	go tool swag init --v3.1 -d ./internal/gateway/${SERVICE}/handler -g ./handler.go --pd -ot yaml -o ./../docs/swagger/gen/${SERVICE}
+	@echo "Simplifying component names..."
+	@go run ./hack/simplify-openapi-components/main.go ../docs/swagger/gen/${SERVICE}/swagger.yaml
 
 docs-all: ## 全サービスのAPI仕様書の生成
 	$(MAKE) docs SERVICE=user/facility

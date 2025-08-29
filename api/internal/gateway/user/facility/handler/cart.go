@@ -62,7 +62,9 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 // @Summary     カートから削除
 // @Description カートから商品を削除します。
 // @Tags        Cart
-// @Router      /facilities/{facilityId}/carts/-/items/:productId [delete]
+// @Router      /facilities/{facilityId}/carts/-/items/{productId} [delete]
+// @Param       facilityId path string true "施設ID"
+// @Param       productId  path string true "商品ID"
 // @Security    bearerauth
 // @Produce     json
 // @Success     204
