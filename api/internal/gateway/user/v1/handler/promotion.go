@@ -12,12 +12,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Promotion
+// @tag.description プロモーション関連
 func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/promotions")
 
 	r.GET("/:code", h.GetPromotion)
 }
 
+// @Summary     プロモーション詳細取得
+// @Description プロモーションコードから割引情報を取得します。
+// @Tags        Promotion
+// @Router      /promotions/{code} [get]
+// @Param       code path string true "プロモーションコード"
+// @Param       coordinatorId query string false "コーディネーターID"
+// @Produce     json
+// @Success     200 {object} response.PromotionResponse
+// @Failure     403 {object} util.ErrorResponse "プロモーションが利用できません"
+// @Failure     404 {object} util.ErrorResponse "プロモーションが見つかりません"
 func (h *handler) GetPromotion(ctx *gin.Context) {
 	in := &store.GetPromotionByCodeInput{
 		PromotionCode: util.GetParam(ctx, "code"),

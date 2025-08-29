@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        LiveComment
+// @tag.description ライブコメント関連
 func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/comments")
 
@@ -19,6 +21,14 @@ func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r.POST("", h.authentication, h.createBroadcastViewerLog, h.CreateLiveComment)
 }
 
+// @Summary     ライブコメント一覧取得
+// @Description ライブ配信のコメント一覧を取得します。
+// @Tags        LiveComment
+// @Router      /schedules/{scheduleId}/comments [get]
+// @Param       scheduleId path string true "スケジュールID"
+// @Param       limit query int64 false "取得件数" default(20)
+// @Produce     json
+// @Success     200 {object} response.LiveCommentsResponse
 func (h *handler) ListLiveComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -76,6 +86,18 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ライブコメント作成
+// @Description ライブ配信にコメントを投稿します。
+// @Tags        LiveComment
+// @Router      /schedules/{scheduleId}/comments [post]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID"
+// @Accept      json
+// @Param       request body request.CreateLiveCommentRequest true "ライブコメント作成"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateLiveComment(ctx *gin.Context) {
 	req := &request.CreateLiveCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {

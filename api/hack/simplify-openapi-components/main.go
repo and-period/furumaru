@@ -10,17 +10,20 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"gopkg.in/yaml.v3"
 )
 
 var (
-	sourceFile string
-	debug      bool
+	sourceFile    string
+	addCookieAuth bool
+	debug         bool
 )
 
 type app struct {
-	source  string
-	pattern *regexp.Regexp
-	debug   bool
+	source        string
+	pattern       *regexp.Regexp
+	addCookieAuth bool
+	debug         bool
 }
 
 func main() {
@@ -51,6 +54,7 @@ func main() {
 
 func setup(_ context.Context) (*app, error) {
 	flag.StringVar(&sourceFile, "source-file", "", "対象のOpenAPI仕様書ファイル (swagger.yaml)")
+	flag.BoolVar(&addCookieAuth, "add-cookie-auth", false, "cookie認証スキームを追加")
 	flag.BoolVar(&debug, "debug", false, "デバッグモード")
 	flag.Parse()
 
@@ -69,9 +73,10 @@ func setup(_ context.Context) (*app, error) {
 	pattern := regexp.MustCompile(`github_com_and-period_furumaru_api_internal_gateway_[^.]+\.((?:response|request)\.)?(\w+)`)
 
 	app := &app{
-		source:  sourceFile,
-		pattern: pattern,
-		debug:   debug,
+		source:        sourceFile,
+		pattern:       pattern,
+		addCookieAuth: addCookieAuth,
+		debug:         debug,
 	}
 	return app, nil
 }
@@ -118,16 +123,110 @@ func (a *app) run(ctx context.Context) error {
 		return match
 	})
 
+	// cookie認証スキームを追加
+	if a.addCookieAuth {
+		result, err = a.addCookieAuthScheme(result)
+		if err != nil {
+			return fmt.Errorf("failed to add cookie auth scheme: %w", err)
+		}
+	}
+
 	// ファイルに書き戻す
 	err = os.WriteFile(a.source, result, 0644)
 	if err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
-	slog.Info("Successfully simplified component names",
+	slog.Info("Successfully processed OpenAPI specification",
 		slog.String("file", a.source),
-		slog.Int("count", count),
+		slog.Int("component_count", count),
+		slog.Bool("cookie_auth_added", a.addCookieAuth),
 	)
 
 	return nil
+}
+
+// addCookieAuthScheme adds cookie authentication scheme to the OpenAPI specification
+func (a *app) addCookieAuthScheme(content []byte) ([]byte, error) {
+	// YAMLをパース
+	var doc yaml.Node
+	if err := yaml.Unmarshal(content, &doc); err != nil {
+		return nil, fmt.Errorf("failed to parse YAML: %w", err)
+	}
+
+	// componentsノードを探す
+	var componentsNode *yaml.Node
+	if doc.Kind == yaml.DocumentNode && len(doc.Content) > 0 {
+		rootNode := doc.Content[0]
+		if rootNode.Kind == yaml.MappingNode {
+			for i := 0; i < len(rootNode.Content); i += 2 {
+				if rootNode.Content[i].Value == "components" {
+					componentsNode = rootNode.Content[i+1]
+					break
+				}
+			}
+		}
+	}
+
+	if componentsNode == nil {
+		slog.Warn("components section not found, skipping cookie auth addition")
+		return content, nil
+	}
+
+	// securitySchemesノードを探す
+	var securitySchemesNode *yaml.Node
+	if componentsNode.Kind == yaml.MappingNode {
+		for i := 0; i < len(componentsNode.Content); i += 2 {
+			if componentsNode.Content[i].Value == "securitySchemes" {
+				securitySchemesNode = componentsNode.Content[i+1]
+				break
+			}
+		}
+	}
+
+	if securitySchemesNode == nil {
+		slog.Warn("securitySchemes section not found, skipping cookie auth addition")
+		return content, nil
+	}
+
+	// cookieauthが既に存在するか確認
+	if securitySchemesNode.Kind == yaml.MappingNode {
+		for i := 0; i < len(securitySchemesNode.Content); i += 2 {
+			if securitySchemesNode.Content[i].Value == "cookieauth" {
+				slog.Info("cookieauth already exists, skipping addition")
+				return content, nil
+			}
+		}
+
+		// cookieauthノードを作成
+		cookieAuthKey := &yaml.Node{
+			Kind:  yaml.ScalarNode,
+			Value: "cookieauth",
+		}
+
+		cookieAuthValue := &yaml.Node{
+			Kind: yaml.MappingNode,
+			Content: []*yaml.Node{
+				{Kind: yaml.ScalarNode, Value: "in"},
+				{Kind: yaml.ScalarNode, Value: "cookie"},
+				{Kind: yaml.ScalarNode, Value: "name"},
+				{Kind: yaml.ScalarNode, Value: "session_id"},
+				{Kind: yaml.ScalarNode, Value: "type"},
+				{Kind: yaml.ScalarNode, Value: "apiKey"},
+			},
+		}
+
+		// securitySchemesに追加
+		securitySchemesNode.Content = append(securitySchemesNode.Content, cookieAuthKey, cookieAuthValue)
+
+		slog.Info("Successfully added cookieauth to securitySchemes")
+	}
+
+	// YAMLに戻す
+	result, err := yaml.Marshal(&doc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal YAML: %w", err)
+	}
+
+	return result, nil
 }

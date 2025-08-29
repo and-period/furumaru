@@ -14,6 +14,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Video
+// @tag.description 動画関連
 func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/videos")
 
@@ -21,6 +23,18 @@ func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 	r.GET("/:videoId", h.createVideoViewerLog, h.GetVideo)
 }
 
+// @Summary     動画一覧取得
+// @Description 動画の一覧を取得します。
+// @Tags        Video
+// @Router      /videos [get]
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Param       category query string false "カテゴリ（all, product, experience）" default("all")
+// @Param       coordinatorId query string false "コーディネーターID"
+// @Param       name query string false "動画名（部分一致検索）"
+// @Produce     json
+// @Success     200 {object} response.VideosResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListVideos(ctx *gin.Context) {
 	const (
 		defaultLimit    = 20
@@ -75,6 +89,14 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画詳細取得
+// @Description 指定されたIDの動画詳細を取得します。
+// @Tags        Video
+// @Router      /videos/{videoId} [get]
+// @Param       videoId path string true "動画ID"
+// @Produce     json
+// @Success     200 {object} response.VideoResponse
+// @Failure     404 {object} util.ErrorResponse "動画が見つかりません"
 func (h *handler) GetVideo(ctx *gin.Context) {
 	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 	if err != nil {

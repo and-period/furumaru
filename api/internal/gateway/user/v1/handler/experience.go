@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Experience
+// @tag.description 体験関連
 func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/experiences")
 
@@ -23,6 +25,19 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 	r.GET("/:experienceId", h.GetExperience)
 }
 
+// @Summary     体験一覧取得
+// @Description 体験の一覧を取得します。
+// @Tags        Experience
+// @Router      /experiences [get]
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Param       prefectureCode query int32 false "都道府県コード" default(0)
+// @Param       coordinatorId query string false "コーディネーターID"
+// @Param       producerId query string false "生産者ID"
+// @Param       name query string false "体験名（部分一致検索）"
+// @Produce     json
+// @Success     200 {object} response.ExperiencesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperiences(ctx *gin.Context) {
 	const (
 		defaultLimit          = 20
@@ -80,6 +95,18 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     位置情報による体験一覧取得
+// @Description 指定された位置情報周辺の体験一覧を取得します。
+// @Tags        Experience
+// @Router      /experiences/geolocation [get]
+// @Param       latitude query number true "緯度"
+// @Param       longitude query number true "経度"
+// @Param       radius query int64 false "検索半径（km）" default(20)
+// @Param       coordinatorId query string false "コーディネーターID"
+// @Param       producerId query string false "生産者ID"
+// @Produce     json
+// @Success     200 {object} response.ExperiencesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
 	const defaultRadius = 20
 
@@ -191,6 +218,14 @@ func (h *handler) newExperiencesResponse(
 	return res, nil
 }
 
+// @Summary     体験詳細取得
+// @Description 指定されたIDの体験詳細を取得します。
+// @Tags        Experience
+// @Router      /experiences/{experienceId} [get]
+// @Param       experienceId path string true "体験ID"
+// @Produce     json
+// @Success     200 {object} response.ExperienceResponse
+// @Failure     404 {object} util.ErrorResponse "体験が見つかりません"
 func (h *handler) GetExperience(ctx *gin.Context) {
 	experience, err := h.getExperience(ctx, ctx.Param("experienceId"))
 	if err != nil {

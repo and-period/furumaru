@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Cart
+// @tag.description カート関連
 func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/carts")
 
@@ -24,6 +26,13 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/-/items/:productId", h.RemoveCartItem)
 }
 
+// @Summary     買い物かご取得
+// @Description 買い物かごの内容を取得します。
+// @Tags        Cart
+// @Router      /carts [get]
+// @Security    cookieauth
+// @Produce     json
+// @Success     200 {object} response.CartResponse
 func (h *handler) GetCart(ctx *gin.Context) {
 	sessionID := h.getSessionID(ctx)
 	if sessionID == "" {
@@ -76,6 +85,18 @@ func (h *handler) GetCart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     買い物かご計算
+// @Description 指定されたコーディネータの買い物かごの送料や合計金額を計算します。
+// @Tags        Cart
+// @Router      /carts/{coordinatorId} [get]
+// @Security    cookieauth
+// @Param       coordinatorId path string true "コーディネータID"
+// @Param       number query int64 false "箱数"
+// @Param       prefecture query int32 false "都道府県コード"
+// @Param       promotion query string false "プロモーションコード"
+// @Produce     json
+// @Success     200 {object} response.CalcCartResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CalcCart(ctx *gin.Context) {
 	boxNumber, err := util.GetQueryInt64(ctx, "number", 0)
 	if err != nil {
@@ -149,6 +170,19 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     買い物かごに商品追加
+// @Description 買い物かごに商品を追加します。
+// @Tags        Cart
+// @Router      /carts/-/items [post]
+// @Security    cookieauth
+// @Accept      json
+// @Param       request body request.AddCartItemRequest true "商品追加"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "商品が非公開になっている"
+// @Failure     404 {object} util.ErrorResponse "商品が存在しない"
+// @Failure     412 {object} util.ErrorResponse "商品在庫が不足している"
 func (h *handler) AddCartItem(ctx *gin.Context) {
 	req := &request.AddCartItemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -170,6 +204,16 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     買い物かごから商品削除
+// @Description 買い物かごから商品を削除します。
+// @Tags        Cart
+// @Router      /carts/-/items/{productId} [delete]
+// @Security    cookieauth
+// @Param       productId path string true "商品ID"
+// @Param       number query int64 false "箱数"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) RemoveCartItem(ctx *gin.Context) {
 	boxNumber, err := util.GetQueryInt64(ctx, "number", 0)
 	if err != nil {

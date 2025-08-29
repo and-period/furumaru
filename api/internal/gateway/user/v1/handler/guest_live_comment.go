@@ -9,12 +9,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        GuestLiveComment
+// @tag.description ゲストライブコメント関連
 func (h *handler) guestLiveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/guests/schedules/:scheduleId/comments")
 
 	r.POST("", h.createBroadcastViewerLog, h.CreateGuestLiveComment)
 }
 
+// @Summary     ゲストライブコメント作成
+// @Description ゲストユーザーとしてライブ配信にコメントを投稿します。
+// @Tags        GuestLiveComment
+// @Router      /guests/schedules/{scheduleId}/comments [post]
+// @Param       scheduleId path string true "スケジュールID"
+// @Accept      json
+// @Param       request body request.CreateGuestLiveCommentRequest true "ゲストライブコメント作成"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateGuestLiveComment(ctx *gin.Context) {
 	req := &request.CreateGuestLiveCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {

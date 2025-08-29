@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Address
+// @tag.description 住所関連
 func (h *handler) addressRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/addresses", h.authentication)
 
@@ -22,6 +24,17 @@ func (h *handler) addressRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:addressId", h.DeleteAddress)
 }
 
+// @Summary     住所一覧取得
+// @Description ユーザーの登録済み住所一覧を取得します。
+// @Tags        Address
+// @Router      /addresses [get]
+// @Security    bearerauth
+// @Param       limit query int64 false "取得上限数(max:200)" default(20)
+// @Param       offset query int64 false "取得開始位置(min:0)" default(0)
+// @Produce     json
+// @Success     200 {object} response.AddressesResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListAddresses(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -57,6 +70,17 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     住所詳細取得
+// @Description 指定されたIDの住所詳細を取得します。
+// @Tags        Address
+// @Router      /addresses/{addressId} [get]
+// @Security    bearerauth
+// @Param       addressId path string true "住所ID"
+// @Produce     json
+// @Success     200 {object} response.AddressResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "他のユーザーのアドレス情報"
+// @Failure     404 {object} util.ErrorResponse "アドレスが存在しない"
 func (h *handler) GetAddress(ctx *gin.Context) {
 	in := &user.GetAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),
@@ -73,6 +97,17 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     住所登録
+// @Description 新しい住所を登録します。
+// @Tags        Address
+// @Router      /addresses [post]
+// @Security    bearerauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.CreateAddressRequest true "住所情報"
+// @Success     200 {object} response.AddressResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateAddress(ctx *gin.Context) {
 	req := &request.CreateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -104,6 +139,19 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     住所更新
+// @Description 指定されたIDの住所情報を更新します。
+// @Tags        Address
+// @Router      /addresses/{addressId} [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       addressId path string true "住所ID"
+// @Param       body body request.UpdateAddressRequest true "更新する住所情報"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "他のユーザーのアドレス情報"
+// @Failure     404 {object} util.ErrorResponse "アドレスが存在しない"
 func (h *handler) UpdateAddress(ctx *gin.Context) {
 	req := &request.UpdateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -132,6 +180,16 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     住所削除
+// @Description 指定されたIDの住所を削除します。
+// @Tags        Address
+// @Router      /addresses/{addressId} [delete]
+// @Security    bearerauth
+// @Param       addressId path string true "住所ID"
+// @Success     204 "削除成功"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "他のユーザーのアドレス情報"
+// @Failure     404 {object} util.ErrorResponse "アドレスが存在しない"
 func (h *handler) DeleteAddress(ctx *gin.Context) {
 	in := &user.DeleteAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),

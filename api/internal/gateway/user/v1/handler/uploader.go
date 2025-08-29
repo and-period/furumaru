@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Upload
+// @tag.description アップロード関連
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload")
 
@@ -21,6 +23,14 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/spots/thumbnail", h.authentication, h.CreateSpotThumbnailURL)
 }
 
+// @Summary     アップロード状態取得
+// @Description アップロードファイルの処理状態を取得します。
+// @Tags        Upload
+// @Router      /upload/state [get]
+// @Param       key query string true "アップロードキー"
+// @Produce     json
+// @Success     200 {object} response.UploadStateResponse
+// @Failure     404 {object} util.ErrorResponse "アップロードファイルが見つかりません"
 func (h *handler) GetUploadState(ctx *gin.Context) {
 	in := &media.GetUploadEventInput{
 		Key: util.GetQuery(ctx, "key", ""),
@@ -37,10 +47,32 @@ func (h *handler) GetUploadState(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ユーザーサムネイルアップロードURL取得
+// @Description ユーザーサムネイルをアップロードするためのURLを取得します。
+// @Tags        Upload
+// @Router      /upload/users/thumbnail [post]
+// @Security    bearerauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.GetUploadURLRequest true "ファイル情報"
+// @Success     200 {object} response.UploadURLResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateUserThumbnailURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetUserThumbnailUploadURL)
 }
 
+// @Summary     スポットサムネイルアップロードURL取得
+// @Description スポットサムネイルをアップロードするためのURLを取得します。
+// @Tags        Upload
+// @Router      /upload/spots/thumbnail [post]
+// @Security    bearerauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.GetUploadURLRequest true "ファイル情報"
+// @Success     200 {object} response.UploadURLResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateSpotThumbnailURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetSpotThumbnailUploadURL)
 }

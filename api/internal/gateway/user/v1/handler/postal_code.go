@@ -10,12 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        PostalCode
+// @tag.description 郵便番号関連
 func (h *handler) postalCodeRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/postal-codes")
 
 	r.GET("/:postalCode", h.SearchPostalCode)
 }
 
+// @Summary     郵便番号検索
+// @Description 郵便番号から住所情報を検索します。
+// @Tags        PostalCode
+// @Router      /postal-codes/{postalCode} [get]
+// @Param       postalCode path string true "郵便番号（ハイフンなし7桁）"
+// @Produce     json
+// @Success     200 {object} response.PostalCodeResponse
+// @Failure     404 {object} util.ErrorResponse "郵便番号が見つかりません"
 func (h *handler) SearchPostalCode(ctx *gin.Context) {
 	in := &store.SearchPostalCodeInput{
 		PostlCode: util.GetParam(ctx, "postalCode"),

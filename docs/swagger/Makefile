@@ -14,10 +14,15 @@ USER_OUTPUT_DOCS_DIR := ./../../tmp/data/swagger/user/docs
 USER_OUTPUT_TS_DIR   := ./../../tmp/data/swagger/user/types
 USER_WEB_TYPES_DIR   := ./../../web/user/src/types/api
 
+USER_V1_INPUT         := gen/user/v1/swagger.yaml
+USER_V1_OUTPUT_TS_DIR := ./../../tmp/data/swagger/user/v1/types
+
 USER_FACILITY_INPUT         := gen/user/facility/swagger.yaml
 USER_FACILITY_OUTPUT_TS_DIR := ./../../tmp/data/swagger/user/facility/types
 
-LIFF_FACILITY_TYPES_DIR   := ./../../web/liff/src/types/api/facility
+USER_WEB_V1_TYPES_DIR   := ./../../web/user/src/types/api/v1
+LIFF_V1_TYPES_DIR       := ./../../web/liff/src/types/api/v1
+LIFF_FACILITY_TYPES_DIR := ./../../web/liff/src/types/api/facility
 
 ARTIFACTS_DIR := artifacts
 
@@ -34,14 +39,18 @@ clean: ## 生成されたファイルを削除
 	rm -rf ${USER_WEB_TYPES_DIR}
 	rm -rf ${LIFF_FACILITY_TYPES_DIR}
 
-build: clean build-admin build-user build-user-facility ## API仕様書の生成
+build: clean build-admin build-user-v1 build-user-facility ## API仕様書の生成
 
 build-admin: ## API仕様書の生成(管理者関連)
 	$(MAKE) generate-v1 TYPE=openapi-yaml INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}
 	$(MAKE) generate-v1 TYPE=typescript-axios INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_TS_DIR}
 	mkdir -p ${ADMIN_WEB_TYPES_DIR}; cp -r ${ADMIN_OUTPUT_TS_DIR}/*.ts ${ADMIN_WEB_TYPES_DIR}
 
-build-user: ## API仕様書の生成(購入者関連)
+build-user-v1: ## API仕様書の生成(購入者関連)
+	$(MAKE) generate TYPE=typescript-fetch INPUT=${USER_V1_INPUT} OUTPUT_DIR=${USER_V1_OUTPUT_TS_DIR}
+	mkdir -p ${USER_WEB_V1_TYPES_DIR}; cp -r ${USER_V1_OUTPUT_TS_DIR}/*.ts ${USER_V1_OUTPUT_TS_DIR}/apis ${USER_V1_OUTPUT_TS_DIR}/models ${USER_WEB_V1_TYPES_DIR}
+	mkdir -p ${LIFF_V1_TYPES_DIR}; cp -r ${USER_V1_OUTPUT_TS_DIR}/*.ts ${USER_V1_OUTPUT_TS_DIR}/apis ${USER_V1_OUTPUT_TS_DIR}/models ${LIFF_V1_TYPES_DIR}
+# 以下は将来的に削除予定
 	$(MAKE) generate-v1 TYPE=openapi-yaml INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_DOCS_DIR}
 	$(MAKE) generate-v1 TYPE=typescript-fetch INPUT_DIR=${USER_INPUT_DIR} OUTPUT_DIR=${USER_OUTPUT_TS_DIR}
 	mkdir -p ${USER_WEB_TYPES_DIR}; cp -r ${USER_OUTPUT_TS_DIR}/*.ts ${USER_OUTPUT_TS_DIR}/apis ${USER_OUTPUT_TS_DIR}/models ${USER_WEB_TYPES_DIR}

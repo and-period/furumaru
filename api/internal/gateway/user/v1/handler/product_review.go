@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        ProductReview
+// @tag.description 商品レビュー関連
 func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/products/:productId/reviews")
 
@@ -29,6 +31,16 @@ func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 	auth.GET("", h.ListUserProductReviews)
 }
 
+// @Summary     商品レビュー一覧取得
+// @Description 指定した商品のレビュー一覧を取得します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews [get]
+// @Param       productId path string true "商品ID"
+// @Param       limit query int64 false "取得件数" default(20)
+// @Param       offset query int64 false "取得開始位置" default(0)
+// @Produce     json
+// @Success     200 {object} response.ProductReviewsResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProductReviews(ctx *gin.Context) {
 	const defaultLimit = 20
 	rates, err := util.GetQueryInt64s(ctx, "rates")
@@ -75,6 +87,15 @@ func (h *handler) ListProductReviews(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品レビュー詳細取得
+// @Description 商品レビューの詳細情報を取得します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews/{reviewId} [get]
+// @Param       productId path string true "商品ID"
+// @Param       reviewId path string true "レビューID"
+// @Produce     json
+// @Success     200 {object} response.ProductReviewResponse
+// @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) GetProductReview(ctx *gin.Context) {
 	review, err := h.getProductReview(ctx, util.GetParam(ctx, "reviewId"))
 	if err != nil {
@@ -91,6 +112,17 @@ func (h *handler) GetProductReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品レビュー作成
+// @Description 商品のレビューを作成します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews [post]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID"
+// @Accept      json
+// @Param       request body request.CreateProductReviewRequest true "レビュー作成"
+// @Success     204 "作成成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) CreateProductReview(ctx *gin.Context) {
 	req := &request.CreateProductReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -120,6 +152,20 @@ func (h *handler) CreateProductReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品レビュー更新
+// @Description 商品レビューの内容を更新します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews/{reviewId} [patch]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID"
+// @Param       reviewId path string true "レビューID"
+// @Accept      json
+// @Param       request body request.UpdateProductReviewRequest true "レビュー更新"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) UpdateProductReview(ctx *gin.Context) {
 	req := &request.UpdateProductReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -168,6 +214,19 @@ func (h *handler) DeleteProductReview(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     商品レビューリアクション登録/更新
+// @Description 商品レビューに対するリアクション（いいねなど）を登録または更新します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews/{reviewId}/reactions [post]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID"
+// @Param       reviewId path string true "レビューID"
+// @Accept      json
+// @Param       request body request.UpsertProductReviewReactionRequest true "リアクション登録/更新"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpsertProductReviewReaction(ctx *gin.Context) {
 	req := &request.UpsertProductReviewReactionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -191,6 +250,16 @@ func (h *handler) UpsertProductReviewReaction(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     商品レビューリアクション削除
+// @Description 商品レビューに対するリアクションを削除します。
+// @Tags        ProductReview
+// @Router      /products/{productId}/reviews/{reviewId}/reactions [delete]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID"
+// @Param       reviewId path string true "レビューID"
+// @Produce     json
+// @Success     204
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) DeleteProductReviewReaction(ctx *gin.Context) {
 	in := &store.DeleteProductReviewReactionInput{
 		ReviewID: util.GetParam(ctx, "reviewId"),
@@ -203,6 +272,15 @@ func (h *handler) DeleteProductReviewReaction(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     ユーザー商品レビュー一覧取得
+// @Description ログイン中のユーザーが投稿した商品レビューの一覧を取得します。
+// @Tags        ProductReview
+// @Router      /users/me/products/{productId}/reviews [get]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID"
+// @Produce     json
+// @Success     200 {object} response.ProductReviewsResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListUserProductReviews(ctx *gin.Context) {
 	productID := util.GetParam(ctx, "productId")
 

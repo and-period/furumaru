@@ -10,12 +10,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Top
+// @tag.description トップページ関連
 func (h *handler) topRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/top")
 
 	r.GET("/common", h.TopCommon)
 }
 
+// @Summary     トップページ共通データ取得
+// @Description トップページに表示する共通データ（ライブ配信、アーカイブ、動画など）を取得します。
+// @Tags        Top
+// @Router      /top/common [get]
+// @Produce     json
+// @Success     200 {object} response.TopCommonResponse
 func (h *handler) TopCommon(ctx *gin.Context) {
 	const (
 		defaultArchivesLimit = 6

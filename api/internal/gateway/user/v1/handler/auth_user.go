@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        AuthUser
+// @tag.description 認証ユーザー関連
 func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/users/me")
 
@@ -32,6 +34,14 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	auth.PATCH("/thumbnail", h.UpdateAuthUserThumbnail)
 }
 
+// @Summary     認証ユーザー情報取得
+// @Description ログイン中のユーザー情報を取得します。
+// @Tags        AuthUser
+// @Router      /users/me [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.AuthUserResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuthUser(ctx *gin.Context) {
 	in := &user.GetUserInput{
 		UserID: h.getUserID(ctx),
@@ -55,6 +65,17 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ユーザー登録
+// @Description 新しいユーザーを登録します。
+// @Tags        AuthUser
+// @Router      /users/me [post]
+// @Accept      json
+// @Produce     json
+// @Param       body body request.CreateAuthUserRequest true "ユーザー情報"
+// @Success     200 {object} response.CreateAuthUserResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateAuthUser(ctx *gin.Context) {
 	req := &request.CreateAuthUserRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -84,6 +105,14 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ユーザー登録確認
+// @Description ユーザー登録時に送信される確認コードで登録を確定します。
+// @Tags        AuthUser
+// @Router      /users/me/verified [post]
+// @Accept      json
+// @Param       body body request.VerifyAuthUserRequest true "確認コード"
+// @Success     204 "確認成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) VerifyAuthUser(ctx *gin.Context) {
 	req := &request.VerifyAuthUserRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -101,6 +130,16 @@ func (h *handler) VerifyAuthUser(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     Googleアカウントでユーザー登録
+// @Description Googleアカウントを使用してユーザー登録を行います。
+// @Tags        AuthUser
+// @Router      /users/me/google [post]
+// @Security    cookieauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.CreateAuthUserWithGoogleRequest true "Googleアカウント情報"
+// @Success     200 {object} response.AuthUserResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateAuthUserWithGoogle(ctx *gin.Context) {
 	req := &request.CreateAuthUserWithGoogleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -141,6 +180,16 @@ func (h *handler) CreateAuthUserWithGoogle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     LINEアカウントでユーザー登録
+// @Description LINEアカウントを使用してユーザー登録を行います。
+// @Tags        AuthUser
+// @Router      /users/me/line [post]
+// @Security    cookieauth
+// @Accept      json
+// @Produce     json
+// @Param       body body request.CreateAuthUserWithLINERequest true "LINEアカウント情報"
+// @Success     200 {object} response.AuthUserResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateAuthUserWithLINE(ctx *gin.Context) {
 	req := &request.CreateAuthUserWithLINERequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -181,6 +230,18 @@ func (h *handler) CreateAuthUserWithLINE(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     メールアドレス更新
+// @Description ユーザーのメールアドレスを更新します。
+// @Tags        AuthUser
+// @Router      /users/me/email [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.UpdateAuthUserEmailRequest true "メールアドレス"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
+// @Failure     412 {object} util.ErrorResponse "変更後のメールアドレスが変更前と同じ"
 func (h *handler) UpdateAuthUserEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -203,6 +264,16 @@ func (h *handler) UpdateAuthUserEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     メールアドレス更新確認
+// @Description メールアドレス更新時に送信される確認コードで更新を確定します。
+// @Tags        AuthUser
+// @Router      /users/me/email/verified [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.VerifyAuthUserEmailRequest true "確認コード"
+// @Success     204 "確認成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) VerifyAuthUserEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -225,6 +296,16 @@ func (h *handler) VerifyAuthUserEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     ユーザー名更新
+// @Description ユーザーの表示名を更新します。
+// @Tags        AuthUser
+// @Router      /users/me/username [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.UpdateAuthUserUsernameRequest true "ユーザー名"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthUserUsername(ctx *gin.Context) {
 	req := &request.UpdateAuthUserUsernameRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -242,6 +323,16 @@ func (h *handler) UpdateAuthUserUsername(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     アカウントID更新
+// @Description ユーザーのアカウントIDを更新します。
+// @Tags        AuthUser
+// @Router      /users/me/account-id [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.UpdateAuthUserAccountIDRequest true "アカウントID"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthUserAccountID(ctx *gin.Context) {
 	req := &request.UpdateAuthUserAccountIDRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -259,6 +350,16 @@ func (h *handler) UpdateAuthUserAccountID(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     通知設定更新
+// @Description ユーザーの通知設定を更新します。
+// @Tags        AuthUser
+// @Router      /users/me/notification [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.UpdateAuthUserNotificationRequest true "通知設定"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthUserNotification(ctx *gin.Context) {
 	req := &request.UpdateAuthUserNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -276,6 +377,16 @@ func (h *handler) UpdateAuthUserNotification(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     サムネイル更新
+// @Description ユーザーのサムネイル画像を更新します。
+// @Tags        AuthUser
+// @Router      /users/me/thumbnail [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       body body request.UpdateAuthUserThumbnailRequest true "サムネイルURL"
+// @Success     204 "更新成功"
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthUserThumbnail(ctx *gin.Context) {
 	req := &request.UpdateAuthUserThumbnailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -293,6 +404,13 @@ func (h *handler) UpdateAuthUserThumbnail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     ユーザー削除
+// @Description ユーザーアカウントを削除します。
+// @Tags        AuthUser
+// @Router      /users/me [delete]
+// @Security    bearerauth
+// @Success     204 "削除成功"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) DeleteAuthUser(ctx *gin.Context) {
 	in := &user.DeleteUserInput{
 		UserID: h.getUserID(ctx),
