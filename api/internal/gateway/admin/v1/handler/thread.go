@@ -13,6 +13,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Thread
+// @tag.description スレッド関連
 func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/contacts/:contactId/threads", h.authentication)
 
@@ -23,6 +25,16 @@ func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:threadId", h.DeleteThread)
 }
 
+// @Summary     お問い合わせスレッド一覧取得
+// @Description 指定されたお問い合わせのスレッド一覧を取得します。
+// @Tags        Thread
+// @Router      /v1/contacts/{contactId}/threads [get]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.ThreadsResponse
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -85,6 +97,17 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スレッド登録
+// @Description 新しいスレッドを登録します。
+// @Tags        Thread
+// @Router      /v1/contacts/{contactId}/threads [post]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.CreateThreadRequest true "スレッド情報"
+// @Produce     json
+// @Success     200 {object} response.ThreadResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateThread(ctx *gin.Context) {
 	req := &request.CreateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -137,6 +160,16 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スレッド取得
+// @Description 指定されたスレッドの詳細情報を取得します。
+// @Tags        Thread
+// @Router      /v1/contacts/{contactId}/threads/{threadId} [get]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       threadId path string true "スレッドID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ThreadResponse
+// @Failure     404 {object} util.ErrorResponse "スレッドが存在しない"
 func (h *handler) GetThread(ctx *gin.Context) {
 	thread, err := h.getThread(ctx, util.GetParam(ctx, "threadId"))
 	if err != nil {
@@ -188,6 +221,19 @@ func (h *handler) getThread(ctx context.Context, threadID string) (*service.Thre
 	return thread, nil
 }
 
+// @Summary     スレッド更新
+// @Description スレッドの情報を更新します。
+// @Tags        Thread
+// @Router      /v1/contacts/{contactId}/threads/{threadId} [patch]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       threadId path string true "スレッドID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateThreadRequest true "スレッド情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "スレッドが存在しない"
 func (h *handler) UpdateThread(ctx *gin.Context) {
 	req := &request.UpdateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -210,6 +256,16 @@ func (h *handler) UpdateThread(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     スレッド削除
+// @Description スレッドを削除します。
+// @Tags        Thread
+// @Router      /v1/contacts/{contactId}/threads/{threadId} [delete]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       threadId path string true "スレッドID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "スレッドが存在しない"
 func (h *handler) DeleteThread(ctx *gin.Context) {
 	in := &messenger.DeleteThreadInput{
 		ThreadID: util.GetParam(ctx, "threadId"),

@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        User
+// @tag.description 購入者関連
 func (h *handler) userRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/users", h.authentication)
 
@@ -26,6 +28,15 @@ func (h *handler) userRoutes(rg *gin.RouterGroup) {
 	r.GET("/:userId/orders", h.ListUserOrders)
 }
 
+// @Summary     購入者一覧取得
+// @Description 購入者の一覧を取得します。管理者は全購入者、コーディネーターは注文実績のある購入者のみ取得可能です。
+// @Tags        User
+// @Router      /v1/users [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.UsersResponse
 func (h *handler) ListUsers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -123,6 +134,15 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     購入者取得
+// @Description 指定された購入者の詳細情報を取得します。
+// @Tags        User
+// @Router      /v1/users/{userId} [get]
+// @Security    bearerauth
+// @Param       userId path string true "購入者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.UserResponse
+// @Failure     404 {object} util.ErrorResponse "購入者が存在しない"
 func (h *handler) GetUser(ctx *gin.Context) {
 	user, err := h.getUser(ctx, util.GetParam(ctx, "userId"))
 	if err != nil {
@@ -136,6 +156,15 @@ func (h *handler) GetUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     購入者削除
+// @Description 購入者を削除します。管理者のみ実行可能です。
+// @Tags        User
+// @Router      /v1/users/{userId} [delete]
+// @Security    bearerauth
+// @Param       userId path string true "購入者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "購入者が存在しない"
 func (h *handler) DeleteUser(ctx *gin.Context) {
 	in := &user.DeleteUserInput{
 		UserID: util.GetParam(ctx, "userId"),
@@ -147,6 +176,18 @@ func (h *handler) DeleteUser(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     購入者注文履歴取得
+// @Description 指定された購入者の注文履歴と注文統計情報を取得します。
+// @Tags        User
+// @Router      /v1/users/{userId}/orders [get]
+// @Security    bearerauth
+// @Param       userId path string true "購入者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.UserOrdersResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "購入者が存在しない"
 func (h *handler) ListUserOrders(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20

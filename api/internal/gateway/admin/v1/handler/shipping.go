@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Shipping
+// @tag.description 配送設定関連
 func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/shippings", h.authentication)
 	r.GET("/default", h.GetDefaultShipping)
@@ -45,6 +47,13 @@ func (h *handler) filterAccessShipping(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     デフォルト配送設定取得
+// @Description デフォルトの配送設定を取得します。
+// @Tags        Shipping
+// @Router      /v1/shippings/default [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.ShippingResponse
 func (h *handler) GetDefaultShipping(ctx *gin.Context) {
 	in := &store.GetDefaultShippingInput{}
 	shipping, err := h.store.GetDefaultShipping(ctx, in)
@@ -58,6 +67,16 @@ func (h *handler) GetDefaultShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     デフォルト配送設定更新
+// @Description デフォルトの配送設定を更新します。
+// @Tags        Shipping
+// @Router      /v1/shippings/default [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpdateDefaultShippingRequest true "デフォルト配送設定情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
 	req := &request.UpdateDefaultShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -93,6 +112,17 @@ func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultSh
 	return res
 }
 
+// @Summary     配送設定一覧取得
+// @Description 指定されたコーディネーターの配送設定一覧を取得します。ページネーションに対応しています。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings [get]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.ShippingsResponse
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) ListShippings(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -150,6 +180,17 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     配送設定取得
+// @Description 指定された配送設定の詳細情報を取得します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings/{shippingId} [get]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ShippingResponse
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
+// @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) GetShipping(ctx *gin.Context) {
 	var (
 		shipping    *service.Shipping
@@ -179,6 +220,18 @@ func (h *handler) GetShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     配送設定登録
+// @Description 新しい配送設定を登録します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings [post]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.CreateShippingRequest true "配送設定情報"
+// @Produce     json
+// @Success     200 {object} response.ShippingResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) CreateShipping(ctx *gin.Context) {
 	req := &request.CreateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -215,6 +268,20 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     配送設定更新
+// @Description 配送設定の情報を更新します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings/{shippingId} [patch]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateShippingRequest true "配送設定情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
+// @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) UpdateShipping(ctx *gin.Context) {
 	req := &request.UpdateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -254,6 +321,17 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     アクティブ配送設定更新
+// @Description 指定した配送設定をアクティブに設定します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings/{shippingId}/activation [patch]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
+// @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) UpdateActiveShipping(ctx *gin.Context) {
 	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
 	if err != nil {
@@ -280,6 +358,17 @@ func (h *handler) UpdateActiveShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     配送設定削除
+// @Description 配送設定を削除します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings/{shippingId} [delete]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
+// @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) DeleteShipping(ctx *gin.Context) {
 	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
 	if err != nil {
@@ -305,6 +394,15 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     アクティブ配送設定取得
+// @Description Deprecated.指定されたコーディネーターのアクティブ配送設定を取得します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings/-/activation [get]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ShippingResponse
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 // Deprecated
 func (h *handler) GetActiveShipping(ctx *gin.Context) {
 	in := &store.GetShippingByCoordinatorIDInput{
@@ -326,6 +424,18 @@ func (h *handler) GetActiveShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     配送設定更新
+// @Description Deprecated.コーディネータの配送設定を更新します。
+// @Tags        Shipping
+// @Router      /v1/coordinators/{coordinatorId}/shippings [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpsertShippingRequest true "配送設定情報"
+// @Param       coordinatorId path string true "コーディネータID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) UpsertShipping(ctx *gin.Context) {
 	req := &request.UpsertShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {

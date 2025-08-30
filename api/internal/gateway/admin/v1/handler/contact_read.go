@@ -11,12 +11,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        ContactRead
+// @tag.description お問い合わせ既読関連
 func (h *handler) contactReadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/contact-reads", h.authentication)
 
 	r.POST("", h.CreateContactRead)
 }
 
+// @Summary     お問い合わせ既読登録
+// @Description お問い合わせの既読状態を登録します。
+// @Tags        ContactRead
+// @Router      /v1/contact-reads [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateContactReadRequest true "既読情報"
+// @Produce     json
+// @Success     200 {object} response.ContactReadResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateContactRead(ctx *gin.Context) {
 	req := &request.CreateContactReadRequest{}
 	if err := ctx.BindJSON(req); err != nil {

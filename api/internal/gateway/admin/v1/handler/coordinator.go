@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Coordinator
+// @tag.description コーディネータ関連
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/coordinators", h.authentication)
 
@@ -27,6 +29,16 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:coordinatorId", h.DeleteCoordinator)
 }
 
+// @Summary     コーディネータ一覧取得
+// @Description コーディネータの一覧を取得します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       username query string false "コーディネータ名(あいまい検索)(64文字以内)" example("&.コーディネータ")
+// @Produce     json
+// @Success     200 {object} response.CoordinatorsResponse
 func (h *handler) ListCoordinators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20

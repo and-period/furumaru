@@ -18,6 +18,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Product
+// @tag.description 商品関連
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/products", h.authentication)
 
@@ -52,6 +54,18 @@ func (h *handler) filterAccessProduct(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     商品一覧取得
+// @Description 商品の一覧を取得します。
+// @Tags        Product
+// @Router      /v1/products [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "商品名(あいまい検索)" example("新じゃがいも")
+// @Param       producerId query string false "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       orders query string false "ソート" example("-updatedAt")
+// @Produce     json
+// @Success     200 {object} response.ProductsResponse
 func (h *handler) ListProducts(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -174,6 +188,15 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 	return res, nil
 }
 
+// @Summary     商品取得
+// @Description 指定された商品の詳細情報を取得します。
+// @Tags        Product
+// @Router      /v1/products/{productId} [get]
+// @Security    bearerauth
+// @Param       productId path string true "商品ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ProductResponse
+// @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 	if err != nil {
@@ -227,6 +250,16 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品登録
+// @Description 新しい商品を登録します。
+// @Tags        Product
+// @Router      /v1/products [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateProductRequest true "商品情報"
+// @Produce     json
+// @Success     200 {object} response.ProductResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProduct(ctx *gin.Context) {
 	req := &request.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {

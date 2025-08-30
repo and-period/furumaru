@@ -16,6 +16,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Contact
+// @tag.description お問い合わせ関連
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/contacts", h.authentication)
 
@@ -26,6 +28,15 @@ func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:contactId", h.DeleteContact)
 }
 
+// @Summary     お問い合わせ一覧取得
+// @Description お問い合わせの一覧を取得します。
+// @Tags        Contact
+// @Router      /v1/contacts [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.ContactsResponse
 func (h *handler) ListContacts(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -100,6 +111,17 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     お問い合わせ登録
+// @Description 新しいお問い合わせを登録します。
+// @Tags        Contact
+// @Router      /v1/contacts [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateContactRequest true "お問い合わせ情報"
+// @Produce     json
+// @Success     200 {object} response.ContactResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "お問い合わせの登録権限がない"
 func (h *handler) CreateContact(ctx *gin.Context) {
 	req := &request.CreateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -179,6 +201,15 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     お問い合わせ取得
+// @Description 指定されたお問い合わせの詳細情報を取得します。
+// @Tags        Contact
+// @Router      /v1/contacts/{contactId} [get]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ContactResponse
+// @Failure     404 {object} util.ErrorResponse "お問い合わせが存在しない"
 func (h *handler) GetContact(ctx *gin.Context) {
 	contactID := util.GetParam(ctx, "contactId")
 	contact, err := h.getContact(ctx, contactID)
@@ -231,6 +262,18 @@ func (h *handler) GetContact(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     お問い合わせ更新
+// @Description お問い合わせの情報を更新します。
+// @Tags        Contact
+// @Router      /v1/contacts/{contactId} [patch]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateContactRequest true "お問い合わせ情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "お問い合わせが存在しない"
 func (h *handler) UpdateContact(ctx *gin.Context) {
 	req := &request.UpdateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -260,6 +303,15 @@ func (h *handler) UpdateContact(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     お問い合わせ削除
+// @Description お問い合わせを削除します。
+// @Tags        Contact
+// @Router      /v1/contacts/{contactId} [delete]
+// @Security    bearerauth
+// @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "お問い合わせが存在しない"
 func (h *handler) DeleteContact(ctx *gin.Context) {
 	in := &messenger.DeleteContactInput{
 		ContactID: util.GetParam(ctx, "contactId"),

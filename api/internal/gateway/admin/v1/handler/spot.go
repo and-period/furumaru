@@ -16,6 +16,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Spot
+// @tag.description スポット関連
 func (h *handler) spotRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/spots", h.authentication)
 
@@ -47,6 +49,16 @@ func (h *handler) filterAccessSpot(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     スポット一覧取得
+// @Description スポットの一覧を取得します。ページネーションと名前でのフィルタリングに対応しています。
+// @Tags        Spot
+// @Router      /v1/spots [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "スポット名" example("春の公園")
+// @Produce     json
+// @Success     200 {object} response.SpotsResponse
 func (h *handler) ListSpots(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -131,6 +143,15 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット取得
+// @Description 指定されたスポットの詳細情報を取得します。
+// @Tags        Spot
+// @Router      /v1/spots/{spotId} [get]
+// @Security    bearerauth
+// @Param       spotId path string true "スポットID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.SpotResponse
+// @Failure     404 {object} util.ErrorResponse "スポットが存在しない"
 func (h *handler) GetSpot(ctx *gin.Context) {
 	spot, err := h.getSpot(ctx, util.GetParam(ctx, "spotId"))
 	if err != nil {
@@ -175,6 +196,16 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット登録
+// @Description 新しいスポットを登録します。
+// @Tags        Spot
+// @Router      /v1/spots [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateSpotRequest true "スポット情報"
+// @Produce     json
+// @Success     200 {object} response.SpotResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateSpot(ctx *gin.Context) {
 	req := &request.CreateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -227,6 +258,19 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポット更新
+// @Description スポットの情報を更新します。
+// @Tags        Spot
+// @Router      /v1/spots/{spotId} [patch]
+// @Security    bearerauth
+// @Param       spotId path string true "スポットID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateSpotRequest true "スポット情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "スポットの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "スポットが存在しない"
 func (h *handler) UpdateSpot(ctx *gin.Context) {
 	req := &request.UpdateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -250,6 +294,16 @@ func (h *handler) UpdateSpot(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     スポット削除
+// @Description スポットを削除します。
+// @Tags        Spot
+// @Router      /v1/spots/{spotId} [delete]
+// @Security    bearerauth
+// @Param       spotId path string true "スポットID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "スポットの削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "スポットが存在しない"
 func (h *handler) DeleteSpot(ctx *gin.Context) {
 	in := &store.DeleteSpotInput{
 		SpotID: util.GetParam(ctx, "spotId"),
@@ -261,6 +315,19 @@ func (h *handler) DeleteSpot(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     スポット承認
+// @Description スポットの承認状態を更新します。
+// @Tags        Spot
+// @Router      /v1/spots/{spotId}/approval [patch]
+// @Security    bearerauth
+// @Param       spotId path string true "スポットID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.ApproveSpotRequest true "承認情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "スポットの承認権限がない"
+// @Failure     404 {object} util.ErrorResponse "スポットが存在しない"
 func (h *handler) ApproveSpot(ctx *gin.Context) {
 	req := &request.ApproveSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {

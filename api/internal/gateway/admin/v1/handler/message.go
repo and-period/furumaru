@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Message
+// @tag.description メッセージ関連
 func (h *handler) messageRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/messages", h.authentication)
 
@@ -19,6 +21,16 @@ func (h *handler) messageRoutes(rg *gin.RouterGroup) {
 	r.GET("/:messageId", h.GetMessage)
 }
 
+// @Summary     メッセージ一覧取得
+// @Description 管理者あてのメッセージ一覧を取得します。ソート順指定が可能です。
+// @Tags        Message
+// @Router      /v1/messages [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       orders query string false "ソート(type,-type,read,-read,receivedAt,-receivedAt)" example("-receivedAt")
+// @Produce     json
+// @Success     200 {object} response.MessagesResponse
 func (h *handler) ListMessages(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -82,6 +94,15 @@ func (h *handler) newMessageOrders(ctx *gin.Context) ([]*messenger.ListMessagesO
 	return res, nil
 }
 
+// @Summary     メッセージ取得
+// @Description 指定されたメッセージの詳細情報を取得します。
+// @Tags        Message
+// @Router      /v1/messages/{messageId} [get]
+// @Security    bearerauth
+// @Param       messageId path string true "メッセージID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.MessageResponse
+// @Failure     404 {object} util.ErrorResponse "メッセージが存在しない"
 func (h *handler) GetMessage(ctx *gin.Context) {
 	in := &messenger.GetMessageInput{
 		MessageID: util.GetParam(ctx, "messageId"),

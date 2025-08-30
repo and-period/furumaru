@@ -55,6 +55,14 @@ type Params struct {
 	Media     media.Service
 }
 
+// @title               ふるマル API - 管理者向け
+// @description         管理者向けのふるマルAPIです。
+// @servers.url         https://admin-api.furumaru-stg.and-period.work
+// @servers.description 検証環境
+// @servers.url				  https://admin-api.furumaru.and-period.co.jp
+// @servers.description 本番環境
+// @securitydefinitions.cookieauth
+// @securitydefinitions.bearerauth
 type handler struct {
 	appName        string
 	env            string

@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        ProductType
+// @tag.description 品目関連
 func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/categories/:categoryId/product-types", h.authentication)
 
@@ -24,6 +26,30 @@ func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
 	rg.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
 }
 
+// @Summary     品目一覧取得
+// @Description 品目の一覧を取得します。商品種別ID省略時は全品目を取得します。
+// @Tags        ProductType
+// @Router      /v1/categories/-/product-types [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "品目名(あいまい検索)" example("いも")
+// @Param       orders query string false "ソート(name,-name)" example("-name")
+// @Produce     json
+// @Success     200 {object} response.ProductTypesResponse
+
+// @Summary     品目一覧取得
+// @Description 品目の一覧を取得します。商品種別ID指定時はその種別の品目のみ取得します。
+// @Tags        ProductType
+// @Router      /v1/categories/{categoryId}/product-types [get]
+// @Security    bearerauth
+// @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "品目名(あいまい検索)" example("いも")
+// @Param       orders query string false "ソート(name,-name)" example("-name")
+// @Produce     json
+// @Success     200 {object} response.ProductTypesResponse
 func (h *handler) ListProductTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -100,6 +126,18 @@ func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTy
 	return res, nil
 }
 
+// @Summary     品目登録
+// @Description 新しい品目を登録します。
+// @Tags        ProductType
+// @Router      /v1/categories/{categoryId}/product-types [post]
+// @Security    bearerauth
+// @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.CreateProductTypeRequest true "品目情報"
+// @Produce     json
+// @Success     200 {object} response.ProductTypeResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在する品目名"
 func (h *handler) CreateProductType(ctx *gin.Context) {
 	req := &request.CreateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -131,6 +169,20 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     品目更新
+// @Description 品目の情報を更新します。
+// @Tags        ProductType
+// @Router      /v1/categories/{categoryId}/product-types/{productTypeId} [patch]
+// @Security    bearerauth
+// @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       productTypeId path string true "品目ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateProductTypeRequest true "品目情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "品目が存在しない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在する品目名"
 func (h *handler) UpdateProductType(ctx *gin.Context) {
 	req := &request.UpdateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -151,6 +203,17 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     品目削除
+// @Description 品目を削除します。
+// @Tags        ProductType
+// @Router      /v1/categories/{categoryId}/product-types/{productTypeId} [delete]
+// @Security    bearerauth
+// @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       productTypeId path string true "品目ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "品目が存在しない"
+// @Failure     412 {object} util.ErrorResponse "商品側で紐づいているため削除不可"
 func (h *handler) DeleteProductType(ctx *gin.Context) {
 	in := &store.DeleteProductTypeInput{
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),

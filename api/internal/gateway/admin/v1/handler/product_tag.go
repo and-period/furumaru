@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        ProductTag
+// @tag.description 商品タグ関連
 func (h *handler) productTagRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/product-tags", h.authentication)
 
@@ -22,6 +24,17 @@ func (h *handler) productTagRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:productTagId", h.DeleteProductTag)
 }
 
+// @Summary     商品タグ一覧取得
+// @Description 商品タグの一覧を取得します。名前でのフィルタリング、ソート順指定が可能です。
+// @Tags        ProductTag
+// @Router      /v1/product-tags [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "商品タグ名(あいまい検索)" example("有機")
+// @Param       orders query string false "ソート(name,-name)" example("-name")
+// @Produce     json
+// @Success     200 {object} response.ProductTagsResponse
 func (h *handler) ListProductTags(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -82,6 +95,17 @@ func (h *handler) newProductTagOrders(ctx *gin.Context) ([]*store.ListProductTag
 	return res, nil
 }
 
+// @Summary     商品タグ登録
+// @Description 新しい商品タグを登録します。
+// @Tags        ProductTag
+// @Router      /v1/product-tags [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateProductTagRequest true "商品タグ情報"
+// @Produce     json
+// @Success     200 {object} response.ProductTagResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在する商品タグ名"
 func (h *handler) CreateProductTag(ctx *gin.Context) {
 	req := &request.CreateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -104,6 +128,19 @@ func (h *handler) CreateProductTag(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品タグ更新
+// @Description 商品タグの情報を更新します。
+// @Tags        ProductTag
+// @Router      /v1/product-tags/{productTagId} [patch]
+// @Security    bearerauth
+// @Param       productTagId path string true "商品タグID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateProductTagRequest true "商品タグ情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "商品タグが存在しない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在する商品タグ名"
 func (h *handler) UpdateProductTag(ctx *gin.Context) {
 	req := &request.UpdateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -123,6 +160,16 @@ func (h *handler) UpdateProductTag(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     商品タグ削除
+// @Description 商品タグを削除します。
+// @Tags        ProductTag
+// @Router      /v1/product-tags/{productTagId} [delete]
+// @Security    bearerauth
+// @Param       productTagId path string true "商品タグID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "商品タグが存在しない"
+// @Failure     412 {object} util.ErrorResponse "商品側で紐づいているため削除不可"
 func (h *handler) DeleteProductTag(ctx *gin.Context) {
 	in := &store.DeleteProductTagInput{
 		ProductTagID: util.GetParam(ctx, "productTagId"),

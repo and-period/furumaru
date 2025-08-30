@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        LiveComment
+// @tag.description ライブコメント関連
 func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/comments")
 
@@ -36,6 +38,18 @@ func (h *handler) filterAccessLiveComment(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     ライブコメント一覧取得
+// @Description 指定されたスケジュールのライブコメント一覧を取得します。ページネーションと期間フィルタリングに対応しています。
+// @Tags        LiveComment
+// @Router      /v1/schedules/{scheduleId}/comments [get]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       start query integer false "検索開始日時（unixtime）" example("1640962800")
+// @Param       end query integer false "検索終了日時（unixtime）" example("1640962800")
+// @Param       next query string false "次ページトークン" example("token123")
+// @Produce     json
+// @Success     200 {object} response.LiveCommentsResponse
 func (h *handler) ListLiveComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -95,6 +109,20 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ライブコメント更新
+// @Description ライブコメントの状態（無効/有効）を更新します。
+// @Tags        LiveComment
+// @Router      /v1/schedules/{scheduleId}/comments/{commentId} [patch]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       commentId path string true "コメントID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateLiveCommentRequest true "コメント情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "コメントの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "コメントが存在しない"
 func (h *handler) UpdateLiveComment(ctx *gin.Context) {
 	req := &request.UpdateLiveCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {

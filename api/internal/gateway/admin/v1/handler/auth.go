@@ -14,6 +14,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Auth
+// @tag.description 認証関連
 func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/auth")
 
@@ -39,6 +41,14 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.PATCH("/coordinator/shippings", h.authentication, h.UpsertAuthShipping)
 }
 
+// @Summary     トークン検証
+// @Description 認証トークンを検証し、認証情報を取得します。
+// @Tags        Auth
+// @Router      /v1/auth [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -65,6 +75,14 @@ type authUser interface {
 	AuthUser() *service.AuthUser
 }
 
+// @Summary     管理者情報取得
+// @Description ログイン中の管理者情報を取得します。
+// @Tags        Auth
+// @Router      /v1/auth/user [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.AuthUserResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuthUser(ctx *gin.Context) {
 	adminID := getAdminID(ctx)
 	var (
@@ -92,6 +110,15 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     サインイン
+// @Description メールアドレスとパスワードでサインインします。
+// @Tags        Auth
+// @Router      /v1/auth [post]
+// @Accept      json
+// @Param       request body request.SignInRequest true "サインイン"
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) SignIn(ctx *gin.Context) {
 	req := &request.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -115,6 +142,14 @@ func (h *handler) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     認証済みプロバイダ一覧の取得
+// @Description 連携済みの外部認証プロバイダ一覧を取得します。
+// @Tags        Auth
+// @Router      /v1/auth/providers [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.AuthProvidersResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListAuthProviders(ctx *gin.Context) {
 	in := &user.ListAdminAuthProvidersInput{
 		AdminID: getAdminID(ctx),
@@ -130,6 +165,17 @@ func (h *handler) ListAuthProviders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     Google認証用URLの発行
+// @Description Googleアカウント連携用の認証URLを発行します。
+// @Tags        Auth
+// @Router      /v1/auth/google [get]
+// @Security    bearerauth
+// @Param       state query string true "CSRF対策用のstate" example("xxxxxxxxxx")
+// @Param       redirectUri query string false "認証後のリダイレクト先（変更したいときのみ指定）" example("https://example.com")
+// @Produce     json
+// @Success     200 {object} response.AuthGoogleAccountResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     412 {object} util.ErrorResponse "すでに連携済み"
 func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 	in := &user.InitialGoogleAdminAuthInput{
 		AdminID:     getAdminID(ctx),
@@ -147,6 +193,16 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     Googleアカウントの連携
+// @Description Googleアカウントを連携します。
+// @Tags        Auth
+// @Router      /v1/auth/google [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.ConnectGoogleAccountRequest true "連携リクエスト"
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 	req := &request.ConnectGoogleAccountRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -166,6 +222,17 @@ func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     LINE認証用URLの発行
+// @Description LINEアカウント連携用の認証URLを発行します。
+// @Tags        Auth
+// @Router      /v1/auth/line [get]
+// @Security    bearerauth
+// @Param       state query string true "CSRF対策用のstate" example("xxxxxxxxxx")
+// @Param       redirectUri query string false "認証後のリダイレクト先（変更したいときのみ指定）" example("https://example.com")
+// @Produce     json
+// @Success     200 {object} response.AuthLINEAccountResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     412 {object} util.ErrorResponse "すでに連携済み"
 func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 	in := &user.InitialLINEAdminAuthInput{
 		AdminID:     getAdminID(ctx),
@@ -183,6 +250,16 @@ func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     LINEアカウントの連携
+// @Description LINEアカウントを連携します。
+// @Tags        Auth
+// @Router      /v1/auth/line [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.ConnectLINEAccountRequest true "連携リクエスト"
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ConnectLINEAccount(ctx *gin.Context) {
 	req := &request.ConnectLINEAccountRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -202,6 +279,14 @@ func (h *handler) ConnectLINEAccount(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     サインアウト
+// @Description サインアウトします。
+// @Tags        Auth
+// @Router      /v1/auth [delete]
+// @Security    bearerauth
+// @Produce     json
+// @Success     204
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) SignOut(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -220,6 +305,15 @@ func (h *handler) SignOut(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     トークン更新
+// @Description リフレッシュトークンを使用してアクセストークンを更新します。
+// @Tags        Auth
+// @Router      /v1/auth/refresh-token [post]
+// @Accept      json
+// @Param       request body request.RefreshAuthTokenRequest true "トークン更新"
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	req := &request.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -242,6 +336,17 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     デバイストークン登録
+// @Description プッシュ通知用のデバイストークンを登録します。
+// @Tags        Auth
+// @Router      /v1/auth/device [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.RegisterAuthDeviceRequest true "デバイストークン"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RegisterDevice(ctx *gin.Context) {
 	req := &request.RegisterAuthDeviceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -261,6 +366,19 @@ func (h *handler) RegisterDevice(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     メールアドレス更新
+// @Description ログイン中のユーザーのメールアドレスを更新します。
+// @Tags        Auth
+// @Router      /v1/auth/email [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpdateAuthEmailRequest true "メールアドレス"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     409 {object} util.ErrorResponse "現在すでに存在するメールアドレス"
+// @Failure     412 {object} util.ErrorResponse "変更後のメールアドレスが変更前と同じ"
 func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -285,6 +403,16 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     メールアドレス更新 - コード検証
+// @Description メールアドレス更新用の検証コードを確認します。
+// @Tags        Auth
+// @Router      /v1/auth/email/verified [post]
+// @Accept      json
+// @Param       request body request.VerifyAuthEmailRequest true "検証コード"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -309,6 +437,17 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     パスワード更新
+// @Description ログイン中のユーザーのパスワードを更新します。
+// @Tags        Auth
+// @Router      /v1/auth/password [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpdateAuthPasswordRequest true "パスワード"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
@@ -335,6 +474,15 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     パスワードリセット
+// @Description パスワードリセット用のメールを送信します。
+// @Tags        Auth
+// @Router      /v1/auth/forgot-password [post]
+// @Accept      json
+// @Param       request body request.ForgotAuthPasswordRequest true "メールアドレス"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 	req := &request.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -353,6 +501,15 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     パスワードリセット - コード検証
+// @Description パスワードリセット用の検証コードを確認し、新しいパスワードを設定します。
+// @Tags        Auth
+// @Router      /v1/auth/forgot-password/verified [post]
+// @Accept      json
+// @Param       request body request.ResetAuthPasswordRequest true "パスワードリセット"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	req := &request.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -374,6 +531,14 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     自身のコーディネータ情報取得
+// @Description ログイン中のコーディネータの詳細情報を取得します。
+// @Tags        Auth
+// @Router      /v1/auth/coordinator [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.CoordinatorResponse
+// @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
@@ -406,6 +571,16 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     自身のコーディネータ情報更新
+// @Description ログイン中のコーディネータの情報を更新します。
+// @Tags        Auth
+// @Router      /v1/auth/coordinator [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpdateCoordinatorRequest true "コーディネータ情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
@@ -447,6 +622,13 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     自身の配送設定取得
+// @Description ログイン中のコーディネータの配送設定を取得します。
+// @Tags        Auth
+// @Router      /v1/auth/coordinator/shippings [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.ShippingResponse
 func (h *handler) GetAuthShipping(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
@@ -472,6 +654,16 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     自身の配送設定更新
+// @Description ログイン中のコーディネータの配送設定を更新します。
+// @Tags        Auth
+// @Router      /v1/auth/coordinator/shippings [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.UpsertShippingRequest true "配送設定"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))

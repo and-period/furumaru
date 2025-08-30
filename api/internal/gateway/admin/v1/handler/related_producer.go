@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        RelatedProducer
+// @tag.description 関連生産者関連
 func (h *handler) relatedProducerRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/coordinators/:coordinatorId/producers", h.authentication, h.filterAccessRelatedProducer)
 
@@ -30,6 +32,17 @@ func (h *handler) filterAccessRelatedProducer(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     関連生産者一覧取得
+// @Description 指定されたコーディネーターに関連する生産者の一覧を取得します。
+// @Tags        RelatedProducer
+// @Router      /v1/coordinators/{coordinatorId}/producers [get]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.ProducersResponse
+// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20

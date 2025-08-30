@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Shop
+// @tag.description ショップ関連
 func (h *handler) shopRotues(rg *gin.RouterGroup) {
 	r := rg.Group("/shops", h.authentication)
 
@@ -46,6 +48,16 @@ func (h *handler) filterAccessShop(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     ショップ取得
+// @Description 指定されたショップの詳細情報を取得します。コーディネーター、生産者、商品種別情報も含まれます。
+// @Tags        Shop
+// @Router      /v1/shops/{shopId} [get]
+// @Security    bearerauth
+// @Param       shopId path string true "ショップID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ShopResponse
+// @Failure     403 {object} util.ErrorResponse "ショップの参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "ショップが存在しない"
 func (h *handler) GetShop(ctx *gin.Context) {
 	shop, err := h.getShop(ctx, ctx.Param("shopId"))
 	if err != nil {
@@ -85,6 +97,19 @@ func (h *handler) GetShop(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ショップ更新
+// @Description ショップの情報を更新します。ショップ名、商品種別、営業日を変更できます。
+// @Tags        Shop
+// @Router      /v1/shops/{shopId} [patch]
+// @Security    bearerauth
+// @Param       shopId path string true "ショップID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateShopRequest true "ショップ情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "ショップの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "ショップが存在しない"
 func (h *handler) UpdateShop(ctx *gin.Context) {
 	req := &request.UpdateShopRequest{}
 	if err := ctx.BindJSON(req); err != nil {

@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Order
+// @tag.description 注文関連
 func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/orders", h.authentication)
 
@@ -52,6 +54,17 @@ func (h *handler) filterAccessOrder(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     注文一覧取得
+// @Description 注文の一覧を取得します。コーディネータは自分の店舗の注文のみ取得できます。
+// @Tags        Order
+// @Router      /v1/orders [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       statuses query []int32 false "注文ステータスフィルタ" collectionFormat(csv)
+// @Param       types query []int32 false "注文タイプフィルタ" collectionFormat(csv)
+// @Produce     json
+// @Success     200 {object} response.OrdersResponse
 func (h *handler) ListOrders(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -146,11 +159,11 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 }
 
 func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, []sentity.OrderType, error) {
-	sparams, err := util.GetQueryInt32s(ctx, "status")
+	sparams, err := util.GetQueryInt32s(ctx, "statuses")
 	if err != nil {
 		return nil, nil, fmt.Errorf("handler: failed to get status query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	tparams, err := util.GetQueryInt32s(ctx, "type")
+	tparams, err := util.GetQueryInt32s(ctx, "types")
 	if err != nil {
 		return nil, nil, fmt.Errorf("handler: failed to get type query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
@@ -182,6 +195,15 @@ func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, []s
 	return statuses, types, nil
 }
 
+// @Summary     注文取得
+// @Description 指定された注文の詳細情報を取得します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId} [get]
+// @Security    bearerauth
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.OrderResponse
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) GetOrder(ctx *gin.Context) {
 	order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
 	if err != nil {
@@ -237,6 +259,18 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     注文下書き保存
+// @Description 注文の下書きを保存します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/draft [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.DraftOrderRequest true "注文下書き保存"
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "操作の権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) DraftOrder(ctx *gin.Context) {
 	req := &request.DraftOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -254,6 +288,16 @@ func (h *handler) DraftOrder(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文確定
+// @Description 注文を確定します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/capture [post]
+// @Security    bearerauth
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "注文の確定権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) CaptureOrder(ctx *gin.Context) {
 	in := &store.CaptureOrderInput{
 		OrderID: util.GetParam(ctx, "orderId"),
@@ -265,6 +309,18 @@ func (h *handler) CaptureOrder(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文対応完了
+// @Description 注文対応を完了します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/complete [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CompleteOrderRequest true "注文対応完了"
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "操作の権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) CompleteOrder(ctx *gin.Context) {
 	req := &request.CompleteOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -298,6 +354,16 @@ func (h *handler) CompleteOrder(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文キャンセル
+// @Description 注文をキャンセルします。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/cancel [post]
+// @Security    bearerauth
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "注文のキャンセル権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) CancelOrder(ctx *gin.Context) {
 	in := &store.CancelOrderInput{
 		OrderID: util.GetParam(ctx, "orderId"),
@@ -309,6 +375,18 @@ func (h *handler) CancelOrder(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文の返金依頼
+// @Description 注文の返金を依頼します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/refund [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.RefundOrderRequest true "注文の返金依頼"
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "操作の権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) RefundOrder(ctx *gin.Context) {
 	req := &request.RefundOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -345,6 +423,16 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文履歴のCSV出力
+// @Description 注文履歴をCSV形式で出力します。
+// @Tags        Order
+// @Router      /v1/orders/-/export [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.ExportOrdersRequest true "注文履歴のCSV出力"
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 func (h *handler) ExportOrders(ctx *gin.Context) {
 	req := &request.ExportOrdersRequest{}
 	if err := ctx.BindJSON(req); err != nil {

@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Administrator
+// @tag.description システム管理者関連
 func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/administrators", h.authentication)
 
@@ -24,6 +26,15 @@ func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:adminId", h.DeleteAdministrator)
 }
 
+// @Summary     システム管理者一覧取得
+// @Description システム管理者の一覧を取得します。
+// @Tags        Administrator
+// @Router      /v1/administrators [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.AdministratorsResponse
 func (h *handler) ListAdministrators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -58,6 +69,15 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     システム管理者取得
+// @Description システム管理者の詳細情報を取得します。
+// @Tags        Administrator
+// @Router      /v1/administrators/{adminId} [get]
+// @Security    bearerauth
+// @Param       adminId path string true "管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.AdministratorResponse
+// @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) GetAdministrator(ctx *gin.Context) {
 	in := &user.GetAdministratorInput{
 		AdministratorID: util.GetParam(ctx, "adminId"),
@@ -74,6 +94,17 @@ func (h *handler) GetAdministrator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     システム管理者登録
+// @Description 新しいシステム管理者を登録します。
+// @Tags        Administrator
+// @Router      /v1/administrators [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateAdministratorRequest true "システム管理者情報"
+// @Produce     json
+// @Success     200 {object} response.AdministratorResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateAdministrator(ctx *gin.Context) {
 	req := &request.CreateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -101,6 +132,18 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     システム管理者更新
+// @Description システム管理者の情報を更新します。
+// @Tags        Administrator
+// @Router      /v1/administrators/{adminId} [patch]
+// @Security    bearerauth
+// @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateAdministratorRequest true "システム管理者情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 	req := &request.UpdateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -124,6 +167,19 @@ func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     システム管理者メールアドレス更新
+// @Description システム管理者のメールアドレスを更新します。
+// @Tags        Administrator
+// @Router      /v1/administrators/{adminId}/email [patch]
+// @Security    bearerauth
+// @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateAdministratorEmailRequest true "メールアドレス"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "存在しないシステム管理者"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
 	req := &request.UpdateAdministratorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -143,6 +199,16 @@ func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     システム管理者パスワード更新(ランダム生成)
+// @Description システム管理者のパスワードをランダムに生成して更新します。
+// @Tags        Administrator
+// @Router      /v1/administrators/{adminId}/password [patch]
+// @Security    bearerauth
+// @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
 	in := &user.ResetAdministratorPasswordInput{
 		AdministratorID: util.GetParam(ctx, "adminId"),
@@ -155,6 +221,16 @@ func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     システム管理者退会
+// @Description システム管理者を削除します。
+// @Tags        Administrator
+// @Router      /v1/administrators/{adminId} [delete]
+// @Security    bearerauth
+// @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) DeleteAdministrator(ctx *gin.Context) {
 	in := &user.DeleteAdministratorInput{
 		AdministratorID: util.GetParam(ctx, "adminId"),

@@ -19,6 +19,17 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 	r.GET("/orders", h.TopOrders)
 }
 
+// @Summary     注文集計取得
+// @Description 指定期間の注文統計情報（注文数、売上、決済手段別集計、推移）を取得します。
+// @Tags        Top
+// @Router      /v1/top/orders [get]
+// @Security    bearerauth
+// @Param       startAt query integer false "集計開始日時（unixtime,未指定の場合は１週間前の時刻）" example("1640962800")
+// @Param       endAt query integer false "集計終了日時（unixtime,未指定の場合は現在時刻）" example("1640962800")
+// @Param       periodType query string false "集計期間（未指定の場合は日次）" example("day")
+// @Param       shopId query string false "店舗ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.TopOrdersResponse
 func (h *handler) TopOrders(ctx *gin.Context) {
 	const defaultPeriodType = service.TopOrderPeriodTypeDay
 

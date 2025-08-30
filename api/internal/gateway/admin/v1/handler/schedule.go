@@ -16,6 +16,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Schedule
+// @tag.description マルシェ開催スケジュール関連
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules", h.authentication)
 
@@ -46,6 +48,15 @@ func (h *handler) filterAccessSchedule(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     マルシェ開催スケジュール一覧取得
+// @Description マルシェ開催スケジュールの一覧を取得します。ページネーションに対応しています。
+// @Tags        Schedule
+// @Router      /v1/schedules [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Produce     json
+// @Success     200 {object} response.SchedulesResponse
 func (h *handler) ListSchedules(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -96,6 +107,16 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     マルシェ開催スケジュール取得
+// @Description 指定されたマルシェ開催スケジュールの詳細情報を取得します。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId} [get]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ScheduleResponse
+// @Failure     403 {object} util.ErrorResponse "スケジュールの参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	schedule, err := h.getSchedule(ctx, scheduleID)
@@ -117,6 +138,16 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     マルシェ開催スケジュール登録
+// @Description 新しいマルシェ開催スケジュールを登録します。
+// @Tags        Schedule
+// @Router      /v1/schedules [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateScheduleRequest true "スケジュール情報"
+// @Produce     json
+// @Success     200 {object} response.ScheduleResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateSchedule(ctx *gin.Context) {
 	req := &request.CreateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -171,6 +202,19 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     マルシェ開催スケジュール更新
+// @Description マルシェ開催スケジュールの情報を更新します。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId} [patch]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateScheduleRequest true "スケジュール情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "スケジュールの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) UpdateSchedule(ctx *gin.Context) {
 	req := &request.UpdateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -195,6 +239,16 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     マルシェ開催スケジュール削除
+// @Description マルシェ開催スケジュールを削除します。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId} [delete]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "スケジュールの削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) DeleteSchedule(ctx *gin.Context) {
 	in := &store.DeleteScheduleInput{
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
@@ -206,6 +260,19 @@ func (h *handler) DeleteSchedule(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     マルシェ開催スケジュール承認
+// @Description マルシェ開催スケジュールの承認状態を更新します。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId}/approval [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       request body request.ApproveScheduleRequest true "承認情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "スケジュールの承認権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) ApproveSchedule(ctx *gin.Context) {
 	req := &request.ApproveScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -225,6 +292,19 @@ func (h *handler) ApproveSchedule(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     マルシェ開催スケジュール公開
+// @Description マルシェ開催スケジュールの公開状態を更新します。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId}/publish [patch]
+// @Security    bearerauth
+// @Accept      json
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       request body request.PublishScheduleRequest true "公開設定情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "スケジュールの公開権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) PublishSchedule(ctx *gin.Context) {
 	req := &request.PublishScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -243,6 +323,19 @@ func (h *handler) PublishSchedule(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     マルシェ分析情報取得
+// @Description 指定されたマルシェ開催スケジュールの視聴者分析データを取得します。集計期間と集計間隔を指定できます。
+// @Tags        Schedule
+// @Router      /v1/schedules/{scheduleId}/analytics [get]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       startAt query integer false "集計開始日時 (unixtime,未指定の場合はスケジュール開始時間)" example("1640962800")
+// @Param       endAt query integer false "集計終了日時 (unixtime,未指定の場合はスケジュール終了時間)" example("1640962800")
+// @Param       viewerLogInterval query string false "集計間隔 (未指定の場合は1分間隔)" example("minute")
+// @Produce     json
+// @Success     200 {object} response.AnalyzeScheduleResponse
+// @Failure     403 {object} util.ErrorResponse "スケジュールの参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
 	const defaultViewerLogInterval = service.BroadcastViewerLogIntervalMinute
 
