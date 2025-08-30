@@ -1,5 +1,12 @@
 # Changelog
 
+## [v5.2.0](https://github.com/and-period/furumaru/compare/v5.1.3...v5.2.0) - 2025-08-30
+- feat(api): キャンプ施設向け認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2963
+- OpenAPI tooling improvements and component name simplification by @taba2424 in https://github.com/and-period/furumaru/pull/2966
+- feat(api): Add comprehensive Swagger comments and improve API tooling by @taba2424 in https://github.com/and-period/furumaru/pull/2967
+- chore(ci): GitHub ActionsでGoのテストキャッシュを有効化 by @taba2424 in https://github.com/and-period/furumaru/pull/2968
+- feat(api): Add comprehensive Swagger documentation for admin API endpoints by @taba2424 in https://github.com/and-period/furumaru/pull/2970
+
 ## [v5.1.3](https://github.com/and-period/furumaru/compare/v5.1.2...v5.1.3) - 2025-08-28
 - feat(api): キャンプ施設向けJWT認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2953
 - feat(api): キャンプ施設ユーザーのチェックイン機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2956
