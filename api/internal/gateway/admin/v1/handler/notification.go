@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Notification
+// @tag.description 通知関連
 func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/notifications", h.authentication)
 
@@ -25,6 +27,18 @@ func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:notificationId", h.DeleteNotification)
 }
 
+// @Summary     通知一覧取得
+// @Description 通知の一覧を取得します。期間や配信日時でのフィルタリング、ソート順指定が可能です。
+// @Tags        Notification
+// @Router      /v1/notifications [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       since query integer false "検索開始日時（unixtime）" example("1640962800")
+// @Param       until query integer false "検索終了日時（unixtime）" example("1640962800")
+// @Param       orders query string false "ソート(title,-title,publishedAt,-publishedAt)" example("-publishedAt")
+// @Produce     json
+// @Success     200 {object} response.NotificationsResponse
 func (h *handler) ListNotifications(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -107,6 +121,15 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     通知取得
+// @Description 指定された通知の詳細情報を取得します。
+// @Tags        Notification
+// @Router      /v1/notifications/{notificationId} [get]
+// @Security    bearerauth
+// @Param       notificationId path string true "通知ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.NotificationResponse
+// @Failure     404 {object} util.ErrorResponse "通知が存在しない"
 func (h *handler) GetNotification(ctx *gin.Context) {
 	in := &messenger.GetNotificationInput{
 		NotificationID: util.GetParam(ctx, "notificationId"),
@@ -174,6 +197,16 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 	return res, nil
 }
 
+// @Summary     通知登録
+// @Description 新しい通知を登録します。配信対象、配信日時などを指定できます。
+// @Tags        Notification
+// @Router      /v1/notifications [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateNotificationRequest true "通知情報"
+// @Produce     json
+// @Success     200 {object} response.NotificationResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateNotification(ctx *gin.Context) {
 	req := &request.CreateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -209,6 +242,18 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     通知更新
+// @Description 通知の情報を更新します。
+// @Tags        Notification
+// @Router      /v1/notifications/{notificationId} [patch]
+// @Security    bearerauth
+// @Param       notificationId path string true "通知ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateNotificationRequest true "通知情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "通知が存在しない"
 func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 	req := &request.UpdateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -238,6 +283,15 @@ func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     通知削除
+// @Description 通知を削除します。
+// @Tags        Notification
+// @Router      /v1/notifications/{notificationId} [delete]
+// @Security    bearerauth
+// @Param       notificationId path string true "通知ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "通知が存在しない"
 func (h *handler) DeleteNotification(ctx *gin.Context) {
 	in := &messenger.DeleteNotificationInput{
 		NotificationID: util.GetParam(ctx, "notificationId"),

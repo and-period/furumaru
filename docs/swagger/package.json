@@ -9,9 +9,6 @@
     "generate:admin": "make build-admin",
     "generate:user": "make build-user",
     "generate:user-facility": "make build-user-facility",
-    "generate:yaml": "make build-yaml",
-    "generate:typescript": "make build-typescript",
-    "lint": "make lint",
     "watch": "npm-run-all --parallel watch:*",
     "watch:admin": "chokidar 'admin/**/*.yaml' -c 'yarn generate:admin' --initial",
     "watch:user": "chokidar 'user/**/*.yaml' -c 'yarn generate:user' --initial"

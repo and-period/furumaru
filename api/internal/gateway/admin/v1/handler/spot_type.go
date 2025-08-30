@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        SpotType
+// @tag.description スポットタイプ関連
 func (h *handler) spotTypeRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/spot-types", h.authentication)
 
@@ -21,6 +23,16 @@ func (h *handler) spotTypeRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:spotTypeId", h.DeleteSpotType)
 }
 
+// @Summary     スポットタイプ一覧取得
+// @Description スポットタイプの一覧を取得します。名前でのフィルタリングが可能です。
+// @Tags        SpotType
+// @Router      /v1/spot-types [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "スポットタイプ名(あいまい検索)" example("観光地")
+// @Produce     json
+// @Success     200 {object} response.SpotTypesResponse
 func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -56,6 +68,17 @@ func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポットタイプ登録
+// @Description 新しいスポットタイプを登録します。
+// @Tags        SpotType
+// @Router      /v1/spot-types [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateSpotTypeRequest true "スポットタイプ情報"
+// @Produce     json
+// @Success     200 {object} response.SpotTypeResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するスポットタイプ名"
 func (h *handler) CreateSpotType(ctx *gin.Context) {
 	req := &request.CreateSpotTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -78,6 +101,19 @@ func (h *handler) CreateSpotType(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     スポットタイプ更新
+// @Description スポットタイプの情報を更新します。
+// @Tags        SpotType
+// @Router      /v1/spot-types/{spotTypeId} [patch]
+// @Security    bearerauth
+// @Param       spotTypeId path string true "スポットタイプID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateSpotTypeRequest true "スポットタイプ情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     404 {object} util.ErrorResponse "スポットタイプが存在しない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するスポットタイプ名"
 func (h *handler) UpdateSpotType(ctx *gin.Context) {
 	req := &request.UpdateSpotTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -97,6 +133,16 @@ func (h *handler) UpdateSpotType(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     スポットタイプ削除
+// @Description スポットタイプを削除します。
+// @Tags        SpotType
+// @Router      /v1/spot-types/{spotTypeId} [delete]
+// @Security    bearerauth
+// @Param       spotTypeId path string true "スポットタイプID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     404 {object} util.ErrorResponse "スポットタイプが存在しない"
+// @Failure     412 {object} util.ErrorResponse "スポット側で紐づいているため削除不可"
 func (h *handler) DeleteSpotType(ctx *gin.Context) {
 	in := &store.DeleteSpotTypeInput{
 		SpotTypeID: ctx.Param("spotTypeId"),

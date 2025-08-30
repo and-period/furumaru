@@ -16,6 +16,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        Producer
+// @tag.description 生産者関連
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/producers", h.authentication)
 
@@ -43,6 +45,16 @@ func (h *handler) filterAccessProducer(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     生産者一覧取得
+// @Description 生産者の一覧を取得します。コーディネーターは管理店舗の生産者のみ取得可能です。
+// @Tags        Producer
+// @Router      /v1/producers [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       username query string false "生産者名(あいまい検索)" example("田中")
+// @Produce     json
+// @Success     200 {object} response.ProducersResponse
 func (h *handler) ListProducers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -116,6 +128,15 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     生産者取得
+// @Description 指定された生産者の詳細情報を取得します。
+// @Tags        Producer
+// @Router      /v1/producers/{producerId} [get]
+// @Security    bearerauth
+// @Param       producerId path string true "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ProducerResponse
+// @Failure     404 {object} util.ErrorResponse "生産者が存在しない"
 func (h *handler) GetProducer(ctx *gin.Context) {
 	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
 	if err != nil {
@@ -147,6 +168,18 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     生産者登録
+// @Description 新しい生産者を登録します。コーディネーターは自身が管理する店舗の生産者のみ登録可能です。
+// @Tags        Producer
+// @Router      /v1/producers [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateProducerRequest true "生産者情報"
+// @Produce     json
+// @Success     200 {object} response.ProducerResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "生産者の登録権限がない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateProducer(ctx *gin.Context) {
 	req := &request.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -206,6 +239,20 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     生産者更新
+// @Description 生産者の情報を更新します。
+// @Tags        Producer
+// @Router      /v1/producers/{producerId} [patch]
+// @Security    bearerauth
+// @Param       producerId path string true "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateProducerRequest true "生産者情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "生産者の更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "生産者が存在しない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) UpdateProducer(ctx *gin.Context) {
 	req := &request.UpdateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -243,6 +290,16 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     生産者削除
+// @Description 生産者を削除します。
+// @Tags        Producer
+// @Router      /v1/producers/{producerId} [delete]
+// @Security    bearerauth
+// @Param       producerId path string true "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "生産者の削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "生産者が存在しない"
 func (h *handler) DeleteProducer(ctx *gin.Context) {
 	in := &user.DeleteProducerInput{
 		ProducerID: util.GetParam(ctx, "producerId"),

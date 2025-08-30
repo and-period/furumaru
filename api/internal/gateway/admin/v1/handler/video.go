@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Video
+// @tag.description 動画関連
 func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/videos", h.authentication)
 
@@ -48,6 +50,16 @@ func (h *handler) filterAccessVideo(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     動画一覧取得
+// @Description 動画の一覧を取得します。ページネーションと名前でのフィルタリングに対応しています。
+// @Tags        Video
+// @Router      /v1/videos [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "動画名" example("春の特産品紹介")
+// @Produce     json
+// @Success     200 {object} response.VideosResponse
 func (h *handler) ListVideos(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -122,6 +134,16 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画取得
+// @Description 指定された動画の詳細情報を取得します。
+// @Tags        Video
+// @Router      /v1/videos/{videoId} [get]
+// @Security    bearerauth
+// @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.VideoResponse
+// @Failure     403 {object} util.ErrorResponse "動画の参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) GetVideo(ctx *gin.Context) {
 	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 	if err != nil {
@@ -161,6 +183,16 @@ func (h *handler) GetVideo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画登録
+// @Description 新しい動画を登録します。
+// @Tags        Video
+// @Router      /v1/videos [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateVideoRequest true "動画情報"
+// @Produce     json
+// @Success     200 {object} response.VideoResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateVideo(ctx *gin.Context) {
 	req := &request.CreateVideoRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -238,6 +270,19 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画更新
+// @Description 動画の情報を更新します。
+// @Tags        Video
+// @Router      /v1/videos/{videoId} [patch]
+// @Security    bearerauth
+// @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateVideoRequest true "動画情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "動画の更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) UpdateVideo(ctx *gin.Context) {
 	req := &request.UpdateVideoRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -293,6 +338,19 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     動画分析情報取得
+// @Description 指定された動画の視聴者分析データを取得します。集計期間と集計間隔を指定できます。
+// @Tags        Video
+// @Router      /v1/videos/{videoId}/analytics [get]
+// @Security    bearerauth
+// @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       start query integer false "集計開始日時 (unixtime,未指定の場合は動画公開時間)" example("1640962800")
+// @Param       end query integer false "集計終了日時 (unixtime,未指定の場合は現在時刻)" example("1640962800")
+// @Param       viewerLogInterval query string false "集計間隔 (未指定の場合は1分間隔)" example("minute")
+// @Produce     json
+// @Success     200 {object} response.AnalyzeVideoResponse
+// @Failure     403 {object} util.ErrorResponse "動画の参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) AnalyzeVideo(ctx *gin.Context) {
 	const defaultViewerLogInterval = service.VideoViewerLogIntervalMinute
 
@@ -336,6 +394,16 @@ func (h *handler) AnalyzeVideo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     動画削除
+// @Description 動画を削除します。
+// @Tags        Video
+// @Router      /v1/videos/{videoId} [delete]
+// @Security    bearerauth
+// @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "動画の削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) DeleteVideo(ctx *gin.Context) {
 	in := &media.DeleteVideoInput{
 		VideoID: util.GetParam(ctx, "videoId"),

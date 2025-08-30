@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Experience
+// @tag.description 体験関連
 func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/experiences", h.authentication)
 
@@ -51,6 +53,17 @@ func (h *handler) filterAccessExperience(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     体験一覧取得
+// @Description 体験の一覧を取得します。店舗、生産者、名前でのフィルタリングが可能です。
+// @Tags        Experience
+// @Router      /v1/experiences [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       name query string false "体験名(あいまい検索)" example("農業体験")
+// @Param       producerId query string false "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ExperiencesResponse
 func (h *handler) ListExperiences(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -126,6 +139,16 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験取得
+// @Description 指定された体験の詳細情報を取得します。
+// @Tags        Experience
+// @Router      /v1/experiences/{experienceId} [get]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.ExperienceResponse
+// @Failure     403 {object} util.ErrorResponse "体験の参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) GetExperience(ctx *gin.Context) {
 	experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
 	if err != nil {
@@ -165,6 +188,17 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験登録
+// @Description 新しい体験を登録します。コーディネーターは管理店舗の生産者の体験のみ登録可能です。
+// @Tags        Experience
+// @Router      /v1/experiences [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreateExperienceRequest true "体験情報"
+// @Produce     json
+// @Success     200 {object} response.ExperienceResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "体験の登録権限がない"
 func (h *handler) CreateExperience(ctx *gin.Context) {
 	req := &request.CreateExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -271,6 +305,19 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     体験更新
+// @Description 体験の情報を更新します。
+// @Tags        Experience
+// @Router      /v1/experiences/{experienceId} [patch]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateExperienceRequest true "体験情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "体験の更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) UpdateExperience(ctx *gin.Context) {
 	req := &request.UpdateExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -340,6 +387,16 @@ func (h *handler) newExperiencePoints(points ...string) []string {
 	return res
 }
 
+// @Summary     体験削除
+// @Description 体験を削除します。
+// @Tags        Experience
+// @Router      /v1/experiences/{experienceId} [delete]
+// @Security    bearerauth
+// @Param       experienceId path string true "体験ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "体験の削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) DeleteExperience(ctx *gin.Context) {
 	in := &store.DeleteExperienceInput{
 		ExperienceID: util.GetParam(ctx, "experienceId"),

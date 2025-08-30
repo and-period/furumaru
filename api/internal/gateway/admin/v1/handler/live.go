@@ -18,6 +18,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Live
+// @tag.description ライブ配信関連
 func (h *handler) liveRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/lives", h.authentication, h.filterAccessSchedule)
 
@@ -49,6 +51,14 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     ライブ配信一覧取得
+// @Description 指定されたスケジュールのライブ配信一覧を取得します。
+// @Tags        Live
+// @Router      /v1/schedules/{scheduleId}/lives [get]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.LivesResponse
 func (h *handler) ListLives(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	in := &store.ListLivesInput{
@@ -86,6 +96,17 @@ func (h *handler) ListLives(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ライブ配信取得
+// @Description 指定されたライブ配信の詳細情報を取得します。
+// @Tags        Live
+// @Router      /v1/schedules/{scheduleId}/lives/{liveId} [get]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       liveId path string true "ライブ配信ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.LiveResponse
+// @Failure     403 {object} util.ErrorResponse "ライブ配信の参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "ライブ配信が存在しない"
 func (h *handler) GetLive(ctx *gin.Context) {
 	liveID := util.GetParam(ctx, "liveId")
 	live, err := h.getLive(ctx, liveID)
@@ -118,6 +139,17 @@ func (h *handler) GetLive(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ライブ配信登録
+// @Description 新しいライブ配信を登録します。
+// @Tags        Live
+// @Router      /v1/schedules/{scheduleId}/lives [post]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.CreateLiveRequest true "ライブ配信情報"
+// @Produce     json
+// @Success     200 {object} response.LiveResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateLive(ctx *gin.Context) {
 	req := &request.CreateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -185,6 +217,20 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     ライブ配信更新
+// @Description ライブ配信の情報を更新します。
+// @Tags        Live
+// @Router      /v1/schedules/{scheduleId}/lives/{liveId} [patch]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       liveId path string true "ライブ配信ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdateLiveRequest true "ライブ配信情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "ライブ配信の更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "ライブ配信が存在しない"
 func (h *handler) UpdateLive(ctx *gin.Context) {
 	req := &request.UpdateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -216,6 +262,17 @@ func (h *handler) UpdateLive(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     ライブ配信削除
+// @Description ライブ配信を削除します。
+// @Tags        Live
+// @Router      /v1/schedules/{scheduleId}/lives/{liveId} [delete]
+// @Security    bearerauth
+// @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       liveId path string true "ライブ配信ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "ライブ配信の削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "ライブ配信が存在しない"
 func (h *handler) DeleteLive(ctx *gin.Context) {
 	in := &store.DeleteLiveInput{
 		LiveID: util.GetParam(ctx, "liveId"),

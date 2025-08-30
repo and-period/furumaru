@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// @tag.name        Promotion
+// @tag.description プロモーション関連
 func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/promotions", h.authentication)
 
@@ -65,6 +67,19 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 	ctx.Next()
 }
 
+// @Summary     プロモーション一覧取得
+// @Description プロモーションの一覧を取得します。ページネーション、ショップ・タイトルでのフィルタリング、ソート機能に対応しています。
+// @Tags        Promotion
+// @Router      /v1/promotions [get]
+// @Security    bearerauth
+// @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
+// @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
+// @Param       shopId query string false "ショップID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       title query string false "プロモーションタイトル" example("春のセール")
+// @Param       withAllTarget query boolean false "全ショップ対象のプロモーションも含める" default(true) example(true)
+// @Param       orders query string false "ソート順序" example("title:asc,createdAt:desc")
+// @Produce     json
+// @Success     200 {object} response.PromotionsResponse
 func (h *handler) ListPromotions(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -182,6 +197,16 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 	return res, nil
 }
 
+// @Summary     プロモーション取得
+// @Description 指定されたプロモーションの詳細情報を取得します。
+// @Tags        Promotion
+// @Router      /v1/promotions/{promotionId} [get]
+// @Security    bearerauth
+// @Param       promotionId path string true "プロモーションID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     200 {object} response.PromotionResponse
+// @Failure     403 {object} util.ErrorResponse "プロモーションの参照権限がない"
+// @Failure     404 {object} util.ErrorResponse "プロモーションが存在しない"
 func (h *handler) GetPromotion(ctx *gin.Context) {
 	promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "promotionId"))
 	if err != nil {
@@ -206,6 +231,16 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     プロモーション登録
+// @Description 新しいプロモーションを登録します。
+// @Tags        Promotion
+// @Router      /v1/promotions [post]
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.CreatePromotionRequest true "プロモーション情報"
+// @Produce     json
+// @Success     200 {object} response.PromotionResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreatePromotion(ctx *gin.Context) {
 	req := &request.CreatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -249,6 +284,19 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     プロモーション更新
+// @Description プロモーションの情報を更新します。
+// @Tags        Promotion
+// @Router      /v1/promotions/{promotionId} [patch]
+// @Security    bearerauth
+// @Param       promotionId path string true "プロモーションID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Accept      json
+// @Param       request body request.UpdatePromotionRequest true "プロモーション情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "プロモーションの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "プロモーションが存在しない"
 func (h *handler) UpdatePromotion(ctx *gin.Context) {
 	req := &request.UpdatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -277,6 +325,16 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     プロモーション削除
+// @Description プロモーションを削除します。
+// @Tags        Promotion
+// @Router      /v1/promotions/{promotionId} [delete]
+// @Security    bearerauth
+// @Param       promotionId path string true "プロモーションID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "プロモーションの削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "プロモーションが存在しない"
 func (h *handler) DeletePromotion(ctx *gin.Context) {
 	in := &store.DeletePromotionInput{
 		PromotionID: util.GetParam(ctx, "promotionId"),

@@ -22,6 +22,7 @@ docs: ## API仕様書の生成
 docs-all: ## 全サービスのAPI仕様書の生成
 	$(MAKE) docs SERVICE=user/facility
 	$(MAKE) docs SERVICE=user/v1 ADD_COOKIE_AUTH=true
+	$(MAKE) docs SERVICE=admin/v1 ADD_COOKIE_AUTH=true
 
 fmt:
 	go tool golangci-lint fmt -c .golangci.yaml --diff ./pkg/... ./internal/...

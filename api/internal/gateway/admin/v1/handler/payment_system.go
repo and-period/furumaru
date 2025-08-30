@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @tag.name        PaymentSystem
+// @tag.description 決済システム関連
 func (h *handler) paymentSystemRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/payment-systems", h.authentication)
 
@@ -19,6 +21,13 @@ func (h *handler) paymentSystemRoutes(rg *gin.RouterGroup) {
 	r.PATCH("/:methodType", h.UpdatePaymentSystem)
 }
 
+// @Summary     決済システム一覧取得
+// @Description 決済手段毎のシステム状態一覧を取得します。
+// @Tags        PaymentSystem
+// @Router      /v1/payment-systems [get]
+// @Security    bearerauth
+// @Produce     json
+// @Success     200 {object} response.PaymentSystemsResponse
 func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 	methodTypes := []entity.PaymentMethodType{
 		entity.PaymentMethodTypeCreditCard,
@@ -42,6 +51,17 @@ func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     決済システム更新
+// @Description 指定された決済手段のシステム状態を更新します。
+// @Tags        PaymentSystem
+// @Router      /v1/payment-systems/{methodType} [patch]
+// @Security    bearerauth
+// @Param       methodType path integer true "決済手段タイプ" example(1)
+// @Accept      json
+// @Param       request body request.UpdatePaymentSystemRequest true "決済システム情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdatePaymentSystem(ctx *gin.Context) {
 	req := &request.UpdatePaymentSystemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
