@@ -14,11 +14,26 @@ type OIDCVerifier interface {
 	GetEmail(token *oidc.IDToken) (string, error)                                    // IDトークンからメールアドレスの取得
 }
 
-type lineVerifier struct {
+type liffVerifier struct {
 	verifier *oidc.IDTokenVerifier
 }
 
-func NewLineVerifier(ctx context.Context) (OIDCVerifier, error) {
+// LIFFのIDトークンのクレーム
+// @see - https://developers.line.biz/ja/docs/basics/user-profile/#profile-information-types
+type liffClaims struct {
+	Sub         string `json:"sub,omitempty"`          // ユーザーID
+	Name        string `json:"name,omitempty"`         // 表示名
+	Picture     string `json:"picture,omitempty"`      // プロフィール画像
+	Email       string `json:"email,omitempty"`        // メールアドレス
+	GivenName   string `json:"given_name,omitempty"`   // 氏名
+	FamilyName  string `json:"family_name,omitempty"`  // 氏名
+	Gender      string `json:"gender,omitempty"`       // 性別
+	Birthdate   string `json:"birthdate,omitempty"`    // 誕生日
+	Address     string `json:"address,omitempty"`      // 住所
+	PhoneNumber string `json:"phone_number,omitempty"` // 電話番号
+}
+
+func NewLIFFVerifier(ctx context.Context) (OIDCVerifier, error) {
 	const issuer = "https://access.line.me"
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err != nil {
@@ -29,16 +44,16 @@ func NewLineVerifier(ctx context.Context) (OIDCVerifier, error) {
 		SkipExpiryCheck:   false,
 		SkipIssuerCheck:   false,
 	})
-	client := &lineVerifier{
+	client := &liffVerifier{
 		verifier: v,
 	}
 	return client, nil
 }
 
-func (v *lineVerifier) VerifyIDToken(ctx context.Context, idToken, nonce string) (*oidc.IDToken, error) {
+func (v *liffVerifier) VerifyIDToken(ctx context.Context, idToken, nonce string) (*oidc.IDToken, error) {
 	token, err := v.verifier.Verify(ctx, idToken)
 	if err != nil {
-		return nil, fmt.Errorf("verifier: failed to verify line id token: %w", err)
+		return nil, fmt.Errorf("verifier: failed to verify liff id token: %w", err)
 	}
 	slog.DebugContext(ctx, "Verified ID token", slog.Any("token", token))
 	if nonce != "" && nonce != token.Nonce {
@@ -47,7 +62,7 @@ func (v *lineVerifier) VerifyIDToken(ctx context.Context, idToken, nonce string)
 	return token, nil
 }
 
-func (v *lineVerifier) GetEmail(token *oidc.IDToken) (string, error) {
+func (v *liffVerifier) GetEmail(token *oidc.IDToken) (string, error) {
 	claims, err := v.extractClaim(token)
 	if err != nil {
 		return "", err
@@ -56,22 +71,11 @@ func (v *lineVerifier) GetEmail(token *oidc.IDToken) (string, error) {
 	if claims.Email == "" {
 		return "", ErrEmailNotFound
 	}
-	if !claims.EmailVerified {
-		return "", ErrEmailUnverified
-	}
 	return claims.Email, nil
 }
 
-type lineClaims struct {
-	Sub           string `json:"sub,omitempty"`
-	Name          string `json:"name,omitempty"`
-	Picture       string `json:"picture,omitempty"`
-	Email         string `json:"email,omitempty"`
-	EmailVerified bool   `json:"email_verified,omitempty"`
-}
-
-func (v *lineVerifier) extractClaim(token *oidc.IDToken) (*lineClaims, error) {
-	claims := &lineClaims{}
+func (v *liffVerifier) extractClaim(token *oidc.IDToken) (*liffClaims, error) {
+	claims := &liffClaims{}
 	if err := token.Claims(&claims); err != nil {
 		return nil, fmt.Errorf("verifier: failed to decode claims: %w", err)
 	}
