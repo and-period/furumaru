@@ -41,7 +41,7 @@ type handler struct {
 	appName      string
 	env          string
 	sentry       sentry.Client
-	lineVerifier auth.OIDCVerifier
+	liffVerifier auth.OIDCVerifier
 	jwtGenerator auth.JWTGenerator
 	jwtVerifier  auth.JWTVerifier
 	waitGroup    *sync.WaitGroup
@@ -51,7 +51,7 @@ type handler struct {
 
 type Params struct {
 	WaitGroup    *sync.WaitGroup
-	LineVerifier auth.OIDCVerifier
+	LiffVerifier auth.OIDCVerifier
 	JWTGenerator auth.JWTGenerator
 	JWTVerifier  auth.JWTVerifier
 	User         user.Service
@@ -97,7 +97,7 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		appName:      dopts.appName,
 		env:          dopts.env,
 		sentry:       dopts.sentry,
-		lineVerifier: params.LineVerifier,
+		liffVerifier: params.LiffVerifier,
 		jwtGenerator: params.JWTGenerator,
 		jwtVerifier:  params.JWTVerifier,
 		waitGroup:    params.WaitGroup,

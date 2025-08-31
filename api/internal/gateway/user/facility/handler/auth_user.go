@@ -67,12 +67,12 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	token, err := h.lineVerifier.VerifyIDToken(ctx, req.AuthToken, "")
+	token, err := h.liffVerifier.VerifyIDToken(ctx, req.AuthToken, "")
 	if err != nil {
 		h.unauthorized(ctx, err)
 		return
 	}
-	email, err := h.lineVerifier.GetEmail(token)
+	email, err := h.liffVerifier.GetEmail(token)
 	if err != nil {
 		h.httpError(ctx, fmt.Errorf("auth: failed to get email from id token. err=%s: %w", err.Error(), exception.ErrUnprocessableEntity))
 		return
