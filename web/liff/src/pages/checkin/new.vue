@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
+import { FmTextInput } from '@furumaru/shared';
 </script>
 
 <template>

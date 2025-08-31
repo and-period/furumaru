@@ -5,6 +5,7 @@ import { NuxtLink } from '#components';
 import liff from '@line/liff';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
+import { useAuthStore } from '~/stores/auth';
 
 const route = useRoute();
 
@@ -18,6 +19,9 @@ const liffId = runtimeConfig.public.LIFF_ID;
 
 const isLogin = ref<boolean>(false);
 const accessToken = ref<string>('');
+
+const authStore = useAuthStore();
+const router = useRouter();
 
 // Init LIFF when DOM is mounted
 // https://vuejs.org/api/composition-api-lifecycle.html#onmounted
@@ -45,6 +49,23 @@ onMounted(async () => {
     if (liffAccessToken) {
       accessToken.value = liffAccessToken;
       console.log('LIFF access token:', accessToken.value);
+
+      // Call facility auth API then check if user exists
+      try {
+        const res = await authStore.signIn(accessToken.value);
+
+        // If no userId returned, redirect to user registration
+        if (!res?.userId) {
+          const current = router.resolve({ path: route.path, query: route.query }).href;
+          const query: Record<string, string> = { redirect: current };
+          if (facilityId.value) query.facilityId = facilityId.value;
+          await router.push({ path: '/checkin/new', query });
+          return;
+        }
+      }
+      catch (err) {
+        console.error('Auth signIn or redirect failed:', err);
+      }
     }
   }
 });
