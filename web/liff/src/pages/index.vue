@@ -37,7 +37,7 @@ onMounted(async () => {
   }
 
   if (!liff.isLoggedIn()) {
-    // liff.login();
+    liff.login();
   }
   else {
     isLogin.value = true;
