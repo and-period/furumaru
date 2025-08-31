@@ -64,6 +64,9 @@ type app struct {
 	KomojuSecretName             string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
 	GoogleSecretName             string  `default:""               envconfig:"GOOGLE_SECRET_NAME"`
 	GoogleMapsPlatformAPIKey     string  `default:""               envconfig:"GOOGLE_MAPS_PLATFORM_API_KEY"`
+	JWTSecretName                string  `default:""               envconfig:"JWT_SECRET_NAME"`
+	JWTIssuer                    string  `default:""               envconfig:"JWT_ISSUER"`
+	JWTSecret                    string  `default:""               envconfig:"JWT_SECRET"`
 	CheckoutAutoCaptured         bool    `default:"false"          envconfig:"CHECKOUT_AUTO_CAPTURED"`
 	SlackAPIToken                string  `default:""               envconfig:"SLACK_API_TOKEN"`
 	SlackChannelID               string  `default:""               envconfig:"SLACK_CHANNEL_ID"`

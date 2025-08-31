@@ -10,7 +10,7 @@ import (
 // @tag.name        Product
 // @tag.description 商品関連
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/products", h.authentication)
+	r := rg.Group("/products")
 
 	r.GET("", h.ListProducts)
 	r.GET("/:productId", h.GetProduct)
