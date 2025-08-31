@@ -20,11 +20,11 @@ import (
 
 func TestOIDCVerifier(t *testing.T) {
 	t.Parallel()
-	verifier := &lineVerifier{}
+	verifier := &liffVerifier{}
 	assert.NotNil(t, verifier)
 }
 
-func TestNewLineVerifier(t *testing.T) {
+func TestNewLIFFVerifier(t *testing.T) {
 	t.Parallel()
 
 	// Create a mock OIDC provider server
@@ -93,7 +93,7 @@ func TestNewLineVerifier(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			verifier, err := NewLineVerifier(tt.ctx)
+			verifier, err := NewLIFFVerifier(tt.ctx)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, verifier)
@@ -212,8 +212,67 @@ func TestLineVerifierIntegration(t *testing.T) {
 	tokenString, err := token.SignedString(privateKey)
 	require.NoError(t, err)
 
+	// Test with LIFF claims
+	liffClaims := jwt.MapClaims{
+		"iss":    "https://access.line.me",
+		"sub":    "U1234567890abcdef",
+		"aud":    "test-channel-id",
+		"exp":    now.Add(time.Hour).Unix(),
+		"iat":    now.Unix(),
+		"nonce":  "test-nonce",
+		"email":  "test@example.com",
+		"name":   "Test User",
+		"picture": "https://profile.line-scdn.net/test",
+	}
+
+	liffToken := jwt.NewWithClaims(jwt.SigningMethodRS256, liffClaims)
+	liffToken.Header["kid"] = "test-key"
+	liffTokenString, err := liffToken.SignedString(privateKey)
+	require.NoError(t, err)
+
 	// Test token generation was successful
 	assert.NotEmpty(t, tokenString)
+	assert.NotEmpty(t, liffTokenString)
+}
+
+func TestLIFFClaims(t *testing.T) {
+	t.Parallel()
+
+	// Test that liffClaims struct can properly marshal/unmarshal JSON
+	claims := &liffClaims{
+		Sub:         "U1234567890abcdef",
+		Name:        "田中太郎",
+		Picture:     "https://profile.line-scdn.net/xxxxx",
+		Email:       "tanaka@example.com",
+		GivenName:   "太郎",
+		FamilyName:  "田中",
+		Gender:      "male",
+		Birthdate:   "1990-01-01",
+		Address:     "東京都渋谷区",
+		PhoneNumber: "+819012345678",
+	}
+
+	// Marshal to JSON
+	data, err := json.Marshal(claims)
+	require.NoError(t, err)
+	assert.NotEmpty(t, data)
+
+	// Unmarshal back
+	var decoded liffClaims
+	err = json.Unmarshal(data, &decoded)
+	require.NoError(t, err)
+
+	// Verify all fields
+	assert.Equal(t, claims.Sub, decoded.Sub)
+	assert.Equal(t, claims.Name, decoded.Name)
+	assert.Equal(t, claims.Picture, decoded.Picture)
+	assert.Equal(t, claims.Email, decoded.Email)
+	assert.Equal(t, claims.GivenName, decoded.GivenName)
+	assert.Equal(t, claims.FamilyName, decoded.FamilyName)
+	assert.Equal(t, claims.Gender, decoded.Gender)
+	assert.Equal(t, claims.Birthdate, decoded.Birthdate)
+	assert.Equal(t, claims.Address, decoded.Address)
+	assert.Equal(t, claims.PhoneNumber, decoded.PhoneNumber)
 }
 
 func createMockOIDCServer(_ *testing.T, privateKey *rsa.PrivateKey) *httptest.Server {

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
 	facility "github.com/and-period/furumaru/api/internal/gateway/user/facility/handler"
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -61,6 +62,9 @@ type params struct {
 	userWebURL               *url.URL
 	postalCode               postalcode.Client
 	geolocation              geolocation.Client
+	liffVerifier             auth.OIDCVerifier
+	jwtVerifier              auth.JWTVerifier
+	jwtGenerator             auth.JWTGenerator
 	now                      func() time.Time
 	debugMode                bool
 	tidbHost                 string
@@ -74,6 +78,8 @@ type params struct {
 	komojuClientID           string
 	komojuClientPassword     string
 	googleMapsPlatformAPIKey string
+	jwtIssuer                string
+	jwtSecret                string
 }
 
 func (a *app) inject(ctx context.Context) error {
@@ -225,6 +231,35 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	params.userWebURL = userWebURL
 
+	// LIFFの設定
+	liffVerifier, err := auth.NewLIFFVerifier(ctx)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to new liff verifier: %w", err)
+	}
+	params.liffVerifier = liffVerifier
+
+	// JWTの設定
+	jwtVerifierParams := &auth.JWTVerifierParams{
+		Cache:  params.cache,
+		Issuer: params.jwtIssuer,
+		Secret: []byte(params.jwtSecret),
+	}
+	jwtVerifier, err := auth.NewJWTVerifier(jwtVerifierParams)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to new jwt verifier: %w", err)
+	}
+	params.jwtVerifier = jwtVerifier
+	jwtGeneratorParams := &auth.JWTGeneratorParams{
+		Cache:  params.cache,
+		Issuer: params.jwtIssuer,
+		Secret: []byte(params.jwtSecret),
+	}
+	jwtGenerator, err := auth.NewJWTGenerator(jwtGeneratorParams)
+	if err != nil {
+		return fmt.Errorf("cmd: failed to new jwt generator: %w", err)
+	}
+	params.jwtGenerator = jwtGenerator
+
 	// Serviceの設定
 	mediaService, err := a.newMediaService(params)
 	if err != nil {
@@ -253,9 +288,12 @@ func (a *app) inject(ctx context.Context) error {
 		Media:      mediaService,
 	}
 	facilityParams := &facility.Params{
-		WaitGroup: params.waitGroup,
-		User:      userService,
-		Store:     storeService,
+		WaitGroup:    params.waitGroup,
+		LiffVerifier: params.liffVerifier,
+		JWTVerifier:  params.jwtVerifier,
+		JWTGenerator: params.jwtGenerator,
+		User:         userService,
+		Store:        storeService,
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),
@@ -361,6 +399,21 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.googleMapsPlatformAPIKey = secrets["mapsPlatformAPIKey"]
+		return nil
+	})
+	eg.Go(func() error {
+		// JWT認証情報の取得
+		if a.JWTSecretName == "" {
+			p.jwtIssuer = a.JWTIssuer
+			p.jwtSecret = a.JWTSecret
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.JWTSecretName)
+		if err != nil {
+			return err
+		}
+		p.jwtIssuer = secrets["issuer"]
+		p.jwtSecret = secrets["secret"]
 		return nil
 	})
 	return eg.Wait()
