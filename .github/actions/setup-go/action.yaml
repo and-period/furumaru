@@ -48,14 +48,20 @@ runs:
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go mod download
+    env:
+      GOCACHE: /home/runner/.cache/go-build
 
   - name: Install tools
     if: steps.modules-cache.outputs.cache-hit != 'true'
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go get tool
+    env:
+      GOCACHE: /home/runner/.cache/go-build
 
   - name: Generate
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go generate ./...
+    env:
+      GOCACHE: /home/runner/.cache/go-build
