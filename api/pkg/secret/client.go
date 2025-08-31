@@ -41,7 +41,7 @@ func (c *client) Get(ctx context.Context, name string) (map[string]string, error
 	secrets := aws.ToString(out.SecretString)
 	results := make(map[string]interface{})
 	if err := json.Unmarshal([]byte(secrets), &results); err != nil {
-		return nil, err
+		return map[string]string{"": secrets}, nil // 単一の文字列として返す
 	}
 	res := make(map[string]string, len(results))
 	for key, value := range results {

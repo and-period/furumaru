@@ -3,8 +3,6 @@ package auth
 import (
 	"context"
 	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
 	"time"
 
@@ -26,9 +24,9 @@ type JWTGenerator interface {
 }
 
 type JWTGeneratorParams struct {
-	Cache  dynamodb.Client
-	Issuer string
-	Secret []byte
+	Cache      dynamodb.Client
+	Issuer     string
+	PrivateKey []byte
 }
 
 type jwtGenerator struct {
@@ -44,9 +42,9 @@ type jwtGenerator struct {
 
 func NewJWTGenerator(params *JWTGeneratorParams, opts ...Option) (JWTGenerator, error) {
 	dopts := buildOptions(opts...)
-	secret, err := parseRSAPrivateKeyFromPEM(params.Secret)
+	secret, err := parseRSAPrivateKey(params.PrivateKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("auth: failed to parse private key: %w", err)
 	}
 	client := &jwtGenerator{
 		issuer:          params.Issuer,
@@ -141,14 +139,14 @@ type JWTVerifier interface {
 }
 
 type JWTVerifierParams struct {
-	Cache  dynamodb.Client
-	Issuer string
-	Secret []byte
+	Cache      dynamodb.Client
+	Issuer     string
+	PrivateKey []byte
 }
 
 type jwtVerifier struct {
 	issuer        string
-	secret        *rsa.PublicKey
+	secret        *rsa.PrivateKey
 	signingMethod *jwt.SigningMethodRSA
 	cache         dynamodb.Client
 	now           func() time.Time
@@ -156,9 +154,9 @@ type jwtVerifier struct {
 
 func NewJWTVerifier(params *JWTVerifierParams, opts ...Option) (JWTVerifier, error) {
 	dopts := buildOptions(opts...)
-	secret, err := parseRSAPublicKeyFromPEM(params.Secret)
+	secret, err := parseRSAPrivateKey(params.PrivateKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("auth: failed to parse private key: %w", err)
 	}
 	client := &jwtVerifier{
 		issuer:        params.Issuer,
@@ -178,7 +176,7 @@ func (v *jwtVerifier) VerifyAccessToken(accessToken string) (*Claims, error) {
 	)
 	claims := &Claims{}
 	keyFunc := func(token *jwt.Token) (any, error) {
-		return v.secret, nil
+		return &v.secret.PublicKey, nil
 	}
 	token, err := parser.ParseWithClaims(accessToken, claims, keyFunc)
 	if err != nil {
@@ -208,23 +206,4 @@ func (v *jwtVerifier) VerifyRefreshToken(ctx context.Context, refreshToken strin
 		return nil, ErrRefreshTokenExpired
 	}
 	return token, nil
-}
-
-func parseRSAPublicKeyFromPEM(pemBytes []byte) (*rsa.PublicKey, error) {
-	block, _ := pem.Decode(pemBytes)
-	if block == nil {
-		return nil, ErrNoPemBlock
-	}
-
-	if key, err := x509.ParsePKCS1PublicKey(block.Bytes); err == nil {
-		return key, nil
-	}
-	if keyAny, err := x509.ParsePKIXPublicKey(block.Bytes); err == nil {
-		if rsaKey, ok := keyAny.(*rsa.PublicKey); ok {
-			return rsaKey, nil
-		}
-		return nil, ErrNotRSAPrivateKey
-	}
-
-	return nil, ErrNotRSAPrivateKey
 }
