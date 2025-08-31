@@ -6,6 +6,12 @@ import liff from '@line/liff';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
 
+const route = useRoute();
+
+const facilityId = computed<string>(() => {
+  return String(route.query.facilityId || '');
+});
+
 // Import runtime config for env variables
 const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
@@ -94,7 +100,7 @@ const { products, isLoading, error } = storeToRefs(productStore);
             :stock="product.inventory"
             :thumbnail-url="product.thumbnailUrl"
             :link-component="NuxtLink"
-            :link-component-props="{ to: `/items/${product.id}`, class: 'block' }"
+            :link-component-props="{ to: `/items/${product.id}?facilityId=${facilityId}`, class: 'block' }"
           />
         </template>
       </div>

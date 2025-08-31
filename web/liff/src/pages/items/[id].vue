@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { FmProductDetail } from '@furumaru/shared';
 import { useProductStore } from '~/stores/product';
+import { useShoppingCartStore } from '~/stores/shopping';
 
 const route = useRoute();
 
 const productStore = useProductStore();
+const shoppingCartStore = useShoppingCartStore();
 
 // Get product ID from route parameter
 const productId = route.params.id as string;
@@ -22,6 +24,24 @@ const mediaFiles = computed(() => {
     isThumbnail: media.isThumbnail,
   }));
 });
+
+// Add to cart handler
+const isAdding = ref(false);
+
+const addToCart = async () => {
+  if (!product.value) return;
+  if (product.value.inventory === 0) return;
+  try {
+    isAdding.value = true;
+    await shoppingCartStore.addCartItem(product.value.id, 1);
+  }
+  catch (e) {
+    console.error('Failed to add to cart', e);
+  }
+  finally {
+    isAdding.value = false;
+  }
+};
 
 const rating = computed(() => {
   if (!product.value?.rate) return { average: 0, count: 0 };
@@ -42,9 +62,9 @@ if (!product.value) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
+  <div class="min-h-screen bg-white relative mb-[186px] overflow-auto">
     <!-- Navigation header for mobile -->
-    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3">
+    <div class="top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 fixed w-full">
       <div class="flex items-center">
         <button
           class="flex items-center text-gray-600 hover:text-gray-800"
@@ -70,7 +90,7 @@ if (!product.value) {
 
     <!-- Product detail content -->
     <div class="px-4 py-6">
-      <FmProductDetail
+      <fm-product-detail
         v-if="product"
         :media-files="mediaFiles"
         :name="product.name"
@@ -91,7 +111,7 @@ if (!product.value) {
     <!-- Price and purchase section for mobile -->
     <div
       v-if="product"
-      class="sticky bottom-0 bg-white border-t border-gray-200 p-4"
+      class="fixed bottom-[56px] bg-white border-t border-gray-200 p-4 w-full"
     >
       <div class="flex items-center justify-between mb-4">
         <div class="text-2xl font-bold text-gray-900">
@@ -103,22 +123,12 @@ if (!product.value) {
       </div>
 
       <button
-        :disabled="product.inventory === 0"
-        class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
-        @click="() => {}"
+        :disabled="product.inventory === 0 || isAdding"
+        class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+        @click="addToCart"
       >
-        {{ product.inventory > 0 ? 'カートに追加' : '在庫なし' }}
+        {{ product.inventory > 0 ? (isAdding ? '追加中...' : 'カートに追加') : '在庫なし' }}
       </button>
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Mobile-first responsive design for LINE app context */
-@media (max-width: 640px) {
-  .sticky {
-    position: -webkit-sticky;
-    position: sticky;
-  }
-}
-</style>

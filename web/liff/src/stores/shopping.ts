@@ -6,6 +6,7 @@ import type {
   Coordinator,
 } from '~/types/api/models';
 import { CartApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
+import type { RequestAddCartItemRequest } from '@/types/api/facility';
 
 export interface CartItem extends ApiCartItem {
   product?: Product & {
@@ -128,6 +129,45 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       catch (error) {
         console.error('Failed to fetch cart:', error);
         this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
+      }
+    },
+
+    // カートにアイテムを追加
+    async addCartItem(productId: string, quantity: number = 1) {
+      try {
+        const runtimeConfig = useRuntimeConfig();
+        const route = useRoute();
+
+        const facilityId = String(route.query.facilityId || '');
+
+        if (!facilityId) {
+          console.warn('facilityId is not specified in query. Skipping addCartItem.');
+          return;
+        }
+
+        const config = new FacilityConfiguration({
+          basePath: runtimeConfig.public.API_BASE_URL,
+          credentials: 'include',
+        });
+
+        const api = new CartApi(config);
+
+        const payload: RequestAddCartItemRequest = {
+          productId,
+          quantity,
+        };
+
+        await api.facilitiesFacilityIdCartsItemsPost({
+          facilityId,
+          requestAddCartItemRequest: payload,
+        });
+
+        // 追加後にカート情報を更新
+        await this.getCart();
+      }
+      catch (error) {
+        console.error('Failed to add item to cart:', error);
+        throw error;
       }
     },
   },

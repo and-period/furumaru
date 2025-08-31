@@ -2,6 +2,12 @@
 import { storeToRefs } from 'pinia';
 import { useShoppingCartStore } from '~/stores/shopping';
 
+const route = useRoute();
+
+const facilityId = computed<string>(() => {
+  return String(route.query.facilityId || '');
+});
+
 const isExpand = ref<boolean>(false);
 
 // ショッピングカートストアを使用
@@ -26,6 +32,12 @@ const formatPrice = (price: number) => {
 <template>
   <div>
     <div class="mb-14">
+      <div v-if="!facilityId">
+        <p class="text-center m-4 border border-yellow-800 text-yellow-800 rounded-lg bg-yellow-50 p-2">
+          施設が選択されていません
+        </p>
+      </div>
+
       <slot />
     </div>
     <div
