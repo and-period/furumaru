@@ -99,6 +99,16 @@ components:
           type: array
           uniqueItems: false
       type: object
+    Category:
+      description: 商品種別情報
+      properties:
+        id:
+          description: 商品種別ID
+          type: string
+        name:
+          description: 商品種別名
+          type: string
+      type: object
     CheckoutResponse:
       properties:
         url:
@@ -308,7 +318,45 @@ components:
           description: 合計数
           type: integer
       type: object
+    Producer:
+      description: 生産者情報
+      properties:
+        city:
+          description: 市区町村
+          type: string
+        coordinatorId:
+          description: 担当コーディネータID
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        id:
+          description: 生産者ID
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          type: string
+        prefecture:
+          description: 都道府県
+          type: string
+        profile:
+          description: 紹介文
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 生産者名
+          type: string
+      type: object
     Product:
+      description: 商品情報
       properties:
         box60Rate:
           description: 箱の占有率(サイズ:60)
@@ -429,6 +477,92 @@ components:
             type: integer
           description: 評価詳細
           type: object
+      type: object
+    ProductResponse:
+      properties:
+        category:
+          $ref: '#/components/schemas/Category'
+        coordinator:
+          $ref: '#/components/schemas/Coordinator'
+        producer:
+          $ref: '#/components/schemas/Producer'
+        product:
+          $ref: '#/components/schemas/Product'
+        productTags:
+          description: 商品タグ一覧
+          items:
+            $ref: '#/components/schemas/ProductTag'
+          type: array
+          uniqueItems: false
+        productType:
+          $ref: '#/components/schemas/ProductType'
+      type: object
+    ProductTag:
+      properties:
+        id:
+          description: 商品タグID
+          type: string
+        name:
+          description: 商品タグ名
+          type: string
+      type: object
+    ProductType:
+      description: 品目情報
+      properties:
+        categoryId:
+          description: 商品種別ID
+          type: string
+        iconUrl:
+          description: アイコンURL
+          type: string
+        id:
+          description: 品目ID
+          type: string
+        name:
+          description: 品目名
+          type: string
+      type: object
+    ProductsResponse:
+      properties:
+        categories:
+          description: 商品種別一覧
+          items:
+            $ref: '#/components/schemas/Category'
+          type: array
+          uniqueItems: false
+        coordinators:
+          description: コーディネータ一覧
+          items:
+            $ref: '#/components/schemas/Coordinator'
+          type: array
+          uniqueItems: false
+        producers:
+          description: 生産者一覧
+          items:
+            $ref: '#/components/schemas/Producer'
+          type: array
+          uniqueItems: false
+        productTags:
+          description: 商品タグ一覧
+          items:
+            $ref: '#/components/schemas/ProductTag'
+          type: array
+          uniqueItems: false
+        productTypes:
+          description: 品目一覧
+          items:
+            $ref: '#/components/schemas/ProductType'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+          uniqueItems: false
+        total:
+          description: 商品合計数
+          type: integer
       type: object
     Promotion:
       description: プロモーション情報
@@ -572,6 +706,13 @@ components:
     time.Weekday:
       type: integer
       x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
       - Sunday
       - Monday
       - Tuesday
@@ -947,6 +1088,76 @@ paths:
       summary: 注文詳細取得
       tags:
       - Order
+  /facilities/{facilityId}/products:
+    get:
+      description: 商品の一覧を取得します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
+      - description: 取得件数
+        in: query
+        name: limit
+        schema:
+          default: 20
+          type: integer
+      - description: 取得開始位置
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+      summary: 商品一覧取得
+      tags:
+      - Product
+  /facilities/{facilityId}/products/{productId}:
+    get:
+      description: 商品の詳細を取得します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
+      - description: 商品ID
+        in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 商品が見つからない
+      summary: 商品詳細取得
+      tags:
+      - Product
   /facilities/{facilityId}/users:
     post:
       description: ユーザーの詳細情報を登録します。
