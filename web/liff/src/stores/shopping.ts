@@ -5,6 +5,7 @@ import type {
   Product,
   Coordinator,
 } from '~/types/api/models';
+import { CartApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
 
 export interface CartItem extends ApiCartItem {
   product?: Product & {
@@ -96,87 +97,38 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
   },
 
   actions: {
-    // カート情報を取得（モックデータで実装）
+    // カート情報を取得（実API呼び出し）
     async getCart() {
-      // TODO: 実際のAPI呼び出しに置き換える
-      // 現在はモックデータを使用
-      this._shoppingCart = {
-        carts: [
-          {
-            number: 1,
-            type: 1,
-            size: 1,
-            coordinatorId: 'coordinator-1',
-            items: [
-              {
-                productId: 'vNpfY5NoPfa9iVcyAgS8qU',
-                quantity: 2,
-              },
-            ],
-            rate: 0.5,
-          },
-        ],
-        coordinators: [
-          {
-            id: 'coordinator-1',
-            marcheName: '田中マルシェ',
-            username: '田中農園',
-            profile: 'こだわりの野菜を作っています',
-            productTypeIds: ['type-1'],
-            businessDays: [1, 2, 3, 4, 5], // Monday to Friday
-            thumbnailUrl: 'https://example.com/coordinator.jpg',
-            headerUrl: '',
-            promotionVideoUrl: '',
-            instagramId: '',
-            facebookId: '',
-            prefecture: '広島県',
-            city: '東広島市',
-          },
-        ],
-        products: [
-          {
-            id: 'vNpfY5NoPfa9iVcyAgS8qU',
-            coordinatorId: 'coordinator-1',
-            producerId: 'producer-1',
-            categoryId: 'category-1',
-            productTypeId: 'type-1',
-            productTagIds: [],
-            name: '【瀬戸内の名産】赤土じゃがいも5キロ(40〜50個)',
-            description: '瀬戸内海を臨む安芸津町の赤土じゃがいも',
-            status: 2, // FOR_SALE
-            inventory: 93,
-            weight: 5,
-            itemUnit: '個',
-            itemDescription: '5キロ',
-            thumbnailUrl: 'https://assets.furumaru.and-period.co.jp/products/media/image/tic8TSBKJGWqGbdpi3h5z7.jpg',
-            media: [
-              {
-                url: 'https://assets.furumaru.and-period.co.jp/products/media/image/tic8TSBKJGWqGbdpi3h5z7.jpg',
-                isThumbnail: true,
-              },
-            ],
-            price: 2700,
-            expirationDate: 30,
-            recommendedPoint1: '地元の名産・安芸津の赤土じゃがいも',
-            recommendedPoint2: 'ホクホク＆しっとりで甘い',
-            recommendedPoint3: '煮くずれしにくく調理しやすい',
-            storageMethodType: 1, // NORMAL
-            deliveryType: 1, // NORMAL
-            box60Rate: 50,
-            box80Rate: 40,
-            box100Rate: 30,
-            originPrefecture: '広島県',
-            originCity: '東広島市',
-            rate: {
-              count: 0,
-              average: 0,
-              detail: {},
-            },
-            startAt: Math.floor(Date.now() / 1000),
-            endAt: Math.floor((Date.now() + 86400000 * 30) / 1000),
-          },
-        ],
-      };
+      try {
+        const runtimeConfig = useRuntimeConfig();
+        const route = useRoute();
+
+        const facilityId = String(route.query.facilityId || '');
+
+        if (!facilityId) {
+          console.warn('facilityId is not specified in query. Skipping cart fetch.');
+          this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
+          return;
+        }
+
+        const config = new FacilityConfiguration({
+          basePath: runtimeConfig.public.API_BASE_URL,
+          credentials: 'include',
+        });
+
+        const api = new CartApi(config);
+        const res = await api.facilitiesFacilityIdCartsGet({ facilityId });
+
+        this._shoppingCart = {
+          carts: res.carts ?? [],
+          coordinators: res.coordinators ?? [],
+          products: res.products ?? [],
+        } as CartResponse;
+      }
+      catch (error) {
+        console.error('Failed to fetch cart:', error);
+        this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
+      }
     },
   },
 });
