@@ -118,6 +118,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	g := rg.Group("/facilities/:facilityId", h.prerequest)
 	// 公開エンドポイント
 	h.authRoutes(g)
+	h.productRoutes(g)
 	// 要認証エンドポイント
 	h.authUserRoutes(g)
 	h.cartRoutes(g)

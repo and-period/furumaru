@@ -46,3 +46,22 @@ type ProductRate struct {
 	Count   int64           `json:"count"`   // 合計評価数
 	Detail  map[int64]int64 `json:"detail"`  // 評価詳細
 }
+
+type ProductResponse struct {
+	Product     *Product      `json:"product"`     // 商品情報
+	Coordinator *Coordinator  `json:"coordinator"` // コーディネータ情報
+	Producer    *Producer     `json:"producer"`    // 生産者情報
+	Category    *Category     `json:"category"`    // 商品種別情報
+	ProductType *ProductType  `json:"productType"` // 品目情報
+	ProductTags []*ProductTag `json:"productTags"` // 商品タグ一覧
+}
+
+type ProductsResponse struct {
+	Products     []*Product     `json:"products"`     // 商品一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	Producers    []*Producer    `json:"producers"`    // 生産者一覧
+	Categories   []*Category    `json:"categories"`   // 商品種別一覧
+	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
+	ProductTags  []*ProductTag  `json:"productTags"`  // 商品タグ一覧
+	Total        int64          `json:"total"`        // 商品合計数
+}
