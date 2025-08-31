@@ -11,7 +11,7 @@ const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
 
 const isLogin = ref<boolean>(false);
-const accessToken = ref<string>('');
+const idToken = ref<string>('');
 
 // Init LIFF when DOM is mounted
 // https://vuejs.org/api/composition-api-lifecycle.html#onmounted
@@ -35,10 +35,10 @@ onMounted(async () => {
   }
   else {
     isLogin.value = true;
-    const liffAccessToken = liff.getAccessToken();
-    if (liffAccessToken) {
-      accessToken.value = liffAccessToken;
-      console.log('LIFF access token:', accessToken.value);
+    const liffIDToken = liff.getIDToken();
+    if (liffIDToken) {
+      idToken.value = liffIDToken;
+      console.log('LIFF ID token:', idToken.value);
     }
   }
 });
@@ -59,7 +59,7 @@ const { products, isLoading, error } = storeToRefs(productStore);
     </h2>
     <div class="text-center">
       {{ isLogin ? 'ログイン済み' : '未ログイン' }} /
-      {{ accessToken || 'アクセストークンの取得に失敗しました' }}
+      {{ idToken || 'IDトークンの取得に失敗しました' }}
     </div>
 
     <!-- Loading state -->
