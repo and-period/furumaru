@@ -35,10 +35,10 @@ onMounted(async () => {
   }
   else {
     isLogin.value = true;
-    const liffAccessToken = liff.getAccessToken();
-    if (liffAccessToken) {
-      accessToken.value = liffAccessToken;
-      console.log('LIFF access token:', accessToken.value);
+    const liffIDToken = liff.getIDToken();
+    if (liffIDToken) {
+      accessToken.value = liffIDToken;
+      console.log('LIFF ID token:', accessToken.value);
     }
   }
 });
