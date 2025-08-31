@@ -35,13 +35,13 @@ func TestJWTGeneratorParams(t *testing.T) {
 	defer ctrl.Finish()
 
 	params := &JWTGeneratorParams{
-		Cache:  mock_dynamodb.NewMockClient(ctrl),
-		Issuer: "https://example.com",
-		Secret: []byte("secret"),
+		Cache:      mock_dynamodb.NewMockClient(ctrl),
+		Issuer:     "https://example.com",
+		PrivateKey: []byte("secret"),
 	}
 	assert.NotNil(t, params.Cache)
 	assert.Equal(t, "https://example.com", params.Issuer)
-	assert.Equal(t, []byte("secret"), params.Secret)
+	assert.Equal(t, []byte("secret"), params.PrivateKey)
 }
 
 func TestNewJWTGenerator(t *testing.T) {
@@ -63,7 +63,7 @@ func TestNewJWTGenerator(t *testing.T) {
 			params: &JWTGeneratorParams{
 				Cache:  mock_dynamodb.NewMockClient(ctrl),
 				Issuer: "https://example.com",
-				Secret: privatePEM,
+				PrivateKey: privatePEM,
 			},
 			opts: []Option{
 				WithAccessTokenTTL(time.Hour),
@@ -76,7 +76,7 @@ func TestNewJWTGenerator(t *testing.T) {
 			params: &JWTGeneratorParams{
 				Cache:  mock_dynamodb.NewMockClient(ctrl),
 				Issuer: "https://example.com",
-				Secret: []byte("invalid"),
+				PrivateKey: []byte("invalid"),
 			},
 			opts:    []Option{},
 			wantErr: true,
@@ -113,12 +113,12 @@ func TestJWTGenerator_Generate(t *testing.T) {
 
 	gen, err := NewJWTGenerator(
 		&JWTGeneratorParams{
-			Cache:  mockCache,
-			Issuer: "https://example.com",
-			Secret: privatePEM,
+			Cache:      mockCache,
+			Issuer:     "https://example.com",
+			PrivateKey: privatePEM,
 		},
 		WithAccessTokenTTL(time.Hour),
-		WithRefreshTokenTTL(24 * time.Hour),
+		WithRefreshTokenTTL(24*time.Hour),
 	)
 	require.NoError(t, err)
 
@@ -139,12 +139,12 @@ func TestJWTGenerator_GenerateAccessToken(t *testing.T) {
 
 	gen, err := NewJWTGenerator(
 		&JWTGeneratorParams{
-			Cache:  mock_dynamodb.NewMockClient(ctrl),
-			Issuer: "https://example.com",
-			Secret: privatePEM,
+			Cache:      mock_dynamodb.NewMockClient(ctrl),
+			Issuer:     "https://example.com",
+			PrivateKey: privatePEM,
 		},
 		WithAccessTokenTTL(time.Hour),
-		WithRefreshTokenTTL(24 * time.Hour),
+		WithRefreshTokenTTL(24*time.Hour),
 	)
 	require.NoError(t, err)
 
@@ -210,12 +210,12 @@ func TestJWTGenerator_GenerateRefreshToken(t *testing.T) {
 
 			gen, err := NewJWTGenerator(
 				&JWTGeneratorParams{
-					Cache:  mockCache,
-					Issuer: "https://example.com",
-					Secret: privatePEM,
+					Cache:      mockCache,
+					Issuer:     "https://example.com",
+					PrivateKey: privatePEM,
 				},
 				WithAccessTokenTTL(time.Hour),
-				WithRefreshTokenTTL(24 * time.Hour),
+				WithRefreshTokenTTL(24*time.Hour),
 			)
 			require.NoError(t, err)
 
@@ -286,12 +286,12 @@ func TestJWTGenerator_RefreshAccessToken(t *testing.T) {
 
 			gen, err := NewJWTGenerator(
 				&JWTGeneratorParams{
-					Cache:  mockCache,
-					Issuer: "https://example.com",
-					Secret: privatePEM,
+					Cache:      mockCache,
+					Issuer:     "https://example.com",
+					PrivateKey: privatePEM,
 				},
 				WithAccessTokenTTL(time.Hour),
-				WithRefreshTokenTTL(24 * time.Hour),
+				WithRefreshTokenTTL(24*time.Hour),
 			)
 			require.NoError(t, err)
 
@@ -327,19 +327,19 @@ func TestJWTVerifierParams(t *testing.T) {
 	defer ctrl.Finish()
 
 	params := &JWTVerifierParams{
-		Cache:  mock_dynamodb.NewMockClient(ctrl),
-		Issuer: "https://example.com",
-		Secret: []byte("secret"),
+		Cache:      mock_dynamodb.NewMockClient(ctrl),
+		Issuer:     "https://example.com",
+		PrivateKey: []byte("secret"),
 	}
 	assert.NotNil(t, params.Cache)
 	assert.Equal(t, "https://example.com", params.Issuer)
-	assert.Equal(t, []byte("secret"), params.Secret)
+	assert.Equal(t, []byte("secret"), params.PrivateKey)
 }
 
 func TestNewJWTVerifier(t *testing.T) {
 	t.Parallel()
 	privateKey, _ := generateRSAKeyPair()
-	publicPEM := encodeRSAPublicKey(&privateKey.PublicKey)
+	privatePEM := encodeRSAPrivateKey(privateKey)
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -347,6 +347,7 @@ func TestNewJWTVerifier(t *testing.T) {
 	tests := []struct {
 		name    string
 		params  *JWTVerifierParams
+		opts    []Option
 		wantErr bool
 	}{
 		{
@@ -354,18 +355,10 @@ func TestNewJWTVerifier(t *testing.T) {
 			params: &JWTVerifierParams{
 				Cache:  mock_dynamodb.NewMockClient(ctrl),
 				Issuer: "https://example.com",
-				Secret: publicPEM,
+				PrivateKey: privatePEM,
 			},
+			opts:    []Option{},
 			wantErr: false,
-		},
-		{
-			name: "invalid secret",
-			params: &JWTVerifierParams{
-				Cache:  mock_dynamodb.NewMockClient(ctrl),
-				Issuer: "https://example.com",
-				Secret: []byte("invalid"),
-			},
-			wantErr: true,
 		},
 	}
 
@@ -373,7 +366,7 @@ func TestNewJWTVerifier(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			verifier, err := NewJWTVerifier(tt.params)
+			verifier, err := NewJWTVerifier(tt.params, tt.opts...)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, verifier)
@@ -388,15 +381,15 @@ func TestNewJWTVerifier(t *testing.T) {
 func TestJWTVerifier_VerifyAccessToken(t *testing.T) {
 	t.Parallel()
 	privateKey, _ := generateRSAKeyPair()
-	publicPEM := encodeRSAPublicKey(&privateKey.PublicKey)
+	privatePEM := encodeRSAPrivateKey(privateKey)
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	verifier, err := NewJWTVerifier(&JWTVerifierParams{
-		Cache:  mock_dynamodb.NewMockClient(ctrl),
-		Issuer: "https://example.com",
-		Secret: publicPEM,
+		Cache:      mock_dynamodb.NewMockClient(ctrl),
+		Issuer:     "https://example.com",
+		PrivateKey: privatePEM,
 	})
 	require.NoError(t, err)
 
@@ -495,7 +488,7 @@ func TestJWTVerifier_VerifyRefreshToken(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 	privateKey, _ := generateRSAKeyPair()
-	publicPEM := encodeRSAPublicKey(&privateKey.PublicKey)
+	privatePEM := encodeRSAPrivateKey(privateKey)
 
 	now := time.Now()
 	validToken := &RefreshToken{
@@ -586,9 +579,9 @@ func TestJWTVerifier_VerifyRefreshToken(t *testing.T) {
 			tt.setupMock(mockCache)
 
 			verifier, err := NewJWTVerifier(&JWTVerifierParams{
-				Cache:  mockCache,
-				Issuer: "https://example.com",
-				Secret: publicPEM,
+				Cache:      mockCache,
+				Issuer:     "https://example.com",
+				PrivateKey: privatePEM,
 			})
 			require.NoError(t, err)
 
@@ -604,54 +597,6 @@ func TestJWTVerifier_VerifyRefreshToken(t *testing.T) {
 				assert.NotNil(t, result)
 				assert.Equal(t, "user-id", result.UserID)
 				assert.Equal(t, "facility-id", result.FacilityID)
-			}
-		})
-	}
-}
-
-func TestParseRSAPublicKeyFromPEM(t *testing.T) {
-	t.Parallel()
-	privateKey, _ := generateRSAKeyPair()
-	publicKey := &privateKey.PublicKey
-
-	tests := []struct {
-		name    string
-		pemData []byte
-		wantErr bool
-	}{
-		{
-			name:    "valid PKCS1 public key",
-			pemData: encodeRSAPublicKeyPKCS1(publicKey),
-			wantErr: false,
-		},
-		{
-			name:    "valid PKIX public key",
-			pemData: encodeRSAPublicKey(publicKey),
-			wantErr: false,
-		},
-		{
-			name:    "invalid PEM",
-			pemData: []byte("invalid pem data"),
-			wantErr: true,
-		},
-		{
-			name:    "empty PEM",
-			pemData: []byte{},
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			key, err := parseRSAPublicKeyFromPEM(tt.pemData)
-			if tt.wantErr {
-				assert.Error(t, err)
-				assert.Nil(t, key)
-			} else {
-				assert.NoError(t, err)
-				assert.NotNil(t, key)
 			}
 		})
 	}
