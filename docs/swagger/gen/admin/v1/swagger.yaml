@@ -1284,20 +1284,6 @@ components:
                             - Thursday
                             - Friday
                             - Saturday
-                            - Sunday
-                            - Monday
-                            - Tuesday
-                            - Wednesday
-                            - Thursday
-                            - Friday
-                            - Saturday
-                            - Sunday
-                            - Monday
-                            - Tuesday
-                            - Wednesday
-                            - Thursday
-                            - Friday
-                            - Saturday
                     type: array
                     uniqueItems: false
                 name:
@@ -4133,20 +4119,6 @@ components:
         time.Weekday:
             type: integer
             x-enum-varnames:
-                - Sunday
-                - Monday
-                - Tuesday
-                - Wednesday
-                - Thursday
-                - Friday
-                - Saturday
-                - Sunday
-                - Monday
-                - Tuesday
-                - Wednesday
-                - Thursday
-                - Friday
-                - Saturday
                 - Sunday
                 - Monday
                 - Tuesday
