@@ -141,7 +141,7 @@ func hashRefreshToken(raw string) (string, error) {
 func compareRefreshToken(hashed string, raw string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashed), []byte(raw))
 }
-4%3
+
 // $ openssl genrsa 2048
 func parseRSAPrivateKey(pemStr []byte) (*rsa.PrivateKey, error) {
 	convertedPem, err := convertPemFromString(pemStr)
