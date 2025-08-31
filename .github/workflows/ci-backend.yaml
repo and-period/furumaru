@@ -83,7 +83,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     env:
-      GOCACHE: /tmp/go-build-cache
+      GOCACHE: ~/.cache/go-build
       GOFLAGS: -buildvcs=false
 
     steps:
@@ -116,7 +116,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     env:
-      GOCACHE: /tmp/go-test-cache
+      GOCACHE: ~/.cache/go-build
       GOFLAGS: -buildvcs=false
 
     steps:
@@ -141,8 +141,8 @@ jobs:
 
     - name: Test with cache
       run: |
-        # テストキャッシュディレクトリを作成
-        mkdir -p /tmp/go-test-cache
+        # GOCACHEディレクトリを確認
+        echo "GOCACHE=$GOCACHE"
         # テストを実行（キャッシュが利用可能な場合は自動的に使用される）
         make test
 

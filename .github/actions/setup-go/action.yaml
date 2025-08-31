@@ -36,7 +36,6 @@ runs:
     with:
       path: |
         ~/.cache/go-build
-        /tmp/go-test-cache
       key: ${{ inputs.service }}-${{ runner.os }}-go-test-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/*.go') }}
       restore-keys: |
         ${{ inputs.service }}-${{ runner.os }}-go-test-${{ hashFiles('**/go.sum') }}-
