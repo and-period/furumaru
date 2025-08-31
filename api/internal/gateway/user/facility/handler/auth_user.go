@@ -21,7 +21,7 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 
 	r.POST("", h.CreateAuthUser)
 	r.GET("/me", h.authentication, h.GetAuthUser)
-	r.PUT("/check-in", h.authentication, h.UpdateAuthUserCheckIn)
+	r.PUT("/me", h.authentication, h.UpdateAuthUser)
 }
 
 // @Summary     ユーザー情報取得
@@ -101,20 +101,19 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 }
 
 // @Summary     ユーザー情報更新
-// @Description ユーザーの最新のチェックイン日時を更新します。
+// @Description ユーザーの詳細情報を更新します。
 // @Tags        AuthUser
-// @Router      /facilities/{facilityId}/users/me/check-in [put]
+// @Router      /facilities/{facilityId}/users/me [put]
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateAuthUserCheckInRequest true "最新のチェックイン情報"
+// @Param       request body request.UpdateAuthUserRequest true "ユーザー情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
-// @Failure     412 {object} util.ErrorResponse "更新日時が不正"
-func (h *handler) UpdateAuthUserCheckIn(ctx *gin.Context) {
-	req := &request.UpdateAuthUserCheckInRequest{}
+func (h *handler) UpdateAuthUser(ctx *gin.Context) {
+	req := &request.UpdateAuthUserRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -696,16 +696,48 @@ components:
       required:
       - authToken
       type: object
-    request.UpdateAuthUserCheckInRequest:
+    request.UpdateAuthUserRequest:
       properties:
+        firstname:
+          description: 名
+          maxLength: 16
+          type: string
+        firstnameKana:
+          description: 名 かな
+          maxLength: 32
+          type: string
         lastCheckInAt:
           description: 最新のチェックイン日時
           minimum: 0
           type: integer
+        lastname:
+          description: 姓
+          maxLength: 16
+          type: string
+        lastnameKana:
+          description: 姓 かな
+          maxLength: 32
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+      required:
+      - firstname
+      - firstnameKana
+      - lastname
+      - lastnameKana
+      - phoneNumber
       type: object
     time.Weekday:
       type: integer
       x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
       - Sunday
       - Monday
       - Tuesday
@@ -1237,9 +1269,8 @@ paths:
       summary: ユーザー情報取得
       tags:
       - AuthUser
-  /facilities/{facilityId}/users/me/check-in:
     put:
-      description: ユーザーの最新のチェックイン日時を更新します。
+      description: ユーザーの詳細情報を更新します。
       parameters:
       - description: 施設ID
         in: path
@@ -1251,8 +1282,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/request.UpdateAuthUserCheckInRequest'
-        description: 最新のチェックイン情報
+              $ref: '#/components/schemas/request.UpdateAuthUserRequest'
+        description: ユーザー情報
         required: true
       responses:
         "204":
@@ -1269,12 +1300,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/util.ErrorResponse'
           description: 認証エラー
-        "412":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
-          description: 更新日時が不正
       security:
       - bearerauth: []
       summary: ユーザー情報更新
