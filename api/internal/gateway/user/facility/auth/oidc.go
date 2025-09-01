@@ -9,9 +9,9 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 )
 
-type OIDCVerifier interface {
+type OIDCVerifier[Token any] interface {
 	VerifyIDToken(ctx context.Context, idToken, nonce string) (*oidc.IDToken, error) // IDトークンの検証
-	GetEmail(token *oidc.IDToken) (string, error)                                    // IDトークンからメールアドレスの取得
+	GetClaims(token *oidc.IDToken) (*Token, error)                                   // IDトークンからクレームの取得
 }
 
 type liffVerifier struct {
@@ -33,7 +33,21 @@ type liffClaims struct {
 	PhoneNumber string `json:"phone_number,omitempty"` // 電話番号
 }
 
-func NewLIFFVerifier(ctx context.Context) (OIDCVerifier, error) {
+// LIFFのトークン詳細情報
+type LIFFClaims struct {
+	Iss     string   `json:"iss"`     // 発行者
+	Sub     string   `json:"sub"`     // ユーザーID
+	Aud     string   `json:"aud"`     // クライアントID
+	Exp     int64    `json:"exp"`     // 有効期限
+	Iat     int64    `json:"iat"`     // 発行日時
+	Nonce   string   `json:"nonce"`   // リプレイ攻撃防止用の値
+	Amr     []string `json:"amr"`     // 認証方法
+	Name    string   `json:"name"`    // 表示名
+	Picture string   `json:"picture"` // プロフィール画像URL
+	Email   string   `json:"email"`   // メールアドレス
+}
+
+func NewLIFFVerifier(ctx context.Context) (OIDCVerifier[LIFFClaims], error) {
 	const issuer = "https://access.line.me"
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err != nil {
@@ -62,20 +76,30 @@ func (v *liffVerifier) VerifyIDToken(ctx context.Context, idToken, nonce string)
 	return token, nil
 }
 
+func (v *liffVerifier) GetClaims(token *oidc.IDToken) (*LIFFClaims, error) {
+	claims := &LIFFClaims{}
+	if err := token.Claims(claims); err != nil {
+		return nil, fmt.Errorf("verifier: failed to decode claims: %w", err)
+	}
+	slog.Debug("Extracted claims", slog.Any("claims", claims))
+	return claims, nil
+}
+
 func (v *liffVerifier) GetEmail(token *oidc.IDToken) (string, error) {
 	claims, err := v.extractClaim(token)
 	if err != nil {
 		return "", err
 	}
 	slog.Debug("Extracted claims", slog.Any("claims", claims))
-	if claims.Email == "" {
+	if claims["email"] == "" {
 		return "", ErrEmailNotFound
 	}
-	return claims.Email, nil
+	return claims["email"], nil
 }
 
-func (v *liffVerifier) extractClaim(token *oidc.IDToken) (*liffClaims, error) {
-	claims := &liffClaims{}
+func (v *liffVerifier) extractClaim(token *oidc.IDToken) (map[string]string, error) {
+	// claims := &liffClaims{}
+	claims := make(map[string]string)
 	if err := token.Claims(&claims); err != nil {
 		return nil, fmt.Errorf("verifier: failed to decode claims: %w", err)
 	}

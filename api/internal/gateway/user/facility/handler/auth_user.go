@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
@@ -72,20 +70,20 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	email, err := h.liffVerifier.GetEmail(token)
+	claims, err := h.liffVerifier.GetClaims(token)
 	if err != nil {
-		h.httpError(ctx, fmt.Errorf("auth: failed to get email from id token. err=%s: %w", err.Error(), exception.ErrUnprocessableEntity))
+		h.unauthorized(ctx, err)
 		return
 	}
 	in := &user.CreateFacilityUserInput{
 		ProducerID:    h.getProducerID(ctx),
 		ProviderType:  entity.UserAuthProviderTypeLINE,
-		ProviderID:    token.Subject,
+		ProviderID:    claims.Sub,
 		Lastname:      req.Lastname,
 		Firstname:     req.Firstname,
 		LastnameKana:  req.LastnameKana,
 		FirstnameKana: req.FirstnameKana,
-		Email:         email,
+		Email:         claims.Email,
 		PhoneNumber:   req.PhoneNumber,
 		LastCheckInAt: jst.ParseFromUnix(req.LastCheckInAt),
 	}
@@ -118,6 +116,18 @@ func (h *handler) UpdateAuthUser(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+	in := &user.UpdateFacilityUserInput{
+		UserID:        h.getUserID(ctx),
+		Lastname:      req.Lastname,
+		Firstname:     req.Firstname,
+		LastnameKana:  req.LastnameKana,
+		FirstnameKana: req.FirstnameKana,
+		PhoneNumber:   req.PhoneNumber,
+		LastCheckInAt: jst.ParseFromUnix(req.LastCheckInAt),
+	}
+	if err := h.user.UpdateFacilityUser(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }

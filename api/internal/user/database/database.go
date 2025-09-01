@@ -4,6 +4,7 @@ package database
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -236,6 +237,16 @@ type UpdateCoordinatorParams struct {
 type FacilityUser interface {
 	GetByExternalID(ctx context.Context, providerType entity.UserAuthProviderType, externalID, producerID string, fields ...string) (*entity.FacilityUser, error)
 	Create(ctx context.Context, user *entity.User) error
+	Update(ctx context.Context, userID string, params *UpdateFacilityUserParams) error
+}
+
+type UpdateFacilityUserParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	PhoneNumber   string
+	LastCheckInAt time.Time
 }
 
 type Guest interface {

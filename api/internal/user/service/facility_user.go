@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
@@ -47,4 +48,23 @@ func (s *service) CreateFacilityUser(ctx context.Context, in *user.CreateFacilit
 		return nil, internalError(err)
 	}
 	return user, nil
+}
+
+func (s *service) UpdateFacilityUser(ctx context.Context, in *user.UpdateFacilityUserInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	if s.now().Before(in.LastCheckInAt) {
+		return fmt.Errorf("user: invalid last checkin at: %w", exception.ErrInvalidArgument)
+	}
+	params := &database.UpdateFacilityUserParams{
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
+		PhoneNumber:   in.PhoneNumber,
+		LastCheckInAt: in.LastCheckInAt,
+	}
+	err := s.db.FacilityUser.Update(ctx, in.UserID, params)
+	return internalError(err)
 }

@@ -62,7 +62,7 @@ type params struct {
 	userWebURL               *url.URL
 	postalCode               postalcode.Client
 	geolocation              geolocation.Client
-	liffVerifier             auth.OIDCVerifier
+	liffVerifier             auth.OIDCVerifier[auth.LIFFClaims]
 	jwtVerifier              auth.JWTVerifier
 	jwtGenerator             auth.JWTGenerator
 	now                      func() time.Time

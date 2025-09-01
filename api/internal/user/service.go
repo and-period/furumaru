@@ -61,6 +61,7 @@ type Service interface {
 	// FacilityUser - 施設利用者
 	GetFacilityUser(ctx context.Context, in *GetFacilityUserInput) (*entity.User, error)       // １件取得
 	CreateFacilityUser(ctx context.Context, in *CreateFacilityUserInput) (*entity.User, error) // 登録
+	UpdateFacilityUser(ctx context.Context, in *UpdateFacilityUserInput) error                 // 更新
 	// Guest - ゲスト
 	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error) // ゲスト登録・更新
 	// Member - 会員
