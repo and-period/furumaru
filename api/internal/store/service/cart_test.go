@@ -448,6 +448,33 @@ func TestCalcCart(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with pickup",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.db.Shop.EXPECT().GetByCoordinatorID(ctx, "coordinator-id").Return(shop, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+			},
+			input: &store.CalcCartInput{
+				SessionID:     "session-id",
+				CoordinatorID: "coordinator-id",
+				BoxNumber:     0,
+				PromotionCode: "code1234",
+				Pickup:        true,
+			},
+			expectCart: cart,
+			expectSummary: &entity.OrderPaymentSummary{
+				Subtotal:    1000,
+				Discount:    100,
+				ShippingFee: 0,
+				Tax:         81,
+				TaxRate:     10,
+				Total:       900,
+			},
+			expectErr: nil,
+		},
+		{
 			name:          "invalid argument",
 			setup:         func(ctx context.Context, mocks *mocks) {},
 			input:         &store.CalcCartInput{},

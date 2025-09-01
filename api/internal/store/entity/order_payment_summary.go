@@ -24,6 +24,7 @@ type OrderPaymentSummary struct {
 
 type NewProductOrderPaymentSummaryParams struct {
 	PrefectureCode int32
+	Pickup         bool
 	Baskets        CartBaskets
 	Products       Products
 	Shipping       *Shipping
@@ -52,6 +53,9 @@ func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) 
 	}
 	// 商品配送料金の算出
 	for _, basket := range params.Baskets {
+		if params.Pickup {
+			break // 店頭受取の場合、配送料金は算出しない
+		}
 		if params.PrefectureCode == 0 {
 			break // 配送先都道府県の指定がない場合、配送料金は算出しない
 		}

@@ -197,6 +197,25 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
+	if len(productIDs) == 0 {
+		return service.Products{}, nil
+	}
+	in := &store.MultiGetProductsInput{
+		ProductIDs: productIDs,
+	}
+	products, err := h.store.MultiGetProducts(ctx, in)
+	if err != nil || len(products) == 0 {
+		return service.Products{}, err
+	}
+	products = products.FilterByPublished()
+	details, err := h.getProductDetails(ctx, products.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducts(products, details), nil
+}
+
 func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
 	in := &store.GetProductInput{
 		ProductID: productID,

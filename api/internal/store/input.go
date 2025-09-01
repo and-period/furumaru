@@ -20,6 +20,7 @@ type CalcCartInput struct {
 	BoxNumber      int64  `validate:"min=0"`
 	PromotionCode  string `validate:"omitempty,len=8"`
 	PrefectureCode int32  `validate:"min=0,max=47"`
+	Pickup         bool   `validate:""`
 }
 
 type AddCartItemInput struct {
