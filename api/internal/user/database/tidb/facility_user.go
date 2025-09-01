@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
@@ -52,5 +53,22 @@ func (f *facilityUser) Create(ctx context.Context, user *entity.User) error {
 		user.FacilityUser.CreatedAt, user.FacilityUser.UpdatedAt = now, now
 		return tx.WithContext(ctx).Table(facilityUserTable).Create(&user.FacilityUser).Error
 	})
+	return dbError(err)
+}
+
+func (f *facilityUser) Update(ctx context.Context, userID string, params *database.UpdateFacilityUserParams) error {
+	updates := map[string]interface{}{
+		"lastname":         params.Lastname,
+		"firstname":        params.Firstname,
+		"lastname_kana":    params.LastnameKana,
+		"firstname_kana":   params.FirstnameKana,
+		"phone_number":     params.PhoneNumber,
+		"last_check_in_at": params.LastCheckInAt,
+		"updated_at":       f.now(),
+	}
+	err := f.db.DB.WithContext(ctx).
+		Table(facilityUserTable).
+		Where("user_id = ?", userID).
+		Updates(updates).Error
 	return dbError(err)
 }

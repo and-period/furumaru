@@ -272,3 +272,154 @@ func TestGetFacilityUser(t *testing.T) {
 		}))
 	}
 }
+
+func TestUpdateFacilityUser(t *testing.T) {
+	t.Parallel()
+
+	lastCheckInAt := jst.Date(2025, 8, 27, 12, 0, 0, 0)
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateFacilityUserInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.FacilityUser.EXPECT().Update(ctx, "user-id", gomock.Any()).Return(nil)
+			},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: nil,
+		},
+		{
+			name:  "validation error - missing user id",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - missing lastname",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - missing firstname",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - missing lastname kana",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - missing firstname kana",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - invalid phone number",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "090-1234-5678", // invalid format (not E.164)
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "validation error - invalid last checkin at (future date)",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: jst.Now().Add(time.Hour), // future date
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "database error",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.FacilityUser.EXPECT().Update(ctx, "user-id", gomock.Any()).Return(assert.AnError)
+			},
+			input: &user.UpdateFacilityUserInput{
+				UserID:        "user-id",
+				Lastname:      "田中",
+				Firstname:     "太郎",
+				LastnameKana:  "たなか",
+				FirstnameKana: "たろう",
+				PhoneNumber:   "+819012345678",
+				LastCheckInAt: lastCheckInAt,
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateFacilityUser(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}

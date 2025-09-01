@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -21,7 +20,6 @@ import (
 
 const (
 	userIDKey     = "userId"
-	facilityKey   = "facility"
 	facilityIDKey = "facilityId"
 )
 
@@ -41,7 +39,7 @@ type handler struct {
 	appName      string
 	env          string
 	sentry       sentry.Client
-	liffVerifier auth.OIDCVerifier
+	liffVerifier auth.OIDCVerifier[auth.LIFFClaims]
 	jwtGenerator auth.JWTGenerator
 	jwtVerifier  auth.JWTVerifier
 	waitGroup    *sync.WaitGroup
@@ -51,7 +49,7 @@ type handler struct {
 
 type Params struct {
 	WaitGroup    *sync.WaitGroup
-	LiffVerifier auth.OIDCVerifier
+	LiffVerifier auth.OIDCVerifier[auth.LIFFClaims]
 	JWTGenerator auth.JWTGenerator
 	JWTVerifier  auth.JWTVerifier
 	User         user.Service
@@ -212,7 +210,7 @@ func (h *handler) setFacility(ctx *gin.Context) error {
 	if err != nil {
 		return fmt.Errorf("handler: failed to get producer: %w", err)
 	}
-	ctx.Set(facilityKey, facility)
+	ctx.Request.Header.Set(facilityIDKey, facility.ID)
 	return nil
 }
 
@@ -264,21 +262,5 @@ func (h *handler) getUserID(ctx *gin.Context) string {
 }
 
 func (h *handler) getProducerID(ctx *gin.Context) string {
-	facility, err := h.getFacility(ctx)
-	if err != nil {
-		return ""
-	}
-	return facility.ID
-}
-
-func (h *handler) getFacility(ctx *gin.Context) (*service.Producer, error) {
-	facility, ok := ctx.Get(facilityKey)
-	if !ok {
-		return nil, errNotFoundFacility
-	}
-	producer, ok := facility.(*service.Producer)
-	if !ok {
-		return nil, errNotFoundFacility
-	}
-	return producer, nil
+	return ctx.GetHeader(facilityIDKey)
 }
