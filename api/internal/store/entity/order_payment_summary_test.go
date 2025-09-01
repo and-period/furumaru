@@ -262,6 +262,76 @@ func TestProductOrderPaymentSummary(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with pickup",
+			params: &NewProductOrderPaymentSummaryParams{
+				PrefectureCode: 13,
+				Pickup:         true,
+				Baskets: CartBaskets{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: []*CartItem{
+							{
+								ProductID: "product-id01",
+								Quantity:  1,
+							},
+							{
+								ProductID: "product-id02",
+								Quantity:  2,
+							},
+						},
+						CoordinatorID: "coordinator-id",
+					},
+				},
+				Products: []*Product{
+					{
+						ID:   "product-id01",
+						Name: "じゃがいも",
+						ProductRevision: ProductRevision{
+							ID:        1,
+							ProductID: "product-id01",
+							Price:     500,
+						},
+					},
+					{
+						ID:   "product-id02",
+						Name: "人参",
+						ProductRevision: ProductRevision{
+							ID:        2,
+							ProductID: "product-id02",
+							Price:     1980,
+						},
+					},
+				},
+				Shipping: &Shipping{
+					ID:            "coordinator-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						ShippingID:        "coordinator-id",
+						Box60Rates:        rates,
+						Box60Frozen:       800,
+						Box80Rates:        rates,
+						Box80Frozen:       800,
+						Box100Rates:       rates,
+						Box100Frozen:      800,
+						HasFreeShipping:   true,
+						FreeShippingRates: 3000,
+					},
+				},
+				Promotion: nil,
+			},
+			expect: &OrderPaymentSummary{
+				Subtotal:    4460,
+				Discount:    0,
+				ShippingFee: 0,
+				Tax:         405,
+				TaxRate:     10,
+				Total:       4460,
+			},
+			expectErr: nil,
+		},
+		{
 			name: "failed to calc total price",
 			params: &NewProductOrderPaymentSummaryParams{
 				PrefectureCode: 13,

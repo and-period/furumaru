@@ -86,6 +86,7 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 	}
 	params := &entity.NewProductOrderPaymentSummaryParams{
 		PrefectureCode: in.PrefectureCode,
+		Pickup:         in.Pickup,
 		Baskets:        baskets,
 		Products:       products,
 		Shipping:       shipping,

@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/sentry"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -25,6 +26,7 @@ const (
 
 var (
 	errNotFoundFacility     = errors.New("handler: not found facility")
+	errNotFoundProduct      = errors.New("handler: not found product")
 	errFailedToCastFacility = errors.New("handler: failed to cast facility")
 )
 
@@ -38,6 +40,7 @@ var (
 type handler struct {
 	appName      string
 	env          string
+	generateID   func() string
 	sentry       sentry.Client
 	liffVerifier auth.OIDCVerifier[auth.LIFFClaims]
 	jwtGenerator auth.JWTGenerator
@@ -92,8 +95,11 @@ func NewHandler(params *Params, opts ...Option) gateway.Handler {
 		opts[i](dopts)
 	}
 	return &handler{
-		appName:      dopts.appName,
-		env:          dopts.env,
+		appName: dopts.appName,
+		env:     dopts.env,
+		generateID: func() string {
+			return uuid.Base58Encode(uuid.New())
+		},
 		sentry:       dopts.sentry,
 		liffVerifier: params.LiffVerifier,
 		jwtGenerator: params.JWTGenerator,
