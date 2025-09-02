@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   srcDir: 'src',
   app: {
     head: {
-      titleTemplate: '%s - ふるマル',
+      titleTemplate: '%s - 産地直送のお取り寄せ通販【ふるマル】',
       htmlAttrs: {
         lang: 'ja',
         prefix: 'og: http://ogp.me/ns#',
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         {
           hid: 'description',
           name: 'description',
-          content: '生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
+          content: '産地直送のお取り寄せ通販のふるマルです。生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
         },
         { name: 'format-detection', content: 'telephone=no' },
         // Google Search Console
@@ -26,18 +26,18 @@ export default defineNuxtConfig({
           name: 'google-site-verification',
           content: 'xLstKXV5GxV27-afCCeUr5hg8vElOz_Y6sieUFHw8oU',
         },
-        { hid: 'og:site_name', property: 'og:site_name', content: 'ふるマル' },
+        { hid: 'og:site_name', property: 'og:site_name', content: '産地直送のお取り寄せ通販【ふるマル】' },
         { hid: 'og:type', property: 'og:type', content: 'website' },
         {
           hid: 'og:url',
           property: 'og:url',
           content: 'https://www.furumaru.and-period.co.jp/',
         },
-        { hid: 'og:title', property: 'og:title', content: 'ふるマル' },
+        { hid: 'og:title', property: 'og:title', content: '産地直送のお取り寄せ通販【ふるマル】' },
         {
           hid: 'og:description',
           property: 'og:description',
-          content: '生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
+          content: '産地直送のお取り寄せ通販のふるマルです。生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
         },
         {
           hid: 'og:image',
