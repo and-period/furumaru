@@ -58,21 +58,19 @@ type Order struct {
 	OrderItems        `gorm:"-"`
 	OrderExperience   `gorm:"-"`
 	OrderMetadata     `gorm:"-"`
-	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
-	UserID            string            `gorm:""`                     // ユーザーID
-	SessionID         string            `gorm:""`                     // 注文時セッションID
-	ShopID            string            `gorm:"default:null"`         // 店舗ID
-	CoordinatorID     string            `gorm:""`                     // 注文受付担当者ID
-	PromotionID       string            `gorm:"default:null"`         // プロモーションID
-	ManagementID      int64             `gorm:""`                     // 管理番号
-	Type              OrderType         `gorm:""`                     // 注文種別
-	Status            OrderStatus       `gorm:""`                     // 注文ステータス
-	ShippingMessage   string            `gorm:"default:null"`         // 発送時のメッセージ
-	ShippingType      OrderShippingType `gorm:""`                     // 発送方法
-	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
-	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
-	CompletedAt       time.Time         `gorm:"default:null"`         // 対応完了日時
-	DeletedAt         gorm.DeletedAt    `gorm:"default:null"`         // 削除日時
+	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
+	UserID            string         `gorm:""`                     // ユーザーID
+	SessionID         string         `gorm:""`                     // 注文時セッションID
+	ShopID            string         `gorm:"default:null"`         // 店舗ID
+	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
+	PromotionID       string         `gorm:"default:null"`         // プロモーションID
+	ManagementID      int64          `gorm:""`                     // 管理番号
+	Type              OrderType      `gorm:""`                     // 注文種別
+	Status            OrderStatus    `gorm:""`                     // 注文ステータス
+	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
+	CompletedAt       time.Time      `gorm:"default:null"`         // 対応完了日時
+	DeletedAt         gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Orders []*Order
@@ -90,6 +88,9 @@ type NewProductOrderParams struct {
 	Products          Products
 	PaymentMethodType PaymentMethodType
 	Promotion         *Promotion
+	Pickup            bool
+	PickupAt          time.Time
+	PickupLocation    string
 }
 
 type NewExperienceOrderParams struct {
@@ -119,6 +120,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	}
 	pparams := &NewProductOrderPaymentParams{
 		OrderID:    params.OrderID,
+		Pickup:     params.Pickup,
 		Address:    params.BillingAddress,
 		MethodType: params.PaymentMethodType,
 		Baskets:    params.Baskets,
@@ -132,6 +134,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	}
 	fparams := &NewOrderFulfillmentsParams{
 		OrderID:  params.OrderID,
+		Pickup:   params.Pickup,
 		Address:  params.ShippingAddress,
 		Baskets:  params.Baskets,
 		Products: params.Products.Map(),
@@ -140,10 +143,20 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	if err != nil {
 		return nil, err
 	}
+	mparams := &NewOrderMetadataParams{
+		OrderID:         params.OrderID,
+		Pickup:          params.Pickup,
+		ShippingAddress: params.ShippingAddress,
+		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
+		PickupAt:        params.PickupAt,
+		PickupLocation:  params.PickupLocation,
+	}
+	metadata := NewOrderMetadata(mparams)
 	return &Order{
 		OrderPayment:      *payment,
 		OrderFulfillments: fulfillments,
 		OrderItems:        items,
+		OrderMetadata:     *metadata,
 		ID:                params.OrderID,
 		SessionID:         params.SessionID,
 		UserID:            params.Customer.ID,
@@ -152,8 +165,6 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 		PromotionID:       promotionID,
 		Type:              OrderTypeProduct,
 		Status:            OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
-		ShippingType:      OrderShippingTypeStandard,
-		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil
 }
 
@@ -194,9 +205,14 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 	if err != nil {
 		return nil, err
 	}
+	mparams := &NewOrderMetadataParams{
+		OrderID: params.OrderID,
+	}
+	metadata := NewOrderMetadata(mparams)
 	return &Order{
 		OrderPayment:    *payment,
 		OrderExperience: *experience,
+		OrderMetadata:   *metadata,
 		ID:              params.OrderID,
 		SessionID:       params.SessionID,
 		UserID:          params.Customer.ID,
@@ -205,8 +221,6 @@ func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
 		PromotionID:     promotionID,
 		Type:            OrderTypeExperience,
 		Status:          OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
-		ShippingType:    OrderShippingTypeNone,
-		ShippingMessage: "",
 	}, nil
 }
 

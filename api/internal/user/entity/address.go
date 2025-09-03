@@ -65,11 +65,17 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 }
 
 func (a *Address) Name() string {
+	if a == nil {
+		return ""
+	}
 	str := strings.Join([]string{a.Lastname, a.Firstname}, " ")
 	return strings.TrimSpace(str)
 }
 
 func (a *Address) NameKana() string {
+	if a == nil {
+		return ""
+	}
 	str := strings.Join([]string{a.LastnameKana, a.FirstnameKana}, " ")
 	return strings.TrimSpace(str)
 }

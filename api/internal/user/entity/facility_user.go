@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 // FacilityUser - 施設利用者情報
 type FacilityUser struct {
@@ -20,6 +23,11 @@ type FacilityUser struct {
 }
 
 type FacilityUsers []*FacilityUser
+
+func (f *FacilityUser) Name() string {
+	str := strings.Join([]string{f.Lastname, f.Firstname}, " ")
+	return strings.TrimSpace(str)
+}
 
 func (fs FacilityUsers) Map() map[string]*FacilityUser {
 	res := make(map[string]*FacilityUser, len(fs))

@@ -24,6 +24,7 @@ const (
 	ShippingTypeUnknown ShippingType = 0
 	ShippingTypeNormal  ShippingType = 1 // 通常配送
 	ShippingTypeFrozen  ShippingType = 2 // クール配送
+	ShippingTypePickup  ShippingType = 3 // 店舗受け取り
 )
 
 // Shipping - 配送設定情報

@@ -19,6 +19,7 @@ const (
 	ShippingTypeUnknown ShippingType = 0
 	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
 	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+	ShippingTypePickup  ShippingType = 3 // 店舗受取
 )
 
 func NewShippingSize(size entity.ShippingSize) ShippingSize {
@@ -44,6 +45,8 @@ func NewShippingType(typ entity.ShippingType) ShippingType {
 		return ShippingTypeNormal
 	case entity.ShippingTypeFrozen:
 		return ShippingTypeFrozen
+	case entity.ShippingTypePickup:
+		return ShippingTypePickup
 	default:
 		return ShippingTypeUnknown
 	}

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -198,12 +198,10 @@ func TestNewOrderStatus(t *testing.T) {
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name        string
-		order       *entity.Order
-		addresses   map[int64]*Address
-		products    map[int64]*Product
-		experiences map[int64]*Experience
-		expect      *Order
+		name     string
+		order    *entity.Order
+		products map[int64]*Product
+		expect   *Order
 	}{
 		{
 			name: "success",
@@ -275,23 +273,12 @@ func TestOrder(t *testing.T) {
 						RequestedTime:  jst.Date(0, 1, 1, 18, 30, 0, 0),
 					},
 				},
+				OrderMetadata: entity.OrderMetadata{
+					PickupAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					PickupLocation: "施設の入り口",
+				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			addresses: map[int64]*Address{
-				1: {
-					Address: response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
-					revisionID: 1,
-				},
 			},
 			products: map[int64]*Product{
 				1: {
@@ -334,43 +321,6 @@ func TestOrder(t *testing.T) {
 					},
 				},
 			},
-			experiences: map[int64]*Experience{
-				1: {
-					Experience: response.Experience{
-						ID:               "experience-id",
-						CoordinatorID:    "coordinator-id",
-						ProducerID:       "producer-id",
-						ExperienceTypeID: "experience-type-id",
-						Title:            "じゃがいも収穫",
-						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
-							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
-							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
-						},
-						PriceAdult:            1000,
-						PriceJuniorHighSchool: 800,
-						PriceElementarySchool: 600,
-						PricePreschool:        400,
-						PriceSenior:           700,
-						RecommendedPoint1:     "じゃがいもを収穫する楽しさを体験できます。",
-						RecommendedPoint2:     "新鮮なじゃがいもを持ち帰ることができます。",
-						RecommendedPoint3:     "じゃがいもの美味しさを再認識できます。",
-						PromotionVideoURL:     "http://example.com/promotion.mp4",
-						Duration:              60,
-						Direction:             "彦根駅から徒歩10分",
-						BusinessOpenTime:      "1000",
-						BusinessCloseTime:     "1800",
-						HostPostalCode:        "5220061",
-						HostCity:              "彦根市",
-						HostAddressLine1:      "金亀町１−１",
-						HostAddressLine2:      "",
-						StartAt:               1640962800,
-						EndAt:                 1640962800,
-					},
-					revisionID: 1,
-				},
-			},
 			expect: &Order{
 				Order: response.Order{
 					ID:            "order-id",
@@ -389,18 +339,6 @@ func TestOrder(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
-						{
-							FulfillmentID:   "fulfillment-id",
-							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
-							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
-							ShippedAt:       1640962800,
-						},
-					},
 					Refund: &response.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
@@ -416,49 +354,15 @@ func TestOrder(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					Experience: &response.OrderExperience{
-						ExperienceID:          "experience-id",
-						AdultCount:            2,
-						AdultPrice:            1000,
-						JuniorHighSchoolCount: 1,
-						JuniorHighSchoolPrice: 800,
-						ElementarySchoolCount: 0,
-						ElementarySchoolPrice: 600,
-						PreschoolCount:        0,
-						PreschoolPrice:        400,
-						SeniorCount:           0,
-						SeniorPrice:           700,
-						Transportation:        "電車",
-						RequestedDate:         "20240102",
-						RequestedTime:         "1830",
-					},
-					BillingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
-					ShippingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
+					PickupAt:       1640962800,
+					PickupLocation: "施設の入り口",
 				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products, tt.experiences))
+			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.products))
 		})
 	}
 }
@@ -489,18 +393,6 @@ func TestOrder_ProductIDs(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
-						{
-							FulfillmentID:   "fulfillment-id",
-							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
-							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
-							ShippedAt:       1640962800,
-						},
-					},
 					Refund: &response.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
@@ -516,26 +408,8 @@ func TestOrder_ProductIDs(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					BillingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
-					ShippingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
+					PickupAt:       1640962800,
+					PickupLocation: "施設の入り口",
 				},
 			},
 			expect: []string{"product-id"},
@@ -574,18 +448,6 @@ func TestOrder_Response(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
-						{
-							FulfillmentID:   "fulfillment-id",
-							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
-							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
-							ShippedAt:       1640962800,
-						},
-					},
 					Refund: &response.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
@@ -601,26 +463,8 @@ func TestOrder_Response(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					BillingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
-					ShippingAddress: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "090-1234-1234",
-					},
+					PickupAt:       1640962800,
+					PickupLocation: "施設の入り口",
 				},
 			},
 			expect: &response.Order{
@@ -639,18 +483,6 @@ func TestOrder_Response(t *testing.T) {
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
 				},
-				Fulfillments: []*response.OrderFulfillment{
-					{
-						FulfillmentID:   "fulfillment-id",
-						TrackingNumber:  "",
-						Status:          FulfillmentStatusFulfilled.Response(),
-						ShippingCarrier: ShippingCarrierUnknown.Response(),
-						ShippingType:    ShippingTypeNormal.Response(),
-						BoxNumber:       1,
-						BoxSize:         ShippingSize60.Response(),
-						ShippedAt:       1640962800,
-					},
-				},
 				Refund: &response.OrderRefund{
 					Total:      0,
 					Type:       RefundTypeNone.Response(),
@@ -666,26 +498,8 @@ func TestOrder_Response(t *testing.T) {
 						Quantity:      1,
 					},
 				},
-				BillingAddress: &response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "090-1234-1234",
-				},
-				ShippingAddress: &response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "090-1234-1234",
-				},
+				PickupAt:       1640962800,
+				PickupLocation: "施設の入り口",
 			},
 		},
 	}

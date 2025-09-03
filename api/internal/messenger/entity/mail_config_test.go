@@ -65,11 +65,14 @@ func TestTemplateBuilder(t *testing.T) {
 				RequestedTime:  now,
 			},
 		},
-		ID:              "order-id",
-		UserID:          "user-id",
-		CoordinatorID:   "coordinator-id",
-		PromotionID:     "promotion-id",
-		ShippingMessage: "ありがとうございます",
+		OrderMetadata: sentity.OrderMetadata{
+			OrderID:         "order-id",
+			ShippingMessage: "ありがとうございます",
+		},
+		ID:            "order-id",
+		UserID:        "user-id",
+		CoordinatorID: "coordinator-id",
+		PromotionID:   "promotion-id",
 	}
 	products := map[int64]*sentity.Product{
 		1: {

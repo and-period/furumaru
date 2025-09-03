@@ -45,6 +45,46 @@ components:
           description: 電話番号
           type: string
       type: object
+    CalcCartResponse:
+      properties:
+        carts:
+          description: カート一覧
+          items:
+            $ref: '#/components/schemas/Cart'
+          type: array
+          uniqueItems: false
+        coordinator:
+          $ref: '#/components/schemas/Coordinator'
+        discount:
+          description: 割引金額(税込)
+          type: integer
+        items:
+          description: カート内の商品一覧(集計結果)
+          items:
+            $ref: '#/components/schemas/CartItem'
+          type: array
+          uniqueItems: false
+        products:
+          description: 商品一覧
+          items:
+            $ref: '#/components/schemas/Product'
+          type: array
+          uniqueItems: false
+        promotion:
+          $ref: '#/components/schemas/Promotion'
+        requestId:
+          description: 支払い時にAPIへ送信するキー(重複判定用)
+          type: string
+        shippingFee:
+          description: 配送手数料(税込)
+          type: integer
+        subtotal:
+          description: 購入金額(税込)
+          type: integer
+        total:
+          description: 合計金額(税込)
+          type: integer
+      type: object
     Cart:
       properties:
         coordinatorId:
@@ -738,20 +778,6 @@ components:
       - Thursday
       - Friday
       - Saturday
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
     util.ErrorResponse:
       properties:
         detail:
@@ -939,6 +965,56 @@ paths:
       security:
       - bearerauth: []
       summary: カートから削除
+      tags:
+      - Cart
+  /facilities/{facilityId}/carts/{coordinatorId}:
+    get:
+      description: カートの内容を計算します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
+      - description: コーディネーターID
+        in: path
+        name: coordinatorId
+        required: true
+        schema:
+          type: string
+      - description: 箱数
+        in: query
+        name: number
+        schema:
+          type: integer
+      - description: プロモーションコード
+        in: query
+        name: promotion
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalcCartResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+      security:
+      - bearerauth: []
+      summary: カート計算
       tags:
       - Cart
   /facilities/{facilityId}/checkouts:

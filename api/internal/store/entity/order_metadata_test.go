@@ -3,21 +3,23 @@ package entity
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewOrderPickupMetadata(t *testing.T) {
+func TestNewOrderMetadata(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		params *NewOrderPickupMetadataParams
+		params *NewOrderMetadataParams
 		expect *OrderMetadata
 	}{
 		{
-			name: "success",
-			params: &NewOrderPickupMetadataParams{
+			name: "success with pickup",
+			params: &NewOrderMetadataParams{
 				OrderID:        "order-id",
+				Pickup:         true,
 				PickupAt:       jst.Date(2022, 1, 1, 10, 0, 0, 0),
 				PickupLocation: "店舗A",
 			},
@@ -27,11 +29,24 @@ func TestNewOrderPickupMetadata(t *testing.T) {
 				PickupLocation: "店舗A",
 			},
 		},
+		{
+			name: "success with shipping",
+			params: &NewOrderMetadataParams{
+				OrderID:         "order-id",
+				Pickup:          false,
+				ShippingAddress: &entity.Address{ID: "address-id"},
+				ShippingMessage: "ご注文ありがとうございます！",
+			},
+			expect: &OrderMetadata{
+				OrderID:         "order-id",
+				ShippingMessage: "ご注文ありがとうございます！",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewOrderPickupMetadata(tt.params)
+			actual := NewOrderMetadata(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -48,26 +63,30 @@ func TestMultiOrderMetadata_MapByOrderID(t *testing.T) {
 			name: "success",
 			metadata: MultiOrderMetadata{
 				{
-					OrderID:        "order-id01",
-					PickupAt:       jst.Date(2022, 1, 1, 10, 0, 0, 0),
-					PickupLocation: "店舗A",
+					OrderID:         "order-id01",
+					PickupAt:        jst.Date(2022, 1, 1, 10, 0, 0, 0),
+					PickupLocation:  "店舗A",
+					ShippingMessage: "メッセージA",
 				},
 				{
-					OrderID:        "order-id02",
-					PickupAt:       jst.Date(2022, 1, 2, 15, 0, 0, 0),
-					PickupLocation: "店舗B",
+					OrderID:         "order-id02",
+					PickupAt:        jst.Date(2022, 1, 2, 15, 0, 0, 0),
+					PickupLocation:  "店舗B",
+					ShippingMessage: "メッセージB",
 				},
 			},
 			expect: map[string]*OrderMetadata{
 				"order-id01": {
-					OrderID:        "order-id01",
-					PickupAt:       jst.Date(2022, 1, 1, 10, 0, 0, 0),
-					PickupLocation: "店舗A",
+					OrderID:         "order-id01",
+					PickupAt:        jst.Date(2022, 1, 1, 10, 0, 0, 0),
+					PickupLocation:  "店舗A",
+					ShippingMessage: "メッセージA",
 				},
 				"order-id02": {
-					OrderID:        "order-id02",
-					PickupAt:       jst.Date(2022, 1, 2, 15, 0, 0, 0),
-					PickupLocation: "店舗B",
+					OrderID:         "order-id02",
+					PickupAt:        jst.Date(2022, 1, 2, 15, 0, 0, 0),
+					PickupLocation:  "店舗B",
+					ShippingMessage: "メッセージB",
 				},
 			},
 		},

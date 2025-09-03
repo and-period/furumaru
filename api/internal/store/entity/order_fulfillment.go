@@ -40,7 +40,7 @@ const (
 type OrderFulfillment struct {
 	ID                string            `gorm:"primaryKey;<-:create"` // 注文配送ID
 	OrderID           string            `gorm:""`                     // 注文履歴ID
-	AddressRevisionID int64             `gorm:""`                     // 配送先情報ID
+	AddressRevisionID int64             `gorm:"default:null"`         // 配送先情報ID
 	Status            FulfillmentStatus `gorm:""`                     // 配送ステータス
 	TrackingNumber    string            `gorm:"default:null"`         // 配送伝票番号
 	ShippingCarrier   ShippingCarrier   `gorm:""`                     // 配送会社
@@ -57,12 +57,14 @@ type OrderFulfillments []*OrderFulfillment
 
 type NewOrderFulfillmentParams struct {
 	OrderID string
+	Pickup  bool
 	Address *entity.Address
 	Basket  *CartBasket
 }
 
 type NewOrderFulfillmentsParams struct {
 	OrderID  string
+	Pickup   bool
 	Address  *entity.Address
 	Baskets  CartBaskets
 	Products map[string]*Product
@@ -82,14 +84,24 @@ func (s ShippingSize) String() string {
 }
 
 func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
+	var (
+		shippingType      ShippingType
+		addressRevisionID int64
+	)
+	if params.Pickup {
+		shippingType = ShippingTypePickup
+	} else {
+		shippingType = params.Basket.BoxType
+		addressRevisionID = params.Address.AddressRevision.ID
+	}
 	return &OrderFulfillment{
 		ID:                uuid.Base58Encode(uuid.New()),
 		OrderID:           params.OrderID,
-		AddressRevisionID: params.Address.AddressRevision.ID,
+		AddressRevisionID: addressRevisionID,
 		Status:            FulfillmentStatusUnfulfilled,
 		TrackingNumber:    "",
 		ShippingCarrier:   ShippingCarrierUnknown,
-		ShippingType:      params.Basket.BoxType,
+		ShippingType:      shippingType,
 		BoxNumber:         params.Basket.BoxNumber,
 		BoxSize:           params.Basket.BoxSize,
 		BoxRate:           params.Basket.BoxRate,
@@ -102,6 +114,7 @@ func NewOrderFulfillments(params *NewOrderFulfillmentsParams) (OrderFulfillments
 	for i, basket := range params.Baskets {
 		fparams := &NewOrderFulfillmentParams{
 			OrderID: params.OrderID,
+			Pickup:  params.Pickup,
 			Address: params.Address,
 			Basket:  basket,
 		}
@@ -132,9 +145,14 @@ func (fs OrderFulfillments) Fulfilled() bool {
 }
 
 func (fs OrderFulfillments) AddressRevisionIDs() []int64 {
-	return set.UniqBy(fs, func(f *OrderFulfillment) int64 {
-		return f.AddressRevisionID
-	})
+	res := set.NewEmpty[int64](len(fs))
+	for _, f := range fs {
+		if f.AddressRevisionID == 0 {
+			continue
+		}
+		res.Add(f.AddressRevisionID)
+	}
+	return res.Slice()
 }
 
 func (fs OrderFulfillments) GroupByOrderID() map[string]OrderFulfillments {
