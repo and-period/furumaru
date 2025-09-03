@@ -22,6 +22,7 @@ func TestAuthUser(t *testing.T) {
 			name: "success with notification",
 			user: &entity.User{
 				ID:         "user-id",
+				Type:       entity.UserTypeMember,
 				Registered: true,
 				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -65,6 +66,7 @@ func TestAuthUser(t *testing.T) {
 			name: "success without notification",
 			user: &entity.User{
 				ID:         "user-id",
+				Type:       entity.UserTypeMember,
 				Registered: true,
 				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
