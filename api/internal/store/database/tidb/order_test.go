@@ -79,6 +79,13 @@ func TestOrder_List(t *testing.T) {
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	orders[1].OrderMetadata = *metadata[1]
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	require.NoError(t, err)
 
 	type args struct {
 		params *database.ListOrdersParams
@@ -206,6 +213,14 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
 
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
+	require.NoError(t, err)
+
 	einternal := make(internalOrderExperiences, 1)
 	einternal[0] = testOrderExperience("order-id03", 1, now())
 	oexperiences, err := einternal.entities()
@@ -326,6 +341,13 @@ func TestOrder_Count(t *testing.T) {
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	orders[1].OrderMetadata = *metadata[1]
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	require.NoError(t, err)
 
 	type args struct {
 		params *database.ListOrdersParams
@@ -426,6 +448,10 @@ func TestOrder_Get(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	o.OrderMetadata = *metadata
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -535,6 +561,10 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	o.OrderMetadata = *metadata
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -648,6 +678,10 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
+	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	o.OrderMetadata = *metadata
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	require.NoError(t, err)
 
 	type args struct {
 		sessionID     string
@@ -756,11 +790,14 @@ func TestOrder_Create(t *testing.T) {
 	items[0] = testOrderItem("fulfillment-id", 1, "product-order-id", now())
 	items[1] = testOrderItem("fulfillment-id", 2, "product-order-id", now())
 
+	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+
 	porder := testOrder("product-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	porder.Type = entity.OrderTypeProduct
 	porder.OrderPayment = *testOrderPayment("product-order-id", 1, "transaction-id", "payment-id", now())
 	porder.OrderFulfillments = fulfillments
 	porder.OrderItems = items
+	porder.OrderMetadata = *metadata
 
 	eorder := testOrder("experience-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeExperience, 2, now())
 	eorder.Type = entity.OrderTypeExperience
@@ -769,6 +806,7 @@ func TestOrder_Create(t *testing.T) {
 	oexperience, err := einternal.entity()
 	require.NoError(t, err)
 	eorder.OrderExperience = *oexperience
+	eorder.OrderMetadata = *metadata
 
 	type args struct {
 		order *entity.Order
@@ -889,6 +927,10 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 		require.NoError(t, err)
 	}
 
@@ -1026,6 +1068,10 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
 		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+		require.NoError(t, err)
 	}
 
 	type args struct {
@@ -1161,6 +1207,10 @@ func TestOrder_UpdateFailed(t *testing.T) {
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 		require.NoError(t, err)
 	}
 
@@ -1300,6 +1350,10 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 		require.NoError(t, err)
 	}
 
@@ -1458,6 +1512,10 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 		require.NoError(t, err)
 	}
 
@@ -1624,6 +1682,10 @@ func TestOrder_Draft(t *testing.T) {
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
 		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+		require.NoError(t, err)
 	}
 
 	type args struct {
@@ -1728,6 +1790,10 @@ func TestOrder_Complete(t *testing.T) {
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
 		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+
+		metadata := testOrderMetadata(orderID, now)
+		err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 		require.NoError(t, err)
 	}
 
@@ -1840,6 +1906,13 @@ func TestOrder_Aggregate(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
 	require.NoError(t, err)
 
 	type args struct {
@@ -1955,6 +2028,13 @@ func TestOrder_AggregateByUser(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
 	require.NoError(t, err)
 
 	type args struct {
@@ -2072,6 +2152,13 @@ func TestOrder_AggregateByPaymentMethodType(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
 	require.NoError(t, err)
 
 	type args struct {
@@ -2192,6 +2279,13 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
+	require.NoError(t, err)
 
 	type args struct {
 		params *database.AggregateOrdersByPromotionParams
@@ -2306,6 +2400,13 @@ func TestOrder_AggregateByPeriod(t *testing.T) {
 	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+	metadata := make(entity.MultiOrderMetadata, 2)
+	metadata[0] = testOrderMetadata("order-id01", now().Add(-time.Hour))
+	orders[0].OrderMetadata = *metadata[0]
+	metadata[1] = testOrderMetadata("order-id02", now())
+	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
+	orders[1].OrderMetadata = *metadata[1]
 	require.NoError(t, err)
 
 	type args struct {
@@ -2443,4 +2544,14 @@ func testOrderExperience(orderID string, experienceID int64, now time.Time) *int
 	}
 	internal, _ := newInternalOrderExperience(experience)
 	return internal
+}
+
+func testOrderMetadata(orderID string, now time.Time) *entity.OrderMetadata {
+	return &entity.OrderMetadata{
+		OrderID:        orderID,
+		PickupAt:       now,
+		PickupLocation: "&.農園",
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
 }
