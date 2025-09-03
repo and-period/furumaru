@@ -291,6 +291,7 @@ func TestPersonalizations(t *testing.T) {
 				users := uentity.Users{
 					{
 						ID:         "user-id",
+						Type:       uentity.UserTypeMember,
 						Registered: true,
 						Member: uentity.Member{
 							Username:      "username",
@@ -302,6 +303,8 @@ func TestPersonalizations(t *testing.T) {
 						},
 					},
 					{
+						ID:         "user-id",
+						Type:       uentity.UserTypeMember,
 						Registered: true,
 						Member: uentity.Member{
 							Username:      "username",
@@ -344,9 +347,9 @@ func TestPersonalizations(t *testing.T) {
 				users := uentity.Users{
 					{
 						ID:         "user-id",
-						Registered: true,
-						Member: uentity.Member{
-							Username:      "username",
+						Type:       uentity.UserTypeGuest,
+						Registered: false,
+						Guest: uentity.Guest{
 							Lastname:      "&.",
 							Firstname:     "利用者",
 							LastnameKana:  "あんどどっと",
@@ -355,9 +358,10 @@ func TestPersonalizations(t *testing.T) {
 						},
 					},
 					{
-						Registered: true,
-						Member: uentity.Member{
-							Username:      "username",
+						ID:         "user-id",
+						Type:       uentity.UserTypeGuest,
+						Registered: false,
+						Guest: uentity.Guest{
 							Lastname:      "&.",
 							Firstname:     "利用者",
 							LastnameKana:  "あんどどっと",
@@ -370,7 +374,61 @@ func TestPersonalizations(t *testing.T) {
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
-				UserType:  entity.UserTypeGuest,
+				UserType:  entity.UserTypeUser,
+				UserIDs:   []string{"user-id"},
+				Email: &entity.MailConfig{
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
+					Substitutions: map[string]interface{}{"key": "value"},
+				},
+			},
+			expect: []*mailer.Personalization{
+				{
+					Name:    "&. 利用者",
+					Address: "test-user@and-period.jp",
+					Type:    mailer.AddressTypeTo,
+					Substitutions: map[string]interface{}{
+						"key": "value",
+						"氏名":  "&. 利用者",
+					},
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success facility user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
+				users := uentity.Users{
+					{
+						ID:         "user-id",
+						Type:       uentity.UserTypeFacilityUser,
+						Registered: false,
+						FacilityUser: uentity.FacilityUser{
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "test-user@and-period.jp",
+						},
+					},
+					{
+						ID:         "user-id",
+						Type:       uentity.UserTypeFacilityUser,
+						Registered: false,
+						FacilityUser: uentity.FacilityUser{
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "",
+						},
+					},
+				}
+				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
+			},
+			payload: &entity.WorkerPayload{
+				EventType: entity.EventTypeRegisterAdmin,
+				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
@@ -658,6 +716,7 @@ func TestFetchUsers(t *testing.T) {
 	users := uentity.Users{
 		{
 			ID:         "user-id",
+			Type:       uentity.UserTypeMember,
 			Registered: true,
 			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
 			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),

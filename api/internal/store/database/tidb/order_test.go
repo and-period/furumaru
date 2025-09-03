@@ -449,7 +449,7 @@ func TestOrder_Get(t *testing.T) {
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
-	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	metadata := testOrderMetadata("order-id", now().Add(-time.Hour))
 	o.OrderMetadata = *metadata
 	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 	require.NoError(t, err)
@@ -562,7 +562,7 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
-	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	metadata := testOrderMetadata("order-id", now().Add(-time.Hour))
 	o.OrderMetadata = *metadata
 	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 	require.NoError(t, err)
@@ -678,7 +678,7 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	o.OrderItems = items
 	err = db.DB.Create(&items).Error
 	require.NoError(t, err)
-	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
+	metadata := testOrderMetadata("order-id", now().Add(-time.Hour))
 	o.OrderMetadata = *metadata
 	err = db.DB.Table(orderMetadataTable).Create(&metadata).Error
 	require.NoError(t, err)

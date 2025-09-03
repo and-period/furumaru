@@ -200,6 +200,7 @@ func TestWorker_Run(t *testing.T) {
 	}
 	users := uentity.Users{{
 		ID:         "user-id",
+		Type:       uentity.UserTypeMember,
 		Registered: true,
 		Member: uentity.Member{
 			Username:      "username",
