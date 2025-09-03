@@ -225,7 +225,7 @@ func TestFetchTokens(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
-				UserType:  entity.UserTypeGuest,
+				UserType:  entity.UserTypeNone,
 				UserIDs:   []string{"user-id"},
 				Push: &entity.PushConfig{
 					TemplateID: entity.PushTemplateIDContact,

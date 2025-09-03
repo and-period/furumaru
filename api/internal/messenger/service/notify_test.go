@@ -734,11 +734,14 @@ func TestNotifyOrderShipped(t *testing.T) {
 				Quantity:          2,
 			},
 		},
-		ID:              "order-id",
-		UserID:          "user-id",
-		CoordinatorID:   "coordinator-id",
-		PromotionID:     "",
-		ShippingMessage: "購入ありがとうございました",
+		OrderMetadata: sentity.OrderMetadata{
+			OrderID:         "order-id",
+			ShippingMessage: "購入ありがとうございました",
+		},
+		ID:            "order-id",
+		UserID:        "user-id",
+		CoordinatorID: "coordinator-id",
+		PromotionID:   "",
 	}
 	products := sentity.Products{
 		{

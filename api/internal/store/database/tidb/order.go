@@ -165,11 +165,15 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 		order.ManagementID = total + 1
 		order.CreatedAt, order.UpdatedAt = now, now
 		order.OrderPayment.CreatedAt, order.OrderPayment.UpdatedAt = now, now
+		order.OrderMetadata.CreatedAt, order.OrderMetadata.UpdatedAt = now, now
 
 		if err := tx.WithContext(ctx).Table(orderTable).Create(&order).Error; err != nil {
 			return err
 		}
 		if err := tx.WithContext(ctx).Table(orderPaymentTable).Create(&order.OrderPayment).Error; err != nil {
+			return err
+		}
+		if err := tx.WithContext(ctx).Table(orderMetadataTable).Create(&order.OrderMetadata).Error; err != nil {
 			return err
 		}
 

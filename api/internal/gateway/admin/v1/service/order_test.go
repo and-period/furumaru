@@ -257,7 +257,6 @@ func TestOrder(t *testing.T) {
 				ManagementID:  1,
 				Type:          entity.OrderTypeProduct,
 				Status:        entity.OrderStatusShipped,
-				ShippingType:  entity.OrderShippingTypeStandard,
 				OrderPayment: entity.OrderPayment{
 					OrderID:           "order-id",
 					AddressRevisionID: 1,
@@ -437,7 +436,6 @@ func TestOrder(t *testing.T) {
 					ShippingMessage: "",
 					Type:            int32(OrderTypeProduct),
 					Status:          int32(OrderStatusShipped),
-					ShippingType:    int32(OrderShippingTypeStandard),
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					CompletedAt:     0,
@@ -797,7 +795,6 @@ func TestOrders(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        entity.OrderStatusShipped,
-					ShippingType:  entity.OrderShippingTypeStandard,
 					OrderPayment: entity.OrderPayment{
 						OrderID:           "product-order-id",
 						AddressRevisionID: 1,
@@ -854,7 +851,6 @@ func TestOrders(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        entity.OrderStatusShipped,
-					ShippingType:  entity.OrderShippingTypeNone,
 					OrderPayment: entity.OrderPayment{
 						OrderID:           "experience-order-id",
 						AddressRevisionID: 1,
@@ -1009,7 +1005,6 @@ func TestOrders(t *testing.T) {
 						ShippingMessage: "",
 						Type:            int32(OrderTypeProduct),
 						Status:          int32(OrderStatusShipped),
-						ShippingType:    int32(OrderShippingTypeStandard),
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,
@@ -1089,7 +1084,6 @@ func TestOrders(t *testing.T) {
 						ShippingMessage: "",
 						Type:            int32(OrderTypeExperience),
 						Status:          int32(OrderStatusShipped),
-						ShippingType:    int32(OrderShippingTypeNone),
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,

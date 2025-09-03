@@ -54,7 +54,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		products, err = h.multiGetProducts(ectx, cart.Baskets.ProductIDs())
+		products, err = h.multiGetProducts(ectx, h.getProducerID(ctx), cart.Baskets.ProductIDs())
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -130,7 +130,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 	}
 
 	items := cart.Baskets.MergeByProductID()
-	products, err := h.multiGetProducts(ctx, items.ProductIDs())
+	products, err := h.multiGetProducts(ctx, h.getProducerID(ctx), items.ProductIDs())
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -169,13 +169,8 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	product, err := h.getProduct(ctx, req.ProductID)
-	if err != nil {
+	if _, err := h.getProduct(ctx, h.getProducerID(ctx), req.ProductID); err != nil {
 		h.httpError(ctx, err)
-		return
-	}
-	if product.ProducerID != h.getProducerID(ctx) {
-		h.notFound(ctx, errNotFoundProduct)
 		return
 	}
 	in := &store.AddCartItemInput{

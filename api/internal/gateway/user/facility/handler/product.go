@@ -147,7 +147,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 // @Success     200 {object} response.ProductResponse
 // @Failure     404 {object} util.ErrorResponse "商品が見つからない"
 func (h *handler) GetProduct(ctx *gin.Context) {
-	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
+	product, err := h.getProduct(ctx, h.getProducerID(ctx), util.GetParam(ctx, "productId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -197,7 +197,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
+func (h *handler) multiGetProducts(ctx context.Context, producerID string, productIDs []string) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil
 	}
@@ -208,7 +208,7 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	if err != nil || len(products) == 0 {
 		return service.Products{}, err
 	}
-	products = products.FilterByPublished()
+	products = products.FilterByProducerID(producerID).FilterByPublished()
 	details, err := h.getProductDetails(ctx, products.IDs()...)
 	if err != nil {
 		return nil, err
@@ -216,7 +216,26 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	return service.NewProducts(products, details), nil
 }
 
-func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
+func (h *handler) multiGetProductsByRevision(ctx context.Context, producerID string, revisionIDs []int64) (service.Products, error) {
+	if len(revisionIDs) == 0 {
+		return service.Products{}, nil
+	}
+	in := &store.MultiGetProductsByRevisionInput{
+		ProductRevisionIDs: revisionIDs,
+	}
+	products, err := h.store.MultiGetProductsByRevision(ctx, in)
+	if err != nil || len(products) == 0 {
+		return service.Products{}, err
+	}
+	products = products.FilterByProducerID(producerID).FilterByPublished()
+	details, err := h.getProductDetails(ctx, products.IDs()...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducts(products, details), nil
+}
+
+func (h *handler) getProduct(ctx context.Context, producerID, productID string) (*service.Product, error) {
 	in := &store.GetProductInput{
 		ProductID: productID,
 	}
@@ -226,6 +245,9 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 	}
 	if !product.Public {
 		// 非公開のものは利用者側に表示しない
+		return nil, exception.ErrNotFound
+	}
+	if product.ProducerID != producerID {
 		return nil, exception.ErrNotFound
 	}
 	details, err := h.getProductDetails(ctx, productID)

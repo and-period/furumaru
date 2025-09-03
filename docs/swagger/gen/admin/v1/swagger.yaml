@@ -1276,14 +1276,6 @@ components:
                     description: 営業曜日(発送可能日)
                     items:
                         type: integer
-                        x-enum-varnames:
-                            - Sunday
-                            - Monday
-                            - Tuesday
-                            - Wednesday
-                            - Thursday
-                            - Friday
-                            - Saturday
                     type: array
                     uniqueItems: false
                 name:
@@ -3503,7 +3495,7 @@ components:
                 businessDays:
                     description: 営業曜日(発送可能日)
                     items:
-                        $ref: '#/components/schemas/time.Weekday'
+                        type: integer
                     type: array
                     uniqueItems: false
                 coordinatorId:
@@ -4116,16 +4108,6 @@ components:
                     type: array
                     uniqueItems: false
             type: object
-        time.Weekday:
-            type: integer
-            x-enum-varnames:
-                - Sunday
-                - Monday
-                - Tuesday
-                - Wednesday
-                - Thursday
-                - Friday
-                - Saturday
         util.ErrorResponse:
             properties:
                 detail:

@@ -1,8 +1,9 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
@@ -94,37 +95,19 @@ func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {
-	var (
-		billingAddress, shippingAddress *Address
-		experience                      *Experience
-	)
-	if address, ok := addresses[order.AddressRevisionID]; ok {
-		billingAddress = address
-	}
-	if exp, ok := experiences[order.ExperienceRevisionID]; ok {
-		experience = exp
-	}
-	if len(order.OrderFulfillments) > 0 {
-		// 現状すべての配送先が同一になっているため
-		if address, ok := addresses[order.OrderFulfillments[0].AddressRevisionID]; ok {
-			shippingAddress = address
-		}
-	}
+func NewOrder(order *entity.Order, products map[int64]*Product) *Order {
 	return &Order{
 		Order: response.Order{
-			ID:              order.ID,
-			CoordinatorID:   order.CoordinatorID,
-			PromotionID:     order.PromotionID,
-			Type:            NewOrderType(order.Type).Response(),
-			Status:          NewOrderStatus(order.Status).Response(),
-			Payment:         NewOrderPayment(&order.OrderPayment).Response(),
-			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
-			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments).Response(),
-			Items:           NewOrderItems(order.OrderItems, products).Response(),
-			Experience:      NewOrderExperience(&order.OrderExperience, experience).Response(),
-			BillingAddress:  billingAddress.Response(),
-			ShippingAddress: shippingAddress.Response(),
+			ID:             order.ID,
+			CoordinatorID:  order.CoordinatorID,
+			PromotionID:    order.PromotionID,
+			Type:           NewOrderType(order.Type).Response(),
+			Status:         NewOrderStatus(order.Status).Response(),
+			Payment:        NewOrderPayment(&order.OrderPayment).Response(),
+			Refund:         NewOrderRefund(&order.OrderPayment).Response(),
+			Items:          NewOrderItems(order.OrderItems, products).Response(),
+			PickupAt:       jst.Unix(order.PickupAt),
+			PickupLocation: order.PickupLocation,
 		},
 	}
 }
@@ -139,10 +122,10 @@ func (o *Order) Response() *response.Order {
 	return &o.Order
 }
 
-func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) Orders {
+func NewOrders(orders entity.Orders, products map[int64]*Product) Orders {
 	res := make(Orders, len(orders))
 	for i := range orders {
-		res[i] = NewOrder(orders[i], addresses, products, experiences)
+		res[i] = NewOrder(orders[i], products)
 	}
 	return res
 }

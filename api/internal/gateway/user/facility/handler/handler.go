@@ -26,6 +26,7 @@ const (
 
 var (
 	errNotFoundFacility     = errors.New("handler: not found facility")
+	errNotFoundOrder        = errors.New("handler: not found order")
 	errNotFoundProduct      = errors.New("handler: not found product")
 	errFailedToCastFacility = errors.New("handler: failed to cast facility")
 )

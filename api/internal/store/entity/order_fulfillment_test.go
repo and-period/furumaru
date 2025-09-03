@@ -101,6 +101,58 @@ func TestOrderFulfillment(t *testing.T) {
 				BoxRate:           80,
 			},
 		},
+		{
+			name: "success with pickup",
+			params: &NewOrderFulfillmentParams{
+				OrderID: "order-id",
+				Pickup:  true,
+				Address: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "",
+					},
+					ID:        "address-id",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+				Basket: &CartBasket{
+					BoxNumber: 1,
+					BoxType:   ShippingTypeNormal,
+					BoxSize:   ShippingSize60,
+					BoxRate:   80,
+					Items: []*CartItem{
+						{
+							ProductID: "product-id01",
+							Quantity:  1,
+						},
+						{
+							ProductID: "product-id02",
+							Quantity:  2,
+						},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+			},
+			expect: &OrderFulfillment{
+				OrderID:           "order-id",
+				AddressRevisionID: 0,
+				Status:            FulfillmentStatusUnfulfilled,
+				TrackingNumber:    "",
+				ShippingCarrier:   ShippingCarrierUnknown,
+				ShippingType:      ShippingTypePickup,
+				BoxNumber:         1,
+				BoxSize:           ShippingSize60,
+				BoxRate:           80,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -190,6 +242,95 @@ func TestOrderFulfillments(t *testing.T) {
 					TrackingNumber:    "",
 					ShippingCarrier:   ShippingCarrierUnknown,
 					ShippingType:      ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           ShippingSize60,
+					BoxRate:           80,
+				},
+			},
+			expectItems: OrderItems{
+				{
+					ProductRevisionID: 1,
+					OrderID:           "order-id",
+					Quantity:          1,
+				},
+				{
+					ProductRevisionID: 2,
+					OrderID:           "order-id",
+					Quantity:          2,
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success with pickup",
+			params: &NewOrderFulfillmentsParams{
+				OrderID: "order-id",
+				Pickup:  true,
+				Address: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "090-1234-1234",
+					},
+					ID:        "address-id",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+				Baskets: CartBaskets{
+					{
+						BoxNumber: 1,
+						BoxType:   ShippingTypeNormal,
+						BoxSize:   ShippingSize60,
+						BoxRate:   80,
+						Items: []*CartItem{
+							{
+								ProductID: "product-id01",
+								Quantity:  1,
+							},
+							{
+								ProductID: "product-id02",
+								Quantity:  2,
+							},
+						},
+						CoordinatorID: "coordinator-id",
+					},
+				},
+				Products: map[string]*Product{
+					"product-id01": {
+						ID:   "product-id01",
+						Name: "じゃがいも",
+						ProductRevision: ProductRevision{
+							ID:        1,
+							ProductID: "product-id01",
+							Price:     500,
+						},
+					},
+					"product-id02": {
+						ID:   "product-id02",
+						Name: "人参",
+						ProductRevision: ProductRevision{
+							ID:        2,
+							ProductID: "product-id02",
+							Price:     1980,
+						},
+					},
+				},
+			},
+			expectFulfillments: OrderFulfillments{
+				{
+					OrderID:           "order-id",
+					AddressRevisionID: 0,
+					Status:            FulfillmentStatusUnfulfilled,
+					TrackingNumber:    "",
+					ShippingCarrier:   ShippingCarrierUnknown,
+					ShippingType:      ShippingTypePickup,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize60,
 					BoxRate:           80,
