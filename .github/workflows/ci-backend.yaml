@@ -17,6 +17,8 @@ env:
   DB_PORT: 4000
   DB_USERNAME: root
   DB_PASSWORD: ''
+  GOCACHE: /home/runner/.cache/go-build
+  GOFLAGS: -buildvcs=false
 
 jobs:
   setup:
@@ -82,9 +84,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    env:
-      GOCACHE: /tmp/go-build-cache
-      GOFLAGS: -buildvcs=false
 
     steps:
     - name: Check out code
@@ -115,9 +114,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    env:
-      GOCACHE: /tmp/go-test-cache
-      GOFLAGS: -buildvcs=false
 
     steps:
     - name: Check out code
@@ -141,8 +137,8 @@ jobs:
 
     - name: Test with cache
       run: |
-        # テストキャッシュディレクトリを作成
-        mkdir -p /tmp/go-test-cache
+        # GOCACHEディレクトリを確認
+        echo "GOCACHE=$GOCACHE"
         # テストを実行（キャッシュが利用可能な場合は自動的に使用される）
         make test
 
