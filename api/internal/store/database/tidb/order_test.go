@@ -790,23 +790,21 @@ func TestOrder_Create(t *testing.T) {
 	items[0] = testOrderItem("fulfillment-id", 1, "product-order-id", now())
 	items[1] = testOrderItem("fulfillment-id", 2, "product-order-id", now())
 
-	metadata := testOrderMetadata("order-id01", now().Add(-time.Hour))
-
 	porder := testOrder("product-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	porder.Type = entity.OrderTypeProduct
 	porder.OrderPayment = *testOrderPayment("product-order-id", 1, "transaction-id", "payment-id", now())
+	porder.OrderMetadata = *testOrderMetadata("product-order-id", now())
 	porder.OrderFulfillments = fulfillments
 	porder.OrderItems = items
-	porder.OrderMetadata = *metadata
 
 	eorder := testOrder("experience-order-id", "user-id", "", "shop-id", "coordinator-id", entity.OrderTypeExperience, 2, now())
 	eorder.Type = entity.OrderTypeExperience
 	eorder.OrderPayment = *testOrderPayment("experience-order-id", 1, "transaction-id", "payment-id", now())
+	eorder.OrderMetadata = *testOrderMetadata("experience-order-id", now())
 	einternal := testOrderExperience("experience-order-id", 1, now())
 	oexperience, err := einternal.entity()
 	require.NoError(t, err)
 	eorder.OrderExperience = *oexperience
-	eorder.OrderMetadata = *metadata
 
 	type args struct {
 		order *entity.Order
