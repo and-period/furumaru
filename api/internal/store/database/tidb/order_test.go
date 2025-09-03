@@ -858,7 +858,7 @@ func TestOrder_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -998,7 +998,7 @@ func TestOrder_UpdateAuthorized(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1138,7 +1138,7 @@ func TestOrder_UpdateCaptured(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1281,7 +1281,7 @@ func TestOrder_UpdateFailed(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1443,7 +1443,7 @@ func TestOrder_UpdateRefunded(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1612,7 +1612,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1721,7 +1721,7 @@ func TestOrder_Draft(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1831,7 +1831,7 @@ func TestOrder_Complete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := t.Context()
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderMetadataTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
