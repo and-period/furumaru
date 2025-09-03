@@ -57,6 +57,7 @@ func deleteAll(ctx context.Context) error {
 	tables := []string{
 		// テストに対応したテーブルから追記(削除順)
 		paymentSystemTable,
+		orderMetadataTable,
 		orderExperienceTable,
 		orderFulfillmentTable,
 		orderPaymentTable,
