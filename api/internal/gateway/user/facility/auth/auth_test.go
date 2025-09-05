@@ -33,7 +33,7 @@ func TestRefreshToken(t *testing.T) {
 func TestRefreshToken_TableName(t *testing.T) {
 	t.Parallel()
 	token := &RefreshToken{}
-	assert.Equal(t, "auth-tokens", token.TableName())
+	assert.Equal(t, "facility-user-auth-tokens", token.TableName())
 }
 
 func TestRefreshToken_PrimaryKey(t *testing.T) {
