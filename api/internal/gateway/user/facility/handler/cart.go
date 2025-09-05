@@ -21,6 +21,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/carts", h.authentication)
 
 	r.GET("", h.GetCart)
+	r.GET("/:coordinatorId", h.CalcCart)
 	r.POST("/-/items", h.AddCartItem)
 	r.DELETE("/-/items/:productId", h.RemoveCartItem)
 }
