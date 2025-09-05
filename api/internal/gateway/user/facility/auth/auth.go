@@ -115,7 +115,7 @@ func NewRefreshToken(params *RefreshTokenParams) (*RefreshToken, error) {
 }
 
 func (t *RefreshToken) TableName() string {
-	return "auth-tokens"
+	return "facility-user-auth-tokens"
 }
 
 func (t *RefreshToken) PrimaryKey() map[string]interface{} {
