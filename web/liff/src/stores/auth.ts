@@ -28,9 +28,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const route = useRoute();
 
-        const facilityId = String(route.query.facilityId || '');
+        const facilityId = String(route.params.facilityId ?? '');
         if (!facilityId) {
-          throw new Error('facilityId is not specified in query.');
+          throw new Error('facilityId is not specified in params.');
         }
 
         const api = this.facilityAuthApiClient();
@@ -75,9 +75,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const route = useRoute();
 
-        const facilityId = String(route.query.facilityId || '');
+        const facilityId = String(route.params.facilityId ?? '');
         if (!facilityId) {
-          throw new Error('facilityId is not specified in query.');
+          throw new Error('facilityId is not specified in params.');
         }
         const api = this.facilityAuthApiClient();
         await api.facilitiesFacilityIdAuthDelete({ facilityId });

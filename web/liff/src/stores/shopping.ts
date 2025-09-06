@@ -6,6 +6,7 @@ import type {
   Coordinator,
 } from '~/types/api/models';
 import { CartApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
+import { useAuthStore } from '~/stores/auth';
 import type { RequestAddCartItemRequest } from '@/types/api/facility';
 
 export interface CartItem extends ApiCartItem {
@@ -103,16 +104,21 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       try {
         const runtimeConfig = useRuntimeConfig();
         const route = useRoute();
+        const authStore = useAuthStore();
 
-        const facilityId = String(route.query.facilityId || '');
+        const facilityId = String(route.params.facilityId ?? '');
 
         if (!facilityId) {
-          console.warn('facilityId is not specified in query. Skipping cart fetch.');
+          console.warn('facilityId is not specified in params. Skipping cart fetch.');
           this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
           return;
         }
 
+        const accessToken = authStore.token?.accessToken;
+        const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
+        console.log('Fetching cart with access token:', accessToken);
         const config = new FacilityConfiguration({
+          headers,
           basePath: runtimeConfig.public.API_BASE_URL,
           credentials: 'include',
         });
@@ -138,10 +144,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         const runtimeConfig = useRuntimeConfig();
         const route = useRoute();
 
-        const facilityId = String(route.query.facilityId || '');
+        const facilityId = String(route.params.facilityId ?? '');
 
         if (!facilityId) {
-          console.warn('facilityId is not specified in query. Skipping addCartItem.');
+          console.warn('facilityId is not specified in params. Skipping addCartItem.');
           return;
         }
 
