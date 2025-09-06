@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/golang-jwt/jwt/v5"
@@ -79,6 +80,12 @@ func buildOptions(opts ...Option) *options {
 	return dopts
 }
 
+type Auth struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    int32
+}
+
 type RefreshToken struct {
 	RefreshToken string    `dynamodbav:"-"`                   // リフレッシュトークン
 	HashedToken  string    `dynamodbav:"hashed_token"`        // リフレッシュトークン（ハッシュ値）
@@ -126,6 +133,20 @@ func (t *RefreshToken) PrimaryKey() map[string]interface{} {
 
 func (t *RefreshToken) Verify(refreshToken string) error {
 	return compareRefreshToken(t.HashedToken, refreshToken)
+}
+
+type RefreshTokens []*RefreshToken
+
+func (t RefreshTokens) TableName() string {
+	return "facility-user-auth-tokens"
+}
+
+func (t RefreshTokens) Items() []dynamodb.Entity {
+	res := make([]dynamodb.Entity, len(t))
+	for i := range t {
+		res[i] = t[i]
+	}
+	return res
 }
 
 func newRefreshToken(raw string) string {

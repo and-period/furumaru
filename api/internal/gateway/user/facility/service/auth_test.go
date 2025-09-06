@@ -7,7 +7,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,15 +15,13 @@ func TestNewAuth(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		user   *entity.User
+		userID string
 		auth   *auth.Auth
 		expect *Auth
 	}{
 		{
-			name: "success",
-			user: &entity.User{
-				ID: "user-id",
-			},
+			name:   "success",
+			userID: "user-id",
 			auth: &auth.Auth{
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
@@ -45,7 +42,7 @@ func TestNewAuth(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAuth(tt.user, tt.auth)
+			actual := NewAuth(tt.userID, tt.auth)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
