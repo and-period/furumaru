@@ -1,18 +1,18 @@
 FROM amazonlinux:2023
 
-ENV OPENAPITOOLS_VERSION 2.13.1
-ENV SWAGGER_CLI_VERSION 4.0.4
+ENV SWAGGER_UI_VERSION 5.28.1
+ENV ARTIFACTS_DIR /opt
 
 RUN dnf upgrade -y
 RUN dnf install -y \
   git \
-  java-17-amazon-corretto \
-  make \
-  nodejs \
-  openssh \
   tar \
   wget
 
-RUN npm install -g yarn
-RUN yarn global add @openapitools/openapi-generator-cli@v${OPENAPITOOLS_VERSION}
-RUN yarn global add swagger-cli@${SWAGGER_CLI_VERSION}
+RUN wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v${SWAGGER_UI_VERSION}.tar.gz -O /tmp/swagger-ui.tar.gz \
+  && tar -zxvf /tmp/swagger-ui.tar.gz -C /tmp \
+  && mkdir -p ${ARTIFACTS_DIR}/swagger \
+  && mv /tmp/swagger-ui-${SWAGGER_UI_VERSION}/dist/* ${ARTIFACTS_DIR}/swagger \
+  && rm -rf /tmp/swagger-ui.tar.gz /tmp/swagger-ui-${SWAGGER_UI_VERSION}
+
+RUN sed -i 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/swagger.yaml/' ${ARTIFACTS_DIR}/swagger/swagger-initializer.js
