@@ -1,55 +1,24 @@
 <script setup lang="ts">
 import { FmProductItem } from '@furumaru/shared';
-
 import { NuxtLink } from '#components';
-import liff from '@line/liff';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
+import { useAuthStore } from '~/stores/auth';
 
-// Import runtime config for env variables
-const runtimeConfig = useRuntimeConfig();
-const liffId = runtimeConfig.public.LIFF_ID;
+const route = useRoute();
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
-const isLogin = ref<boolean>(false);
-const idToken = ref<string>('');
+// 認証状態はレイアウトで処理済み。表示用にストアから参照。
+const authStore = useAuthStore();
+const isLogin = computed(() => authStore.isAuthenticated);
+const idToken = computed(() => authStore.token?.accessToken || '');
 
-// Init LIFF when DOM is mounted
-// https://vuejs.org/api/composition-api-lifecycle.html#onmounted
-onMounted(async () => {
-  if (!liffId) {
-    console.error('Please set LIFF_ID in .env file');
-    return;
-  };
-
-  try {
-    await liff.init({ liffId: liffId });
-    console.log('LIFF init success');
-    console.log('LIFF SDK version', liff.getVersion());
-  }
-  catch (error) {
-    console.error('LIFF init failed', error);
-  }
-
-  if (!liff.isLoggedIn()) {
-    liff.login();
-  }
-  else {
-    isLogin.value = true;
-    const liffIDToken = liff.getIDToken();
-    if (liffIDToken) {
-      idToken.value = liffIDToken;
-      console.log('LIFF ID token:', idToken.value);
-    }
-  }
-});
-
-onMounted(() => {
-  // Fetch products after LIFF initialization
-  productStore.fetchProducts();
-});
-
+// 商品取得
 const productStore = useProductStore();
 const { products, isLoading, error } = storeToRefs(productStore);
+onMounted(() => {
+  productStore.fetchProducts();
+});
 </script>
 
 <template>
@@ -94,7 +63,7 @@ const { products, isLoading, error } = storeToRefs(productStore);
             :stock="product.inventory"
             :thumbnail-url="product.thumbnailUrl"
             :link-component="NuxtLink"
-            :link-component-props="{ to: `/items/${product.id}`, class: 'block' }"
+            :link-component-props="{ to: `/${facilityId}/items/${product.id}`, class: 'block' }"
           />
         </template>
       </div>

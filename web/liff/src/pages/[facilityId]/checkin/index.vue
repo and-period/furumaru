@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import FmTextInput from '../../../shared/src/components/FmTextInput.vue';
+import { FmTextInput } from '@furumaru/shared';
 
 // 仮データ: 実際はpropsやstore等で受け取る想定
 const lastName = ref('山田');

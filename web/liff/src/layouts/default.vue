@@ -1,31 +1,82 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import liff from '@line/liff';
+import { useAuthStore } from '~/stores/auth';
 import { useShoppingCartStore } from '~/stores/shopping';
+
+const route = useRoute();
+const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
+
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
 const isExpand = ref<boolean>(false);
 
-// ショッピングカートストアを使用
+// ストア
 const shoppingCartStore = useShoppingCartStore();
+const authStore = useAuthStore();
 const { shoppingCart, cartIsEmpty, totalPrice, totalQuantity } = storeToRefs(shoppingCartStore);
 
 const toggleExpand = () => {
   isExpand.value = !isExpand.value;
 };
 
-// コンポーネントマウント時にカート情報を取得
+// マウント時に認証処理とカート取得を実行
 onMounted(async () => {
+  const liffId = runtimeConfig.public.LIFF_ID;
+  if (!liffId) {
+    console.error('Please set LIFF_ID in .env file');
+  }
+  else {
+    try {
+      console.log(liffId);
+      await liff.init({ liffId });
+    }
+    catch (error) {
+      console.error('LIFF init failed', error);
+    }
+  }
+
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
+
+  // サインイン（LIFFログイン済みの場合のみ）
+  if (liff.isLoggedIn()) {
+    const liffAccessToken = liff.getAccessToken();
+    if (liffAccessToken) {
+      try {
+        const res = await authStore.signIn(liffAccessToken);
+        if (!res?.userId) {
+          const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
+          await router.push(path);
+          return;
+        }
+      }
+      catch (err) {
+        console.error('Auth signIn or redirect failed:', err);
+      }
+    }
+  }
+
+  // 認証処理の後にカート情報を取得（トークン付与のため）
   await shoppingCartStore.getCart();
 });
 
 // 価格のフォーマット
-const formatPrice = (price: number) => {
-  return price.toLocaleString('ja-JP');
-};
+const formatPrice = (price: number) => price.toLocaleString('ja-JP');
 </script>
 
 <template>
   <div>
     <div class="mb-14">
+      <div v-if="!facilityId">
+        <p class="text-center m-4 border border-yellow-800 text-yellow-800 rounded-lg bg-yellow-50 p-2">
+          施設が選択されていません
+        </p>
+      </div>
+
       <slot />
     </div>
     <div
