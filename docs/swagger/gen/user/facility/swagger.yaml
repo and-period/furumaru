@@ -93,6 +93,14 @@ components:
       - lastnameKana
       - phoneNumber
       type: object
+    request.GetAccessTokenRequest:
+      properties:
+        refreshToken:
+          description: 更新トークン
+          type: string
+      required:
+      - refreshToken
+      type: object
     request.SignInRequest:
       properties:
         authToken:
@@ -778,13 +786,6 @@ components:
       - Thursday
       - Friday
       - Saturday
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
     util.ErrorResponse:
       properties:
         detail:
@@ -824,6 +825,12 @@ paths:
       responses:
         "204":
           description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
       security:
       - bearerauth: []
       summary: サインアウト
@@ -877,6 +884,53 @@ paths:
                 $ref: '#/components/schemas/util.ErrorResponse'
           description: ユーザーが存在しない
       summary: サインイン
+      tags:
+      - Auth
+  /facilities/{facilityId}/auth/refresh-token:
+    post:
+      description: 更新トークンを渡すことで、アクセストークンを再発行します。
+      parameters:
+      - description: 施設ID
+        in: path
+        name: facilityId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/request.GetAccessTokenRequest'
+        description: アクセストークンの再発行
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.AuthResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/util.ErrorResponse'
+          description: リフレッシュトークンが無効
+      security:
+      - bearerauth: []
+      summary: アクセストークンの再発行
       tags:
       - Auth
   /facilities/{facilityId}/carts:
