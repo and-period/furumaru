@@ -63,7 +63,7 @@ onMounted(() => {
             :stock="product.inventory"
             :thumbnail-url="product.thumbnailUrl"
             :link-component="NuxtLink"
-            :link-component-props="{ to: `/items/${product.id}?facilityId=${facilityId}`, class: 'block' }"
+            :link-component-props="{ to: `/${facilityId}/items/${product.id}`, class: 'block' }"
           />
         </template>
       </div>

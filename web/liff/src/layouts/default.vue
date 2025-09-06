@@ -8,7 +8,7 @@ const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 
-const facilityId = computed<string>(() => String(route.query.facilityId || ''));
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
 const isExpand = ref<boolean>(false);
 
@@ -47,13 +47,10 @@ onMounted(async () => {
     const liffAccessToken = liff.getAccessToken();
     if (liffAccessToken) {
       try {
-        console.log('liffAccessToken:', liffAccessToken);
         const res = await authStore.signIn(liffAccessToken);
         if (!res?.userId) {
-          const current = router.resolve({ path: route.path, query: route.query }).href;
-          const query: Record<string, string> = { redirect: current };
-          if (facilityId.value) query.facilityId = facilityId.value;
-          await router.push({ path: '/checkin/new', query });
+          const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
+          await router.push(path);
           return;
         }
       }

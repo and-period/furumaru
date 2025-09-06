@@ -143,6 +143,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       try {
         const runtimeConfig = useRuntimeConfig();
         const route = useRoute();
+        const authStore = useAuthStore();
 
         const facilityId = String(route.params.facilityId ?? '');
 
@@ -151,7 +152,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
           return;
         }
 
+        const accessToken = authStore.token?.accessToken;
+        const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
+
         const config = new FacilityConfiguration({
+          headers,
           basePath: runtimeConfig.public.API_BASE_URL,
           credentials: 'include',
         });
