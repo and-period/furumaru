@@ -62,7 +62,7 @@ type params struct {
 	userWebURL               *url.URL
 	postalCode               postalcode.Client
 	geolocation              geolocation.Client
-	liffVerifier             auth.OIDCVerifier
+	liffVerifier             auth.OIDCVerifier[auth.LIFFClaims]
 	jwtVerifier              auth.JWTVerifier
 	jwtGenerator             auth.JWTGenerator
 	now                      func() time.Time
@@ -78,7 +78,6 @@ type params struct {
 	komojuClientID           string
 	komojuClientPassword     string
 	googleMapsPlatformAPIKey string
-	jwtIssuer                string
 	jwtSecret                string
 }
 
@@ -240,9 +239,9 @@ func (a *app) inject(ctx context.Context) error {
 
 	// JWTの設定
 	jwtVerifierParams := &auth.JWTVerifierParams{
-		Cache:  params.cache,
-		Issuer: params.jwtIssuer,
-		Secret: []byte(params.jwtSecret),
+		Cache:      params.cache,
+		Issuer:     a.JWTIssuer,
+		PrivateKey: []byte(params.jwtSecret),
 	}
 	jwtVerifier, err := auth.NewJWTVerifier(jwtVerifierParams)
 	if err != nil {
@@ -250,9 +249,9 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	params.jwtVerifier = jwtVerifier
 	jwtGeneratorParams := &auth.JWTGeneratorParams{
-		Cache:  params.cache,
-		Issuer: params.jwtIssuer,
-		Secret: []byte(params.jwtSecret),
+		Cache:      params.cache,
+		Issuer:     a.JWTIssuer,
+		PrivateKey: []byte(params.jwtSecret),
 	}
 	jwtGenerator, err := auth.NewJWTGenerator(jwtGeneratorParams)
 	if err != nil {
@@ -404,7 +403,6 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg.Go(func() error {
 		// JWT認証情報の取得
 		if a.JWTSecretName == "" {
-			p.jwtIssuer = a.JWTIssuer
 			p.jwtSecret = a.JWTSecret
 			return nil
 		}
@@ -412,8 +410,7 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		if err != nil {
 			return err
 		}
-		p.jwtIssuer = secrets["issuer"]
-		p.jwtSecret = secrets["secret"]
+		p.jwtSecret = secrets[""]
 		return nil
 	})
 	return eg.Wait()

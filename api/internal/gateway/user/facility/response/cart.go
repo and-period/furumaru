@@ -21,3 +21,16 @@ type CartResponse struct {
 	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
 	Products     []*Product     `json:"products"`     // 商品一覧
 }
+
+type CalcCartResponse struct {
+	RequestID   string       `json:"requestId"`   // 支払い時にAPIへ送信するキー(重複判定用)
+	Carts       []*Cart      `json:"carts"`       // カート一覧
+	Items       []*CartItem  `json:"items"`       // カート内の商品一覧(集計結果)
+	Products    []*Product   `json:"products"`    // 商品一覧
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+	Promotion   *Promotion   `json:"promotion"`   // プロモーション情報
+	SubTotal    int64        `json:"subtotal"`    // 購入金額(税込)
+	Discount    int64        `json:"discount"`    // 割引金額(税込)
+	ShippingFee int64        `json:"shippingFee"` // 配送手数料(税込)
+	Total       int64        `json:"total"`       // 合計金額(税込)
+}

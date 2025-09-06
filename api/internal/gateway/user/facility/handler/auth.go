@@ -17,6 +17,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/auth")
 
 	r.POST("", h.SignIn)
+	r.POST("/refresh-token", h.authentication, h.GetAccessToken)
 	r.DELETE("", h.authentication, h.SignOut)
 }
 
@@ -64,7 +65,42 @@ func (h *handler) SignIn(ctx *gin.Context) {
 		return
 	}
 	res := &response.AuthResponse{
-		Auth: service.NewAuth(user, auth).Response(),
+		Auth: service.NewAuth(user.ID, auth).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+// @Summary     アクセストークンの再発行
+// @Description 更新トークンを渡すことで、アクセストークンを再発行します。
+// @Tags        Auth
+// @Router      /facilities/{facilityId}/auth/refresh-token [post]
+// @Param       facilityId path string true "施設ID"
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body request.GetAccessTokenRequest true "アクセストークンの再発行"
+// @Produce     json
+// @Success     200 {object} response.AuthResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
+// @Failure     403 {object} util.ErrorResponse "リフレッシュトークンが無効"
+func (h *handler) GetAccessToken(ctx *gin.Context) {
+	req := &request.GetAccessTokenRequest{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	token, err := h.jwtVerifier.VerifyRefreshToken(ctx, req.RefreshToken) // 更新トークンの検証
+	if err != nil {
+		h.forbidden(ctx, err)
+		return
+	}
+	auth, err := h.jwtGenerator.RefreshAccessToken(ctx, req.RefreshToken) // アクセストークンの再発行
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.AuthResponse{
+		Auth: service.NewAuth(token.UserID, auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -77,7 +113,11 @@ func (h *handler) SignIn(ctx *gin.Context) {
 // @Security    bearerauth
 // @Produce     json
 // @Success     204
+// @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) SignOut(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	if err := h.jwtGenerator.DeleteRefreshToken(ctx, h.getUserID(ctx)); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }

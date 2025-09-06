@@ -2545,9 +2545,6 @@ components:
                 shippingMessage:
                     description: 発送連絡時のメッセージ
                     type: string
-                shippingType:
-                    description: 発送方法
-                    type: integer
                 status:
                     description: 注文ステータス
                     type: integer

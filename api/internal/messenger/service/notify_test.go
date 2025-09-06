@@ -396,7 +396,16 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).Times(2)
+				mocks.user.EXPECT().GetUser(gomock.Any(), &user.GetUserInput{UserID: "user-id"}).Return(&uentity.User{
+					ID:   "user-id",
+					Type: uentity.UserTypeMember,
+					Member: uentity.Member{
+						UserID:    "user-id",
+						Lastname:  "&.",
+						Firstname: "太郎",
+					},
+				}, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queues ...*entity.ReceivedQueue) error {
@@ -485,7 +494,8 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
+				mocks.user.EXPECT().GetUser(gomock.Any(), gomock.Any()).Return(&uentity.User{}, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -498,7 +508,22 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).AnyTimes()
+				mocks.user.EXPECT().GetUser(gomock.Any(), gomock.Any()).Return(&uentity.User{}, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
+			},
+			input: &messenger.NotifyOrderCapturedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "product failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().GetUser(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -511,7 +536,8 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError).MinTimes(1)
+				mocks.user.EXPECT().GetUser(gomock.Any(), gomock.Any()).Return(&uentity.User{}, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
 				OrderID: "order-id",
@@ -524,7 +550,8 @@ func TestNotifyOrderCaptured(t *testing.T) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order(sentity.OrderTypeProduct), nil)
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(gomock.Any(), gomock.Any()).Return(products, nil)
-				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil).Times(2)
+				mocks.user.EXPECT().GetUser(gomock.Any(), gomock.Any()).Return(&uentity.User{}, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderCapturedInput{
@@ -734,11 +761,14 @@ func TestNotifyOrderShipped(t *testing.T) {
 				Quantity:          2,
 			},
 		},
-		ID:              "order-id",
-		UserID:          "user-id",
-		CoordinatorID:   "coordinator-id",
-		PromotionID:     "",
-		ShippingMessage: "購入ありがとうございました",
+		OrderMetadata: sentity.OrderMetadata{
+			OrderID:         "order-id",
+			ShippingMessage: "購入ありがとうございました",
+		},
+		ID:            "order-id",
+		UserID:        "user-id",
+		CoordinatorID: "coordinator-id",
+		PromotionID:   "",
 	}
 	products := sentity.Products{
 		{

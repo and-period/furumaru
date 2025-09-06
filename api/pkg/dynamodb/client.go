@@ -37,11 +37,18 @@ type Client interface {
 	Get(ctx context.Context, entity Entity) error
 	Insert(ctx context.Context, entity Entity) error
 	Delete(ctx context.Context, entity Entity) error
+	Scan(ctx context.Context, entities Entities, filter map[string]any) error
+	BatchDelete(ctx context.Context, entities Entities) error
 }
 
 type Entity interface {
 	TableName() string
 	PrimaryKey() map[string]interface{}
+}
+
+type Entities interface {
+	TableName() string
+	Items() []Entity
 }
 
 type Params struct {
@@ -160,7 +167,84 @@ func (c *client) Delete(ctx context.Context, e Entity) error {
 	return c.dbError(err)
 }
 
-func (c *client) tableName(e Entity) *string {
+func (c *client) Scan(ctx context.Context, entities Entities, filter map[string]any) error {
+	if len(filter) == 0 {
+		return fmt.Errorf("%w: scan without filter is not allowed", ErrInvalidArgument)
+	}
+
+	conditions := make([]string, 0, len(filter))
+	expressionAttributeNames := make(map[string]string, len(filter))
+	expressionAttributeValues := make(map[string]types.AttributeValue, len(filter))
+	for k, v := range filter {
+		nameKey := fmt.Sprintf("#%s", k)
+		valueKey := fmt.Sprintf(":%s", k)
+
+		expressionAttributeNames[nameKey] = k
+		av, err := attributevalue.Marshal(v)
+		if err != nil {
+			return c.dbError(err)
+		}
+		expressionAttributeValues[valueKey] = av
+
+		conditions = append(conditions, fmt.Sprintf("%s = %s", nameKey, valueKey))
+	}
+
+	in := &dynamodb.ScanInput{
+		TableName:                 c.tableName(entities),
+		FilterExpression:          aws.String(strings.Join(conditions, " AND ")),
+		ExpressionAttributeNames:  expressionAttributeNames,
+		ExpressionAttributeValues: expressionAttributeValues,
+	}
+	result, err := c.db.Scan(ctx, in)
+	if err != nil {
+		return c.dbError(err)
+	}
+
+	err = attributevalue.UnmarshalListOfMaps(result.Items, entities)
+	return c.dbError(err)
+}
+
+func (c *client) BatchDelete(ctx context.Context, entities Entities) error {
+	const batchSize = 25 // DynamoDBのBatchWriteItemは最大25アイテムまで
+
+	table := c.tableName(entities)
+	items := entities.Items()
+
+	for i := 0; i < len(items); i += batchSize {
+		end := i + batchSize
+		if end > len(items) {
+			end = len(items)
+		}
+
+		reqs := make([]types.WriteRequest, 0, end-i)
+		for _, item := range items[i:end] {
+			key, err := c.keys(item.PrimaryKey())
+			if err != nil {
+				return c.dbError(err)
+			}
+			req := types.WriteRequest{
+				DeleteRequest: &types.DeleteRequest{
+					Key: key,
+				},
+			}
+			reqs = append(reqs, req)
+		}
+
+		in := &dynamodb.BatchWriteItemInput{
+			RequestItems: map[string][]types.WriteRequest{
+				aws.ToString(table): reqs,
+			},
+		}
+
+		if _, err := c.db.BatchWriteItem(ctx, in); err != nil {
+			return c.dbError(err)
+		}
+	}
+
+	return nil
+}
+
+func (c *client) tableName(e interface{ TableName() string }) *string {
 	strs := []string{c.tablePrefix, e.TableName()}
 	if c.tableSuffix != "" {
 		strs = append(strs, c.tableSuffix)

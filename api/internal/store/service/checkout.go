@@ -304,6 +304,9 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	})
 	// 請求先住所の取得
 	eg.Go(func() (err error) {
+		if params.payload.BillingAddressID == "" {
+			return
+		}
 		in := &user.GetAddressInput{
 			UserID:    params.payload.UserID,
 			AddressID: params.payload.BillingAddressID,
@@ -370,6 +373,10 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	if err != nil {
 		return "", internalError(err)
 	}
+	// 配送先住所の必須チェック
+	if !params.payload.Pickup && params.shippingAddress == nil {
+		return "", fmt.Errorf("service: shipping address is required: %w", exception.ErrFailedPrecondition)
+	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionCode != "" && !promotion.IsEnabled(shop.ID) {
 		slog.WarnContext(ctx, "Failed to disable promotion",
@@ -416,6 +423,9 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		Products:          products,
 		PaymentMethodType: params.paymentMethodType,
 		Promotion:         promotion,
+		Pickup:            params.payload.Pickup,
+		PickupAt:          params.payload.PickupAt,
+		PickupLocation:    params.payload.PickupLocation,
 	}
 	order, err := entity.NewProductOrder(oparams)
 	if err != nil {
@@ -497,6 +507,9 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 	}
 	if err != nil {
 		return "", internalError(err)
+	}
+	if params.payload.Pickup {
+		return "", fmt.Errorf("service: experience order cannot be pickup: %w", exception.ErrForbidden)
 	}
 	// 店舗の有効性検証
 	shop, err := s.db.Shop.Get(ctx, experience.ShopID)
@@ -585,16 +598,18 @@ func (s *service) executePaymentOrder(
 		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    params.customer.ID,
-			Name:  params.billingAddress.Name(),
+			Name:  params.customer.Name(),
 			Email: params.customer.Email(),
 		},
-		BillingAddress: &komoju.CreateSessionAddress{
+	}
+	if params.billingAddress != nil {
+		sparams.BillingAddress = &komoju.CreateSessionAddress{
 			ZipCode:      params.billingAddress.PostalCode,
 			Prefecture:   params.billingAddress.Prefecture,
 			City:         params.billingAddress.City,
 			AddressLine1: params.billingAddress.AddressLine1,
 			AddressLine2: params.billingAddress.AddressLine2,
-		},
+		}
 	}
 	if params.shippingAddress != nil {
 		sparams.ShippingAddress = &komoju.CreateSessionAddress{

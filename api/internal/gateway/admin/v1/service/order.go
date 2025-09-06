@@ -139,7 +139,6 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			ShippingMessage: order.ShippingMessage,
 			Type:            NewOrderType(order.Type).Response(),
 			Status:          NewOrderStatus(order.Status).Response(),
-			ShippingType:    NewOrderShippingType(order.ShippingType).Response(),
 			Metadata:        NewOrderMetadata(&order.OrderMetadata).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),

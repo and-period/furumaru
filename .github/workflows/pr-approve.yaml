@@ -6,14 +6,68 @@ jobs:
   label_when_approved:
     name: label when approved
     runs-on: ${{ matrix.os }}
-
+    permissions:
+      pull-requests: write
     strategy:
       matrix:
         os: [ubuntu-latest]
 
     steps:
-    - uses: pullreminders/label-when-approved-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        APPROVALS: 1
-        ADD_LABEL: "mergeable"
+    - name: Approved
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      with:
+        script: |
+          const REQUIRED_APPROVALS = 1;
+          const LABEL_NAME = "mergeable";
+          const { data: reviews } = await github.rest.pulls.listReviews({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          // Get the latest review state for each user
+          const latestReviews = {};
+          for (const review of reviews) {
+            if (!review.user) continue;
+
+            // Only consider reviews with meaningful states
+            if (["APPROVED", "CHANGES_REQUESTED", "DISMISSED"].includes(review.state)) {
+              if (!latestReviews[review.user.login] ||
+                  new Date(review.submitted_at) > new Date(latestReviews[review.user.login].submitted_at)) {
+                latestReviews[review.user.login] = review;
+              }
+            }
+          }
+
+          // Count current approvals
+          const approvalCount = Object.values(latestReviews)
+            .filter(review => review.state === "APPROVED")
+            .length;
+
+          console.log(`Current approvals: ${approvalCount}/${REQUIRED_APPROVALS}`);
+
+          if (approvalCount >= REQUIRED_APPROVALS) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels: [LABEL_NAME],
+            });
+            console.log(`Added label: ${LABEL_NAME}`);
+          } else {
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                name: LABEL_NAME
+              });
+              console.log(`Removed label: ${LABEL_NAME}`);
+            } catch (e) {
+              // Label doesn't exist (404) - ignore
+              if (e.status !== 404) {
+                throw e;
+              }
+              console.log(`Label ${LABEL_NAME} was not present`);
+            }
+          }

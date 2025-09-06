@@ -28,16 +28,6 @@ const (
 	OrderStatusFailed    OrderStatus = 6 // 失敗
 )
 
-// OrderShippingType - 発送方法
-type OrderShippingType int32
-
-const (
-	OrderShippingTypeUnknown  OrderShippingType = 0
-	OrderShippingTypeNone     OrderShippingType = 1 // 発送なし
-	OrderShippingTypeStandard OrderShippingType = 2 // 通常配送
-	OrderShippingTypePickup   OrderShippingType = 3 // 店舗受取
-)
-
 type Order struct {
 	response.Order
 }
@@ -104,23 +94,6 @@ func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderShippingType(typ entity.OrderShippingType) OrderShippingType {
-	switch typ {
-	case entity.OrderShippingTypeNone:
-		return OrderShippingTypeNone
-	case entity.OrderShippingTypeStandard:
-		return OrderShippingTypeStandard
-	case entity.OrderShippingTypePickup:
-		return OrderShippingTypePickup
-	default:
-		return OrderShippingTypeUnknown
-	}
-}
-
-func (t OrderShippingType) Response() int32 {
-	return int32(t)
-}
-
 func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {
 	var (
 		billingAddress, shippingAddress *Address
@@ -145,7 +118,6 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			PromotionID:     order.PromotionID,
 			Type:            NewOrderType(order.Type).Response(),
 			Status:          NewOrderStatus(order.Status).Response(),
-			ShippingType:    NewOrderShippingType(order.ShippingType).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
 			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments).Response(),

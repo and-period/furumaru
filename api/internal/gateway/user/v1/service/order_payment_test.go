@@ -265,7 +265,6 @@ func TestOrderPayment(t *testing.T) {
 	tests := []struct {
 		name    string
 		payment *entity.OrderPayment
-		address *Address
 		expect  *OrderPayment
 	}{
 		{
@@ -289,19 +288,6 @@ func TestOrderPayment(t *testing.T) {
 				RefundedAt:        time.Time{},
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			address: &Address{
-				Address: response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "090-1234-1234",
-				},
-				revisionID: 1,
 			},
 			expect: &OrderPayment{
 				OrderPayment: response.OrderPayment{

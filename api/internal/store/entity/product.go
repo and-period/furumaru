@@ -337,6 +337,17 @@ func (ps Products) Filter(productIDs ...string) Products {
 	return res
 }
 
+func (ps Products) FilterByProducerID(producerID string) Products {
+	res := make(Products, 0, len(ps))
+	for _, p := range ps {
+		if p.ProducerID != producerID {
+			continue
+		}
+		res = append(res, p)
+	}
+	return res
+}
+
 func (ps Products) FilterBySales() Products {
 	res := make(Products, 0, len(ps))
 	for _, p := range ps {

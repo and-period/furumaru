@@ -1754,12 +1754,12 @@ func TestSession_ExecuteAUPay(t *testing.T) {
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 		assert.Equal(t, "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=", r.Header.Get("Authorization"))
 		// request body
-		body := &orderRakutenPayRequest{}
+		body := &orderAUPayRequest{}
 		err := json.NewDecoder(r.Body).Decode(&body)
 		require.NoError(t, err)
-		expect := &orderRakutenPayRequest{
+		expect := &orderAUPayRequest{
 			Capture: "manual",
-			PaymentDetails: &rakutenPayDetails{
+			PaymentDetails: &auPayDetails{
 				Type: "aupay",
 			},
 		}

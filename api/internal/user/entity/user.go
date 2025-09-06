@@ -114,10 +114,16 @@ func NewUser(params *NewUserParams) *User {
 }
 
 func (u *User) Name() string {
-	if !u.Registered {
-		return "ゲスト"
+	switch u.Type {
+	case UserTypeMember:
+		return u.Member.Name()
+	case UserTypeGuest:
+		return u.Guest.Name()
+	case UserTypeFacilityUser:
+		return u.FacilityUser.Name()
+	default:
+		return ""
 	}
-	return u.Member.Name()
 }
 
 func (u *User) Username() string {
@@ -128,10 +134,16 @@ func (u *User) Username() string {
 }
 
 func (u *User) Email() string {
-	if u.Registered {
+	switch u.Type {
+	case UserTypeMember:
 		return u.Member.Email
+	case UserTypeGuest:
+		return u.Guest.Email
+	case UserTypeFacilityUser:
+		return u.FacilityUser.Email
+	default:
+		return ""
 	}
-	return u.Guest.Email
 }
 
 func (u *User) Fill(member *Member, guest *Guest, facilityUser *FacilityUser) {

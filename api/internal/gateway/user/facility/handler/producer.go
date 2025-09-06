@@ -3,10 +3,35 @@ package handler
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 )
+
+func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
+	if len(producerIDs) == 0 {
+		return service.Producers{}, nil
+	}
+	in := &user.MultiGetProducersInput{
+		ProducerIDs: producerIDs,
+	}
+	producers, err := h.user.MultiGetProducers(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	if len(producers) == 0 {
+		return service.Producers{}, nil
+	}
+	shopsIn := &store.ListShopsInput{
+		ProducerIDs: producerIDs,
+		NoLimit:     true,
+	}
+	shops, _, err := h.store.ListShops(ctx, shopsIn)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers, shops.GroupByProducerID()), nil
+}
 
 func (h *handler) getProducer(ctx context.Context, producerID string) (*service.Producer, error) {
 	in := &user.GetProducerInput{

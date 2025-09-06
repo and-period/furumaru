@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"errors"
 	"slices"
 	"time"
 
@@ -10,8 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
-
-var errNotFoundAddress = errors.New("entity: not found address")
 
 // 支払いステータス
 type PaymentStatus int32
@@ -93,7 +90,7 @@ const (
 // OrderPayment - 注文支払い情報
 type OrderPayment struct {
 	OrderID           string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
-	AddressRevisionID int64             `gorm:""`                     // 請求先情報ID
+	AddressRevisionID int64             `gorm:"default:null"`         // 請求先情報ID
 	Status            PaymentStatus     `gorm:""`                     // 決済状況
 	TransactionID     string            `gorm:""`                     // 決済ID(決済代行システム)
 	PaymentID         string            `gorm:""`                     // 決済ID(決済代行システム)
@@ -120,6 +117,7 @@ type OrderPayments []*OrderPayment
 
 type NewProductOrderPaymentParams struct {
 	OrderID    string
+	Pickup     bool
 	MethodType PaymentMethodType
 	Address    *entity.Address
 	Baskets    CartBaskets
@@ -222,14 +220,20 @@ func (t PaymentMethodType) String() string {
 }
 
 func NewProductOrderPayment(params *NewProductOrderPaymentParams) (*OrderPayment, error) {
-	if params.Address == nil {
-		return nil, errNotFoundAddress
-	}
-	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
-		return nil, err
+	var (
+		addressRevisionID int64
+		prefectureCode    int32
+	)
+	if params.Address != nil {
+		addressRevisionID = params.Address.AddressRevision.ID
+		prefectureCode = params.Address.PrefectureCode
+		if err := codes.ValidatePrefectureValues(prefectureCode); err != nil {
+			return nil, err
+		}
 	}
 	sparams := &NewProductOrderPaymentSummaryParams{
-		PrefectureCode: params.Address.PrefectureCode,
+		PrefectureCode: prefectureCode,
+		Pickup:         params.Pickup,
 		Baskets:        params.Baskets,
 		Products:       params.Products,
 		Shipping:       params.Shipping,
@@ -241,7 +245,7 @@ func NewProductOrderPayment(params *NewProductOrderPaymentParams) (*OrderPayment
 	}
 	return &OrderPayment{
 		OrderID:           params.OrderID,
-		AddressRevisionID: params.Address.AddressRevision.ID,
+		AddressRevisionID: addressRevisionID,
 		Status:            PaymentStatusPending,
 		TransactionID:     "",
 		MethodType:        params.MethodType,
@@ -254,11 +258,16 @@ func NewProductOrderPayment(params *NewProductOrderPaymentParams) (*OrderPayment
 }
 
 func NewExperienceOrderPayment(params *NewExperienceOrderPaymentParams) (*OrderPayment, error) {
-	if params.Address == nil {
-		return nil, errNotFoundAddress
-	}
-	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
-		return nil, err
+	var (
+		addressRevisionID int64
+		prefectureCode    int32
+	)
+	if params.Address != nil {
+		addressRevisionID = params.Address.AddressRevision.ID
+		prefectureCode = params.Address.PrefectureCode
+		if err := codes.ValidatePrefectureValues(prefectureCode); err != nil {
+			return nil, err
+		}
 	}
 	sparams := &NewExperienceOrderPaymentSummaryParams{
 		Experience:            params.Experience,
@@ -272,7 +281,7 @@ func NewExperienceOrderPayment(params *NewExperienceOrderPaymentParams) (*OrderP
 	summary := NewExperienceOrderPaymentSummary(sparams)
 	return &OrderPayment{
 		OrderID:           params.OrderID,
-		AddressRevisionID: params.Address.AddressRevision.ID,
+		AddressRevisionID: addressRevisionID,
 		Status:            PaymentStatusPending,
 		TransactionID:     "",
 		MethodType:        params.MethodType,
@@ -310,9 +319,14 @@ func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {
 }
 
 func (ps OrderPayments) AddressRevisionIDs() []int64 {
-	return set.UniqBy(ps, func(p *OrderPayment) int64 {
-		return p.AddressRevisionID
-	})
+	res := set.NewEmpty[int64](len(ps))
+	for _, p := range ps {
+		if p.AddressRevisionID == 0 {
+			continue
+		}
+		res.Add(p.AddressRevisionID)
+	}
+	return res.Slice()
 }
 
 func (ps OrderPayments) MapByOrderID() map[string]*OrderPayment {

@@ -20,6 +20,7 @@ type CalcCartInput struct {
 	BoxNumber      int64  `validate:"min=0"`
 	PromotionCode  string `validate:"omitempty,len=8"`
 	PrefectureCode int32  `validate:"min=0,max=47"`
+	Pickup         bool   `validate:""`
 }
 
 type AddCartItemInput struct {
@@ -144,15 +145,18 @@ type CheckoutDetail struct {
 	SessionID                string           `validate:"required"`
 	RequestID                string           `validate:"required"`
 	PromotionCode            string           `validate:"omitempty,len=8"`
-	BillingAddressID         string           `validate:"required"`
+	BillingAddressID         string           `validate:""`
 	CallbackURL              string           `validate:"required,http_url"`
 	Total                    int64            `validate:"min=0"`
 }
 
 type CheckoutProductDetail struct {
-	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"min=0"`
-	ShippingAddressID string `validate:"required"`
+	CoordinatorID     string    `validate:"required"`
+	BoxNumber         int64     `validate:"min=0"`
+	ShippingAddressID string    `validate:"required_without=Pickup"`
+	Pickup            bool      `validate:""`
+	PickupAt          time.Time `validate:"required_with=Pickup"`
+	PickupLocation    string    `validate:"required_with=Pickup"`
 }
 
 type CheckoutExperienceDetail struct {

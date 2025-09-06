@@ -18,7 +18,7 @@ const runtimeConfig = useRuntimeConfig();
 const liffId = runtimeConfig.public.LIFF_ID;
 
 const isLogin = ref<boolean>(false);
-const accessToken = ref<string>('');
+const idToken = ref<string>('');
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -86,7 +86,7 @@ const { products, isLoading, error } = storeToRefs(productStore);
     </h2>
     <div class="text-center">
       {{ isLogin ? 'ログイン済み' : '未ログイン' }} /
-      {{ accessToken || 'アクセストークンの取得に失敗しました' }}
+      {{ idToken || 'IDトークンの取得に失敗しました' }}
     </div>
 
     <!-- Loading state -->

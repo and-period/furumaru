@@ -8,8 +8,10 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/golang-jwt/jwt/v5"
@@ -19,8 +21,6 @@ import (
 var (
 	ErrInvalidAccessToken  = errors.New("auth: invalid access token")
 	ErrInvalidRefreshToken = errors.New("auth: invalid refresh token")
-	ErrNoPemBlock          = errors.New("auth: no pem block found")
-	ErrNotRSAPrivateKey    = errors.New("auth: not rsa private key")
 	ErrRefreshTokenExpired = errors.New("auth: refresh token expired")
 	ErrEmailNotFound       = errors.New("auth: email not found in claims")
 	ErrEmailUnverified     = errors.New("auth: email not verified in claims")
@@ -80,6 +80,12 @@ func buildOptions(opts ...Option) *options {
 	return dopts
 }
 
+type Auth struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresIn    int32
+}
+
 type RefreshToken struct {
 	RefreshToken string    `dynamodbav:"-"`                   // リフレッシュトークン
 	HashedToken  string    `dynamodbav:"hashed_token"`        // リフレッシュトークン（ハッシュ値）
@@ -116,7 +122,7 @@ func NewRefreshToken(params *RefreshTokenParams) (*RefreshToken, error) {
 }
 
 func (t *RefreshToken) TableName() string {
-	return "auth-tokens"
+	return "facility-user-auth-tokens"
 }
 
 func (t *RefreshToken) PrimaryKey() map[string]interface{} {
@@ -127,6 +133,20 @@ func (t *RefreshToken) PrimaryKey() map[string]interface{} {
 
 func (t *RefreshToken) Verify(refreshToken string) error {
 	return compareRefreshToken(t.HashedToken, refreshToken)
+}
+
+type RefreshTokens []*RefreshToken
+
+func (t RefreshTokens) TableName() string {
+	return "facility-user-auth-tokens"
+}
+
+func (t RefreshTokens) Items() []dynamodb.Entity {
+	res := make([]dynamodb.Entity, len(t))
+	for i := range t {
+		res[i] = t[i]
+	}
+	return res
 }
 
 func newRefreshToken(raw string) string {
@@ -143,19 +163,45 @@ func compareRefreshToken(hashed string, raw string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashed), []byte(raw))
 }
 
-func parseRSAPrivateKeyFromPEM(pemBytes []byte) (*rsa.PrivateKey, error) {
-	block, _ := pem.Decode(pemBytes)
-	if block == nil {
-		return nil, ErrNoPemBlock
+// $ openssl genrsa 2048
+func parseRSAPrivateKey(pemStr []byte) (*rsa.PrivateKey, error) {
+	convertedPem, err := convertPemFromString(pemStr)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to convert pem string: %w", err)
 	}
 
-	if key, err := x509.ParsePKCS1PrivateKey(block.Bytes); err == nil {
-		return key, nil
+	block, _ := pem.Decode(convertedPem)
+	if block == nil {
+		return nil, errors.New("auth: failed to parse PEM block containing the private key")
 	}
-	if keyAny, err := x509.ParsePKCS8PrivateKey(block.Bytes); err == nil {
-		if rsaKey, ok := keyAny.(*rsa.PrivateKey); ok {
-			return rsaKey, nil
+
+	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		// PKCS#8形式も試してみる
+		key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("auth: failed to parse private key: %w", err)
 		}
+		rsaPrivateKey, ok := key.(*rsa.PrivateKey)
+		if !ok {
+			return nil, errors.New("auth: key type is not RSA")
+		}
+		return rsaPrivateKey, nil
 	}
-	return nil, ErrNotRSAPrivateKey
+
+	return privateKey, nil
+}
+
+func convertPemFromString(pemStr []byte) ([]byte, error) {
+	pemString := string(pemStr)
+
+	// \nを実際の改行コードに変換
+	pemString = strings.ReplaceAll(pemString, "\\n", "\n")
+
+	// 既に適切な改行コードが使われている場合はそのまま返す
+	if strings.Contains(pemString, "\n") {
+		return []byte(pemString), nil
+	}
+
+	return nil, errors.New("auth: invalid PEM format")
 }

@@ -3,8 +3,6 @@ package auth
 import (
 	"context"
 	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
 	"time"
 
@@ -12,23 +10,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Auth struct {
-	AccessToken  string
-	RefreshToken string
-	ExpiresIn    int32
-}
-
 type JWTGenerator interface {
 	Generate(ctx context.Context, sub, facilityID string) (*Auth, error)
 	GenerateAccessToken(sub, facilityID string) (string, error)
 	GenerateRefreshToken(ctx context.Context, sub, facilityID string) (string, error)
-	RefreshAccessToken(ctx context.Context, refreshToken string) (string, error)
+	RefreshAccessToken(ctx context.Context, refreshToken string) (*Auth, error)
+	DeleteRefreshToken(ctx context.Context, userID string) error
 }
 
 type JWTGeneratorParams struct {
-	Cache  dynamodb.Client
-	Issuer string
-	Secret []byte
+	Cache      dynamodb.Client
+	Issuer     string
+	PrivateKey []byte
 }
 
 type jwtGenerator struct {
@@ -44,9 +37,9 @@ type jwtGenerator struct {
 
 func NewJWTGenerator(params *JWTGeneratorParams, opts ...Option) (JWTGenerator, error) {
 	dopts := buildOptions(opts...)
-	secret, err := parseRSAPrivateKeyFromPEM(params.Secret)
+	secret, err := parseRSAPrivateKey(params.PrivateKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("auth: failed to parse private key: %w", err)
 	}
 	client := &jwtGenerator{
 		issuer:          params.Issuer,
@@ -113,21 +106,50 @@ func (g *jwtGenerator) GenerateRefreshToken(ctx context.Context, sub, facilityID
 	return token.RefreshToken, nil
 }
 
-func (g *jwtGenerator) RefreshAccessToken(ctx context.Context, refreshToken string) (string, error) {
+func (g *jwtGenerator) RefreshAccessToken(ctx context.Context, refreshToken string) (*Auth, error) {
 	if refreshToken == "" {
-		return "", ErrInvalidRefreshToken
+		return nil, ErrInvalidRefreshToken
 	}
 	hashedToken, err := hashRefreshToken(refreshToken)
 	if err != nil {
-		return "", fmt.Errorf("auth: failed to hash refresh token: %w", err)
+		return nil, fmt.Errorf("auth: failed to hash refresh token: %w", err)
 	}
 	token := &RefreshToken{
 		HashedToken: hashedToken,
 	}
 	if err := g.cache.Get(ctx, token); err != nil {
-		return "", fmt.Errorf("auth: failed to get auth token from cache: %w", err)
+		return nil, fmt.Errorf("auth: failed to get auth token from cache: %w", err)
 	}
-	return g.GenerateAccessToken(token.UserID, token.FacilityID)
+	accessToken, err := g.GenerateAccessToken(token.UserID, token.FacilityID)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to generate access token: %w", err)
+	}
+	res := &Auth{
+		AccessToken:  accessToken,
+		RefreshToken: "",
+		ExpiresIn:    int32(g.accessTokenTTL.Seconds()),
+	}
+	return res, nil
+}
+
+func (g *jwtGenerator) DeleteRefreshToken(ctx context.Context, userID string) error {
+	// ユーザーIDに紐づく全てのリフレッシュトークンを検索
+	filter := map[string]interface{}{
+		"user_id": userID,
+	}
+	tokens := RefreshTokens{}
+	if err := g.cache.Scan(ctx, tokens, filter); err != nil {
+		return fmt.Errorf("auth: failed to scan refresh tokens: %w", err)
+	}
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	// バッチ削除を実行
+	if err := g.cache.BatchDelete(ctx, tokens); err != nil {
+		return fmt.Errorf("auth: failed to batch delete refresh tokens: %w", err)
+	}
+	return nil
 }
 
 type Claims struct {
@@ -141,14 +163,14 @@ type JWTVerifier interface {
 }
 
 type JWTVerifierParams struct {
-	Cache  dynamodb.Client
-	Issuer string
-	Secret []byte
+	Cache      dynamodb.Client
+	Issuer     string
+	PrivateKey []byte
 }
 
 type jwtVerifier struct {
 	issuer        string
-	secret        *rsa.PublicKey
+	secret        *rsa.PrivateKey
 	signingMethod *jwt.SigningMethodRSA
 	cache         dynamodb.Client
 	now           func() time.Time
@@ -156,9 +178,9 @@ type jwtVerifier struct {
 
 func NewJWTVerifier(params *JWTVerifierParams, opts ...Option) (JWTVerifier, error) {
 	dopts := buildOptions(opts...)
-	secret, err := parseRSAPublicKeyFromPEM(params.Secret)
+	secret, err := parseRSAPrivateKey(params.PrivateKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("auth: failed to parse private key: %w", err)
 	}
 	client := &jwtVerifier{
 		issuer:        params.Issuer,
@@ -178,7 +200,7 @@ func (v *jwtVerifier) VerifyAccessToken(accessToken string) (*Claims, error) {
 	)
 	claims := &Claims{}
 	keyFunc := func(token *jwt.Token) (any, error) {
-		return v.secret, nil
+		return &v.secret.PublicKey, nil
 	}
 	token, err := parser.ParseWithClaims(accessToken, claims, keyFunc)
 	if err != nil {
@@ -208,23 +230,4 @@ func (v *jwtVerifier) VerifyRefreshToken(ctx context.Context, refreshToken strin
 		return nil, ErrRefreshTokenExpired
 	}
 	return token, nil
-}
-
-func parseRSAPublicKeyFromPEM(pemBytes []byte) (*rsa.PublicKey, error) {
-	block, _ := pem.Decode(pemBytes)
-	if block == nil {
-		return nil, ErrNoPemBlock
-	}
-
-	if key, err := x509.ParsePKCS1PublicKey(block.Bytes); err == nil {
-		return key, nil
-	}
-	if keyAny, err := x509.ParsePKIXPublicKey(block.Bytes); err == nil {
-		if rsaKey, ok := keyAny.(*rsa.PublicKey); ok {
-			return rsaKey, nil
-		}
-		return nil, ErrNotRSAPrivateKey
-	}
-
-	return nil, ErrNotRSAPrivateKey
 }

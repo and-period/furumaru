@@ -1,10 +1,6 @@
 package auth
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"testing"
 	"time"
 
@@ -37,7 +33,7 @@ func TestRefreshToken(t *testing.T) {
 func TestRefreshToken_TableName(t *testing.T) {
 	t.Parallel()
 	token := &RefreshToken{}
-	assert.Equal(t, "auth-tokens", token.TableName())
+	assert.Equal(t, "facility-user-auth-tokens", token.TableName())
 }
 
 func TestRefreshToken_PrimaryKey(t *testing.T) {
@@ -219,90 +215,4 @@ func TestCompareRefreshToken(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestParseRSAPrivateKeyFromPEM(t *testing.T) {
-	t.Parallel()
-
-	// Generate test keys
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-	require.NoError(t, err)
-
-	// PKCS1 format
-	pkcs1Bytes := x509.MarshalPKCS1PrivateKey(privateKey)
-	pkcs1PEM := pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: pkcs1Bytes,
-	})
-
-	// PKCS8 format
-	pkcs8Bytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
-	require.NoError(t, err)
-	pkcs8PEM := pem.EncodeToMemory(&pem.Block{
-		Type:  "PRIVATE KEY",
-		Bytes: pkcs8Bytes,
-	})
-
-	tests := []struct {
-		name    string
-		pemData []byte
-		wantErr bool
-		errType error
-	}{
-		{
-			name:    "valid PKCS1 private key",
-			pemData: pkcs1PEM,
-			wantErr: false,
-		},
-		{
-			name:    "valid PKCS8 private key",
-			pemData: pkcs8PEM,
-			wantErr: false,
-		},
-		{
-			name:    "invalid PEM",
-			pemData: []byte("invalid pem data"),
-			wantErr: true,
-			errType: ErrNoPemBlock,
-		},
-		{
-			name:    "empty PEM",
-			pemData: []byte{},
-			wantErr: true,
-			errType: ErrNoPemBlock,
-		},
-		{
-			name: "non-RSA key",
-			pemData: pem.EncodeToMemory(&pem.Block{
-				Type:  "PRIVATE KEY",
-				Bytes: []byte("invalid key data"),
-			}),
-			wantErr: true,
-			errType: ErrNotRSAPrivateKey,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			key, err := parseRSAPrivateKeyFromPEM(tt.pemData)
-			if tt.wantErr {
-				assert.Error(t, err)
-				assert.Nil(t, key)
-				if tt.errType != nil {
-					assert.ErrorIs(t, err, tt.errType)
-				}
-			} else {
-				assert.NoError(t, err)
-				assert.NotNil(t, key)
-			}
-		})
-	}
-}
-
-func TestErrors(t *testing.T) {
-	t.Parallel()
-	assert.Equal(t, "auth: no pem block found", ErrNoPemBlock.Error())
-	assert.Equal(t, "auth: not rsa private key", ErrNotRSAPrivateKey.Error())
 }

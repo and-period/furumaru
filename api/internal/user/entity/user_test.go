@@ -136,6 +136,7 @@ func TestUser_Name(t *testing.T) {
 			name: "success member",
 			user: &User{
 				ID:         "user-id",
+				Type:       UserTypeMember,
 				Registered: true,
 				Member: Member{
 					UserID:        "user-id",
@@ -163,17 +164,48 @@ func TestUser_Name(t *testing.T) {
 			name: "success guest",
 			user: &User{
 				ID:         "user-id",
+				Type:       UserTypeGuest,
 				Registered: false,
 				Guest: Guest{
-					UserID:    "user-id",
-					Email:     "test-user@and-period.jp",
-					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UserID:        "user-id",
+					Lastname:      "ゲスト",
+					Firstname:     "",
+					LastnameKana:  "げすと",
+					FirstnameKana: "",
+					Email:         "test-user@and-period.jp",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: "ゲスト",
+		},
+		{
+			name: "success facility user",
+			user: &User{
+				ID:         "user-id",
+				Type:       UserTypeFacilityUser,
+				Registered: false,
+				FacilityUser: FacilityUser{
+					UserID:        "user-id",
+					Lastname:      "&.",
+					Firstname:     "施設利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "しせつりようしゃ",
+					Email:         "test-user@and-period.jp",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "&. 施設利用者",
+		},
+		{
+			name:   "success empty",
+			user:   &User{},
+			expect: "",
 		},
 	}
 	for _, tt := range tests {
@@ -228,6 +260,7 @@ func TestUser_Email(t *testing.T) {
 			name: "success member",
 			user: &User{
 				ID:         "user-id",
+				Type:       UserTypeMember,
 				Registered: true,
 				Member: Member{
 					UserID:       "user-id",
@@ -251,6 +284,7 @@ func TestUser_Email(t *testing.T) {
 			name: "success guest",
 			user: &User{
 				ID:         "user-id",
+				Type:       UserTypeGuest,
 				Registered: false,
 				Guest: Guest{
 					UserID:    "user-id",
@@ -262,6 +296,35 @@ func TestUser_Email(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: "test-user@and-period.jp",
+		},
+		{
+			name: "success facility user",
+			user: &User{
+				ID:         "user-id",
+				Type:       UserTypeFacilityUser,
+				Registered: false,
+				FacilityUser: FacilityUser{
+					UserID:        "user-id",
+					Email:         "facility-user@and-period.jp",
+					PhoneNumber:   "+819098765432",
+					ExternalID:    "external-id",
+					ProducerID:    "producer-id",
+					Lastname:      "施設",
+					Firstname:     "利用者",
+					LastnameKana:  "しせつ",
+					FirstnameKana: "りようしゃ",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "facility-user@and-period.jp",
+		},
+		{
+			name:   "success empty",
+			user:   &User{},
+			expect: "",
 		},
 	}
 	for _, tt := range tests {
