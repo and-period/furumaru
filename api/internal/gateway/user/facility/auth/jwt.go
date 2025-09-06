@@ -138,7 +138,7 @@ func (g *jwtGenerator) DeleteRefreshToken(ctx context.Context, userID string) er
 		"user_id": userID,
 	}
 	tokens := RefreshTokens{}
-	if err := g.cache.Scan(ctx, tokens, filter); err != nil {
+	if err := g.cache.Scan(ctx, &tokens, filter); err != nil {
 		return fmt.Errorf("auth: failed to scan refresh tokens: %w", err)
 	}
 	if len(tokens) == 0 {

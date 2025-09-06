@@ -326,8 +326,26 @@ func TestJWTGenerator_DeleteRefreshToken(t *testing.T) {
 			name:   "success",
 			userID: "user-id",
 			setupMock: func(m *mock_dynamodb.MockClient) {
-				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, tokens interface{}, filter map[string]interface{}) error {
+					// Scanの結果として空でないトークンリストをシミュレート
+					if tokensPtr, ok := tokens.(*RefreshTokens); ok {
+						*tokensPtr = append(*tokensPtr, &RefreshToken{HashedToken: "hashed-token", UserID: "user-id"})
+					}
+					return nil
+				})
 				m.EXPECT().BatchDelete(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name:   "success with no tokens",
+			userID: "user-id",
+			setupMock: func(m *mock_dynamodb.MockClient) {
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, tokens interface{}, filter map[string]interface{}) error {
+					// Scanの結果として空のトークンリストをシミュレート
+					return nil
+				})
+				// BatchDeleteは呼ばれない（早期returnのため）
 			},
 			wantErr: false,
 		},
@@ -343,7 +361,13 @@ func TestJWTGenerator_DeleteRefreshToken(t *testing.T) {
 			name:   "batch delete error",
 			userID: "user-id",
 			setupMock: func(m *mock_dynamodb.MockClient) {
-				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, tokens interface{}, filter map[string]interface{}) error {
+					// Scanの結果として空でないトークンリストをシミュレート
+					if tokensPtr, ok := tokens.(*RefreshTokens); ok {
+						*tokensPtr = append(*tokensPtr, &RefreshToken{HashedToken: "hashed-token", UserID: "user-id"})
+					}
+					return nil
+				})
 				m.EXPECT().BatchDelete(gomock.Any(), gomock.Any()).Return(errors.New("batch delete error"))
 			},
 			wantErr: true,
