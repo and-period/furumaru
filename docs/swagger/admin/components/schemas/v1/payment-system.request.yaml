@@ -1,9 +1,0 @@
-updatePaymentSystemRequest:
-  type: object
-  properties:
-    status:
-      $ref: './../../../openapi.yaml#/components/schemas/paymentSystemStatus'
-  required:
-  - status
-  example:
-    status: 1
