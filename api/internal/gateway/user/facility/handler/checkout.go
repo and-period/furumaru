@@ -32,6 +32,7 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 // @Tags        Checkout
 // @Router      /facilities/{facilityId}/checkouts [post]
 // @Param       facilityId path string true "施設ID"
+// @Security    bearerauth
 // @Accept      json
 // @Param				request body request.CheckoutRequest true "チェックアウト情報"
 // @Produce     json
