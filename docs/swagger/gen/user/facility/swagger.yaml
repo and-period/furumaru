@@ -17,6 +17,8 @@ components:
       properties:
         month:
           description: 有効期限（月）
+          maximum: 12
+          minimum: 1
           type: integer
         name:
           description: カード名義
@@ -26,15 +28,23 @@ components:
           type: string
         verificationValue:
           description: セキュリティコード
+          maxLength: 4
+          minLength: 3
           type: string
         year:
           description: 有効期限（年）
+          maximum: 2100
+          minimum: 2000
           type: integer
+      required:
+      - name
+      - number
       type: object
     request.CheckoutRequest:
       properties:
         boxNumber:
           description: 箱の通番（箱単位で購入する場合）
+          minimum: 0
           type: integer
         callbackUrl:
           description: 決済完了後のリダイレクト先URL
@@ -55,7 +65,13 @@ components:
           type: string
         total:
           description: 支払い合計金額（誤り検出用）
+          minimum: 0
           type: integer
+      required:
+      - callbackUrl
+      - coordinatorId
+      - paymentMethod
+      - requestId
       type: object
     request.CreateAuthUserRequest:
       properties:
@@ -779,6 +795,20 @@ components:
     time.Weekday:
       type: integer
       x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
       - Sunday
       - Monday
       - Tuesday

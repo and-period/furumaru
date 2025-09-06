@@ -161,11 +161,11 @@ type CheckoutProductDetail struct {
 
 type CheckoutExperienceDetail struct {
 	ExperienceID          string `validate:"required"`
-	AdultCount            int64  `validate:"min=0"`
-	JuniorHighSchoolCount int64  `validate:"min=0"`
-	ElementarySchoolCount int64  `validate:"min=0"`
-	PreschoolCount        int64  `validate:"min=0"`
-	SeniorCount           int64  `validate:"min=0"`
+	AdultCount            int64  `validate:"min=0,max=99"`
+	JuniorHighSchoolCount int64  `validate:"min=0,max=99"`
+	ElementarySchoolCount int64  `validate:"min=0,max=99"`
+	PreschoolCount        int64  `validate:"min=0,max=99"`
+	SeniorCount           int64  `validate:"min=0,max=99"`
 	Transportation        string `validate:"max=256"`
 	RequestedDate         string `validate:"omitempty,date"`
 	RequestedTime         string `validate:"omitempty,time"`

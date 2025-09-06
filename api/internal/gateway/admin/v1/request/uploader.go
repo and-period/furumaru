@@ -1,5 +1,5 @@
 package request
 
 type GetUploadURLRequest struct {
-	FileType string `json:"fileType"` // ファイル種別
+	FileType string `json:"fileType" binding:"required"` // ファイル種別
 }

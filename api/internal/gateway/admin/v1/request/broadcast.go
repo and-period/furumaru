@@ -1,24 +1,24 @@
 package request
 
 type UpdateBroadcastArchiveRequest struct {
-	ArchiveURL string `json:"archiveUrl"` // アーカイブ動画URL
+	ArchiveURL string `json:"archiveUrl" binding:"required,url"` // アーカイブ動画URL
 }
 
 type ActivateBroadcastMP4Request struct {
-	InputURL string `json:"inputUrl"` // 配信動画URL
+	InputURL string `json:"inputUrl" binding:"required,url"` // 配信動画URL
 }
 
 type AuthYoutubeBroadcastRequest struct {
-	YoutubeHandle string `json:"youtubeHandle"` // 連携先Youtubeアカウント
+	YoutubeHandle string `json:"youtubeHandle" binding:"required"` // 連携先Youtubeアカウント
 }
 
 type CallbackAuthYoutubeBroadcastRequest struct {
-	State    string `json:"state"`    // Google認証時に取得したstate
-	AuthCode string `json:"authCode"` // Google認証時に取得したcode
+	State    string `json:"state" binding:"required"`    // Google認証時に取得したstate
+	AuthCode string `json:"authCode" binding:"required"` // Google認証時に取得したcode
 }
 
 type CreateYoutubeBroadcastRequest struct {
-	Title       string `json:"title"`       // ライブ配信タイトル
-	Description string `json:"description"` // ライブ配信説明
-	Public      bool   `json:"public"`      // 公開設定
+	Title       string `json:"title" binding:"required,max=100"`         // ライブ配信タイトル
+	Description string `json:"description" binding:"omitempty,max=1000"` // ライブ配信説明
+	Public      bool   `json:"public" binding:""`                        // 公開設定
 }

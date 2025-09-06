@@ -5,6 +5,8 @@ components:
                 inputUrl:
                     description: 配信動画URL
                     type: string
+            required:
+                - inputUrl
             type: object
         request.ApproveScheduleRequest:
             properties:
@@ -23,6 +25,8 @@ components:
                 youtubeHandle:
                     description: 連携先Youtubeアカウント
                     type: string
+            required:
+                - youtubeHandle
             type: object
         request.CallbackAuthYoutubeBroadcastRequest:
             properties:
@@ -32,11 +36,15 @@ components:
                 state:
                     description: Google認証時に取得したstate
                     type: string
+            required:
+                - authCode
+                - state
             type: object
         request.CompleteOrderRequest:
             properties:
                 shippingMessage:
                     description: 発送連絡時のメッセージ
+                    maxLength: 2000
                     type: string
             type: object
         request.ConnectGoogleAccountRequest:
@@ -50,6 +58,10 @@ components:
                 redirectUri:
                     description: リダイレクトURI
                     type: string
+            required:
+                - code
+                - nonce
+                - redirectUri
             type: object
         request.ConnectLINEAccountRequest:
             properties:
@@ -62,9 +74,15 @@ components:
                 redirectUri:
                     description: リダイレクトURI
                     type: string
+            required:
+                - code
+                - nonce
+                - redirectUri
             type: object
         request.ContactStatus:
             description: お問い合わせステータス
+            maximum: 4
+            minimum: 0
             type: integer
             x-enum-comments:
                 ContactStatusDiscard: 対応不要
@@ -85,25 +103,39 @@ components:
                     type: string
                 firstname:
                     description: 名
+                    maxLength: 16
                     type: string
                 firstnameKana:
                     description: 名(かな)
+                    maxLength: 32
                     type: string
                 lastname:
                     description: 姓
+                    maxLength: 16
                     type: string
                 lastnameKana:
                     description: 姓(かな)
+                    maxLength: 32
                     type: string
                 phoneNumber:
                     description: 電話番号
                     type: string
+            required:
+                - email
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
             type: object
         request.CreateCategoryRequest:
             properties:
                 name:
                     description: 商品種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.CreateContactReadRequest:
             properties:
@@ -115,7 +147,12 @@ components:
                     type: string
                 userType:
                     description: 送信者種別(不明:0, admin:1, uer:2, guest:3)
+                    maximum: 3
+                    minimum: 0
                     type: integer
+            required:
+                - contactId
+                - userId
             type: object
         request.CreateContactRequest:
             properties:
@@ -124,12 +161,14 @@ components:
                     type: string
                 content:
                     description: お問い合わせ内容
+                    maxLength: 2000
                     type: string
                 email:
                     description: メールアドレス
                     type: string
                 note:
                     description: 対応者メモ
+                    maxLength: 500
                     type: string
                 phoneNumber:
                     description: 電話番号
@@ -139,13 +178,22 @@ components:
                     type: string
                 title:
                     description: お問い合わせ件名
+                    maxLength: 64
                     type: string
                 userId:
                     description: 問い合わせ作成者ID(null許容)
                     type: string
                 username:
                     description: 氏名
+                    maxLength: 32
                     type: string
+            required:
+                - categoryId
+                - content
+                - email
+                - phoneNumber
+                - title
+                - username
             type: object
         request.CreateExperienceMedia:
             properties:
@@ -155,6 +203,8 @@ components:
                 url:
                     description: メディアURL
                     type: string
+            required:
+                - url
             type: object
         request.CreateExperienceRequest:
             properties:
@@ -169,12 +219,15 @@ components:
                     type: string
                 description:
                     description: 説明
+                    maxLength: 20000
                     type: string
                 direction:
                     description: アクセス方法
+                    maxLength: 2000
                     type: string
                 duration:
                     description: 体験時間(分)
+                    minimum: 0
                     type: integer
                 endAt:
                     description: 募集終了日時
@@ -184,18 +237,24 @@ components:
                     type: string
                 hostAddressLine1:
                     description: 開催場所(住所1)
+                    maxLength: 64
                     type: string
                 hostAddressLine2:
                     description: 開催場所(住所2)
+                    maxLength: 64
                     type: string
                 hostCity:
                     description: 開催場所(市区町村)
+                    maxLength: 32
                     type: string
                 hostPostalCode:
                     description: 開催場所(郵便番号)
+                    maxLength: 16
                     type: string
                 hostPrefectureCode:
                     description: 開催場所(都道府県コード)
+                    maximum: 47
+                    minimum: 1
                     type: integer
                 media:
                     description: メディア一覧
@@ -205,18 +264,28 @@ components:
                     uniqueItems: false
                 priceAdult:
                     description: 大人料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceElementarySchool:
                     description: 小学生料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceJuniorHighSchool:
                     description: 中学生料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 pricePreschool:
                     description: 幼児料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceSenior:
                     description: シニア料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 producerId:
                     description: 生産者ID
@@ -229,12 +298,15 @@ components:
                     type: boolean
                 recommendedPoint1:
                     description: おすすめポイント1
+                    maxLength: 128
                     type: string
                 recommendedPoint2:
                     description: おすすめポイント2
+                    maxLength: 128
                     type: string
                 recommendedPoint3:
                     description: おすすめポイント3
+                    maxLength: 128
                     type: string
                 soldOut:
                     description: 定員オーバーフラグ
@@ -244,18 +316,41 @@ components:
                     type: integer
                 title:
                     description: 体験名
+                    maxLength: 128
                     type: string
+            required:
+                - coordinatorId
+                - description
+                - endAt
+                - experienceTypeId
+                - hostAddressLine1
+                - hostCity
+                - hostPostalCode
+                - hostPrefectureCode
+                - media
+                - priceAdult
+                - priceElementarySchool
+                - priceJuniorHighSchool
+                - pricePreschool
+                - priceSenior
+                - producerId
+                - startAt
+                - title
             type: object
         request.CreateExperienceTypeRequest:
             properties:
                 name:
                     description: 体験種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.CreateLiveRequest:
             properties:
                 comment:
                     description: コメント
+                    maxLength: 2000
                     type: string
                 endAt:
                     description: 配信終了日時
@@ -272,14 +367,22 @@ components:
                 startAt:
                     description: 配信開始日時
                     type: integer
+            required:
+                - comment
+                - endAt
+                - producerId
+                - productIds
+                - startAt
             type: object
         request.CreateNotificationRequest:
             properties:
                 body:
                     description: 本文
+                    maxLength: 2000
                     type: string
                 note:
                     description: 備考
+                    maxLength: 2000
                     type: string
                 promotionId:
                     description: プロモーションID
@@ -291,28 +394,40 @@ components:
                     description: 掲載対象一覧
                     items:
                         type: integer
+                    maxItems: 4
+                    minItems: 1
                     type: array
                     uniqueItems: false
                 title:
                     description: タイトル
+                    maxLength: 128
                     type: string
                 type:
                     description: お知らせ種別
                     type: integer
+            required:
+                - body
+                - publishedAt
+                - targets
+                - title
+                - type
             type: object
         request.CreateProducerRequest:
             properties:
                 addressLine1:
                     description: 町名・番地
+                    maxLength: 64
                     type: string
                 addressLine2:
                     description: ビル名・号室など
+                    maxLength: 64
                     type: string
                 bonusVideoUrl:
                     description: 購入特典映像URL
                     type: string
                 city:
                     description: 市区町村
+                    maxLength: 32
                     type: string
                 coordinatorId:
                     description: 担当コーディネータ名
@@ -322,36 +437,46 @@ components:
                     type: string
                 facebookId:
                     description: Facebookアカウント
+                    maxLength: 50
                     type: string
                 firstname:
                     description: 名
+                    maxLength: 16
                     type: string
                 firstnameKana:
                     description: 名(かな)
+                    maxLength: 32
                     type: string
                 headerUrl:
                     description: ヘッダー画像URL
                     type: string
                 instagramId:
                     description: Instagramアカウント
+                    maxLength: 30
                     type: string
                 lastname:
                     description: 姓
+                    maxLength: 16
                     type: string
                 lastnameKana:
                     description: 姓(かな)
+                    maxLength: 32
                     type: string
                 phoneNumber:
                     description: 電話番号
                     type: string
                 postalCode:
                     description: 郵便番号
+                    maxLength: 16
                     type: string
                 prefectureCode:
                     description: 都道府県
+                    maximum: 47
+                    minimum: 0
                     type: integer
                 profile:
                     description: 紹介文
+                    maxLength: 2000
                     type: string
                 promotionVideoUrl:
                     description: 紹介映像URL
@@ -361,7 +486,15 @@ components:
                     type: string
                 username:
                     description: 表示名
+                    maxLength: 64
                     type: string
+            required:
+                - coordinatorId
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - username
             type: object
         request.CreateProductMedia:
             properties:
@@ -371,62 +504,82 @@ components:
                 url:
                     description: メディアURL
                     type: string
+            required:
+                - url
             type: object
         request.CreateProductRequest:
             properties:
                 box60Rate:
                     description: 箱の占有率(サイズ:60)
+                    maximum: 600
+                    minimum: 0
                     type: integer
                 box80Rate:
                     description: 箱の占有率(サイズ:80)
+                    maximum: 250
+                    minimum: 0
                     type: integer
                 box100Rate:
                     description: 箱の占有率(サイズ:100)
+                    maximum: 100
+                    minimum: 0
                     type: integer
                 coordinatorId:
                     description: コーディネータID
                     type: string
                 cost:
                     description: 原価(税込)
+                    minimum: 0
                     type: integer
                 deliveryType:
                     description: 配送方法
                     type: integer
                 description:
                     description: 商品説明
+                    maxLength: 2000
                     type: string
                 endAt:
                     description: 販売終了日時
                     type: integer
                 expirationDate:
                     description: 賞味期限(単位:日)
+                    minimum: 0
                     type: integer
                 inventory:
                     description: 在庫数
+                    minimum: 0
                     type: integer
                 itemDescription:
                     description: 数量単位説明
+                    maxLength: 64
                     type: string
                 itemUnit:
                     description: 数量単位
+                    maxLength: 16
                     type: string
                 media:
                     description: メディア一覧
                     items:
                         $ref: '#/components/schemas/request.CreateProductMedia'
+                    maxItems: 8
                     type: array
                     uniqueItems: false
                 name:
                     description: 商品名
+                    maxLength: 64
                     type: string
                 originCity:
                     description: 原産地(市区町村)
+                    maxLength: 32
                     type: string
                 originPrefectureCode:
                     description: 原産地(都道府県)
+                    maximum: 47
+                    minimum: 1
                     type: integer
                 price:
                     description: 販売価格(税込)
+                    minimum: 0
                     type: integer
                 producerId:
                     description: 生産者ID
@@ -435,6 +588,7 @@ components:
                     description: 商品タグID一覧
                     items:
                         type: string
+                    maxItems: 8
                     type: array
                     uniqueItems: false
                 productTypeId:
@@ -445,12 +599,15 @@ components:
                     type: boolean
                 recommendedPoint1:
                     description: おすすめポイント1
+                    maxLength: 128
                     type: string
                 recommendedPoint2:
                     description: おすすめポイント2
+                    maxLength: 128
                     type: string
                 recommendedPoint3:
                     description: おすすめポイント3
+                    maxLength: 128
                     type: string
                 startAt:
                     description: 販売開始日時
@@ -460,13 +617,31 @@ components:
                     type: integer
                 weight:
                     description: 重量(kg,少数第一位まで)
+                    minimum: 0
                     type: number
+            required:
+                - coordinatorId
+                - deliveryType
+                - description
+                - endAt
+                - itemDescription
+                - itemUnit
+                - name
+                - originPrefectureCode
+                - producerId
+                - productTagIds
+                - productTypeId
+                - startAt
+                - storageMethodType
             type: object
         request.CreateProductTagRequest:
             properties:
                 name:
                     description: 商品タグ名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.CreateProductTypeRequest:
             properties:
@@ -475,15 +650,21 @@ components:
                     type: string
                 name:
                     description: 品目名
+                    maxLength: 32
                     type: string
+            required:
+                - iconUrl
+                - name
             type: object
         request.CreatePromotionRequest:
             properties:
                 code:
                     type: string
                 description:
+                    maxLength: 2000
                     type: string
                 discountRate:
+                    minimum: 0
                     type: integer
                 discountType:
                     type: integer
@@ -494,7 +675,14 @@ components:
                 startAt:
                     type: integer
                 title:
+                    maxLength: 64
                     type: string
+            required:
+                - description
+                - discountType
+                - endAt
+                - startAt
+                - title
             type: object
         request.CreateScheduleRequest:
             properties:
@@ -503,6 +691,7 @@ components:
                     type: string
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 endAt:
                     description: 配信終了日時
@@ -524,12 +713,20 @@ components:
                     type: string
                 title:
                     description: タイトル
+                    maxLength: 64
                     type: string
+            required:
+                - coordinatorId
+                - description
+                - endAt
+                - startAt
+                - title
             type: object
         request.CreateShippingRate:
             properties:
                 name:
                     description: 配送料金設定名
+                    maxLength: 64
                     type: string
                 prefectureCodes:
                     description: 対象都道府県一覧
@@ -539,12 +736,18 @@ components:
                     uniqueItems: false
                 price:
                     description: 配送料金(税込)
+                    minimum: 0
                     type: integer
+            required:
+                - name
+                - prefectureCodes
+                - price
             type: object
         request.CreateShippingRequest:
             properties:
                 box60Frozen:
                     description: 箱サイズ60の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box60Rates:
                     description: 箱サイズ60の通常便配送料一覧
@@ -554,6 +757,7 @@ components:
                     uniqueItems: false
                 box80Frozen:
                     description: 箱サイズ80の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box80Rates:
                     description: 箱サイズ80の通常便配送料一覧
@@ -563,6 +767,7 @@ components:
                     uniqueItems: false
                 box100Frozen:
                     description: 箱サイズ100の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box100Rates:
                     description: 箱サイズ100の通常便配送料一覧
@@ -572,27 +777,43 @@ components:
                     uniqueItems: false
                 freeShippingRates:
                     description: 送料無料になる金額(税込)
+                    minimum: 0
                     type: integer
                 hasFreeShipping:
                     description: 送料無料オプションの有無
                     type: boolean
                 name:
                     description: 配送設定名
+                    maxLength: 64
                     type: string
+            required:
+                - box100Frozen
+                - box100Rates
+                - box60Frozen
+                - box60Rates
+                - box80Frozen
+                - box80Rates
+                - name
             type: object
         request.CreateSpotRequest:
             properties:
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 latitude:
                     description: 緯度
+                    maximum: 90
+                    minimum: -90
                     type: number
                 longitude:
                     description: 経度
+                    maximum: 180
+                    minimum: -180
                     type: number
                 name:
                     description: スポット名
+                    maxLength: 64
                     type: string
                 spotTypeId:
                     description: スポット種別ID
@@ -600,12 +821,20 @@ components:
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
+            required:
+                - latitude
+                - longitude
+                - name
+                - spotTypeId
             type: object
         request.CreateSpotTypeRequest:
             properties:
                 name:
                     description: スポット種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.CreateThreadRequest:
             properties:
@@ -614,13 +843,20 @@ components:
                     type: string
                 content:
                     description: 内容
+                    maxLength: 1000
                     type: string
                 userId:
                     description: 送信者ID
                     type: string
                 userType:
                     description: 送信者種別(不明:0, admin:1, uer:2, guest:3)
+                    maximum: 3
+                    minimum: 0
                     type: integer
+            required:
+                - contactId
+                - content
+                - userId
             type: object
         request.CreateVideoRequest:
             properties:
@@ -629,6 +865,7 @@ components:
                     type: string
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 displayExperience:
                     description: 体験への表示設定
@@ -662,27 +899,42 @@ components:
                     type: string
                 title:
                     description: タイトル
+                    maxLength: 128
                     type: string
                 videoUrl:
                     description: 動画URL
                     type: string
+            required:
+                - coordinatorId
+                - description
+                - experienceIds
+                - productIds
+                - publishedAt
+                - thumbnailUrl
+                - title
+                - videoUrl
             type: object
         request.CreateYoutubeBroadcastRequest:
             properties:
                 description:
                     description: ライブ配信説明
+                    maxLength: 1000
                     type: string
                 public:
                     description: 公開設定
                     type: boolean
                 title:
                     description: ライブ配信タイトル
+                    maxLength: 100
                     type: string
+            required:
+                - title
             type: object
         request.DraftOrderRequest:
             properties:
                 shippingMessage:
                     description: 発送連絡時のメッセージ
+                    maxLength: 2000
                     type: string
             type: object
         request.ExportOrdersRequest:
@@ -693,18 +945,24 @@ components:
                 shippingCarrier:
                     description: 配送会社
                     type: integer
+            required:
+                - shippingCarrier
             type: object
         request.ForgotAuthPasswordRequest:
             properties:
                 email:
                     description: メールアドレス
                     type: string
+            required:
+                - email
             type: object
         request.GetUploadURLRequest:
             properties:
                 fileType:
                     description: ファイル種別
                     type: string
+            required:
+                - fileType
             type: object
         request.PublishScheduleRequest:
             properties:
@@ -717,18 +975,25 @@ components:
                 refreshToken:
                     description: 更新トークン
                     type: string
+            required:
+                - refreshToken
             type: object
         request.RefundOrderRequest:
             properties:
                 description:
                     description: 返金理由
+                    maxLength: 2000
                     type: string
+            required:
+                - description
             type: object
         request.RegisterAuthDeviceRequest:
             properties:
                 device:
                     description: デバイスID
                     type: string
+            required:
+                - device
             type: object
         request.ResetAuthPasswordRequest:
             properties:
@@ -737,6 +1002,8 @@ components:
                     type: string
                 password:
                     description: パスワード
+                    maxLength: 32
+                    minLength: 8
                     type: string
                 passwordConfirmation:
                     description: パスワード (確認用)
@@ -744,6 +1011,10 @@ components:
                 verifyCode:
                     description: 検証コード
                     type: string
+            required:
+                - email
+                - passwordConfirmation
+                - verifyCode
             type: object
         request.SignInRequest:
             properties:
@@ -753,41 +1024,60 @@ components:
                 username:
                     description: ユーザー名 (メールアドレス)
                     type: string
+            required:
+                - password
+                - username
             type: object
         request.UpdateAdministratorEmailRequest:
             properties:
                 email:
                     description: メールアドレス
                     type: string
+            required:
+                - email
             type: object
         request.UpdateAdministratorRequest:
             properties:
                 firstname:
                     description: 名
+                    maxLength: 16
                     type: string
                 firstnameKana:
                     description: 名(かな)
+                    maxLength: 32
                     type: string
                 lastname:
                     description: 姓
+                    maxLength: 16
                     type: string
                 lastnameKana:
                     description: 姓(かな)
+                    maxLength: 32
                     type: string
                 phoneNumber:
                     description: 電話番号
                     type: string
+            required:
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
             type: object
         request.UpdateAuthEmailRequest:
             properties:
                 email:
                     description: メールアドレス
                     type: string
+            required:
+                - email
             type: object
         request.UpdateAuthPasswordRequest:
             properties:
                 newPassword:
                     description: 新しいパスワード
+                    maxLength: 32
+                    minLength: 8
                     type: string
                 oldPassword:
                     description: 現在のパスワード
@@ -795,18 +1085,26 @@ components:
                 passwordConfirmation:
                     description: パスワード (確認用)
                     type: string
+            required:
+                - oldPassword
+                - passwordConfirmation
             type: object
         request.UpdateBroadcastArchiveRequest:
             properties:
                 archiveUrl:
                     description: アーカイブ動画URL
                     type: string
+            required:
+                - archiveUrl
             type: object
         request.UpdateCategoryRequest:
             properties:
                 name:
                     description: 商品種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.UpdateContactRequest:
             properties:
@@ -815,12 +1113,14 @@ components:
                     type: string
                 content:
                     description: お問い合わせ内容
+                    maxLength: 2000
                     type: string
                 email:
                     description: メールアドレス
                     type: string
                 note:
                     description: 対応者メモ
+                    maxLength: 500
                     type: string
                 phoneNumber:
                     description: 電話番号
@@ -832,60 +1132,82 @@ components:
                     $ref: '#/components/schemas/request.ContactStatus'
                 title:
                     description: お問い合わせ件名
+                    maxLength: 64
                     type: string
                 userId:
                     description: 問い合わせ作成者ID(null許容)
                     type: string
                 username:
                     description: 氏名
+                    maxLength: 32
                     type: string
+            required:
+                - categoryId
+                - content
+                - email
+                - phoneNumber
+                - title
+                - username
             type: object
         request.UpdateCoordinatorRequest:
             properties:
                 addressLine1:
                     description: 町名・番地
+                    maxLength: 64
                     type: string
                 addressLine2:
                     description: ビル名・号室など
+                    maxLength: 64
                     type: string
                 bonusVideoUrl:
                     description: 購入特典映像URL
                     type: string
                 city:
                     description: 市区町村
+                    maxLength: 32
                     type: string
                 facebookId:
                     description: Facebookアカウント
+                    maxLength: 50
                     type: string
                 firstname:
                     description: 名
+                    maxLength: 16
                     type: string
                 firstnameKana:
                     description: 名(かな)
+                    maxLength: 32
                     type: string
                 headerUrl:
                     description: ヘッダー画像URL
                     type: string
                 instagramId:
                     description: Instagramアカウント
+                    maxLength: 32
                     type: string
                 lastname:
                     description: 姓
+                    maxLength: 16
                     type: string
                 lastnameKana:
                     description: 姓(かな)
+                    maxLength: 32
                     type: string
                 phoneNumber:
                     description: 電話番号
                     type: string
                 postalCode:
                     description: 郵便番号
+                    maxLength: 16
                     type: string
                 prefectureCode:
                     description: 都道府県
+                    maximum: 47
+                    minimum: 1
                     type: integer
                 profile:
                     description: 紹介文
+                    maxLength: 2000
                     type: string
                 promotionVideoUrl:
                     description: 紹介映像URL
@@ -895,12 +1217,25 @@ components:
                     type: string
                 username:
                     description: 表示名
+                    maxLength: 32
                     type: string
+            required:
+                - addressLine1
+                - city
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
+                - prefectureCode
+                - profile
+                - username
             type: object
         request.UpdateDefaultShippingRate:
             properties:
                 name:
                     description: 配送料金設定名
+                    maxLength: 64
                     type: string
                 prefectureCodes:
                     description: 対象都道府県一覧
@@ -910,12 +1245,18 @@ components:
                     uniqueItems: false
                 price:
                     description: 配送料金(税込)
+                    minimum: 0
                     type: integer
+            required:
+                - name
+                - prefectureCodes
+                - price
             type: object
         request.UpdateDefaultShippingRequest:
             properties:
                 box60Frozen:
                     description: 箱サイズ60の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box60Rates:
                     description: 箱サイズ60の通常便配送料一覧
@@ -925,6 +1266,7 @@ components:
                     uniqueItems: false
                 box80Frozen:
                     description: 箱サイズ80の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box80Rates:
                     description: 箱サイズ80の通常便配送料一覧
@@ -934,6 +1276,7 @@ components:
                     uniqueItems: false
                 box100Frozen:
                     description: 箱サイズ100の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box100Rates:
                     description: 箱サイズ100の通常便配送料一覧
@@ -943,10 +1286,18 @@ components:
                     uniqueItems: false
                 freeShippingRates:
                     description: 送料無料になる金額(税込)
+                    minimum: 0
                     type: integer
                 hasFreeShipping:
                     description: 送料無料オプションの有無
                     type: boolean
+            required:
+                - box100Frozen
+                - box100Rates
+                - box60Frozen
+                - box60Rates
+                - box80Frozen
+                - box80Rates
             type: object
         request.UpdateExperienceMedia:
             properties:
@@ -956,6 +1307,8 @@ components:
                 url:
                     description: メディアURL
                     type: string
+            required:
+                - url
             type: object
         request.UpdateExperienceRequest:
             properties:
@@ -967,12 +1320,15 @@ components:
                     type: string
                 description:
                     description: 説明
+                    maxLength: 20000
                     type: string
                 direction:
                     description: アクセス方法
+                    maxLength: 2000
                     type: string
                 duration:
                     description: 体験時間(分)
+                    minimum: 0
                     type: integer
                 endAt:
                     description: 募集終了日時
@@ -982,18 +1338,24 @@ components:
                     type: string
                 hostAddressLine1:
                     description: 開催場所(住所1)
+                    maxLength: 64
                     type: string
                 hostAddressLine2:
                     description: 開催場所(住所2)
+                    maxLength: 64
                     type: string
                 hostCity:
                     description: 開催場所(市区町村)
+                    maxLength: 32
                     type: string
                 hostPostalCode:
                     description: 開催場所(郵便番号)
+                    maxLength: 16
                     type: string
                 hostPrefectureCode:
                     description: 開催場所(都道府県コード)
+                    maximum: 47
+                    minimum: 1
                     type: integer
                 media:
                     description: メディア一覧
@@ -1003,18 +1365,28 @@ components:
                     uniqueItems: false
                 priceAdult:
                     description: 大人料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceElementarySchool:
                     description: 小学生料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceJuniorHighSchool:
                     description: 中学生料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 pricePreschool:
                     description: 幼児料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 priceSenior:
                     description: シニア料金
+                    maximum: 99
+                    minimum: 0
                     type: integer
                 promotionVideoUrl:
                     description: 紹介動画URL
@@ -1024,12 +1396,15 @@ components:
                     type: boolean
                 recommendedPoint1:
                     description: おすすめポイント1
+                    maxLength: 128
                     type: string
                 recommendedPoint2:
                     description: おすすめポイント2
+                    maxLength: 128
                     type: string
                 recommendedPoint3:
                     description: おすすめポイント3
+                    maxLength: 128
                     type: string
                 soldOut:
                     description: 定員オーバーフラグ
@@ -1039,13 +1414,33 @@ components:
                     type: integer
                 title:
                     description: 体験名
+                    maxLength: 128
                     type: string
+            required:
+                - description
+                - endAt
+                - experienceTypeId
+                - hostAddressLine1
+                - hostCity
+                - hostPostalCode
+                - hostPrefectureCode
+                - media
+                - priceAdult
+                - priceElementarySchool
+                - priceJuniorHighSchool
+                - pricePreschool
+                - priceSenior
+                - startAt
+                - title
             type: object
         request.UpdateExperienceTypeRequest:
             properties:
                 name:
                     description: 体験種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.UpdateLiveCommentRequest:
             properties:
@@ -1057,6 +1452,7 @@ components:
             properties:
                 comment:
                     description: コメント
+                    maxLength: 2000
                     type: string
                 endAt:
                     description: 配信終了日時
@@ -1070,14 +1466,21 @@ components:
                 startAt:
                     description: 配信開始日時
                     type: integer
+            required:
+                - comment
+                - endAt
+                - productIds
+                - startAt
             type: object
         request.UpdateNotificationRequest:
             properties:
                 body:
                     description: 本文
+                    maxLength: 2000
                     type: string
                 note:
                     description: 備考
+                    maxLength: 2000
                     type: string
                 publishedAt:
                     description: 掲載開始日
@@ -1086,67 +1489,90 @@ components:
                     description: 掲載対象一覧
                     items:
                         type: integer
+                    maxItems: 4
+                    minItems: 1
                     type: array
                     uniqueItems: false
                 title:
                     description: タイトル
+                    maxLength: 128
                     type: string
+            required:
+                - body
+                - publishedAt
+                - targets
+                - title
             type: object
         request.UpdatePaymentSystemRequest:
             properties:
                 status:
                     description: 決済システム状態
                     type: integer
+            required:
+                - status
             type: object
         request.UpdateProducerRequest:
             properties:
                 addressLine1:
                     description: 町名・番地
+                    maxLength: 64
                     type: string
                 addressLine2:
                     description: ビル名・号室など
+                    maxLength: 64
                     type: string
                 bonusVideoUrl:
                     description: 購入特典映像URL
                     type: string
                 city:
                     description: 市区町村
+                    maxLength: 32
                     type: string
                 email:
                     description: メールアドレス
                     type: string
                 facebookId:
                     description: Facebookアカウント
+                    maxLength: 50
                     type: string
                 firstname:
                     description: 名
+                    maxLength: 16
                     type: string
                 firstnameKana:
                     description: 名(かな)
+                    maxLength: 32
                     type: string
                 headerUrl:
                     description: ヘッダー画像URL
                     type: string
                 instagramId:
                     description: Instagramアカウント
+                    maxLength: 30
                     type: string
                 lastname:
                     description: 姓
+                    maxLength: 16
                     type: string
                 lastnameKana:
                     description: 姓(かな)
+                    maxLength: 32
                     type: string
                 phoneNumber:
                     description: 電話番号
                     type: string
                 postalCode:
                     description: 郵便番号
+                    maxLength: 16
                     type: string
                 prefectureCode:
                     description: 都道府県
+                    maximum: 47
+                    minimum: 0
                     type: integer
                 profile:
                     description: 紹介文
+                    maxLength: 2000
                     type: string
                 promotionVideoUrl:
                     description: 紹介映像URL
@@ -1156,13 +1582,23 @@ components:
                     type: string
                 username:
                     description: 表示名
+                    maxLength: 64
                     type: string
+            required:
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - username
             type: object
         request.UpdateProductTagRequest:
             properties:
                 name:
                     description: 商品タグ名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.UpdateProductTypeRequest:
             properties:
@@ -1171,15 +1607,21 @@ components:
                     type: string
                 name:
                     description: 品目名
+                    maxLength: 32
                     type: string
+            required:
+                - iconUrl
+                - name
             type: object
         request.UpdatePromotionRequest:
             properties:
                 code:
                     type: string
                 description:
+                    maxLength: 2000
                     type: string
                 discountRate:
+                    minimum: 0
                     type: integer
                 discountType:
                     type: integer
@@ -1190,12 +1632,20 @@ components:
                 startAt:
                     type: integer
                 title:
+                    maxLength: 64
                     type: string
+            required:
+                - description
+                - discountType
+                - endAt
+                - startAt
+                - title
             type: object
         request.UpdateScheduleRequest:
             properties:
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 endAt:
                     description: 配信終了日時
@@ -1214,12 +1664,19 @@ components:
                     type: string
                 title:
                     description: タイトル
+                    maxLength: 64
                     type: string
+            required:
+                - description
+                - endAt
+                - startAt
+                - title
             type: object
         request.UpdateShippingRate:
             properties:
                 name:
                     description: 配送料金設定名
+                    maxLength: 64
                     type: string
                 prefectureCodes:
                     description: 対象都道府県一覧
@@ -1229,12 +1686,18 @@ components:
                     uniqueItems: false
                 price:
                     description: 配送料金(税込)
+                    minimum: 0
                     type: integer
+            required:
+                - name
+                - prefectureCodes
+                - price
             type: object
         request.UpdateShippingRequest:
             properties:
                 box60Frozen:
                     description: 箱サイズ60の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box60Rates:
                     description: 箱サイズ60の通常便配送料一覧
@@ -1244,6 +1707,7 @@ components:
                     uniqueItems: false
                 box80Frozen:
                     description: 箱サイズ80の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box80Rates:
                     description: 箱サイズ80の通常便配送料一覧
@@ -1253,6 +1717,7 @@ components:
                     uniqueItems: false
                 box100Frozen:
                     description: 箱サイズ100の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box100Rates:
                     description: 箱サイズ100の通常便配送料一覧
@@ -1262,13 +1727,23 @@ components:
                     uniqueItems: false
                 freeShippingRates:
                     description: 送料無料になる金額(税込)
+                    minimum: 0
                     type: integer
                 hasFreeShipping:
                     description: 送料無料オプションの有無
                     type: boolean
                 name:
                     description: 配送設定名
+                    maxLength: 64
                     type: string
+            required:
+                - box100Frozen
+                - box100Rates
+                - box60Frozen
+                - box60Rates
+                - box80Frozen
+                - box80Rates
+                - name
             type: object
         request.UpdateShopRequest:
             properties:
@@ -1284,10 +1759,12 @@ components:
                             - Thursday
                             - Friday
                             - Saturday
+                    maxItems: 7
                     type: array
-                    uniqueItems: false
+                    uniqueItems: true
                 name:
                     description: 店舗名
+                    maxLength: 64
                     type: string
                 productTypeIds:
                     description: 取り扱い品目一覧
@@ -1295,20 +1772,29 @@ components:
                         type: string
                     type: array
                     uniqueItems: false
+            required:
+                - name
+                - productTypeIds
             type: object
         request.UpdateSpotRequest:
             properties:
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 latitude:
                     description: 緯度
+                    maximum: 90
+                    minimum: -90
                     type: number
                 longitude:
                     description: 経度
+                    maximum: 180
+                    minimum: -180
                     type: number
                 name:
                     description: スポット名
+                    maxLength: 64
                     type: string
                 spotTypeId:
                     description: スポット種別ID
@@ -1316,17 +1802,26 @@ components:
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
+            required:
+                - latitude
+                - longitude
+                - name
+                - spotTypeId
             type: object
         request.UpdateSpotTypeRequest:
             properties:
                 name:
                     description: スポット種別名
+                    maxLength: 32
                     type: string
+            required:
+                - name
             type: object
         request.UpdateThreadRequest:
             properties:
                 content:
                     description: 内容
+                    maxLength: 1000
                     type: string
                 threadId:
                     description: お問い合わせID
@@ -1336,7 +1831,13 @@ components:
                     type: string
                 userType:
                     description: 送信者種別(不明:0, admin:1, uer:2, guest:3)
+                    maximum: 3
+                    minimum: 0
                     type: integer
+            required:
+                - content
+                - threadId
+                - userId
             type: object
         request.UpdateVideoCommentRequest:
             properties:
@@ -1346,14 +1847,12 @@ components:
             type: object
         request.UpdateVideoRequest:
             properties:
-                categoryIds:
-                    description: カテゴリID一覧
-                    items:
-                        type: string
-                    type: array
-                    uniqueItems: false
+                coordinatorId:
+                    description: コーディネータID
+                    type: string
                 description:
                     description: 説明
+                    maxLength: 2000
                     type: string
                 displayExperience:
                     description: 体験への表示設定
@@ -1387,15 +1886,26 @@ components:
                     type: string
                 title:
                     description: タイトル
+                    maxLength: 128
                     type: string
                 videoUrl:
                     description: 動画URL
                     type: string
+            required:
+                - coordinatorId
+                - description
+                - experienceIds
+                - productIds
+                - publishedAt
+                - thumbnailUrl
+                - title
+                - videoUrl
             type: object
         request.UpsertShippingRate:
             properties:
                 name:
                     description: 配送料金設定名
+                    maxLength: 64
                     type: string
                 prefectureCodes:
                     description: 対象都道府県一覧
@@ -1405,12 +1915,18 @@ components:
                     uniqueItems: false
                 price:
                     description: 配送料金(税込)
+                    minimum: 0
                     type: integer
+            required:
+                - name
+                - prefectureCodes
+                - price
             type: object
         request.UpsertShippingRequest:
             properties:
                 box60Frozen:
                     description: 箱サイズ60の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box60Rates:
                     description: 箱サイズ60の通常便配送料一覧
@@ -1420,6 +1936,7 @@ components:
                     uniqueItems: false
                 box80Frozen:
                     description: 箱サイズ80の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box80Rates:
                     description: 箱サイズ80の通常便配送料一覧
@@ -1429,6 +1946,7 @@ components:
                     uniqueItems: false
                 box100Frozen:
                     description: 箱サイズ100の冷凍便追加配送料(税込)
+                    minimum: 0
                     type: integer
                 box100Rates:
                     description: 箱サイズ100の通常便配送料一覧
@@ -1438,16 +1956,26 @@ components:
                     uniqueItems: false
                 freeShippingRates:
                     description: 送料無料になる金額(税込)
+                    minimum: 0
                     type: integer
                 hasFreeShipping:
                     description: 送料無料オプションの有無
                     type: boolean
+            required:
+                - box100Frozen
+                - box100Rates
+                - box60Frozen
+                - box60Rates
+                - box80Frozen
+                - box80Rates
             type: object
         request.VerifyAuthEmailRequest:
             properties:
                 verifyCode:
                     description: 検証コード
                     type: string
+            required:
+                - verifyCode
             type: object
         response.Address:
             description: デフォルト設定の住所情報
