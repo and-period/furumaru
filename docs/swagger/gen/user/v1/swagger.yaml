@@ -1410,9 +1410,6 @@ components:
                     $ref: '#/components/schemas/response.OrderRefund'
                 shippingAddress:
                     $ref: '#/components/schemas/response.Address'
-                shippingType:
-                    description: 配送方法
-                    type: integer
                 status:
                     description: 注文ステータス
                     type: integer
@@ -2446,6 +2443,13 @@ components:
         time.Weekday:
             type: integer
             x-enum-varnames:
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
                 - Sunday
                 - Monday
                 - Tuesday

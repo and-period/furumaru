@@ -91,7 +91,7 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 	var (
 		coordinator          *uentity.Coordinator
 		products             sentity.Products
-		paymentAddress       *uentity.Address
+		customer             *uentity.User
 		fulfillmentAddresses uentity.Addresses
 	)
 	eg, ectx := errgroup.WithContext(ctx)
@@ -107,14 +107,12 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 		products, err = s.multiGetProductsByRevision(ectx, order.ProductRevisionIDs())
 		return
 	})
-	eg.Go(func() error {
-		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.AddressRevisionID})
-		if err != nil || len(addresses) == 0 {
-			paymentAddress = &uentity.Address{}
-			return err
+	eg.Go(func() (err error) {
+		in := &user.GetUserInput{
+			UserID: order.UserID,
 		}
-		paymentAddress = addresses[0]
-		return nil
+		customer, err = s.user.GetUser(ectx, in)
+		return
 	})
 	eg.Go(func() (err error) {
 		fulfillmentAddresses, err = s.multiGetAddressesByRevision(ectx, order.AddressRevisionIDs())
@@ -134,7 +132,7 @@ func (s *service) newOrderProductCaptured(ctx context.Context, order *sentity.Or
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
 		TemplateID: entity.ReportTemplateIDOrderProductCaptured,
-		Overview:   paymentAddress.Name(),
+		Overview:   customer.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
 		ReceivedAt: order.CapturedAt,

@@ -1276,6 +1276,28 @@ components:
                     description: 営業曜日(発送可能日)
                     items:
                         type: integer
+                        x-enum-varnames:
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
                     type: array
                     uniqueItems: false
                 name:
@@ -2537,9 +2559,6 @@ components:
                 shippingMessage:
                     description: 発送連絡時のメッセージ
                     type: string
-                shippingType:
-                    description: 発送方法
-                    type: integer
                 status:
                     description: 注文ステータス
                     type: integer
@@ -3495,7 +3514,7 @@ components:
                 businessDays:
                     description: 営業曜日(発送可能日)
                     items:
-                        type: integer
+                        $ref: '#/components/schemas/time.Weekday'
                     type: array
                     uniqueItems: false
                 coordinatorId:
@@ -4108,6 +4127,30 @@ components:
                     type: array
                     uniqueItems: false
             type: object
+        time.Weekday:
+            type: integer
+            x-enum-varnames:
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
         util.ErrorResponse:
             properties:
                 detail:
