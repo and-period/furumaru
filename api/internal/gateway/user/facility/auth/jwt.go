@@ -10,17 +10,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Auth struct {
-	AccessToken  string
-	RefreshToken string
-	ExpiresIn    int32
-}
-
 type JWTGenerator interface {
 	Generate(ctx context.Context, sub, facilityID string) (*Auth, error)
 	GenerateAccessToken(sub, facilityID string) (string, error)
 	GenerateRefreshToken(ctx context.Context, sub, facilityID string) (string, error)
-	RefreshAccessToken(ctx context.Context, refreshToken string) (string, error)
+	RefreshAccessToken(ctx context.Context, refreshToken string) (*Auth, error)
+	DeleteRefreshToken(ctx context.Context, userID string) error
 }
 
 type JWTGeneratorParams struct {
@@ -111,21 +106,50 @@ func (g *jwtGenerator) GenerateRefreshToken(ctx context.Context, sub, facilityID
 	return token.RefreshToken, nil
 }
 
-func (g *jwtGenerator) RefreshAccessToken(ctx context.Context, refreshToken string) (string, error) {
+func (g *jwtGenerator) RefreshAccessToken(ctx context.Context, refreshToken string) (*Auth, error) {
 	if refreshToken == "" {
-		return "", ErrInvalidRefreshToken
+		return nil, ErrInvalidRefreshToken
 	}
 	hashedToken, err := hashRefreshToken(refreshToken)
 	if err != nil {
-		return "", fmt.Errorf("auth: failed to hash refresh token: %w", err)
+		return nil, fmt.Errorf("auth: failed to hash refresh token: %w", err)
 	}
 	token := &RefreshToken{
 		HashedToken: hashedToken,
 	}
 	if err := g.cache.Get(ctx, token); err != nil {
-		return "", fmt.Errorf("auth: failed to get auth token from cache: %w", err)
+		return nil, fmt.Errorf("auth: failed to get auth token from cache: %w", err)
 	}
-	return g.GenerateAccessToken(token.UserID, token.FacilityID)
+	accessToken, err := g.GenerateAccessToken(token.UserID, token.FacilityID)
+	if err != nil {
+		return nil, fmt.Errorf("auth: failed to generate access token: %w", err)
+	}
+	res := &Auth{
+		AccessToken:  accessToken,
+		RefreshToken: "",
+		ExpiresIn:    int32(g.accessTokenTTL.Seconds()),
+	}
+	return res, nil
+}
+
+func (g *jwtGenerator) DeleteRefreshToken(ctx context.Context, userID string) error {
+	// ユーザーIDに紐づく全てのリフレッシュトークンを検索
+	filter := map[string]interface{}{
+		"user_id": userID,
+	}
+	tokens := RefreshTokens{}
+	if err := g.cache.Scan(ctx, tokens, filter); err != nil {
+		return fmt.Errorf("auth: failed to scan refresh tokens: %w", err)
+	}
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	// バッチ削除を実行
+	if err := g.cache.BatchDelete(ctx, tokens); err != nil {
+		return fmt.Errorf("auth: failed to batch delete refresh tokens: %w", err)
+	}
+	return nil
 }
 
 type Claims struct {

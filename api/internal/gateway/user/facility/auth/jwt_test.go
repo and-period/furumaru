@@ -61,8 +61,8 @@ func TestNewJWTGenerator(t *testing.T) {
 		{
 			name: "success",
 			params: &JWTGeneratorParams{
-				Cache:  mock_dynamodb.NewMockClient(ctrl),
-				Issuer: "https://example.com",
+				Cache:      mock_dynamodb.NewMockClient(ctrl),
+				Issuer:     "https://example.com",
 				PrivateKey: privatePEM,
 			},
 			opts: []Option{
@@ -74,8 +74,8 @@ func TestNewJWTGenerator(t *testing.T) {
 		{
 			name: "invalid secret",
 			params: &JWTGeneratorParams{
-				Cache:  mock_dynamodb.NewMockClient(ctrl),
-				Issuer: "https://example.com",
+				Cache:      mock_dynamodb.NewMockClient(ctrl),
+				Issuer:     "https://example.com",
 				PrivateKey: []byte("invalid"),
 			},
 			opts:    []Option{},
@@ -295,13 +295,87 @@ func TestJWTGenerator_RefreshAccessToken(t *testing.T) {
 			)
 			require.NoError(t, err)
 
-			token, err := gen.RefreshAccessToken(ctx, tt.refreshToken)
+			auth, err := gen.RefreshAccessToken(ctx, tt.refreshToken)
 			if tt.wantErr {
 				assert.Error(t, err)
-				assert.Empty(t, token)
+				assert.Nil(t, auth)
 			} else {
 				assert.NoError(t, err)
-				assert.NotEmpty(t, token)
+				assert.NotNil(t, auth)
+				assert.NotEmpty(t, auth.AccessToken)
+				assert.Empty(t, auth.RefreshToken) // RefreshAccessTokenではRefreshTokenは空
+				assert.Equal(t, int32(3600), auth.ExpiresIn) // 1時間 = 3600秒
+			}
+		})
+	}
+}
+
+func TestJWTGenerator_DeleteRefreshToken(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+	privateKey, _ := generateRSAKeyPair()
+	privatePEM := encodeRSAPrivateKey(privateKey)
+
+	tests := []struct {
+		name      string
+		userID    string
+		setupMock func(*mock_dynamodb.MockClient)
+		wantErr   bool
+	}{
+		{
+			name:   "success",
+			userID: "user-id",
+			setupMock: func(m *mock_dynamodb.MockClient) {
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
+				m.EXPECT().BatchDelete(gomock.Any(), gomock.Any()).Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name:   "scan error",
+			userID: "user-id",
+			setupMock: func(m *mock_dynamodb.MockClient) {
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("scan error"))
+			},
+			wantErr: true,
+		},
+		{
+			name:   "batch delete error",
+			userID: "user-id",
+			setupMock: func(m *mock_dynamodb.MockClient) {
+				m.EXPECT().Scan(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
+				m.EXPECT().BatchDelete(gomock.Any(), gomock.Any()).Return(errors.New("batch delete error"))
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockCache := mock_dynamodb.NewMockClient(ctrl)
+			tt.setupMock(mockCache)
+
+			gen, err := NewJWTGenerator(
+				&JWTGeneratorParams{
+					Cache:      mockCache,
+					Issuer:     "https://example.com",
+					PrivateKey: privatePEM,
+				},
+				WithAccessTokenTTL(time.Hour),
+				WithRefreshTokenTTL(24*time.Hour),
+			)
+			require.NoError(t, err)
+
+			err = gen.DeleteRefreshToken(ctx, tt.userID)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -353,8 +427,8 @@ func TestNewJWTVerifier(t *testing.T) {
 		{
 			name: "success",
 			params: &JWTVerifierParams{
-				Cache:  mock_dynamodb.NewMockClient(ctrl),
-				Issuer: "https://example.com",
+				Cache:      mock_dynamodb.NewMockClient(ctrl),
+				Issuer:     "https://example.com",
 				PrivateKey: privatePEM,
 			},
 			opts:    []Option{},
