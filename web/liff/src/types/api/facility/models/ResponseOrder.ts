@@ -13,105 +13,105 @@
  */
 
 import { mapValues } from '../runtime';
-import type { OrderItem } from './OrderItem';
+import type { ResponseOrderRefund } from './ResponseOrderRefund';
 import {
-    OrderItemFromJSON,
-    OrderItemFromJSONTyped,
-    OrderItemToJSON,
-} from './OrderItem';
-import type { OrderRefund } from './OrderRefund';
+    ResponseOrderRefundFromJSON,
+    ResponseOrderRefundFromJSONTyped,
+    ResponseOrderRefundToJSON,
+} from './ResponseOrderRefund';
+import type { ResponseOrderPayment } from './ResponseOrderPayment';
 import {
-    OrderRefundFromJSON,
-    OrderRefundFromJSONTyped,
-    OrderRefundToJSON,
-} from './OrderRefund';
-import type { OrderPayment } from './OrderPayment';
+    ResponseOrderPaymentFromJSON,
+    ResponseOrderPaymentFromJSONTyped,
+    ResponseOrderPaymentToJSON,
+} from './ResponseOrderPayment';
+import type { ResponseOrderItem } from './ResponseOrderItem';
 import {
-    OrderPaymentFromJSON,
-    OrderPaymentFromJSONTyped,
-    OrderPaymentToJSON,
-} from './OrderPayment';
+    ResponseOrderItemFromJSON,
+    ResponseOrderItemFromJSONTyped,
+    ResponseOrderItemToJSON,
+} from './ResponseOrderItem';
 
 /**
  * 注文履歴情報
  * @export
- * @interface Order
+ * @interface ResponseOrder
  */
-export interface Order {
+export interface ResponseOrder {
     /**
      * コーディネータID
      * @type {string}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     coordinatorId?: string;
     /**
      * 注文履歴ID
      * @type {string}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     id?: string;
     /**
      * 注文商品一覧
-     * @type {Array<OrderItem>}
-     * @memberof Order
+     * @type {Array<ResponseOrderItem>}
+     * @memberof ResponseOrder
      */
-    items?: Array<OrderItem>;
+    items?: Array<ResponseOrderItem>;
     /**
      * 
-     * @type {OrderPayment}
-     * @memberof Order
+     * @type {ResponseOrderPayment}
+     * @memberof ResponseOrder
      */
-    payment?: OrderPayment;
+    payment?: ResponseOrderPayment;
     /**
      * 受け取り日時
      * @type {number}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     pickupAt?: number;
     /**
      * 受け取り場所
      * @type {string}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     pickupLocation?: string;
     /**
      * プロモーションID
      * @type {string}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     promotionId?: string;
     /**
      * 
-     * @type {OrderRefund}
-     * @memberof Order
+     * @type {ResponseOrderRefund}
+     * @memberof ResponseOrder
      */
-    refund?: OrderRefund;
+    refund?: ResponseOrderRefund;
     /**
      * 注文ステータス
      * @type {number}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     status?: number;
     /**
      * 注文種別
      * @type {number}
-     * @memberof Order
+     * @memberof ResponseOrder
      */
     type?: number;
 }
 
 /**
- * Check if a given object implements the Order interface.
+ * Check if a given object implements the ResponseOrder interface.
  */
-export function instanceOfOrder(value: object): value is Order {
+export function instanceOfResponseOrder(value: object): value is ResponseOrder {
     return true;
 }
 
-export function OrderFromJSON(json: any): Order {
-    return OrderFromJSONTyped(json, false);
+export function ResponseOrderFromJSON(json: any): ResponseOrder {
+    return ResponseOrderFromJSONTyped(json, false);
 }
 
-export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Order {
+export function ResponseOrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseOrder {
     if (json == null) {
         return json;
     }
@@ -119,18 +119,18 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
         
         'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
         'id': json['id'] == null ? undefined : json['id'],
-        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(OrderItemFromJSON)),
-        'payment': json['payment'] == null ? undefined : OrderPaymentFromJSON(json['payment']),
+        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(ResponseOrderItemFromJSON)),
+        'payment': json['payment'] == null ? undefined : ResponseOrderPaymentFromJSON(json['payment']),
         'pickupAt': json['pickupAt'] == null ? undefined : json['pickupAt'],
         'pickupLocation': json['pickupLocation'] == null ? undefined : json['pickupLocation'],
         'promotionId': json['promotionId'] == null ? undefined : json['promotionId'],
-        'refund': json['refund'] == null ? undefined : OrderRefundFromJSON(json['refund']),
+        'refund': json['refund'] == null ? undefined : ResponseOrderRefundFromJSON(json['refund']),
         'status': json['status'] == null ? undefined : json['status'],
         'type': json['type'] == null ? undefined : json['type'],
     };
 }
 
-export function OrderToJSON(value?: Order | null): any {
+export function ResponseOrderToJSON(value?: ResponseOrder | null): any {
     if (value == null) {
         return value;
     }
@@ -138,12 +138,12 @@ export function OrderToJSON(value?: Order | null): any {
         
         'coordinatorId': value['coordinatorId'],
         'id': value['id'],
-        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(OrderItemToJSON)),
-        'payment': OrderPaymentToJSON(value['payment']),
+        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(ResponseOrderItemToJSON)),
+        'payment': ResponseOrderPaymentToJSON(value['payment']),
         'pickupAt': value['pickupAt'],
         'pickupLocation': value['pickupLocation'],
         'promotionId': value['promotionId'],
-        'refund': OrderRefundToJSON(value['refund']),
+        'refund': ResponseOrderRefundToJSON(value['refund']),
         'status': value['status'],
         'type': value['type'],
     };

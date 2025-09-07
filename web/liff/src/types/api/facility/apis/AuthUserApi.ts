@@ -15,29 +15,29 @@
 
 import * as runtime from '../runtime';
 import type {
-  AuthUserResponse,
   RequestCreateAuthUserRequest,
-  RequestUpdateAuthUserCheckInRequest,
+  RequestUpdateAuthUserRequest,
+  ResponseAuthUserResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    AuthUserResponseFromJSON,
-    AuthUserResponseToJSON,
     RequestCreateAuthUserRequestFromJSON,
     RequestCreateAuthUserRequestToJSON,
-    RequestUpdateAuthUserCheckInRequestFromJSON,
-    RequestUpdateAuthUserCheckInRequestToJSON,
+    RequestUpdateAuthUserRequestFromJSON,
+    RequestUpdateAuthUserRequestToJSON,
+    ResponseAuthUserResponseFromJSON,
+    ResponseAuthUserResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
 
-export interface FacilitiesFacilityIdUsersMeCheckInPutRequest {
-    facilityId: string;
-    requestUpdateAuthUserCheckInRequest: RequestUpdateAuthUserCheckInRequest;
-}
-
 export interface FacilitiesFacilityIdUsersMeGetRequest {
     facilityId: string;
+}
+
+export interface FacilitiesFacilityIdUsersMePutRequest {
+    facilityId: string;
+    requestUpdateAuthUserRequest: RequestUpdateAuthUserRequest;
 }
 
 export interface FacilitiesFacilityIdUsersPostRequest {
@@ -51,62 +51,10 @@ export interface FacilitiesFacilityIdUsersPostRequest {
 export class AuthUserApi extends runtime.BaseAPI {
 
     /**
-     * ユーザーの最新のチェックイン日時を更新します。
-     * ユーザー情報更新
-     */
-    async facilitiesFacilityIdUsersMeCheckInPutRaw(requestParameters: FacilitiesFacilityIdUsersMeCheckInPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['facilityId'] == null) {
-            throw new runtime.RequiredError(
-                'facilityId',
-                'Required parameter "facilityId" was null or undefined when calling facilitiesFacilityIdUsersMeCheckInPut().'
-            );
-        }
-
-        if (requestParameters['requestUpdateAuthUserCheckInRequest'] == null) {
-            throw new runtime.RequiredError(
-                'requestUpdateAuthUserCheckInRequest',
-                'Required parameter "requestUpdateAuthUserCheckInRequest" was null or undefined when calling facilitiesFacilityIdUsersMeCheckInPut().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerauth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/facilities/{facilityId}/users/me/check-in`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: RequestUpdateAuthUserCheckInRequestToJSON(requestParameters['requestUpdateAuthUserCheckInRequest']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * ユーザーの最新のチェックイン日時を更新します。
-     * ユーザー情報更新
-     */
-    async facilitiesFacilityIdUsersMeCheckInPut(requestParameters: FacilitiesFacilityIdUsersMeCheckInPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.facilitiesFacilityIdUsersMeCheckInPutRaw(requestParameters, initOverrides);
-    }
-
-    /**
      * ユーザーの詳細情報を取得します。
      * ユーザー情報取得
      */
-    async facilitiesFacilityIdUsersMeGetRaw(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+    async facilitiesFacilityIdUsersMeGetRaw(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthUserResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -133,23 +81,75 @@ export class AuthUserApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーの詳細情報を取得します。
      * ユーザー情報取得
      */
-    async facilitiesFacilityIdUsersMeGet(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
+    async facilitiesFacilityIdUsersMeGet(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthUserResponse> {
         const response = await this.facilitiesFacilityIdUsersMeGetRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * ユーザーの詳細情報を更新します。
+     * ユーザー情報更新
+     */
+    async facilitiesFacilityIdUsersMePutRaw(requestParameters: FacilitiesFacilityIdUsersMePutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['facilityId'] == null) {
+            throw new runtime.RequiredError(
+                'facilityId',
+                'Required parameter "facilityId" was null or undefined when calling facilitiesFacilityIdUsersMePut().'
+            );
+        }
+
+        if (requestParameters['requestUpdateAuthUserRequest'] == null) {
+            throw new runtime.RequiredError(
+                'requestUpdateAuthUserRequest',
+                'Required parameter "requestUpdateAuthUserRequest" was null or undefined when calling facilitiesFacilityIdUsersMePut().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/facilities/{facilityId}/users/me`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RequestUpdateAuthUserRequestToJSON(requestParameters['requestUpdateAuthUserRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ユーザーの詳細情報を更新します。
+     * ユーザー情報更新
+     */
+    async facilitiesFacilityIdUsersMePut(requestParameters: FacilitiesFacilityIdUsersMePutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.facilitiesFacilityIdUsersMePutRaw(requestParameters, initOverrides);
     }
 
     /**
      * ユーザーの詳細情報を登録します。
      * ユーザー情報登録
      */
-    async facilitiesFacilityIdUsersPostRaw(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+    async facilitiesFacilityIdUsersPostRaw(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthUserResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -178,14 +178,14 @@ export class AuthUserApi extends runtime.BaseAPI {
             body: RequestCreateAuthUserRequestToJSON(requestParameters['requestCreateAuthUserRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーの詳細情報を登録します。
      * ユーザー情報登録
      */
-    async facilitiesFacilityIdUsersPost(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
+    async facilitiesFacilityIdUsersPost(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthUserResponse> {
         const response = await this.facilitiesFacilityIdUsersPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

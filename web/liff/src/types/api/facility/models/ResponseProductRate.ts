@@ -16,41 +16,41 @@ import { mapValues } from '../runtime';
 /**
  * 商品評価
  * @export
- * @interface ProductRate
+ * @interface ResponseProductRate
  */
-export interface ProductRate {
+export interface ResponseProductRate {
     /**
      * 平均評価
      * @type {number}
-     * @memberof ProductRate
+     * @memberof ResponseProductRate
      */
     average?: number;
     /**
      * 合計評価数
      * @type {number}
-     * @memberof ProductRate
+     * @memberof ResponseProductRate
      */
     count?: number;
     /**
      * 評価詳細
      * @type {{ [key: string]: number; }}
-     * @memberof ProductRate
+     * @memberof ResponseProductRate
      */
     detail?: { [key: string]: number; };
 }
 
 /**
- * Check if a given object implements the ProductRate interface.
+ * Check if a given object implements the ResponseProductRate interface.
  */
-export function instanceOfProductRate(value: object): value is ProductRate {
+export function instanceOfResponseProductRate(value: object): value is ResponseProductRate {
     return true;
 }
 
-export function ProductRateFromJSON(json: any): ProductRate {
-    return ProductRateFromJSONTyped(json, false);
+export function ResponseProductRateFromJSON(json: any): ResponseProductRate {
+    return ResponseProductRateFromJSONTyped(json, false);
 }
 
-export function ProductRateFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductRate {
+export function ResponseProductRateFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseProductRate {
     if (json == null) {
         return json;
     }
@@ -62,7 +62,7 @@ export function ProductRateFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-export function ProductRateToJSON(value?: ProductRate | null): any {
+export function ResponseProductRateToJSON(value?: ResponseProductRate | null): any {
     if (value == null) {
         return value;
     }

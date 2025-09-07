@@ -16,101 +16,101 @@ import { mapValues } from '../runtime';
 /**
  * コーディネータ情報
  * @export
- * @interface Coordinator
+ * @interface ResponseCoordinator
  */
-export interface Coordinator {
+export interface ResponseCoordinator {
     /**
      * 営業曜日(発送可能日)
      * @type {Array<number>}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     businessDays?: Array<number>;
     /**
      * 市区町村
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     city?: string;
     /**
      * Facebookアカウント
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     facebookId?: string;
     /**
      * ヘッダー画像URL
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     headerUrl?: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     id?: string;
     /**
      * Instagramアカウント
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     instagramId?: string;
     /**
      * マルシェ名
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     marcheName?: string;
     /**
      * 都道府県
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     prefecture?: string;
     /**
      * 取り扱い品目一覧
      * @type {Array<string>}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     productTypeIds?: Array<string>;
     /**
      * 紹介文
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     profile?: string;
     /**
      * 紹介映像URL
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     promotionVideoUrl?: string;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     thumbnailUrl?: string;
     /**
      * 表示名
      * @type {string}
-     * @memberof Coordinator
+     * @memberof ResponseCoordinator
      */
     username?: string;
 }
 
 /**
- * Check if a given object implements the Coordinator interface.
+ * Check if a given object implements the ResponseCoordinator interface.
  */
-export function instanceOfCoordinator(value: object): value is Coordinator {
+export function instanceOfResponseCoordinator(value: object): value is ResponseCoordinator {
     return true;
 }
 
-export function CoordinatorFromJSON(json: any): Coordinator {
-    return CoordinatorFromJSONTyped(json, false);
+export function ResponseCoordinatorFromJSON(json: any): ResponseCoordinator {
+    return ResponseCoordinatorFromJSONTyped(json, false);
 }
 
-export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Coordinator {
+export function ResponseCoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseCoordinator {
     if (json == null) {
         return json;
     }
@@ -132,7 +132,7 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-export function CoordinatorToJSON(value?: Coordinator | null): any {
+export function ResponseCoordinatorToJSON(value?: ResponseCoordinator | null): any {
     if (value == null) {
         return value;
     }

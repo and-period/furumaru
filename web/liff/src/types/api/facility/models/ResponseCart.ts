@@ -13,76 +13,76 @@
  */
 
 import { mapValues } from '../runtime';
-import type { CartItem } from './CartItem';
+import type { ResponseCartItem } from './ResponseCartItem';
 import {
-    CartItemFromJSON,
-    CartItemFromJSONTyped,
-    CartItemToJSON,
-} from './CartItem';
+    ResponseCartItemFromJSON,
+    ResponseCartItemFromJSONTyped,
+    ResponseCartItemToJSON,
+} from './ResponseCartItem';
 
 /**
  * 
  * @export
- * @interface Cart
+ * @interface ResponseCart
  */
-export interface Cart {
+export interface ResponseCart {
     /**
      * コーディネータID
      * @type {string}
-     * @memberof Cart
+     * @memberof ResponseCart
      */
     coordinatorId?: string;
     /**
      * 箱の商品一覧
-     * @type {Array<CartItem>}
-     * @memberof Cart
+     * @type {Array<ResponseCartItem>}
+     * @memberof ResponseCart
      */
-    items?: Array<CartItem>;
+    items?: Array<ResponseCartItem>;
     /**
      * 箱の通番
      * @type {number}
-     * @memberof Cart
+     * @memberof ResponseCart
      */
     number?: number;
     /**
      * 箱の占有率
      * @type {number}
-     * @memberof Cart
+     * @memberof ResponseCart
      */
     rate?: number;
     /**
      * 箱のサイズ
      * @type {number}
-     * @memberof Cart
+     * @memberof ResponseCart
      */
     size?: number;
     /**
      * 箱の種別
      * @type {number}
-     * @memberof Cart
+     * @memberof ResponseCart
      */
     type?: number;
 }
 
 /**
- * Check if a given object implements the Cart interface.
+ * Check if a given object implements the ResponseCart interface.
  */
-export function instanceOfCart(value: object): value is Cart {
+export function instanceOfResponseCart(value: object): value is ResponseCart {
     return true;
 }
 
-export function CartFromJSON(json: any): Cart {
-    return CartFromJSONTyped(json, false);
+export function ResponseCartFromJSON(json: any): ResponseCart {
+    return ResponseCartFromJSONTyped(json, false);
 }
 
-export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart {
+export function ResponseCartFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseCart {
     if (json == null) {
         return json;
     }
     return {
         
         'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(CartItemFromJSON)),
+        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(ResponseCartItemFromJSON)),
         'number': json['number'] == null ? undefined : json['number'],
         'rate': json['rate'] == null ? undefined : json['rate'],
         'size': json['size'] == null ? undefined : json['size'],
@@ -90,14 +90,14 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
     };
 }
 
-export function CartToJSON(value?: Cart | null): any {
+export function ResponseCartToJSON(value?: ResponseCart | null): any {
     if (value == null) {
         return value;
     }
     return {
         
         'coordinatorId': value['coordinatorId'],
-        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(CartItemToJSON)),
+        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(ResponseCartItemToJSON)),
         'number': value['number'],
         'rate': value['rate'],
         'size': value['size'],

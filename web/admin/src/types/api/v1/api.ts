@@ -34,7 +34,7 @@ export interface RequestActivateBroadcastMP4Request {
      * @type {string}
      * @memberof RequestActivateBroadcastMP4Request
      */
-    'inputUrl'?: string;
+    'inputUrl': string;
 }
 /**
  * 
@@ -73,7 +73,7 @@ export interface RequestAuthYoutubeBroadcastRequest {
      * @type {string}
      * @memberof RequestAuthYoutubeBroadcastRequest
      */
-    'youtubeHandle'?: string;
+    'youtubeHandle': string;
 }
 /**
  * 
@@ -86,13 +86,13 @@ export interface RequestCallbackAuthYoutubeBroadcastRequest {
      * @type {string}
      * @memberof RequestCallbackAuthYoutubeBroadcastRequest
      */
-    'authCode'?: string;
+    'authCode': string;
     /**
      * Google認証時に取得したstate
      * @type {string}
      * @memberof RequestCallbackAuthYoutubeBroadcastRequest
      */
-    'state'?: string;
+    'state': string;
 }
 /**
  * 
@@ -118,19 +118,19 @@ export interface RequestConnectGoogleAccountRequest {
      * @type {string}
      * @memberof RequestConnectGoogleAccountRequest
      */
-    'code'?: string;
+    'code': string;
     /**
      * セキュア文字列（リプレイアタック対策）
      * @type {string}
      * @memberof RequestConnectGoogleAccountRequest
      */
-    'nonce'?: string;
+    'nonce': string;
     /**
      * リダイレクトURI
      * @type {string}
      * @memberof RequestConnectGoogleAccountRequest
      */
-    'redirectUri'?: string;
+    'redirectUri': string;
 }
 /**
  * 
@@ -143,19 +143,19 @@ export interface RequestConnectLINEAccountRequest {
      * @type {string}
      * @memberof RequestConnectLINEAccountRequest
      */
-    'code'?: string;
+    'code': string;
     /**
      * セキュア文字列（リプレイアタック対策）
      * @type {string}
      * @memberof RequestConnectLINEAccountRequest
      */
-    'nonce'?: string;
+    'nonce': string;
     /**
      * リダイレクトURI
      * @type {string}
      * @memberof RequestConnectLINEAccountRequest
      */
-    'redirectUri'?: string;
+    'redirectUri': string;
 }
 /**
  * 
@@ -168,37 +168,37 @@ export interface RequestCreateAdministratorRequest {
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'email'?: string;
+    'email': string;
     /**
      * 名
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * 姓
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestCreateAdministratorRequest
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
 }
 /**
  * 
@@ -211,7 +211,7 @@ export interface RequestCreateCategoryRequest {
      * @type {string}
      * @memberof RequestCreateCategoryRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -224,13 +224,13 @@ export interface RequestCreateContactReadRequest {
      * @type {string}
      * @memberof RequestCreateContactReadRequest
      */
-    'contactId'?: string;
+    'contactId': string;
     /**
      * 送信者ID
      * @type {string}
      * @memberof RequestCreateContactReadRequest
      */
-    'userId'?: string;
+    'userId': string;
     /**
      * 送信者種別(不明:0, admin:1, uer:2, guest:3)
      * @type {number}
@@ -249,19 +249,19 @@ export interface RequestCreateContactRequest {
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'categoryId'?: string;
+    'categoryId': string;
     /**
      * お問い合わせ内容
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'content'?: string;
+    'content': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'email'?: string;
+    'email': string;
     /**
      * 対応者メモ
      * @type {string}
@@ -273,7 +273,7 @@ export interface RequestCreateContactRequest {
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 対応者ID(null許容)
      * @type {string}
@@ -285,7 +285,7 @@ export interface RequestCreateContactRequest {
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'title'?: string;
+    'title': string;
     /**
      * 問い合わせ作成者ID(null許容)
      * @type {string}
@@ -297,7 +297,7 @@ export interface RequestCreateContactRequest {
      * @type {string}
      * @memberof RequestCreateContactRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -316,7 +316,7 @@ export interface RequestCreateExperienceMedia {
      * @type {string}
      * @memberof RequestCreateExperienceMedia
      */
-    'url'?: string;
+    'url': string;
 }
 /**
  * 
@@ -341,13 +341,13 @@ export interface RequestCreateExperienceRequest {
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'coordinatorId'?: string;
+    'coordinatorId': string;
     /**
      * 説明
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * アクセス方法
      * @type {string}
@@ -365,19 +365,19 @@ export interface RequestCreateExperienceRequest {
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 体験種別ID
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'experienceTypeId'?: string;
+    'experienceTypeId': string;
     /**
      * 開催場所(住所1)
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'hostAddressLine1'?: string;
+    'hostAddressLine1': string;
     /**
      * 開催場所(住所2)
      * @type {string}
@@ -389,61 +389,61 @@ export interface RequestCreateExperienceRequest {
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'hostCity'?: string;
+    'hostCity': string;
     /**
      * 開催場所(郵便番号)
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'hostPostalCode'?: string;
+    'hostPostalCode': string;
     /**
      * 開催場所(都道府県コード)
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'hostPrefectureCode'?: number;
+    'hostPrefectureCode': number;
     /**
      * メディア一覧
      * @type {Array<RequestCreateExperienceMedia>}
      * @memberof RequestCreateExperienceRequest
      */
-    'media'?: Array<RequestCreateExperienceMedia>;
+    'media': Array<RequestCreateExperienceMedia>;
     /**
      * 大人料金
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'priceAdult'?: number;
+    'priceAdult': number;
     /**
      * 小学生料金
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'priceElementarySchool'?: number;
+    'priceElementarySchool': number;
     /**
      * 中学生料金
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'priceJuniorHighSchool'?: number;
+    'priceJuniorHighSchool': number;
     /**
      * 幼児料金
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'pricePreschool'?: number;
+    'pricePreschool': number;
     /**
      * シニア料金
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'priceSenior'?: number;
+    'priceSenior': number;
     /**
      * 生産者ID
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * 紹介動画URL
      * @type {string}
@@ -485,13 +485,13 @@ export interface RequestCreateExperienceRequest {
      * @type {number}
      * @memberof RequestCreateExperienceRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * 体験名
      * @type {string}
      * @memberof RequestCreateExperienceRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -504,7 +504,7 @@ export interface RequestCreateExperienceTypeRequest {
      * @type {string}
      * @memberof RequestCreateExperienceTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -517,31 +517,31 @@ export interface RequestCreateLiveRequest {
      * @type {string}
      * @memberof RequestCreateLiveRequest
      */
-    'comment'?: string;
+    'comment': string;
     /**
      * 配信終了日時
      * @type {number}
      * @memberof RequestCreateLiveRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 生産者ID
      * @type {string}
      * @memberof RequestCreateLiveRequest
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * 商品ID一覧
      * @type {Array<string>}
      * @memberof RequestCreateLiveRequest
      */
-    'productIds'?: Array<string>;
+    'productIds': Array<string>;
     /**
      * 配信開始日時
      * @type {number}
      * @memberof RequestCreateLiveRequest
      */
-    'startAt'?: number;
+    'startAt': number;
 }
 /**
  * 
@@ -554,7 +554,7 @@ export interface RequestCreateNotificationRequest {
      * @type {string}
      * @memberof RequestCreateNotificationRequest
      */
-    'body'?: string;
+    'body': string;
     /**
      * 備考
      * @type {string}
@@ -572,25 +572,25 @@ export interface RequestCreateNotificationRequest {
      * @type {number}
      * @memberof RequestCreateNotificationRequest
      */
-    'publishedAt'?: number;
+    'publishedAt': number;
     /**
      * 掲載対象一覧
      * @type {Array<number>}
      * @memberof RequestCreateNotificationRequest
      */
-    'targets'?: Array<number>;
+    'targets': Array<number>;
     /**
      * タイトル
      * @type {string}
      * @memberof RequestCreateNotificationRequest
      */
-    'title'?: string;
+    'title': string;
     /**
      * お知らせ種別
      * @type {number}
      * @memberof RequestCreateNotificationRequest
      */
-    'type'?: number;
+    'type': number;
 }
 /**
  * 
@@ -627,7 +627,7 @@ export interface RequestCreateProducerRequest {
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'coordinatorId'?: string;
+    'coordinatorId': string;
     /**
      * メールアドレス
      * @type {string}
@@ -645,13 +645,13 @@ export interface RequestCreateProducerRequest {
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -669,13 +669,13 @@ export interface RequestCreateProducerRequest {
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 電話番号
      * @type {string}
@@ -717,7 +717,7 @@ export interface RequestCreateProducerRequest {
      * @type {string}
      * @memberof RequestCreateProducerRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -736,7 +736,7 @@ export interface RequestCreateProductMedia {
      * @type {string}
      * @memberof RequestCreateProductMedia
      */
-    'url'?: string;
+    'url': string;
 }
 /**
  * 
@@ -767,7 +767,7 @@ export interface RequestCreateProductRequest {
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'coordinatorId'?: string;
+    'coordinatorId': string;
     /**
      * 原価(税込)
      * @type {number}
@@ -779,19 +779,19 @@ export interface RequestCreateProductRequest {
      * @type {number}
      * @memberof RequestCreateProductRequest
      */
-    'deliveryType'?: number;
+    'deliveryType': number;
     /**
      * 商品説明
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 販売終了日時
      * @type {number}
      * @memberof RequestCreateProductRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 賞味期限(単位:日)
      * @type {number}
@@ -809,13 +809,13 @@ export interface RequestCreateProductRequest {
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'itemDescription'?: string;
+    'itemDescription': string;
     /**
      * 数量単位
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'itemUnit'?: string;
+    'itemUnit': string;
     /**
      * メディア一覧
      * @type {Array<RequestCreateProductMedia>}
@@ -827,7 +827,7 @@ export interface RequestCreateProductRequest {
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -839,7 +839,7 @@ export interface RequestCreateProductRequest {
      * @type {number}
      * @memberof RequestCreateProductRequest
      */
-    'originPrefectureCode'?: number;
+    'originPrefectureCode': number;
     /**
      * 販売価格(税込)
      * @type {number}
@@ -851,19 +851,19 @@ export interface RequestCreateProductRequest {
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'producerId'?: string;
+    'producerId': string;
     /**
      * 商品タグID一覧
      * @type {Array<string>}
      * @memberof RequestCreateProductRequest
      */
-    'productTagIds'?: Array<string>;
+    'productTagIds': Array<string>;
     /**
      * 品目ID
      * @type {string}
      * @memberof RequestCreateProductRequest
      */
-    'productTypeId'?: string;
+    'productTypeId': string;
     /**
      * 公開フラグ
      * @type {boolean}
@@ -893,13 +893,13 @@ export interface RequestCreateProductRequest {
      * @type {number}
      * @memberof RequestCreateProductRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * 保存方法
      * @type {number}
      * @memberof RequestCreateProductRequest
      */
-    'storageMethodType'?: number;
+    'storageMethodType': number;
     /**
      * 重量(kg,少数第一位まで)
      * @type {number}
@@ -918,7 +918,7 @@ export interface RequestCreateProductTagRequest {
      * @type {string}
      * @memberof RequestCreateProductTagRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -931,13 +931,13 @@ export interface RequestCreateProductTypeRequest {
      * @type {string}
      * @memberof RequestCreateProductTypeRequest
      */
-    'iconUrl'?: string;
+    'iconUrl': string;
     /**
      * 品目名
      * @type {string}
      * @memberof RequestCreateProductTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -956,7 +956,7 @@ export interface RequestCreatePromotionRequest {
      * @type {string}
      * @memberof RequestCreatePromotionRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {number}
@@ -968,13 +968,13 @@ export interface RequestCreatePromotionRequest {
      * @type {number}
      * @memberof RequestCreatePromotionRequest
      */
-    'discountType'?: number;
+    'discountType': number;
     /**
      * 
      * @type {number}
      * @memberof RequestCreatePromotionRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 
      * @type {boolean}
@@ -986,13 +986,13 @@ export interface RequestCreatePromotionRequest {
      * @type {number}
      * @memberof RequestCreatePromotionRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * 
      * @type {string}
      * @memberof RequestCreatePromotionRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -1005,19 +1005,19 @@ export interface RequestCreateScheduleRequest {
      * @type {string}
      * @memberof RequestCreateScheduleRequest
      */
-    'coordinatorId'?: string;
+    'coordinatorId': string;
     /**
      * 説明
      * @type {string}
      * @memberof RequestCreateScheduleRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 配信終了日時
      * @type {number}
      * @memberof RequestCreateScheduleRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 蓋絵URL
      * @type {string}
@@ -1041,7 +1041,7 @@ export interface RequestCreateScheduleRequest {
      * @type {number}
      * @memberof RequestCreateScheduleRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * サムネイルURL
      * @type {string}
@@ -1053,7 +1053,7 @@ export interface RequestCreateScheduleRequest {
      * @type {string}
      * @memberof RequestCreateScheduleRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -1066,19 +1066,19 @@ export interface RequestCreateShippingRate {
      * @type {string}
      * @memberof RequestCreateShippingRate
      */
-    'name'?: string;
+    'name': string;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
      * @memberof RequestCreateShippingRate
      */
-    'prefectureCodes'?: Array<number>;
+    'prefectureCodes': Array<number>;
     /**
      * 配送料金(税込)
      * @type {number}
      * @memberof RequestCreateShippingRate
      */
-    'price'?: number;
+    'price': number;
 }
 /**
  * 
@@ -1091,37 +1091,37 @@ export interface RequestCreateShippingRequest {
      * @type {number}
      * @memberof RequestCreateShippingRequest
      */
-    'box60Frozen'?: number;
+    'box60Frozen': number;
     /**
      * 箱サイズ60の通常便配送料一覧
      * @type {Array<RequestCreateShippingRate>}
      * @memberof RequestCreateShippingRequest
      */
-    'box60Rates'?: Array<RequestCreateShippingRate>;
+    'box60Rates': Array<RequestCreateShippingRate>;
     /**
      * 箱サイズ80の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestCreateShippingRequest
      */
-    'box80Frozen'?: number;
+    'box80Frozen': number;
     /**
      * 箱サイズ80の通常便配送料一覧
      * @type {Array<RequestCreateShippingRate>}
      * @memberof RequestCreateShippingRequest
      */
-    'box80Rates'?: Array<RequestCreateShippingRate>;
+    'box80Rates': Array<RequestCreateShippingRate>;
     /**
      * 箱サイズ100の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestCreateShippingRequest
      */
-    'box100Frozen'?: number;
+    'box100Frozen': number;
     /**
      * 箱サイズ100の通常便配送料一覧
      * @type {Array<RequestCreateShippingRate>}
      * @memberof RequestCreateShippingRequest
      */
-    'box100Rates'?: Array<RequestCreateShippingRate>;
+    'box100Rates': Array<RequestCreateShippingRate>;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
@@ -1139,7 +1139,7 @@ export interface RequestCreateShippingRequest {
      * @type {string}
      * @memberof RequestCreateShippingRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -1158,25 +1158,25 @@ export interface RequestCreateSpotRequest {
      * @type {number}
      * @memberof RequestCreateSpotRequest
      */
-    'latitude'?: number;
+    'latitude': number;
     /**
      * 経度
      * @type {number}
      * @memberof RequestCreateSpotRequest
      */
-    'longitude'?: number;
+    'longitude': number;
     /**
      * スポット名
      * @type {string}
      * @memberof RequestCreateSpotRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * スポット種別ID
      * @type {string}
      * @memberof RequestCreateSpotRequest
      */
-    'spotTypeId'?: string;
+    'spotTypeId': string;
     /**
      * サムネイルURL
      * @type {string}
@@ -1195,7 +1195,7 @@ export interface RequestCreateSpotTypeRequest {
      * @type {string}
      * @memberof RequestCreateSpotTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -1208,19 +1208,19 @@ export interface RequestCreateThreadRequest {
      * @type {string}
      * @memberof RequestCreateThreadRequest
      */
-    'contactId'?: string;
+    'contactId': string;
     /**
      * 内容
      * @type {string}
      * @memberof RequestCreateThreadRequest
      */
-    'content'?: string;
+    'content': string;
     /**
      * 送信者ID
      * @type {string}
      * @memberof RequestCreateThreadRequest
      */
-    'userId'?: string;
+    'userId': string;
     /**
      * 送信者種別(不明:0, admin:1, uer:2, guest:3)
      * @type {number}
@@ -1239,13 +1239,13 @@ export interface RequestCreateVideoRequest {
      * @type {string}
      * @memberof RequestCreateVideoRequest
      */
-    'coordinatorId'?: string;
+    'coordinatorId': string;
     /**
      * 説明
      * @type {string}
      * @memberof RequestCreateVideoRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 体験への表示設定
      * @type {boolean}
@@ -1263,7 +1263,7 @@ export interface RequestCreateVideoRequest {
      * @type {Array<string>}
      * @memberof RequestCreateVideoRequest
      */
-    'experienceIds'?: Array<string>;
+    'experienceIds': Array<string>;
     /**
      * 限定公開設定
      * @type {boolean}
@@ -1275,7 +1275,7 @@ export interface RequestCreateVideoRequest {
      * @type {Array<string>}
      * @memberof RequestCreateVideoRequest
      */
-    'productIds'?: Array<string>;
+    'productIds': Array<string>;
     /**
      * 公開設定
      * @type {boolean}
@@ -1287,25 +1287,25 @@ export interface RequestCreateVideoRequest {
      * @type {number}
      * @memberof RequestCreateVideoRequest
      */
-    'publishedAt'?: number;
+    'publishedAt': number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof RequestCreateVideoRequest
      */
-    'thumbnailUrl'?: string;
+    'thumbnailUrl': string;
     /**
      * タイトル
      * @type {string}
      * @memberof RequestCreateVideoRequest
      */
-    'title'?: string;
+    'title': string;
     /**
      * 動画URL
      * @type {string}
      * @memberof RequestCreateVideoRequest
      */
-    'videoUrl'?: string;
+    'videoUrl': string;
 }
 /**
  * 
@@ -1330,7 +1330,7 @@ export interface RequestCreateYoutubeBroadcastRequest {
      * @type {string}
      * @memberof RequestCreateYoutubeBroadcastRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -1362,7 +1362,7 @@ export interface RequestExportOrdersRequest {
      * @type {number}
      * @memberof RequestExportOrdersRequest
      */
-    'shippingCarrier'?: number;
+    'shippingCarrier': number;
 }
 /**
  * 
@@ -1375,7 +1375,7 @@ export interface RequestForgotAuthPasswordRequest {
      * @type {string}
      * @memberof RequestForgotAuthPasswordRequest
      */
-    'email'?: string;
+    'email': string;
 }
 /**
  * 
@@ -1388,7 +1388,7 @@ export interface RequestGetUploadURLRequest {
      * @type {string}
      * @memberof RequestGetUploadURLRequest
      */
-    'fileType'?: string;
+    'fileType': string;
 }
 /**
  * 
@@ -1414,7 +1414,7 @@ export interface RequestRefreshAuthTokenRequest {
      * @type {string}
      * @memberof RequestRefreshAuthTokenRequest
      */
-    'refreshToken'?: string;
+    'refreshToken': string;
 }
 /**
  * 
@@ -1427,7 +1427,7 @@ export interface RequestRefundOrderRequest {
      * @type {string}
      * @memberof RequestRefundOrderRequest
      */
-    'description'?: string;
+    'description': string;
 }
 /**
  * 
@@ -1440,7 +1440,7 @@ export interface RequestRegisterAuthDeviceRequest {
      * @type {string}
      * @memberof RequestRegisterAuthDeviceRequest
      */
-    'device'?: string;
+    'device': string;
 }
 /**
  * 
@@ -1453,7 +1453,7 @@ export interface RequestResetAuthPasswordRequest {
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    'email'?: string;
+    'email': string;
     /**
      * パスワード
      * @type {string}
@@ -1465,13 +1465,13 @@ export interface RequestResetAuthPasswordRequest {
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    'passwordConfirmation'?: string;
+    'passwordConfirmation': string;
     /**
      * 検証コード
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    'verifyCode'?: string;
+    'verifyCode': string;
 }
 /**
  * 
@@ -1484,13 +1484,13 @@ export interface RequestSignInRequest {
      * @type {string}
      * @memberof RequestSignInRequest
      */
-    'password'?: string;
+    'password': string;
     /**
      * ユーザー名 (メールアドレス)
      * @type {string}
      * @memberof RequestSignInRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -1503,7 +1503,7 @@ export interface RequestUpdateAdministratorEmailRequest {
      * @type {string}
      * @memberof RequestUpdateAdministratorEmailRequest
      */
-    'email'?: string;
+    'email': string;
 }
 /**
  * 
@@ -1516,31 +1516,31 @@ export interface RequestUpdateAdministratorRequest {
      * @type {string}
      * @memberof RequestUpdateAdministratorRequest
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof RequestUpdateAdministratorRequest
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * 姓
      * @type {string}
      * @memberof RequestUpdateAdministratorRequest
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof RequestUpdateAdministratorRequest
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestUpdateAdministratorRequest
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
 }
 /**
  * 
@@ -1553,7 +1553,7 @@ export interface RequestUpdateAuthEmailRequest {
      * @type {string}
      * @memberof RequestUpdateAuthEmailRequest
      */
-    'email'?: string;
+    'email': string;
 }
 /**
  * 
@@ -1572,13 +1572,13 @@ export interface RequestUpdateAuthPasswordRequest {
      * @type {string}
      * @memberof RequestUpdateAuthPasswordRequest
      */
-    'oldPassword'?: string;
+    'oldPassword': string;
     /**
      * パスワード (確認用)
      * @type {string}
      * @memberof RequestUpdateAuthPasswordRequest
      */
-    'passwordConfirmation'?: string;
+    'passwordConfirmation': string;
 }
 /**
  * 
@@ -1591,7 +1591,7 @@ export interface RequestUpdateBroadcastArchiveRequest {
      * @type {string}
      * @memberof RequestUpdateBroadcastArchiveRequest
      */
-    'archiveUrl'?: string;
+    'archiveUrl': string;
 }
 /**
  * 
@@ -1604,7 +1604,7 @@ export interface RequestUpdateCategoryRequest {
      * @type {string}
      * @memberof RequestUpdateCategoryRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -1617,19 +1617,19 @@ export interface RequestUpdateContactRequest {
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'categoryId'?: string;
+    'categoryId': string;
     /**
      * お問い合わせ内容
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'content'?: string;
+    'content': string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'email'?: string;
+    'email': string;
     /**
      * 対応者メモ
      * @type {string}
@@ -1641,7 +1641,7 @@ export interface RequestUpdateContactRequest {
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 対応者ID(null許容)
      * @type {string}
@@ -1659,7 +1659,7 @@ export interface RequestUpdateContactRequest {
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'title'?: string;
+    'title': string;
     /**
      * 問い合わせ作成者ID(null許容)
      * @type {string}
@@ -1671,7 +1671,7 @@ export interface RequestUpdateContactRequest {
      * @type {string}
      * @memberof RequestUpdateContactRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -1684,7 +1684,7 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'addressLine1'?: string;
+    'addressLine1': string;
     /**
      * ビル名・号室など
      * @type {string}
@@ -1702,7 +1702,7 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'city'?: string;
+    'city': string;
     /**
      * Facebookアカウント
      * @type {string}
@@ -1714,13 +1714,13 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -1738,19 +1738,19 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * 郵便番号
      * @type {string}
@@ -1762,13 +1762,13 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {number}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'prefectureCode'?: number;
+    'prefectureCode': number;
     /**
      * 紹介文
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'profile'?: string;
+    'profile': string;
     /**
      * 紹介映像URL
      * @type {string}
@@ -1786,7 +1786,7 @@ export interface RequestUpdateCoordinatorRequest {
      * @type {string}
      * @memberof RequestUpdateCoordinatorRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -1799,19 +1799,19 @@ export interface RequestUpdateDefaultShippingRate {
      * @type {string}
      * @memberof RequestUpdateDefaultShippingRate
      */
-    'name'?: string;
+    'name': string;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
      * @memberof RequestUpdateDefaultShippingRate
      */
-    'prefectureCodes'?: Array<number>;
+    'prefectureCodes': Array<number>;
     /**
      * 配送料金(税込)
      * @type {number}
      * @memberof RequestUpdateDefaultShippingRate
      */
-    'price'?: number;
+    'price': number;
 }
 /**
  * 
@@ -1824,37 +1824,37 @@ export interface RequestUpdateDefaultShippingRequest {
      * @type {number}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box60Frozen'?: number;
+    'box60Frozen': number;
     /**
      * 箱サイズ60の通常便配送料一覧
      * @type {Array<RequestUpdateDefaultShippingRate>}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box60Rates'?: Array<RequestUpdateDefaultShippingRate>;
+    'box60Rates': Array<RequestUpdateDefaultShippingRate>;
     /**
      * 箱サイズ80の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box80Frozen'?: number;
+    'box80Frozen': number;
     /**
      * 箱サイズ80の通常便配送料一覧
      * @type {Array<RequestUpdateDefaultShippingRate>}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box80Rates'?: Array<RequestUpdateDefaultShippingRate>;
+    'box80Rates': Array<RequestUpdateDefaultShippingRate>;
     /**
      * 箱サイズ100の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box100Frozen'?: number;
+    'box100Frozen': number;
     /**
      * 箱サイズ100の通常便配送料一覧
      * @type {Array<RequestUpdateDefaultShippingRate>}
      * @memberof RequestUpdateDefaultShippingRequest
      */
-    'box100Rates'?: Array<RequestUpdateDefaultShippingRate>;
+    'box100Rates': Array<RequestUpdateDefaultShippingRate>;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
@@ -1885,7 +1885,7 @@ export interface RequestUpdateExperienceMedia {
      * @type {string}
      * @memberof RequestUpdateExperienceMedia
      */
-    'url'?: string;
+    'url': string;
 }
 /**
  * 
@@ -1910,7 +1910,7 @@ export interface RequestUpdateExperienceRequest {
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * アクセス方法
      * @type {string}
@@ -1928,19 +1928,19 @@ export interface RequestUpdateExperienceRequest {
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 体験種別ID
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'experienceTypeId'?: string;
+    'experienceTypeId': string;
     /**
      * 開催場所(住所1)
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'hostAddressLine1'?: string;
+    'hostAddressLine1': string;
     /**
      * 開催場所(住所2)
      * @type {string}
@@ -1952,55 +1952,55 @@ export interface RequestUpdateExperienceRequest {
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'hostCity'?: string;
+    'hostCity': string;
     /**
      * 開催場所(郵便番号)
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'hostPostalCode'?: string;
+    'hostPostalCode': string;
     /**
      * 開催場所(都道府県コード)
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'hostPrefectureCode'?: number;
+    'hostPrefectureCode': number;
     /**
      * メディア一覧
      * @type {Array<RequestUpdateExperienceMedia>}
      * @memberof RequestUpdateExperienceRequest
      */
-    'media'?: Array<RequestUpdateExperienceMedia>;
+    'media': Array<RequestUpdateExperienceMedia>;
     /**
      * 大人料金
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'priceAdult'?: number;
+    'priceAdult': number;
     /**
      * 小学生料金
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'priceElementarySchool'?: number;
+    'priceElementarySchool': number;
     /**
      * 中学生料金
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'priceJuniorHighSchool'?: number;
+    'priceJuniorHighSchool': number;
     /**
      * 幼児料金
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'pricePreschool'?: number;
+    'pricePreschool': number;
     /**
      * シニア料金
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'priceSenior'?: number;
+    'priceSenior': number;
     /**
      * 紹介動画URL
      * @type {string}
@@ -2042,13 +2042,13 @@ export interface RequestUpdateExperienceRequest {
      * @type {number}
      * @memberof RequestUpdateExperienceRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * 体験名
      * @type {string}
      * @memberof RequestUpdateExperienceRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -2061,7 +2061,7 @@ export interface RequestUpdateExperienceTypeRequest {
      * @type {string}
      * @memberof RequestUpdateExperienceTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -2087,25 +2087,25 @@ export interface RequestUpdateLiveRequest {
      * @type {string}
      * @memberof RequestUpdateLiveRequest
      */
-    'comment'?: string;
+    'comment': string;
     /**
      * 配信終了日時
      * @type {number}
      * @memberof RequestUpdateLiveRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 商品ID一覧
      * @type {Array<string>}
      * @memberof RequestUpdateLiveRequest
      */
-    'productIds'?: Array<string>;
+    'productIds': Array<string>;
     /**
      * 配信開始日時
      * @type {number}
      * @memberof RequestUpdateLiveRequest
      */
-    'startAt'?: number;
+    'startAt': number;
 }
 /**
  * 
@@ -2118,7 +2118,7 @@ export interface RequestUpdateNotificationRequest {
      * @type {string}
      * @memberof RequestUpdateNotificationRequest
      */
-    'body'?: string;
+    'body': string;
     /**
      * 備考
      * @type {string}
@@ -2130,19 +2130,19 @@ export interface RequestUpdateNotificationRequest {
      * @type {number}
      * @memberof RequestUpdateNotificationRequest
      */
-    'publishedAt'?: number;
+    'publishedAt': number;
     /**
      * 掲載対象一覧
      * @type {Array<number>}
      * @memberof RequestUpdateNotificationRequest
      */
-    'targets'?: Array<number>;
+    'targets': Array<number>;
     /**
      * タイトル
      * @type {string}
      * @memberof RequestUpdateNotificationRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -2155,7 +2155,7 @@ export interface RequestUpdatePaymentSystemRequest {
      * @type {number}
      * @memberof RequestUpdatePaymentSystemRequest
      */
-    'status'?: number;
+    'status': number;
 }
 /**
  * 
@@ -2204,13 +2204,13 @@ export interface RequestUpdateProducerRequest {
      * @type {string}
      * @memberof RequestUpdateProducerRequest
      */
-    'firstname'?: string;
+    'firstname': string;
     /**
      * 名(かな)
      * @type {string}
      * @memberof RequestUpdateProducerRequest
      */
-    'firstnameKana'?: string;
+    'firstnameKana': string;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -2228,13 +2228,13 @@ export interface RequestUpdateProducerRequest {
      * @type {string}
      * @memberof RequestUpdateProducerRequest
      */
-    'lastname'?: string;
+    'lastname': string;
     /**
      * 姓(かな)
      * @type {string}
      * @memberof RequestUpdateProducerRequest
      */
-    'lastnameKana'?: string;
+    'lastnameKana': string;
     /**
      * 電話番号
      * @type {string}
@@ -2276,7 +2276,7 @@ export interface RequestUpdateProducerRequest {
      * @type {string}
      * @memberof RequestUpdateProducerRequest
      */
-    'username'?: string;
+    'username': string;
 }
 /**
  * 
@@ -2289,7 +2289,7 @@ export interface RequestUpdateProductTagRequest {
      * @type {string}
      * @memberof RequestUpdateProductTagRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -2302,13 +2302,13 @@ export interface RequestUpdateProductTypeRequest {
      * @type {string}
      * @memberof RequestUpdateProductTypeRequest
      */
-    'iconUrl'?: string;
+    'iconUrl': string;
     /**
      * 品目名
      * @type {string}
      * @memberof RequestUpdateProductTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -2327,7 +2327,7 @@ export interface RequestUpdatePromotionRequest {
      * @type {string}
      * @memberof RequestUpdatePromotionRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {number}
@@ -2339,13 +2339,13 @@ export interface RequestUpdatePromotionRequest {
      * @type {number}
      * @memberof RequestUpdatePromotionRequest
      */
-    'discountType'?: number;
+    'discountType': number;
     /**
      * 
      * @type {number}
      * @memberof RequestUpdatePromotionRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 
      * @type {boolean}
@@ -2357,13 +2357,13 @@ export interface RequestUpdatePromotionRequest {
      * @type {number}
      * @memberof RequestUpdatePromotionRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * 
      * @type {string}
      * @memberof RequestUpdatePromotionRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -2376,13 +2376,13 @@ export interface RequestUpdateScheduleRequest {
      * @type {string}
      * @memberof RequestUpdateScheduleRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 配信終了日時
      * @type {number}
      * @memberof RequestUpdateScheduleRequest
      */
-    'endAt'?: number;
+    'endAt': number;
     /**
      * 蓋絵URL
      * @type {string}
@@ -2400,7 +2400,7 @@ export interface RequestUpdateScheduleRequest {
      * @type {number}
      * @memberof RequestUpdateScheduleRequest
      */
-    'startAt'?: number;
+    'startAt': number;
     /**
      * サムネイルURL
      * @type {string}
@@ -2412,7 +2412,7 @@ export interface RequestUpdateScheduleRequest {
      * @type {string}
      * @memberof RequestUpdateScheduleRequest
      */
-    'title'?: string;
+    'title': string;
 }
 /**
  * 
@@ -2425,19 +2425,19 @@ export interface RequestUpdateShippingRate {
      * @type {string}
      * @memberof RequestUpdateShippingRate
      */
-    'name'?: string;
+    'name': string;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
      * @memberof RequestUpdateShippingRate
      */
-    'prefectureCodes'?: Array<number>;
+    'prefectureCodes': Array<number>;
     /**
      * 配送料金(税込)
      * @type {number}
      * @memberof RequestUpdateShippingRate
      */
-    'price'?: number;
+    'price': number;
 }
 /**
  * 
@@ -2450,37 +2450,37 @@ export interface RequestUpdateShippingRequest {
      * @type {number}
      * @memberof RequestUpdateShippingRequest
      */
-    'box60Frozen'?: number;
+    'box60Frozen': number;
     /**
      * 箱サイズ60の通常便配送料一覧
      * @type {Array<RequestUpdateShippingRate>}
      * @memberof RequestUpdateShippingRequest
      */
-    'box60Rates'?: Array<RequestUpdateShippingRate>;
+    'box60Rates': Array<RequestUpdateShippingRate>;
     /**
      * 箱サイズ80の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpdateShippingRequest
      */
-    'box80Frozen'?: number;
+    'box80Frozen': number;
     /**
      * 箱サイズ80の通常便配送料一覧
      * @type {Array<RequestUpdateShippingRate>}
      * @memberof RequestUpdateShippingRequest
      */
-    'box80Rates'?: Array<RequestUpdateShippingRate>;
+    'box80Rates': Array<RequestUpdateShippingRate>;
     /**
      * 箱サイズ100の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpdateShippingRequest
      */
-    'box100Frozen'?: number;
+    'box100Frozen': number;
     /**
      * 箱サイズ100の通常便配送料一覧
      * @type {Array<RequestUpdateShippingRate>}
      * @memberof RequestUpdateShippingRequest
      */
-    'box100Rates'?: Array<RequestUpdateShippingRate>;
+    'box100Rates': Array<RequestUpdateShippingRate>;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
@@ -2498,7 +2498,7 @@ export interface RequestUpdateShippingRequest {
      * @type {string}
      * @memberof RequestUpdateShippingRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -2508,22 +2508,22 @@ export interface RequestUpdateShippingRequest {
 export interface RequestUpdateShopRequest {
     /**
      * 営業曜日(発送可能日)
-     * @type {Array<number>}
+     * @type {Set<number>}
      * @memberof RequestUpdateShopRequest
      */
-    'businessDays'?: Array<number>;
+    'businessDays'?: Set<number>;
     /**
      * 店舗名
      * @type {string}
      * @memberof RequestUpdateShopRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * 取り扱い品目一覧
      * @type {Array<string>}
      * @memberof RequestUpdateShopRequest
      */
-    'productTypeIds'?: Array<string>;
+    'productTypeIds': Array<string>;
 }
 /**
  * 
@@ -2542,25 +2542,25 @@ export interface RequestUpdateSpotRequest {
      * @type {number}
      * @memberof RequestUpdateSpotRequest
      */
-    'latitude'?: number;
+    'latitude': number;
     /**
      * 経度
      * @type {number}
      * @memberof RequestUpdateSpotRequest
      */
-    'longitude'?: number;
+    'longitude': number;
     /**
      * スポット名
      * @type {string}
      * @memberof RequestUpdateSpotRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * スポット種別ID
      * @type {string}
      * @memberof RequestUpdateSpotRequest
      */
-    'spotTypeId'?: string;
+    'spotTypeId': string;
     /**
      * サムネイルURL
      * @type {string}
@@ -2579,7 +2579,7 @@ export interface RequestUpdateSpotTypeRequest {
      * @type {string}
      * @memberof RequestUpdateSpotTypeRequest
      */
-    'name'?: string;
+    'name': string;
 }
 /**
  * 
@@ -2592,19 +2592,19 @@ export interface RequestUpdateThreadRequest {
      * @type {string}
      * @memberof RequestUpdateThreadRequest
      */
-    'content'?: string;
+    'content': string;
     /**
      * お問い合わせID
      * @type {string}
      * @memberof RequestUpdateThreadRequest
      */
-    'threadId'?: string;
+    'threadId': string;
     /**
      * 送信者ID
      * @type {string}
      * @memberof RequestUpdateThreadRequest
      */
-    'userId'?: string;
+    'userId': string;
     /**
      * 送信者種別(不明:0, admin:1, uer:2, guest:3)
      * @type {number}
@@ -2632,17 +2632,17 @@ export interface RequestUpdateVideoCommentRequest {
  */
 export interface RequestUpdateVideoRequest {
     /**
-     * カテゴリID一覧
-     * @type {Array<string>}
+     * コーディネータID
+     * @type {string}
      * @memberof RequestUpdateVideoRequest
      */
-    'categoryIds'?: Array<string>;
+    'coordinatorId': string;
     /**
      * 説明
      * @type {string}
      * @memberof RequestUpdateVideoRequest
      */
-    'description'?: string;
+    'description': string;
     /**
      * 体験への表示設定
      * @type {boolean}
@@ -2660,7 +2660,7 @@ export interface RequestUpdateVideoRequest {
      * @type {Array<string>}
      * @memberof RequestUpdateVideoRequest
      */
-    'experienceIds'?: Array<string>;
+    'experienceIds': Array<string>;
     /**
      * 限定公開設定
      * @type {boolean}
@@ -2672,7 +2672,7 @@ export interface RequestUpdateVideoRequest {
      * @type {Array<string>}
      * @memberof RequestUpdateVideoRequest
      */
-    'productIds'?: Array<string>;
+    'productIds': Array<string>;
     /**
      * 公開設定
      * @type {boolean}
@@ -2684,25 +2684,25 @@ export interface RequestUpdateVideoRequest {
      * @type {number}
      * @memberof RequestUpdateVideoRequest
      */
-    'publishedAt'?: number;
+    'publishedAt': number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof RequestUpdateVideoRequest
      */
-    'thumbnailUrl'?: string;
+    'thumbnailUrl': string;
     /**
      * タイトル
      * @type {string}
      * @memberof RequestUpdateVideoRequest
      */
-    'title'?: string;
+    'title': string;
     /**
      * 動画URL
      * @type {string}
      * @memberof RequestUpdateVideoRequest
      */
-    'videoUrl'?: string;
+    'videoUrl': string;
 }
 /**
  * 
@@ -2715,19 +2715,19 @@ export interface RequestUpsertShippingRate {
      * @type {string}
      * @memberof RequestUpsertShippingRate
      */
-    'name'?: string;
+    'name': string;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
      * @memberof RequestUpsertShippingRate
      */
-    'prefectureCodes'?: Array<number>;
+    'prefectureCodes': Array<number>;
     /**
      * 配送料金(税込)
      * @type {number}
      * @memberof RequestUpsertShippingRate
      */
-    'price'?: number;
+    'price': number;
 }
 /**
  * 
@@ -2740,37 +2740,37 @@ export interface RequestUpsertShippingRequest {
      * @type {number}
      * @memberof RequestUpsertShippingRequest
      */
-    'box60Frozen'?: number;
+    'box60Frozen': number;
     /**
      * 箱サイズ60の通常便配送料一覧
      * @type {Array<RequestUpsertShippingRate>}
      * @memberof RequestUpsertShippingRequest
      */
-    'box60Rates'?: Array<RequestUpsertShippingRate>;
+    'box60Rates': Array<RequestUpsertShippingRate>;
     /**
      * 箱サイズ80の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpsertShippingRequest
      */
-    'box80Frozen'?: number;
+    'box80Frozen': number;
     /**
      * 箱サイズ80の通常便配送料一覧
      * @type {Array<RequestUpsertShippingRate>}
      * @memberof RequestUpsertShippingRequest
      */
-    'box80Rates'?: Array<RequestUpsertShippingRate>;
+    'box80Rates': Array<RequestUpsertShippingRate>;
     /**
      * 箱サイズ100の冷凍便追加配送料(税込)
      * @type {number}
      * @memberof RequestUpsertShippingRequest
      */
-    'box100Frozen'?: number;
+    'box100Frozen': number;
     /**
      * 箱サイズ100の通常便配送料一覧
      * @type {Array<RequestUpsertShippingRate>}
      * @memberof RequestUpsertShippingRequest
      */
-    'box100Rates'?: Array<RequestUpsertShippingRate>;
+    'box100Rates': Array<RequestUpsertShippingRate>;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
@@ -2795,7 +2795,7 @@ export interface RequestVerifyAuthEmailRequest {
      * @type {string}
      * @memberof RequestVerifyAuthEmailRequest
      */
-    'verifyCode'?: string;
+    'verifyCode': string;
 }
 /**
  * デフォルト設定の住所情報
@@ -4821,12 +4821,6 @@ export interface ResponseOrder {
      * @memberof ResponseOrder
      */
     'shippingMessage'?: string;
-    /**
-     * 発送方法
-     * @type {number}
-     * @memberof ResponseOrder
-     */
-    'shippingType'?: number;
     /**
      * 注文ステータス
      * @type {number}

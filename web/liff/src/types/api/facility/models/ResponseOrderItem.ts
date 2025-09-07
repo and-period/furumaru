@@ -16,47 +16,47 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface OrderItem
+ * @interface ResponseOrderItem
  */
-export interface OrderItem {
+export interface ResponseOrderItem {
     /**
      * 配送情報ID
      * @type {string}
-     * @memberof OrderItem
+     * @memberof ResponseOrderItem
      */
     fulfillmentId?: string;
     /**
      * 購入価格(税込)
      * @type {number}
-     * @memberof OrderItem
+     * @memberof ResponseOrderItem
      */
     price?: number;
     /**
      * 商品ID
      * @type {string}
-     * @memberof OrderItem
+     * @memberof ResponseOrderItem
      */
     productId?: string;
     /**
      * 購入数量
      * @type {number}
-     * @memberof OrderItem
+     * @memberof ResponseOrderItem
      */
     quantity?: number;
 }
 
 /**
- * Check if a given object implements the OrderItem interface.
+ * Check if a given object implements the ResponseOrderItem interface.
  */
-export function instanceOfOrderItem(value: object): value is OrderItem {
+export function instanceOfResponseOrderItem(value: object): value is ResponseOrderItem {
     return true;
 }
 
-export function OrderItemFromJSON(json: any): OrderItem {
-    return OrderItemFromJSONTyped(json, false);
+export function ResponseOrderItemFromJSON(json: any): ResponseOrderItem {
+    return ResponseOrderItemFromJSONTyped(json, false);
 }
 
-export function OrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderItem {
+export function ResponseOrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseOrderItem {
     if (json == null) {
         return json;
     }
@@ -69,7 +69,7 @@ export function OrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     };
 }
 
-export function OrderItemToJSON(value?: OrderItem | null): any {
+export function ResponseOrderItemToJSON(value?: ResponseOrderItem | null): any {
     if (value == null) {
         return value;
     }

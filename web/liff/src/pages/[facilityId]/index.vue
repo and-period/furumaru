@@ -4,6 +4,7 @@ import { NuxtLink } from '#components';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
 import { useAuthStore } from '~/stores/auth';
+import { useShoppingCartStore } from '~/stores/shopping';
 
 const route = useRoute();
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
@@ -19,6 +20,17 @@ const { products, isLoading, error } = storeToRefs(productStore);
 onMounted(() => {
   productStore.fetchProducts();
 });
+
+// カート追加
+const shoppingCartStore = useShoppingCartStore();
+async function handleAddToCart(productId: string, quantity: number) {
+  try {
+    await shoppingCartStore.addCartItem(productId, quantity);
+  }
+  catch (e) {
+    console.error('Failed to add to cart:', e);
+  }
+}
 </script>
 
 <template>
@@ -64,6 +76,7 @@ onMounted(() => {
             :thumbnail-url="product.thumbnailUrl"
             :link-component="NuxtLink"
             :link-component-props="{ to: `/${facilityId}/items/${product.id}`, class: 'block' }"
+            @click:add-cart="(q) => handleAddToCart(product.id, q)"
           />
         </template>
       </div>

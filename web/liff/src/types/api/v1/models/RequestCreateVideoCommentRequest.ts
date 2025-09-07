@@ -24,13 +24,14 @@ export interface RequestCreateVideoCommentRequest {
      * @type {string}
      * @memberof RequestCreateVideoCommentRequest
      */
-    comment?: string;
+    comment: string;
 }
 
 /**
  * Check if a given object implements the RequestCreateVideoCommentRequest interface.
  */
 export function instanceOfRequestCreateVideoCommentRequest(value: object): value is RequestCreateVideoCommentRequest {
+    if (!('comment' in value) || value['comment'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RequestCreateVideoCommentRequestFromJSONTyped(json: any, ignoreD
     }
     return {
         
-        'comment': json['comment'] == null ? undefined : json['comment'],
+        'comment': json['comment'],
     };
 }
 

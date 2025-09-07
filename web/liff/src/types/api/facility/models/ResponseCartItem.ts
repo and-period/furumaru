@@ -16,35 +16,35 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CartItem
+ * @interface ResponseCartItem
  */
-export interface CartItem {
+export interface ResponseCartItem {
     /**
      * 商品ID
      * @type {string}
-     * @memberof CartItem
+     * @memberof ResponseCartItem
      */
     productId?: string;
     /**
      * 数量
      * @type {number}
-     * @memberof CartItem
+     * @memberof ResponseCartItem
      */
     quantity?: number;
 }
 
 /**
- * Check if a given object implements the CartItem interface.
+ * Check if a given object implements the ResponseCartItem interface.
  */
-export function instanceOfCartItem(value: object): value is CartItem {
+export function instanceOfResponseCartItem(value: object): value is ResponseCartItem {
     return true;
 }
 
-export function CartItemFromJSON(json: any): CartItem {
-    return CartItemFromJSONTyped(json, false);
+export function ResponseCartItemFromJSON(json: any): ResponseCartItem {
+    return ResponseCartItemFromJSONTyped(json, false);
 }
 
-export function CartItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): CartItem {
+export function ResponseCartItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseCartItem {
     if (json == null) {
         return json;
     }
@@ -55,7 +55,7 @@ export function CartItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     };
 }
 
-export function CartItemToJSON(value?: CartItem | null): any {
+export function ResponseCartItemToJSON(value?: ResponseCartItem | null): any {
     if (value == null) {
         return value;
     }

@@ -16,35 +16,35 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CheckoutStateResponse
+ * @interface ResponseCheckoutStateResponse
  */
-export interface CheckoutStateResponse {
+export interface ResponseCheckoutStateResponse {
     /**
      * 注文履歴ID
      * @type {string}
-     * @memberof CheckoutStateResponse
+     * @memberof ResponseCheckoutStateResponse
      */
     orderId?: string;
     /**
      * 注文ステータス
      * @type {number}
-     * @memberof CheckoutStateResponse
+     * @memberof ResponseCheckoutStateResponse
      */
     status?: number;
 }
 
 /**
- * Check if a given object implements the CheckoutStateResponse interface.
+ * Check if a given object implements the ResponseCheckoutStateResponse interface.
  */
-export function instanceOfCheckoutStateResponse(value: object): value is CheckoutStateResponse {
+export function instanceOfResponseCheckoutStateResponse(value: object): value is ResponseCheckoutStateResponse {
     return true;
 }
 
-export function CheckoutStateResponseFromJSON(json: any): CheckoutStateResponse {
-    return CheckoutStateResponseFromJSONTyped(json, false);
+export function ResponseCheckoutStateResponseFromJSON(json: any): ResponseCheckoutStateResponse {
+    return ResponseCheckoutStateResponseFromJSONTyped(json, false);
 }
 
-export function CheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutStateResponse {
+export function ResponseCheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseCheckoutStateResponse {
     if (json == null) {
         return json;
     }
@@ -55,7 +55,7 @@ export function CheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function CheckoutStateResponseToJSON(value?: CheckoutStateResponse | null): any {
+export function ResponseCheckoutStateResponseToJSON(value?: ResponseCheckoutStateResponse | null): any {
     if (value == null) {
         return value;
     }

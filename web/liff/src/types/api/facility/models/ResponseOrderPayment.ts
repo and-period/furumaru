@@ -16,77 +16,77 @@ import { mapValues } from '../runtime';
 /**
  * 支払い情報
  * @export
- * @interface OrderPayment
+ * @interface ResponseOrderPayment
  */
-export interface OrderPayment {
+export interface ResponseOrderPayment {
     /**
      * 割引金額(税込)
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     discount?: number;
     /**
      * 決済手段種別
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     methodType?: number;
     /**
      * 注文日時
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     orderedAt?: number;
     /**
      * 支払日時
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     paidAt?: number;
     /**
      * 配送手数料(税込)
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     shippingFee?: number;
     /**
      * 支払い状況
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     status?: number;
     /**
      * 購入金額(税込)
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     subtotal?: number;
     /**
      * 合計金額(税込)
      * @type {number}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     total?: number;
     /**
      * 取引ID
      * @type {string}
-     * @memberof OrderPayment
+     * @memberof ResponseOrderPayment
      */
     transactionId?: string;
 }
 
 /**
- * Check if a given object implements the OrderPayment interface.
+ * Check if a given object implements the ResponseOrderPayment interface.
  */
-export function instanceOfOrderPayment(value: object): value is OrderPayment {
+export function instanceOfResponseOrderPayment(value: object): value is ResponseOrderPayment {
     return true;
 }
 
-export function OrderPaymentFromJSON(json: any): OrderPayment {
-    return OrderPaymentFromJSONTyped(json, false);
+export function ResponseOrderPaymentFromJSON(json: any): ResponseOrderPayment {
+    return ResponseOrderPaymentFromJSONTyped(json, false);
 }
 
-export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderPayment {
+export function ResponseOrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseOrderPayment {
     if (json == null) {
         return json;
     }
@@ -104,7 +104,7 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function OrderPaymentToJSON(value?: OrderPayment | null): any {
+export function ResponseOrderPaymentToJSON(value?: ResponseOrderPayment | null): any {
     if (value == null) {
         return value;
     }
