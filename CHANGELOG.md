@@ -1,5 +1,8 @@
 # Changelog
 
+## [v6.0.1](https://github.com/and-period/furumaru/compare/v6.0.0...v6.0.1) - 2025-09-07
+- Claude Codeセッション管理システムの追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3006
+
 ## [v6.0.0](https://github.com/and-period/furumaru/compare/v5.1.3...v6.0.0) - 2025-09-07
 - feat(api): キャンプ施設向け認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2963
 - OpenAPI tooling improvements and component name simplification by @taba2424 in https://github.com/and-period/furumaru/pull/2966
