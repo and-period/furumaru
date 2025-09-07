@@ -1,0 +1,91 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices"
+  ],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["* 19 * * 3"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 10,
+  "automerge": false,
+  "automergeType": "pr",
+  "rangeStrategy": "bump",
+  "postUpdateOptions": ["gomodTidy", "npmDedupe"],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "automerge": false
+  },
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "packageRules": [
+    {
+      "groupName": "GitHub Actions dependencies",
+      "matchPaths": [".github/**"],
+      "matchManagers": ["github-actions"],
+      "labels": ["workflow", "dependencies"]
+    },
+    {
+      "groupName": "API dependencies",
+      "matchPaths": ["api/**"],
+      "matchManagers": ["gomod"],
+      "labels": ["backend", "dependencies"],
+      "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
+    },
+    {
+      "groupName": "Functions dependencies",
+      "matchPaths": ["func/**"],
+      "labels": ["backend", "dependencies"]
+    },
+    {
+      "groupName": "Documentation dependencies",
+      "matchPaths": ["docs/**"],
+      "labels": ["docs", "dependencies"]
+    },
+    {
+      "groupName": "Infrastructure dependencies",
+      "matchPaths": ["infra/**"],
+      "labels": ["infrastructure", "dependencies"]
+    },
+    {
+      "groupName": "Admin Web dependencies",
+      "matchPaths": ["web/admin/**"],
+      "matchManagers": ["npm"],
+      "labels": ["frontend", "dependencies"]
+    },
+    {
+      "groupName": "LIFF Web dependencies",
+      "matchPaths": ["web/liff/**"],
+      "matchManagers": ["npm"],
+      "labels": ["frontend", "dependencies"]
+    },
+    {
+      "groupName": "Shared Web dependencies",
+      "matchPaths": ["web/shared/**"],
+      "matchManagers": ["npm"],
+      "labels": ["frontend", "dependencies"]
+    },
+    {
+      "groupName": "User Web dependencies",
+      "matchPaths": ["web/user/**"],
+      "matchManagers": ["npm"],
+      "labels": ["frontend", "dependencies"]
+    },
+    {
+      "description": "Automatically merge minor and patch updates for dev dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Disable major version updates by default",
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Enable major updates for specific safe packages",
+      "matchPackageNames": ["eslint", "prettier", "typescript"],
+      "matchUpdateTypes": ["major"],
+      "enabled": true
+    }
+  ]
+}
