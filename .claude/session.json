@@ -1,0 +1,38 @@
+{
+  "current_session": {
+    "id": "session_20250907_203900",
+    "started_at": "2025-09-07T20:39:00Z",
+    "status": "active",
+    "context": {
+      "working_directory": "/Users/nishi/Public/github.com/and-period/furumaru",
+      "branch": "main",
+      "modified_files": []
+    },
+    "tasks": {
+      "current": "セッション管理システムのセットアップ",
+      "completed": [
+        "セッション管理構造の作成",
+        "session.jsonの実装",
+        "セッションログユーティリティの作成",
+        "ドキュメントの日本語化"
+      ],
+      "pending": []
+    },
+    "notes": [
+      {
+        "timestamp": "2025-09-07T20:40:00Z",
+        "content": "セッション管理システムを構築し、作業の継続性を確保"
+      },
+      {
+        "timestamp": "2025-09-07T20:41:00Z",
+        "content": ".claude配下のドキュメントを日本語化して可読性を向上"
+      }
+    ]
+  },
+  "history": [],
+  "settings": {
+    "auto_save": true,
+    "save_interval_minutes": 10,
+    "max_history_entries": 100
+  }
+}
