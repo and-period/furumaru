@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import liff from '@line/liff';
 import { useAuthStore } from '~/stores/auth';
 import { useShoppingCartStore } from '~/stores/shopping';
+import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
 const router = useRouter();
@@ -44,24 +45,32 @@ onMounted(async () => {
 
   // サインイン（LIFFログイン済みの場合のみ）
   if (liff.isLoggedIn()) {
-    const liffAccessToken = liff.getAccessToken();
-    if (liffAccessToken) {
+    const liffIDToken = liff.getIDToken();
+    if (liffIDToken) {
       try {
-        const res = await authStore.signIn(liffAccessToken);
-        if (!res?.userId) {
-          const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
-          await router.push(path);
-          return;
-        }
+        await authStore.signIn(liffIDToken);
+        // 認証処理の後にカート情報を取得（トークン付与のため）
+        await shoppingCartStore.getCart();
       }
       catch (err) {
+        if (err instanceof ResponseError) {
+          if (err.response.status === 404) {
+            // 404 Error の場合は新規登録へリダイレクト
+            const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
+            await router.push(path);
+            return;
+          }
+          if (err.response.status === 401) {
+            // 401 Error の場合は再ログイン
+            liff.logout();
+            return;
+          }
+        }
+
         console.error('Auth signIn or redirect failed:', err);
       }
     }
   }
-
-  // 認証処理の後にカート情報を取得（トークン付与のため）
-  await shoppingCartStore.getCart();
 });
 
 // 価格のフォーマット

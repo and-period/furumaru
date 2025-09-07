@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    async signIn(liffAccessToken: string) {
+    async signIn(liffIDToken: string) {
       this.isLoading = true;
       this.error = null;
 
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
         const api = this.facilityAuthApiClient();
 
         const payload: RequestSignInRequest = {
-          authToken: liffAccessToken,
+          authToken: liffIDToken,
         };
 
         const res = await api.facilitiesFacilityIdAuthPost({
