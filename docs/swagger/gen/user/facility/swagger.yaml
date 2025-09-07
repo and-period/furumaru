@@ -327,7 +327,7 @@ components:
         businessDays:
           description: 営業曜日(発送可能日)
           items:
-            type: integer
+            $ref: '#/components/schemas/time.Weekday'
           type: array
           uniqueItems: false
         city:
@@ -792,6 +792,23 @@ components:
           description: タイトル
           type: string
       type: object
+    time.Weekday:
+      type: integer
+      x-enum-varnames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     util.ErrorResponse:
       properties:
         detail:
