@@ -1,5 +1,44 @@
 # Changelog
 
+## [v6.0.0](https://github.com/and-period/furumaru/compare/v5.1.3...v6.0.0) - 2025-09-07
+- feat(api): キャンプ施設向け認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2963
+- OpenAPI tooling improvements and component name simplification by @taba2424 in https://github.com/and-period/furumaru/pull/2966
+- feat(api): Add comprehensive Swagger comments and improve API tooling by @taba2424 in https://github.com/and-period/furumaru/pull/2967
+- chore(ci): GitHub ActionsでGoのテストキャッシュを有効化 by @taba2424 in https://github.com/and-period/furumaru/pull/2968
+- feat(api): Add comprehensive Swagger documentation for admin API endpoints by @taba2424 in https://github.com/and-period/furumaru/pull/2970
+- refactor(api): Rename LINE verifier to LIFF verifier for clarity by @taba2424 in https://github.com/and-period/furumaru/pull/2971
+- chore: Add Japanese language preference to Copilot instructions by @taba2424 in https://github.com/and-period/furumaru/pull/2973
+- feat: 施設向けの商品関連APIのドキュメント追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2974
+- refactor(api): Rename LINE verifier to LIFF verifier in facility auth by @taba2424 in https://github.com/and-period/furumaru/pull/2975
+- feat(api): Expand auth user update API to include full user details by @taba2424 in https://github.com/and-period/furumaru/pull/2976
+- Web/liff/login by @wf-yamaday in https://github.com/and-period/furumaru/pull/2969
+- feat(api): Add RSA key parsing functions for facility authentication by @taba2424 in https://github.com/and-period/furumaru/pull/2979
+- Feat/2025 01 31 facility auth rsa key parsing by @taba2424 in https://github.com/and-period/furumaru/pull/2980
+- feat(api): Add facility handlers and services for user gateway by @taba2424 in https://github.com/and-period/furumaru/pull/2977
+- fix(web): Add debug logging for LIFF ID token by @taba2424 in https://github.com/and-period/furumaru/pull/2981
+- test(api): Add tests for facility user Update methods by @taba2424 in https://github.com/and-period/furumaru/pull/2982
+- feat(api): Add facility gateway services and handlers by @taba2424 in https://github.com/and-period/furumaru/pull/2983
+- ドキュメント: Gitワークフローの日本語運用ルール追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2984
+- feat: 店舗受け取りでの注文機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2986
+- fix(ci): GitHub Actionsのテストキャッシュを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2972
+- chore(liff): LINE LIFF SDKを最新版へアップデート by @taba2424 in https://github.com/and-period/furumaru/pull/2989
+- fix(api): facility認証トークンのテーブル名を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2990
+- feat(api): facility向けカート計算APIエンドポイントを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2991
+- fix(ci): PR承認ラベリングワークフローの改善 by @taba2424 in https://github.com/and-period/furumaru/pull/2992
+- build(deps): bump the dependencies group in /web/admin with 88 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/2988
+- fix(api): KOMOJUセッション作成とテストの不具合を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2993
+- SEO修正: タイトル・ディスクリプション変更、sitemap.xml作成 by @nexerENG in https://github.com/and-period/furumaru/pull/2985
+- fix(api): メッセンジャーサービスで注文確定時の顧客情報取得を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2994
+- feat(api): リフレッシュトークン管理機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2995
+- カート部分のAPIつなぎこみ by @wf-yamaday in https://github.com/and-period/furumaru/pull/2978
+- chore(docs): Swagger定義ファイルの大規模リファクタリング by @taba2424 in https://github.com/and-period/furumaru/pull/2996
+- feat(api): APIリクエスト構造体にバリデーションタグを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2997
+- chore: Go バージョンを 1.25.1 にアップデート by @taba2424 in https://github.com/and-period/furumaru/pull/2999
+- chore: Configure Renovate by @renovate[bot] in https://github.com/and-period/furumaru/pull/2998
+- chore(deps): Update dependency esbuild to ^0.25.0 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3002
+- chore(deps): migrate renovate config - autoclosed by @renovate[bot] in https://github.com/and-period/furumaru/pull/3004
+- chore(deps): Update dependency axios to v1.8.2 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3001
+
 ## [v5.1.3](https://github.com/and-period/furumaru/compare/v5.1.2...v5.1.3) - 2025-08-28
 - feat(api): キャンプ施設向けJWT認証機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2953
 - feat(api): キャンプ施設ユーザーのチェックイン機能を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2956
