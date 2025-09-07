@@ -61,8 +61,8 @@ function normalizePhoneNumberToJpIntl(raw: string): string {
   const cleaned = half
     .trim()
     .replace(/(?!^)[^0-9]/g, '') // 先頭以外の非数字を除去
-    .replace(/^\+?([^0-9]*)(.*)$/,'+$2') // 先頭+がなければ仮に付加（後で整形）
-    .replace(/^\+\+/,'+');
+    .replace(/^\+?([^0-9]*)(.*)$/, '+$2') // 先頭+がなければ仮に付加（後で整形）
+    .replace(/^\+\+/, '+');
 
   // 先頭+81形式はそのまま
   if (cleaned.startsWith('+81')) return cleaned;

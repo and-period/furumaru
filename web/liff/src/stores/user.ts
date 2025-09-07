@@ -238,7 +238,7 @@ export const useUserStore = defineStore('user', {
         // アップロードの完了をポーリング
         const otherApi = this.otherApiClient(token);
         let url: string | undefined;
-        // eslint-disable-next-line no-constant-condition
+
         while (true) {
           await new Promise(resolve => setTimeout(resolve, 200));
           const state = await otherApi.v1GetUploadState({ key });
@@ -290,4 +290,3 @@ export const useUserStore = defineStore('user', {
     },
   },
 });
-
