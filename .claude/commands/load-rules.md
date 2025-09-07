@@ -35,7 +35,7 @@
 
 ### 技術スタック
 - **Frontend**: Nuxt 3 + Vue 3 + Vuetify/Tailwind CSS + TypeScript
-- **Backend**: Go 1.24.2 + Gin + GORM + gRPC
+- **Backend**: Go 1.25.1 + Gin + GORM + gRPC
 - **Database**: MySQL/TiDB（ドメインごとに分離）
 - **Infrastructure**: AWS (S3, Cognito, SQS, MediaLive) + Docker
 

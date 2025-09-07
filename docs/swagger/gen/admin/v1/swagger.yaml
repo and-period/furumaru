@@ -1759,6 +1759,13 @@ components:
                             - Thursday
                             - Friday
                             - Saturday
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
                     maxItems: 7
                     type: array
                     uniqueItems: true
@@ -4644,6 +4651,13 @@ components:
         time.Weekday:
             type: integer
             x-enum-varnames:
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
                 - Sunday
                 - Monday
                 - Tuesday
