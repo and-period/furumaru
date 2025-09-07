@@ -148,3 +148,27 @@ jobs:
         fail_ci_if_error: true
         flags: api
         verbose: true
+
+  docs:
+    name: docs
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+    - uses: ./.github/actions/setup-go
+      with:
+        working-directory: ./api
+        service: ${{ env.SERVICE }}
+
+    - name: Generate API docs
+      run: make docs-all
