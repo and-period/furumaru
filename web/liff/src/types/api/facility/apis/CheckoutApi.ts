@@ -15,18 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  CheckoutResponse,
-  CheckoutStateResponse,
   RequestCheckoutRequest,
+  ResponseCheckoutResponse,
+  ResponseCheckoutStateResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    CheckoutResponseFromJSON,
-    CheckoutResponseToJSON,
-    CheckoutStateResponseFromJSON,
-    CheckoutStateResponseToJSON,
     RequestCheckoutRequestFromJSON,
     RequestCheckoutRequestToJSON,
+    ResponseCheckoutResponseFromJSON,
+    ResponseCheckoutResponseToJSON,
+    ResponseCheckoutStateResponseFromJSON,
+    ResponseCheckoutStateResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -50,7 +50,7 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 商品を購入します。
      * 購入する
      */
-    async facilitiesFacilityIdCheckoutsPostRaw(requestParameters: FacilitiesFacilityIdCheckoutsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
+    async facilitiesFacilityIdCheckoutsPostRaw(requestParameters: FacilitiesFacilityIdCheckoutsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCheckoutResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -71,6 +71,14 @@ export class CheckoutApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const response = await this.request({
             path: `/facilities/{facilityId}/checkouts`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
             method: 'POST',
@@ -79,14 +87,14 @@ export class CheckoutApi extends runtime.BaseAPI {
             body: RequestCheckoutRequestToJSON(requestParameters['requestCheckoutRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCheckoutResponseFromJSON(jsonValue));
     }
 
     /**
      * 商品を購入します。
      * 購入する
      */
-    async facilitiesFacilityIdCheckoutsPost(requestParameters: FacilitiesFacilityIdCheckoutsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
+    async facilitiesFacilityIdCheckoutsPost(requestParameters: FacilitiesFacilityIdCheckoutsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCheckoutResponse> {
         const response = await this.facilitiesFacilityIdCheckoutsPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -95,7 +103,7 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 支払い状態を取得します。
      * 支払い状態取得
      */
-    async facilitiesFacilityIdCheckoutsTransactionIdGetRaw(requestParameters: FacilitiesFacilityIdCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutStateResponse>> {
+    async facilitiesFacilityIdCheckoutsTransactionIdGetRaw(requestParameters: FacilitiesFacilityIdCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCheckoutStateResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -129,14 +137,14 @@ export class CheckoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutStateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCheckoutStateResponseFromJSON(jsonValue));
     }
 
     /**
      * 支払い状態を取得します。
      * 支払い状態取得
      */
-    async facilitiesFacilityIdCheckoutsTransactionIdGet(requestParameters: FacilitiesFacilityIdCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutStateResponse> {
+    async facilitiesFacilityIdCheckoutsTransactionIdGet(requestParameters: FacilitiesFacilityIdCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCheckoutStateResponse> {
         const response = await this.facilitiesFacilityIdCheckoutsTransactionIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -20,10 +20,25 @@ export const useProductStore = defineStore('product', {
       this.error = null;
 
       try {
-        const response = await this.productApiClient().v1ListProducts({
-          limit: 20,
-          offset: 0,
-        });
+        const route = useRoute();
+        const runtimeConfig = useRuntimeConfig();
+
+        const facilityId = String(route.params.facilityId ?? '');
+        if (!facilityId) {
+          throw new Error('facilityId is not specified in params.');
+        }
+
+        const response = await $fetch<ProductsResponse>(
+          `${runtimeConfig.public.API_BASE_URL}/facilities/${facilityId}/products`,
+          {
+            method: 'GET',
+            credentials: 'include',
+            query: {
+              limit: 20,
+              offset: 0,
+            },
+          },
+        );
 
         this.products = response.products || [];
       }

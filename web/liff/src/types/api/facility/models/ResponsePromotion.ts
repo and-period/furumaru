@@ -16,77 +16,77 @@ import { mapValues } from '../runtime';
 /**
  * プロモーション情報
  * @export
- * @interface Promotion
+ * @interface ResponsePromotion
  */
-export interface Promotion {
+export interface ResponsePromotion {
     /**
      * クーポンコード
      * @type {string}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     code?: string;
     /**
      * 詳細説明
      * @type {string}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     description?: string;
     /**
      * 割引額(%/円)
      * @type {number}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     discountRate?: number;
     /**
      * 割引計算方法
      * @type {number}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     discountType?: number;
     /**
      * クーポン使用可能日時(終了)
      * @type {number}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     endAt?: number;
     /**
      * プロモーションID
      * @type {string}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     id?: string;
     /**
      * クーポン使用可能日時(開始)
      * @type {number}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     startAt?: number;
     /**
      * ステータス
      * @type {number}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     status?: number;
     /**
      * タイトル
      * @type {string}
-     * @memberof Promotion
+     * @memberof ResponsePromotion
      */
     title?: string;
 }
 
 /**
- * Check if a given object implements the Promotion interface.
+ * Check if a given object implements the ResponsePromotion interface.
  */
-export function instanceOfPromotion(value: object): value is Promotion {
+export function instanceOfResponsePromotion(value: object): value is ResponsePromotion {
     return true;
 }
 
-export function PromotionFromJSON(json: any): Promotion {
-    return PromotionFromJSONTyped(json, false);
+export function ResponsePromotionFromJSON(json: any): ResponsePromotion {
+    return ResponsePromotionFromJSONTyped(json, false);
 }
 
-export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean): Promotion {
+export function ResponsePromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponsePromotion {
     if (json == null) {
         return json;
     }
@@ -104,7 +104,7 @@ export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     };
 }
 
-export function PromotionToJSON(value?: Promotion | null): any {
+export function ResponsePromotionToJSON(value?: ResponsePromotion | null): any {
     if (value == null) {
         return value;
     }

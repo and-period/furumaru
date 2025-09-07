@@ -13,219 +13,219 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ProductMedia } from './ProductMedia';
+import type { ResponseProductMedia } from './ResponseProductMedia';
 import {
-    ProductMediaFromJSON,
-    ProductMediaFromJSONTyped,
-    ProductMediaToJSON,
-} from './ProductMedia';
-import type { ProductRate } from './ProductRate';
+    ResponseProductMediaFromJSON,
+    ResponseProductMediaFromJSONTyped,
+    ResponseProductMediaToJSON,
+} from './ResponseProductMedia';
+import type { ResponseProductRate } from './ResponseProductRate';
 import {
-    ProductRateFromJSON,
-    ProductRateFromJSONTyped,
-    ProductRateToJSON,
-} from './ProductRate';
+    ResponseProductRateFromJSON,
+    ResponseProductRateFromJSONTyped,
+    ResponseProductRateToJSON,
+} from './ResponseProductRate';
 
 /**
- * 
+ * 商品情報
  * @export
- * @interface Product
+ * @interface ResponseProduct
  */
-export interface Product {
+export interface ResponseProduct {
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     box60Rate?: number;
     /**
      * 箱の占有率(サイズ:80)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     box80Rate?: number;
     /**
      * 箱の占有率(サイズ:100)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     box100Rate?: number;
     /**
      * 商品種別ID
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     categoryId?: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     coordinatorId?: string;
     /**
      * 配送方法
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     deliveryType?: number;
     /**
      * 商品説明
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     description?: string;
     /**
      * 販売終了日時
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     endAt?: number;
     /**
      * 賞味期限(単位:日)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     expirationDate?: number;
     /**
      * 商品ID
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     id?: string;
     /**
      * 在庫数
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     inventory?: number;
     /**
      * 数量単位説明
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     itemDescription?: string;
     /**
      * 数量単位
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     itemUnit?: string;
     /**
      * メディア一覧
-     * @type {Array<ProductMedia>}
-     * @memberof Product
+     * @type {Array<ResponseProductMedia>}
+     * @memberof ResponseProduct
      */
-    media?: Array<ProductMedia>;
+    media?: Array<ResponseProductMedia>;
     /**
      * 商品名
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     name?: string;
     /**
      * 原産地(市区町村)
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     originCity?: string;
     /**
      * 原産地(都道府県)
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     originPrefecture?: string;
     /**
      * 販売価格(税込)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     price?: number;
     /**
      * 生産者ID
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     producerId?: string;
     /**
      * 商品タグID一覧
      * @type {Array<string>}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     productTagIds?: Array<string>;
     /**
      * 品目ID
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     productTypeId?: string;
     /**
      * 
-     * @type {ProductRate}
-     * @memberof Product
+     * @type {ResponseProductRate}
+     * @memberof ResponseProduct
      */
-    rate?: ProductRate;
+    rate?: ResponseProductRate;
     /**
      * おすすめポイント1
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     recommendedPoint1?: string;
     /**
      * おすすめポイント2
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     recommendedPoint2?: string;
     /**
      * おすすめポイント3
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     recommendedPoint3?: string;
     /**
      * 販売開始日時
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     startAt?: number;
     /**
      * 販売状況
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     status?: number;
     /**
      * 保存方法
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     storageMethodType?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     thumbnailUrl?: string;
     /**
      * 重量(kg,少数第一位まで)
      * @type {number}
-     * @memberof Product
+     * @memberof ResponseProduct
      */
     weight?: number;
 }
 
 /**
- * Check if a given object implements the Product interface.
+ * Check if a given object implements the ResponseProduct interface.
  */
-export function instanceOfProduct(value: object): value is Product {
+export function instanceOfResponseProduct(value: object): value is ResponseProduct {
     return true;
 }
 
-export function ProductFromJSON(json: any): Product {
-    return ProductFromJSONTyped(json, false);
+export function ResponseProductFromJSON(json: any): ResponseProduct {
+    return ResponseProductFromJSONTyped(json, false);
 }
 
-export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): Product {
+export function ResponseProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseProduct {
     if (json == null) {
         return json;
     }
@@ -244,7 +244,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'inventory': json['inventory'] == null ? undefined : json['inventory'],
         'itemDescription': json['itemDescription'] == null ? undefined : json['itemDescription'],
         'itemUnit': json['itemUnit'] == null ? undefined : json['itemUnit'],
-        'media': json['media'] == null ? undefined : ((json['media'] as Array<any>).map(ProductMediaFromJSON)),
+        'media': json['media'] == null ? undefined : ((json['media'] as Array<any>).map(ResponseProductMediaFromJSON)),
         'name': json['name'] == null ? undefined : json['name'],
         'originCity': json['originCity'] == null ? undefined : json['originCity'],
         'originPrefecture': json['originPrefecture'] == null ? undefined : json['originPrefecture'],
@@ -252,7 +252,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'producerId': json['producerId'] == null ? undefined : json['producerId'],
         'productTagIds': json['productTagIds'] == null ? undefined : json['productTagIds'],
         'productTypeId': json['productTypeId'] == null ? undefined : json['productTypeId'],
-        'rate': json['rate'] == null ? undefined : ProductRateFromJSON(json['rate']),
+        'rate': json['rate'] == null ? undefined : ResponseProductRateFromJSON(json['rate']),
         'recommendedPoint1': json['recommendedPoint1'] == null ? undefined : json['recommendedPoint1'],
         'recommendedPoint2': json['recommendedPoint2'] == null ? undefined : json['recommendedPoint2'],
         'recommendedPoint3': json['recommendedPoint3'] == null ? undefined : json['recommendedPoint3'],
@@ -264,7 +264,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
     };
 }
 
-export function ProductToJSON(value?: Product | null): any {
+export function ResponseProductToJSON(value?: ResponseProduct | null): any {
     if (value == null) {
         return value;
     }
@@ -283,7 +283,7 @@ export function ProductToJSON(value?: Product | null): any {
         'inventory': value['inventory'],
         'itemDescription': value['itemDescription'],
         'itemUnit': value['itemUnit'],
-        'media': value['media'] == null ? undefined : ((value['media'] as Array<any>).map(ProductMediaToJSON)),
+        'media': value['media'] == null ? undefined : ((value['media'] as Array<any>).map(ResponseProductMediaToJSON)),
         'name': value['name'],
         'originCity': value['originCity'],
         'originPrefecture': value['originPrefecture'],
@@ -291,7 +291,7 @@ export function ProductToJSON(value?: Product | null): any {
         'producerId': value['producerId'],
         'productTagIds': value['productTagIds'],
         'productTypeId': value['productTypeId'],
-        'rate': ProductRateToJSON(value['rate']),
+        'rate': ResponseProductRateToJSON(value['rate']),
         'recommendedPoint1': value['recommendedPoint1'],
         'recommendedPoint2': value['recommendedPoint2'],
         'recommendedPoint3': value['recommendedPoint3'],

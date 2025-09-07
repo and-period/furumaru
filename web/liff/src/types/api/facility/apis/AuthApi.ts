@@ -15,15 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  AuthResponse,
+  RequestGetAccessTokenRequest,
   RequestSignInRequest,
+  ResponseAuthResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    AuthResponseFromJSON,
-    AuthResponseToJSON,
+    RequestGetAccessTokenRequestFromJSON,
+    RequestGetAccessTokenRequestToJSON,
     RequestSignInRequestFromJSON,
     RequestSignInRequestToJSON,
+    ResponseAuthResponseFromJSON,
+    ResponseAuthResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -35,6 +38,11 @@ export interface FacilitiesFacilityIdAuthDeleteRequest {
 export interface FacilitiesFacilityIdAuthPostRequest {
     facilityId: string;
     requestSignInRequest: RequestSignInRequest;
+}
+
+export interface FacilitiesFacilityIdAuthRefreshTokenPostRequest {
+    facilityId: string;
+    requestGetAccessTokenRequest: RequestGetAccessTokenRequest;
 }
 
 /**
@@ -88,7 +96,7 @@ export class AuthApi extends runtime.BaseAPI {
      * LINEの認証トークンを渡すことで、ふるマルへサインインします。
      * サインイン
      */
-    async facilitiesFacilityIdAuthPostRaw(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthResponse>> {
+    async facilitiesFacilityIdAuthPostRaw(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -117,15 +125,68 @@ export class AuthApi extends runtime.BaseAPI {
             body: RequestSignInRequestToJSON(requestParameters['requestSignInRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthResponseFromJSON(jsonValue));
     }
 
     /**
      * LINEの認証トークンを渡すことで、ふるマルへサインインします。
      * サインイン
      */
-    async facilitiesFacilityIdAuthPost(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthResponse> {
+    async facilitiesFacilityIdAuthPost(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthResponse> {
         const response = await this.facilitiesFacilityIdAuthPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 更新トークンを渡すことで、アクセストークンを再発行します。
+     * アクセストークンの再発行
+     */
+    async facilitiesFacilityIdAuthRefreshTokenPostRaw(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthResponse>> {
+        if (requestParameters['facilityId'] == null) {
+            throw new runtime.RequiredError(
+                'facilityId',
+                'Required parameter "facilityId" was null or undefined when calling facilitiesFacilityIdAuthRefreshTokenPost().'
+            );
+        }
+
+        if (requestParameters['requestGetAccessTokenRequest'] == null) {
+            throw new runtime.RequiredError(
+                'requestGetAccessTokenRequest',
+                'Required parameter "requestGetAccessTokenRequest" was null or undefined when calling facilitiesFacilityIdAuthRefreshTokenPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/facilities/{facilityId}/auth/refresh-token`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RequestGetAccessTokenRequestToJSON(requestParameters['requestGetAccessTokenRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 更新トークンを渡すことで、アクセストークンを再発行します。
+     * アクセストークンの再発行
+     */
+    async facilitiesFacilityIdAuthRefreshTokenPost(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthResponse> {
+        const response = await this.facilitiesFacilityIdAuthRefreshTokenPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

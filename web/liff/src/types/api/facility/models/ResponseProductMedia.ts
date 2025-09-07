@@ -16,35 +16,35 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ProductMedia
+ * @interface ResponseProductMedia
  */
-export interface ProductMedia {
+export interface ResponseProductMedia {
     /**
      * サムネイルとして使用
      * @type {boolean}
-     * @memberof ProductMedia
+     * @memberof ResponseProductMedia
      */
     isThumbnail?: boolean;
     /**
      * メディアURL
      * @type {string}
-     * @memberof ProductMedia
+     * @memberof ResponseProductMedia
      */
     url?: string;
 }
 
 /**
- * Check if a given object implements the ProductMedia interface.
+ * Check if a given object implements the ResponseProductMedia interface.
  */
-export function instanceOfProductMedia(value: object): value is ProductMedia {
+export function instanceOfResponseProductMedia(value: object): value is ResponseProductMedia {
     return true;
 }
 
-export function ProductMediaFromJSON(json: any): ProductMedia {
-    return ProductMediaFromJSONTyped(json, false);
+export function ResponseProductMediaFromJSON(json: any): ResponseProductMedia {
+    return ResponseProductMediaFromJSONTyped(json, false);
 }
 
-export function ProductMediaFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductMedia {
+export function ResponseProductMediaFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseProductMedia {
     if (json == null) {
         return json;
     }
@@ -55,7 +55,7 @@ export function ProductMediaFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function ProductMediaToJSON(value?: ProductMedia | null): any {
+export function ResponseProductMediaToJSON(value?: ResponseProductMedia | null): any {
     if (value == null) {
         return value;
     }

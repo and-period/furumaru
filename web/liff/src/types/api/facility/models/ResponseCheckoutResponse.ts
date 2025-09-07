@@ -16,29 +16,29 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CheckoutResponse
+ * @interface ResponseCheckoutResponse
  */
-export interface CheckoutResponse {
+export interface ResponseCheckoutResponse {
     /**
      * 遷移先URL
      * @type {string}
-     * @memberof CheckoutResponse
+     * @memberof ResponseCheckoutResponse
      */
     url?: string;
 }
 
 /**
- * Check if a given object implements the CheckoutResponse interface.
+ * Check if a given object implements the ResponseCheckoutResponse interface.
  */
-export function instanceOfCheckoutResponse(value: object): value is CheckoutResponse {
+export function instanceOfResponseCheckoutResponse(value: object): value is ResponseCheckoutResponse {
     return true;
 }
 
-export function CheckoutResponseFromJSON(json: any): CheckoutResponse {
-    return CheckoutResponseFromJSONTyped(json, false);
+export function ResponseCheckoutResponseFromJSON(json: any): ResponseCheckoutResponse {
+    return ResponseCheckoutResponseFromJSONTyped(json, false);
 }
 
-export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutResponse {
+export function ResponseCheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseCheckoutResponse {
     if (json == null) {
         return json;
     }
@@ -48,7 +48,7 @@ export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function CheckoutResponseToJSON(value?: CheckoutResponse | null): any {
+export function ResponseCheckoutResponseToJSON(value?: ResponseCheckoutResponse | null): any {
     if (value == null) {
         return value;
     }

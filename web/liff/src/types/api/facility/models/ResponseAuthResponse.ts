@@ -16,53 +16,53 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface AuthResponse
+ * @interface ResponseAuthResponse
  */
-export interface AuthResponse {
+export interface ResponseAuthResponse {
     /**
      * アクセストークン
      * @type {string}
-     * @memberof AuthResponse
+     * @memberof ResponseAuthResponse
      */
     accessToken?: string;
     /**
      * 有効期限
      * @type {number}
-     * @memberof AuthResponse
+     * @memberof ResponseAuthResponse
      */
     expiresIn?: number;
     /**
      * 更新トークン
      * @type {string}
-     * @memberof AuthResponse
+     * @memberof ResponseAuthResponse
      */
     refreshToken?: string;
     /**
      * トークン種別
      * @type {string}
-     * @memberof AuthResponse
+     * @memberof ResponseAuthResponse
      */
     tokenType?: string;
     /**
      * ユーザーID
      * @type {string}
-     * @memberof AuthResponse
+     * @memberof ResponseAuthResponse
      */
     userId?: string;
 }
 
 /**
- * Check if a given object implements the AuthResponse interface.
+ * Check if a given object implements the ResponseAuthResponse interface.
  */
-export function instanceOfAuthResponse(value: object): value is AuthResponse {
+export function instanceOfResponseAuthResponse(value: object): value is ResponseAuthResponse {
     return true;
 }
 
-export function AuthResponseFromJSON(json: any): AuthResponse {
-    return AuthResponseFromJSONTyped(json, false);
+export function ResponseAuthResponseFromJSON(json: any): ResponseAuthResponse {
+    return ResponseAuthResponseFromJSONTyped(json, false);
 }
 
-export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthResponse {
+export function ResponseAuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseAuthResponse {
     if (json == null) {
         return json;
     }
@@ -76,7 +76,7 @@ export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function AuthResponseToJSON(value?: AuthResponse | null): any {
+export function ResponseAuthResponseToJSON(value?: ResponseAuthResponse | null): any {
     if (value == null) {
         return value;
     }

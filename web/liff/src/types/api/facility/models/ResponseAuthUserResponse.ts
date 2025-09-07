@@ -16,71 +16,71 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface AuthUserResponse
+ * @interface ResponseAuthUserResponse
  */
-export interface AuthUserResponse {
+export interface ResponseAuthUserResponse {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     email?: string;
     /**
      * 名
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     firstname?: string;
     /**
      * 名（かな）
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     firstnameKana?: string;
     /**
      * ユーザーID
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     id?: string;
     /**
      * 最新のチェックイン日時
      * @type {number}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     lastCheckInAt?: number;
     /**
      * 姓
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     lastname?: string;
     /**
      * 姓（かな）
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     lastnameKana?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof ResponseAuthUserResponse
      */
     phoneNumber?: string;
 }
 
 /**
- * Check if a given object implements the AuthUserResponse interface.
+ * Check if a given object implements the ResponseAuthUserResponse interface.
  */
-export function instanceOfAuthUserResponse(value: object): value is AuthUserResponse {
+export function instanceOfResponseAuthUserResponse(value: object): value is ResponseAuthUserResponse {
     return true;
 }
 
-export function AuthUserResponseFromJSON(json: any): AuthUserResponse {
-    return AuthUserResponseFromJSONTyped(json, false);
+export function ResponseAuthUserResponseFromJSON(json: any): ResponseAuthUserResponse {
+    return ResponseAuthUserResponseFromJSONTyped(json, false);
 }
 
-export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthUserResponse {
+export function ResponseAuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseAuthUserResponse {
     if (json == null) {
         return json;
     }
@@ -97,7 +97,7 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
+export function ResponseAuthUserResponseToJSON(value?: ResponseAuthUserResponse | null): any {
     if (value == null) {
         return value;
     }

@@ -16,53 +16,53 @@ import { mapValues } from '../runtime';
 /**
  * 注文キャンセル情報
  * @export
- * @interface OrderRefund
+ * @interface ResponseOrderRefund
  */
-export interface OrderRefund {
+export interface ResponseOrderRefund {
     /**
      * 注文キャンセルフラグ
      * @type {boolean}
-     * @memberof OrderRefund
+     * @memberof ResponseOrderRefund
      */
     canceled?: boolean;
     /**
      * 注文キャンセル日時
      * @type {number}
-     * @memberof OrderRefund
+     * @memberof ResponseOrderRefund
      */
     canceledAt?: number;
     /**
      * 注文キャンセル理由
      * @type {string}
-     * @memberof OrderRefund
+     * @memberof ResponseOrderRefund
      */
     reason?: string;
     /**
      * 返金金額
      * @type {number}
-     * @memberof OrderRefund
+     * @memberof ResponseOrderRefund
      */
     total?: number;
     /**
      * 注文キャンセル種別
      * @type {number}
-     * @memberof OrderRefund
+     * @memberof ResponseOrderRefund
      */
     type?: number;
 }
 
 /**
- * Check if a given object implements the OrderRefund interface.
+ * Check if a given object implements the ResponseOrderRefund interface.
  */
-export function instanceOfOrderRefund(value: object): value is OrderRefund {
+export function instanceOfResponseOrderRefund(value: object): value is ResponseOrderRefund {
     return true;
 }
 
-export function OrderRefundFromJSON(json: any): OrderRefund {
-    return OrderRefundFromJSONTyped(json, false);
+export function ResponseOrderRefundFromJSON(json: any): ResponseOrderRefund {
+    return ResponseOrderRefundFromJSONTyped(json, false);
 }
 
-export function OrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderRefund {
+export function ResponseOrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResponseOrderRefund {
     if (json == null) {
         return json;
     }
@@ -76,7 +76,7 @@ export function OrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-export function OrderRefundToJSON(value?: OrderRefund | null): any {
+export function ResponseOrderRefundToJSON(value?: ResponseOrderRefund | null): any {
     if (value == null) {
         return value;
     }
