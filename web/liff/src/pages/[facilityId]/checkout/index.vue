@@ -36,7 +36,7 @@ const creditCard = ref<CreditCardData>({
 
 const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
-const PAYMENT_METHOD_CARD = 1; // クレジットカード決済（仮のコード）
+const PAYMENT_METHOD_CARD = 2; // クレジットカード決済（仮のコード）
 
 const handlePay = async () => {
   submitError.value = null;
