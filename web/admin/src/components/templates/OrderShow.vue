@@ -100,6 +100,10 @@ const props = defineProps({
           requestedTime: '',
         },
       },
+      metadata: {
+        pickupAt: 0,
+        pickupLocation: '',
+      },
     }),
   },
   coordinator: {
@@ -343,11 +347,11 @@ const getStatusColor = (): string => {
 }
 
 const getOrderedAt = (): string => {
-  return getDatetime(props.order.payment.orderedAt)
+  return getDatetime(props.order?.payment?.orderedAt)
 }
 
 const getCompletedAt = (): string => {
-  return getDatetime(props.order.completedAt)
+  return getDatetime(props.order?.completedAt)
 }
 
 /**
@@ -358,7 +362,7 @@ const getAllItems = computed(() => {
   if (!props.order) {
     return items
   }
-  props.order.items.forEach((item: OrderItem): void => {
+  props.order?.items?.forEach((item: OrderItem): void => {
     const index = items.findIndex((v: OrderItem): boolean => {
       return v.productId === item.productId
     })
@@ -407,7 +411,7 @@ const getPaymentStatusColor = (status: PaymentStatus): string => {
 }
 
 const getPaymentMethodType = (): string => {
-  switch (props.order?.payment.methodType) {
+  switch (props.order?.payment?.methodType) {
     case PaymentMethodType.CASH:
       return '代引支払い'
     case PaymentMethodType.CREDIT_CARD:
@@ -436,7 +440,7 @@ const getPaymentMethodType = (): string => {
 }
 
 const getPaidAt = (): string => {
-  return getDatetime(props.order.payment.paidAt)
+  return getDatetime(props.order?.payment?.paidAt)
 }
 
 const getSubtotal = (item: OrderItem): number => {
@@ -507,6 +511,8 @@ const getShippingType = (shippingType: ShippingType): string => {
       return '常温・冷蔵便'
     case ShippingType.FROZEN:
       return '冷凍便'
+    case ShippingType.PICKUP:
+      return '店舗受け取り'
     default:
       return '不明'
   }
@@ -538,37 +544,37 @@ const getCustomerNameKana = (): string => {
 }
 
 const getShippingAddressName = (): string => {
-  return getUserName(props.order?.payment.lastname, props.order?.payment.firstname)
+  return getUserName(props.order?.payment?.lastname, props.order?.payment?.firstname)
 }
 
 const getShippingAddressPhoneNumber = (): string => {
-  return props.order.payment.phoneNumber ? convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber) : ''
+  return props.order?.payment?.phoneNumber ? convertI18nToJapanesePhoneNumber(props.order?.payment?.phoneNumber) : ''
 }
 
 const getShippingAddressPrefecture = (): string => {
-  const prefecture = findPrefecture(props.order?.payment.prefectureCode)
+  const prefecture = findPrefecture(props.order?.payment?.prefectureCode)
   return prefecture ? prefecture.text : ''
 }
 
 const getFulfillmentAddressName = (): string => {
-  if (!props.order || props.order.fulfillments.length === 0) {
+  if (!props.order || !props.order.fulfillments || props.order.fulfillments.length === 0) {
     return ''
   }
-  return getUserName(props.order.fulfillments[0].lastname, props.order.fulfillments[0].firstname)
+  return getUserName(props.order.fulfillments[0]?.lastname, props.order.fulfillments[0]?.firstname)
 }
 
 const getFulfillmentAddressPhoneNumber = (): string => {
-  if (!props.order || props.order.fulfillments.length === 0) {
+  if (!props.order || !props.order.fulfillments || props.order.fulfillments.length === 0) {
     return ''
   }
-  return convertI18nToJapanesePhoneNumber(props.order.fulfillments[0].phoneNumber)
+  return props.order.fulfillments[0]?.phoneNumber ? convertI18nToJapanesePhoneNumber(props.order.fulfillments[0].phoneNumber) : ''
 }
 
 const getFulfillmentAddressPrefecture = (): string => {
-  if (!props.order || props.order.fulfillments.length === 0) {
+  if (!props.order || !props.order.fulfillments || props.order.fulfillments.length === 0) {
     return ''
   }
-  const prefecture = findPrefecture(props.order?.fulfillments[0].prefectureCode)
+  const prefecture = findPrefecture(props.order?.fulfillments[0]?.prefectureCode)
   return prefecture ? prefecture.text : ''
 }
 
@@ -577,8 +583,30 @@ const getRequestDaliveryDay = (fulfillment: OrderFulfillment): string => {
   return '未指定'
 }
 
+// 店舗受け取りかどうかを判定
+const isPickupShipping = (): boolean => {
+  if (!props.order || !props.order.fulfillments || props.order.fulfillments.length === 0) {
+    return false
+  }
+  return props.order.fulfillments[0]?.shippingType === ShippingType.PICKUP
+}
+
+// 受け取り日時を取得
+const getPickupDate = (): string => {
+  const pickupAt = props.order?.metadata?.pickupAt
+  if (!pickupAt || pickupAt === 0) {
+    return '未指定'
+  }
+  return unix(pickupAt).format('YYYY年MM月DD日 HH:mm')
+}
+
+// 受け取り場所を取得
+const getPickupLocation = (): string => {
+  return props.order?.metadata?.pickupLocation || '未指定'
+}
+
 const getOrderItems = (fulfillmentId: string): OrderItem[] => {
-  const items = props.order.items.filter((item: OrderItem): boolean => {
+  const items = props.order?.items?.filter((item: OrderItem): boolean => {
     return item.fulfillmentId === fulfillmentId
   })
   return items
@@ -728,7 +756,7 @@ const onSubmitRefund = (): void => {
               注文番号
             </v-col>
             <v-col cols="9">
-              {{ order.id }}
+              {{ order?.id || '' }}
             </v-col>
           </v-row>
           <v-row>
@@ -785,9 +813,9 @@ const onSubmitRefund = (): void => {
             <v-col cols="9">
               <v-chip
                 size="small"
-                :color="getPaymentStatusColor(order.payment.status)"
+                :color="getPaymentStatusColor(order?.payment?.status)"
               >
-                {{ getPaymentStatus(order.payment.status) }}
+                {{ getPaymentStatus(order?.payment?.status) }}
               </v-chip>
             </v-col>
           </v-row>
@@ -814,24 +842,24 @@ const onSubmitRefund = (): void => {
                   <tr>
                     <td>小計</td>
                     <td>{{ getAllItems.length }}つのアイテム</td>
-                    <td>&yen; {{ order.payment.subtotal.toLocaleString() }}</td>
+                    <td>&yen; {{ (order?.payment?.subtotal || 0).toLocaleString() }}</td>
                   </tr>
                   <tr>
                     <td>配送手数料</td>
-                    <td>{{ order.fulfillments.length }}つの箱</td>
-                    <td>&yen; {{ order.payment.shippingFee.toLocaleString() }}</td>
+                    <td>{{ (order?.fulfillments?.length || 0) }}つの箱</td>
+                    <td>&yen; {{ (order?.payment?.shippingFee || 0).toLocaleString() }}</td>
                   </tr>
                   <tr>
                     <td>割引金額</td>
                     <td />
-                    <td>&yen; {{ order.payment.discount.toLocaleString() }}</td>
+                    <td>&yen; {{ (order?.payment?.discount || 0).toLocaleString() }}</td>
                   </tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <td>支払い合計（税込み）</td>
                     <td />
-                    <td>&yen; {{ order.payment.total.toLocaleString() }}</td>
+                    <td>&yen; {{ (order?.payment?.total || 0).toLocaleString() }}</td>
                   </tr>
                 </tfoot>
               </v-table>
@@ -904,10 +932,10 @@ const onSubmitRefund = (): void => {
               大人:
             </v-col>
             <v-col cols="3">
-              {{ props.order.experience.adultCount }}人
+              {{ props.order?.experience?.adultCount || 0 }}人
             </v-col>
             <v-col cols="6">
-              合計: {{ props.order.experience.adultPrice * props.order.experience.adultCount }}円
+              合計: {{ (props.order?.experience?.adultPrice || 0) * (props.order?.experience?.adultCount || 0) }}円
             </v-col>
           </v-row>
           <v-row>
@@ -915,10 +943,10 @@ const onSubmitRefund = (): void => {
               未就学児(3歳〜):
             </v-col>
             <v-col cols="3">
-              {{ props.order.experience.preschoolCount }}人
+              {{ props.order?.experience?.preschoolCount || 0 }}人
             </v-col>
             <v-col cols="6">
-              合計: {{ props.order.experience.preschoolPrice * props.order.experience.preschoolCount }}円
+              合計: {{ (props.order?.experience?.preschoolPrice || 0) * (props.order?.experience?.preschoolCount || 0) }}円
             </v-col>
           </v-row>
           <v-row>
@@ -926,10 +954,10 @@ const onSubmitRefund = (): void => {
               小学生:
             </v-col>
             <v-col cols="3">
-              {{ props.order.experience.elementarySchoolCount }}人
+              {{ props.order?.experience?.elementarySchoolCount || 0 }}人
             </v-col>
             <v-col cols="6">
-              合計: {{ props.order.experience.elementarySchoolPrice * props.order.experience.elementarySchoolCount }}円
+              合計: {{ (props.order?.experience?.elementarySchoolPrice || 0) * (props.order?.experience?.elementarySchoolCount || 0) }}円
             </v-col>
           </v-row>
           <v-row>
@@ -937,10 +965,10 @@ const onSubmitRefund = (): void => {
               中学生:
             </v-col>
             <v-col cols="3">
-              {{ props.order.experience.juniorHighSchoolCount }}人
+              {{ props.order?.experience?.juniorHighSchoolCount || 0 }}人
             </v-col>
             <v-col cols="6">
-              合計: {{ props.order.experience.juniorHighSchoolPrice * props.order.experience.juniorHighSchoolCount }}円
+              合計: {{ (props.order?.experience?.juniorHighSchoolPrice || 0) * (props.order?.experience?.juniorHighSchoolCount || 0) }}円
             </v-col>
           </v-row>
           <v-row>
@@ -948,10 +976,10 @@ const onSubmitRefund = (): void => {
               シニア(65歳〜):
             </v-col>
             <v-col cols="3">
-              {{ props.order.experience.seniorCount }}人
+              {{ props.order?.experience?.seniorCount || 0 }}人
             </v-col>
             <v-col cols="6">
-              合計: {{ props.order.experience.seniorPrice * props.order.experience.seniorCount }}円
+              合計: {{ (props.order?.experience?.seniorPrice || 0) * (props.order?.experience?.seniorCount || 0) }}円
             </v-col>
           </v-row>
         </v-card-text>
@@ -992,26 +1020,36 @@ const onSubmitRefund = (): void => {
                 &phone; {{ getShippingAddressPhoneNumber() }}
               </div>
               <div class="mt-1">
-                &#12306; {{ props.order.payment.postalCode }}
+                &#12306; {{ props.order?.payment?.postalCode || '' }}
               </div>
-              <div>{{ `${getShippingAddressPrefecture()} ${props.order.payment.city}` }}</div>
-              <div>{{ props.order.payment.addressLine1 }}</div>
-              <div>{{ props.order.payment.addressLine2 }}</div>
+              <div>{{ `${getShippingAddressPrefecture()} ${props.order?.payment?.city || ''}` }}</div>
+              <div>{{ props.order?.payment?.addressLine1 || '' }}</div>
+              <div>{{ props.order?.payment?.addressLine2 || '' }}</div>
             </v-list-item>
-            <v-list-item v-if="props.order.fulfillments.length > 0">
+            <v-list-item v-if="props.order?.fulfillments?.length > 0">
               <v-list-item-subtitle class="pb-2">
-                配送先情報
+                {{ isPickupShipping() ? '受け取り情報' : '配送先情報' }}
               </v-list-item-subtitle>
-              <div>{{ getFulfillmentAddressName() }}</div>
-              <div class="mt-1">
-                &phone; {{ getFulfillmentAddressPhoneNumber() }}
-              </div>
-              <div class="mt-1">
-                &#12306; {{ props.order.fulfillments[0].postalCode }}
-              </div>
-              <div>{{ `${getFulfillmentAddressPrefecture()} ${props.order.fulfillments[0].city}` }}</div>
-              <div>{{ props.order.fulfillments[0].addressLine1 }}</div>
-              <div>{{ props.order.fulfillments[0].addressLine2 }}</div>
+              <template v-if="isPickupShipping()">
+                <div class="mt-1">
+                  📍 受け取り場所: {{ getPickupLocation() }}
+                </div>
+                <div class="mt-1">
+                  📅 受け取り日時: {{ getPickupDate() }}
+                </div>
+              </template>
+              <template v-else>
+                <div>{{ getFulfillmentAddressName() }}</div>
+                <div class="mt-1">
+                  &phone; {{ getFulfillmentAddressPhoneNumber() }}
+                </div>
+                <div class="mt-1">
+                  &#12306; {{ props.order.fulfillments[0]?.postalCode || '' }}
+                </div>
+                <div>{{ `${getFulfillmentAddressPrefecture()} ${props.order.fulfillments[0]?.city || ''}` }}</div>
+                <div>{{ props.order.fulfillments[0]?.addressLine1 || '' }}</div>
+                <div>{{ props.order.fulfillments[0]?.addressLine2 || '' }}</div>
+              </template>
             </v-list-item>
           </v-list>
         </v-card-text>

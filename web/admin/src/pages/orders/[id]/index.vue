@@ -41,15 +41,15 @@ watch(data, (newData) => {
   if (newData) {
     userData.value = newData.user
     completeFormData.value = {
-      shippingMessage: newData.order.shippingMessage,
+      shippingMessage: newData.order?.shippingMessage || '',
     }
     refundFormData.value = {
-      description: newData.order.refund.reason || '',
+      description: newData.order?.refund?.reason || '',
     }
-    fulfillmentsFormData.value = newData.order.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
+    fulfillmentsFormData.value = (newData.order?.fulfillments || []).map((fulfillment: OrderFulfillment): FulfillmentInput => ({
       fulfillmentId: fulfillment.fulfillmentId,
-      shippingCarrier: fulfillment.shippingCarrier,
-      trackingNumber: fulfillment.trackingNumber,
+      shippingCarrier: fulfillment.shippingCarrier || 0,
+      trackingNumber: fulfillment.trackingNumber || '',
     }))
   }
 })
