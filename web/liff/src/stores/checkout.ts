@@ -13,7 +13,6 @@ interface CheckoutState {
   isLoading: boolean;
   error: string | null;
   redirectUrl: string | null;
-  lastRequest: RequestCheckoutRequest | null;
   lastResponse: ResponseCheckoutResponse | null;
   lastStatus: ResponseCheckoutStateResponse | null;
 }
@@ -34,7 +33,6 @@ export const useCheckoutStore = defineStore('checkout', {
     isLoading: false,
     error: null,
     redirectUrl: null,
-    lastRequest: null,
     lastResponse: null,
     lastStatus: null,
   }),
@@ -103,7 +101,6 @@ export const useCheckoutStore = defineStore('checkout', {
           requestCheckoutRequest: body,
         });
 
-        this.lastRequest = body;
         this.lastResponse = res;
         this.redirectUrl = res.url ?? null;
         return res;
