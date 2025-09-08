@@ -22,6 +22,13 @@ const toggleExpand = () => {
   isExpand.value = !isExpand.value;
 };
 
+const goToCheckout = async () => {
+  const id = facilityId.value;
+  const path = id ? `/${id}/checkout` : '/checkout';
+  router.push(path);
+  toggleExpand();
+};
+
 // マウント時に認証処理とカート取得を実行
 onMounted(async () => {
   const liffId = runtimeConfig.public.LIFF_ID;
@@ -89,7 +96,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
       <slot />
     </div>
     <div
-      class="fixed p-4 w-full bottom-0 bg-white border-t border-gray-200 shadow-sm rounded-2xl flex flex-col transition-all gap-4"
+      class="fixed p-4 w-full bottom-0 bg-white border-t border-gray-200 shadow-sm rounded-2xl flex flex-col transition-all gap-4 z-20"
       :class="{ 'h-svh': isExpand, 'h-[56px]': !isExpand }"
     >
       <div class="text-center">
@@ -200,7 +207,10 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
 
           <!-- アクション -->
           <div class="mt-4 space-y-2">
-            <button class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.7] transition-colors">
+            <button
+              class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.7] transition-colors"
+              @click="goToCheckout"
+            >
               レジに進む
             </button>
             <button
