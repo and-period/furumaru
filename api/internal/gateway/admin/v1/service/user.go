@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -20,14 +20,14 @@ const (
 )
 
 type User struct {
-	response.User
+	types.User
 	address Address
 }
 
 type Users []*User
 
 type UserToList struct {
-	response.UserToList
+	types.UserToList
 }
 
 type UsersToList []*UserToList
@@ -69,7 +69,7 @@ func NewUser(user *uentity.User, address *uentity.Address) *User {
 
 func newMemberUser(user *uentity.User, address *uentity.Address) *User {
 	return &User{
-		User: response.User{
+		User: types.User{
 			ID:            user.ID,
 			Status:        NewUserStatus(user.Status).Response(),
 			Registered:    user.Registered,
@@ -91,7 +91,7 @@ func newMemberUser(user *uentity.User, address *uentity.Address) *User {
 
 func newGuestUser(user *uentity.User, address *uentity.Address) *User {
 	return &User{
-		User: response.User{
+		User: types.User{
 			ID:            user.ID,
 			Status:        NewUserStatus(user.Status).Response(),
 			Registered:    user.Registered,
@@ -112,7 +112,7 @@ func newGuestUser(user *uentity.User, address *uentity.Address) *User {
 
 func newFacilityUser(user *uentity.User, _ *uentity.Address) *User {
 	return &User{
-		User: response.User{
+		User: types.User{
 			ID:            user.ID,
 			Status:        NewUserStatus(user.Status).Response(),
 			Registered:    user.Registered,
@@ -138,7 +138,7 @@ func (u *User) Address() *Address {
 	return &u.address
 }
 
-func (u *User) Response() *response.User {
+func (u *User) Response() *types.User {
 	return &u.User
 }
 
@@ -164,8 +164,8 @@ func (us Users) Map() map[string]*User {
 	return res
 }
 
-func (us Users) Response() []*response.User {
-	res := make([]*response.User, len(us))
+func (us Users) Response() []*types.User {
+	res := make([]*types.User, len(us))
 	for i := range us {
 		res[i] = us[i].Response()
 	}
@@ -177,7 +177,7 @@ func NewUserToList(user *User, order *sentity.AggregatedUserOrder) *UserToList {
 		order = &sentity.AggregatedUserOrder{}
 	}
 	return &UserToList{
-		UserToList: response.UserToList{
+		UserToList: types.UserToList{
 			ID:                user.ID,
 			Lastname:          user.Lastname,
 			Firstname:         user.Firstname,
@@ -191,7 +191,7 @@ func NewUserToList(user *User, order *sentity.AggregatedUserOrder) *UserToList {
 	}
 }
 
-func (u *UserToList) Response() *response.UserToList {
+func (u *UserToList) Response() *types.UserToList {
 	return &u.UserToList
 }
 
@@ -203,8 +203,8 @@ func NewUsersToList(users Users, orders map[string]*sentity.AggregatedUserOrder)
 	return res
 }
 
-func (us UsersToList) Response() []*response.UserToList {
-	res := make([]*response.UserToList, len(us))
+func (us UsersToList) Response() []*types.UserToList {
+	res := make([]*types.UserToList, len(us))
 	for i := range us {
 		res[i] = us[i].Response()
 	}

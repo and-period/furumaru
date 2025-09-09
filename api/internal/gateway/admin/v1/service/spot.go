@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -34,7 +34,7 @@ func (t SpotUserType) Response() int32 {
 }
 
 type Spot struct {
-	response.Spot
+	types.Spot
 	UserType SpotUserType
 }
 
@@ -43,7 +43,7 @@ type Spots []*Spot
 func NewSpot(spot *entity.Spot) *Spot {
 	userType := NewSpotUserType(spot.UserType)
 	return &Spot{
-		Spot: response.Spot{
+		Spot: types.Spot{
 			ID:           spot.ID,
 			TypeID:       spot.TypeID,
 			UserType:     userType.Response(),
@@ -61,7 +61,7 @@ func NewSpot(spot *entity.Spot) *Spot {
 	}
 }
 
-func (s *Spot) Response() *response.Spot {
+func (s *Spot) Response() *types.Spot {
 	return &s.Spot
 }
 
@@ -73,8 +73,8 @@ func NewSpots(spots []*entity.Spot) Spots {
 	return res
 }
 
-func (ss Spots) Response() []*response.Spot {
-	res := make([]*response.Spot, len(ss))
+func (ss Spots) Response() []*types.Spot {
+	res := make([]*types.Spot, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}

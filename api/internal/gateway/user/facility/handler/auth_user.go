@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -29,7 +28,7 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.AuthUserResponse
+// @Success     200 {object} types.AuthUserResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuthUser(ctx *gin.Context) {
@@ -41,7 +40,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthUserResponse{
+	res := &types.AuthUserResponse{
 		AuthUser: service.NewAuthUser(user).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -53,14 +52,14 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Router      /facilities/{facilityId}/users [post]
 // @Param       facilityId path string true "施設ID"
 // @Accept      json
-// @Param				request body request.CreateAuthUserRequest true "ユーザー情報"
+// @Param				request body types.CreateAuthUserRequest true "ユーザー情報"
 // @Produce     json
-// @Success     200 {object} response.AuthUserResponse
+// @Success     200 {object} types.AuthUserResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー。不正なトークン"
 // @Failure     409 {object} util.ErrorResponse "ユーザーが既に存在する"
 func (h *handler) CreateAuthUser(ctx *gin.Context) {
-	req := &request.CreateAuthUserRequest{}
+	req := &types.CreateAuthUserRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -92,7 +91,7 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthUserResponse{
+	res := &types.AuthUserResponse{
 		AuthUser: service.NewAuthUser(user).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -105,13 +104,13 @@ func (h *handler) CreateAuthUser(ctx *gin.Context) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateAuthUserRequest true "ユーザー情報"
+// @Param       request body types.UpdateAuthUserRequest true "ユーザー情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpdateAuthUser(ctx *gin.Context) {
-	req := &request.UpdateAuthUserRequest{}
+	req := &types.UpdateAuthUserRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

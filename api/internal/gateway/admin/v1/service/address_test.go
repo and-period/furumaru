@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -37,7 +37,7 @@ func TestAddress(t *testing.T) {
 				},
 			},
 			expect: &Address{
-				Address: response.Address{
+				Address: types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					LastnameKana:   "あんどどっと",
@@ -68,12 +68,12 @@ func TestAddress_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		address *Address
-		expect  *response.Address
+		expect  *types.Address
 	}{
 		{
 			name: "success",
 			address: &Address{
-				Address: response.Address{
+				Address: types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					LastnameKana:   "あんどどっと",
@@ -87,7 +87,7 @@ func TestAddress_Response(t *testing.T) {
 				},
 				revisionID: 1,
 			},
-			expect: &response.Address{
+			expect: &types.Address{
 				Lastname:       "&.",
 				Firstname:      "購入者",
 				LastnameKana:   "あんどどっと",
@@ -146,7 +146,7 @@ func TestAddresses(t *testing.T) {
 			},
 			expect: Addresses{
 				{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -184,7 +184,7 @@ func TestAddresses_MapRevision(t *testing.T) {
 			name: "success",
 			addresses: Addresses{
 				{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -201,7 +201,7 @@ func TestAddresses_MapRevision(t *testing.T) {
 			},
 			expect: map[int64]*Address{
 				1: {
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -231,13 +231,13 @@ func TestAddresses_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		addresses Addresses
-		expect    []*response.Address
+		expect    []*types.Address
 	}{
 		{
 			name: "success",
 			addresses: Addresses{
 				{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -252,7 +252,7 @@ func TestAddresses_Response(t *testing.T) {
 					revisionID: 1,
 				},
 			},
-			expect: []*response.Address{
+			expect: []*types.Address{
 				{
 					Lastname:       "&.",
 					Firstname:      "購入者",

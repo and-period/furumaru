@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -191,7 +191,7 @@ func TestPromotion(t *testing.T) {
 				UpdatedAt:    now,
 			},
 			expect: &Promotion{
-				Promotion: response.Promotion{
+				Promotion: types.Promotion{
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -218,12 +218,12 @@ func TestPromotion_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		promotion *Promotion
-		expect    *response.Promotion
+		expect    *types.Promotion
 	}{
 		{
 			name: "success",
 			promotion: &Promotion{
-				Promotion: response.Promotion{
+				Promotion: types.Promotion{
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -235,7 +235,7 @@ func TestPromotion_Response(t *testing.T) {
 					EndAt:        1643641200,
 				},
 			},
-			expect: &response.Promotion{
+			expect: &types.Promotion{
 				ID:           "promotion-id",
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -290,7 +290,7 @@ func TestPromotions(t *testing.T) {
 			},
 			expect: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -318,13 +318,13 @@ func TestPromotions_Response(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions Promotions
-		expect     []*response.Promotion
+		expect     []*types.Promotion
 	}{
 		{
 			name: "success",
 			promotions: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -337,7 +337,7 @@ func TestPromotions_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Promotion{
+			expect: []*types.Promotion{
 				{
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",

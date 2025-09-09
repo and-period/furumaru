@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -26,7 +26,7 @@ func TestNewOrderMetadata(t *testing.T) {
 				PickupLocation: "東京都千代田区",
 			},
 			expect: &OrderMetadata{
-				OrderMetadata: response.OrderMetadata{
+				OrderMetadata: types.OrderMetadata{
 					PickupAt:       jst.Unix(now),
 					PickupLocation: "東京都千代田区",
 				},
@@ -41,7 +41,7 @@ func TestNewOrderMetadata(t *testing.T) {
 				PickupLocation: "",
 			},
 			expect: &OrderMetadata{
-				OrderMetadata: response.OrderMetadata{
+				OrderMetadata: types.OrderMetadata{
 					PickupAt:       jst.Unix(now),
 					PickupLocation: "",
 				},
@@ -56,7 +56,7 @@ func TestNewOrderMetadata(t *testing.T) {
 				PickupLocation: "東京都千代田区",
 			},
 			expect: &OrderMetadata{
-				OrderMetadata: response.OrderMetadata{
+				OrderMetadata: types.OrderMetadata{
 					PickupAt:       0,
 					PickupLocation: "東京都千代田区",
 				},
@@ -79,18 +79,18 @@ func TestOrderMetadata_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		metadata *OrderMetadata
-		expect   *response.OrderMetadata
+		expect   *types.OrderMetadata
 	}{
 		{
 			name: "success",
 			metadata: &OrderMetadata{
-				OrderMetadata: response.OrderMetadata{
+				OrderMetadata: types.OrderMetadata{
 					PickupAt:       jst.Unix(now),
 					PickupLocation: "東京都千代田区",
 				},
 				orderID: "order-id",
 			},
-			expect: &response.OrderMetadata{
+			expect: &types.OrderMetadata{
 				PickupAt:       jst.Unix(now),
 				PickupLocation: "東京都千代田区",
 			},
@@ -98,13 +98,13 @@ func TestOrderMetadata_Response(t *testing.T) {
 		{
 			name: "empty values",
 			metadata: &OrderMetadata{
-				OrderMetadata: response.OrderMetadata{
+				OrderMetadata: types.OrderMetadata{
 					PickupAt:       0,
 					PickupLocation: "",
 				},
 				orderID: "order-id",
 			},
-			expect: &response.OrderMetadata{
+			expect: &types.OrderMetadata{
 				PickupAt:       0,
 				PickupLocation: "",
 			},

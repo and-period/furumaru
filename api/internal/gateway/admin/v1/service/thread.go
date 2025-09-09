@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
@@ -41,7 +41,7 @@ func (t ThreadUserType) StoreEntity() entity.ThreadUserType {
 }
 
 type Thread struct {
-	response.Thread
+	types.Thread
 }
 
 type Threads []*Thread
@@ -52,7 +52,7 @@ func (t ThreadUserType) Response() int32 {
 
 func NewThread(thread *entity.Thread) *Thread {
 	return &Thread{
-		Thread: response.Thread{
+		Thread: types.Thread{
 			ID:        thread.ID,
 			ContactID: thread.ContactID,
 			UserID:    thread.UserID,
@@ -64,7 +64,7 @@ func NewThread(thread *entity.Thread) *Thread {
 	}
 }
 
-func (t *Thread) Response() *response.Thread {
+func (t *Thread) Response() *types.Thread {
 	return &t.Thread
 }
 
@@ -76,8 +76,8 @@ func NewThreads(threads entity.Threads) Threads {
 	return res
 }
 
-func (ts Threads) Response() []*response.Thread {
-	res := make([]*response.Thread, len(ts))
+func (ts Threads) Response() []*types.Thread {
+	res := make([]*types.Thread, len(ts))
 	for i := range ts {
 		res[i] = ts[i].Response()
 	}

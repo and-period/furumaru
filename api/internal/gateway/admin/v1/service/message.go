@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
@@ -14,7 +14,7 @@ const (
 )
 
 type Message struct {
-	response.Message
+	types.Message
 }
 
 type Messages []*Message
@@ -34,7 +34,7 @@ func (t MessageType) Response() int32 {
 
 func NewMessage(message *entity.Message) *Message {
 	return &Message{
-		Message: response.Message{
+		Message: types.Message{
 			ID:         message.ID,
 			Type:       NewMessageType(message.Type).Response(),
 			Title:      message.Title,
@@ -48,7 +48,7 @@ func NewMessage(message *entity.Message) *Message {
 	}
 }
 
-func (m *Message) Response() *response.Message {
+func (m *Message) Response() *types.Message {
 	return &m.Message
 }
 
@@ -60,8 +60,8 @@ func NewMessages(messages entity.Messages) Messages {
 	return res
 }
 
-func (ms Messages) Response() []*response.Message {
-	res := make([]*response.Message, len(ms))
+func (ms Messages) Response() []*types.Message {
+	res := make([]*types.Message, len(ms))
 	for i := range ms {
 		res[i] = ms[i].Response()
 	}

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -79,7 +78,7 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 // @Param       withAllTarget query boolean false "全ショップ対象のプロモーションも含める" default(true) example(true)
 // @Param       orders query string false "ソート順序" example("title:asc,createdAt:desc")
 // @Produce     json
-// @Success     200 {object} response.PromotionsResponse
+// @Success     200 {object} types.PromotionsResponse
 func (h *handler) ListPromotions(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -132,9 +131,9 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		return
 	}
 	if len(promotions) == 0 {
-		res := &response.PromotionsResponse{
-			Promotions: []*response.Promotion{},
-			Shops:      []*response.Shop{},
+		res := &types.PromotionsResponse{
+			Promotions: []*types.Promotion{},
+			Shops:      []*types.Shop{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -158,7 +157,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.PromotionsResponse{
+	res := &types.PromotionsResponse{
 		Promotions: service.NewPromotions(promotions, aggregates).Response(),
 		Shops:      shops.Response(),
 		Total:      total,
@@ -204,7 +203,7 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 // @Security    bearerauth
 // @Param       promotionId path string true "プロモーションID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.PromotionResponse
+// @Success     200 {object} types.PromotionResponse
 // @Failure     403 {object} util.ErrorResponse "プロモーションの参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "プロモーションが存在しない"
 func (h *handler) GetPromotion(ctx *gin.Context) {
@@ -214,7 +213,7 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.PromotionResponse{
+	res := &types.PromotionResponse{
 		Promotion: promotion.Response(),
 	}
 	if promotion.ShopID == "" {
@@ -237,12 +236,12 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 // @Router      /v1/promotions [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreatePromotionRequest true "プロモーション情報"
+// @Param       request body types.CreatePromotionRequest true "プロモーション情報"
 // @Produce     json
-// @Success     200 {object} response.PromotionResponse
+// @Success     200 {object} types.PromotionResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreatePromotion(ctx *gin.Context) {
-	req := &request.CreatePromotionRequest{}
+	req := &types.CreatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -266,7 +265,7 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.PromotionResponse{
+	res := &types.PromotionResponse{
 		// 初回は集計結果が存在しないためnilで渡す
 		Promotion: service.NewPromotion(promotion, nil).Response(),
 	}
@@ -291,14 +290,14 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       promotionId path string true "プロモーションID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdatePromotionRequest true "プロモーション情報"
+// @Param       request body types.UpdatePromotionRequest true "プロモーション情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "プロモーションの更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "プロモーションが存在しない"
 func (h *handler) UpdatePromotion(ctx *gin.Context) {
-	req := &request.UpdatePromotionRequest{}
+	req := &types.UpdatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

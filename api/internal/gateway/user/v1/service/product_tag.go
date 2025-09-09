@@ -1,26 +1,26 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type ProductTag struct {
-	response.ProductTag
+	types.ProductTag
 }
 
 type ProductTags []*ProductTag
 
 func NewProductTag(tag *entity.ProductTag) *ProductTag {
 	return &ProductTag{
-		ProductTag: response.ProductTag{
+		ProductTag: types.ProductTag{
 			ID:   tag.ID,
 			Name: tag.Name,
 		},
 	}
 }
 
-func (t *ProductTag) Response() *response.ProductTag {
+func (t *ProductTag) Response() *types.ProductTag {
 	return &t.ProductTag
 }
 
@@ -32,8 +32,8 @@ func NewProductTags(tags entity.ProductTags) ProductTags {
 	return res
 }
 
-func (ts ProductTags) Response() []*response.ProductTag {
-	res := make([]*response.ProductTag, len(ts))
+func (ts ProductTags) Response() []*types.ProductTag {
+	res := make([]*types.ProductTag, len(ts))
 	for i := range ts {
 		res[i] = ts[i].Response()
 	}

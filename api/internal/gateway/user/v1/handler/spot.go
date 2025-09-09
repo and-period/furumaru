@@ -8,9 +8,8 @@ import (
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -38,7 +37,7 @@ func (h *handler) spotRoutes(rg *gin.RouterGroup) {
 // @Param       longitude query number true "経度"
 // @Param       radius query int64 false "検索半径（km）" default(20)
 // @Produce     json
-// @Success     200 {object} response.SpotsResponse
+// @Success     200 {object} types.SpotsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListSpots(ctx *gin.Context) {
 	const defaultRadius = 20
@@ -80,9 +79,9 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 		return
 	}
 	if len(sspots) == 0 {
-		res := &response.SpotsResponse{
-			Spots:     []*response.Spot{},
-			SpotTypes: []*response.SpotType{},
+		res := &types.SpotsResponse{
+			Spots:     []*types.Spot{},
+			SpotTypes: []*types.SpotType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -139,7 +138,7 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.SpotsResponse{
+	res := &types.SpotsResponse{
 		Spots:     spots.Response(),
 		SpotTypes: spotTypes.Response(),
 	}
@@ -152,7 +151,7 @@ func (h *handler) ListSpots(ctx *gin.Context) {
 // @Router      /spots/{spotId} [get]
 // @Param       spotId path string true "スポットID"
 // @Produce     json
-// @Success     200 {object} response.SpotResponse
+// @Success     200 {object} types.SpotResponse
 // @Failure     404 {object} util.ErrorResponse "スポットが見つかりません"
 func (h *handler) GetSpot(ctx *gin.Context) {
 	spot, err := h.getSpot(ctx, util.GetParam(ctx, "spotId"))
@@ -165,7 +164,7 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.SpotResponse{
+	res := &types.SpotResponse{
 		Spot:     spot.Response(),
 		SpotType: spotType.Response(),
 	}
@@ -179,12 +178,12 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Produce     json
-// @Param       body body request.CreateSpotRequest true "スポット情報"
-// @Success     200 {object} response.SpotResponse
+// @Param       body body types.CreateSpotRequest true "スポット情報"
+// @Success     200 {object} types.SpotResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateSpot(ctx *gin.Context) {
-	req := &request.CreateSpotRequest{}
+	req := &types.CreateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -213,7 +212,7 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.SpotResponse{
+	res := &types.SpotResponse{
 		Spot:     service.NewSpotByUser(spot, user).Response(),
 		SpotType: spotType.Response(),
 	}
@@ -227,14 +226,14 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Param       spotId path string true "スポットID"
-// @Param       body body request.UpdateSpotRequest true "更新するスポット情報"
+// @Param       body body types.UpdateSpotRequest true "更新するスポット情報"
 // @Success     204 "更新成功"
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がありません"
 // @Failure     404 {object} util.ErrorResponse "スポットが見つかりません"
 func (h *handler) UpdateSpot(ctx *gin.Context) {
-	req := &request.UpdateSpotRequest{}
+	req := &types.UpdateSpotRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

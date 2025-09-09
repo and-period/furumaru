@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -290,7 +290,7 @@ func TestOrderPayment(t *testing.T) {
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &OrderPayment{
-				OrderPayment: response.OrderPayment{
+				OrderPayment: types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -317,12 +317,12 @@ func TestOrderPayment_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		payment *OrderPayment
-		expect  *response.OrderPayment
+		expect  *types.OrderPayment
 	}{
 		{
 			name: "success",
 			payment: &OrderPayment{
-				OrderPayment: response.OrderPayment{
+				OrderPayment: types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -334,7 +334,7 @@ func TestOrderPayment_Response(t *testing.T) {
 					PaidAt:        1640962800,
 				},
 			},
-			expect: &response.OrderPayment{
+			expect: &types.OrderPayment{
 				TransactionID: "transaction-id",
 				MethodType:    PaymentMethodTypeCreditCard.Response(),
 				Status:        PaymentStatusPaid.Response(),

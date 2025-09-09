@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -92,7 +92,7 @@ func TestOrderRefund(t *testing.T) {
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &OrderRefund{
-				OrderRefund: response.OrderRefund{
+				OrderRefund: types.OrderRefund{
 					Total:      0,
 					Type:       RefundTypeNone.Response(),
 					Reason:     "",
@@ -116,12 +116,12 @@ func TestOrderRefund_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		refund *OrderRefund
-		expect *response.OrderRefund
+		expect *types.OrderRefund
 	}{
 		{
 			name: "success",
 			refund: &OrderRefund{
-				OrderRefund: response.OrderRefund{
+				OrderRefund: types.OrderRefund{
 					Total:      0,
 					Type:       RefundTypeNone.Response(),
 					Reason:     "",
@@ -129,7 +129,7 @@ func TestOrderRefund_Response(t *testing.T) {
 					CanceledAt: 0,
 				},
 			},
-			expect: &response.OrderRefund{
+			expect: &types.OrderRefund{
 				Total:      0,
 				Type:       RefundTypeNone.Response(),
 				Reason:     "",
@@ -184,7 +184,7 @@ func TestOrderRefunds(t *testing.T) {
 			},
 			expect: OrderRefunds{
 				{
-					OrderRefund: response.OrderRefund{
+					OrderRefund: types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",

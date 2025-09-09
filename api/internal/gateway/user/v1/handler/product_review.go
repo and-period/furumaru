@@ -5,9 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -39,7 +38,7 @@ func (h *handler) productReviewRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Produce     json
-// @Success     200 {object} response.ProductReviewsResponse
+// @Success     200 {object} types.ProductReviewsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProductReviews(ctx *gin.Context) {
 	const defaultLimit = 20
@@ -67,8 +66,8 @@ func (h *handler) ListProductReviews(ctx *gin.Context) {
 		return
 	}
 	if len(reviews) == 0 {
-		res := &response.ProductReviewsResponse{
-			Reviews: []*response.ProductReview{},
+		res := &types.ProductReviewsResponse{
+			Reviews: []*types.ProductReview{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -80,7 +79,7 @@ func (h *handler) ListProductReviews(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductReviewsResponse{
+	res := &types.ProductReviewsResponse{
 		Reviews:   service.NewProductReviews(reviews, users.Map()).Response(),
 		NextToken: nextToken,
 	}
@@ -94,7 +93,7 @@ func (h *handler) ListProductReviews(ctx *gin.Context) {
 // @Param       productId path string true "商品ID"
 // @Param       reviewId path string true "レビューID"
 // @Produce     json
-// @Success     200 {object} response.ProductReviewResponse
+// @Success     200 {object} types.ProductReviewResponse
 // @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) GetProductReview(ctx *gin.Context) {
 	review, err := h.getProductReview(ctx, util.GetParam(ctx, "reviewId"))
@@ -106,7 +105,7 @@ func (h *handler) GetProductReview(ctx *gin.Context) {
 		h.notFound(ctx, errors.New("handler: review not found"))
 		return
 	}
-	res := &response.ProductReviewResponse{
+	res := &types.ProductReviewResponse{
 		Review: review.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -119,12 +118,12 @@ func (h *handler) GetProductReview(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       productId path string true "商品ID"
 // @Accept      json
-// @Param       request body request.CreateProductReviewRequest true "レビュー作成"
+// @Param       request body types.CreateProductReviewRequest true "レビュー作成"
 // @Success     204 "作成成功"
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) CreateProductReview(ctx *gin.Context) {
-	req := &request.CreateProductReviewRequest{}
+	req := &types.CreateProductReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -146,7 +145,7 @@ func (h *handler) CreateProductReview(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ProductReviewResponse{
+	res := &types.ProductReviewResponse{
 		Review: service.NewProductReview(review, user).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -160,14 +159,14 @@ func (h *handler) CreateProductReview(ctx *gin.Context) {
 // @Param       productId path string true "商品ID"
 // @Param       reviewId path string true "レビューID"
 // @Accept      json
-// @Param       request body request.UpdateProductReviewRequest true "レビュー更新"
+// @Param       request body types.UpdateProductReviewRequest true "レビュー更新"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) UpdateProductReview(ctx *gin.Context) {
-	req := &request.UpdateProductReviewRequest{}
+	req := &types.UpdateProductReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -222,13 +221,13 @@ func (h *handler) DeleteProductReview(ctx *gin.Context) {
 // @Param       productId path string true "商品ID"
 // @Param       reviewId path string true "レビューID"
 // @Accept      json
-// @Param       request body request.UpsertProductReviewReactionRequest true "リアクション登録/更新"
+// @Param       request body types.UpsertProductReviewReactionRequest true "リアクション登録/更新"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpsertProductReviewReaction(ctx *gin.Context) {
-	req := &request.UpsertProductReviewReactionRequest{}
+	req := &types.UpsertProductReviewReactionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -279,7 +278,7 @@ func (h *handler) DeleteProductReviewReaction(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       productId path string true "商品ID"
 // @Produce     json
-// @Success     200 {object} response.ProductReviewsResponse
+// @Success     200 {object} types.ProductReviewsResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListUserProductReviews(ctx *gin.Context) {
 	productID := util.GetParam(ctx, "productId")
@@ -325,7 +324,7 @@ func (h *handler) ListUserProductReviews(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.UserProductReviewsResponse{
+	res := &types.UserProductReviewsResponse{
 		Reviews:   reviews.Response(),
 		Reactions: reactions.Response(),
 	}

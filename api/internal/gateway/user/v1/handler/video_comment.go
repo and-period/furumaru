@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -28,7 +27,7 @@ func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
 // @Param       videoId path string true "動町ID"
 // @Param       limit query int64 false "取得件数" default(20)
 // @Produce     json
-// @Success     200 {object} response.VideoCommentsResponse
+// @Success     200 {object} types.VideoCommentsResponse
 func (h *handler) ListVideoComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -67,8 +66,8 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 		return
 	}
 	if len(comments) == 0 {
-		res := &response.VideoCommentsResponse{
-			Comments: []*response.VideoComment{},
+		res := &types.VideoCommentsResponse{
+			Comments: []*types.VideoComment{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -79,7 +78,7 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideoCommentsResponse{
+	res := &types.VideoCommentsResponse{
 		Comments:  service.NewVideoComments(comments, users.Map()).Response(),
 		NextToken: token,
 	}
@@ -93,14 +92,14 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       videoId path string true "動町ID"
 // @Accept      json
-// @Param       request body request.CreateVideoCommentRequest true "動画コメント作成"
+// @Param       request body types.CreateVideoCommentRequest true "動画コメント作成"
 // @Success     204 "作成成功"
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "オンデマンド配信が存在しない"
 // @Failure     412 {object} util.ErrorResponse "オンデマンド配信が公開されていない"
 func (h *handler) CreateVideoComment(ctx *gin.Context) {
-	req := &request.CreateVideoCommentRequest{}
+	req := &types.CreateVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

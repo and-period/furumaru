@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -55,7 +54,7 @@ func (h *handler) filterAccessShop(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       shopId path string true "ショップID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ShopResponse
+// @Success     200 {object} types.ShopResponse
 // @Failure     403 {object} util.ErrorResponse "ショップの参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "ショップが存在しない"
 func (h *handler) GetShop(ctx *gin.Context) {
@@ -88,7 +87,7 @@ func (h *handler) GetShop(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ShopResponse{
+	res := &types.ShopResponse{
 		Shop:         shop.Response(),
 		Coordinator:  coordinator.Response(),
 		Producers:    producers.Response(),
@@ -104,14 +103,14 @@ func (h *handler) GetShop(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       shopId path string true "ショップID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateShopRequest true "ショップ情報"
+// @Param       request body types.UpdateShopRequest true "ショップ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "ショップの更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "ショップが存在しない"
 func (h *handler) UpdateShop(ctx *gin.Context) {
-	req := &request.UpdateShopRequest{}
+	req := &types.UpdateShopRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

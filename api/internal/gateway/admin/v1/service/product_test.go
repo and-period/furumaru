@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -326,7 +326,7 @@ func TestProduct(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
@@ -341,7 +341,7 @@ func TestProduct(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail01.png",
 							IsThumbnail: true,
@@ -385,12 +385,12 @@ func TestProduct_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		product *Product
-		expect  *response.Product
+		expect  *types.Product
 	}{
 		{
 			name: "success",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					ProductTypeID:   "product-type-id",
 					CategoryID:      "category-id",
@@ -404,7 +404,7 @@ func TestProduct_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail01.png",
 							IsThumbnail: true,
@@ -427,7 +427,7 @@ func TestProduct_Response(t *testing.T) {
 					UpdatedAt:            1640962800,
 				},
 			},
-			expect: &response.Product{
+			expect: &types.Product{
 				ID:              "product-id",
 				ProductTypeID:   "product-type-id",
 				CategoryID:      "category-id",
@@ -441,7 +441,7 @@ func TestProduct_Response(t *testing.T) {
 				Weight:          1.3,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*response.ProductMedia{
+				Media: []*types.ProductMedia{
 					{
 						URL:         "https://and-period.jp/thumbnail01.png",
 						IsThumbnail: true,
@@ -531,7 +531,7 @@ func TestProducts(t *testing.T) {
 			},
 			expect: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "",
@@ -545,7 +545,7 @@ func TestProducts(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{
 								URL:         "https://and-period.jp/thumbnail01.png",
 								IsThumbnail: true,
@@ -592,7 +592,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -605,7 +605,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -643,7 +643,7 @@ func TestProducts_CategoryIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -656,7 +656,7 @@ func TestProducts_CategoryIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -694,7 +694,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -707,7 +707,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -745,7 +745,7 @@ func TestProducts_Map(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -758,7 +758,7 @@ func TestProducts_Map(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -776,7 +776,7 @@ func TestProducts_Map(t *testing.T) {
 			},
 			expect: map[string]*Product{
 				"product-id": {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -789,7 +789,7 @@ func TestProducts_Map(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -826,7 +826,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -839,7 +839,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -858,7 +858,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 			},
 			expect: map[int64]*Product{
 				1: {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -871,7 +871,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -903,13 +903,13 @@ func TestProducts_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		products Products
-		expect   []*response.Product
+		expect   []*types.Product
 	}{
 		{
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -923,7 +923,7 @@ func TestProducts_Response(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 						},
@@ -941,7 +941,7 @@ func TestProducts_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Product{
+			expect: []*types.Product{
 				{
 					ID:              "product-id",
 					ProductTypeID:   "product-type-id",
@@ -956,7 +956,7 @@ func TestProducts_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
@@ -997,7 +997,7 @@ func TestProductMedia(t *testing.T) {
 				IsThumbnail: true,
 			},
 			expect: &ProductMedia{
-				ProductMedia: response.ProductMedia{
+				ProductMedia: types.ProductMedia{
 					URL:         "https://and-period.jp/thumbnail01.png",
 					IsThumbnail: true,
 				},
@@ -1017,17 +1017,17 @@ func TestProductMedia_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		media  *ProductMedia
-		expect *response.ProductMedia
+		expect *types.ProductMedia
 	}{
 		{
 			name: "success",
 			media: &ProductMedia{
-				ProductMedia: response.ProductMedia{
+				ProductMedia: types.ProductMedia{
 					URL:         "https://and-period.jp/thumbnail01.png",
 					IsThumbnail: true,
 				},
 			},
-			expect: &response.ProductMedia{
+			expect: &types.ProductMedia{
 				URL:         "https://and-period.jp/thumbnail01.png",
 				IsThumbnail: true,
 			},
@@ -1062,13 +1062,13 @@ func TestMultiProductMedia(t *testing.T) {
 			},
 			expect: MultiProductMedia{
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://and-period.jp/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://and-period.jp/thumbnail02.png",
 						IsThumbnail: false,
 					},
@@ -1089,25 +1089,25 @@ func TestMultiProductMedia_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		media  MultiProductMedia
-		expect []*response.ProductMedia
+		expect []*types.ProductMedia
 	}{
 		{
 			name: "success",
 			media: MultiProductMedia{
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://and-period.jp/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://and-period.jp/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
 			},
-			expect: []*response.ProductMedia{
+			expect: []*types.ProductMedia{
 				{
 					URL:         "https://and-period.jp/thumbnail01.png",
 					IsThumbnail: true,

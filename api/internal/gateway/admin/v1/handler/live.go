@@ -8,9 +8,8 @@ import (
 	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -58,7 +57,7 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.LivesResponse
+// @Success     200 {object} types.LivesResponse
 func (h *handler) ListLives(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	in := &store.ListLivesInput{
@@ -87,7 +86,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.LivesResponse{
+	res := &types.LivesResponse{
 		Lives:     service.NewLives(lives).Response(),
 		Producers: producers.Response(),
 		Products:  products.Response(),
@@ -104,7 +103,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       liveId path string true "ライブ配信ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.LiveResponse
+// @Success     200 {object} types.LiveResponse
 // @Failure     403 {object} util.ErrorResponse "ライブ配信の参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "ライブ配信が存在しない"
 func (h *handler) GetLive(ctx *gin.Context) {
@@ -131,7 +130,7 @@ func (h *handler) GetLive(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.LiveResponse{
+	res := &types.LiveResponse{
 		Live:     live.Response(),
 		Producer: producer.Response(),
 		Products: products.Response(),
@@ -146,12 +145,12 @@ func (h *handler) GetLive(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.CreateLiveRequest true "ライブ配信情報"
+// @Param       request body types.CreateLiveRequest true "ライブ配信情報"
 // @Produce     json
-// @Success     200 {object} response.LiveResponse
+// @Success     200 {object} types.LiveResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateLive(ctx *gin.Context) {
-	req := &request.CreateLiveRequest{}
+	req := &types.CreateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -209,7 +208,7 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.LiveResponse{
+	res := &types.LiveResponse{
 		Live:     service.NewLive(live).Response(),
 		Producer: producer.Response(),
 		Products: products.Response(),
@@ -225,14 +224,14 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       liveId path string true "ライブ配信ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateLiveRequest true "ライブ配信情報"
+// @Param       request body types.UpdateLiveRequest true "ライブ配信情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "ライブ配信の更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "ライブ配信が存在しない"
 func (h *handler) UpdateLive(ctx *gin.Context) {
-	req := &request.UpdateLiveRequest{}
+	req := &types.UpdateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -301,7 +301,7 @@ func TestOrderPayment(t *testing.T) {
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			address: &Address{
-				Address: response.Address{
+				Address: types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
@@ -314,7 +314,7 @@ func TestOrderPayment(t *testing.T) {
 				revisionID: 1,
 			},
 			expect: &OrderPayment{
-				OrderPayment: response.OrderPayment{
+				OrderPayment: types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -324,7 +324,7 @@ func TestOrderPayment(t *testing.T) {
 					Total:         2530,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
+					Address: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -352,12 +352,12 @@ func TestOrderPayment_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		payment *OrderPayment
-		expect  *response.OrderPayment
+		expect  *types.OrderPayment
 	}{
 		{
 			name: "success",
 			payment: &OrderPayment{
-				OrderPayment: response.OrderPayment{
+				OrderPayment: types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -367,7 +367,7 @@ func TestOrderPayment_Response(t *testing.T) {
 					Total:         1600,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
+					Address: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -380,7 +380,7 @@ func TestOrderPayment_Response(t *testing.T) {
 				},
 				orderID: "order-id",
 			},
-			expect: &response.OrderPayment{
+			expect: &types.OrderPayment{
 				TransactionID: "transaction-id",
 				MethodType:    PaymentMethodTypeCreditCard.Response(),
 				Status:        PaymentStatusPaid.Response(),
@@ -390,7 +390,7 @@ func TestOrderPayment_Response(t *testing.T) {
 				Total:         1600,
 				OrderedAt:     1640962800,
 				PaidAt:        1640962800,
-				Address: &response.Address{
+				Address: &types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",

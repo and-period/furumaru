@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -48,7 +48,7 @@ func TestAuthUser(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &AuthUser{
-				AuthUser: response.AuthUser{
+				AuthUser: types.AuthUser{
 					ID:                  "user-id",
 					Username:            "username",
 					AccountID:           "account-id",
@@ -87,7 +87,7 @@ func TestAuthUser(t *testing.T) {
 			},
 			notification: nil,
 			expect: &AuthUser{
-				AuthUser: response.AuthUser{
+				AuthUser: types.AuthUser{
 					ID:            "user-id",
 					Username:      "username",
 					AccountID:     "account-id",
@@ -116,12 +116,12 @@ func TestAuthUser_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		auth   *AuthUser
-		expect *response.AuthUser
+		expect *types.AuthUser
 	}{
 		{
 			name: "success",
 			auth: &AuthUser{
-				AuthUser: response.AuthUser{
+				AuthUser: types.AuthUser{
 					ID:            "user-id",
 					Username:      "username",
 					AccountID:     "account-id",
@@ -132,7 +132,7 @@ func TestAuthUser_Response(t *testing.T) {
 					FirstnameKana: "りようしゃ",
 				},
 			},
-			expect: &response.AuthUser{
+			expect: &types.AuthUser{
 				ID:            "user-id",
 				Username:      "username",
 				AccountID:     "account-id",

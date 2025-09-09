@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -63,7 +63,7 @@ func TestAuth(t *testing.T) {
 				ExpiresIn:    3600,
 			},
 			expect: &Auth{
-				Auth: response.Auth{
+				Auth: types.Auth{
 					AdminID:      "admin-id",
 					Type:         int32(AdminTypeAdministrator),
 					AccessToken:  "access-token",
@@ -87,12 +87,12 @@ func TestAuth_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		auth   *Auth
-		expect *response.Auth
+		expect *types.Auth
 	}{
 		{
 			name: "success",
 			auth: &Auth{
-				Auth: response.Auth{
+				Auth: types.Auth{
 					AdminID:      "admin-id",
 					Type:         int32(AdminTypeAdministrator),
 					AccessToken:  "access-token",
@@ -101,7 +101,7 @@ func TestAuth_Response(t *testing.T) {
 					TokenType:    "Bearer",
 				},
 			},
-			expect: &response.Auth{
+			expect: &types.Auth{
 				AdminID:      "admin-id",
 				Type:         int32(AdminTypeAdministrator),
 				AccessToken:  "access-token",
@@ -126,7 +126,7 @@ func TestAuthProviders(t *testing.T) {
 		name      string
 		providers entity.AdminAuthProviders
 		expect    AuthProviders
-		response  []*response.AuthProvider
+		response  []*types.AuthProvider
 	}{
 		{
 			name: "success",
@@ -142,13 +142,13 @@ func TestAuthProviders(t *testing.T) {
 			},
 			expect: AuthProviders{
 				{
-					AuthProvider: response.AuthProvider{
+					AuthProvider: types.AuthProvider{
 						Type:        1,
 						ConnectedAt: now.Unix(),
 					},
 				},
 			},
-			response: []*response.AuthProvider{
+			response: []*types.AuthProvider{
 				{
 					Type:        1,
 					ConnectedAt: now.Unix(),

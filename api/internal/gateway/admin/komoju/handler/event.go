@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/request"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/types"
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,7 +44,7 @@ func (h *handler) Event(ctx *gin.Context) {
 }
 
 func (h *handler) ping(ctx *gin.Context) {
-	req := &request.PingRequest{}
+	req := &types.PingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

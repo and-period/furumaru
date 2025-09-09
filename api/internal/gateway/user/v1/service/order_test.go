@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -194,7 +194,6 @@ func TestNewOrderStatus(t *testing.T) {
 	}
 }
 
-
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -280,7 +279,7 @@ func TestOrder(t *testing.T) {
 			},
 			addresses: map[int64]*Address{
 				1: {
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -295,7 +294,7 @@ func TestOrder(t *testing.T) {
 			},
 			products: map[int64]*Product{
 				1: {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						CoordinatorID:   "coordinator-id",
 						ProducerID:      "producer-id",
@@ -309,7 +308,7 @@ func TestOrder(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{
 								URL:         "https://and-period.jp/thumbnail01.png",
 								IsThumbnail: true,
@@ -336,7 +335,7 @@ func TestOrder(t *testing.T) {
 			},
 			experiences: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -344,7 +343,7 @@ func TestOrder(t *testing.T) {
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -372,13 +371,13 @@ func TestOrder(t *testing.T) {
 				},
 			},
 			expect: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Type:          int32(OrderTypeProduct),
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -389,7 +388,7 @@ func TestOrder(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
+					Fulfillments: []*types.OrderFulfillment{
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
@@ -401,14 +400,14 @@ func TestOrder(t *testing.T) {
 							ShippedAt:       1640962800,
 						},
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -416,7 +415,7 @@ func TestOrder(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					Experience: &response.OrderExperience{
+					Experience: &types.OrderExperience{
 						ExperienceID:          "experience-id",
 						AdultCount:            2,
 						AdultPrice:            1000,
@@ -432,7 +431,7 @@ func TestOrder(t *testing.T) {
 						RequestedDate:         "20240102",
 						RequestedTime:         "1830",
 					},
-					BillingAddress: &response.Address{
+					BillingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -442,7 +441,7 @@ func TestOrder(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "090-1234-1234",
 					},
-					ShippingAddress: &response.Address{
+					ShippingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -473,12 +472,12 @@ func TestOrder_ProductIDs(t *testing.T) {
 		{
 			name: "success",
 			order: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "",
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -489,7 +488,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
+					Fulfillments: []*types.OrderFulfillment{
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
@@ -501,14 +500,14 @@ func TestOrder_ProductIDs(t *testing.T) {
 							ShippedAt:       1640962800,
 						},
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -516,7 +515,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					BillingAddress: &response.Address{
+					BillingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -526,7 +525,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "090-1234-1234",
 					},
-					ShippingAddress: &response.Address{
+					ShippingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -553,17 +552,17 @@ func TestOrder_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		order  *Order
-		expect *response.Order
+		expect *types.Order
 	}{
 		{
 			name: "success",
 			order: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -574,7 +573,7 @@ func TestOrder_Response(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Fulfillments: []*response.OrderFulfillment{
+					Fulfillments: []*types.OrderFulfillment{
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
@@ -586,14 +585,14 @@ func TestOrder_Response(t *testing.T) {
 							ShippedAt:       1640962800,
 						},
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -601,7 +600,7 @@ func TestOrder_Response(t *testing.T) {
 							Quantity:      1,
 						},
 					},
-					BillingAddress: &response.Address{
+					BillingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -611,7 +610,7 @@ func TestOrder_Response(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "090-1234-1234",
 					},
-					ShippingAddress: &response.Address{
+					ShippingAddress: &types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -623,12 +622,12 @@ func TestOrder_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: &response.Order{
+			expect: &types.Order{
 				ID:            "order-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
 				Status:        int32(OrderStatusPreparing),
-				Payment: &response.OrderPayment{
+				Payment: &types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -639,7 +638,7 @@ func TestOrder_Response(t *testing.T) {
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
 				},
-				Fulfillments: []*response.OrderFulfillment{
+				Fulfillments: []*types.OrderFulfillment{
 					{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
@@ -651,14 +650,14 @@ func TestOrder_Response(t *testing.T) {
 						ShippedAt:       1640962800,
 					},
 				},
-				Refund: &response.OrderRefund{
+				Refund: &types.OrderRefund{
 					Total:      0,
 					Type:       RefundTypeNone.Response(),
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
 				},
-				Items: []*response.OrderItem{
+				Items: []*types.OrderItem{
 					{
 						FulfillmentID: "fulfillment-id",
 						ProductID:     "product-id",
@@ -666,7 +665,7 @@ func TestOrder_Response(t *testing.T) {
 						Quantity:      1,
 					},
 				},
-				BillingAddress: &response.Address{
+				BillingAddress: &types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
@@ -676,7 +675,7 @@ func TestOrder_Response(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "090-1234-1234",
 				},
-				ShippingAddress: &response.Address{
+				ShippingAddress: &types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",

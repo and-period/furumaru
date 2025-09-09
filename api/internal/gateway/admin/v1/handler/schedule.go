@@ -6,9 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -56,7 +55,7 @@ func (h *handler) filterAccessSchedule(ctx *gin.Context) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.SchedulesResponse
+// @Success     200 {object} types.SchedulesResponse
 func (h *handler) ListSchedules(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -85,9 +84,9 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		return
 	}
 	if len(schedules) == 0 {
-		res := &response.SchedulesResponse{
-			Schedules:    []*response.Schedule{},
-			Coordinators: []*response.Coordinator{},
+		res := &types.SchedulesResponse{
+			Schedules:    []*types.Schedule{},
+			Coordinators: []*types.Coordinator{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -99,7 +98,7 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.SchedulesResponse{
+	res := &types.SchedulesResponse{
 		Schedules:    service.NewSchedules(schedules).Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
@@ -114,7 +113,7 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ScheduleResponse
+// @Success     200 {object} types.ScheduleResponse
 // @Failure     403 {object} util.ErrorResponse "スケジュールの参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) GetSchedule(ctx *gin.Context) {
@@ -131,7 +130,7 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 		return
 	}
 
-	res := response.ScheduleResponse{
+	res := types.ScheduleResponse{
 		Schedule:    schedule.Response(),
 		Coordinator: coordinator.Response(),
 	}
@@ -144,12 +143,12 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 // @Router      /v1/schedules [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateScheduleRequest true "スケジュール情報"
+// @Param       request body types.CreateScheduleRequest true "スケジュール情報"
 // @Produce     json
-// @Success     200 {object} response.ScheduleResponse
+// @Success     200 {object} types.ScheduleResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateSchedule(ctx *gin.Context) {
-	req := &request.CreateScheduleRequest{}
+	req := &types.CreateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -195,7 +194,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 	sschedule := service.NewSchedule(schedule)
 
-	res := &response.ScheduleResponse{
+	res := &types.ScheduleResponse{
 		Schedule:    sschedule.Response(),
 		Coordinator: coordinator.Response(),
 	}
@@ -209,14 +208,14 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateScheduleRequest true "スケジュール情報"
+// @Param       request body types.UpdateScheduleRequest true "スケジュール情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "スケジュールの更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) UpdateSchedule(ctx *gin.Context) {
-	req := &request.UpdateScheduleRequest{}
+	req := &types.UpdateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -267,14 +266,14 @@ func (h *handler) DeleteSchedule(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
-// @Param       request body request.ApproveScheduleRequest true "承認情報"
+// @Param       request body types.ApproveScheduleRequest true "承認情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "スケジュールの承認権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) ApproveSchedule(ctx *gin.Context) {
-	req := &request.ApproveScheduleRequest{}
+	req := &types.ApproveScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -299,14 +298,14 @@ func (h *handler) ApproveSchedule(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
-// @Param       request body request.PublishScheduleRequest true "公開設定情報"
+// @Param       request body types.PublishScheduleRequest true "公開設定情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "スケジュールの公開権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) PublishSchedule(ctx *gin.Context) {
-	req := &request.PublishScheduleRequest{}
+	req := &types.PublishScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -333,7 +332,7 @@ func (h *handler) PublishSchedule(ctx *gin.Context) {
 // @Param       endAt query integer false "集計終了日時 (unixtime,未指定の場合はスケジュール終了時間)" example("1640962800")
 // @Param       viewerLogInterval query string false "集計間隔 (未指定の場合は1分間隔)" example("minute")
 // @Produce     json
-// @Success     200 {object} response.AnalyzeScheduleResponse
+// @Success     200 {object} types.AnalyzeScheduleResponse
 // @Failure     403 {object} util.ErrorResponse "スケジュールの参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
@@ -372,7 +371,7 @@ func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AnalyzeScheduleResponse{
+	res := &types.AnalyzeScheduleResponse{
 		ViewerLogs:   service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
 		TotalViewers: totalViewers,
 	}

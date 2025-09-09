@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -25,7 +25,7 @@ func (h *handler) postalCodeRoutes(rg *gin.RouterGroup) {
 // @Security    bearerauth
 // @Param       postalCode path string true "郵便番号" example("1000001")
 // @Produce     json
-// @Success     200 {object} response.PostalCodeResponse
+// @Success     200 {object} types.PostalCodeResponse
 // @Failure     404 {object} util.ErrorResponse "郵便番号が存在しない"
 func (h *handler) SearchPostalCode(ctx *gin.Context) {
 	in := &store.SearchPostalCodeInput{
@@ -36,7 +36,7 @@ func (h *handler) SearchPostalCode(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.PostalCodeResponse{
+	res := &types.PostalCodeResponse{
 		PostalCode: service.NewPostalCode(postalCode).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

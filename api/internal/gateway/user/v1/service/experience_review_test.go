@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
@@ -116,7 +116,7 @@ func TestExperienceReviews(t *testing.T) {
 			},
 			expect: ExperienceReviews{
 				{
-					ExperienceReview: response.ExperienceReview{
+					ExperienceReview: types.ExperienceReview{
 						ID:           "review-id",
 						ExperienceID: "experience-id",
 						UserID:       "user-id",
@@ -147,13 +147,13 @@ func TestExperienceReviews_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		reviews ExperienceReviews
-		expect  []*response.ExperienceReview
+		expect  []*types.ExperienceReview
 	}{
 		{
 			name: "success",
 			reviews: ExperienceReviews{
 				{
-					ExperienceReview: response.ExperienceReview{
+					ExperienceReview: types.ExperienceReview{
 						ID:           "review-id",
 						ExperienceID: "experience-id",
 						UserID:       "user-id",
@@ -167,7 +167,7 @@ func TestExperienceReviews_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.ExperienceReview{
+			expect: []*types.ExperienceReview{
 				{
 					ID:           "review-id",
 					ExperienceID: "experience-id",
@@ -213,7 +213,7 @@ func TestExperienceReviewReactions(t *testing.T) {
 			},
 			expect: ExperienceReviewReactions{
 				{
-					ExperienceReviewReaction: response.ExperienceReviewReaction{
+					ExperienceReviewReaction: types.ExperienceReviewReaction{
 						ReviewID:     "review-id",
 						ReactionType: int32(ExperienceReviewReactionTypeLike),
 					},
@@ -235,19 +235,19 @@ func TestExperienceReviewReactions_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		reactions ExperienceReviewReactions
-		expect    []*response.ExperienceReviewReaction
+		expect    []*types.ExperienceReviewReaction
 	}{
 		{
 			name: "success",
 			reactions: ExperienceReviewReactions{
 				{
-					ExperienceReviewReaction: response.ExperienceReviewReaction{
+					ExperienceReviewReaction: types.ExperienceReviewReaction{
 						ReviewID:     "review-id",
 						ReactionType: int32(ExperienceReviewReactionTypeLike),
 					},
 				},
 			},
-			expect: []*response.ExperienceReviewReaction{
+			expect: []*types.ExperienceReviewReaction{
 				{
 					ReviewID:     "review-id",
 					ReactionType: int32(ExperienceReviewReactionTypeLike),

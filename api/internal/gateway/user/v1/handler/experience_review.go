@@ -5,9 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -39,7 +38,7 @@ func (h *handler) experienceReviewRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Produce     json
-// @Success     200 {object} response.ExperienceReviewsResponse
+// @Success     200 {object} types.ExperienceReviewsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 	const defaultLimit = 20
@@ -67,8 +66,8 @@ func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 		return
 	}
 	if len(reviews) == 0 {
-		res := &response.ExperienceReviewsResponse{
-			Reviews: []*response.ExperienceReview{},
+		res := &types.ExperienceReviewsResponse{
+			Reviews: []*types.ExperienceReview{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -80,7 +79,7 @@ func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperienceReviewsResponse{
+	res := &types.ExperienceReviewsResponse{
 		Reviews:   service.NewExperienceReviews(reviews, users.Map()).Response(),
 		NextToken: nextToken,
 	}
@@ -94,7 +93,7 @@ func (h *handler) ListExperienceReviews(ctx *gin.Context) {
 // @Param       experienceId path string true "体験ID"
 // @Param       reviewId path string true "レビューID"
 // @Produce     json
-// @Success     200 {object} response.ExperienceReviewResponse
+// @Success     200 {object} types.ExperienceReviewResponse
 // @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) GetExperienceReview(ctx *gin.Context) {
 	review, err := h.getExperienceReview(ctx, util.GetParam(ctx, "reviewId"))
@@ -106,7 +105,7 @@ func (h *handler) GetExperienceReview(ctx *gin.Context) {
 		h.notFound(ctx, errors.New("handler: review not found"))
 		return
 	}
-	res := &response.ExperienceReviewResponse{
+	res := &types.ExperienceReviewResponse{
 		Review: review.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -119,12 +118,12 @@ func (h *handler) GetExperienceReview(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       experienceId path string true "体験ID"
 // @Accept      json
-// @Param       request body request.CreateExperienceReviewRequest true "レビュー作成"
+// @Param       request body types.CreateExperienceReviewRequest true "レビュー作成"
 // @Success     204 "作成成功"
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) CreateExperienceReview(ctx *gin.Context) {
-	req := &request.CreateExperienceReviewRequest{}
+	req := &types.CreateExperienceReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -146,7 +145,7 @@ func (h *handler) CreateExperienceReview(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ExperienceReviewResponse{
+	res := &types.ExperienceReviewResponse{
 		Review: service.NewExperienceReview(review, user).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -160,14 +159,14 @@ func (h *handler) CreateExperienceReview(ctx *gin.Context) {
 // @Param       experienceId path string true "体験ID"
 // @Param       reviewId path string true "レビューID"
 // @Accept      json
-// @Param       request body request.UpdateExperienceReviewRequest true "レビュー更新"
+// @Param       request body types.UpdateExperienceReviewRequest true "レビュー更新"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "レビューが見つからない"
 func (h *handler) UpdateExperienceReview(ctx *gin.Context) {
-	req := &request.UpdateExperienceReviewRequest{}
+	req := &types.UpdateExperienceReviewRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -222,13 +221,13 @@ func (h *handler) DeleteExperienceReview(ctx *gin.Context) {
 // @Param       experienceId path string true "体験ID"
 // @Param       reviewId path string true "レビューID"
 // @Accept      json
-// @Param       request body request.UpsertExperienceReviewReactionRequest true "リアクション登録/更新"
+// @Param       request body types.UpsertExperienceReviewReactionRequest true "リアクション登録/更新"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) UpsertExperienceReviewReaction(ctx *gin.Context) {
-	req := &request.UpsertExperienceReviewReactionRequest{}
+	req := &types.UpsertExperienceReviewReactionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -279,7 +278,7 @@ func (h *handler) DeleteExperienceReviewReaction(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       experienceId path string true "体験ID"
 // @Produce     json
-// @Success     200 {object} response.ExperienceReviewsResponse
+// @Success     200 {object} types.ExperienceReviewsResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListUserExperienceReviews(ctx *gin.Context) {
 	experienceID := util.GetParam(ctx, "experienceId")
@@ -325,7 +324,7 @@ func (h *handler) ListUserExperienceReviews(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.UserExperienceReviewsResponse{
+	res := &types.UserExperienceReviewsResponse{
 		Reviews:   reviews.Response(),
 		Reactions: reactions.Response(),
 	}

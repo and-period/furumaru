@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -27,7 +27,7 @@ func TestProductType(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &ProductType{
-				ProductType: response.ProductType{
+				ProductType: types.ProductType{
 					ID:         "product-type-id",
 					CategoryID: "category-id",
 					Name:       "じゃがいも",
@@ -49,19 +49,19 @@ func TestProductType_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		productType *ProductType
-		expect      *response.ProductType
+		expect      *types.ProductType
 	}{
 		{
 			name: "success",
 			productType: &ProductType{
-				ProductType: response.ProductType{
+				ProductType: types.ProductType{
 					ID:         "product-type-id",
 					CategoryID: "category-id",
 					Name:       "じゃがいも",
 					IconURL:    "https://and-period.jp/icon.png",
 				},
 			},
-			expect: &response.ProductType{
+			expect: &types.ProductType{
 				ID:         "product-type-id",
 				CategoryID: "category-id",
 				Name:       "じゃがいも",
@@ -98,7 +98,7 @@ func TestProductTypes(t *testing.T) {
 			},
 			expect: ProductTypes{
 				{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -127,7 +127,7 @@ func TestProductTypes_CategoryIDs(t *testing.T) {
 			name: "success",
 			productTypes: ProductTypes{
 				{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -157,7 +157,7 @@ func TestProductTypes_Map(t *testing.T) {
 			name: "success",
 			productTypes: ProductTypes{
 				{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -167,7 +167,7 @@ func TestProductTypes_Map(t *testing.T) {
 			},
 			expect: map[string]*ProductType{
 				"product-type-id": {
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -190,13 +190,13 @@ func TestProductTypes_Response(t *testing.T) {
 	tests := []struct {
 		name         string
 		productTypes ProductTypes
-		expect       []*response.ProductType
+		expect       []*types.ProductType
 	}{
 		{
 			name: "success",
 			productTypes: ProductTypes{
 				{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						ID:         "product-type-id",
 						CategoryID: "category-id",
 						Name:       "じゃがいも",
@@ -204,7 +204,7 @@ func TestProductTypes_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.ProductType{
+			expect: []*types.ProductType{
 				{
 					ID:         "product-type-id",
 					CategoryID: "category-id",

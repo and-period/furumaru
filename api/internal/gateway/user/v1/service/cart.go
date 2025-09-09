@@ -1,25 +1,25 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Cart struct {
-	response.Cart
+	types.Cart
 }
 
 type Carts []*Cart
 
 type CartItem struct {
-	response.CartItem
+	types.CartItem
 }
 
 type CartItems []*CartItem
 
 func NewCart(basket *entity.CartBasket) *Cart {
 	return &Cart{
-		Cart: response.Cart{
+		Cart: types.Cart{
 			Number:        basket.BoxNumber,
 			Type:          NewShippingType(basket.BoxType).Response(),
 			Size:          NewShippingSize(basket.BoxSize).Response(),
@@ -30,7 +30,7 @@ func NewCart(basket *entity.CartBasket) *Cart {
 	}
 }
 
-func (c *Cart) Response() *response.Cart {
+func (c *Cart) Response() *types.Cart {
 	return &c.Cart
 }
 
@@ -45,8 +45,8 @@ func NewCarts(cart *entity.Cart) Carts {
 	return res
 }
 
-func (cs Carts) Response() []*response.Cart {
-	res := make([]*response.Cart, len(cs))
+func (cs Carts) Response() []*types.Cart {
+	res := make([]*types.Cart, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}
@@ -55,14 +55,14 @@ func (cs Carts) Response() []*response.Cart {
 
 func NewCartItem(item *entity.CartItem) *CartItem {
 	return &CartItem{
-		CartItem: response.CartItem{
+		CartItem: types.CartItem{
 			ProductID: item.ProductID,
 			Quantity:  item.Quantity,
 		},
 	}
 }
 
-func (i *CartItem) Response() *response.CartItem {
+func (i *CartItem) Response() *types.CartItem {
 	return &i.CartItem
 }
 
@@ -74,8 +74,8 @@ func NewCartItems(items entity.CartItems) CartItems {
 	return res
 }
 
-func (is CartItems) Response() []*response.CartItem {
-	res := make([]*response.CartItem, len(is))
+func (is CartItems) Response() []*types.CartItem {
+	res := make([]*types.CartItem, len(is))
 	for i := range is {
 		res[i] = is[i].Response()
 	}

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
@@ -116,7 +116,7 @@ func TestProductReviews(t *testing.T) {
 			},
 			expect: ProductReviews{
 				{
-					ProductReview: response.ProductReview{
+					ProductReview: types.ProductReview{
 						ID:           "review-id",
 						ProductID:    "product-id",
 						UserID:       "user-id",
@@ -147,13 +147,13 @@ func TestProductReviews_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		reviews ProductReviews
-		expect  []*response.ProductReview
+		expect  []*types.ProductReview
 	}{
 		{
 			name: "success",
 			reviews: ProductReviews{
 				{
-					ProductReview: response.ProductReview{
+					ProductReview: types.ProductReview{
 						ID:           "review-id",
 						ProductID:    "product-id",
 						UserID:       "user-id",
@@ -167,7 +167,7 @@ func TestProductReviews_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.ProductReview{
+			expect: []*types.ProductReview{
 				{
 					ID:           "review-id",
 					ProductID:    "product-id",
@@ -213,7 +213,7 @@ func TestProductReviewReactions(t *testing.T) {
 			},
 			expect: ProductReviewReactions{
 				{
-					ProductReviewReaction: response.ProductReviewReaction{
+					ProductReviewReaction: types.ProductReviewReaction{
 						ReviewID:     "review-id",
 						ReactionType: int32(ProductReviewReactionTypeLike),
 					},
@@ -235,19 +235,19 @@ func TestProductReviewReactions_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		reactions ProductReviewReactions
-		expect    []*response.ProductReviewReaction
+		expect    []*types.ProductReviewReaction
 	}{
 		{
 			name: "success",
 			reactions: ProductReviewReactions{
 				{
-					ProductReviewReaction: response.ProductReviewReaction{
+					ProductReviewReaction: types.ProductReviewReaction{
 						ReviewID:     "review-id",
 						ReactionType: int32(ProductReviewReactionTypeLike),
 					},
 				},
 			},
-			expect: []*response.ProductReviewReaction{
+			expect: []*types.ProductReviewReaction{
 				{
 					ReviewID:     "review-id",
 					ReactionType: int32(ProductReviewReactionTypeLike),

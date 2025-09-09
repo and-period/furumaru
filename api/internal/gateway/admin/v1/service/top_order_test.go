@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -146,7 +146,7 @@ func TestTopOrderValue(t *testing.T) {
 			current: 0,
 			before:  0,
 			expect: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      0,
 					Comparison: 0,
 				},
@@ -157,7 +157,7 @@ func TestTopOrderValue(t *testing.T) {
 			current: 100,
 			before:  50,
 			expect: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      100,
 					Comparison: 100,
 				},
@@ -168,7 +168,7 @@ func TestTopOrderValue(t *testing.T) {
 			current: 50,
 			before:  100,
 			expect: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      50,
 					Comparison: -50,
 				},
@@ -179,7 +179,7 @@ func TestTopOrderValue(t *testing.T) {
 			current: 100,
 			before:  100,
 			expect: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      100,
 					Comparison: 0,
 				},
@@ -190,7 +190,7 @@ func TestTopOrderValue(t *testing.T) {
 			current: 50,
 			before:  0,
 			expect: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      50,
 					Comparison: 100,
 				},
@@ -211,17 +211,17 @@ func TestTopOrderValue_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		value  *TopOrderValue
-		expect *response.TopOrderValue
+		expect *types.TopOrderValue
 	}{
 		{
 			name: "success",
 			value: &TopOrderValue{
-				TopOrderValue: response.TopOrderValue{
+				TopOrderValue: types.TopOrderValue{
 					Value:      100,
 					Comparison: 50,
 				},
 			},
-			expect: &response.TopOrderValue{
+			expect: &types.TopOrderValue{
 				Value:      100,
 				Comparison: 50,
 			},
@@ -262,13 +262,13 @@ func TestTopOrderSalesTrends(t *testing.T) {
 			},
 			expect: TopOrderSalesTrends{
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-17",
 						SalesTotal: 0,
 					},
 				},
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-18",
 						SalesTotal: 100,
 					},
@@ -291,19 +291,19 @@ func TestTopOrderSalesTrends(t *testing.T) {
 			},
 			expect: TopOrderSalesTrends{
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2024-12-29",
 						SalesTotal: 0,
 					},
 				},
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-05",
 						SalesTotal: 0,
 					},
 				},
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-12",
 						SalesTotal: 100,
 					},
@@ -326,7 +326,7 @@ func TestTopOrderSalesTrends(t *testing.T) {
 			},
 			expect: TopOrderSalesTrends{
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-01",
 						SalesTotal: 100,
 					},
@@ -348,19 +348,19 @@ func TestTopOrderSalesTrends_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		trends TopOrderSalesTrends
-		expect []*response.TopOrderSalesTrend
+		expect []*types.TopOrderSalesTrend
 	}{
 		{
 			name: "success",
 			trends: TopOrderSalesTrends{
 				{
-					TopOrderSalesTrend: response.TopOrderSalesTrend{
+					TopOrderSalesTrend: types.TopOrderSalesTrend{
 						Period:     "2025-01-18",
 						SalesTotal: 100,
 					},
 				},
 			},
-			expect: []*response.TopOrderSalesTrend{
+			expect: []*types.TopOrderSalesTrend{
 				{
 					Period:     "2025-01-18",
 					SalesTotal: 100,
@@ -396,7 +396,7 @@ func TestTopOrderPayments(t *testing.T) {
 			},
 			expect: TopOrderPayments{
 				{
-					TopOrderPayment: response.TopOrderPayment{
+					TopOrderPayment: types.TopOrderPayment{
 						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
 						OrderCount:        2,
 						UserCount:         1,
@@ -421,13 +421,13 @@ func TestTopOrderPayments_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		payments TopOrderPayments
-		expect   []*response.TopOrderPayment
+		expect   []*types.TopOrderPayment
 	}{
 		{
 			name: "success",
 			payments: TopOrderPayments{
 				{
-					TopOrderPayment: response.TopOrderPayment{
+					TopOrderPayment: types.TopOrderPayment{
 						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
 						OrderCount:        2,
 						UserCount:         1,
@@ -436,7 +436,7 @@ func TestTopOrderPayments_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.TopOrderPayment{
+			expect: []*types.TopOrderPayment{
 				{
 					PaymentMethodType: int32(PaymentMethodTypeCreditCard),
 					OrderCount:        2,

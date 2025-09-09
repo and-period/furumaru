@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -31,7 +31,7 @@ func TestExperienceTypes(t *testing.T) {
 			},
 			expect: ExperienceTypes{
 				{
-					ExperienceType: response.ExperienceType{
+					ExperienceType: types.ExperienceType{
 						ID:   "1",
 						Name: "じゃがいも収穫",
 					},
@@ -55,19 +55,19 @@ func TestExperienceTypes_Response(t *testing.T) {
 	tests := []struct {
 		name            string
 		experienceTypes ExperienceTypes
-		expect          []*response.ExperienceType
+		expect          []*types.ExperienceType
 	}{
 		{
 			name: "success",
 			experienceTypes: ExperienceTypes{
 				{
-					ExperienceType: response.ExperienceType{
+					ExperienceType: types.ExperienceType{
 						ID:   "1",
 						Name: "じゃがいも収穫",
 					},
 				},
 			},
-			expect: []*response.ExperienceType{
+			expect: []*types.ExperienceType{
 				{
 					ID:   "1",
 					Name: "じゃがいも収穫",

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -53,14 +53,14 @@ func (t ProductReviewReactionType) Response() int32 {
 }
 
 type ProductReview struct {
-	response.ProductReview
+	types.ProductReview
 }
 
 type ProductReviews []*ProductReview
 
 func NewProductReview(review *entity.ProductReview, user *uentity.User) *ProductReview {
 	return &ProductReview{
-		ProductReview: response.ProductReview{
+		ProductReview: types.ProductReview{
 			ID:           review.ID,
 			ProductID:    review.ProductID,
 			UserID:       user.ID,
@@ -77,7 +77,7 @@ func NewProductReview(review *entity.ProductReview, user *uentity.User) *Product
 	}
 }
 
-func (r *ProductReview) Response() *response.ProductReview {
+func (r *ProductReview) Response() *types.ProductReview {
 	return &r.ProductReview
 }
 
@@ -93,8 +93,8 @@ func NewProductReviews(reviews entity.ProductReviews, users map[string]*uentity.
 	return res
 }
 
-func (rs ProductReviews) Response() []*response.ProductReview {
-	res := make([]*response.ProductReview, len(rs))
+func (rs ProductReviews) Response() []*types.ProductReview {
+	res := make([]*types.ProductReview, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
 	}
@@ -102,21 +102,21 @@ func (rs ProductReviews) Response() []*response.ProductReview {
 }
 
 type ProductReviewReaction struct {
-	response.ProductReviewReaction
+	types.ProductReviewReaction
 }
 
 type ProductReviewReactions []*ProductReviewReaction
 
 func NewProductReviewReaction(reaction *entity.ProductReviewReaction) *ProductReviewReaction {
 	return &ProductReviewReaction{
-		ProductReviewReaction: response.ProductReviewReaction{
+		ProductReviewReaction: types.ProductReviewReaction{
 			ReviewID:     reaction.ReviewID,
 			ReactionType: NewProductReviewReactionType(reaction.ReactionType).Response(),
 		},
 	}
 }
 
-func (r *ProductReviewReaction) Response() *response.ProductReviewReaction {
+func (r *ProductReviewReaction) Response() *types.ProductReviewReaction {
 	return &r.ProductReviewReaction
 }
 
@@ -128,8 +128,8 @@ func NewProductReviewReactions(reactions entity.ProductReviewReactions) ProductR
 	return res
 }
 
-func (rs ProductReviewReactions) Response() []*response.ProductReviewReaction {
-	res := make([]*response.ProductReviewReaction, len(rs))
+func (rs ProductReviewReactions) Response() []*types.ProductReviewReaction {
+	res := make([]*types.ProductReviewReaction, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
 	}

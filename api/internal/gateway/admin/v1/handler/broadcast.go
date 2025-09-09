@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
@@ -42,7 +41,7 @@ func (h *handler) guestBroadcastRoutes(rg *gin.RouterGroup) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "マルシェ開催スケジュールID" example("schedule-id")
 // @Produce     json
-// @Success     200 {object} response.BroadcastResponse
+// @Success     200 {object} types.BroadcastResponse
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 func (h *handler) GetBroadcast(ctx *gin.Context) {
 	in := &media.GetBroadcastByScheduleIDInput{
@@ -53,7 +52,7 @@ func (h *handler) GetBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.BroadcastResponse{
+	res := &types.BroadcastResponse{
 		Broadcast: service.NewBroadcast(broadcast).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -106,13 +105,13 @@ func (h *handler) UnpauseBroadcast(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "マルシェ開催スケジュールID" example("schedule-id")
 // @Accept      json
-// @Param       request body request.UpdateBroadcastArchiveRequest true "アーカイブURL"
+// @Param       request body types.UpdateBroadcastArchiveRequest true "アーカイブURL"
 // @Produce     json
 // @Success     204
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 // @Failure     412 {object} util.ErrorResponse "マルシェライブ配信が終了していない"
 func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
-	req := &request.UpdateBroadcastArchiveRequest{}
+	req := &types.UpdateBroadcastArchiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -156,13 +155,13 @@ func (h *handler) ActivateBroadcastRTMP(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "マルシェ開催スケジュールID" example("schedule-id")
 // @Accept      json
-// @Param       request body request.ActivateBroadcastMP4Request true "MP4ファイルURL"
+// @Param       request body types.ActivateBroadcastMP4Request true "MP4ファイルURL"
 // @Produce     json
 // @Success     204
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 // @Failure     412 {object} util.ErrorResponse "マルシェライブ配信中でない"
 func (h *handler) ActivateBroadcastMP4(ctx *gin.Context) {
-	req := &request.ActivateBroadcastMP4Request{}
+	req := &types.ActivateBroadcastMP4Request{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -227,7 +226,7 @@ func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
 // @Router      /v1/guests/schedules/-/broadcasts [get]
 // @Security    cookieauth
 // @Produce     json
-// @Success     200 {object} response.GuestBroadcastResponse
+// @Success     200 {object} types.GuestBroadcastResponse
 func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
 	sessionID, err := h.getSessionID(ctx)
 	if err != nil {
@@ -257,7 +256,7 @@ func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.GuestBroadcastResponse{
+	res := &types.GuestBroadcastResponse{
 		Broadcast: service.NewGuestBroadcast(schedule, shop, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -270,13 +269,13 @@ func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "マルシェ開催スケジュールID" example("schedule-id")
 // @Accept      json
-// @Param       request body request.AuthYoutubeBroadcastRequest true "Youtubeハンドル"
+// @Param       request body types.AuthYoutubeBroadcastRequest true "Youtubeハンドル"
 // @Produce     json
-// @Success     200 {object} response.AuthYoutubeBroadcastResponse
+// @Success     200 {object} types.AuthYoutubeBroadcastResponse
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 // @Failure     412 {object} util.ErrorResponse "マルシェライブ配信前でない"
 func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
-	req := &request.AuthYoutubeBroadcastRequest{}
+	req := &types.AuthYoutubeBroadcastRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -290,7 +289,7 @@ func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthYoutubeBroadcastResponse{
+	res := &types.AuthYoutubeBroadcastResponse{
 		URL: authURL,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -302,14 +301,14 @@ func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 // @Tags        Broadcast
 // @Router      /v1/guests/schedules/-/broadcasts/youtube/auth/complete [post]
 // @Accept      json
-// @Param       request body request.CallbackAuthYoutubeBroadcastRequest true "認証コールバック"
+// @Param       request body types.CallbackAuthYoutubeBroadcastRequest true "認証コールバック"
 // @Produce     json
-// @Success     200 {object} response.GuestBroadcastResponse
+// @Success     200 {object} types.GuestBroadcastResponse
 // @Failure     401 {object} util.ErrorResponse "Youtube APIの認証エラー"
 // @Failure     403 {object} util.ErrorResponse "Youtube APIの権限エラー"
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
-	req := &request.CallbackAuthYoutubeBroadcastRequest{}
+	req := &types.CallbackAuthYoutubeBroadcastRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -339,7 +338,7 @@ func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.GuestBroadcastResponse{
+	res := &types.GuestBroadcastResponse{
 		Broadcast: service.NewGuestBroadcast(schedule, shop, coordinator).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -352,7 +351,7 @@ func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
 // @Router      /v1/guests/schedules/-/broadcasts/youtube [post]
 // @Security    cookieauth
 // @Accept      json
-// @Param       request body request.CreateYoutubeBroadcastRequest true "Youtube配信設定"
+// @Param       request body types.CreateYoutubeBroadcastRequest true "Youtube配信設定"
 // @Produce     json
 // @Success     204
 // @Failure     401 {object} util.ErrorResponse "Youtube APIの認証エラー"
@@ -360,7 +359,7 @@ func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
 // @Failure     404 {object} util.ErrorResponse "マルシェライブ配信が存在しない"
 // @Failure     412 {object} util.ErrorResponse "マルシェライブ配信前でない"
 func (h *handler) CreateYoutubeBroadcast(ctx *gin.Context) {
-	req := &request.CreateYoutubeBroadcastRequest{}
+	req := &types.CreateYoutubeBroadcastRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

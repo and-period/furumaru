@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -36,7 +35,7 @@ func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
 // @Param       name query string false "品目名(あいまい検索)" example("いも")
 // @Param       orders query string false "ソート(name,-name)" example("-name")
 // @Produce     json
-// @Success     200 {object} response.ProductTypesResponse
+// @Success     200 {object} types.ProductTypesResponse
 
 // @Summary     品目一覧取得
 // @Description 品目の一覧を取得します。商品種別ID指定時はその種別の品目のみ取得します。
@@ -49,7 +48,7 @@ func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
 // @Param       name query string false "品目名(あいまい検索)" example("いも")
 // @Param       orders query string false "ソート(name,-name)" example("-name")
 // @Produce     json
-// @Success     200 {object} response.ProductTypesResponse
+// @Success     200 {object} types.ProductTypesResponse
 func (h *handler) ListProductTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -85,9 +84,9 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 	if len(productTypes) == 0 {
-		res := &response.ProductTypesResponse{
-			ProductTypes: []*response.ProductType{},
-			Categories:   []*response.Category{},
+		res := &types.ProductTypesResponse{
+			ProductTypes: []*types.ProductType{},
+			Categories:   []*types.Category{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -99,7 +98,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductTypesResponse{
+	res := &types.ProductTypesResponse{
 		ProductTypes: service.NewProductTypes(productTypes).Response(),
 		Categories:   categories.Response(),
 		Total:        total,
@@ -133,13 +132,13 @@ func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTy
 // @Security    bearerauth
 // @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.CreateProductTypeRequest true "品目情報"
+// @Param       request body types.CreateProductTypeRequest true "品目情報"
 // @Produce     json
-// @Success     200 {object} response.ProductTypeResponse
+// @Success     200 {object} types.ProductTypeResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する品目名"
 func (h *handler) CreateProductType(ctx *gin.Context) {
-	req := &request.CreateProductTypeRequest{}
+	req := &types.CreateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -163,7 +162,7 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	}
 	productType := service.NewProductType(sproductType)
 
-	res := &response.ProductTypeResponse{
+	res := &types.ProductTypeResponse{
 		ProductType: productType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -177,14 +176,14 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 // @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       productTypeId path string true "品目ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateProductTypeRequest true "品目情報"
+// @Param       request body types.UpdateProductTypeRequest true "品目情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "品目が存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する品目名"
 func (h *handler) UpdateProductType(ctx *gin.Context) {
-	req := &request.UpdateProductTypeRequest{}
+	req := &types.UpdateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

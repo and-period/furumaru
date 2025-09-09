@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -236,7 +236,7 @@ func TestPromotion(t *testing.T) {
 				DiscountTotal: 1000,
 			},
 			expect: &Promotion{
-				Promotion: response.Promotion{
+				Promotion: types.Promotion{
 					ID:           "promotion-id",
 					ShopID:       "shop-id",
 					Status:       int32(PromotionStatusEnabled),
@@ -270,12 +270,12 @@ func TestPromotion_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		promotion *Promotion
-		expect    *response.Promotion
+		expect    *types.Promotion
 	}{
 		{
 			name: "success",
 			promotion: &Promotion{
-				Promotion: response.Promotion{
+				Promotion: types.Promotion{
 					ID:           "promotion-id",
 					Status:       int32(PromotionStatusEnabled),
 					Title:        "夏の採れたて野菜マルシェを開催!!",
@@ -292,7 +292,7 @@ func TestPromotion_Response(t *testing.T) {
 					UpdatedAt:    1640962800,
 				},
 			},
-			expect: &response.Promotion{
+			expect: &types.Promotion{
 				ID:           "promotion-id",
 				Status:       int32(PromotionStatusEnabled),
 				Title:        "夏の採れたて野菜マルシェを開催!!",
@@ -362,7 +362,7 @@ func TestPromotions(t *testing.T) {
 			},
 			expect: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						ShopID:       "shop-id",
 						Status:       int32(PromotionStatusEnabled),
@@ -403,7 +403,7 @@ func TestPromotions_ShopIDs(t *testing.T) {
 			name: "success",
 			promotions: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						ShopID:       "shop-id",
 						Status:       int32(PromotionStatusEnabled),
@@ -444,7 +444,7 @@ func TestPromotions_Map(t *testing.T) {
 			name: "success",
 			promotions: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
@@ -464,7 +464,7 @@ func TestPromotions_Map(t *testing.T) {
 			},
 			expect: map[string]*Promotion{
 				"promotion-id": {
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
@@ -497,13 +497,13 @@ func TestPromotions_Response(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions Promotions
-		expect     []*response.Promotion
+		expect     []*types.Promotion
 	}{
 		{
 			name: "success",
 			promotions: Promotions{
 				{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
@@ -521,7 +521,7 @@ func TestPromotions_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Promotion{
+			expect: []*types.Promotion{
 				{
 					ID:           "promotion-id",
 					Status:       int32(PromotionStatusEnabled),

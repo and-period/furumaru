@@ -4,9 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -34,13 +33,13 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
-// @Param				request body request.CheckoutRequest true "チェックアウト情報"
+// @Param				request body types.CheckoutRequest true "チェックアウト情報"
 // @Produce     json
-// @Success     200 {object} response.CheckoutResponse
+// @Success     200 {object} types.CheckoutResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) Checkout(ctx *gin.Context) {
-	req := &request.CheckoutRequest{}
+	req := &types.CheckoutRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -103,7 +102,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 // @Param       transactionId path string true "取引ID"
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.CheckoutStateResponse
+// @Success     200 {object} types.CheckoutStateResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "取引が見つからない"
@@ -117,7 +116,7 @@ func (h *handler) GetCheckoutState(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.CheckoutStateResponse{
+	res := &types.CheckoutStateResponse{
 		OrderID: orderID,
 		Status:  service.NewPaymentStatus(status).Response(),
 	}
@@ -141,7 +140,7 @@ func (h *handler) checkPaymentSystem(ctx *gin.Context, methodType service.Paymen
 type checkoutParams struct {
 	methodType service.PaymentMethodType
 	detail     *store.CheckoutDetail
-	creditCard *request.CheckoutCreditCard
+	creditCard *types.CheckoutCreditCard
 }
 
 func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
@@ -218,7 +217,7 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.CheckoutResponse{
+	res := &types.CheckoutResponse{
 		URL: redirectURL,
 	}
 	ctx.JSON(http.StatusOK, res)

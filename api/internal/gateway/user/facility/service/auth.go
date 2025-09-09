@@ -2,17 +2,17 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 )
 
 type Auth struct {
-	response.Auth
+	types.Auth
 }
 
 func NewAuth(userID string, auth *auth.Auth) *Auth {
 	return &Auth{
-		Auth: response.Auth{
+		Auth: types.Auth{
 			UserID:       userID,
 			AccessToken:  auth.AccessToken,
 			RefreshToken: auth.RefreshToken,
@@ -22,6 +22,6 @@ func NewAuth(userID string, auth *auth.Auth) *Auth {
 	}
 }
 
-func (a *Auth) Response() *response.Auth {
+func (a *Auth) Response() *types.Auth {
 	return &a.Auth
 }

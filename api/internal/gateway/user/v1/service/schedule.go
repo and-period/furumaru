@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 )
@@ -38,7 +38,7 @@ func (s ScheduleStatus) Response() int32 {
 }
 
 type Schedule struct {
-	response.Schedule
+	types.Schedule
 }
 
 type Schedules []*Schedule
@@ -46,7 +46,7 @@ type Schedules []*Schedule
 func NewSchedule(schedule *sentity.Schedule, broadcast *mentity.Broadcast) *Schedule {
 	distributionURL, archived, metadata := newBroadcastDetail(broadcast)
 	return &Schedule{
-		Schedule: response.Schedule{
+		Schedule: types.Schedule{
 			ID:                   schedule.ID,
 			CoordinatorID:        schedule.CoordinatorID,
 			Status:               NewScheduleStatus(schedule.Status, archived).Response(),
@@ -61,8 +61,8 @@ func NewSchedule(schedule *sentity.Schedule, broadcast *mentity.Broadcast) *Sche
 	}
 }
 
-func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.ScheduleDistributionMetadata) {
-	metadata := &response.ScheduleDistributionMetadata{
+func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *types.ScheduleDistributionMetadata) {
+	metadata := &types.ScheduleDistributionMetadata{
 		Subtitles: map[string]string{},
 	}
 	if broadcast == nil {
@@ -81,7 +81,7 @@ func newBroadcastDetail(broadcast *mentity.Broadcast) (string, bool, *response.S
 	}
 }
 
-func (s *Schedule) Response() *response.Schedule {
+func (s *Schedule) Response() *types.Schedule {
 	return &s.Schedule
 }
 
@@ -93,8 +93,8 @@ func NewSchedules(schedules sentity.Schedules, broadcasts map[string]*mentity.Br
 	return res
 }
 
-func (ss Schedules) Response() []*response.Schedule {
-	res := make([]*response.Schedule, len(ss))
+func (ss Schedules) Response() []*types.Schedule {
+	res := make([]*types.Schedule, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}

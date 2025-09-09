@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -43,7 +43,7 @@ func TestOrderExperiences(t *testing.T) {
 			},
 			experiences: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -53,7 +53,7 @@ func TestOrderExperiences(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -85,7 +85,7 @@ func TestOrderExperiences(t *testing.T) {
 			},
 			expect: OrderExperiences{
 				{
-					OrderExperience: response.OrderExperience{
+					OrderExperience: types.OrderExperience{
 						ExperienceID:          "experience-id",
 						AdultCount:            2,
 						AdultPrice:            1000,
@@ -97,7 +97,7 @@ func TestOrderExperiences(t *testing.T) {
 						PreschoolPrice:        400,
 						SeniorCount:           0,
 						SeniorPrice:           700,
-						Remarks: &response.OrderExperienceRemarks{
+						Remarks: &types.OrderExperienceRemarks{
 							Transportation: "電車",
 							RequestedDate:  "20240102",
 							RequestedTime:  "1830",
@@ -112,7 +112,7 @@ func TestOrderExperiences(t *testing.T) {
 			items: entity.OrderExperiences{},
 			experiences: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -122,7 +122,7 @@ func TestOrderExperiences(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -171,13 +171,13 @@ func TestOrderExperiences_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		experiences OrderExperiences
-		expect      []*response.OrderExperience
+		expect      []*types.OrderExperience
 	}{
 		{
 			name: "success",
 			experiences: OrderExperiences{
 				{
-					OrderExperience: response.OrderExperience{
+					OrderExperience: types.OrderExperience{
 						ExperienceID:          "experience-id",
 						AdultCount:            2,
 						AdultPrice:            1000,
@@ -189,7 +189,7 @@ func TestOrderExperiences_Response(t *testing.T) {
 						PreschoolPrice:        400,
 						SeniorCount:           0,
 						SeniorPrice:           700,
-						Remarks: &response.OrderExperienceRemarks{
+						Remarks: &types.OrderExperienceRemarks{
 							Transportation: "電車",
 							RequestedDate:  "20240102",
 							RequestedTime:  "1830",
@@ -198,7 +198,7 @@ func TestOrderExperiences_Response(t *testing.T) {
 					orderID: "order-id",
 				},
 			},
-			expect: []*response.OrderExperience{
+			expect: []*types.OrderExperience{
 				{
 					ExperienceID:          "experience-id",
 					AdultCount:            2,
@@ -211,7 +211,7 @@ func TestOrderExperiences_Response(t *testing.T) {
 					PreschoolPrice:        400,
 					SeniorCount:           0,
 					SeniorPrice:           700,
-					Remarks: &response.OrderExperienceRemarks{
+					Remarks: &types.OrderExperienceRemarks{
 						Transportation: "電車",
 						RequestedDate:  "20240102",
 						RequestedTime:  "1830",
@@ -246,7 +246,7 @@ func TestOrderExperienceRemarks(t *testing.T) {
 				RequestedTime:  jst.Date(0, 1, 1, 18, 30, 0, 0),
 			},
 			expect: &OrderExperienceRemarks{
-				OrderExperienceRemarks: response.OrderExperienceRemarks{
+				OrderExperienceRemarks: types.OrderExperienceRemarks{
 					Transportation: "transportation",
 					RequestedDate:  "20240102",
 					RequestedTime:  "1830",
@@ -261,7 +261,7 @@ func TestOrderExperienceRemarks(t *testing.T) {
 				RequestedTime:  time.Time{},
 			},
 			expect: &OrderExperienceRemarks{
-				OrderExperienceRemarks: response.OrderExperienceRemarks{
+				OrderExperienceRemarks: types.OrderExperienceRemarks{
 					Transportation: "transportation",
 					RequestedDate:  "",
 					RequestedTime:  "",
@@ -285,18 +285,18 @@ func TestOrderExperienceRemarks_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		remarks *OrderExperienceRemarks
-		expect  *response.OrderExperienceRemarks
+		expect  *types.OrderExperienceRemarks
 	}{
 		{
 			name: "success",
 			remarks: &OrderExperienceRemarks{
-				OrderExperienceRemarks: response.OrderExperienceRemarks{
+				OrderExperienceRemarks: types.OrderExperienceRemarks{
 					Transportation: "transportation",
 					RequestedDate:  "20240102",
 					RequestedTime:  "1830",
 				},
 			},
-			expect: &response.OrderExperienceRemarks{
+			expect: &types.OrderExperienceRemarks{
 				Transportation: "transportation",
 				RequestedDate:  "20240102",
 				RequestedTime:  "1830",

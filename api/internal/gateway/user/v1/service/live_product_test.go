@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -63,7 +63,7 @@ func TestLiveProduct(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &LiveProduct{
-				LiveProduct: response.LiveProduct{
+				LiveProduct: types.LiveProduct{
 					ProductID:    "product-id",
 					Name:         "新鮮なじゃがいも",
 					Price:        400,
@@ -88,12 +88,12 @@ func TestLiveProduct_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		live   *LiveProduct
-		expect *response.LiveProduct
+		expect *types.LiveProduct
 	}{
 		{
 			name: "success",
 			live: &LiveProduct{
-				LiveProduct: response.LiveProduct{
+				LiveProduct: types.LiveProduct{
 					ProductID:    "product-id",
 					Name:         "新鮮なじゃがいも",
 					Price:        400,
@@ -101,7 +101,7 @@ func TestLiveProduct_Response(t *testing.T) {
 					ThumbnailURL: "https://example.com/thumbnail01.png",
 				},
 			},
-			expect: &response.LiveProduct{
+			expect: &types.LiveProduct{
 				ProductID:    "product-id",
 				Name:         "新鮮なじゃがいも",
 				Price:        400,
@@ -175,7 +175,7 @@ func TestLiveProducts(t *testing.T) {
 			},
 			expect: LiveProducts{
 				{
-					LiveProduct: response.LiveProduct{
+					LiveProduct: types.LiveProduct{
 						ProductID:    "product-id",
 						Name:         "新鮮なじゃがいも",
 						Price:        400,
@@ -206,16 +206,16 @@ func TestLiveProducts_SortByIsSale(t *testing.T) {
 		{
 			name: "success",
 			products: LiveProducts{
-				{LiveProduct: response.LiveProduct{ProductID: "product-id01"}, isSale: true},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id02"}, isSale: false},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id03"}, isSale: true},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id04"}, isSale: false},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id01"}, isSale: true},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id02"}, isSale: false},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id03"}, isSale: true},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id04"}, isSale: false},
 			},
 			expect: []*LiveProduct{
-				{LiveProduct: response.LiveProduct{ProductID: "product-id01"}, isSale: true},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id03"}, isSale: true},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id02"}, isSale: false},
-				{LiveProduct: response.LiveProduct{ProductID: "product-id04"}, isSale: false},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id01"}, isSale: true},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id03"}, isSale: true},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id02"}, isSale: false},
+				{LiveProduct: types.LiveProduct{ProductID: "product-id04"}, isSale: false},
 			},
 		},
 	}
@@ -232,13 +232,13 @@ func TestLiveProducts_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		products LiveProducts
-		expect   []*response.LiveProduct
+		expect   []*types.LiveProduct
 	}{
 		{
 			name: "success",
 			products: LiveProducts{
 				{
-					LiveProduct: response.LiveProduct{
+					LiveProduct: types.LiveProduct{
 						ProductID:    "product-id",
 						Name:         "新鮮なじゃがいも",
 						Price:        400,
@@ -248,7 +248,7 @@ func TestLiveProducts_Response(t *testing.T) {
 					isSale: true,
 				},
 			},
-			expect: []*response.LiveProduct{
+			expect: []*types.LiveProduct{
 				{
 					ProductID:    "product-id",
 					Name:         "新鮮なじゃがいも",

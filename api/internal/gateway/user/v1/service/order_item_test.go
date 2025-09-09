@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -28,7 +28,7 @@ func TestOrderItem(t *testing.T) {
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
@@ -42,7 +42,7 @@ func TestOrderItem(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail01.png",
 							IsThumbnail: true,
@@ -67,7 +67,7 @@ func TestOrderItem(t *testing.T) {
 				},
 			},
 			expect: &OrderItem{
-				OrderItem: response.OrderItem{
+				OrderItem: types.OrderItem{
 					FulfillmentID: "fulfillment-id",
 					ProductID:     "product-id",
 					Price:         400,
@@ -90,12 +90,12 @@ func TestOrderItem_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		item   *OrderItem
-		expect *response.OrderItem
+		expect *types.OrderItem
 	}{
 		{
 			name: "success",
 			item: &OrderItem{
-				OrderItem: response.OrderItem{
+				OrderItem: types.OrderItem{
 					FulfillmentID: "fulfillment-id",
 					ProductID:     "product-id",
 					Price:         400,
@@ -103,7 +103,7 @@ func TestOrderItem_Response(t *testing.T) {
 				},
 				orderID: "order-id",
 			},
-			expect: &response.OrderItem{
+			expect: &types.OrderItem{
 				FulfillmentID: "fulfillment-id",
 				ProductID:     "product-id",
 				Price:         400,
@@ -141,7 +141,7 @@ func TestOrderItems(t *testing.T) {
 			},
 			products: map[int64]*Product{
 				1: {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						CoordinatorID:   "coordinator-id",
 						ProducerID:      "producer-id",
@@ -155,7 +155,7 @@ func TestOrderItems(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{
 								URL:         "https://and-period.jp/thumbnail01.png",
 								IsThumbnail: true,
@@ -182,7 +182,7 @@ func TestOrderItems(t *testing.T) {
 			},
 			expect: OrderItems{
 				{
-					OrderItem: response.OrderItem{
+					OrderItem: types.OrderItem{
 						FulfillmentID: "fulfillment-id",
 						ProductID:     "product-id",
 						Price:         400,
@@ -206,13 +206,13 @@ func TestOrderItems_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		items  OrderItems
-		expect []*response.OrderItem
+		expect []*types.OrderItem
 	}{
 		{
 			name: "success",
 			items: OrderItems{
 				{
-					OrderItem: response.OrderItem{
+					OrderItem: types.OrderItem{
 						FulfillmentID: "fulfillment-id",
 						ProductID:     "product-id",
 						Price:         400,
@@ -221,7 +221,7 @@ func TestOrderItems_Response(t *testing.T) {
 					orderID: "order-id",
 				},
 			},
-			expect: []*response.OrderItem{
+			expect: []*types.OrderItem{
 				{
 					FulfillmentID: "fulfillment-id",
 					ProductID:     "product-id",

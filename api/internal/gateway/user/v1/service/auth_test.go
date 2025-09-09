@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +25,7 @@ func TestAuth(t *testing.T) {
 				ExpiresIn:    3600,
 			},
 			expect: &Auth{
-				Auth: response.Auth{
+				Auth: types.Auth{
 					UserID:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
@@ -50,12 +50,12 @@ func TestAuth_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		auth   *Auth
-		expect *response.Auth
+		expect *types.Auth
 	}{
 		{
 			name: "success",
 			auth: &Auth{
-				Auth: response.Auth{
+				Auth: types.Auth{
 					UserID:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
@@ -63,7 +63,7 @@ func TestAuth_Response(t *testing.T) {
 					TokenType:    "Bearer",
 				},
 			},
-			expect: &response.Auth{
+			expect: &types.Auth{
 				UserID:       "user-id",
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",

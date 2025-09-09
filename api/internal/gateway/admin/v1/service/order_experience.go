@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 type OrderExperience struct {
-	response.OrderExperience
+	types.OrderExperience
 	orderID string
 }
 
 type OrderExperiences []*OrderExperience
 
 type OrderExperienceRemarks struct {
-	response.OrderExperienceRemarks
+	types.OrderExperienceRemarks
 }
 
 func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *OrderExperience {
@@ -34,7 +34,7 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 		seniorPrice = experience.PriceSenior
 	}
 	return &OrderExperience{
-		OrderExperience: response.OrderExperience{
+		OrderExperience: types.OrderExperience{
 			ExperienceID:          experienceID,
 			AdultCount:            item.AdultCount,
 			AdultPrice:            adultPrice,
@@ -52,7 +52,7 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 	}
 }
 
-func (e *OrderExperience) Response() *response.OrderExperience {
+func (e *OrderExperience) Response() *types.OrderExperience {
 	if e == nil {
 		return nil
 	}
@@ -71,8 +71,8 @@ func NewOrderExperiences(items entity.OrderExperiences, experiences map[int64]*E
 	return res
 }
 
-func (es OrderExperiences) Response() []*response.OrderExperience {
-	res := make([]*response.OrderExperience, 0, len(es))
+func (es OrderExperiences) Response() []*types.OrderExperience {
+	res := make([]*types.OrderExperience, 0, len(es))
 	for _, e := range es {
 		if e == nil {
 			continue
@@ -91,7 +91,7 @@ func NewOrderExperienceRemarks(remarks *entity.OrderExperienceRemarks) *OrderExp
 		requestedTime = jst.FormatHHMM(remarks.RequestedTime)
 	}
 	return &OrderExperienceRemarks{
-		response.OrderExperienceRemarks{
+		types.OrderExperienceRemarks{
 			Transportation: remarks.Transportation,
 			RequestedDate:  requestedDate,
 			RequestedTime:  requestedTime,
@@ -99,6 +99,6 @@ func NewOrderExperienceRemarks(remarks *entity.OrderExperienceRemarks) *OrderExp
 	}
 }
 
-func (r *OrderExperienceRemarks) Response() *response.OrderExperienceRemarks {
+func (r *OrderExperienceRemarks) Response() *types.OrderExperienceRemarks {
 	return &r.OrderExperienceRemarks
 }

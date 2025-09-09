@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/request"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/komoju/types"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -144,8 +144,8 @@ func (h *handler) paymentRefunded(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) newPaymentRequest(ctx *gin.Context) (*request.PaymentRequest, error) {
-	req := &request.PaymentRequest{}
+func (h *handler) newPaymentRequest(ctx *gin.Context) (*types.PaymentRequest, error) {
+	req := &types.PaymentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		slog.Warn("Failed to parse request", log.Error(err))
 		return nil, err
@@ -153,7 +153,7 @@ func (h *handler) newPaymentRequest(ctx *gin.Context) (*request.PaymentRequest, 
 	return req, nil
 }
 
-func (h *handler) newNotifyPaymentPayload(req *request.PaymentRequest, status entity.PaymentStatus) *store.NotifyPaymentPayload {
+func (h *handler) newNotifyPaymentPayload(req *types.PaymentRequest, status entity.PaymentStatus) *store.NotifyPaymentPayload {
 	return &store.NotifyPaymentPayload{
 		OrderID:   req.Payload.ExternalOrderNumber,
 		PaymentID: req.Payload.ID,

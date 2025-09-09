@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/gin-gonic/gin"
@@ -25,12 +24,12 @@ func (h *handler) contactReadRoutes(rg *gin.RouterGroup) {
 // @Router      /v1/contact-reads [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateContactReadRequest true "既読情報"
+// @Param       request body types.CreateContactReadRequest true "既読情報"
 // @Produce     json
-// @Success     200 {object} response.ContactReadResponse
+// @Success     200 {object} types.ContactReadResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateContactRead(ctx *gin.Context) {
-	req := &request.CreateContactReadRequest{}
+	req := &types.CreateContactReadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -48,7 +47,7 @@ func (h *handler) CreateContactRead(ctx *gin.Context) {
 	}
 	contactRead := service.NewContactRead(scontactRead)
 
-	res := &response.ContactReadResponse{
+	res := &types.ContactReadResponse{
 		ContactRead: contactRead.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

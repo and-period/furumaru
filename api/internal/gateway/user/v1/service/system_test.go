@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -109,7 +109,7 @@ func TestPaymentSystem(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &PaymentSystem{
-				PaymentSystem: response.PaymentSystem{
+				PaymentSystem: types.PaymentSystem{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 				},
@@ -130,17 +130,17 @@ func TestPaymentSystem_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		system *PaymentSystem
-		expect *response.PaymentSystem
+		expect *types.PaymentSystem
 	}{
 		{
 			name: "success",
 			system: &PaymentSystem{
-				PaymentSystem: response.PaymentSystem{
+				PaymentSystem: types.PaymentSystem{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 				},
 			},
-			expect: &response.PaymentSystem{
+			expect: &types.PaymentSystem{
 				MethodType: PaymentMethodTypeCreditCard.Response(),
 				Status:     PaymentSystemStatusInUse.Response(),
 			},
@@ -173,7 +173,7 @@ func TestPaymentSystems(t *testing.T) {
 			},
 			expect: PaymentSystems{
 				{
-					PaymentSystem: response.PaymentSystem{
+					PaymentSystem: types.PaymentSystem{
 						MethodType: PaymentMethodTypeCreditCard.Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 					},
@@ -195,19 +195,19 @@ func TestPaymentSystems_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		systems PaymentSystems
-		expect  []*response.PaymentSystem
+		expect  []*types.PaymentSystem
 	}{
 		{
 			name: "success",
 			systems: PaymentSystems{
 				{
-					PaymentSystem: response.PaymentSystem{
+					PaymentSystem: types.PaymentSystem{
 						MethodType: PaymentMethodTypeCreditCard.Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 					},
 				},
 			},
-			expect: []*response.PaymentSystem{
+			expect: []*types.PaymentSystem{
 				{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),

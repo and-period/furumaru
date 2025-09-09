@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
@@ -41,7 +41,7 @@ func (h *handler) filterAccessRelatedProducer(ctx *gin.Context) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.ProducersResponse
+// @Success     200 {object} types.ProducersResponse
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 	const (
@@ -76,7 +76,7 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducersResponse{
+	res := &types.ProducersResponse{
 		Producers:    service.NewProducers(producers).Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,

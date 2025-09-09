@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -85,7 +85,7 @@ func TestBroadcastViewerLog(t *testing.T) {
 			},
 			interval: time.Minute,
 			expect: &BroadcastViewerLog{
-				BroadcastViewerLog: response.BroadcastViewerLog{
+				BroadcastViewerLog: types.BroadcastViewerLog{
 					StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 					BroadcastID: "broadcast-id",
@@ -108,19 +108,19 @@ func TestBroadcastViewerLog_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		log    *BroadcastViewerLog
-		expect *response.BroadcastViewerLog
+		expect *types.BroadcastViewerLog
 	}{
 		{
 			name: "success",
 			log: &BroadcastViewerLog{
-				BroadcastViewerLog: response.BroadcastViewerLog{
+				BroadcastViewerLog: types.BroadcastViewerLog{
 					StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 					BroadcastID: "broadcast-id",
 					Total:       1,
 				},
 			},
-			expect: &response.BroadcastViewerLog{
+			expect: &types.BroadcastViewerLog{
 				StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 				EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 				BroadcastID: "broadcast-id",
@@ -160,7 +160,7 @@ func TestBroadcastViewerLogs(t *testing.T) {
 			},
 			expect: BroadcastViewerLogs{
 				{
-					BroadcastViewerLog: response.BroadcastViewerLog{
+					BroadcastViewerLog: types.BroadcastViewerLog{
 						StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 						EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						BroadcastID: "broadcast-id",
@@ -168,7 +168,7 @@ func TestBroadcastViewerLogs(t *testing.T) {
 					},
 				},
 				{
-					BroadcastViewerLog: response.BroadcastViewerLog{
+					BroadcastViewerLog: types.BroadcastViewerLog{
 						StartAt:     time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						EndAt:       time.Date(2021, 1, 1, 0, 2, 0, 0, time.UTC).Unix(),
 						BroadcastID: "broadcast-id",
@@ -200,13 +200,13 @@ func TestBroadcastViewerLogs_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		logs   BroadcastViewerLogs
-		expect []*response.BroadcastViewerLog
+		expect []*types.BroadcastViewerLog
 	}{
 		{
 			name: "success",
 			logs: BroadcastViewerLogs{
 				{
-					BroadcastViewerLog: response.BroadcastViewerLog{
+					BroadcastViewerLog: types.BroadcastViewerLog{
 						StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 						EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						BroadcastID: "broadcast-id",
@@ -214,7 +214,7 @@ func TestBroadcastViewerLogs_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.BroadcastViewerLog{
+			expect: []*types.BroadcastViewerLog{
 				{
 					StartAt:     time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:       time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),

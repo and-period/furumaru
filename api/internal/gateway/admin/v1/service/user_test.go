@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -114,7 +114,7 @@ func TestUser(t *testing.T) {
 				},
 			},
 			expect: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -131,7 +131,7 @@ func TestUser(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -188,7 +188,7 @@ func TestUser(t *testing.T) {
 				},
 			},
 			expect: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusGuest),
 					Registered:    false,
@@ -204,7 +204,7 @@ func TestUser(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "ゲスト",
 						LastnameKana:   "あんどどっと",
@@ -244,7 +244,7 @@ func TestUser(t *testing.T) {
 			},
 			address: nil,
 			expect: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -294,7 +294,7 @@ func TestUser_Address(t *testing.T) {
 		{
 			name: "success",
 			user: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -310,7 +310,7 @@ func TestUser_Address(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						AddressID:      "address-id",
 						Lastname:       "&.",
 						Firstname:      "購入者",
@@ -327,7 +327,7 @@ func TestUser_Address(t *testing.T) {
 				},
 			},
 			expect: &Address{
-				Address: response.Address{
+				Address: types.Address{
 					AddressID:      "address-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
@@ -362,12 +362,12 @@ func TestUser_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		user   *User
-		expect *response.User
+		expect *types.User
 	}{
 		{
 			name: "success",
 			user: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -383,7 +383,7 @@ func TestUser_Response(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -398,7 +398,7 @@ func TestUser_Response(t *testing.T) {
 					revisionID: 1,
 				},
 			},
-			expect: &response.User{
+			expect: &types.User{
 				ID:            "user-id",
 				Status:        int32(UserStatusVerified),
 				Registered:    true,
@@ -483,7 +483,7 @@ func TestUsers(t *testing.T) {
 			},
 			expect: Users{
 				{
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusVerified),
 						Registered:    true,
@@ -500,7 +500,7 @@ func TestUsers(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -538,7 +538,7 @@ func TestUsers_IDs(t *testing.T) {
 			name: "success",
 			users: Users{
 				{
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusGuest),
 						Registered:    false,
@@ -554,7 +554,7 @@ func TestUsers_IDs(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -592,7 +592,7 @@ func TestUsers_Map(t *testing.T) {
 			name: "success",
 			users: Users{
 				{
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusGuest),
 						Registered:    false,
@@ -608,7 +608,7 @@ func TestUsers_Map(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -626,7 +626,7 @@ func TestUsers_Map(t *testing.T) {
 			},
 			expect: map[string]*User{
 				"user-id": {
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusGuest),
 						Registered:    false,
@@ -642,7 +642,7 @@ func TestUsers_Map(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -673,13 +673,13 @@ func TestUsers_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		users  Users
-		expect []*response.User
+		expect []*types.User
 	}{
 		{
 			name: "success",
 			users: Users{
 				{
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusGuest),
 						Registered:    false,
@@ -695,7 +695,7 @@ func TestUsers_Response(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -711,7 +711,7 @@ func TestUsers_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.User{
+			expect: []*types.User{
 				{
 					ID:            "user-id",
 					Status:        int32(UserStatusGuest),
@@ -749,7 +749,7 @@ func TestUserToList(t *testing.T) {
 		{
 			name: "success",
 			user: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -765,7 +765,7 @@ func TestUserToList(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -787,7 +787,7 @@ func TestUserToList(t *testing.T) {
 				Discount:   0,
 			},
 			expect: &UserToList{
-				UserToList: response.UserToList{
+				UserToList: types.UserToList{
 					ID:                "user-id",
 					Lastname:          "&.",
 					Firstname:         "購入者",
@@ -803,7 +803,7 @@ func TestUserToList(t *testing.T) {
 		{
 			name: "success without order",
 			user: &User{
-				User: response.User{
+				User: types.User{
 					ID:            "user-id",
 					Status:        int32(UserStatusVerified),
 					Registered:    true,
@@ -819,7 +819,7 @@ func TestUserToList(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 				address: Address{
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -836,7 +836,7 @@ func TestUserToList(t *testing.T) {
 			},
 			order: nil,
 			expect: &UserToList{
-				UserToList: response.UserToList{
+				UserToList: types.UserToList{
 					ID:                "user-id",
 					Lastname:          "&.",
 					Firstname:         "購入者",
@@ -863,12 +863,12 @@ func TestUserToList_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		user   *UserToList
-		expect *response.UserToList
+		expect *types.UserToList
 	}{
 		{
 			name: "success",
 			user: &UserToList{
-				UserToList: response.UserToList{
+				UserToList: types.UserToList{
 					ID:                "user-id",
 					Lastname:          "&.",
 					Firstname:         "購入者",
@@ -880,7 +880,7 @@ func TestUserToList_Response(t *testing.T) {
 					PaymentTotalCount: 2,
 				},
 			},
-			expect: &response.UserToList{
+			expect: &types.UserToList{
 				ID:                "user-id",
 				Lastname:          "&.",
 				Firstname:         "購入者",
@@ -913,7 +913,7 @@ func TestUsersToList(t *testing.T) {
 			name: "success",
 			users: Users{
 				{
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusGuest),
 						Registered:    false,
@@ -929,7 +929,7 @@ func TestUsersToList(t *testing.T) {
 						UpdatedAt:     1640962800,
 					},
 					address: Address{
-						Address: response.Address{
+						Address: types.Address{
 							Lastname:       "&.",
 							Firstname:      "購入者",
 							LastnameKana:   "あんどどっと",
@@ -955,7 +955,7 @@ func TestUsersToList(t *testing.T) {
 			},
 			expect: UsersToList{
 				{
-					UserToList: response.UserToList{
+					UserToList: types.UserToList{
 						ID:                "user-id",
 						Lastname:          "&.",
 						Firstname:         "購入者",
@@ -983,13 +983,13 @@ func TestUsersToList_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		users  UsersToList
-		expect []*response.UserToList
+		expect []*types.UserToList
 	}{
 		{
 			name: "success",
 			users: UsersToList{
 				{
-					UserToList: response.UserToList{
+					UserToList: types.UserToList{
 						ID:                "user-id",
 						Lastname:          "&.",
 						Firstname:         "購入者",
@@ -1002,7 +1002,7 @@ func TestUsersToList_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.UserToList{
+			expect: []*types.UserToList{
 				{
 					ID:                "user-id",
 					Lastname:          "&.",

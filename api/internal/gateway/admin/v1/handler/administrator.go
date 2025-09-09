@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,7 @@ func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.AdministratorsResponse
+// @Success     200 {object} types.AdministratorsResponse
 func (h *handler) ListAdministrators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -62,7 +61,7 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AdministratorsResponse{
+	res := &types.AdministratorsResponse{
 		Administrators: service.NewAdministrators(admins).Response(),
 		Total:          total,
 	}
@@ -76,7 +75,7 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       adminId path string true "管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.AdministratorResponse
+// @Success     200 {object} types.AdministratorResponse
 // @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) GetAdministrator(ctx *gin.Context) {
 	in := &user.GetAdministratorInput{
@@ -88,7 +87,7 @@ func (h *handler) GetAdministrator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AdministratorResponse{
+	res := &types.AdministratorResponse{
 		Administrator: service.NewAdministrator(admin).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -100,13 +99,13 @@ func (h *handler) GetAdministrator(ctx *gin.Context) {
 // @Router      /v1/administrators [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateAdministratorRequest true "システム管理者情報"
+// @Param       request body types.CreateAdministratorRequest true "システム管理者情報"
 // @Produce     json
-// @Success     200 {object} response.AdministratorResponse
+// @Success     200 {object} types.AdministratorResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateAdministrator(ctx *gin.Context) {
-	req := &request.CreateAdministratorRequest{}
+	req := &types.CreateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -126,7 +125,7 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AdministratorResponse{
+	res := &types.AdministratorResponse{
 		Administrator: service.NewAdministrator(admin).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -139,13 +138,13 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateAdministratorRequest true "システム管理者情報"
+// @Param       request body types.UpdateAdministratorRequest true "システム管理者情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "システム管理者が存在しない"
 func (h *handler) UpdateAdministrator(ctx *gin.Context) {
-	req := &request.UpdateAdministratorRequest{}
+	req := &types.UpdateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -174,14 +173,14 @@ func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       adminId path string true "システム管理者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateAdministratorEmailRequest true "メールアドレス"
+// @Param       request body types.UpdateAdministratorEmailRequest true "メールアドレス"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "存在しないシステム管理者"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
-	req := &request.UpdateAdministratorEmailRequest{}
+	req := &types.UpdateAdministratorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

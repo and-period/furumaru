@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,7 @@ func (h *handler) productTagRoutes(rg *gin.RouterGroup) {
 // @Param       name query string false "商品タグ名(あいまい検索)" example("有機")
 // @Param       orders query string false "ソート(name,-name)" example("-name")
 // @Produce     json
-// @Success     200 {object} response.ProductTagsResponse
+// @Success     200 {object} types.ProductTagsResponse
 func (h *handler) ListProductTags(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -69,7 +68,7 @@ func (h *handler) ListProductTags(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductTagsResponse{
+	res := &types.ProductTagsResponse{
 		ProductTags: service.NewProductTags(productTags).Response(),
 		Total:       total,
 	}
@@ -101,13 +100,13 @@ func (h *handler) newProductTagOrders(ctx *gin.Context) ([]*store.ListProductTag
 // @Router      /v1/product-tags [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateProductTagRequest true "商品タグ情報"
+// @Param       request body types.CreateProductTagRequest true "商品タグ情報"
 // @Produce     json
-// @Success     200 {object} response.ProductTagResponse
+// @Success     200 {object} types.ProductTagResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する商品タグ名"
 func (h *handler) CreateProductTag(ctx *gin.Context) {
-	req := &request.CreateProductTagRequest{}
+	req := &types.CreateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -122,7 +121,7 @@ func (h *handler) CreateProductTag(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductTagResponse{
+	res := &types.ProductTagResponse{
 		ProductTag: service.NewProductTag(productTag).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -135,14 +134,14 @@ func (h *handler) CreateProductTag(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       productTagId path string true "商品タグID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateProductTagRequest true "商品タグ情報"
+// @Param       request body types.UpdateProductTagRequest true "商品タグ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "商品タグが存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する商品タグ名"
 func (h *handler) UpdateProductTag(ctx *gin.Context) {
-	req := &request.UpdateProductTagRequest{}
+	req := &types.UpdateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

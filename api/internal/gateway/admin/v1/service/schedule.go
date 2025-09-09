@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -39,14 +39,14 @@ func (s ScheduleStatus) Response() int32 {
 }
 
 type Schedule struct {
-	response.Schedule
+	types.Schedule
 }
 
 type Schedules []*Schedule
 
 func NewSchedule(schedule *entity.Schedule) *Schedule {
 	return &Schedule{
-		Schedule: response.Schedule{
+		Schedule: types.Schedule{
 			ID:              schedule.ID,
 			ShopID:          schedule.ShopID,
 			CoordinatorID:   schedule.CoordinatorID,
@@ -66,7 +66,7 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 	}
 }
 
-func (s *Schedule) Response() *response.Schedule {
+func (s *Schedule) Response() *types.Schedule {
 	return &s.Schedule
 }
 
@@ -78,8 +78,8 @@ func NewSchedules(schedules entity.Schedules) Schedules {
 	return res
 }
 
-func (ss Schedules) Response() []*response.Schedule {
-	res := make([]*response.Schedule, len(ss))
+func (ss Schedules) Response() []*types.Schedule {
+	res := make([]*types.Schedule, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}

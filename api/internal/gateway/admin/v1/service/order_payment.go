@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -38,7 +38,7 @@ const (
 )
 
 type OrderPayment struct {
-	response.OrderPayment
+	types.OrderPayment
 	orderID string
 }
 
@@ -133,7 +133,7 @@ func (s PaymentStatus) Response() int32 {
 
 func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayment {
 	return &OrderPayment{
-		OrderPayment: response.OrderPayment{
+		OrderPayment: types.OrderPayment{
 			TransactionID: payment.TransactionID,
 			MethodType:    NewPaymentMethodType(payment.MethodType).Response(),
 			Status:        NewPaymentStatus(payment.Status).Response(),
@@ -149,7 +149,7 @@ func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayme
 	}
 }
 
-func (p *OrderPayment) Response() *response.OrderPayment {
+func (p *OrderPayment) Response() *types.OrderPayment {
 	if p == nil {
 		return nil
 	}

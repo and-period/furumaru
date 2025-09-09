@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -35,7 +35,7 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Param       types query []int32 false "注文ステータス" collectionFormat(csv)
 // @Produce     json
-// @Success     200 {object} response.OrdersResponse
+// @Success     200 {object} types.OrdersResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListOrders(ctx *gin.Context) {
@@ -54,14 +54,14 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	types, err := util.GetQueryInt32s(ctx, "types")
+	otypes, err := util.GetQueryInt32s(ctx, "types")
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
 
-	orderTypes := make([]sentity.OrderType, len(types))
-	for i, t := range types {
+	orderTypes := make([]sentity.OrderType, len(otypes))
+	for i, t := range otypes {
 		orderTypes[i] = sentity.OrderType(t)
 	}
 	orderStatuses := []sentity.OrderStatus{
@@ -86,11 +86,11 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	}
 	if len(orders) == 0 {
-		res := &response.OrdersResponse{
-			Order:        []*response.Order{},
-			Coordinators: []*response.Coordinator{},
-			Promotions:   []*response.Promotion{},
-			Products:     []*response.Product{},
+		res := &types.OrdersResponse{
+			Order:        []*types.Order{},
+			Coordinators: []*types.Coordinator{},
+			Promotions:   []*types.Promotion{},
+			Products:     []*types.Product{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -124,7 +124,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.OrdersResponse{
+	res := &types.OrdersResponse{
 		Order:        service.NewOrders(orders, oproducts.MapByRevision()).Response(),
 		Coordinators: coordinators.Response(),
 		Promotions:   promotions.Response(),
@@ -142,7 +142,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 // @Param       orderId path string true "注文ID"
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.OrderResponse
+// @Success     200 {object} types.OrderResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "注文が見つからない"
 func (h *handler) GetOrder(ctx *gin.Context) {
@@ -178,7 +178,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.OrderResponse{
+	res := &types.OrderResponse{
 		Order:       order.Response(),
 		Coordinator: coordinator.Response(),
 		Promotion:   promotion.Response(),

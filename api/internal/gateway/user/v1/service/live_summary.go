@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type LiveSummary struct {
-	response.LiveSummary
+	types.LiveSummary
 }
 
 type LiveSummaries []*LiveSummary
 
 func NewLiveSummary(schedule *entity.Schedule, products entity.Products) *LiveSummary {
 	return &LiveSummary{
-		LiveSummary: response.LiveSummary{
+		LiveSummary: types.LiveSummary{
 			ScheduleID:    schedule.ID,
 			CoordinatorID: schedule.CoordinatorID,
 			Status:        NewScheduleStatus(schedule.Status, false).Response(),
@@ -27,7 +27,7 @@ func NewLiveSummary(schedule *entity.Schedule, products entity.Products) *LiveSu
 	}
 }
 
-func (l *LiveSummary) Response() *response.LiveSummary {
+func (l *LiveSummary) Response() *types.LiveSummary {
 	return &l.LiveSummary
 }
 
@@ -47,8 +47,8 @@ func (ls LiveSummaries) CoordinatorIDs() []string {
 	})
 }
 
-func (ls LiveSummaries) Response() []*response.LiveSummary {
-	res := make([]*response.LiveSummary, len(ls))
+func (ls LiveSummaries) Response() []*types.LiveSummary {
+	res := make([]*types.LiveSummary, len(ls))
 	for i := range ls {
 		res[i] = ls[i].Response()
 	}

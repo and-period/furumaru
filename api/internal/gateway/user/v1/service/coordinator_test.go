@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -18,7 +18,7 @@ func TestCoordinators(t *testing.T) {
 		coordinators uentity.Coordinators
 		shops        map[string]*sentity.Shop
 		expect       Coordinators
-		response     []*response.Coordinator
+		response     []*types.Coordinator
 	}{
 		{
 			name: "success",
@@ -106,7 +106,7 @@ func TestCoordinators(t *testing.T) {
 			},
 			expect: Coordinators{
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id01",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",
@@ -124,7 +124,7 @@ func TestCoordinators(t *testing.T) {
 					ShopID: "shop-id01",
 				},
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id02",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",
@@ -142,7 +142,7 @@ func TestCoordinators(t *testing.T) {
 					ShopID: "shop-id02",
 				},
 			},
-			response: []*response.Coordinator{
+			response: []*types.Coordinator{
 				{
 					ID:                "coordinator-id01",
 					MarcheName:        "&.マルシェ",
@@ -197,7 +197,7 @@ func TestCoordinators_Map(t *testing.T) {
 			name: "success",
 			coordinators: Coordinators{
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id01",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",
@@ -215,7 +215,7 @@ func TestCoordinators_Map(t *testing.T) {
 					ShopID: "shop-id01",
 				},
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id02",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",
@@ -235,7 +235,7 @@ func TestCoordinators_Map(t *testing.T) {
 			},
 			expect: map[string]*Coordinator{
 				"coordinator-id01": {
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id01",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",
@@ -253,7 +253,7 @@ func TestCoordinators_Map(t *testing.T) {
 					ShopID: "shop-id01",
 				},
 				"coordinator-id02": {
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id02",
 						MarcheName:        "&.マルシェ",
 						Username:          "&.農園",

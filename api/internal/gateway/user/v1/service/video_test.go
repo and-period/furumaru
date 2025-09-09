@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -57,7 +57,7 @@ func TestVideos(t *testing.T) {
 			},
 			expect: Videos{
 				{
-					Video: response.Video{
+					Video: types.Video{
 						ID:            "video-id",
 						CoordinatorID: "coordinator-id",
 						ProductIDs:    []string{"product-id"},
@@ -90,13 +90,13 @@ func TestVideos_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		videos Videos
-		expect []*response.Video
+		expect []*types.Video
 	}{
 		{
 			name: "success",
 			videos: Videos{
 				{
-					Video: response.Video{
+					Video: types.Video{
 						ID:            "video-id",
 						CoordinatorID: "coordinator-id",
 						ProductIDs:    []string{"product-id"},
@@ -109,7 +109,7 @@ func TestVideos_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Video{
+			expect: []*types.Video{
 				{
 					ID:            "video-id",
 					CoordinatorID: "coordinator-id",

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -36,7 +36,7 @@ func (h *handler) userRoutes(rg *gin.RouterGroup) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.UsersResponse
+// @Success     200 {object} types.UsersResponse
 func (h *handler) ListUsers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -110,8 +110,8 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 	if len(users) == 0 {
-		res := &response.UsersResponse{
-			Users: []*response.UserToList{},
+		res := &types.UsersResponse{
+			Users: []*types.UserToList{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -127,7 +127,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.UsersResponse{
+	res := &types.UsersResponse{
 		Users: service.NewUsersToList(users, orders.Map()).Response(),
 		Total: total,
 	}
@@ -141,7 +141,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       userId path string true "購入者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.UserResponse
+// @Success     200 {object} types.UserResponse
 // @Failure     404 {object} util.ErrorResponse "購入者が存在しない"
 func (h *handler) GetUser(ctx *gin.Context) {
 	user, err := h.getUser(ctx, util.GetParam(ctx, "userId"))
@@ -149,7 +149,7 @@ func (h *handler) GetUser(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.UserResponse{
+	res := &types.UserResponse{
 		User:    user.Response(),
 		Address: user.Address().Response(),
 	}
@@ -185,7 +185,7 @@ func (h *handler) DeleteUser(ctx *gin.Context) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.UserOrdersResponse
+// @Success     200 {object} types.UserOrdersResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "購入者が存在しない"
 func (h *handler) ListUserOrders(ctx *gin.Context) {
@@ -247,7 +247,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.UserOrdersResponse{
+	res := &types.UserOrdersResponse{
 		Orders:             service.NewUserOrders(orders).Response(),
 		OrderTotalCount:    total,
 		PaymentTotalCount:  aggregatedOrder.OrderCount,

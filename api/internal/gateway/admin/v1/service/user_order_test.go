@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -74,7 +74,7 @@ func TestUserOrder(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &UserOrder{
-				UserOrder: response.UserOrder{
+				UserOrder: types.UserOrder{
 					OrderID:   "order-id",
 					Status:    int32(PaymentStatusPaid),
 					SubTotal:  1980,
@@ -99,12 +99,12 @@ func TestUserOrder_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		order  *UserOrder
-		expect *response.UserOrder
+		expect *types.UserOrder
 	}{
 		{
 			name: "success",
 			order: &UserOrder{
-				UserOrder: response.UserOrder{
+				UserOrder: types.UserOrder{
 					OrderID:   "order-id",
 					Status:    int32(PaymentStatusPaid),
 					SubTotal:  1980,
@@ -113,7 +113,7 @@ func TestUserOrder_Response(t *testing.T) {
 					PaidAt:    1640962800,
 				},
 			},
-			expect: &response.UserOrder{
+			expect: &types.UserOrder{
 				OrderID:   "order-id",
 				Status:    int32(PaymentStatusPaid),
 				SubTotal:  1980,
@@ -197,7 +197,7 @@ func TestUserOrders(t *testing.T) {
 			},
 			expect: UserOrders{
 				{
-					UserOrder: response.UserOrder{
+					UserOrder: types.UserOrder{
 						OrderID:   "order-id",
 						Status:    int32(PaymentStatusPaid),
 						SubTotal:  1980,
@@ -223,13 +223,13 @@ func TestUserOrders_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		orders UserOrders
-		expect []*response.UserOrder
+		expect []*types.UserOrder
 	}{
 		{
 			name: "success",
 			orders: UserOrders{
 				{
-					UserOrder: response.UserOrder{
+					UserOrder: types.UserOrder{
 						OrderID:   "order-id",
 						Status:    int32(PaymentStatusPaid),
 						SubTotal:  1980,
@@ -239,7 +239,7 @@ func TestUserOrders_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.UserOrder{
+			expect: []*types.UserOrder{
 				{
 					OrderID:   "order-id",
 					Status:    int32(PaymentStatusPaid),

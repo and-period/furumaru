@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Producer struct {
-	response.Producer
+	types.Producer
 }
 
 type Producers []*Producer
@@ -19,7 +19,7 @@ func NewProducer(producer *uentity.Producer, shops sentity.Shops) *Producer {
 		coordinatorID = shops[0].CoordinatorID
 	}
 	return &Producer{
-		Producer: response.Producer{
+		Producer: types.Producer{
 			ID:                producer.ID,
 			Username:          producer.Username,
 			Profile:           producer.Profile,
@@ -35,7 +35,7 @@ func NewProducer(producer *uentity.Producer, shops sentity.Shops) *Producer {
 	}
 }
 
-func (p *Producer) Response() *response.Producer {
+func (p *Producer) Response() *types.Producer {
 	return &p.Producer
 }
 
@@ -55,8 +55,8 @@ func (ps Producers) Map() map[string]*Producer {
 	return res
 }
 
-func (ps Producers) Response() []*response.Producer {
-	res := make([]*response.Producer, len(ps))
+func (ps Producers) Response() []*types.Producer {
+	res := make([]*types.Producer, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -38,7 +37,7 @@ func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
 // @Param       until query integer false "検索終了日時（unixtime）" example("1640962800")
 // @Param       orders query string false "ソート(title,-title,publishedAt,-publishedAt)" example("-publishedAt")
 // @Produce     json
-// @Success     200 {object} response.NotificationsResponse
+// @Success     200 {object} types.NotificationsResponse
 func (h *handler) ListNotifications(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -84,9 +83,9 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		return
 	}
 	if len(notifications) == 0 {
-		res := &response.NotificationsResponse{
-			Notifications: []*response.Notification{},
-			Admins:        []*response.Admin{},
+		res := &types.NotificationsResponse{
+			Notifications: []*types.Notification{},
+			Admins:        []*types.Admin{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -113,7 +112,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	snotifications := service.NewNotifications(notifications)
 	snotifications.Fill(promotions.Map())
 
-	res := &response.NotificationsResponse{
+	res := &types.NotificationsResponse{
 		Notifications: snotifications.Response(),
 		Admins:        admins.Response(),
 		Total:         total,
@@ -128,7 +127,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       notificationId path string true "通知ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.NotificationResponse
+// @Success     200 {object} types.NotificationResponse
 // @Failure     404 {object} util.ErrorResponse "通知が存在しない"
 func (h *handler) GetNotification(ctx *gin.Context) {
 	in := &messenger.GetNotificationInput{
@@ -164,7 +163,7 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	snotification := service.NewNotification(notification)
 	snotification.Fill(promotion)
 
-	res := &response.NotificationResponse{
+	res := &types.NotificationResponse{
 		Notification: snotification.Response(),
 		Admin:        admin.Response(),
 	}
@@ -203,12 +202,12 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 // @Router      /v1/notifications [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateNotificationRequest true "通知情報"
+// @Param       request body types.CreateNotificationRequest true "通知情報"
 // @Produce     json
-// @Success     200 {object} response.NotificationResponse
+// @Success     200 {object} types.NotificationResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateNotification(ctx *gin.Context) {
-	req := &request.CreateNotificationRequest{}
+	req := &types.CreateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -236,7 +235,7 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.NotificationResponse{
+	res := &types.NotificationResponse{
 		Notification: service.NewNotification(notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -249,13 +248,13 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       notificationId path string true "通知ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateNotificationRequest true "通知情報"
+// @Param       request body types.UpdateNotificationRequest true "通知情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "通知が存在しない"
 func (h *handler) UpdateNotifcation(ctx *gin.Context) {
-	req := &request.UpdateNotificationRequest{}
+	req := &types.UpdateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type AuthUser struct {
-	response.AuthUser
+	types.AuthUser
 }
 
 func NewAuthUser(user *entity.User, notification *entity.UserNotification) *AuthUser {
 	res := &AuthUser{
-		AuthUser: response.AuthUser{
+		AuthUser: types.AuthUser{
 			ID:            user.ID,
 			Username:      user.Member.Username,
 			AccountID:     user.AccountID,
@@ -29,6 +29,6 @@ func NewAuthUser(user *entity.User, notification *entity.UserNotification) *Auth
 	return res
 }
 
-func (u *AuthUser) Response() *response.AuthUser {
+func (u *AuthUser) Response() *types.AuthUser {
 	return &u.AuthUser
 }

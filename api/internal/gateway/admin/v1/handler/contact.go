@@ -6,9 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -36,7 +35,7 @@ func (h *handler) contactRoutes(rg *gin.RouterGroup) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.ContactsResponse
+// @Success     200 {object} types.ContactsResponse
 func (h *handler) ListContacts(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -100,7 +99,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ContactsResponse{
+	res := &types.ContactsResponse{
 		Contacts:   service.NewContacts(contacts).Response(),
 		Threads:    service.NewThreads(threads).Response(),
 		Categories: contactCategories.Response(),
@@ -117,13 +116,13 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 // @Router      /v1/contacts [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateContactRequest true "お問い合わせ情報"
+// @Param       request body types.CreateContactRequest true "お問い合わせ情報"
 // @Produce     json
-// @Success     200 {object} response.ContactResponse
+// @Success     200 {object} types.ContactResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "お問い合わせの登録権限がない"
 func (h *handler) CreateContact(ctx *gin.Context) {
-	req := &request.CreateContactRequest{}
+	req := &types.CreateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -190,7 +189,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ContactResponse{
+	res := &types.ContactResponse{
 		Contact:   service.NewContact(scontact).Response(),
 		Category:  category.Response(),
 		Threads:   service.NewThreads(entity.Threads{sthread}).Response(),
@@ -208,7 +207,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ContactResponse
+// @Success     200 {object} types.ContactResponse
 // @Failure     404 {object} util.ErrorResponse "お問い合わせが存在しない"
 func (h *handler) GetContact(ctx *gin.Context) {
 	contactID := util.GetParam(ctx, "contactId")
@@ -252,7 +251,7 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		return
 	}
 
-	res := response.ContactResponse{
+	res := types.ContactResponse{
 		Contact:   contact.Response(),
 		Category:  category.Response(),
 		Threads:   threads.Response(),
@@ -269,13 +268,13 @@ func (h *handler) GetContact(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateContactRequest true "お問い合わせ情報"
+// @Param       request body types.UpdateContactRequest true "お問い合わせ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "お問い合わせが存在しない"
 func (h *handler) UpdateContact(ctx *gin.Context) {
-	req := &request.UpdateContactRequest{}
+	req := &types.UpdateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Coordinator struct {
-	response.Coordinator
+	types.Coordinator
 	ShopID string
 }
 
@@ -15,7 +15,7 @@ type Coordinators []*Coordinator
 
 func NewCoordinator(coordinator *uentity.Coordinator, shop *sentity.Shop) *Coordinator {
 	return &Coordinator{
-		Coordinator: response.Coordinator{
+		Coordinator: types.Coordinator{
 			ID:                coordinator.ID,
 			Username:          coordinator.Username,
 			Profile:           coordinator.Profile,
@@ -34,7 +34,7 @@ func NewCoordinator(coordinator *uentity.Coordinator, shop *sentity.Shop) *Coord
 	}
 }
 
-func (c *Coordinator) Response() *response.Coordinator {
+func (c *Coordinator) Response() *types.Coordinator {
 	return &c.Coordinator
 }
 
@@ -54,8 +54,8 @@ func (cs Coordinators) Map() map[string]*Coordinator {
 	return res
 }
 
-func (cs Coordinators) Response() []*response.Coordinator {
-	res := make([]*response.Coordinator, len(cs))
+func (cs Coordinators) Response() []*types.Coordinator {
+	res := make([]*types.Coordinator, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

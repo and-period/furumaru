@@ -3,12 +3,12 @@ package service
 import (
 	"sort"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type LiveProduct struct {
-	response.LiveProduct
+	types.LiveProduct
 	isSale bool
 }
 
@@ -30,7 +30,7 @@ func NewLiveProduct(product *entity.Product) *LiveProduct {
 		isSale = true
 	}
 	return &LiveProduct{
-		LiveProduct: response.LiveProduct{
+		LiveProduct: types.LiveProduct{
 			ProductID:    product.ID,
 			Name:         product.Name,
 			Price:        product.Price,
@@ -41,7 +41,7 @@ func NewLiveProduct(product *entity.Product) *LiveProduct {
 	}
 }
 
-func (p *LiveProduct) Response() *response.LiveProduct {
+func (p *LiveProduct) Response() *types.LiveProduct {
 	return &p.LiveProduct
 }
 
@@ -63,8 +63,8 @@ func (ps LiveProducts) SortByIsSale() LiveProducts {
 	return ps
 }
 
-func (ps LiveProducts) Response() []*response.LiveProduct {
-	res := make([]*response.LiveProduct, len(ps))
+func (ps LiveProducts) Response() []*types.LiveProduct {
+	res := make([]*types.LiveProduct, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

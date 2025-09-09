@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 )
 
 type LiveComment struct {
-	response.LiveComment
+	types.LiveComment
 }
 
 type LiveComments []*LiveComment
 
 func NewLiveComment(comment *mentity.BroadcastComment, user *User) *LiveComment {
 	res := &LiveComment{
-		LiveComment: response.LiveComment{
+		LiveComment: types.LiveComment{
 			ID:          comment.ID,
 			Comment:     comment.Content,
 			Disabled:    comment.Disabled,
@@ -30,7 +30,7 @@ func NewLiveComment(comment *mentity.BroadcastComment, user *User) *LiveComment 
 	return res
 }
 
-func (c *LiveComment) Response() *response.LiveComment {
+func (c *LiveComment) Response() *types.LiveComment {
 	return &c.LiveComment
 }
 
@@ -42,8 +42,8 @@ func NewLiveComments(comments mentity.BroadcastComments, users map[string]*User)
 	return res
 }
 
-func (cs LiveComments) Response() []*response.LiveComment {
-	res := make([]*response.LiveComment, len(cs))
+func (cs LiveComments) Response() []*types.LiveComment {
+	res := make([]*types.LiveComment, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

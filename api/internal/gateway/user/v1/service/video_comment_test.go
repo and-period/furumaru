@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
@@ -79,7 +79,7 @@ func TestVideoComments(t *testing.T) {
 			},
 			expect: VideoComments{
 				{
-					VideoComment: response.VideoComment{
+					VideoComment: types.VideoComment{
 						UserID:       "user-id",
 						Username:     "username",
 						AccountID:    "account-id",
@@ -89,7 +89,7 @@ func TestVideoComments(t *testing.T) {
 					},
 				},
 				{
-					VideoComment: response.VideoComment{
+					VideoComment: types.VideoComment{
 						UserID:       "",
 						Username:     "",
 						AccountID:    "",
@@ -116,13 +116,13 @@ func TestVideoComments_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		comments VideoComments
-		expect   []*response.VideoComment
+		expect   []*types.VideoComment
 	}{
 		{
 			name: "success",
 			comments: VideoComments{
 				{
-					VideoComment: response.VideoComment{
+					VideoComment: types.VideoComment{
 						UserID:       "user-id",
 						Username:     "username",
 						AccountID:    "account-id",
@@ -132,7 +132,7 @@ func TestVideoComments_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.VideoComment{
+			expect: []*types.VideoComment{
 				{
 					UserID:       "user-id",
 					Username:     "username",

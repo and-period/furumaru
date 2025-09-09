@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Coordinator struct {
-	response.Coordinator
+	types.Coordinator
 }
 
 type Coordinators []*Coordinator
 
 func NewCoordinator(coordinator *entity.Coordinator, shop *Shop) *Coordinator {
 	return &Coordinator{
-		Coordinator: response.Coordinator{
+		Coordinator: types.Coordinator{
 			ID:                coordinator.ID,
 			ShopID:            shop.GetID(),
 			Status:            NewAdminStatus(coordinator.Status).Response(),
@@ -45,7 +45,7 @@ func NewCoordinator(coordinator *entity.Coordinator, shop *Shop) *Coordinator {
 
 func (c *Coordinator) AuthUser() *AuthUser {
 	return &AuthUser{
-		AuthUser: response.AuthUser{
+		AuthUser: types.AuthUser{
 			AdminID:      c.ID,
 			ShopIDs:      []string{c.ShopID},
 			Type:         AdminTypeCoordinator.Response(),
@@ -56,7 +56,7 @@ func (c *Coordinator) AuthUser() *AuthUser {
 	}
 }
 
-func (c *Coordinator) Response() *response.Coordinator {
+func (c *Coordinator) Response() *types.Coordinator {
 	return &c.Coordinator
 }
 
@@ -86,8 +86,8 @@ func (cs Coordinators) Map() map[string]*Coordinator {
 	return res
 }
 
-func (cs Coordinators) Response() []*response.Coordinator {
-	res := make([]*response.Coordinator, len(cs))
+func (cs Coordinators) Response() []*types.Coordinator {
+	res := make([]*types.Coordinator, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

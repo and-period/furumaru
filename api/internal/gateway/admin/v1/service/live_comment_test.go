@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -51,7 +51,7 @@ func TestLiveComments(t *testing.T) {
 			},
 			users: map[string]*User{
 				"user-id": {
-					User: response.User{
+					User: types.User{
 						ID:            "user-id",
 						Status:        int32(UserStatusVerified),
 						Registered:    true,
@@ -71,7 +71,7 @@ func TestLiveComments(t *testing.T) {
 			},
 			expect: LiveComments{
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						ID:           "comment-id",
 						UserID:       "user-id",
 						Username:     "username",
@@ -83,7 +83,7 @@ func TestLiveComments(t *testing.T) {
 					},
 				},
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						ID:           "disabled-id",
 						UserID:       "user-id",
 						Username:     "username",
@@ -95,7 +95,7 @@ func TestLiveComments(t *testing.T) {
 					},
 				},
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						ID:           "unknown-id",
 						UserID:       "",
 						Username:     "",
@@ -123,13 +123,13 @@ func TestLiveComments_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		comments LiveComments
-		expect   []*response.LiveComment
+		expect   []*types.LiveComment
 	}{
 		{
 			name: "success",
 			comments: LiveComments{
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						ID:           "comment-id",
 						UserID:       "user-id",
 						Username:     "username",
@@ -141,7 +141,7 @@ func TestLiveComments_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.LiveComment{
+			expect: []*types.LiveComment{
 				{
 					ID:           "comment-id",
 					UserID:       "user-id",

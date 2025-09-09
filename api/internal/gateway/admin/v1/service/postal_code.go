@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type PostalCode struct {
-	response.PostalCode
+	types.PostalCode
 }
 
 func NewPostalCode(c *entity.PostalCode) *PostalCode {
 	return &PostalCode{
-		PostalCode: response.PostalCode{
+		PostalCode: types.PostalCode{
 			PostalCode:     c.PostalCode,
 			PrefectureCode: c.PrefectureCode,
 			Prefecture:     c.Prefecture,
@@ -21,6 +21,6 @@ func NewPostalCode(c *entity.PostalCode) *PostalCode {
 	}
 }
 
-func (c *PostalCode) Response() *response.PostalCode {
+func (c *PostalCode) Response() *types.PostalCode {
 	return &c.PostalCode
 }

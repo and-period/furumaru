@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -16,7 +16,7 @@ const (
 )
 
 type OrderRefund struct {
-	response.OrderRefund
+	types.OrderRefund
 	orderID string
 }
 
@@ -39,7 +39,7 @@ func (t RefundType) Response() int32 {
 
 func NewOrderRefund(payment *entity.OrderPayment) *OrderRefund {
 	return &OrderRefund{
-		OrderRefund: response.OrderRefund{
+		OrderRefund: types.OrderRefund{
 			Total:      payment.RefundTotal,
 			Type:       NewRefundType(payment.RefundType).Response(),
 			Reason:     payment.RefundReason,
@@ -61,7 +61,7 @@ func newOrderCanceledAt(payment *entity.OrderPayment) int64 {
 	}
 }
 
-func (r *OrderRefund) Response() *response.OrderRefund {
+func (r *OrderRefund) Response() *types.OrderRefund {
 	if r == nil {
 		return nil
 	}

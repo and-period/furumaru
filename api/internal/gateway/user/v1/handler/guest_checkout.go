@@ -5,9 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -32,14 +31,14 @@ func (h *handler) guestCheckoutRoutes(rg *gin.RouterGroup) {
 // @Router      /guests/checkouts/products [post]
 // @Security    cookieauth
 // @Accept      json
-// @Param       request body request.GuestCheckoutProductRequest true "ゲスト商品決済"
+// @Param       request body types.GuestCheckoutProductRequest true "ゲスト商品決済"
 // @Produce     json
-// @Success     200 {object} response.CheckoutResponse
+// @Success     200 {object} types.CheckoutResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "決済システムがメンテナンス中"
 // @Failure     412 {object} util.ErrorResponse "前提条件エラー(商品在庫が不足、無効なプロモーションなど...)"
 func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
-	req := &request.GuestCheckoutProductRequest{}
+	req := &types.GuestCheckoutProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -119,12 +118,12 @@ func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
 // @Security    cookieauth
 // @Param       experienceId path string true "体験ID"
 // @Accept      json
-// @Param       request body request.GuestCheckoutExperienceRequest true "ゲスト体験決済"
+// @Param       request body types.GuestCheckoutExperienceRequest true "ゲスト体験決済"
 // @Produce     json
-// @Success     200 {object} response.CheckoutResponse
+// @Success     200 {object} types.CheckoutResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
-	req := &request.GuestCheckoutExperienceRequest{}
+	req := &types.GuestCheckoutExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -173,7 +172,7 @@ func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
 	h.checkout(ctx, params)
 }
 
-func (h *handler) createGuestForCheckout(ctx context.Context, email string, address *request.GuestCheckoutAddress) (string, string, error) {
+func (h *handler) createGuestForCheckout(ctx context.Context, email string, address *types.GuestCheckoutAddress) (string, string, error) {
 	// ゲストユーザー登録
 	guestIn := &user.UpsertGuestInput{
 		Lastname:      address.Lastname,
@@ -215,7 +214,7 @@ func (h *handler) createGuestForCheckout(ctx context.Context, email string, addr
 // @Security    cookieauth
 // @Param       transactionId path string true "トランザクションID"
 // @Produce     json
-// @Success     200 {object} response.CheckoutStateResponse
+// @Success     200 {object} types.CheckoutStateResponse
 // @Failure     404 {object} util.ErrorResponse "トランザクションが見つからない"
 func (h *handler) GetGuestCheckoutState(ctx *gin.Context) {
 	in := &store.GetCheckoutStateInput{
@@ -227,7 +226,7 @@ func (h *handler) GetGuestCheckoutState(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.GuestCheckoutStateResponse{
+	res := &types.GuestCheckoutStateResponse{
 		OrderID: orderID,
 		Status:  service.NewPaymentStatus(status).Response(),
 	}

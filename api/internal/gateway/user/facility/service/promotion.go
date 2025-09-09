@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -27,7 +27,7 @@ const (
 )
 
 type Promotion struct {
-	response.Promotion
+	types.Promotion
 }
 
 type Promotions []*Promotion
@@ -83,7 +83,7 @@ func (t DiscountType) Response() int32 {
 
 func NewPromotion(promotion *entity.Promotion) *Promotion {
 	return &Promotion{
-		Promotion: response.Promotion{
+		Promotion: types.Promotion{
 			ID:           promotion.ID,
 			Title:        promotion.Title,
 			Description:  promotion.Description,
@@ -97,7 +97,7 @@ func NewPromotion(promotion *entity.Promotion) *Promotion {
 	}
 }
 
-func (p *Promotion) Response() *response.Promotion {
+func (p *Promotion) Response() *types.Promotion {
 	if p == nil {
 		return nil
 	}
@@ -112,8 +112,8 @@ func NewPromotions(promotions entity.Promotions) Promotions {
 	return res
 }
 
-func (ps Promotions) Response() []*response.Promotion {
-	res := make([]*response.Promotion, len(ps))
+func (ps Promotions) Response() []*types.Promotion {
+	res := make([]*types.Promotion, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

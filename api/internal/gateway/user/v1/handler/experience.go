@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -36,7 +36,7 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 // @Param       producerId query string false "生産者ID"
 // @Param       name query string false "体験名（部分一致検索）"
 // @Produce     json
-// @Success     200 {object} response.ExperiencesResponse
+// @Success     200 {object} types.ExperiencesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperiences(ctx *gin.Context) {
 	const (
@@ -105,7 +105,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 // @Param       coordinatorId query string false "コーディネーターID"
 // @Param       producerId query string false "生産者ID"
 // @Produce     json
-// @Success     200 {object} response.ExperiencesResponse
+// @Success     200 {object} types.ExperiencesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
 	const defaultRadius = 20
@@ -170,13 +170,13 @@ func (h *handler) ListExperiencesByGeolocation(ctx *gin.Context) {
 
 func (h *handler) newExperiencesResponse(
 	ctx context.Context, experiences entity.Experiences, total int64,
-) (*response.ExperiencesResponse, error) {
+) (*types.ExperiencesResponse, error) {
 	if len(experiences) == 0 {
-		res := &response.ExperiencesResponse{
-			Experiences:     []*response.Experience{},
-			Coordinators:    []*response.Coordinator{},
-			Producers:       []*response.Producer{},
-			ExperienceTypes: []*response.ExperienceType{},
+		res := &types.ExperiencesResponse{
+			Experiences:     []*types.Experience{},
+			Coordinators:    []*types.Coordinator{},
+			Producers:       []*types.Producer{},
+			ExperienceTypes: []*types.ExperienceType{},
 		}
 		return res, nil
 	}
@@ -208,7 +208,7 @@ func (h *handler) newExperiencesResponse(
 		return nil, err
 	}
 
-	res := &response.ExperiencesResponse{
+	res := &types.ExperiencesResponse{
 		Experiences:     service.NewExperiences(experiences, experienceRates.MapByExperienceID()).Response(),
 		Coordinators:    coordinators.Response(),
 		Producers:       producers.Response(),
@@ -224,7 +224,7 @@ func (h *handler) newExperiencesResponse(
 // @Router      /experiences/{experienceId} [get]
 // @Param       experienceId path string true "体験ID"
 // @Produce     json
-// @Success     200 {object} response.ExperienceResponse
+// @Success     200 {object} types.ExperienceResponse
 // @Failure     404 {object} util.ErrorResponse "体験が見つかりません"
 func (h *handler) GetExperience(ctx *gin.Context) {
 	experience, err := h.getExperience(ctx, ctx.Param("experienceId"))
@@ -256,7 +256,7 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperienceResponse{
+	res := &types.ExperienceResponse{
 		Experience:     experience.Response(),
 		Coordinator:    coordinator.Response(),
 		Producer:       producer.Response(),

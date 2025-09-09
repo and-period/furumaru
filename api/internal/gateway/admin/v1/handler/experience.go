@@ -7,9 +7,8 @@ import (
 	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -63,7 +62,7 @@ func (h *handler) filterAccessExperience(ctx *gin.Context) {
 // @Param       name query string false "体験名(あいまい検索)" example("農業体験")
 // @Param       producerId query string false "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ExperiencesResponse
+// @Success     200 {object} types.ExperiencesResponse
 func (h *handler) ListExperiences(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -96,11 +95,11 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		return
 	}
 	if len(experiences) == 0 {
-		res := &response.ExperiencesResponse{
-			Experiences:     []*response.Experience{},
-			Coordinators:    []*response.Coordinator{},
-			Producers:       []*response.Producer{},
-			ExperienceTypes: []*response.ExperienceType{},
+		res := &types.ExperiencesResponse{
+			Experiences:     []*types.Experience{},
+			Coordinators:    []*types.Coordinator{},
+			Producers:       []*types.Producer{},
+			ExperienceTypes: []*types.ExperienceType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -129,7 +128,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperiencesResponse{
+	res := &types.ExperiencesResponse{
 		Experiences:     service.NewExperiences(experiences).Response(),
 		Coordinators:    coordinators.Response(),
 		Producers:       producers.Response(),
@@ -146,7 +145,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       experienceId path string true "体験ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ExperienceResponse
+// @Success     200 {object} types.ExperienceResponse
 // @Failure     403 {object} util.ErrorResponse "体験の参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) GetExperience(ctx *gin.Context) {
@@ -179,7 +178,7 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperienceResponse{
+	res := &types.ExperienceResponse{
 		Experience:     experience.Response(),
 		Coordinator:    coordinator.Response(),
 		Producer:       producer.Response(),
@@ -194,13 +193,13 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 // @Router      /v1/experiences [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateExperienceRequest true "体験情報"
+// @Param       request body types.CreateExperienceRequest true "体験情報"
 // @Produce     json
-// @Success     200 {object} response.ExperienceResponse
+// @Success     200 {object} types.ExperienceResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "体験の登録権限がない"
 func (h *handler) CreateExperience(ctx *gin.Context) {
-	req := &request.CreateExperienceRequest{}
+	req := &types.CreateExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -296,7 +295,7 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperienceResponse{
+	res := &types.ExperienceResponse{
 		Experience:     service.NewExperience(experience).Response(),
 		Coordinator:    coordinator.Response(),
 		Producer:       producer.Response(),
@@ -312,14 +311,14 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       experienceId path string true "体験ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateExperienceRequest true "体験情報"
+// @Param       request body types.UpdateExperienceRequest true "体験情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "体験の更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "体験が存在しない"
 func (h *handler) UpdateExperience(ctx *gin.Context) {
-	req := &request.UpdateExperienceRequest{}
+	req := &types.UpdateExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

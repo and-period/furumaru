@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ func TestSetAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = &http.Request{Header: http.Header{}}
-	auth := &service.Auth{Auth: response.Auth{
+	auth := &service.Auth{Auth: types.Auth{
 		AdminID: "admin-id",
 		Type:    service.AdminTypeAdministrator.Response(),
 	}}
@@ -141,7 +141,7 @@ func TestFilterAccess(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctx, _ := gin.CreateTestContext(w)
 			ctx.Request = &http.Request{Header: http.Header{}}
-			auth := &service.Auth{Auth: response.Auth{
+			auth := &service.Auth{Auth: types.Auth{
 				AdminID: "admin-id",
 				Type:    int32(tt.role),
 			}}

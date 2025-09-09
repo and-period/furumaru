@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type OrderItem struct {
-	response.OrderItem
+	types.OrderItem
 	orderID string
 }
 
@@ -22,7 +22,7 @@ func NewOrderItem(item *entity.OrderItem, product *Product) *OrderItem {
 		price = product.Price
 	}
 	return &OrderItem{
-		OrderItem: response.OrderItem{
+		OrderItem: types.OrderItem{
 			FulfillmentID: item.FulfillmentID,
 			ProductID:     productID,
 			Price:         price,
@@ -32,7 +32,7 @@ func NewOrderItem(item *entity.OrderItem, product *Product) *OrderItem {
 	}
 }
 
-func (i *OrderItem) Response() *response.OrderItem {
+func (i *OrderItem) Response() *types.OrderItem {
 	return &i.OrderItem
 }
 
@@ -44,8 +44,8 @@ func NewOrderItems(items entity.OrderItems, products map[int64]*Product) OrderIt
 	return res
 }
 
-func (is OrderItems) Response() []*response.OrderItem {
-	res := make([]*response.OrderItem, len(is))
+func (is OrderItems) Response() []*types.OrderItem {
+	res := make([]*types.OrderItem, len(is))
 	for i := range is {
 		res[i] = is[i].Response()
 	}

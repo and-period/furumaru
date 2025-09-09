@@ -6,9 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -53,7 +52,7 @@ func (h *handler) filterAccessShipping(ctx *gin.Context) {
 // @Router      /v1/shippings/default [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.ShippingResponse
+// @Success     200 {object} types.ShippingResponse
 func (h *handler) GetDefaultShipping(ctx *gin.Context) {
 	in := &store.GetDefaultShippingInput{}
 	shipping, err := h.store.GetDefaultShipping(ctx, in)
@@ -61,7 +60,7 @@ func (h *handler) GetDefaultShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ShippingResponse{
+	res := &types.ShippingResponse{
 		Shipping: service.NewShipping(shipping).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -73,12 +72,12 @@ func (h *handler) GetDefaultShipping(ctx *gin.Context) {
 // @Router      /v1/shippings/default [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateDefaultShippingRequest true "デフォルト配送設定情報"
+// @Param       request body types.UpdateDefaultShippingRequest true "デフォルト配送設定情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
-	req := &request.UpdateDefaultShippingRequest{}
+	req := &types.UpdateDefaultShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -100,7 +99,7 @@ func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultShippingRate) []*store.UpdateDefaultShippingRate {
+func (h *handler) newShippingRatesForUpdateDefault(in []*types.UpdateDefaultShippingRate) []*store.UpdateDefaultShippingRate {
 	res := make([]*store.UpdateDefaultShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpdateDefaultShippingRate{
@@ -121,7 +120,7 @@ func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultSh
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.ShippingsResponse
+// @Success     200 {object} types.ShippingsResponse
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) ListShippings(ctx *gin.Context) {
 	const (
@@ -158,9 +157,9 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 	}
 
 	if len(shippings) > 0 {
-		res := &response.ShippingsResponse{
+		res := &types.ShippingsResponse{
 			Shippings:    service.NewShippings(shippings).Response(),
-			Coordinators: []*response.Coordinator{coordinator.Response()},
+			Coordinators: []*types.Coordinator{coordinator.Response()},
 			Total:        total,
 		}
 		ctx.JSON(http.StatusOK, res)
@@ -173,8 +172,8 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ShippingsResponse{
-		Shippings: []*response.Shipping{service.NewShipping(shipping).Response()},
+	res := &types.ShippingsResponse{
+		Shippings: []*types.Shipping{service.NewShipping(shipping).Response()},
 		Total:     1,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -188,7 +187,7 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 // @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ShippingResponse
+// @Success     200 {object} types.ShippingResponse
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 // @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) GetShipping(ctx *gin.Context) {
@@ -213,7 +212,7 @@ func (h *handler) GetShipping(ctx *gin.Context) {
 		h.notFound(ctx, errors.New("handler: not found"))
 		return
 	}
-	res := &response.ShippingResponse{
+	res := &types.ShippingResponse{
 		Shipping:    shipping.Response(),
 		Coordinator: coordinator.Response(),
 	}
@@ -227,13 +226,13 @@ func (h *handler) GetShipping(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.CreateShippingRequest true "配送設定情報"
+// @Param       request body types.CreateShippingRequest true "配送設定情報"
 // @Produce     json
-// @Success     200 {object} response.ShippingResponse
+// @Success     200 {object} types.ShippingResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) CreateShipping(ctx *gin.Context) {
-	req := &request.CreateShippingRequest{}
+	req := &types.CreateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -261,7 +260,7 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ShippingResponse{
+	res := &types.ShippingResponse{
 		Shipping:    service.NewShipping(shipping).Response(),
 		Coordinator: coordinator.Response(),
 	}
@@ -276,14 +275,14 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 // @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       shippingId path string true "配送設定ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateShippingRequest true "配送設定情報"
+// @Param       request body types.UpdateShippingRequest true "配送設定情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 // @Failure     404 {object} util.ErrorResponse "配送設定が存在しない"
 func (h *handler) UpdateShipping(ctx *gin.Context) {
-	req := &request.UpdateShippingRequest{}
+	req := &types.UpdateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -401,7 +400,7 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ShippingResponse
+// @Success     200 {object} types.ShippingResponse
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 // Deprecated
 func (h *handler) GetActiveShipping(ctx *gin.Context) {
@@ -418,7 +417,7 @@ func (h *handler) GetActiveShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ShippingResponse{
+	res := &types.ShippingResponse{
 		Shipping: service.NewShipping(shipping).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -430,14 +429,14 @@ func (h *handler) GetActiveShipping(ctx *gin.Context) {
 // @Router      /v1/coordinators/{coordinatorId}/shippings [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpsertShippingRequest true "配送設定情報"
+// @Param       request body types.UpsertShippingRequest true "配送設定情報"
 // @Param       coordinatorId path string true "コーディネータID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
 func (h *handler) UpsertShipping(ctx *gin.Context) {
-	req := &request.UpsertShippingRequest{}
+	req := &types.UpsertShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -482,7 +481,7 @@ func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.
 	return service.NewShipping(shipping), nil
 }
 
-func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []*store.CreateShippingRate {
+func (h *handler) newShippingRatesForCreate(in []*types.CreateShippingRate) []*store.CreateShippingRate {
 	res := make([]*store.CreateShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.CreateShippingRate{
@@ -494,7 +493,7 @@ func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []
 	return res
 }
 
-func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []*store.UpdateShippingRate {
+func (h *handler) newShippingRatesForUpdate(in []*types.UpdateShippingRate) []*store.UpdateShippingRate {
 	res := make([]*store.UpdateShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpdateShippingRate{
@@ -506,7 +505,7 @@ func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []
 	return res
 }
 
-func (h *handler) newShippingRatesForUpsert(in []*request.UpsertShippingRate) []*store.UpsertShippingRate {
+func (h *handler) newShippingRatesForUpsert(in []*types.UpsertShippingRate) []*store.UpsertShippingRate {
 	res := make([]*store.UpsertShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpsertShippingRate{

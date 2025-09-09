@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/shopspring/decimal"
@@ -105,7 +105,7 @@ func (t TopOrderPeriodType) Response() string {
 }
 
 type TopOrderValue struct {
-	response.TopOrderValue
+	types.TopOrderValue
 }
 
 func NewTopOrderValue(current, before int64) *TopOrderValue {
@@ -125,7 +125,7 @@ func NewTopOrderValue(current, before int64) *TopOrderValue {
 	}
 
 	return &TopOrderValue{
-		TopOrderValue: response.TopOrderValue{
+		TopOrderValue: types.TopOrderValue{
 			Value:      current,
 			Comparison: comparison,
 		},
@@ -134,26 +134,26 @@ func NewTopOrderValue(current, before int64) *TopOrderValue {
 
 func newEmptyTopOrderValue() *TopOrderValue {
 	return &TopOrderValue{
-		TopOrderValue: response.TopOrderValue{
+		TopOrderValue: types.TopOrderValue{
 			Value:      0,
 			Comparison: 0,
 		},
 	}
 }
 
-func (v *TopOrderValue) Response() *response.TopOrderValue {
+func (v *TopOrderValue) Response() *types.TopOrderValue {
 	return &v.TopOrderValue
 }
 
 type TopOrderSalesTrend struct {
-	response.TopOrderSalesTrend
+	types.TopOrderSalesTrend
 }
 
 type TopOrderSalesTrends []*TopOrderSalesTrend
 
 func NewTopOrderSalesTrend(aggregated *entity.AggregatedPeriodOrder, periodType TopOrderPeriodType) *TopOrderSalesTrend {
 	return &TopOrderSalesTrend{
-		TopOrderSalesTrend: response.TopOrderSalesTrend{
+		TopOrderSalesTrend: types.TopOrderSalesTrend{
 			Period:     periodType.String(aggregated.Period),
 			SalesTotal: aggregated.SalesTotal,
 		},
@@ -162,14 +162,14 @@ func NewTopOrderSalesTrend(aggregated *entity.AggregatedPeriodOrder, periodType 
 
 func newEmptyTopOrderSalesTrend(ts time.Time, periodType TopOrderPeriodType) *TopOrderSalesTrend {
 	return &TopOrderSalesTrend{
-		TopOrderSalesTrend: response.TopOrderSalesTrend{
+		TopOrderSalesTrend: types.TopOrderSalesTrend{
 			Period:     periodType.String(ts),
 			SalesTotal: 0,
 		},
 	}
 }
 
-func (t *TopOrderSalesTrend) Response() *response.TopOrderSalesTrend {
+func (t *TopOrderSalesTrend) Response() *types.TopOrderSalesTrend {
 	return &t.TopOrderSalesTrend
 }
 
@@ -190,8 +190,8 @@ func NewTopOrderSalesTrends(
 	return res
 }
 
-func (t TopOrderSalesTrends) Response() []*response.TopOrderSalesTrend {
-	res := make([]*response.TopOrderSalesTrend, len(t))
+func (t TopOrderSalesTrends) Response() []*types.TopOrderSalesTrend {
+	res := make([]*types.TopOrderSalesTrend, len(t))
 	for i := range t {
 		res[i] = t[i].Response()
 	}
@@ -199,7 +199,7 @@ func (t TopOrderSalesTrends) Response() []*response.TopOrderSalesTrend {
 }
 
 type TopOrderPayment struct {
-	response.TopOrderPayment
+	types.TopOrderPayment
 }
 
 type TopOrderPayments []*TopOrderPayment
@@ -213,7 +213,7 @@ func NewTopOrderPayment(payment *entity.AggregatedOrderPayment, total int64) *To
 	}
 
 	return &TopOrderPayment{
-		TopOrderPayment: response.TopOrderPayment{
+		TopOrderPayment: types.TopOrderPayment{
 			PaymentMethodType: NewPaymentMethodType(payment.PaymentMethodType).Response(),
 			OrderCount:        payment.OrderCount,
 			UserCount:         payment.UserCount,
@@ -223,7 +223,7 @@ func NewTopOrderPayment(payment *entity.AggregatedOrderPayment, total int64) *To
 	}
 }
 
-func (p *TopOrderPayment) Response() *response.TopOrderPayment {
+func (p *TopOrderPayment) Response() *types.TopOrderPayment {
 	return &p.TopOrderPayment
 }
 
@@ -236,8 +236,8 @@ func NewTopOrderPayments(payments entity.AggregatedOrderPayments) TopOrderPaymen
 	return res
 }
 
-func (p TopOrderPayments) Response() []*response.TopOrderPayment {
-	res := make([]*response.TopOrderPayment, len(p))
+func (p TopOrderPayments) Response() []*types.TopOrderPayment {
+	res := make([]*types.TopOrderPayment, len(p))
 	for i := range p {
 		res[i] = p[i].Response()
 	}

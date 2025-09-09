@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -49,7 +48,7 @@ func (h *handler) filterAccessVideoComment(ctx *gin.Context) {
 // @Param       end query integer false "検索終了日時（unixtime）" example("1640962800")
 // @Param       next query string false "次ページトークン" example("token123")
 // @Produce     json
-// @Success     200 {object} response.VideoCommentsResponse
+// @Success     200 {object} types.VideoCommentsResponse
 func (h *handler) ListVideoComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -89,8 +88,8 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 		return
 	}
 	if len(comments) == 0 {
-		res := &response.VideoCommentsResponse{
-			Comments: []*response.VideoComment{},
+		res := &types.VideoCommentsResponse{
+			Comments: []*types.VideoComment{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -102,7 +101,7 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideoCommentsResponse{
+	res := &types.VideoCommentsResponse{
 		Comments:  service.NewVideoComments(comments, users.Map()).Response(),
 		NextToken: token,
 	}
@@ -117,14 +116,14 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 // @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       commentId path string true "コメントID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateVideoCommentRequest true "コメント情報"
+// @Param       request body types.UpdateVideoCommentRequest true "コメント情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "コメントの更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "コメントが存在しない"
 func (h *handler) UpdateVideoComment(ctx *gin.Context) {
-	req := &request.UpdateVideoCommentRequest{}
+	req := &types.UpdateVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

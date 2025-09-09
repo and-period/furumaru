@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +31,7 @@ func TestLive(t *testing.T) {
 				UpdatedAt:  now,
 			},
 			expect: &Live{
-				Live: response.Live{
+				Live: types.Live{
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",
 					ProductIDs: []string{"product-id"},
@@ -56,12 +56,12 @@ func TestLive_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		live   *Live
-		expect *response.Live
+		expect *types.Live
 	}{
 		{
 			name: "success",
 			live: &Live{
-				Live: response.Live{
+				Live: types.Live{
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",
 					ProductIDs: []string{"product-id"},
@@ -70,7 +70,7 @@ func TestLive_Response(t *testing.T) {
 					EndAt:      1643641200,
 				},
 			},
-			expect: &response.Live{
+			expect: &types.Live{
 				ScheduleID: "schedule-id",
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
@@ -113,7 +113,7 @@ func TestLives(t *testing.T) {
 			},
 			expect: Lives{
 				{
-					Live: response.Live{
+					Live: types.Live{
 						ScheduleID: "schedule-id",
 						ProducerID: "producer-id",
 						ProductIDs: []string{"product-id"},
@@ -139,13 +139,13 @@ func TestLives_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		lives  Lives
-		expect []*response.Live
+		expect []*types.Live
 	}{
 		{
 			name: "success",
 			lives: Lives{
 				{
-					Live: response.Live{
+					Live: types.Live{
 						ScheduleID: "schedule-id",
 						ProducerID: "producer-id",
 						ProductIDs: []string{"product-id"},
@@ -155,7 +155,7 @@ func TestLives_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Live{
+			expect: []*types.Live{
 				{
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",

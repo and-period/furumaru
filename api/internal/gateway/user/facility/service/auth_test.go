@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/auth"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/stretchr/testify/assert"
 )
@@ -28,7 +28,7 @@ func TestNewAuth(t *testing.T) {
 				ExpiresIn:    3600,
 			},
 			expect: &Auth{
-				Auth: response.Auth{
+				Auth: types.Auth{
 					UserID:       "user-id",
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
@@ -53,7 +53,7 @@ func TestAuth_Response(t *testing.T) {
 
 	now := time.Now()
 	auth := &Auth{
-		Auth: response.Auth{
+		Auth: types.Auth{
 			UserID:       "user-id",
 			AccessToken:  "access-token",
 			RefreshToken: "refresh-token",
@@ -62,7 +62,7 @@ func TestAuth_Response(t *testing.T) {
 		},
 	}
 
-	expected := &response.Auth{
+	expected := &types.Auth{
 		UserID:       "user-id",
 		AccessToken:  "access-token",
 		RefreshToken: "refresh-token",

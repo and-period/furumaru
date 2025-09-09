@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type VideoComment struct {
-	response.VideoComment
+	types.VideoComment
 }
 
 type VideoComments []*VideoComment
 
 func NewVideoComment(comment *mentity.VideoComment, user *uentity.User) *VideoComment {
 	res := &VideoComment{
-		VideoComment: response.VideoComment{
+		VideoComment: types.VideoComment{
 			Comment:     comment.Content,
 			PublishedAt: comment.CreatedAt.Unix(),
 		},
@@ -29,7 +29,7 @@ func NewVideoComment(comment *mentity.VideoComment, user *uentity.User) *VideoCo
 	return res
 }
 
-func (c *VideoComment) Response() *response.VideoComment {
+func (c *VideoComment) Response() *types.VideoComment {
 	return &c.VideoComment
 }
 
@@ -44,8 +44,8 @@ func NewVideoComments(comments mentity.VideoComments, users map[string]*uentity.
 	return res
 }
 
-func (cs VideoComments) Response() []*response.VideoComment {
-	res := make([]*response.VideoComment, len(cs))
+func (cs VideoComments) Response() []*types.VideoComment {
+	res := make([]*types.VideoComment, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

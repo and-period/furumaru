@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -109,7 +109,7 @@ func TestPaymentSystem(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &PaymentSystem{
-				PaymentSystem: response.PaymentSystem{
+				PaymentSystem: types.PaymentSystem{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 					CreatedAt:  1640962800,
@@ -132,19 +132,19 @@ func TestPaymentSystem_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		system *PaymentSystem
-		expect *response.PaymentSystem
+		expect *types.PaymentSystem
 	}{
 		{
 			name: "success",
 			system: &PaymentSystem{
-				PaymentSystem: response.PaymentSystem{
+				PaymentSystem: types.PaymentSystem{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
 				},
 			},
-			expect: &response.PaymentSystem{
+			expect: &types.PaymentSystem{
 				MethodType: PaymentMethodTypeCreditCard.Response(),
 				Status:     PaymentSystemStatusInUse.Response(),
 				CreatedAt:  1640962800,
@@ -179,7 +179,7 @@ func TestPaymentSystems(t *testing.T) {
 			},
 			expect: PaymentSystems{
 				{
-					PaymentSystem: response.PaymentSystem{
+					PaymentSystem: types.PaymentSystem{
 						MethodType: PaymentMethodTypeCreditCard.Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 						CreatedAt:  1640962800,
@@ -203,13 +203,13 @@ func TestPaymentSystems_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		systems PaymentSystems
-		expect  []*response.PaymentSystem
+		expect  []*types.PaymentSystem
 	}{
 		{
 			name: "success",
 			systems: PaymentSystems{
 				{
-					PaymentSystem: response.PaymentSystem{
+					PaymentSystem: types.PaymentSystem{
 						MethodType: PaymentMethodTypeCreditCard.Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 						CreatedAt:  1640962800,
@@ -217,7 +217,7 @@ func TestPaymentSystems_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.PaymentSystem{
+			expect: []*types.PaymentSystem{
 				{
 					MethodType: PaymentMethodTypeCreditCard.Response(),
 					Status:     PaymentSystemStatusInUse.Response(),

@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -29,7 +29,7 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Produce     json
-// @Success     200 {object} response.ProducersResponse
+// @Success     200 {object} types.ProducersResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProducers(ctx *gin.Context) {
 	const (
@@ -58,8 +58,8 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		return
 	}
 	if len(producers) == 0 {
-		res := &response.ProducersResponse{
-			Producers: []*response.Producer{},
+		res := &types.ProducersResponse{
+			Producers: []*types.Producer{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -71,7 +71,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducersResponse{
+	res := &types.ProducersResponse{
 		Producers: service.NewProducers(producers, shops.GroupByProducerID()).Response(),
 		Total:     total,
 	}
@@ -84,7 +84,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 // @Router      /producers/{producerId} [get]
 // @Param       producerId path string true "生産者ID"
 // @Produce     json
-// @Success     200 {object} response.ProducerResponse
+// @Success     200 {object} types.ProducerResponse
 // @Failure     404 {object} util.ErrorResponse "生産者が見つからない"
 func (h *handler) GetProducer(ctx *gin.Context) {
 	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
@@ -142,7 +142,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducerResponse{
+	res := &types.ProducerResponse{
 		Producer:    producer.Response(),
 		Lives:       lives.Response(),
 		Archives:    archives.Response(),

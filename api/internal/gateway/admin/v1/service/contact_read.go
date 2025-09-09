@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
 type ContactRead struct {
-	response.ContactRead
+	types.ContactRead
 }
 
 type ContactReads []*ContactRead
 
 func NewContactRead(contactRead *entity.ContactRead) *ContactRead {
 	return &ContactRead{
-		ContactRead: response.ContactRead{
+		ContactRead: types.ContactRead{
 			ID:        contactRead.ID,
 			ContactID: contactRead.ContactID,
 			UserID:    contactRead.UserID,
@@ -25,7 +25,7 @@ func NewContactRead(contactRead *entity.ContactRead) *ContactRead {
 	}
 }
 
-func (c *ContactRead) Response() *response.ContactRead {
+func (c *ContactRead) Response() *types.ContactRead {
 	return &c.ContactRead
 }
 
@@ -37,8 +37,8 @@ func NewContactReads(contactReads entity.ContactReads) ContactReads {
 	return res
 }
 
-func (cs ContactReads) Response() []*response.ContactRead {
-	res := make([]*response.ContactRead, len(cs))
+func (cs ContactReads) Response() []*types.ContactRead {
+	res := make([]*types.ContactRead, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}
