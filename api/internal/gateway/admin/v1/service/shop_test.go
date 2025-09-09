@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +20,7 @@ func TestShop_GetID(t *testing.T) {
 		{
 			name: "success",
 			shop: &Shop{
-				Shop: response.Shop{
+				Shop: types.Shop{
 					ID:             "shop-id",
 					Name:           "テスト店舗",
 					CoordinatorID:  "coordinator-id",
@@ -54,7 +54,7 @@ func TestShops(t *testing.T) {
 		name     string
 		shops    entity.Shops
 		expect   Shops
-		response []*response.Shop
+		response []*types.Shop
 	}{
 		{
 			name: "success",
@@ -73,7 +73,7 @@ func TestShops(t *testing.T) {
 			},
 			expect: Shops{
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -85,7 +85,7 @@ func TestShops(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Shop{
+			response: []*types.Shop{
 				{
 					ID:             "shop-id",
 					Name:           "テスト店舗",
@@ -121,7 +121,7 @@ func TestShops_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			shops: Shops{
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -133,7 +133,7 @@ func TestShops_CoordinatorIDs(t *testing.T) {
 					},
 				},
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -168,7 +168,7 @@ func TestShops_ProductTypeIDs(t *testing.T) {
 			name: "success",
 			shops: Shops{
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -180,7 +180,7 @@ func TestShops_ProductTypeIDs(t *testing.T) {
 					},
 				},
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -215,7 +215,7 @@ func TestShops_MapByCoordinatorID(t *testing.T) {
 			name: "success",
 			shops: Shops{
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -227,7 +227,7 @@ func TestShops_MapByCoordinatorID(t *testing.T) {
 					},
 				},
 				{
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",
@@ -241,7 +241,7 @@ func TestShops_MapByCoordinatorID(t *testing.T) {
 			},
 			expect: map[string]*Shop{
 				"coordinator-id": {
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id",
 						Name:           "テスト店舗",
 						CoordinatorID:  "coordinator-id",

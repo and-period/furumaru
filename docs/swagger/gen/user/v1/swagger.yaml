@@ -1,6 +1,16 @@
 components:
     schemas:
-        request.AddCartItemRequest:
+        time.Weekday:
+            type: integer
+            x-enum-varnames:
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
+        types.AddCartItemRequest:
             properties:
                 productId:
                     description: 商品ID
@@ -12,895 +22,7 @@ components:
             required:
                 - productId
             type: object
-        request.CheckoutCreditCard:
-            description: クレジットカード決済情報
-            properties:
-                month:
-                    description: 有効期限（月）
-                    maximum: 12
-                    minimum: 1
-                    type: integer
-                name:
-                    description: カード名義
-                    type: string
-                number:
-                    description: カード番号
-                    type: string
-                verificationValue:
-                    description: セキュリティコード
-                    maxLength: 4
-                    minLength: 3
-                    type: string
-                year:
-                    description: 有効期限（年）
-                    maximum: 2100
-                    minimum: 2000
-                    type: integer
-            required:
-                - name
-                - number
-            type: object
-        request.CheckoutExperienceRequest:
-            properties:
-                adultCount:
-                    description: 大人人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                billingAddressId:
-                    description: 請求先住所ID
-                    type: string
-                callbackUrl:
-                    description: 決済完了後のリダイレクト先URL
-                    type: string
-                creditCard:
-                    $ref: '#/components/schemas/request.CheckoutCreditCard'
-                elementarySchoolCount:
-                    description: 小学生人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                juniorHighSchoolCount:
-                    description: 中学生人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                paymentMethod:
-                    description: 支払い方法
-                    type: integer
-                preschoolCount:
-                    description: 幼児人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                promotionCode:
-                    description: プロモーションコード
-                    type: string
-                requestId:
-                    description: 支払いキー(重複判定用)
-                    type: string
-                requestedDate:
-                    description: 体験希望日
-                    type: string
-                requestedTime:
-                    description: 体験希望時間
-                    type: string
-                seniorCount:
-                    description: シニア人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                total:
-                    description: 支払い合計金額（誤り検出用）
-                    minimum: 0
-                    type: integer
-                transportation:
-                    description: 交通手段
-                    maxLength: 256
-                    type: string
-            required:
-                - billingAddressId
-                - callbackUrl
-                - paymentMethod
-                - requestId
-            type: object
-        request.CheckoutProductRequest:
-            properties:
-                billingAddressId:
-                    description: 請求先住所ID
-                    type: string
-                boxNumber:
-                    description: 箱の通番（箱単位で購入する場合）
-                    minimum: 0
-                    type: integer
-                callbackUrl:
-                    description: 決済完了後のリダイレクト先URL
-                    type: string
-                coordinatorId:
-                    description: コーディネータID
-                    type: string
-                creditCard:
-                    $ref: '#/components/schemas/request.CheckoutCreditCard'
-                paymentMethod:
-                    description: 支払い方法
-                    type: integer
-                promotionCode:
-                    description: プロモーションコード
-                    type: string
-                requestId:
-                    description: 支払いキー(重複判定用)
-                    type: string
-                shippingAddressId:
-                    description: 配送先住所ID
-                    type: string
-                total:
-                    description: 支払い合計金額（誤り検出用）
-                    minimum: 0
-                    type: integer
-            required:
-                - billingAddressId
-                - callbackUrl
-                - coordinatorId
-                - paymentMethod
-                - requestId
-                - shippingAddressId
-            type: object
-        request.CreateAddressRequest:
-            properties:
-                addressLine1:
-                    description: 町名・番地
-                    maxLength: 64
-                    type: string
-                addressLine2:
-                    description: ビル名・号室など
-                    maxLength: 64
-                    type: string
-                city:
-                    description: 市区町村
-                    maxLength: 32
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                isDefault:
-                    description: デフォルト設定フラグ
-                    type: boolean
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                postalCode:
-                    description: 郵便番号
-                    maxLength: 16
-                    type: string
-                prefectureCode:
-                    description: 都道府県
-                    maximum: 47
-                    minimum: 1
-                    type: integer
-            required:
-                - addressLine1
-                - city
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - phoneNumber
-                - postalCode
-                - prefectureCode
-            type: object
-        request.CreateAuthUserRequest:
-            properties:
-                accountId:
-                    description: ユーザーID(検索名)
-                    maxLength: 32
-                    type: string
-                email:
-                    description: メールアドレス
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                password:
-                    description: パスワード
-                    maxLength: 32
-                    minLength: 8
-                    type: string
-                passwordConfirmation:
-                    description: パスワード (確認用)
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                username:
-                    description: ユーザー名(表示名)
-                    maxLength: 32
-                    type: string
-            required:
-                - accountId
-                - email
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - passwordConfirmation
-                - phoneNumber
-                - username
-            type: object
-        request.CreateAuthUserWithGoogleRequest:
-            properties:
-                accountId:
-                    description: ユーザーID(検索名)
-                    maxLength: 32
-                    minLength: 4
-                    type: string
-                code:
-                    description: 認証コード
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                nonce:
-                    description: セキュア文字列（リプレイアタック対策）
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                redirectUri:
-                    description: リダイレクトURI
-                    type: string
-                username:
-                    description: ユーザー名(表示名)
-                    maxLength: 32
-                    type: string
-            required:
-                - accountId
-                - code
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - nonce
-                - phoneNumber
-                - redirectUri
-                - username
-            type: object
-        request.CreateAuthUserWithLINERequest:
-            properties:
-                accountId:
-                    description: ユーザーID(検索名)
-                    maxLength: 32
-                    minLength: 4
-                    type: string
-                code:
-                    description: 認証コード
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                nonce:
-                    description: セキュア文字列（リプレイアタック対策）
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                redirectUri:
-                    description: リダイレクトURI
-                    type: string
-                username:
-                    description: ユーザー名(表示名)
-                    maxLength: 32
-                    type: string
-            required:
-                - accountId
-                - code
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - nonce
-                - phoneNumber
-                - redirectUri
-                - username
-            type: object
-        request.CreateExperienceReviewRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 2000
-                    type: string
-                rate:
-                    description: 評価
-                    maximum: 5
-                    minimum: 1
-                    type: integer
-                title:
-                    description: タイトル
-                    maxLength: 64
-                    type: string
-            required:
-                - comment
-                - title
-            type: object
-        request.CreateGuestLiveCommentRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 200
-                    type: string
-            required:
-                - comment
-            type: object
-        request.CreateGuestVideoCommentRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 200
-                    type: string
-            required:
-                - comment
-            type: object
-        request.CreateLiveCommentRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 200
-                    type: string
-            required:
-                - comment
-            type: object
-        request.CreateProductReviewRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 2000
-                    type: string
-                rate:
-                    description: 評価
-                    maximum: 5
-                    minimum: 1
-                    type: integer
-                title:
-                    description: タイトル
-                    maxLength: 64
-                    type: string
-            required:
-                - comment
-                - title
-            type: object
-        request.CreateSpotRequest:
-            properties:
-                description:
-                    description: 説明
-                    maxLength: 2000
-                    type: string
-                latitude:
-                    description: 緯度
-                    maximum: 90
-                    minimum: -90
-                    type: number
-                longitude:
-                    description: 経度
-                    maximum: 180
-                    minimum: -180
-                    type: number
-                name:
-                    description: スポット名
-                    maxLength: 64
-                    type: string
-                spotTypeId:
-                    description: スポット種別ID
-                    type: string
-                thumbnailUrl:
-                    description: サムネイルURL
-                    type: string
-            required:
-                - latitude
-                - longitude
-                - name
-                - spotTypeId
-            type: object
-        request.CreateVideoCommentRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 200
-                    type: string
-            required:
-                - comment
-            type: object
-        request.ForgotAuthPasswordRequest:
-            properties:
-                email:
-                    description: メールアドレス
-                    type: string
-            required:
-                - email
-            type: object
-        request.GetUploadURLRequest:
-            properties:
-                fileType:
-                    description: ファイル種別
-                    type: string
-            required:
-                - fileType
-            type: object
-        request.GuestCheckoutAddress:
-            description: 請求先住所
-            properties:
-                addressLine1:
-                    description: 町名・番地
-                    maxLength: 64
-                    type: string
-                addressLine2:
-                    description: ビル名・号室など
-                    maxLength: 64
-                    type: string
-                city:
-                    description: 市区町村
-                    maxLength: 32
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                postalCode:
-                    description: 郵便番号
-                    maxLength: 16
-                    type: string
-                prefectureCode:
-                    description: 都道府県
-                    maximum: 47
-                    minimum: 1
-                    type: integer
-            required:
-                - addressLine1
-                - city
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - phoneNumber
-                - postalCode
-                - prefectureCode
-            type: object
-        request.GuestCheckoutExperienceRequest:
-            properties:
-                adultCount:
-                    description: 大人人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                billingAddress:
-                    $ref: '#/components/schemas/request.GuestCheckoutAddress'
-                callbackUrl:
-                    description: 決済完了後のリダイレクト先URL
-                    type: string
-                creditCard:
-                    $ref: '#/components/schemas/request.CheckoutCreditCard'
-                elementarySchoolCount:
-                    description: 小学生人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                email:
-                    description: メールアドレス
-                    type: string
-                juniorHighSchoolCount:
-                    description: 中学生人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                paymentMethod:
-                    description: 支払い方法
-                    type: integer
-                preschoolCount:
-                    description: 幼児人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                promotionCode:
-                    description: プロモーションコード
-                    type: string
-                requestId:
-                    description: 支払いキー(重複判定用)
-                    type: string
-                requestedDate:
-                    description: 体験希望日
-                    type: string
-                requestedTime:
-                    description: 体験希望時間
-                    type: string
-                seniorCount:
-                    description: シニア人数
-                    maximum: 99
-                    minimum: 0
-                    type: integer
-                total:
-                    description: 支払い合計金額（誤り検出用）
-                    minimum: 0
-                    type: integer
-                transportation:
-                    description: 交通手段
-                    maxLength: 256
-                    type: string
-            required:
-                - billingAddress
-                - callbackUrl
-                - email
-                - paymentMethod
-                - requestId
-            type: object
-        request.GuestCheckoutProductRequest:
-            properties:
-                billingAddress:
-                    $ref: '#/components/schemas/request.GuestCheckoutAddress'
-                boxNumber:
-                    description: 箱の通番（箱単位で購入する場合）
-                    minimum: 0
-                    type: integer
-                callbackUrl:
-                    description: 決済完了後のリダイレクト先URL
-                    type: string
-                coordinatorId:
-                    description: コーディネータID
-                    type: string
-                creditCard:
-                    $ref: '#/components/schemas/request.CheckoutCreditCard'
-                email:
-                    description: メールアドレス
-                    type: string
-                isSameAddress:
-                    description: 配送先住所を請求先住所と同一にする
-                    type: boolean
-                paymentMethod:
-                    description: 支払い方法
-                    type: integer
-                promotionCode:
-                    description: プロモーションコード
-                    type: string
-                requestId:
-                    description: 支払いキー(重複判定用)
-                    type: string
-                shippingAddress:
-                    $ref: '#/components/schemas/request.GuestCheckoutAddress'
-                total:
-                    description: 支払い合計金額（誤り検出用）
-                    minimum: 0
-                    type: integer
-            required:
-                - billingAddress
-                - callbackUrl
-                - coordinatorId
-                - email
-                - paymentMethod
-                - requestId
-            type: object
-        request.RefreshAuthTokenRequest:
-            properties:
-                refreshToken:
-                    description: 更新トークン
-                    type: string
-            required:
-                - refreshToken
-            type: object
-        request.ResetAuthPasswordRequest:
-            properties:
-                email:
-                    description: メールアドレス
-                    type: string
-                password:
-                    description: パスワード
-                    maxLength: 32
-                    minLength: 8
-                    type: string
-                passwordConfirmation:
-                    description: パスワード (確認用)
-                    type: string
-                verifyCode:
-                    description: 検証コード
-                    type: string
-            required:
-                - email
-                - passwordConfirmation
-                - verifyCode
-            type: object
-        request.SignInRequest:
-            properties:
-                password:
-                    description: パスワード
-                    type: string
-                username:
-                    description: ユーザー名 (メールアドレス,電話番号)
-                    type: string
-            required:
-                - password
-                - username
-            type: object
-        request.UpdateAddressRequest:
-            properties:
-                addressLine1:
-                    description: 町名・番地
-                    maxLength: 64
-                    type: string
-                addressLine2:
-                    description: ビル名・号室など
-                    maxLength: 64
-                    type: string
-                city:
-                    description: 市区町村
-                    maxLength: 32
-                    type: string
-                firstname:
-                    description: 名
-                    maxLength: 16
-                    type: string
-                firstnameKana:
-                    description: 名（かな）
-                    maxLength: 32
-                    type: string
-                isDefault:
-                    description: デフォルト設定フラグ
-                    type: boolean
-                lastname:
-                    description: 姓
-                    maxLength: 16
-                    type: string
-                lastnameKana:
-                    description: 姓（かな）
-                    maxLength: 32
-                    type: string
-                phoneNumber:
-                    description: 電話番号
-                    type: string
-                postalCode:
-                    description: 郵便番号
-                    maxLength: 16
-                    type: string
-                prefectureCode:
-                    description: 都道府県
-                    maximum: 47
-                    minimum: 1
-                    type: integer
-            required:
-                - addressLine1
-                - city
-                - firstname
-                - firstnameKana
-                - lastname
-                - lastnameKana
-                - phoneNumber
-                - postalCode
-                - prefectureCode
-            type: object
-        request.UpdateAuthPasswordRequest:
-            properties:
-                newPassword:
-                    description: 新しいパスワード
-                    maxLength: 32
-                    minLength: 8
-                    type: string
-                oldPassword:
-                    description: 現在のパスワード
-                    type: string
-                passwordConfirmation:
-                    description: パスワード (確認用)
-                    type: string
-            required:
-                - oldPassword
-                - passwordConfirmation
-            type: object
-        request.UpdateAuthUserAccountIDRequest:
-            properties:
-                accountId:
-                    description: ユーザーID(検索名)
-                    maxLength: 32
-                    type: string
-            required:
-                - accountId
-            type: object
-        request.UpdateAuthUserEmailRequest:
-            properties:
-                email:
-                    description: メールアドレス
-                    type: string
-            required:
-                - email
-            type: object
-        request.UpdateAuthUserNotificationRequest:
-            properties:
-                enabled:
-                    description: 通知の有効化設定
-                    type: boolean
-            type: object
-        request.UpdateAuthUserThumbnailRequest:
-            properties:
-                thumbnailUrl:
-                    description: サムネイルURL
-                    type: string
-            type: object
-        request.UpdateAuthUserUsernameRequest:
-            properties:
-                username:
-                    description: ユーザー名(表示名)
-                    maxLength: 32
-                    type: string
-            required:
-                - username
-            type: object
-        request.UpdateExperienceReviewRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 2000
-                    type: string
-                rate:
-                    description: 評価
-                    maximum: 5
-                    minimum: 1
-                    type: integer
-                title:
-                    description: タイトル
-                    maxLength: 64
-                    type: string
-            required:
-                - comment
-                - title
-            type: object
-        request.UpdateProductReviewRequest:
-            properties:
-                comment:
-                    description: コメント
-                    maxLength: 2000
-                    type: string
-                rate:
-                    description: 評価
-                    maximum: 5
-                    minimum: 1
-                    type: integer
-                title:
-                    description: タイトル
-                    maxLength: 64
-                    type: string
-            required:
-                - comment
-                - title
-            type: object
-        request.UpdateSpotRequest:
-            properties:
-                description:
-                    description: 説明
-                    maxLength: 2000
-                    type: string
-                latitude:
-                    description: 緯度
-                    maximum: 90
-                    minimum: -90
-                    type: number
-                longitude:
-                    description: 経度
-                    maximum: 180
-                    minimum: -180
-                    type: number
-                name:
-                    description: スポット名
-                    maxLength: 64
-                    type: string
-                spotTypeId:
-                    description: スポット種別ID
-                    type: string
-                thumbnailUrl:
-                    description: サムネイルURL
-                    type: string
-            required:
-                - latitude
-                - longitude
-                - name
-                - spotTypeId
-            type: object
-        request.UpsertExperienceReviewReactionRequest:
-            properties:
-                reactionType:
-                    description: リアクション種別
-                    type: integer
-            required:
-                - reactionType
-            type: object
-        request.UpsertProductReviewReactionRequest:
-            properties:
-                reactionType:
-                    description: リアクション種別
-                    type: integer
-            required:
-                - reactionType
-            type: object
-        request.VerifyAuthUserEmailRequest:
-            properties:
-                verifyCode:
-                    description: 検証コード
-                    type: string
-            required:
-                - verifyCode
-            type: object
-        request.VerifyAuthUserRequest:
-            properties:
-                id:
-                    description: ユーザーID
-                    type: string
-                verifyCode:
-                    description: 検証コード
-                    type: string
-            required:
-                - id
-                - verifyCode
-            type: object
-        response.Address:
+        types.Address:
             description: アドレス情報
             properties:
                 addressLine1:
@@ -943,42 +65,42 @@ components:
                     description: 都道府県コード
                     type: integer
             type: object
-        response.AddressResponse:
+        types.AddressResponse:
             properties:
                 address:
-                    $ref: '#/components/schemas/response.Address'
+                    $ref: '#/components/schemas/types.Address'
             type: object
-        response.AddressesResponse:
+        types.AddressesResponse:
             properties:
                 addresses:
                     description: アドレス一覧
                     items:
-                        $ref: '#/components/schemas/response.Address'
+                        $ref: '#/components/schemas/types.Address'
                     type: array
                     uniqueItems: false
                 total:
                     description: 合計数
                     type: integer
             type: object
-        response.ArchiveSchedulesResponse:
+        types.ArchiveSchedulesResponse:
             properties:
                 archives:
                     description: 過去のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.ArchiveSummary'
+                        $ref: '#/components/schemas/types.ArchiveSummary'
                     type: array
                     uniqueItems: false
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 total:
                     description: 過去のマルシェ合計数
                     type: integer
             type: object
-        response.ArchiveSummary:
+        types.ArchiveSummary:
             properties:
                 coordinatorId:
                     description: コーディネータID
@@ -999,19 +121,19 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.AuthGoogleAccountResponse:
+        types.AuthGoogleAccountResponse:
             properties:
                 url:
                     description: Googleアカウント連携URL
                     type: string
             type: object
-        response.AuthLINEAccountResponse:
+        types.AuthLINEAccountResponse:
             properties:
                 url:
                     description: LINEアカウント連携URL
                     type: string
             type: object
-        response.AuthResponse:
+        types.AuthResponse:
             properties:
                 accessToken:
                     description: アクセストークン
@@ -1029,7 +151,7 @@ components:
                     description: ユーザーID
                     type: string
             type: object
-        response.AuthUserResponse:
+        types.AuthUserResponse:
             properties:
                 accountId:
                     description: ユーザー名 (検索用)
@@ -1062,33 +184,33 @@ components:
                     description: ユーザー名 (表示名)
                     type: string
             type: object
-        response.CalcCartResponse:
+        types.CalcCartResponse:
             properties:
                 carts:
                     description: カート一覧
                     items:
-                        $ref: '#/components/schemas/response.Cart'
+                        $ref: '#/components/schemas/types.Cart'
                     type: array
                     uniqueItems: false
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 discount:
                     description: 割引金額(税込)
                     type: integer
                 items:
                     description: カート内の商品一覧(集計結果)
                     items:
-                        $ref: '#/components/schemas/response.CartItem'
+                        $ref: '#/components/schemas/types.CartItem'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 promotion:
-                    $ref: '#/components/schemas/response.Promotion'
+                    $ref: '#/components/schemas/types.Promotion'
                 requestId:
                     description: 支払い時にAPIへ送信するキー(重複判定用)
                     type: string
@@ -1102,7 +224,7 @@ components:
                     description: 合計金額(税込)
                     type: integer
             type: object
-        response.Cart:
+        types.Cart:
             properties:
                 coordinatorId:
                     description: コーディネータID
@@ -1110,7 +232,7 @@ components:
                 items:
                     description: 箱の商品一覧
                     items:
-                        $ref: '#/components/schemas/response.CartItem'
+                        $ref: '#/components/schemas/types.CartItem'
                     type: array
                     uniqueItems: false
                 number:
@@ -1126,7 +248,7 @@ components:
                     description: 箱の種別
                     type: integer
             type: object
-        response.CartItem:
+        types.CartItem:
             properties:
                 productId:
                     description: 商品ID
@@ -1135,28 +257,28 @@ components:
                     description: 数量
                     type: integer
             type: object
-        response.CartResponse:
+        types.CartResponse:
             properties:
                 carts:
                     description: カート一覧
                     items:
-                        $ref: '#/components/schemas/response.Cart'
+                        $ref: '#/components/schemas/types.Cart'
                     type: array
                     uniqueItems: false
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
             type: object
-        response.Category:
+        types.Category:
             description: 商品種別情報
             properties:
                 id:
@@ -1166,13 +288,146 @@ components:
                     description: 商品種別名
                     type: string
             type: object
-        response.CheckoutResponse:
+        types.CheckoutCreditCard:
+            description: クレジットカード決済情報
+            properties:
+                month:
+                    description: 有効期限（月）
+                    maximum: 12
+                    minimum: 1
+                    type: integer
+                name:
+                    description: カード名義
+                    type: string
+                number:
+                    description: カード番号
+                    type: string
+                verificationValue:
+                    description: セキュリティコード
+                    maxLength: 4
+                    minLength: 3
+                    type: string
+                year:
+                    description: 有効期限（年）
+                    maximum: 2100
+                    minimum: 2000
+                    type: integer
+            required:
+                - name
+                - number
+            type: object
+        types.CheckoutExperienceRequest:
+            properties:
+                adultCount:
+                    description: 大人人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                billingAddressId:
+                    description: 請求先住所ID
+                    type: string
+                callbackUrl:
+                    description: 決済完了後のリダイレクト先URL
+                    type: string
+                creditCard:
+                    $ref: '#/components/schemas/types.CheckoutCreditCard'
+                elementarySchoolCount:
+                    description: 小学生人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                juniorHighSchoolCount:
+                    description: 中学生人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                paymentMethod:
+                    description: 支払い方法
+                    type: integer
+                preschoolCount:
+                    description: 幼児人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                promotionCode:
+                    description: プロモーションコード
+                    type: string
+                requestId:
+                    description: 支払いキー(重複判定用)
+                    type: string
+                requestedDate:
+                    description: 体験希望日
+                    type: string
+                requestedTime:
+                    description: 体験希望時間
+                    type: string
+                seniorCount:
+                    description: シニア人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                total:
+                    description: 支払い合計金額（誤り検出用）
+                    minimum: 0
+                    type: integer
+                transportation:
+                    description: 交通手段
+                    maxLength: 256
+                    type: string
+            required:
+                - billingAddressId
+                - callbackUrl
+                - paymentMethod
+                - requestId
+            type: object
+        types.CheckoutProductRequest:
+            properties:
+                billingAddressId:
+                    description: 請求先住所ID
+                    type: string
+                boxNumber:
+                    description: 箱の通番（箱単位で購入する場合）
+                    minimum: 0
+                    type: integer
+                callbackUrl:
+                    description: 決済完了後のリダイレクト先URL
+                    type: string
+                coordinatorId:
+                    description: コーディネータID
+                    type: string
+                creditCard:
+                    $ref: '#/components/schemas/types.CheckoutCreditCard'
+                paymentMethod:
+                    description: 支払い方法
+                    type: integer
+                promotionCode:
+                    description: プロモーションコード
+                    type: string
+                requestId:
+                    description: 支払いキー(重複判定用)
+                    type: string
+                shippingAddressId:
+                    description: 配送先住所ID
+                    type: string
+                total:
+                    description: 支払い合計金額（誤り検出用）
+                    minimum: 0
+                    type: integer
+            required:
+                - billingAddressId
+                - callbackUrl
+                - coordinatorId
+                - paymentMethod
+                - requestId
+                - shippingAddressId
+            type: object
+        types.CheckoutResponse:
             properties:
                 url:
                     description: 遷移先URL
                     type: string
             type: object
-        response.CheckoutStateResponse:
+        types.CheckoutStateResponse:
             properties:
                 orderId:
                     description: 注文履歴ID
@@ -1181,7 +436,7 @@ components:
                     description: 注文ステータス
                     type: integer
             type: object
-        response.Coordinator:
+        types.Coordinator:
             description: コーディネータ情報
             properties:
                 businessDays:
@@ -1230,74 +485,389 @@ components:
                     description: 表示名
                     type: string
             type: object
-        response.CoordinatorResponse:
+        types.CoordinatorResponse:
             properties:
                 archives:
                     description: 過去のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.ArchiveSummary'
+                        $ref: '#/components/schemas/types.ArchiveSummary'
                     type: array
                     uniqueItems: false
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 experiences:
                     description: コーディネータに関連する体験一覧
                     items:
-                        $ref: '#/components/schemas/response.Experience'
+                        $ref: '#/components/schemas/types.Experience'
                     type: array
                     uniqueItems: false
                 lives:
                     description: 配信中・配信予定のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveSummary'
+                        $ref: '#/components/schemas/types.LiveSummary'
                     type: array
                     uniqueItems: false
                 producers:
                     description: 生産者一覧
                     items:
-                        $ref: '#/components/schemas/response.Producer'
+                        $ref: '#/components/schemas/types.Producer'
                     type: array
                     uniqueItems: false
                 productTypes:
                     description: 品目一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductType'
+                        $ref: '#/components/schemas/types.ProductType'
                     type: array
                     uniqueItems: false
                 products:
                     description: コーディネータに関連する商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 shipping:
-                    $ref: '#/components/schemas/response.Shipping'
+                    $ref: '#/components/schemas/types.Shipping'
             type: object
-        response.CoordinatorsResponse:
+        types.CoordinatorsResponse:
             properties:
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 productTypes:
                     description: 品目一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductType'
+                        $ref: '#/components/schemas/types.ProductType'
                     type: array
                     uniqueItems: false
                 total:
                     description: コーディネータ合計数
                     type: integer
             type: object
-        response.CreateAuthUserResponse:
+        types.CreateAddressRequest:
+            properties:
+                addressLine1:
+                    description: 町名・番地
+                    maxLength: 64
+                    type: string
+                addressLine2:
+                    description: ビル名・号室など
+                    maxLength: 64
+                    type: string
+                city:
+                    description: 市区町村
+                    maxLength: 32
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                isDefault:
+                    description: デフォルト設定フラグ
+                    type: boolean
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                postalCode:
+                    description: 郵便番号
+                    maxLength: 16
+                    type: string
+                prefectureCode:
+                    description: 都道府県
+                    maximum: 47
+                    minimum: 1
+                    type: integer
+            required:
+                - addressLine1
+                - city
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
+                - postalCode
+                - prefectureCode
+            type: object
+        types.CreateAuthUserRequest:
+            properties:
+                accountId:
+                    description: ユーザーID(検索名)
+                    maxLength: 32
+                    type: string
+                email:
+                    description: メールアドレス
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                password:
+                    description: パスワード
+                    maxLength: 32
+                    minLength: 8
+                    type: string
+                passwordConfirmation:
+                    description: パスワード (確認用)
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                username:
+                    description: ユーザー名(表示名)
+                    maxLength: 32
+                    type: string
+            required:
+                - accountId
+                - email
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - passwordConfirmation
+                - phoneNumber
+                - username
+            type: object
+        types.CreateAuthUserResponse:
             properties:
                 id:
                     description: ユーザーID
                     type: string
             type: object
-        response.Experience:
+        types.CreateAuthUserWithGoogleRequest:
+            properties:
+                accountId:
+                    description: ユーザーID(検索名)
+                    maxLength: 32
+                    minLength: 4
+                    type: string
+                code:
+                    description: 認証コード
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                nonce:
+                    description: セキュア文字列（リプレイアタック対策）
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                redirectUri:
+                    description: リダイレクトURI
+                    type: string
+                username:
+                    description: ユーザー名(表示名)
+                    maxLength: 32
+                    type: string
+            required:
+                - accountId
+                - code
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - nonce
+                - phoneNumber
+                - redirectUri
+                - username
+            type: object
+        types.CreateAuthUserWithLINERequest:
+            properties:
+                accountId:
+                    description: ユーザーID(検索名)
+                    maxLength: 32
+                    minLength: 4
+                    type: string
+                code:
+                    description: 認証コード
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                nonce:
+                    description: セキュア文字列（リプレイアタック対策）
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                redirectUri:
+                    description: リダイレクトURI
+                    type: string
+                username:
+                    description: ユーザー名(表示名)
+                    maxLength: 32
+                    type: string
+            required:
+                - accountId
+                - code
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - nonce
+                - phoneNumber
+                - redirectUri
+                - username
+            type: object
+        types.CreateExperienceReviewRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 2000
+                    type: string
+                rate:
+                    description: 評価
+                    maximum: 5
+                    minimum: 1
+                    type: integer
+                title:
+                    description: タイトル
+                    maxLength: 64
+                    type: string
+            required:
+                - comment
+                - title
+            type: object
+        types.CreateGuestLiveCommentRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 200
+                    type: string
+            required:
+                - comment
+            type: object
+        types.CreateGuestVideoCommentRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 200
+                    type: string
+            required:
+                - comment
+            type: object
+        types.CreateLiveCommentRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 200
+                    type: string
+            required:
+                - comment
+            type: object
+        types.CreateProductReviewRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 2000
+                    type: string
+                rate:
+                    description: 評価
+                    maximum: 5
+                    minimum: 1
+                    type: integer
+                title:
+                    description: タイトル
+                    maxLength: 64
+                    type: string
+            required:
+                - comment
+                - title
+            type: object
+        types.CreateSpotRequest:
+            properties:
+                description:
+                    description: 説明
+                    maxLength: 2000
+                    type: string
+                latitude:
+                    description: 緯度
+                    maximum: 90
+                    minimum: -90
+                    type: number
+                longitude:
+                    description: 経度
+                    maximum: 180
+                    minimum: -180
+                    type: number
+                name:
+                    description: スポット名
+                    maxLength: 64
+                    type: string
+                spotTypeId:
+                    description: スポット種別ID
+                    type: string
+                thumbnailUrl:
+                    description: サムネイルURL
+                    type: string
+            required:
+                - latitude
+                - longitude
+                - name
+                - spotTypeId
+            type: object
+        types.CreateVideoCommentRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 200
+                    type: string
+            required:
+                - comment
+            type: object
+        types.Experience:
             description: 体験情報
             properties:
                 businessCloseTime:
@@ -1351,7 +921,7 @@ components:
                 media:
                     description: メディア一覧
                     items:
-                        $ref: '#/components/schemas/response.ExperienceMedia'
+                        $ref: '#/components/schemas/types.ExperienceMedia'
                     type: array
                     uniqueItems: false
                 priceAdult:
@@ -1376,7 +946,7 @@ components:
                     description: 紹介動画URL
                     type: string
                 rate:
-                    $ref: '#/components/schemas/response.ExperienceRate'
+                    $ref: '#/components/schemas/types.ExperienceRate'
                 recommendedPoint1:
                     description: おすすめポイント1
                     type: string
@@ -1399,7 +969,7 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.ExperienceMedia:
+        types.ExperienceMedia:
             properties:
                 isThumbnail:
                     description: サムネイルとして使用
@@ -1408,7 +978,7 @@ components:
                     description: メディアURL
                     type: string
             type: object
-        response.ExperienceRate:
+        types.ExperienceRate:
             description: 体験評価
             properties:
                 average:
@@ -1423,18 +993,18 @@ components:
                     description: 評価詳細
                     type: object
             type: object
-        response.ExperienceResponse:
+        types.ExperienceResponse:
             properties:
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 experience:
-                    $ref: '#/components/schemas/response.Experience'
+                    $ref: '#/components/schemas/types.Experience'
                 experienceType:
-                    $ref: '#/components/schemas/response.ExperienceType'
+                    $ref: '#/components/schemas/types.ExperienceType'
                 producer:
-                    $ref: '#/components/schemas/response.Producer'
+                    $ref: '#/components/schemas/types.Producer'
             type: object
-        response.ExperienceReview:
+        types.ExperienceReview:
             description: 体験レビュー
             properties:
                 accountId:
@@ -1474,12 +1044,12 @@ components:
                     description: ユーザー名
                     type: string
             type: object
-        response.ExperienceReviewResponse:
+        types.ExperienceReviewResponse:
             properties:
                 review:
-                    $ref: '#/components/schemas/response.ExperienceReview'
+                    $ref: '#/components/schemas/types.ExperienceReview'
             type: object
-        response.ExperienceReviewsResponse:
+        types.ExperienceReviewsResponse:
             properties:
                 nextToken:
                     description: 次の取得開始位置
@@ -1487,11 +1057,11 @@ components:
                 reviews:
                     description: 体験レビュー一覧
                     items:
-                        $ref: '#/components/schemas/response.ExperienceReview'
+                        $ref: '#/components/schemas/types.ExperienceReview'
                     type: array
                     uniqueItems: false
             type: object
-        response.ExperienceType:
+        types.ExperienceType:
             description: 体験種別情報
             properties:
                 id:
@@ -1501,37 +1071,219 @@ components:
                     description: 体験種別名
                     type: string
             type: object
-        response.ExperiencesResponse:
+        types.ExperiencesResponse:
             properties:
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 experienceTypes:
                     description: 体験種別一覧
                     items:
-                        $ref: '#/components/schemas/response.ExperienceType'
+                        $ref: '#/components/schemas/types.ExperienceType'
                     type: array
                     uniqueItems: false
                 experiences:
                     description: 体験一覧
                     items:
-                        $ref: '#/components/schemas/response.Experience'
+                        $ref: '#/components/schemas/types.Experience'
                     type: array
                     uniqueItems: false
                 producers:
                     description: 生産者一覧
                     items:
-                        $ref: '#/components/schemas/response.Producer'
+                        $ref: '#/components/schemas/types.Producer'
                     type: array
                     uniqueItems: false
                 total:
                     description: 体験合計数
                     type: integer
             type: object
-        response.Live:
+        types.ForgotAuthPasswordRequest:
+            properties:
+                email:
+                    description: メールアドレス
+                    type: string
+            required:
+                - email
+            type: object
+        types.GetUploadURLRequest:
+            properties:
+                fileType:
+                    description: ファイル種別
+                    type: string
+            required:
+                - fileType
+            type: object
+        types.GuestCheckoutAddress:
+            description: 請求先住所
+            properties:
+                addressLine1:
+                    description: 町名・番地
+                    maxLength: 64
+                    type: string
+                addressLine2:
+                    description: ビル名・号室など
+                    maxLength: 64
+                    type: string
+                city:
+                    description: 市区町村
+                    maxLength: 32
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                postalCode:
+                    description: 郵便番号
+                    maxLength: 16
+                    type: string
+                prefectureCode:
+                    description: 都道府県
+                    maximum: 47
+                    minimum: 1
+                    type: integer
+            required:
+                - addressLine1
+                - city
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
+                - postalCode
+                - prefectureCode
+            type: object
+        types.GuestCheckoutExperienceRequest:
+            properties:
+                adultCount:
+                    description: 大人人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                billingAddress:
+                    $ref: '#/components/schemas/types.GuestCheckoutAddress'
+                callbackUrl:
+                    description: 決済完了後のリダイレクト先URL
+                    type: string
+                creditCard:
+                    $ref: '#/components/schemas/types.CheckoutCreditCard'
+                elementarySchoolCount:
+                    description: 小学生人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                email:
+                    description: メールアドレス
+                    type: string
+                juniorHighSchoolCount:
+                    description: 中学生人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                paymentMethod:
+                    description: 支払い方法
+                    type: integer
+                preschoolCount:
+                    description: 幼児人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                promotionCode:
+                    description: プロモーションコード
+                    type: string
+                requestId:
+                    description: 支払いキー(重複判定用)
+                    type: string
+                requestedDate:
+                    description: 体験希望日
+                    type: string
+                requestedTime:
+                    description: 体験希望時間
+                    type: string
+                seniorCount:
+                    description: シニア人数
+                    maximum: 99
+                    minimum: 0
+                    type: integer
+                total:
+                    description: 支払い合計金額（誤り検出用）
+                    minimum: 0
+                    type: integer
+                transportation:
+                    description: 交通手段
+                    maxLength: 256
+                    type: string
+            required:
+                - billingAddress
+                - callbackUrl
+                - email
+                - paymentMethod
+                - requestId
+            type: object
+        types.GuestCheckoutProductRequest:
+            properties:
+                billingAddress:
+                    $ref: '#/components/schemas/types.GuestCheckoutAddress'
+                boxNumber:
+                    description: 箱の通番（箱単位で購入する場合）
+                    minimum: 0
+                    type: integer
+                callbackUrl:
+                    description: 決済完了後のリダイレクト先URL
+                    type: string
+                coordinatorId:
+                    description: コーディネータID
+                    type: string
+                creditCard:
+                    $ref: '#/components/schemas/types.CheckoutCreditCard'
+                email:
+                    description: メールアドレス
+                    type: string
+                isSameAddress:
+                    description: 配送先住所を請求先住所と同一にする
+                    type: boolean
+                paymentMethod:
+                    description: 支払い方法
+                    type: integer
+                promotionCode:
+                    description: プロモーションコード
+                    type: string
+                requestId:
+                    description: 支払いキー(重複判定用)
+                    type: string
+                shippingAddress:
+                    $ref: '#/components/schemas/types.GuestCheckoutAddress'
+                total:
+                    description: 支払い合計金額（誤り検出用）
+                    minimum: 0
+                    type: integer
+            required:
+                - billingAddress
+                - callbackUrl
+                - coordinatorId
+                - email
+                - paymentMethod
+                - requestId
+            type: object
+        types.Live:
             properties:
                 comment:
                     description: コメント
@@ -1555,7 +1307,7 @@ components:
                     description: ライブ配信開始日時
                     type: integer
             type: object
-        response.LiveComment:
+        types.LiveComment:
             properties:
                 accountId:
                     description: アカウントID
@@ -1576,19 +1328,19 @@ components:
                     description: ユーザー名
                     type: string
             type: object
-        response.LiveCommentsResponse:
+        types.LiveCommentsResponse:
             properties:
                 comments:
                     description: コメント一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveComment'
+                        $ref: '#/components/schemas/types.LiveComment'
                     type: array
                     uniqueItems: false
                 nextToken:
                     description: 次の取得開始位置
                     type: string
             type: object
-        response.LiveProduct:
+        types.LiveProduct:
             properties:
                 id:
                     description: 商品ID
@@ -1606,25 +1358,25 @@ components:
                     description: サムネイルURL
                     type: string
             type: object
-        response.LiveSchedulesResponse:
+        types.LiveSchedulesResponse:
             properties:
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 lives:
                     description: 配信中・配信予定のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveSummary'
+                        $ref: '#/components/schemas/types.LiveSummary'
                     type: array
                     uniqueItems: false
                 total:
                     description: 配信中・配信予定のマルシェ合計数
                     type: integer
             type: object
-        response.LiveSummary:
+        types.LiveSummary:
             properties:
                 coordinatorId:
                     description: コーディネータID
@@ -1635,7 +1387,7 @@ components:
                 products:
                     description: 販売商品一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveProduct'
+                        $ref: '#/components/schemas/types.LiveProduct'
                     type: array
                     uniqueItems: false
                 scheduleId:
@@ -1654,20 +1406,20 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.Order:
+        types.Order:
             description: 注文履歴情報
             properties:
                 billingAddress:
-                    $ref: '#/components/schemas/response.Address'
+                    $ref: '#/components/schemas/types.Address'
                 coordinatorId:
                     description: コーディネータID
                     type: string
                 experience:
-                    $ref: '#/components/schemas/response.OrderExperience'
+                    $ref: '#/components/schemas/types.OrderExperience'
                 fulfillments:
                     description: 配送情報一覧
                     items:
-                        $ref: '#/components/schemas/response.OrderFulfillment'
+                        $ref: '#/components/schemas/types.OrderFulfillment'
                     type: array
                     uniqueItems: false
                 id:
@@ -1676,18 +1428,18 @@ components:
                 items:
                     description: 注文商品一覧
                     items:
-                        $ref: '#/components/schemas/response.OrderItem'
+                        $ref: '#/components/schemas/types.OrderItem'
                     type: array
                     uniqueItems: false
                 payment:
-                    $ref: '#/components/schemas/response.OrderPayment'
+                    $ref: '#/components/schemas/types.OrderPayment'
                 promotionId:
                     description: プロモーションID
                     type: string
                 refund:
-                    $ref: '#/components/schemas/response.OrderRefund'
+                    $ref: '#/components/schemas/types.OrderRefund'
                 shippingAddress:
-                    $ref: '#/components/schemas/response.Address'
+                    $ref: '#/components/schemas/types.Address'
                 status:
                     description: 注文ステータス
                     type: integer
@@ -1695,7 +1447,7 @@ components:
                     description: 注文種別
                     type: integer
             type: object
-        response.OrderExperience:
+        types.OrderExperience:
             description: 注文体験情報
             properties:
                 adultCount:
@@ -1741,7 +1493,7 @@ components:
                     description: 交通手段
                     type: string
             type: object
-        response.OrderFulfillment:
+        types.OrderFulfillment:
             properties:
                 boxNumber:
                     description: 箱の通番
@@ -1771,7 +1523,7 @@ components:
                     description: 伝票番号
                     type: string
             type: object
-        response.OrderItem:
+        types.OrderItem:
             properties:
                 fulfillmentId:
                     description: 配送情報ID
@@ -1786,7 +1538,7 @@ components:
                     description: 購入数量
                     type: integer
             type: object
-        response.OrderPayment:
+        types.OrderPayment:
             description: 支払い情報
             properties:
                 discount:
@@ -1817,7 +1569,7 @@ components:
                     description: 取引ID
                     type: string
             type: object
-        response.OrderRefund:
+        types.OrderRefund:
             description: 注文キャンセル情報
             properties:
                 canceled:
@@ -1836,60 +1588,60 @@ components:
                     description: 注文キャンセル種別
                     type: integer
             type: object
-        response.OrderResponse:
+        types.OrderResponse:
             properties:
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 experience:
-                    $ref: '#/components/schemas/response.Experience'
+                    $ref: '#/components/schemas/types.Experience'
                 order:
-                    $ref: '#/components/schemas/response.Order'
+                    $ref: '#/components/schemas/types.Order'
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 promotion:
-                    $ref: '#/components/schemas/response.Promotion'
+                    $ref: '#/components/schemas/types.Promotion'
             type: object
-        response.OrdersResponse:
+        types.OrdersResponse:
             properties:
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 experiences:
                     description: 体験一覧
                     items:
-                        $ref: '#/components/schemas/response.Experience'
+                        $ref: '#/components/schemas/types.Experience'
                     type: array
                     uniqueItems: false
                 orders:
                     description: 注文履歴一覧
                     items:
-                        $ref: '#/components/schemas/response.Order'
+                        $ref: '#/components/schemas/types.Order'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 promotions:
                     description: プロモーション一覧
                     items:
-                        $ref: '#/components/schemas/response.Promotion'
+                        $ref: '#/components/schemas/types.Promotion'
                     type: array
                     uniqueItems: false
                 total:
                     description: 合計数
                     type: integer
             type: object
-        response.PaymentSystem:
+        types.PaymentSystem:
             properties:
                 methodType:
                     description: 決済システム種別
@@ -1898,16 +1650,16 @@ components:
                     description: 決済システム状態
                     type: integer
             type: object
-        response.PaymentSystemsResponse:
+        types.PaymentSystemsResponse:
             properties:
                 systems:
                     description: 決済システム一覧
                     items:
-                        $ref: '#/components/schemas/response.PaymentSystem'
+                        $ref: '#/components/schemas/types.PaymentSystem'
                     type: array
                     uniqueItems: false
             type: object
-        response.PostalCodeResponse:
+        types.PostalCodeResponse:
             properties:
                 city:
                     description: 市区町村名
@@ -1925,15 +1677,15 @@ components:
                     description: 町域名
                     type: string
             type: object
-        response.PreCheckoutExperienceResponse:
+        types.PreCheckoutExperienceResponse:
             properties:
                 discount:
                     description: 割引金額(税込)
                     type: integer
                 experience:
-                    $ref: '#/components/schemas/response.Experience'
+                    $ref: '#/components/schemas/types.Experience'
                 promotion:
-                    $ref: '#/components/schemas/response.Promotion'
+                    $ref: '#/components/schemas/types.Promotion'
                 requestId:
                     description: 支払い時にAPIへ送信するキー(重複判定用)
                     type: string
@@ -1944,7 +1696,7 @@ components:
                     description: 合計金額(税込)
                     type: integer
             type: object
-        response.Producer:
+        types.Producer:
             description: 生産者情報
             properties:
                 city:
@@ -1981,48 +1733,48 @@ components:
                     description: 生産者名
                     type: string
             type: object
-        response.ProducerResponse:
+        types.ProducerResponse:
             properties:
                 archives:
                     description: 過去のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.ArchiveSummary'
+                        $ref: '#/components/schemas/types.ArchiveSummary'
                     type: array
                     uniqueItems: false
                 experiences:
                     description: 体験一覧
                     items:
-                        $ref: '#/components/schemas/response.Experience'
+                        $ref: '#/components/schemas/types.Experience'
                     type: array
                     uniqueItems: false
                 lives:
                     description: 配信中・配信予定のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveSummary'
+                        $ref: '#/components/schemas/types.LiveSummary'
                     type: array
                     uniqueItems: false
                 producer:
-                    $ref: '#/components/schemas/response.Producer'
+                    $ref: '#/components/schemas/types.Producer'
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
             type: object
-        response.ProducersResponse:
+        types.ProducersResponse:
             properties:
                 producers:
                     description: 生産者一覧
                     items:
-                        $ref: '#/components/schemas/response.Producer'
+                        $ref: '#/components/schemas/types.Producer'
                     type: array
                     uniqueItems: false
                 total:
                     description: 生産者合計数
                     type: integer
             type: object
-        response.Product:
+        types.Product:
             description: 商品情報
             properties:
                 box60Rate:
@@ -2067,7 +1819,7 @@ components:
                 media:
                     description: メディア一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductMedia'
+                        $ref: '#/components/schemas/types.ProductMedia'
                     type: array
                     uniqueItems: false
                 name:
@@ -2095,7 +1847,7 @@ components:
                     description: 品目ID
                     type: string
                 rate:
-                    $ref: '#/components/schemas/response.ProductRate'
+                    $ref: '#/components/schemas/types.ProductRate'
                 recommendedPoint1:
                     description: おすすめポイント1
                     type: string
@@ -2121,7 +1873,7 @@ components:
                     description: 重量(kg,少数第一位まで)
                     type: number
             type: object
-        response.ProductMedia:
+        types.ProductMedia:
             properties:
                 isThumbnail:
                     description: サムネイルとして使用
@@ -2130,7 +1882,7 @@ components:
                     description: メディアURL
                     type: string
             type: object
-        response.ProductRate:
+        types.ProductRate:
             description: 商品評価
             properties:
                 average:
@@ -2145,26 +1897,26 @@ components:
                     description: 評価詳細
                     type: object
             type: object
-        response.ProductResponse:
+        types.ProductResponse:
             properties:
                 category:
-                    $ref: '#/components/schemas/response.Category'
+                    $ref: '#/components/schemas/types.Category'
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 producer:
-                    $ref: '#/components/schemas/response.Producer'
+                    $ref: '#/components/schemas/types.Producer'
                 product:
-                    $ref: '#/components/schemas/response.Product'
+                    $ref: '#/components/schemas/types.Product'
                 productTags:
                     description: 商品タグ一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductTag'
+                        $ref: '#/components/schemas/types.ProductTag'
                     type: array
                     uniqueItems: false
                 productType:
-                    $ref: '#/components/schemas/response.ProductType'
+                    $ref: '#/components/schemas/types.ProductType'
             type: object
-        response.ProductReview:
+        types.ProductReview:
             description: 商品レビュー
             properties:
                 accountId:
@@ -2204,12 +1956,12 @@ components:
                     description: ユーザー名
                     type: string
             type: object
-        response.ProductReviewResponse:
+        types.ProductReviewResponse:
             properties:
                 review:
-                    $ref: '#/components/schemas/response.ProductReview'
+                    $ref: '#/components/schemas/types.ProductReview'
             type: object
-        response.ProductReviewsResponse:
+        types.ProductReviewsResponse:
             properties:
                 nextToken:
                     description: 次の取得開始位置
@@ -2217,11 +1969,11 @@ components:
                 reviews:
                     description: 商品レビュー一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductReview'
+                        $ref: '#/components/schemas/types.ProductReview'
                     type: array
                     uniqueItems: false
             type: object
-        response.ProductTag:
+        types.ProductTag:
             properties:
                 id:
                     description: 商品タグID
@@ -2230,7 +1982,7 @@ components:
                     description: 商品タグ名
                     type: string
             type: object
-        response.ProductType:
+        types.ProductType:
             description: 品目情報
             properties:
                 categoryId:
@@ -2246,49 +1998,49 @@ components:
                     description: 品目名
                     type: string
             type: object
-        response.ProductsResponse:
+        types.ProductsResponse:
             properties:
                 categories:
                     description: 商品種別一覧
                     items:
-                        $ref: '#/components/schemas/response.Category'
+                        $ref: '#/components/schemas/types.Category'
                     type: array
                     uniqueItems: false
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 producers:
                     description: 生産者一覧
                     items:
-                        $ref: '#/components/schemas/response.Producer'
+                        $ref: '#/components/schemas/types.Producer'
                     type: array
                     uniqueItems: false
                 productTags:
                     description: 商品タグ一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductTag'
+                        $ref: '#/components/schemas/types.ProductTag'
                     type: array
                     uniqueItems: false
                 productTypes:
                     description: 品目一覧
                     items:
-                        $ref: '#/components/schemas/response.ProductType'
+                        $ref: '#/components/schemas/types.ProductType'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 total:
                     description: 商品合計数
                     type: integer
             type: object
-        response.Promotion:
+        types.Promotion:
             description: プロモーション情報
             properties:
                 code:
@@ -2319,12 +2071,41 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.PromotionResponse:
+        types.PromotionResponse:
             properties:
                 promotion:
-                    $ref: '#/components/schemas/response.Promotion'
+                    $ref: '#/components/schemas/types.Promotion'
             type: object
-        response.Schedule:
+        types.RefreshAuthTokenRequest:
+            properties:
+                refreshToken:
+                    description: 更新トークン
+                    type: string
+            required:
+                - refreshToken
+            type: object
+        types.ResetAuthPasswordRequest:
+            properties:
+                email:
+                    description: メールアドレス
+                    type: string
+                password:
+                    description: パスワード
+                    maxLength: 32
+                    minLength: 8
+                    type: string
+                passwordConfirmation:
+                    description: パスワード (確認用)
+                    type: string
+                verifyCode:
+                    description: 検証コード
+                    type: string
+            required:
+                - email
+                - passwordConfirmation
+                - verifyCode
+            type: object
+        types.Schedule:
             description: マルシェ開催情報
             properties:
                 coordinatorId:
@@ -2334,7 +2115,7 @@ components:
                     description: 説明
                     type: string
                 distributionMedatada:
-                    $ref: '#/components/schemas/response.ScheduleDistributionMetadata'
+                    $ref: '#/components/schemas/types.ScheduleDistributionMetadata'
                 distributionUrl:
                     description: 映像配信URL
                     type: string
@@ -2357,7 +2138,7 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.ScheduleDistributionMetadata:
+        types.ScheduleDistributionMetadata:
             description: 映像メタデータ
             properties:
                 subtitles:
@@ -2366,32 +2147,32 @@ components:
                     description: 字幕情報
                     type: object
             type: object
-        response.ScheduleResponse:
+        types.ScheduleResponse:
             properties:
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 lives:
                     description: ライブ配信一覧
                     items:
-                        $ref: '#/components/schemas/response.Live'
+                        $ref: '#/components/schemas/types.Live'
                     type: array
                     uniqueItems: false
                 producers:
                     description: 生産者一覧
                     items:
-                        $ref: '#/components/schemas/response.Producer'
+                        $ref: '#/components/schemas/types.Producer'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 schedule:
-                    $ref: '#/components/schemas/response.Schedule'
+                    $ref: '#/components/schemas/types.Schedule'
             type: object
-        response.Shipping:
+        types.Shipping:
             description: 配送設定
             properties:
                 box60Frozen:
@@ -2400,7 +2181,7 @@ components:
                 box60Rates:
                     description: 箱サイズ60の通常（常温・冷蔵便）配送料一覧
                     items:
-                        $ref: '#/components/schemas/response.ShippingRate'
+                        $ref: '#/components/schemas/types.ShippingRate'
                     type: array
                     uniqueItems: false
                 box80Frozen:
@@ -2409,7 +2190,7 @@ components:
                 box80Rates:
                     description: 箱サイズ80の通常（常温・冷蔵便）配送料一覧
                     items:
-                        $ref: '#/components/schemas/response.ShippingRate'
+                        $ref: '#/components/schemas/types.ShippingRate'
                     type: array
                     uniqueItems: false
                 box100Frozen:
@@ -2418,7 +2199,7 @@ components:
                 box100Rates:
                     description: 箱サイズ100の通常（常温・冷蔵便）配送料一覧
                     items:
-                        $ref: '#/components/schemas/response.ShippingRate'
+                        $ref: '#/components/schemas/types.ShippingRate'
                     type: array
                     uniqueItems: false
                 freeShippingRates:
@@ -2431,7 +2212,7 @@ components:
                     description: 配送設定ID
                     type: string
             type: object
-        response.ShippingRate:
+        types.ShippingRate:
             properties:
                 name:
                     description: 配送料金設定名
@@ -2455,7 +2236,19 @@ components:
                     description: 配送料金(税込)
                     type: integer
             type: object
-        response.Spot:
+        types.SignInRequest:
+            properties:
+                password:
+                    description: パスワード
+                    type: string
+                username:
+                    description: ユーザー名 (メールアドレス,電話番号)
+                    type: string
+            required:
+                - password
+                - username
+            type: object
+        types.Spot:
             description: スポット情報
             properties:
                 createdAt:
@@ -2498,14 +2291,14 @@ components:
                     description: 投稿者の種別
                     type: integer
             type: object
-        response.SpotResponse:
+        types.SpotResponse:
             properties:
                 spot:
-                    $ref: '#/components/schemas/response.Spot'
+                    $ref: '#/components/schemas/types.Spot'
                 spotType:
-                    $ref: '#/components/schemas/response.SpotType'
+                    $ref: '#/components/schemas/types.SpotType'
             type: object
-        response.SpotType:
+        types.SpotType:
             description: スポット種別情報
             properties:
                 id:
@@ -2515,67 +2308,248 @@ components:
                     description: 体験種別名
                     type: string
             type: object
-        response.SpotTypesResponse:
+        types.SpotTypesResponse:
             properties:
                 spotTypes:
                     description: 体験種別一覧
                     items:
-                        $ref: '#/components/schemas/response.SpotType'
+                        $ref: '#/components/schemas/types.SpotType'
                     type: array
                     uniqueItems: false
                 total:
                     description: 体験種別合計数
                     type: integer
             type: object
-        response.SpotsResponse:
+        types.SpotsResponse:
             properties:
                 spotTypes:
                     description: スポット種別一覧
                     items:
-                        $ref: '#/components/schemas/response.SpotType'
+                        $ref: '#/components/schemas/types.SpotType'
                     type: array
                     uniqueItems: false
                 spots:
                     description: スポット一覧
                     items:
-                        $ref: '#/components/schemas/response.Spot'
+                        $ref: '#/components/schemas/types.Spot'
                     type: array
                     uniqueItems: false
             type: object
-        response.TopCommonResponse:
+        types.TopCommonResponse:
             properties:
                 archives:
                     description: 過去のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.ArchiveSummary'
+                        $ref: '#/components/schemas/types.ArchiveSummary'
                     type: array
                     uniqueItems: false
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 experienceVideos:
                     description: 体験動画一覧
                     items:
-                        $ref: '#/components/schemas/response.VideoSummary'
+                        $ref: '#/components/schemas/types.VideoSummary'
                     type: array
                     uniqueItems: false
                 lives:
                     description: 配信中・配信予定のマルシェ一覧
                     items:
-                        $ref: '#/components/schemas/response.LiveSummary'
+                        $ref: '#/components/schemas/types.LiveSummary'
                     type: array
                     uniqueItems: false
                 productVideos:
                     description: 商品動画一覧
                     items:
-                        $ref: '#/components/schemas/response.VideoSummary'
+                        $ref: '#/components/schemas/types.VideoSummary'
                     type: array
                     uniqueItems: false
             type: object
-        response.UploadStateResponse:
+        types.UpdateAddressRequest:
+            properties:
+                addressLine1:
+                    description: 町名・番地
+                    maxLength: 64
+                    type: string
+                addressLine2:
+                    description: ビル名・号室など
+                    maxLength: 64
+                    type: string
+                city:
+                    description: 市区町村
+                    maxLength: 32
+                    type: string
+                firstname:
+                    description: 名
+                    maxLength: 16
+                    type: string
+                firstnameKana:
+                    description: 名（かな）
+                    maxLength: 32
+                    type: string
+                isDefault:
+                    description: デフォルト設定フラグ
+                    type: boolean
+                lastname:
+                    description: 姓
+                    maxLength: 16
+                    type: string
+                lastnameKana:
+                    description: 姓（かな）
+                    maxLength: 32
+                    type: string
+                phoneNumber:
+                    description: 電話番号
+                    type: string
+                postalCode:
+                    description: 郵便番号
+                    maxLength: 16
+                    type: string
+                prefectureCode:
+                    description: 都道府県
+                    maximum: 47
+                    minimum: 1
+                    type: integer
+            required:
+                - addressLine1
+                - city
+                - firstname
+                - firstnameKana
+                - lastname
+                - lastnameKana
+                - phoneNumber
+                - postalCode
+                - prefectureCode
+            type: object
+        types.UpdateAuthPasswordRequest:
+            properties:
+                newPassword:
+                    description: 新しいパスワード
+                    maxLength: 32
+                    minLength: 8
+                    type: string
+                oldPassword:
+                    description: 現在のパスワード
+                    type: string
+                passwordConfirmation:
+                    description: パスワード (確認用)
+                    type: string
+            required:
+                - oldPassword
+                - passwordConfirmation
+            type: object
+        types.UpdateAuthUserAccountIDRequest:
+            properties:
+                accountId:
+                    description: ユーザーID(検索名)
+                    maxLength: 32
+                    type: string
+            required:
+                - accountId
+            type: object
+        types.UpdateAuthUserEmailRequest:
+            properties:
+                email:
+                    description: メールアドレス
+                    type: string
+            required:
+                - email
+            type: object
+        types.UpdateAuthUserNotificationRequest:
+            properties:
+                enabled:
+                    description: 通知の有効化設定
+                    type: boolean
+            type: object
+        types.UpdateAuthUserThumbnailRequest:
+            properties:
+                thumbnailUrl:
+                    description: サムネイルURL
+                    type: string
+            type: object
+        types.UpdateAuthUserUsernameRequest:
+            properties:
+                username:
+                    description: ユーザー名(表示名)
+                    maxLength: 32
+                    type: string
+            required:
+                - username
+            type: object
+        types.UpdateExperienceReviewRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 2000
+                    type: string
+                rate:
+                    description: 評価
+                    maximum: 5
+                    minimum: 1
+                    type: integer
+                title:
+                    description: タイトル
+                    maxLength: 64
+                    type: string
+            required:
+                - comment
+                - title
+            type: object
+        types.UpdateProductReviewRequest:
+            properties:
+                comment:
+                    description: コメント
+                    maxLength: 2000
+                    type: string
+                rate:
+                    description: 評価
+                    maximum: 5
+                    minimum: 1
+                    type: integer
+                title:
+                    description: タイトル
+                    maxLength: 64
+                    type: string
+            required:
+                - comment
+                - title
+            type: object
+        types.UpdateSpotRequest:
+            properties:
+                description:
+                    description: 説明
+                    maxLength: 2000
+                    type: string
+                latitude:
+                    description: 緯度
+                    maximum: 90
+                    minimum: -90
+                    type: number
+                longitude:
+                    description: 経度
+                    maximum: 180
+                    minimum: -180
+                    type: number
+                name:
+                    description: スポット名
+                    maxLength: 64
+                    type: string
+                spotTypeId:
+                    description: スポット種別ID
+                    type: string
+                thumbnailUrl:
+                    description: サムネイルURL
+                    type: string
+            required:
+                - latitude
+                - longitude
+                - name
+                - spotTypeId
+            type: object
+        types.UploadStateResponse:
             properties:
                 status:
                     description: アップロード結果
@@ -2584,7 +2558,7 @@ components:
                     description: 参照先URL
                     type: string
             type: object
-        response.UploadURLResponse:
+        types.UploadURLResponse:
             properties:
                 key:
                     description: アップロード後の状態参照用キー
@@ -2593,7 +2567,43 @@ components:
                     description: アップロード用の署名付きURL
                     type: string
             type: object
-        response.Video:
+        types.UpsertExperienceReviewReactionRequest:
+            properties:
+                reactionType:
+                    description: リアクション種別
+                    type: integer
+            required:
+                - reactionType
+            type: object
+        types.UpsertProductReviewReactionRequest:
+            properties:
+                reactionType:
+                    description: リアクション種別
+                    type: integer
+            required:
+                - reactionType
+            type: object
+        types.VerifyAuthUserEmailRequest:
+            properties:
+                verifyCode:
+                    description: 検証コード
+                    type: string
+            required:
+                - verifyCode
+            type: object
+        types.VerifyAuthUserRequest:
+            properties:
+                id:
+                    description: ユーザーID
+                    type: string
+                verifyCode:
+                    description: 検証コード
+                    type: string
+            required:
+                - id
+                - verifyCode
+            type: object
+        types.Video:
             description: オンデマンド動画情報
             properties:
                 coordinatorId:
@@ -2630,7 +2640,7 @@ components:
                     description: 動画URL
                     type: string
             type: object
-        response.VideoComment:
+        types.VideoComment:
             properties:
                 accountId:
                     description: アカウントID
@@ -2651,38 +2661,38 @@ components:
                     description: ユーザー名
                     type: string
             type: object
-        response.VideoCommentsResponse:
+        types.VideoCommentsResponse:
             properties:
                 comments:
                     description: コメント一覧
                     items:
-                        $ref: '#/components/schemas/response.VideoComment'
+                        $ref: '#/components/schemas/types.VideoComment'
                     type: array
                     uniqueItems: false
                 nextToken:
                     description: 次の取得開始位置
                     type: string
             type: object
-        response.VideoResponse:
+        types.VideoResponse:
             properties:
                 coordinator:
-                    $ref: '#/components/schemas/response.Coordinator'
+                    $ref: '#/components/schemas/types.Coordinator'
                 experiences:
                     description: 体験一覧
                     items:
-                        $ref: '#/components/schemas/response.Experience'
+                        $ref: '#/components/schemas/types.Experience'
                     type: array
                     uniqueItems: false
                 products:
                     description: 商品一覧
                     items:
-                        $ref: '#/components/schemas/response.Product'
+                        $ref: '#/components/schemas/types.Product'
                     type: array
                     uniqueItems: false
                 video:
-                    $ref: '#/components/schemas/response.Video'
+                    $ref: '#/components/schemas/types.Video'
             type: object
-        response.VideoSummary:
+        types.VideoSummary:
             properties:
                 coordinatorId:
                     description: コーディネータID
@@ -2700,12 +2710,12 @@ components:
                     description: タイトル
                     type: string
             type: object
-        response.VideosResponse:
+        types.VideosResponse:
             properties:
                 coordinators:
                     description: コーディネータ一覧
                     items:
-                        $ref: '#/components/schemas/response.Coordinator'
+                        $ref: '#/components/schemas/types.Coordinator'
                     type: array
                     uniqueItems: false
                 total:
@@ -2714,20 +2724,10 @@ components:
                 videos:
                     description: オンデマンド動画一覧
                     items:
-                        $ref: '#/components/schemas/response.VideoSummary'
+                        $ref: '#/components/schemas/types.VideoSummary'
                     type: array
                     uniqueItems: false
             type: object
-        time.Weekday:
-            type: integer
-            x-enum-varnames:
-                - Sunday
-                - Monday
-                - Tuesday
-                - Wednesday
-                - Thursday
-                - Friday
-                - Saturday
         util.ErrorResponse:
             properties:
                 detail:
@@ -2779,7 +2779,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AddressesResponse'
+                                $ref: '#/components/schemas/types.AddressesResponse'
                     description: OK
                 "400":
                     content:
@@ -2804,7 +2804,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateAddressRequest'
+                            $ref: '#/components/schemas/types.CreateAddressRequest'
                 description: 住所情報
                 required: true
             responses:
@@ -2812,7 +2812,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AddressResponse'
+                                $ref: '#/components/schemas/types.AddressResponse'
                     description: OK
                 "400":
                     content:
@@ -2881,7 +2881,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AddressResponse'
+                                $ref: '#/components/schemas/types.AddressResponse'
                     description: OK
                 "401":
                     content:
@@ -2919,7 +2919,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAddressRequest'
+                            $ref: '#/components/schemas/types.UpdateAddressRequest'
                 description: 更新する住所情報
                 required: true
             responses:
@@ -2978,7 +2978,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthResponse'
+                                $ref: '#/components/schemas/types.AuthResponse'
                     description: OK
                 "401":
                     content:
@@ -2997,7 +2997,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.SignInRequest'
+                            $ref: '#/components/schemas/types.SignInRequest'
                 description: サインイン
                 required: true
             responses:
@@ -3005,7 +3005,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthResponse'
+                                $ref: '#/components/schemas/types.AuthResponse'
                     description: OK
                 "400":
                     content:
@@ -3029,7 +3029,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.ForgotAuthPasswordRequest'
+                            $ref: '#/components/schemas/types.ForgotAuthPasswordRequest'
                 description: パスワード再設定リクエスト
                 required: true
             responses:
@@ -3051,7 +3051,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.ResetAuthPasswordRequest'
+                            $ref: '#/components/schemas/types.ResetAuthPasswordRequest'
                 description: パスワード再設定実行
                 required: true
             responses:
@@ -3085,7 +3085,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthGoogleAccountResponse'
+                                $ref: '#/components/schemas/types.AuthGoogleAccountResponse'
                     description: OK
             security:
                 - cookieauth: []
@@ -3111,7 +3111,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthLINEAccountResponse'
+                                $ref: '#/components/schemas/types.AuthLINEAccountResponse'
                     description: OK
             security:
                 - cookieauth: []
@@ -3125,7 +3125,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthPasswordRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthPasswordRequest'
                 description: パスワード変更
                 required: true
             responses:
@@ -3155,7 +3155,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.RefreshAuthTokenRequest'
+                            $ref: '#/components/schemas/types.RefreshAuthTokenRequest'
                 description: トークンリフレッシュ
                 required: true
             responses:
@@ -3163,7 +3163,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthResponse'
+                                $ref: '#/components/schemas/types.AuthResponse'
                     description: OK
                 "400":
                     content:
@@ -3188,7 +3188,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CartResponse'
+                                $ref: '#/components/schemas/types.CartResponse'
                     description: OK
             security:
                 - cookieauth: []
@@ -3202,7 +3202,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.AddCartItemRequest'
+                            $ref: '#/components/schemas/types.AddCartItemRequest'
                 description: 商品追加
                 required: true
             responses:
@@ -3296,7 +3296,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CalcCartResponse'
+                                $ref: '#/components/schemas/types.CalcCartResponse'
                     description: OK
                 "400":
                     content:
@@ -3324,7 +3324,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutStateResponse'
+                                $ref: '#/components/schemas/types.CheckoutStateResponse'
                     description: OK
                 "401":
                     content:
@@ -3359,7 +3359,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.PreCheckoutExperienceResponse'
+                                $ref: '#/components/schemas/types.PreCheckoutExperienceResponse'
                     description: OK
                 "401":
                     content:
@@ -3392,7 +3392,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CheckoutExperienceRequest'
+                            $ref: '#/components/schemas/types.CheckoutExperienceRequest'
                 description: 体験決済
                 required: true
             responses:
@@ -3400,7 +3400,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutResponse'
+                                $ref: '#/components/schemas/types.CheckoutResponse'
                     description: OK
                 "400":
                     content:
@@ -3427,7 +3427,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CheckoutProductRequest'
+                            $ref: '#/components/schemas/types.CheckoutProductRequest'
                 description: 商品決済
                 required: true
             responses:
@@ -3435,7 +3435,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutResponse'
+                                $ref: '#/components/schemas/types.CheckoutResponse'
                     description: OK
                 "400":
                     content:
@@ -3488,7 +3488,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CoordinatorsResponse'
+                                $ref: '#/components/schemas/types.CoordinatorsResponse'
                     description: OK
                 "400":
                     content:
@@ -3514,7 +3514,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CoordinatorResponse'
+                                $ref: '#/components/schemas/types.CoordinatorResponse'
                     description: OK
                 "404":
                     content:
@@ -3567,7 +3567,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperiencesResponse'
+                                $ref: '#/components/schemas/types.ExperiencesResponse'
                     description: OK
                 "400":
                     content:
@@ -3593,7 +3593,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperienceResponse'
+                                $ref: '#/components/schemas/types.ExperienceResponse'
                     description: OK
                 "404":
                     content:
@@ -3631,7 +3631,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperienceReviewsResponse'
+                                $ref: '#/components/schemas/types.ExperienceReviewsResponse'
                     description: OK
                 "400":
                     content:
@@ -3655,7 +3655,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateExperienceReviewRequest'
+                            $ref: '#/components/schemas/types.CreateExperienceReviewRequest'
                 description: レビュー作成
                 required: true
             responses:
@@ -3699,7 +3699,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperienceReviewResponse'
+                                $ref: '#/components/schemas/types.ExperienceReviewResponse'
                     description: OK
                 "404":
                     content:
@@ -3729,7 +3729,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateExperienceReviewRequest'
+                            $ref: '#/components/schemas/types.UpdateExperienceReviewRequest'
                 description: レビュー更新
                 required: true
             responses:
@@ -3807,7 +3807,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpsertExperienceReviewReactionRequest'
+                            $ref: '#/components/schemas/types.UpsertExperienceReviewReactionRequest'
                 description: リアクション登録/更新
                 required: true
             responses:
@@ -3867,7 +3867,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperiencesResponse'
+                                $ref: '#/components/schemas/types.ExperiencesResponse'
                     description: OK
                 "400":
                     content:
@@ -3893,7 +3893,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutStateResponse'
+                                $ref: '#/components/schemas/types.CheckoutStateResponse'
                     description: OK
                 "404":
                     content:
@@ -3920,7 +3920,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.GuestCheckoutExperienceRequest'
+                            $ref: '#/components/schemas/types.GuestCheckoutExperienceRequest'
                 description: ゲスト体験決済
                 required: true
             responses:
@@ -3928,7 +3928,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutResponse'
+                                $ref: '#/components/schemas/types.CheckoutResponse'
                     description: OK
                 "400":
                     content:
@@ -3948,7 +3948,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.GuestCheckoutProductRequest'
+                            $ref: '#/components/schemas/types.GuestCheckoutProductRequest'
                 description: ゲスト商品決済
                 required: true
             responses:
@@ -3956,7 +3956,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CheckoutResponse'
+                                $ref: '#/components/schemas/types.CheckoutResponse'
                     description: OK
                 "400":
                     content:
@@ -3995,7 +3995,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateGuestLiveCommentRequest'
+                            $ref: '#/components/schemas/types.CreateGuestLiveCommentRequest'
                 description: ゲストライブコメント作成
                 required: true
             responses:
@@ -4024,7 +4024,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateGuestVideoCommentRequest'
+                            $ref: '#/components/schemas/types.CreateGuestVideoCommentRequest'
                 description: ゲスト動画コメント作成
                 required: true
             responses:
@@ -4068,7 +4068,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.OrdersResponse'
+                                $ref: '#/components/schemas/types.OrdersResponse'
                     description: OK
                 "400":
                     content:
@@ -4102,7 +4102,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.OrderResponse'
+                                $ref: '#/components/schemas/types.OrderResponse'
                     description: OK
                 "401":
                     content:
@@ -4136,7 +4136,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.PostalCodeResponse'
+                                $ref: '#/components/schemas/types.PostalCodeResponse'
                     description: OK
                 "404":
                     content:
@@ -4168,7 +4168,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProducersResponse'
+                                $ref: '#/components/schemas/types.ProducersResponse'
                     description: OK
                 "400":
                     content:
@@ -4194,7 +4194,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProducerResponse'
+                                $ref: '#/components/schemas/types.ProducerResponse'
                     description: OK
                 "404":
                     content:
@@ -4231,7 +4231,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProductsResponse'
+                                $ref: '#/components/schemas/types.ProductsResponse'
                     description: OK
                 "400":
                     content:
@@ -4257,7 +4257,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProductResponse'
+                                $ref: '#/components/schemas/types.ProductResponse'
                     description: OK
                 "404":
                     content:
@@ -4295,7 +4295,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProductReviewsResponse'
+                                $ref: '#/components/schemas/types.ProductReviewsResponse'
                     description: OK
                 "400":
                     content:
@@ -4319,7 +4319,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateProductReviewRequest'
+                            $ref: '#/components/schemas/types.CreateProductReviewRequest'
                 description: レビュー作成
                 required: true
             responses:
@@ -4363,7 +4363,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProductReviewResponse'
+                                $ref: '#/components/schemas/types.ProductReviewResponse'
                     description: OK
                 "404":
                     content:
@@ -4393,7 +4393,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateProductReviewRequest'
+                            $ref: '#/components/schemas/types.UpdateProductReviewRequest'
                 description: レビュー更新
                 required: true
             responses:
@@ -4471,7 +4471,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpsertProductReviewReactionRequest'
+                            $ref: '#/components/schemas/types.UpsertProductReviewReactionRequest'
                 description: リアクション登録/更新
                 required: true
             responses:
@@ -4530,7 +4530,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.PromotionResponse'
+                                $ref: '#/components/schemas/types.PromotionResponse'
                     description: OK
                 "403":
                     content:
@@ -4562,7 +4562,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ScheduleResponse'
+                                $ref: '#/components/schemas/types.ScheduleResponse'
                     description: OK
                 "404":
                     content:
@@ -4594,7 +4594,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.LiveCommentsResponse'
+                                $ref: '#/components/schemas/types.LiveCommentsResponse'
                     description: OK
             summary: ライブコメント一覧取得
             tags:
@@ -4612,7 +4612,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateLiveCommentRequest'
+                            $ref: '#/components/schemas/types.CreateLiveCommentRequest'
                 description: ライブコメント作成
                 required: true
             responses:
@@ -4666,7 +4666,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ArchiveSchedulesResponse'
+                                $ref: '#/components/schemas/types.ArchiveSchedulesResponse'
                     description: OK
                 "400":
                     content:
@@ -4708,7 +4708,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.LiveSchedulesResponse'
+                                $ref: '#/components/schemas/types.LiveSchedulesResponse'
                     description: OK
                 "400":
                     content:
@@ -4740,7 +4740,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.SpotTypesResponse'
+                                $ref: '#/components/schemas/types.SpotTypesResponse'
                     description: OK
                 "400":
                     content:
@@ -4778,7 +4778,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.SpotsResponse'
+                                $ref: '#/components/schemas/types.SpotsResponse'
                     description: OK
                 "400":
                     content:
@@ -4795,7 +4795,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateSpotRequest'
+                            $ref: '#/components/schemas/types.CreateSpotRequest'
                 description: スポット情報
                 required: true
             responses:
@@ -4803,7 +4803,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.SpotResponse'
+                                $ref: '#/components/schemas/types.SpotResponse'
                     description: OK
                 "400":
                     content:
@@ -4872,7 +4872,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.SpotResponse'
+                                $ref: '#/components/schemas/types.SpotResponse'
                     description: OK
                 "404":
                     content:
@@ -4896,7 +4896,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateSpotRequest'
+                            $ref: '#/components/schemas/types.UpdateSpotRequest'
                 description: 更新するスポット情報
                 required: true
             responses:
@@ -4939,7 +4939,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.PaymentSystemsResponse'
+                                $ref: '#/components/schemas/types.PaymentSystemsResponse'
                     description: OK
             summary: 支払手段一覧取得
             tags:
@@ -4952,7 +4952,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.TopCommonResponse'
+                                $ref: '#/components/schemas/types.TopCommonResponse'
                     description: OK
             summary: トップページ共通データ取得
             tags:
@@ -4964,7 +4964,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.GetUploadURLRequest'
+                            $ref: '#/components/schemas/types.GetUploadURLRequest'
                 description: ファイル情報
                 required: true
             responses:
@@ -4972,7 +4972,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.UploadURLResponse'
+                                $ref: '#/components/schemas/types.UploadURLResponse'
                     description: OK
                 "400":
                     content:
@@ -5006,7 +5006,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.UploadStateResponse'
+                                $ref: '#/components/schemas/types.UploadStateResponse'
                     description: OK
                 "404":
                     content:
@@ -5024,7 +5024,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.GetUploadURLRequest'
+                            $ref: '#/components/schemas/types.GetUploadURLRequest'
                 description: ファイル情報
                 required: true
             responses:
@@ -5032,7 +5032,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.UploadURLResponse'
+                                $ref: '#/components/schemas/types.UploadURLResponse'
                     description: OK
                 "400":
                     content:
@@ -5075,7 +5075,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthUserResponse'
+                                $ref: '#/components/schemas/types.AuthUserResponse'
                     description: OK
                 "401":
                     content:
@@ -5094,7 +5094,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateAuthUserRequest'
+                            $ref: '#/components/schemas/types.CreateAuthUserRequest'
                 description: ユーザー情報
                 required: true
             responses:
@@ -5102,7 +5102,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.CreateAuthUserResponse'
+                                $ref: '#/components/schemas/types.CreateAuthUserResponse'
                     description: OK
                 "400":
                     content:
@@ -5132,7 +5132,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthUserAccountIDRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthUserAccountIDRequest'
                 description: アカウントID
                 required: true
             responses:
@@ -5162,7 +5162,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthUserEmailRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthUserEmailRequest'
                 description: メールアドレス
                 required: true
             responses:
@@ -5204,7 +5204,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.VerifyAuthUserEmailRequest'
+                            $ref: '#/components/schemas/types.VerifyAuthUserEmailRequest'
                 description: 確認コード
                 required: true
             responses:
@@ -5242,7 +5242,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ExperienceReviewsResponse'
+                                $ref: '#/components/schemas/types.ExperienceReviewsResponse'
                     description: OK
                 "401":
                     content:
@@ -5262,7 +5262,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateAuthUserWithGoogleRequest'
+                            $ref: '#/components/schemas/types.CreateAuthUserWithGoogleRequest'
                 description: Googleアカウント情報
                 required: true
             responses:
@@ -5270,7 +5270,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthUserResponse'
+                                $ref: '#/components/schemas/types.AuthUserResponse'
                     description: OK
                 "400":
                     content:
@@ -5290,7 +5290,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateAuthUserWithLINERequest'
+                            $ref: '#/components/schemas/types.CreateAuthUserWithLINERequest'
                 description: LINEアカウント情報
                 required: true
             responses:
@@ -5298,7 +5298,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.AuthUserResponse'
+                                $ref: '#/components/schemas/types.AuthUserResponse'
                     description: OK
                 "400":
                     content:
@@ -5318,7 +5318,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthUserNotificationRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthUserNotificationRequest'
                 description: 通知設定
                 required: true
             responses:
@@ -5356,7 +5356,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.ProductReviewsResponse'
+                                $ref: '#/components/schemas/types.ProductReviewsResponse'
                     description: OK
                 "401":
                     content:
@@ -5376,7 +5376,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthUserThumbnailRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthUserThumbnailRequest'
                 description: サムネイルURL
                 required: true
             responses:
@@ -5406,7 +5406,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.UpdateAuthUserUsernameRequest'
+                            $ref: '#/components/schemas/types.UpdateAuthUserUsernameRequest'
                 description: ユーザー名
                 required: true
             responses:
@@ -5436,7 +5436,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.VerifyAuthUserRequest'
+                            $ref: '#/components/schemas/types.VerifyAuthUserRequest'
                 description: 確認コード
                 required: true
             responses:
@@ -5488,7 +5488,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.VideosResponse'
+                                $ref: '#/components/schemas/types.VideosResponse'
                     description: OK
                 "400":
                     content:
@@ -5514,7 +5514,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.VideoResponse'
+                                $ref: '#/components/schemas/types.VideoResponse'
                     description: OK
                 "404":
                     content:
@@ -5546,7 +5546,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/response.VideoCommentsResponse'
+                                $ref: '#/components/schemas/types.VideoCommentsResponse'
                     description: OK
             summary: 動画コメント一覧取得
             tags:
@@ -5564,7 +5564,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/request.CreateVideoCommentRequest'
+                            $ref: '#/components/schemas/types.CreateVideoCommentRequest'
                 description: 動画コメント作成
                 required: true
             responses:

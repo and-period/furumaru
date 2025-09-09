@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
@@ -27,15 +26,15 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 // @Router      /facilities/{facilityId}/auth [post]
 // @Param       facilityId path string true "施設ID"
 // @Accept      json
-// @Param       request body request.SignInRequest true "サインイン"
+// @Param       request body types.SignInRequest true "サインイン"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "退会済み"
 // @Failure     404 {object} util.ErrorResponse "ユーザーが存在しない"
 func (h *handler) SignIn(ctx *gin.Context) {
-	req := &request.SignInRequest{}
+	req := &types.SignInRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -64,7 +63,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(user.ID, auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -77,14 +76,14 @@ func (h *handler) SignIn(ctx *gin.Context) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetAccessTokenRequest true "アクセストークンの再発行"
+// @Param       request body types.GetAccessTokenRequest true "アクセストークンの再発行"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "リフレッシュトークンが無効"
 func (h *handler) GetAccessToken(ctx *gin.Context) {
-	req := &request.GetAccessTokenRequest{}
+	req := &types.GetAccessTokenRequest{}
 	if err := ctx.ShouldBindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -99,7 +98,7 @@ func (h *handler) GetAccessToken(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(token.UserID, auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

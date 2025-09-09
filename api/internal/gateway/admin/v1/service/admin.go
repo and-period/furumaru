@@ -3,7 +3,7 @@ package service
 import (
 	"strings"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
@@ -28,7 +28,7 @@ const (
 )
 
 type Admin struct {
-	response.Admin
+	types.Admin
 }
 
 type Admins []*Admin
@@ -86,7 +86,7 @@ func (s AdminStatus) Response() int32 {
 
 func NewAdmin(admin *entity.Admin) *Admin {
 	return &Admin{
-		Admin: response.Admin{
+		Admin: types.Admin{
 			ID:            admin.ID,
 			Type:          NewAdminType(admin.Type).Response(),
 			Lastname:      admin.Lastname,
@@ -104,7 +104,7 @@ func (a *Admin) Name() string {
 	return strings.TrimSpace(strings.Join([]string{a.Lastname, a.Firstname}, " "))
 }
 
-func (a *Admin) Response() *response.Admin {
+func (a *Admin) Response() *types.Admin {
 	return &a.Admin
 }
 
@@ -124,8 +124,8 @@ func (as Admins) Map() map[string]*Admin {
 	return res
 }
 
-func (as Admins) Response() []*response.Admin {
-	res := make([]*response.Admin, len(as))
+func (as Admins) Response() []*types.Admin {
+	res := make([]*types.Admin, len(as))
 	for i := range as {
 		res[i] = as[i].Response()
 	}

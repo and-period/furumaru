@@ -7,9 +7,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -64,7 +63,7 @@ func (h *handler) filterAccessOrder(ctx *gin.Context) {
 // @Param       statuses query []int32 false "注文ステータスフィルタ" collectionFormat(csv)
 // @Param       types query []int32 false "注文タイプフィルタ" collectionFormat(csv)
 // @Produce     json
-// @Success     200 {object} response.OrdersResponse
+// @Success     200 {object} types.OrdersResponse
 func (h *handler) ListOrders(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -81,7 +80,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	statuses, types, err := h.newOrderFileters(ctx)
+	statuses, otypes, err := h.newOrderFileters(ctx)
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -92,7 +91,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		Limit:    limit,
 		Offset:   offset,
 		Statuses: statuses,
-		Types:    types,
+		Types:    otypes,
 	}
 	orders, total, err := h.store.ListOrders(ctx, in)
 	if err != nil {
@@ -100,11 +99,11 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	}
 	if len(orders) == 0 {
-		res := &response.OrdersResponse{
-			Orders:       []*response.Order{},
-			Users:        []*response.User{},
-			Coordinators: []*response.Coordinator{},
-			Promotions:   []*response.Promotion{},
+		res := &types.OrdersResponse{
+			Orders:       []*types.Order{},
+			Users:        []*types.User{},
+			Coordinators: []*types.Coordinator{},
+			Promotions:   []*types.Promotion{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -148,7 +147,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.OrdersResponse{
+	res := &types.OrdersResponse{
 		Orders:       service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()).Response(),
 		Users:        users.Response(),
 		Coordinators: coordinators.Response(),
@@ -202,7 +201,7 @@ func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, []s
 // @Security    bearerauth
 // @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.OrderResponse
+// @Success     200 {object} types.OrderResponse
 // @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) GetOrder(ctx *gin.Context) {
 	order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
@@ -248,7 +247,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.OrderResponse{
+	res := &types.OrderResponse{
 		Order:       order.Response(),
 		User:        user.Response(),
 		Coordinator: coordinator.Response(),
@@ -265,14 +264,14 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 // @Router      /v1/orders/{orderId}/draft [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.DraftOrderRequest true "注文下書き保存"
+// @Param       request body types.DraftOrderRequest true "注文下書き保存"
 // @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
 // @Success     204
 // @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 // @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) DraftOrder(ctx *gin.Context) {
-	req := &request.DraftOrderRequest{}
+	req := &types.DraftOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -315,14 +314,14 @@ func (h *handler) CaptureOrder(ctx *gin.Context) {
 // @Router      /v1/orders/{orderId}/complete [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CompleteOrderRequest true "注文対応完了"
+// @Param       request body types.CompleteOrderRequest true "注文対応完了"
 // @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
 // @Success     204
 // @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 // @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) CompleteOrder(ctx *gin.Context) {
-	req := &request.CompleteOrderRequest{}
+	req := &types.CompleteOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -381,14 +380,14 @@ func (h *handler) CancelOrder(ctx *gin.Context) {
 // @Router      /v1/orders/{orderId}/refund [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.RefundOrderRequest true "注文の返金依頼"
+// @Param       request body types.RefundOrderRequest true "注文の返金依頼"
 // @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
 // @Success     204
 // @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 // @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) RefundOrder(ctx *gin.Context) {
-	req := &request.RefundOrderRequest{}
+	req := &types.RefundOrderRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -405,7 +404,7 @@ func (h *handler) RefundOrder(ctx *gin.Context) {
 }
 
 func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
-	req := &request.UpdateOrderFulfillmentRequest{}
+	req := &types.UpdateOrderFulfillmentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -429,12 +428,12 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 // @Router      /v1/orders/-/export [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.ExportOrdersRequest true "注文履歴のCSV出力"
+// @Param       request body types.ExportOrdersRequest true "注文履歴のCSV出力"
 // @Produce     json
 // @Success     204
 // @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 func (h *handler) ExportOrders(ctx *gin.Context) {
-	req := &request.ExportOrdersRequest{}
+	req := &types.ExportOrdersRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Shipping struct {
-	response.Shipping
+	types.Shipping
 }
 
 func NewShipping(shipping *entity.Shipping) *Shipping {
 	return &Shipping{
-		Shipping: response.Shipping{
+		Shipping: types.Shipping{
 			ID:                shipping.ID,
 			Box60Rates:        NewShippingRates(shipping.Box60Rates).Response(),
 			Box60Frozen:       shipping.Box60Frozen,
@@ -25,19 +25,19 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 	}
 }
 
-func (s *Shipping) Response() *response.Shipping {
+func (s *Shipping) Response() *types.Shipping {
 	return &s.Shipping
 }
 
 type ShippingRate struct {
-	response.ShippingRate
+	types.ShippingRate
 }
 
 type ShippingRates []*ShippingRate
 
 func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 	return &ShippingRate{
-		ShippingRate: response.ShippingRate{
+		ShippingRate: types.ShippingRate{
 			Number:          rate.Number,
 			Name:            rate.Name,
 			Price:           rate.Price,
@@ -47,7 +47,7 @@ func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 	}
 }
 
-func (r *ShippingRate) Response() *response.ShippingRate {
+func (r *ShippingRate) Response() *types.ShippingRate {
 	return &r.ShippingRate
 }
 
@@ -59,8 +59,8 @@ func NewShippingRates(rates []*entity.ShippingRate) ShippingRates {
 	return shippingRates
 }
 
-func (rs ShippingRates) Response() []*response.ShippingRate {
-	shippingRates := make([]*response.ShippingRate, 0, len(rs))
+func (rs ShippingRates) Response() []*types.ShippingRate {
+	shippingRates := make([]*types.ShippingRate, 0, len(rs))
 	for _, rate := range rs {
 		shippingRates = append(shippingRates, rate.Response())
 	}

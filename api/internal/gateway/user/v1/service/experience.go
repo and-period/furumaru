@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/format"
 	"github.com/shopspring/decimal"
@@ -40,7 +40,7 @@ func (s ExperienceStatus) Response() int32 {
 }
 
 type Experience struct {
-	response.Experience
+	types.Experience
 	revisionID int64
 }
 
@@ -67,7 +67,7 @@ func NewExperience(experience *entity.Experience, rate *ExperienceRate) *Experie
 		point3 = experience.RecommendedPoints[2]
 	}
 	return &Experience{
-		Experience: response.Experience{
+		Experience: types.Experience{
 			ID:                    experience.ID,
 			CoordinatorID:         experience.CoordinatorID,
 			ProducerID:            experience.ProducerID,
@@ -141,7 +141,7 @@ func (e *Experience) Calc(params *CalcExperienceParams) (subtotal int64, discoun
 	return
 }
 
-func (e *Experience) Response() *response.Experience {
+func (e *Experience) Response() *types.Experience {
 	if e == nil {
 		return nil
 	}
@@ -164,8 +164,8 @@ func (es Experiences) MapByRevision() map[int64]*Experience {
 	return res
 }
 
-func (es Experiences) Response() []*response.Experience {
-	res := make([]*response.Experience, len(es))
+func (es Experiences) Response() []*types.Experience {
+	res := make([]*types.Experience, len(es))
 	for i := range es {
 		res[i] = es[i].Response()
 	}
@@ -173,21 +173,21 @@ func (es Experiences) Response() []*response.Experience {
 }
 
 type ExperienceMedia struct {
-	response.ExperienceMedia
+	types.ExperienceMedia
 }
 
 type MultiExperienceMedia []*ExperienceMedia
 
 func NewExperienceMedia(media *entity.ExperienceMedia) *ExperienceMedia {
 	return &ExperienceMedia{
-		ExperienceMedia: response.ExperienceMedia{
+		ExperienceMedia: types.ExperienceMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
 		},
 	}
 }
 
-func (m *ExperienceMedia) Response() *response.ExperienceMedia {
+func (m *ExperienceMedia) Response() *types.ExperienceMedia {
 	return &m.ExperienceMedia
 }
 
@@ -199,8 +199,8 @@ func NewMultiExperienceMedia(media []*entity.ExperienceMedia) MultiExperienceMed
 	return res
 }
 
-func (m MultiExperienceMedia) Response() []*response.ExperienceMedia {
-	res := make([]*response.ExperienceMedia, len(m))
+func (m MultiExperienceMedia) Response() []*types.ExperienceMedia {
+	res := make([]*types.ExperienceMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
 	}
@@ -208,7 +208,7 @@ func (m MultiExperienceMedia) Response() []*response.ExperienceMedia {
 }
 
 type ExperienceRate struct {
-	response.ExperienceRate
+	types.ExperienceRate
 	experienceID string
 }
 
@@ -216,7 +216,7 @@ type ExperienceRates []*ExperienceRate
 
 func newExperienceRate(review *entity.AggregatedExperienceReview) *ExperienceRate {
 	return &ExperienceRate{
-		ExperienceRate: response.ExperienceRate{
+		ExperienceRate: types.ExperienceRate{
 			Count:   review.Count,
 			Average: format.Round(review.Average, 1),
 			Detail: map[int64]int64{
@@ -233,7 +233,7 @@ func newExperienceRate(review *entity.AggregatedExperienceReview) *ExperienceRat
 
 func newEmptyExperienceRate() *ExperienceRate {
 	return &ExperienceRate{
-		ExperienceRate: response.ExperienceRate{
+		ExperienceRate: types.ExperienceRate{
 			Count:   0,
 			Average: 0.0,
 			Detail: map[int64]int64{
@@ -248,7 +248,7 @@ func newEmptyExperienceRate() *ExperienceRate {
 	}
 }
 
-func (r *ExperienceRate) Response() *response.ExperienceRate {
+func (r *ExperienceRate) Response() *types.ExperienceRate {
 	if r == nil {
 		return newEmptyExperienceRate().Response()
 	}
@@ -271,8 +271,8 @@ func (rs ExperienceRates) MapByExperienceID() map[string]*ExperienceRate {
 	return res
 }
 
-func (rs ExperienceRates) Response() []*response.ExperienceRate {
-	res := make([]*response.ExperienceRate, len(rs))
+func (rs ExperienceRates) Response() []*types.ExperienceRate {
+	res := make([]*types.ExperienceRate, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
 	}

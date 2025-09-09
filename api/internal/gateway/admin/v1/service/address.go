@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Address struct {
-	response.Address
+	types.Address
 	revisionID int64
 }
 
@@ -14,7 +14,7 @@ type Addresses []*Address
 
 func NewAddress(address *entity.Address) *Address {
 	return &Address{
-		Address: response.Address{
+		Address: types.Address{
 			AddressID:      address.AddressID,
 			Lastname:       address.Lastname,
 			Firstname:      address.Firstname,
@@ -32,7 +32,7 @@ func NewAddress(address *entity.Address) *Address {
 	}
 }
 
-func (a *Address) Response() *response.Address {
+func (a *Address) Response() *types.Address {
 	if a == nil {
 		return nil
 	}
@@ -55,8 +55,8 @@ func (as Addresses) MapByRevision() map[int64]*Address {
 	return res
 }
 
-func (as Addresses) Response() []*response.Address {
-	res := make([]*response.Address, len(as))
+func (as Addresses) Response() []*types.Address {
+	res := make([]*types.Address, len(as))
 	for i := range as {
 		res[i] = as[i].Response()
 	}

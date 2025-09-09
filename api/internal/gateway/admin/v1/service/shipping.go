@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Shipping struct {
-	response.Shipping
+	types.Shipping
 	ShopID        string
 	coordinatorID string
 }
@@ -14,14 +14,14 @@ type Shipping struct {
 type Shippings []*Shipping
 
 type ShippingRate struct {
-	response.ShippingRate
+	types.ShippingRate
 }
 
 type ShippingRates []*ShippingRate
 
 func NewShipping(shipping *entity.Shipping) *Shipping {
 	return &Shipping{
-		Shipping: response.Shipping{
+		Shipping: types.Shipping{
 			ID:                shipping.ID,
 			Name:              shipping.Name,
 			IsDefault:         shipping.IsDefault(),
@@ -41,7 +41,7 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 	}
 }
 
-func (s *Shipping) Response() *response.Shipping {
+func (s *Shipping) Response() *types.Shipping {
 	return &s.Shipping
 }
 
@@ -53,8 +53,8 @@ func NewShippings(shippings entity.Shippings) Shippings {
 	return res
 }
 
-func (ss Shippings) Response() []*response.Shipping {
-	res := make([]*response.Shipping, len(ss))
+func (ss Shippings) Response() []*types.Shipping {
+	res := make([]*types.Shipping, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}
@@ -63,7 +63,7 @@ func (ss Shippings) Response() []*response.Shipping {
 
 func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 	return &ShippingRate{
-		ShippingRate: response.ShippingRate{
+		ShippingRate: types.ShippingRate{
 			Number:          rate.Number,
 			Name:            rate.Name,
 			Price:           rate.Price,
@@ -72,7 +72,7 @@ func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 	}
 }
 
-func (r *ShippingRate) Response() *response.ShippingRate {
+func (r *ShippingRate) Response() *types.ShippingRate {
 	return &r.ShippingRate
 }
 
@@ -84,8 +84,8 @@ func NewShippingRates(rates entity.ShippingRates) ShippingRates {
 	return res
 }
 
-func (rs ShippingRates) Response() []*response.ShippingRate {
-	res := make([]*response.ShippingRate, len(rs))
+func (rs ShippingRates) Response() []*types.ShippingRate {
+	res := make([]*types.ShippingRate, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
 	}

@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -32,15 +31,15 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 // @Router      /carts [get]
 // @Security    cookieauth
 // @Produce     json
-// @Success     200 {object} response.CartResponse
+// @Success     200 {object} types.CartResponse
 func (h *handler) GetCart(ctx *gin.Context) {
 	sessionID := h.getSessionID(ctx)
 	if sessionID == "" {
 		// セッションIDがない場合は空のレスポンスを返す
-		res := &response.CartResponse{
-			Carts:        []*response.Cart{},
-			Coordinators: []*response.Coordinator{},
-			Products:     []*response.Product{},
+		res := &types.CartResponse{
+			Carts:        []*types.Cart{},
+			Coordinators: []*types.Coordinator{},
+			Products:     []*types.Product{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -77,7 +76,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CartResponse{
+	res := &types.CartResponse{
 		Carts:        service.NewCarts(cart).Response(),
 		Coordinators: coordinators.Response(),
 		Products:     products.Response(),
@@ -95,7 +94,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 // @Param       prefecture query int32 false "都道府県コード"
 // @Param       promotion query string false "プロモーションコード"
 // @Produce     json
-// @Success     200 {object} response.CalcCartResponse
+// @Success     200 {object} types.CalcCartResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CalcCart(ctx *gin.Context) {
 	boxNumber, err := util.GetQueryInt64(ctx, "number", 0)
@@ -155,7 +154,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CalcCartResponse{
+	res := &types.CalcCartResponse{
 		RequestID:   h.generateID(),
 		Carts:       service.NewCarts(cart).Response(),
 		Items:       service.NewCartItems(items).Response(),
@@ -176,7 +175,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 // @Router      /carts/-/items [post]
 // @Security    cookieauth
 // @Accept      json
-// @Param       request body request.AddCartItemRequest true "商品追加"
+// @Param       request body types.AddCartItemRequest true "商品追加"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -184,7 +183,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 // @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 // @Failure     412 {object} util.ErrorResponse "商品在庫が不足している"
 func (h *handler) AddCartItem(ctx *gin.Context) {
-	req := &request.AddCartItemRequest{}
+	req := &types.AddCartItemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -99,7 +99,7 @@ func TestSchedule(t *testing.T) {
 			},
 			broadcast: nil,
 			expect: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusWaiting.Response(),
@@ -107,7 +107,7 @@ func TestSchedule(t *testing.T) {
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					DistributionURL: "",
-					DistributionMetadata: &response.ScheduleDistributionMetadata{
+					DistributionMetadata: &types.ScheduleDistributionMetadata{
 						Subtitles: map[string]string{},
 					},
 					StartAt: 1638284400,
@@ -145,7 +145,7 @@ func TestSchedule(t *testing.T) {
 				UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
@@ -153,7 +153,7 @@ func TestSchedule(t *testing.T) {
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					DistributionURL: "http://example.com/index.m3u8",
-					DistributionMetadata: &response.ScheduleDistributionMetadata{
+					DistributionMetadata: &types.ScheduleDistributionMetadata{
 						Subtitles: map[string]string{},
 					},
 					StartAt: 1638284400,
@@ -197,7 +197,7 @@ func TestSchedule(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusArchived.Response(),
@@ -205,7 +205,7 @@ func TestSchedule(t *testing.T) {
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					DistributionURL: "http://example.com/movie.mp4",
-					DistributionMetadata: &response.ScheduleDistributionMetadata{
+					DistributionMetadata: &types.ScheduleDistributionMetadata{
 						Subtitles: map[string]string{
 							"ja": "http://example.com/subtitles.jpn.vtt",
 							"en": "http://example.com/subtitles.eng.vtt",
@@ -230,12 +230,12 @@ func TestSchedule_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		schedule *Schedule
-		expect   *response.Schedule
+		expect   *types.Schedule
 	}{
 		{
 			name: "success",
 			schedule: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Status:        ScheduleStatusLive.Response(),
@@ -246,7 +246,7 @@ func TestSchedule_Response(t *testing.T) {
 					EndAt:         1643641200,
 				},
 			},
-			expect: &response.Schedule{
+			expect: &types.Schedule{
 				ID:            "schedule-id",
 				CoordinatorID: "coordinator-id",
 				Status:        ScheduleStatusLive.Response(),
@@ -298,7 +298,7 @@ func TestSchedules(t *testing.T) {
 			},
 			expect: Schedules{
 				{
-					Schedule: response.Schedule{
+					Schedule: types.Schedule{
 						ID:              "schedule-id",
 						CoordinatorID:   "coordinator-id",
 						Status:          ScheduleStatusLive.Response(),
@@ -306,7 +306,7 @@ func TestSchedules(t *testing.T) {
 						Description:     "スケジュールの詳細です。",
 						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 						DistributionURL: "",
-						DistributionMetadata: &response.ScheduleDistributionMetadata{
+						DistributionMetadata: &types.ScheduleDistributionMetadata{
 							Subtitles: map[string]string{},
 						},
 						StartAt: 1638284400,
@@ -329,13 +329,13 @@ func TestSchedules_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		schedules Schedules
-		expect    []*response.Schedule
+		expect    []*types.Schedule
 	}{
 		{
 			name: "success",
 			schedules: Schedules{
 				{
-					Schedule: response.Schedule{
+					Schedule: types.Schedule{
 						ID:            "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Status:        ScheduleStatusLive.Response(),
@@ -347,7 +347,7 @@ func TestSchedules_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Schedule{
+			expect: []*types.Schedule{
 				{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -45,7 +45,7 @@ const (
 )
 
 type OrderFulfillment struct {
-	response.OrderFulfillment
+	types.OrderFulfillment
 	orderID string
 }
 
@@ -117,7 +117,7 @@ func (t ShippingType) Response() int32 {
 
 func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address) *OrderFulfillment {
 	return &OrderFulfillment{
-		OrderFulfillment: response.OrderFulfillment{
+		OrderFulfillment: types.OrderFulfillment{
 			FulfillmentID:   fulfillment.ID,
 			TrackingNumber:  fulfillment.TrackingNumber,
 			Status:          NewFulfillmentStatus(fulfillment.Status).Response(),
@@ -133,7 +133,7 @@ func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address)
 	}
 }
 
-func (f *OrderFulfillment) Response() *response.OrderFulfillment {
+func (f *OrderFulfillment) Response() *types.OrderFulfillment {
 	return &f.OrderFulfillment
 }
 
@@ -145,8 +145,8 @@ func NewOrderFulfillments(fulfillments entity.OrderFulfillments, addresses map[i
 	return res
 }
 
-func (fs OrderFulfillments) Response() []*response.OrderFulfillment {
-	res := make([]*response.OrderFulfillment, len(fs))
+func (fs OrderFulfillments) Response() []*types.OrderFulfillment {
+	res := make([]*types.OrderFulfillment, len(fs))
 	for i := range fs {
 		res[i] = fs[i].Response()
 	}

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -79,7 +79,7 @@ func TestMessage(t *testing.T) {
 				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Message{
-				Message: response.Message{
+				Message: types.Message{
 					ID:         "message-id",
 					Type:       int32(MessageTypeNotification),
 					Title:      "メッセージタイトル",
@@ -106,12 +106,12 @@ func TestMessage_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		message *Message
-		expect  *response.Message
+		expect  *types.Message
 	}{
 		{
 			name: "success",
 			message: &Message{
-				Message: response.Message{
+				Message: types.Message{
 					ID:         "message-id",
 					Type:       int32(MessageTypeNotification),
 					Title:      "メッセージタイトル",
@@ -123,7 +123,7 @@ func TestMessage_Response(t *testing.T) {
 					UpdatedAt:  1640962800,
 				},
 			},
-			expect: &response.Message{
+			expect: &types.Message{
 				ID:         "message-id",
 				Type:       int32(MessageTypeNotification),
 				Title:      "メッセージタイトル",
@@ -170,7 +170,7 @@ func TestMessages(t *testing.T) {
 			},
 			expect: Messages{
 				{
-					Message: response.Message{
+					Message: types.Message{
 						ID:         "message-id",
 						Type:       int32(MessageTypeNotification),
 						Title:      "メッセージタイトル",
@@ -198,13 +198,13 @@ func TestMessages_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		messages Messages
-		expect   []*response.Message
+		expect   []*types.Message
 	}{
 		{
 			name: "success",
 			messages: Messages{
 				{
-					Message: response.Message{
+					Message: types.Message{
 						ID:         "message-id",
 						Type:       int32(MessageTypeNotification),
 						Title:      "メッセージタイトル",
@@ -217,7 +217,7 @@ func TestMessages_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Message{
+			expect: []*types.Message{
 				{
 					ID:         "message-id",
 					Type:       int32(MessageTypeNotification),

@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,7 @@ func (h *handler) threadRoutes(rg *gin.RouterGroup) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.ThreadsResponse
+// @Success     200 {object} types.ThreadsResponse
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -62,8 +61,8 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 		h.httpError(ctx, err)
 	}
 	if len(sthreads) == 0 {
-		res := &response.ThreadsResponse{
-			Threads: []*response.Thread{},
+		res := &types.ThreadsResponse{
+			Threads: []*types.Thread{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -88,7 +87,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 	}
 
 	threads := service.NewThreads(sthreads)
-	res := &response.ThreadsResponse{
+	res := &types.ThreadsResponse{
 		Threads: threads.Response(),
 		Users:   users.Response(),
 		Admins:  admins.Response(),
@@ -104,12 +103,12 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.CreateThreadRequest true "スレッド情報"
+// @Param       request body types.CreateThreadRequest true "スレッド情報"
 // @Produce     json
-// @Success     200 {object} response.ThreadResponse
+// @Success     200 {object} types.ThreadResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateThread(ctx *gin.Context) {
-	req := &request.CreateThreadRequest{}
+	req := &types.CreateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -152,7 +151,7 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 	}
 	thread := service.NewThread(sthread)
 
-	res := &response.ThreadResponse{
+	res := &types.ThreadResponse{
 		Thread: thread.Response(),
 		User:   user.Response(),
 		Admin:  admin.Response(),
@@ -168,7 +167,7 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 // @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       threadId path string true "スレッドID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ThreadResponse
+// @Success     200 {object} types.ThreadResponse
 // @Failure     404 {object} util.ErrorResponse "スレッドが存在しない"
 func (h *handler) GetThread(ctx *gin.Context) {
 	thread, err := h.getThread(ctx, util.GetParam(ctx, "threadId"))
@@ -201,7 +200,7 @@ func (h *handler) GetThread(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ThreadResponse{
+	res := &types.ThreadResponse{
 		Thread: thread.Response(),
 		User:   user.Response(),
 		Admin:  admin.Response(),
@@ -229,13 +228,13 @@ func (h *handler) getThread(ctx context.Context, threadID string) (*service.Thre
 // @Param       contactId path string true "お問い合わせID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       threadId path string true "スレッドID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateThreadRequest true "スレッド情報"
+// @Param       request body types.UpdateThreadRequest true "スレッド情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "スレッドが存在しない"
 func (h *handler) UpdateThread(ctx *gin.Context) {
-	req := &request.UpdateThreadRequest{}
+	req := &types.UpdateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

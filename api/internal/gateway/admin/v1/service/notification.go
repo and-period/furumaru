@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
@@ -40,7 +40,7 @@ const (
 )
 
 type Notification struct {
-	response.Notification
+	types.Notification
 }
 
 type Notifications []*Notification
@@ -165,7 +165,7 @@ func (ts NotificationTargets) Response() []int32 {
 
 func NewNotification(notification *entity.Notification) *Notification {
 	return &Notification{
-		Notification: response.Notification{
+		Notification: types.Notification{
 			ID:          notification.ID,
 			Status:      NewNotificationStatus(notification.Status).Response(),
 			Type:        NewNotificationType(notification.Type).Response(),
@@ -189,7 +189,7 @@ func (n *Notification) Fill(promotion *Promotion) {
 	}
 }
 
-func (n *Notification) Response() *response.Notification {
+func (n *Notification) Response() *types.Notification {
 	return &n.Notification
 }
 
@@ -201,8 +201,8 @@ func NewNotifications(notifications entity.Notifications) Notifications {
 	return res
 }
 
-func (ns Notifications) Response() []*response.Notification {
-	res := make([]*response.Notification, len(ns))
+func (ns Notifications) Response() []*types.Notification {
+	res := make([]*types.Notification, len(ns))
 	for i := range ns {
 		res[i] = ns[i].Response()
 	}

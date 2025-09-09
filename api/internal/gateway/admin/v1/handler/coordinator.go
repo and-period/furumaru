@@ -6,9 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
@@ -38,7 +37,7 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       username query string false "コーディネータ名(あいまい検索)(64文字以内)" example("&.コーディネータ")
 // @Produce     json
-// @Success     200 {object} response.CoordinatorsResponse
+// @Success     200 {object} types.CoordinatorsResponse
 func (h *handler) ListCoordinators(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -67,10 +66,10 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 	if len(coordinators) == 0 {
-		res := &response.CoordinatorsResponse{
-			Coordinators: []*response.Coordinator{},
-			Shops:        []*response.Shop{},
-			ProductTypes: []*response.ProductType{},
+		res := &types.CoordinatorsResponse{
+			Coordinators: []*types.Coordinator{},
+			Shops:        []*types.Shop{},
+			ProductTypes: []*types.ProductType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -106,7 +105,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	scoordinator := service.NewCoordinators(coordinators, shops.MapByCoordinatorID())
 	scoordinator.SetProducerTotal(producerTotals)
 
-	res := &response.CoordinatorsResponse{
+	res := &types.CoordinatorsResponse{
 		Coordinators: scoordinator.Response(),
 		Shops:        shops.Response(),
 		ProductTypes: productTypes.Response(),
@@ -135,7 +134,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CoordinatorResponse{
+	res := &types.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		Shop:         shop.Response(),
 		ProductTypes: productTypes.Response(),
@@ -144,7 +143,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 }
 
 func (h *handler) CreateCoordinator(ctx *gin.Context) {
-	req := &request.CreateCoordinatorRequest{}
+	req := &types.CreateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -195,7 +194,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CoordinatorResponse{
+	res := &types.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		ProductTypes: productTypes.Response(),
 		Password:     password,
@@ -204,7 +203,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 }
 
 func (h *handler) UpdateCoordinator(ctx *gin.Context) {
-	req := &request.UpdateCoordinatorRequest{}
+	req := &types.UpdateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -240,7 +239,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 }
 
 func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
-	req := &request.UpdateCoordinatorEmailRequest{}
+	req := &types.UpdateCoordinatorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

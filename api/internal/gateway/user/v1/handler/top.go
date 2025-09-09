@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -23,7 +23,7 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 // @Tags        Top
 // @Router      /top/common [get]
 // @Produce     json
-// @Success     200 {object} response.TopCommonResponse
+// @Success     200 {object} types.TopCommonResponse
 func (h *handler) TopCommon(ctx *gin.Context) {
 	const (
 		defaultArchivesLimit = 6
@@ -85,7 +85,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.TopCommonResponse{
+	res := &types.TopCommonResponse{
 		Lives:            lives.Response(),
 		Archives:         archives.Response(),
 		ProductVideos:    productVideos.Response(),

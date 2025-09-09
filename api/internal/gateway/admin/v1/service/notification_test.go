@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -35,7 +35,7 @@ func TestNotification(t *testing.T) {
 				UpdatedAt:   jst.ParseFromUnix(date),
 			},
 			expect: &Notification{
-				Notification: response.Notification{
+				Notification: types.Notification{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",
 					UpdatedBy:   "admin-id",
@@ -68,7 +68,7 @@ func TestNotification_Fill(t *testing.T) {
 		{
 			name: "success",
 			notification: &Notification{
-				Notification: response.Notification{
+				Notification: types.Notification{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",
 					UpdatedBy:   "admin-id",
@@ -81,7 +81,7 @@ func TestNotification_Fill(t *testing.T) {
 				},
 			},
 			promotion: &Promotion{
-				Promotion: response.Promotion{
+				Promotion: types.Promotion{
 					ID:           "promotion-id",
 					Title:        "セール情報",
 					Description:  "セール詳細",
@@ -98,7 +98,7 @@ func TestNotification_Fill(t *testing.T) {
 				},
 			},
 			expect: &Notification{
-				Notification: response.Notification{
+				Notification: types.Notification{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",
 					UpdatedBy:   "admin-id",
@@ -126,12 +126,12 @@ func TestNotification_Response(t *testing.T) {
 	tests := []struct {
 		name         string
 		notification *Notification
-		expect       *response.Notification
+		expect       *types.Notification
 	}{
 		{
 			name: "success",
 			notification: &Notification{
-				Notification: response.Notification{
+				Notification: types.Notification{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",
 					UpdatedBy:   "admin-id",
@@ -144,7 +144,7 @@ func TestNotification_Response(t *testing.T) {
 					UpdatedAt: 1640962800,
 				},
 			},
-			expect: &response.Notification{
+			expect: &types.Notification{
 				ID:          "notification-id",
 				CreatedBy:   "admin-id",
 				UpdatedBy:   "admin-id",
@@ -194,7 +194,7 @@ func TestNotifications(t *testing.T) {
 			},
 			expect: Notifications{
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						CreatedBy:   "admin-id",
 						UpdatedBy:   "admin-id",
@@ -228,7 +228,7 @@ func TestNotifications_AdminIDs(t *testing.T) {
 			name: "success",
 			notifications: Notifications{
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						CreatedBy:   "admin-id",
 						UpdatedBy:   "admin-id",
@@ -264,7 +264,7 @@ func TestNotifications_Fill(t *testing.T) {
 			name: "success",
 			notifications: Notifications{
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						Type:        NotificationTypeSystem.Response(),
 						CreatedBy:   "admin-id",
@@ -278,7 +278,7 @@ func TestNotifications_Fill(t *testing.T) {
 					},
 				},
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						Type:        NotificationTypePromotion.Response(),
 						CreatedBy:   "admin-id",
@@ -295,7 +295,7 @@ func TestNotifications_Fill(t *testing.T) {
 			},
 			promotions: map[string]*Promotion{
 				"promotion-id": {
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "セール情報",
 						Description:  "セール詳細",
@@ -314,7 +314,7 @@ func TestNotifications_Fill(t *testing.T) {
 			},
 			expect: Notifications{
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						Type:        NotificationTypeSystem.Response(),
 						CreatedBy:   "admin-id",
@@ -328,7 +328,7 @@ func TestNotifications_Fill(t *testing.T) {
 					},
 				},
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						Type:        NotificationTypePromotion.Response(),
 						CreatedBy:   "admin-id",
@@ -359,13 +359,13 @@ func TestNotifications_Response(t *testing.T) {
 	tests := []struct {
 		name          string
 		notifications Notifications
-		expect        []*response.Notification
+		expect        []*types.Notification
 	}{
 		{
 			name: "success",
 			notifications: Notifications{
 				{
-					Notification: response.Notification{
+					Notification: types.Notification{
 						ID:          "notification-id",
 						CreatedBy:   "admin-id",
 						UpdatedBy:   "admin-id",
@@ -378,7 +378,7 @@ func TestNotifications_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Notification{
+			expect: []*types.Notification{
 				{
 					ID:          "notification-id",
 					CreatedBy:   "admin-id",

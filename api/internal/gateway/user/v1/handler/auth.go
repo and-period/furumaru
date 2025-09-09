@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
@@ -33,7 +32,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 // @Router      /auth [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
@@ -51,7 +50,7 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -62,13 +61,13 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /auth [post]
 // @Accept      json
-// @Param       request body request.SignInRequest true "サインイン"
+// @Param       request body types.SignInRequest true "サインイン"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) SignIn(ctx *gin.Context) {
-	req := &request.SignInRequest{}
+	req := &types.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -84,7 +83,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -120,13 +119,13 @@ func (h *handler) SignOut(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /auth/refresh-token [post]
 // @Accept      json
-// @Param       request body request.RefreshAuthTokenRequest true "トークンリフレッシュ"
+// @Param       request body types.RefreshAuthTokenRequest true "トークンリフレッシュ"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RefreshAuthToken(ctx *gin.Context) {
-	req := &request.RefreshAuthTokenRequest{}
+	req := &types.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -141,7 +140,7 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -153,7 +152,7 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 // @Router      /auth/password [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateAuthPasswordRequest true "パスワード変更"
+// @Param       request body types.UpdateAuthPasswordRequest true "パスワード変更"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -164,7 +163,7 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	req := &request.UpdateAuthPasswordRequest{}
+	req := &types.UpdateAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -189,12 +188,12 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /auth/forgot-password [post]
 // @Accept      json
-// @Param       request body request.ForgotAuthPasswordRequest true "パスワード再設定リクエスト"
+// @Param       request body types.ForgotAuthPasswordRequest true "パスワード再設定リクエスト"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
-	req := &request.ForgotAuthPasswordRequest{}
+	req := &types.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -216,12 +215,12 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /auth/forgot-password/verified [post]
 // @Accept      json
-// @Param       request body request.ResetAuthPasswordRequest true "パスワード再設定実行"
+// @Param       request body types.ResetAuthPasswordRequest true "パスワード再設定実行"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ResetAuthPassword(ctx *gin.Context) {
-	req := &request.ResetAuthPasswordRequest{}
+	req := &types.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -249,7 +248,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 // @Param       state query string false "ステート"
 // @Param       redirectUri query string false "リダイレクトURI"
 // @Produce     json
-// @Success     200 {object} response.AuthGoogleAccountResponse
+// @Success     200 {object} types.AuthGoogleAccountResponse
 func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 	in := &user.AuthMemberWithGoogleInput{
 		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
@@ -263,7 +262,7 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthGoogleAccountResponse{
+	res := &types.AuthGoogleAccountResponse{
 		URL: authURL,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -277,7 +276,7 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 // @Param       state query string false "ステート"
 // @Param       redirectUri query string false "リダイレクトURI"
 // @Produce     json
-// @Success     200 {object} response.AuthLINEAccountResponse
+// @Success     200 {object} types.AuthLINEAccountResponse
 func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 	in := &user.AuthMemberWithLINEInput{
 		AuthMemberDetailWithOAuth: user.AuthMemberDetailWithOAuth{
@@ -291,7 +290,7 @@ func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthLINEAccountResponse{
+	res := &types.AuthLINEAccountResponse{
 		URL: authURL,
 	}
 	ctx.JSON(http.StatusOK, res)

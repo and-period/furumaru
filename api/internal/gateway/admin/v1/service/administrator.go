@@ -3,19 +3,19 @@ package service
 import (
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Administrator struct {
-	response.Administrator
+	types.Administrator
 }
 
 type Administrators []*Administrator
 
 func NewAdministrator(admin *entity.Administrator) *Administrator {
 	return &Administrator{
-		Administrator: response.Administrator{
+		Administrator: types.Administrator{
 			ID:            admin.ID,
 			Status:        NewAdminStatus(admin.Status).Response(),
 			Lastname:      admin.Lastname,
@@ -32,7 +32,7 @@ func NewAdministrator(admin *entity.Administrator) *Administrator {
 
 func (a *Administrator) AuthUser() *AuthUser {
 	return &AuthUser{
-		AuthUser: response.AuthUser{
+		AuthUser: types.AuthUser{
 			AdminID:  a.ID,
 			ShopIDs:  []string{},
 			Type:     AdminTypeAdministrator.Response(),
@@ -42,7 +42,7 @@ func (a *Administrator) AuthUser() *AuthUser {
 	}
 }
 
-func (a *Administrator) Response() *response.Administrator {
+func (a *Administrator) Response() *types.Administrator {
 	return &a.Administrator
 }
 
@@ -54,8 +54,8 @@ func NewAdministrators(admins entity.Administrators) Administrators {
 	return res
 }
 
-func (as Administrators) Response() []*response.Administrator {
-	res := make([]*response.Administrator, len(as))
+func (as Administrators) Response() []*types.Administrator {
+	res := make([]*types.Administrator, len(as))
 	for i := range as {
 		res[i] = as[i].Response()
 	}

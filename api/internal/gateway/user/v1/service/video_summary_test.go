@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -57,7 +57,7 @@ func TestVideoSummaries(t *testing.T) {
 			},
 			expect: VideoSummaries{
 				{
-					VideoSummary: response.VideoSummary{
+					VideoSummary: types.VideoSummary{
 						ID:            "video-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "じゃがいもの育て方",
@@ -90,7 +90,7 @@ func TestVideoSummaries_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			videos: VideoSummaries{
 				{
-					VideoSummary: response.VideoSummary{
+					VideoSummary: types.VideoSummary{
 						ID:            "video-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "じゃがいもの育て方",
@@ -118,13 +118,13 @@ func TestVideoSummaries_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		videos VideoSummaries
-		expect []*response.VideoSummary
+		expect []*types.VideoSummary
 	}{
 		{
 			name: "success",
 			videos: VideoSummaries{
 				{
-					VideoSummary: response.VideoSummary{
+					VideoSummary: types.VideoSummary{
 						ID:            "video-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "じゃがいもの育て方",
@@ -133,7 +133,7 @@ func TestVideoSummaries_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.VideoSummary{
+			expect: []*types.VideoSummary{
 				{
 					ID:            "video-id",
 					CoordinatorID: "coordinator-id",

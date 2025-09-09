@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +25,7 @@ func TestPostalCode(t *testing.T) {
 				Town:           "永田町",
 			},
 			expect: &PostalCode{
-				PostalCode: response.PostalCode{
+				PostalCode: types.PostalCode{
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					Prefecture:     "東京都",
@@ -49,12 +49,12 @@ func TestPostalCode_Response(t *testing.T) {
 	tests := []struct {
 		name       string
 		postalCode *PostalCode
-		expect     *response.PostalCode
+		expect     *types.PostalCode
 	}{
 		{
 			name: "success",
 			postalCode: &PostalCode{
-				PostalCode: response.PostalCode{
+				PostalCode: types.PostalCode{
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					Prefecture:     "東京都",
@@ -62,7 +62,7 @@ func TestPostalCode_Response(t *testing.T) {
 					Town:           "永田町",
 				},
 			},
-			expect: &response.PostalCode{
+			expect: &types.PostalCode{
 				PostalCode:     "1000014",
 				PrefectureCode: 13,
 				Prefecture:     "東京都",

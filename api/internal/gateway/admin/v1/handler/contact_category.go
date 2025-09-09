@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,7 @@ func (h *handler) contactCategoryRoutes(rg *gin.RouterGroup) {
 // @Param       limit query integer false "取得上限数(max:200)" default(20) example(20)
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Produce     json
-// @Success     200 {object} response.ContactCategoriesResponse
+// @Success     200 {object} types.ContactCategoriesResponse
 func (h *handler) ListContactCategories(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -56,7 +56,7 @@ func (h *handler) ListContactCategories(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ContactCategoriesResponse{
+	res := &types.ContactCategoriesResponse{
 		ContactCategories: service.NewContactCategories(categories).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -69,7 +69,7 @@ func (h *handler) ListContactCategories(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       contactCategoryId path string true "お問い合わせカテゴリID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ContactCategoryResponse
+// @Success     200 {object} types.ContactCategoryResponse
 // @Failure     404 {object} util.ErrorResponse "お問い合わせカテゴリが存在しない"
 func (h *handler) GetContactCategory(ctx *gin.Context) {
 	category, err := h.getContactCategory(ctx, util.GetParam(ctx, "contactCategoryId"))
@@ -78,7 +78,7 @@ func (h *handler) GetContactCategory(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ContactCategoryResponse{
+	res := &types.ContactCategoryResponse{
 		ContactCategory: category.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

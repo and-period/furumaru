@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -32,7 +31,7 @@ func (h *handler) experienceTypeRoutes(rg *gin.RouterGroup) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       name query string false "体験タイプ名(あいまい検索)" example("農業")
 // @Produce     json
-// @Success     200 {object} response.ExperienceTypesResponse
+// @Success     200 {object} types.ExperienceTypesResponse
 func (h *handler) ListExperienceTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -55,14 +54,14 @@ func (h *handler) ListExperienceTypes(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	types, total, err := h.store.ListExperienceTypes(ctx, in)
+	etypes, total, err := h.store.ListExperienceTypes(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
-	res := &response.ExperienceTypesResponse{
-		ExperienceTypes: service.NewExperienceTypes(types).Response(),
+	res := &types.ExperienceTypesResponse{
+		ExperienceTypes: service.NewExperienceTypes(etypes).Response(),
 		Total:           total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -74,13 +73,13 @@ func (h *handler) ListExperienceTypes(ctx *gin.Context) {
 // @Router      /v1/experience-types [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateExperienceTypeRequest true "体験タイプ情報"
+// @Param       request body types.CreateExperienceTypeRequest true "体験タイプ情報"
 // @Produce     json
-// @Success     200 {object} response.ExperienceTypeResponse
+// @Success     200 {object} types.ExperienceTypeResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する体験タイプ名"
 func (h *handler) CreateExperienceType(ctx *gin.Context) {
-	req := &request.CreateExperienceTypeRequest{}
+	req := &types.CreateExperienceTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -95,7 +94,7 @@ func (h *handler) CreateExperienceType(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ExperienceTypeResponse{
+	res := &types.ExperienceTypeResponse{
 		ExperienceType: service.NewExperienceType(experienceType).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -108,14 +107,14 @@ func (h *handler) CreateExperienceType(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       experienceTypeId path string true "体験タイプID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateExperienceTypeRequest true "体験タイプ情報"
+// @Param       request body types.UpdateExperienceTypeRequest true "体験タイプ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "体験タイプが存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する体験タイプ名"
 func (h *handler) UpdateExperienceType(ctx *gin.Context) {
-	req := &request.UpdateExperienceTypeRequest{}
+	req := &types.UpdateExperienceTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

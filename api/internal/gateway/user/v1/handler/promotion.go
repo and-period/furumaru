@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
 // @Param       code path string true "プロモーションコード"
 // @Param       coordinatorId query string false "コーディネーターID"
 // @Produce     json
-// @Success     200 {object} response.PromotionResponse
+// @Success     200 {object} types.PromotionResponse
 // @Failure     403 {object} util.ErrorResponse "プロモーションが利用できません"
 // @Failure     404 {object} util.ErrorResponse "プロモーションが見つかりません"
 func (h *handler) GetPromotion(ctx *gin.Context) {
@@ -43,7 +43,7 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 		h.forbidden(ctx, errors.New("handler: this promotion is disabled"))
 		return
 	}
-	res := &response.PromotionResponse{
+	res := &types.PromotionResponse{
 		Promotion: service.NewPromotion(promotion).Response(),
 	}
 	if promotion.ShopID == "" {

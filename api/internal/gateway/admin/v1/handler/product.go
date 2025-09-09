@@ -8,9 +8,8 @@ import (
 	"slices"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -65,7 +64,7 @@ func (h *handler) filterAccessProduct(ctx *gin.Context) {
 // @Param       producerId query string false "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Param       orders query string false "ソート" example("-updatedAt")
 // @Produce     json
-// @Success     200 {object} response.ProductsResponse
+// @Success     200 {object} types.ProductsResponse
 func (h *handler) ListProducts(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -103,13 +102,13 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	}
 	if len(products) == 0 {
-		res := &response.ProductsResponse{
-			Products:     []*response.Product{},
-			Coordinators: []*response.Coordinator{},
-			Producers:    []*response.Producer{},
-			Categories:   []*response.Category{},
-			ProductTypes: []*response.ProductType{},
-			ProductTags:  []*response.ProductTag{},
+		res := &types.ProductsResponse{
+			Products:     []*types.Product{},
+			Coordinators: []*types.Coordinator{},
+			Producers:    []*types.Producer{},
+			Categories:   []*types.Category{},
+			ProductTypes: []*types.ProductType{},
+			ProductTags:  []*types.ProductTag{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -151,7 +150,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	sproducts := service.NewProducts(products)
 	sproducts.Fill(productTypes.Map(), categories.Map())
 
-	res := &response.ProductsResponse{
+	res := &types.ProductsResponse{
 		Products:     sproducts.Response(),
 		Coordinators: coordinators.Response(),
 		Producers:    producers.Response(),
@@ -195,7 +194,7 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 // @Security    bearerauth
 // @Param       productId path string true "商品ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ProductResponse
+// @Success     200 {object} types.ProductResponse
 // @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
@@ -239,7 +238,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 
 	product.Fill(category)
 
-	res := &response.ProductResponse{
+	res := &types.ProductResponse{
 		Product:     product.Response(),
 		Coordinator: coordinator.Response(),
 		Producer:    producer.Response(),
@@ -256,12 +255,12 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 // @Router      /v1/products [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateProductRequest true "商品情報"
+// @Param       request body types.CreateProductRequest true "商品情報"
 // @Produce     json
-// @Success     200 {object} response.ProductResponse
+// @Success     200 {object} types.ProductResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProduct(ctx *gin.Context) {
-	req := &request.CreateProductRequest{}
+	req := &types.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -369,7 +368,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductResponse{
+	res := &types.ProductResponse{
 		Product:     service.NewProduct(sproduct).Response(),
 		Coordinator: coordinator.Response(),
 		Producer:    producer.Response(),
@@ -381,7 +380,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 }
 
 func (h *handler) UpdateProduct(ctx *gin.Context) {
-	req := &request.UpdateProductRequest{}
+	req := &types.UpdateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

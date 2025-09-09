@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
@@ -33,7 +33,7 @@ func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 // @Param       coordinatorId query string false "コーディネーターID"
 // @Param       name query string false "動画名（部分一致検索）"
 // @Produce     json
-// @Success     200 {object} response.VideosResponse
+// @Success     200 {object} types.VideosResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListVideos(ctx *gin.Context) {
 	const (
@@ -68,9 +68,9 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		return
 	}
 	if len(videos) == 0 {
-		res := &response.VideosResponse{
-			Videos:       []*response.VideoSummary{},
-			Coordinators: []*response.Coordinator{},
+		res := &types.VideosResponse{
+			Videos:       []*types.VideoSummary{},
+			Coordinators: []*types.Coordinator{},
 		}
 		ctx.JSON(http.StatusOK, res)
 	}
@@ -81,7 +81,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideosResponse{
+	res := &types.VideosResponse{
 		Videos:       videos.Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
@@ -95,7 +95,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 // @Router      /videos/{videoId} [get]
 // @Param       videoId path string true "動画ID"
 // @Produce     json
-// @Success     200 {object} response.VideoResponse
+// @Success     200 {object} types.VideoResponse
 // @Failure     404 {object} util.ErrorResponse "動画が見つかりません"
 func (h *handler) GetVideo(ctx *gin.Context) {
 	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
@@ -127,7 +127,7 @@ func (h *handler) GetVideo(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideoResponse{
+	res := &types.VideoResponse{
 		Video:       video.Response(),
 		Coordinator: coordinator.Response(),
 		Products:    products.Response(),

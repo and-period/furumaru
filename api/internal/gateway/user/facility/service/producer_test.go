@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -17,7 +17,7 @@ func TestProducers(t *testing.T) {
 		producers uentity.Producers
 		shops     map[string]sentity.Shops
 		expect    Producers
-		response  []*response.Producer
+		response  []*types.Producer
 	}{
 		{
 			name: "success",
@@ -91,7 +91,7 @@ func TestProducers(t *testing.T) {
 			},
 			expect: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id01",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -102,7 +102,7 @@ func TestProducers(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id02",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -113,7 +113,7 @@ func TestProducers(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Producer{
+			response: []*types.Producer{
 				{
 					ID:            "producer-id01",
 					CoordinatorID: "coordinator-id",
@@ -156,7 +156,7 @@ func TestProducers_Map(t *testing.T) {
 			name: "success",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id01",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -166,7 +166,7 @@ func TestProducers_Map(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id02",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -178,7 +178,7 @@ func TestProducers_Map(t *testing.T) {
 			},
 			expect: map[string]*Producer{
 				"producer-id01": {
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id01",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -188,7 +188,7 @@ func TestProducers_Map(t *testing.T) {
 					},
 				},
 				"producer-id02": {
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id02",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -214,13 +214,13 @@ func TestProducers_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		producers Producers
-		expect    []*response.Producer
+		expect    []*types.Producer
 	}{
 		{
 			name: "success",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id01",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -230,7 +230,7 @@ func TestProducers_Response(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:            "producer-id02",
 						CoordinatorID: "coordinator-id",
 						Username:      "&.農園",
@@ -240,7 +240,7 @@ func TestProducers_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Producer{
+			expect: []*types.Producer{
 				{
 					ID:            "producer-id01",
 					CoordinatorID: "coordinator-id",

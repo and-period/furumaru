@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type Shop struct {
-	response.Shop
+	types.Shop
 }
 
 type Shops []*Shop
 
 func NewShop(shop *entity.Shop) *Shop {
 	return &Shop{
-		Shop: response.Shop{
+		Shop: types.Shop{
 			ID:             shop.ID,
 			Name:           shop.Name,
 			CoordinatorID:  shop.CoordinatorID,
@@ -34,7 +34,7 @@ func (s *Shop) GetID() string {
 	return s.ID
 }
 
-func (s *Shop) Response() *response.Shop {
+func (s *Shop) Response() *types.Shop {
 	return &s.Shop
 }
 
@@ -68,8 +68,8 @@ func (ss Shops) MapByCoordinatorID() map[string]*Shop {
 	return res
 }
 
-func (ss Shops) Response() []*response.Shop {
-	res := make([]*response.Shop, len(ss))
+func (ss Shops) Response() []*types.Shop {
+	res := make([]*types.Shop, len(ss))
 	for i, shop := range ss {
 		res[i] = shop.Response()
 	}

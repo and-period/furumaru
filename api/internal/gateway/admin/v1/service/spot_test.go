@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -61,7 +61,7 @@ func TestSpots(t *testing.T) {
 		name     string
 		spots    entity.Spots
 		expect   Spots
-		response []*response.Spot
+		response []*types.Spot
 	}{
 		{
 			name: "success",
@@ -83,7 +83,7 @@ func TestSpots(t *testing.T) {
 			},
 			expect: Spots{
 				{
-					Spot: response.Spot{
+					Spot: types.Spot{
 						ID:           "spot-id",
 						UserType:     1,
 						UserID:       "user-id",
@@ -99,7 +99,7 @@ func TestSpots(t *testing.T) {
 					UserType: SpotUserTypeUser,
 				},
 			},
-			response: []*response.Spot{
+			response: []*types.Spot{
 				{
 					ID:           "spot-id",
 					UserType:     1,

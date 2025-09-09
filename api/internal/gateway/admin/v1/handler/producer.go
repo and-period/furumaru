@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -54,7 +53,7 @@ func (h *handler) filterAccessProducer(ctx *gin.Context) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       username query string false "生産者名(あいまい検索)" example("田中")
 // @Produce     json
-// @Success     200 {object} response.ProducersResponse
+// @Success     200 {object} types.ProducersResponse
 func (h *handler) ListProducers(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -119,7 +118,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducersResponse{
+	res := &types.ProducersResponse{
 		Producers:    producers.Response(),
 		Shops:        shops.Response(),
 		Coordinators: coordinators.Response(),
@@ -135,7 +134,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       producerId path string true "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.ProducerResponse
+// @Success     200 {object} types.ProducerResponse
 // @Failure     404 {object} util.ErrorResponse "生産者が存在しない"
 func (h *handler) GetProducer(ctx *gin.Context) {
 	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
@@ -149,7 +148,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducerResponse{
+	res := &types.ProducerResponse{
 		Producer: producer.Response(),
 		Shops:    shops.Response(),
 	}
@@ -174,14 +173,14 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 // @Router      /v1/producers [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateProducerRequest true "生産者情報"
+// @Param       request body types.CreateProducerRequest true "生産者情報"
 // @Produce     json
-// @Success     200 {object} response.ProducerResponse
+// @Success     200 {object} types.ProducerResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "生産者の登録権限がない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateProducer(ctx *gin.Context) {
-	req := &request.CreateProducerRequest{}
+	req := &types.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -231,10 +230,10 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProducerResponse{
+	res := &types.ProducerResponse{
 		Producer:     service.NewProducer(producer).Response(),
-		Shops:        []*response.Shop{shop.Response()},
-		Coordinators: []*response.Coordinator{coordinator.Response()},
+		Shops:        []*types.Shop{shop.Response()},
+		Coordinators: []*types.Coordinator{coordinator.Response()},
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -246,7 +245,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       producerId path string true "生産者ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateProducerRequest true "生産者情報"
+// @Param       request body types.UpdateProducerRequest true "生産者情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -254,7 +253,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 // @Failure     404 {object} util.ErrorResponse "生産者が存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) UpdateProducer(ctx *gin.Context) {
-	req := &request.UpdateProducerRequest{}
+	req := &types.UpdateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

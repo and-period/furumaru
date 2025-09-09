@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
@@ -17,7 +17,7 @@ const (
 )
 
 type VideoViewerLog struct {
-	response.VideoViewerLog
+	types.VideoViewerLog
 }
 
 type VideoViewerLogs []*VideoViewerLog
@@ -54,7 +54,7 @@ func (i VideoViewerLogInterval) MediaEntity() entity.AggregateVideoViewerLogInte
 
 func NewVideoViewerLog(aggregate *entity.AggregatedVideoViewerLog, interval time.Duration) *VideoViewerLog {
 	return &VideoViewerLog{
-		VideoViewerLog: response.VideoViewerLog{
+		VideoViewerLog: types.VideoViewerLog{
 			VideoID: aggregate.VideoID,
 			StartAt: aggregate.ReportedAt.Unix(),
 			EndAt:   aggregate.ReportedAt.Add(interval).Unix(),
@@ -72,7 +72,7 @@ func newEmptyVideoViewerLog(videoID string, startAt time.Time, interval time.Dur
 	return NewVideoViewerLog(aggregate, interval)
 }
 
-func (l *VideoViewerLog) Response() *response.VideoViewerLog {
+func (l *VideoViewerLog) Response() *types.VideoViewerLog {
 	return &l.VideoViewerLog
 }
 
@@ -100,8 +100,8 @@ func NewVideoViewerLogs(
 	return res
 }
 
-func (ls VideoViewerLogs) Response() []*response.VideoViewerLog {
-	res := make([]*response.VideoViewerLog, len(ls))
+func (ls VideoViewerLogs) Response() []*types.VideoViewerLog {
+	res := make([]*types.VideoViewerLog, len(ls))
 	for i := range ls {
 		res[i] = ls[i].Response()
 	}

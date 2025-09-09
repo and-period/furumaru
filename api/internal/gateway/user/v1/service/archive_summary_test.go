@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +37,7 @@ func TestArchiveSummary(t *testing.T) {
 				UpdatedAt:       now,
 			},
 			expect: &ArchiveSummary{
-				ArchiveSummary: response.ArchiveSummary{
+				ArchiveSummary: types.ArchiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Title:         "スケジュールタイトル",
@@ -62,12 +62,12 @@ func TestArchiveSummary_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		archive *ArchiveSummary
-		expect  *response.ArchiveSummary
+		expect  *types.ArchiveSummary
 	}{
 		{
 			name: "success",
 			archive: &ArchiveSummary{
-				ArchiveSummary: response.ArchiveSummary{
+				ArchiveSummary: types.ArchiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Title:         "スケジュールタイトル",
@@ -76,7 +76,7 @@ func TestArchiveSummary_Response(t *testing.T) {
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 				},
 			},
-			expect: &response.ArchiveSummary{
+			expect: &types.ArchiveSummary{
 				ScheduleID:    "schedule-id",
 				CoordinatorID: "coordinator-id",
 				Title:         "スケジュールタイトル",
@@ -125,7 +125,7 @@ func TestArchiveSummaries(t *testing.T) {
 			},
 			expect: ArchiveSummaries{
 				{
-					ArchiveSummary: response.ArchiveSummary{
+					ArchiveSummary: types.ArchiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
@@ -157,7 +157,7 @@ func TestArchiveSummaries_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			archives: ArchiveSummaries{
 				{
-					ArchiveSummary: response.ArchiveSummary{
+					ArchiveSummary: types.ArchiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
@@ -183,13 +183,13 @@ func TestArchiveSummaries_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		archives ArchiveSummaries
-		expect   []*response.ArchiveSummary
+		expect   []*types.ArchiveSummary
 	}{
 		{
 			name: "success",
 			archives: ArchiveSummaries{
 				{
-					ArchiveSummary: response.ArchiveSummary{
+					ArchiveSummary: types.ArchiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
@@ -199,7 +199,7 @@ func TestArchiveSummaries_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.ArchiveSummary{
+			expect: []*types.ArchiveSummary{
 				{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",

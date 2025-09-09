@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	mentity "github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -30,7 +30,7 @@ func (h *handler) messageRoutes(rg *gin.RouterGroup) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       orders query string false "ソート(type,-type,read,-read,receivedAt,-receivedAt)" example("-receivedAt")
 // @Produce     json
-// @Success     200 {object} response.MessagesResponse
+// @Success     200 {object} types.MessagesResponse
 func (h *handler) ListMessages(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -66,7 +66,7 @@ func (h *handler) ListMessages(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.MessagesResponse{
+	res := &types.MessagesResponse{
 		Messages: service.NewMessages(messages).Response(),
 		Total:    total,
 	}
@@ -101,7 +101,7 @@ func (h *handler) newMessageOrders(ctx *gin.Context) ([]*messenger.ListMessagesO
 // @Security    bearerauth
 // @Param       messageId path string true "メッセージID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.MessageResponse
+// @Success     200 {object} types.MessageResponse
 // @Failure     404 {object} util.ErrorResponse "メッセージが存在しない"
 func (h *handler) GetMessage(ctx *gin.Context) {
 	in := &messenger.GetMessageInput{
@@ -115,7 +115,7 @@ func (h *handler) GetMessage(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.MessageResponse{
+	res := &types.MessageResponse{
 		Message: service.NewMessage(message).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

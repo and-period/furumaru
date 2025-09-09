@@ -7,9 +7,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -59,7 +58,7 @@ func (h *handler) filterAccessVideo(ctx *gin.Context) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       name query string false "動画名" example("春の特産品紹介")
 // @Produce     json
-// @Success     200 {object} response.VideosResponse
+// @Success     200 {object} types.VideosResponse
 func (h *handler) ListVideos(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -91,11 +90,11 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		return
 	}
 	if len(videos) == 0 {
-		res := &response.VideosResponse{
-			Videos:       []*response.Video{},
-			Coordinators: []*response.Coordinator{},
-			Products:     []*response.Product{},
-			Experiences:  []*response.Experience{},
+		res := &types.VideosResponse{
+			Videos:       []*types.Video{},
+			Coordinators: []*types.Coordinator{},
+			Products:     []*types.Product{},
+			Experiences:  []*types.Experience{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -124,7 +123,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideosResponse{
+	res := &types.VideosResponse{
 		Videos:       service.NewVideos(videos).Response(),
 		Coordinators: coordinators.Response(),
 		Products:     products.Response(),
@@ -141,7 +140,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.VideoResponse
+// @Success     200 {object} types.VideoResponse
 // @Failure     403 {object} util.ErrorResponse "動画の参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) GetVideo(ctx *gin.Context) {
@@ -174,7 +173,7 @@ func (h *handler) GetVideo(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideoResponse{
+	res := &types.VideoResponse{
 		Video:       video.Response(),
 		Coordinator: coordinator.Response(),
 		Products:    products.Response(),
@@ -189,12 +188,12 @@ func (h *handler) GetVideo(ctx *gin.Context) {
 // @Router      /v1/videos [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateVideoRequest true "動画情報"
+// @Param       request body types.CreateVideoRequest true "動画情報"
 // @Produce     json
-// @Success     200 {object} response.VideoResponse
+// @Success     200 {object} types.VideoResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateVideo(ctx *gin.Context) {
-	req := &request.CreateVideoRequest{}
+	req := &types.CreateVideoRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -261,7 +260,7 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.VideoResponse{
+	res := &types.VideoResponse{
 		Video:       service.NewVideo(video).Response(),
 		Coordinator: coordinator.Response(),
 		Products:    products.Response(),
@@ -277,14 +276,14 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       videoId path string true "動画ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateVideoRequest true "動画情報"
+// @Param       request body types.UpdateVideoRequest true "動画情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     403 {object} util.ErrorResponse "動画の更新権限がない"
 // @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) UpdateVideo(ctx *gin.Context) {
-	req := &request.UpdateVideoRequest{}
+	req := &types.UpdateVideoRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -348,7 +347,7 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 // @Param       end query integer false "集計終了日時 (unixtime,未指定の場合は現在時刻)" example("1640962800")
 // @Param       viewerLogInterval query string false "集計間隔 (未指定の場合は1分間隔)" example("minute")
 // @Produce     json
-// @Success     200 {object} response.AnalyzeVideoResponse
+// @Success     200 {object} types.AnalyzeVideoResponse
 // @Failure     403 {object} util.ErrorResponse "動画の参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) AnalyzeVideo(ctx *gin.Context) {
@@ -387,7 +386,7 @@ func (h *handler) AnalyzeVideo(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AnalyzeVideoResponse{
+	res := &types.AnalyzeVideoResponse{
 		ViewerLogs:   service.NewVideoViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
 		TotalViewers: totalViewers,
 	}

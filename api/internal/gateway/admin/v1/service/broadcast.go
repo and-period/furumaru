@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
@@ -24,13 +24,13 @@ const (
 )
 
 type Broadcast struct {
-	response.Broadcast
+	types.Broadcast
 }
 
 type Broadcasts []*Broadcast
 
 type GuestBroadcast struct {
-	response.GuestBroadcast
+	types.GuestBroadcast
 }
 
 func NewBroadcastStatus(status entity.BroadcastStatus) BroadcastStatus {
@@ -54,7 +54,7 @@ func (s BroadcastStatus) Response() int32 {
 
 func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
 	res := &Broadcast{
-		Broadcast: response.Broadcast{
+		Broadcast: types.Broadcast{
 			ID:             broadcast.ID,
 			ScheduleID:     broadcast.ScheduleID,
 			Status:         NewBroadcastStatus(broadcast.Status).Response(),
@@ -73,7 +73,7 @@ func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
 	return res
 }
 
-func (b *Broadcast) Response() *response.Broadcast {
+func (b *Broadcast) Response() *types.Broadcast {
 	if b == nil {
 		return nil
 	}
@@ -88,8 +88,8 @@ func NewBroadcasts(broadcasts entity.Broadcasts) Broadcasts {
 	return res
 }
 
-func (bs Broadcasts) Response() []*response.Broadcast {
-	res := make([]*response.Broadcast, len(bs))
+func (bs Broadcasts) Response() []*types.Broadcast {
+	res := make([]*types.Broadcast, len(bs))
 	for i := range bs {
 		res[i] = bs[i].Response()
 	}
@@ -98,7 +98,7 @@ func (bs Broadcasts) Response() []*response.Broadcast {
 
 func NewGuestBroadcast(schedule *Schedule, shop *Shop, coordinator *Coordinator) *GuestBroadcast {
 	return &GuestBroadcast{
-		response.GuestBroadcast{
+		types.GuestBroadcast{
 			Title:             schedule.Title,
 			Description:       schedule.Description,
 			StartAt:           schedule.StartAt,
@@ -109,6 +109,6 @@ func NewGuestBroadcast(schedule *Schedule, shop *Shop, coordinator *Coordinator)
 	}
 }
 
-func (b *GuestBroadcast) Response() *response.GuestBroadcast {
+func (b *GuestBroadcast) Response() *types.GuestBroadcast {
 	return &b.GuestBroadcast
 }

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -83,7 +83,7 @@ func TestLiveSummary(t *testing.T) {
 				},
 			},
 			expect: &LiveSummary{
-				LiveSummary: response.LiveSummary{
+				LiveSummary: types.LiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Status:        int32(ScheduleStatusLive),
@@ -91,7 +91,7 @@ func TestLiveSummary(t *testing.T) {
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,
 					EndAt:         1643641200,
-					Products: []*response.LiveProduct{
+					Products: []*types.LiveProduct{
 						{
 							ProductID:    "product-id",
 							Name:         "新鮮なじゃがいも",
@@ -118,12 +118,12 @@ func TestLiveSummary_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		live   *LiveSummary
-		expect *response.LiveSummary
+		expect *types.LiveSummary
 	}{
 		{
 			name: "success",
 			live: &LiveSummary{
-				LiveSummary: response.LiveSummary{
+				LiveSummary: types.LiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Status:        int32(ScheduleStatusLive),
@@ -131,7 +131,7 @@ func TestLiveSummary_Response(t *testing.T) {
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,
 					EndAt:         1643641200,
-					Products: []*response.LiveProduct{
+					Products: []*types.LiveProduct{
 						{
 							ProductID:    "product-id",
 							Name:         "新鮮なじゃがいも",
@@ -142,7 +142,7 @@ func TestLiveSummary_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: &response.LiveSummary{
+			expect: &types.LiveSummary{
 				ScheduleID:    "schedule-id",
 				CoordinatorID: "coordinator-id",
 				Status:        int32(ScheduleStatusLive),
@@ -150,7 +150,7 @@ func TestLiveSummary_Response(t *testing.T) {
 				ThumbnailURL:  "https://example.com/thumbnail.png",
 				StartAt:       1638284400,
 				EndAt:         1643641200,
-				Products: []*response.LiveProduct{
+				Products: []*types.LiveProduct{
 					{
 						ProductID:    "product-id",
 						Name:         "新鮮なじゃがいも",
@@ -261,7 +261,7 @@ func TestLiveSummaries(t *testing.T) {
 			},
 			expect: LiveSummaries{
 				{
-					LiveSummary: response.LiveSummary{
+					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Status:        int32(ScheduleStatusLive),
@@ -269,7 +269,7 @@ func TestLiveSummaries(t *testing.T) {
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
 						EndAt:         1643641200,
-						Products: []*response.LiveProduct{
+						Products: []*types.LiveProduct{
 							{
 								ProductID:    "product-id",
 								Name:         "新鮮なじゃがいも",
@@ -303,7 +303,7 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			lives: LiveSummaries{
 				{
-					LiveSummary: response.LiveSummary{
+					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Status:        int32(ScheduleStatusLive),
@@ -311,7 +311,7 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
 						EndAt:         1643641200,
-						Products: []*response.LiveProduct{
+						Products: []*types.LiveProduct{
 							{
 								ProductID:    "product-id",
 								Name:         "新鮮なじゃがいも",
@@ -339,13 +339,13 @@ func TestLiveSummaries_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		lives  LiveSummaries
-		expect []*response.LiveSummary
+		expect []*types.LiveSummary
 	}{
 		{
 			name: "success",
 			lives: LiveSummaries{
 				{
-					LiveSummary: response.LiveSummary{
+					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Status:        int32(ScheduleStatusLive),
@@ -353,7 +353,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
 						EndAt:         1643641200,
-						Products: []*response.LiveProduct{
+						Products: []*types.LiveProduct{
 							{
 								ProductID:    "product-id",
 								Name:         "新鮮なじゃがいも",
@@ -365,7 +365,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.LiveSummary{
+			expect: []*types.LiveSummary{
 				{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
@@ -374,7 +374,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,
 					EndAt:         1643641200,
-					Products: []*response.LiveProduct{
+					Products: []*types.LiveProduct{
 						{
 							ProductID:    "product-id",
 							Name:         "新鮮なじゃがいも",

@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Live struct {
-	response.Live
+	types.Live
 }
 
 type Lives []*Live
 
 func NewLive(live *entity.Live) *Live {
 	return &Live{
-		Live: response.Live{
+		Live: types.Live{
 			ID:         live.ID,
 			ScheduleID: live.ScheduleID,
 			ProducerID: live.ProducerID,
@@ -27,7 +27,7 @@ func NewLive(live *entity.Live) *Live {
 	}
 }
 
-func (l *Live) Response() *response.Live {
+func (l *Live) Response() *types.Live {
 	return &l.Live
 }
 
@@ -39,8 +39,8 @@ func NewLives(lives entity.Lives) Lives {
 	return res
 }
 
-func (ls Lives) Response() []*response.Live {
-	res := make([]*response.Live, len(ls))
+func (ls Lives) Response() []*types.Live {
+	res := make([]*types.Live, len(ls))
 	for i := range ls {
 		res[i] = ls[i].Response()
 	}

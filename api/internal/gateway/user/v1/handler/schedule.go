@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -34,7 +34,7 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 // @Param       coordinator query string false "コーディネーターID"
 // @Param       producer query string false "生産者ID"
 // @Produce     json
-// @Success     200 {object} response.LiveSchedulesResponse
+// @Success     200 {object} types.LiveSchedulesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 	const (
@@ -79,7 +79,7 @@ func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.LiveSchedulesResponse{
+	res := &types.LiveSchedulesResponse{
 		Lives:        lives.Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
@@ -96,7 +96,7 @@ func (h *handler) ListLiveSchedules(ctx *gin.Context) {
 // @Param       coordinator query string false "コーディネーターID"
 // @Param       producer query string false "生産者ID"
 // @Produce     json
-// @Success     200 {object} response.ArchiveSchedulesResponse
+// @Success     200 {object} types.ArchiveSchedulesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 	const (
@@ -141,7 +141,7 @@ func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ArchiveSchedulesResponse{
+	res := &types.ArchiveSchedulesResponse{
 		Archives:     archives.Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
@@ -155,7 +155,7 @@ func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
 // @Router      /schedules/{scheduleId} [get]
 // @Param       scheduleId path string true "スケジュールID"
 // @Produce     json
-// @Success     200 {object} response.ScheduleResponse
+// @Success     200 {object} types.ScheduleResponse
 // @Failure     404 {object} util.ErrorResponse "スケジュールが見つかりません"
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
@@ -197,7 +197,7 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ScheduleResponse{
+	res := &types.ScheduleResponse{
 		Schedule:    schedule.Response(),
 		Coordinator: coordinator.Response(),
 		Lives:       service.NewLives(lives).Response(),

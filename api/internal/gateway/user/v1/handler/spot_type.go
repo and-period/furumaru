@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -26,7 +26,7 @@ func (h *handler) spotTypeRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Produce     json
-// @Success     200 {object} response.SpotTypesResponse
+// @Success     200 {object} types.SpotTypesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	const (
@@ -50,14 +50,14 @@ func (h *handler) ListSpotTypes(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	types, total, err := h.store.ListSpotTypes(ctx, in)
+	stypes, total, err := h.store.ListSpotTypes(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
-	res := &response.SpotTypesResponse{
-		SpotTypes: service.NewSpotTypes(types).Response(),
+	res := &types.SpotTypesResponse{
+		SpotTypes: service.NewSpotTypes(stypes).Response(),
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)

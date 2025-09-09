@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -84,7 +84,7 @@ func TestSchedule(t *testing.T) {
 				UpdatedAt:       now,
 			},
 			expect: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
@@ -117,12 +117,12 @@ func TestSchedule_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		schedule *Schedule
-		expect   *response.Schedule
+		expect   *types.Schedule
 	}{
 		{
 			name: "success",
 			schedule: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
@@ -140,7 +140,7 @@ func TestSchedule_Response(t *testing.T) {
 					UpdatedAt:       1640962800,
 				},
 			},
-			expect: &response.Schedule{
+			expect: &types.Schedule{
 				ID:              "schedule-id",
 				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
@@ -199,7 +199,7 @@ func TestSchedules(t *testing.T) {
 			},
 			expect: Schedules{
 				{
-					Schedule: response.Schedule{
+					Schedule: types.Schedule{
 						ID:              "schedule-id",
 						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
@@ -233,13 +233,13 @@ func TestSchedules_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		schedules Schedules
-		expect    []*response.Schedule
+		expect    []*types.Schedule
 	}{
 		{
 			name: "success",
 			schedules: Schedules{
 				{
-					Schedule: response.Schedule{
+					Schedule: types.Schedule{
 						ID:              "schedule-id",
 						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
@@ -258,7 +258,7 @@ func TestSchedules_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Schedule{
+			expect: []*types.Schedule{
 				{
 					ID:              "schedule-id",
 					ShopID:          "shop-id",

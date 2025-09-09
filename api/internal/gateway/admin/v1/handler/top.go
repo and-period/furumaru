@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -29,7 +29,7 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 // @Param       periodType query string false "集計期間（未指定の場合は日次）" example("day")
 // @Param       shopId query string false "店舗ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Produce     json
-// @Success     200 {object} response.TopOrdersResponse
+// @Success     200 {object} types.TopOrdersResponse
 func (h *handler) TopOrders(ctx *gin.Context) {
 	const defaultPeriodType = service.TopOrderPeriodTypeDay
 
@@ -112,7 +112,7 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		previous = &sentity.AggregatedOrder{}
 	}
 
-	res := &response.TopOrdersResponse{
+	res := &types.TopOrdersResponse{
 		StartAt:     jst.Unix(startAt),
 		EndAt:       jst.Unix(endAt),
 		PeriodType:  periodType.Response(),

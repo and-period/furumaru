@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 type UserOrder struct {
-	response.UserOrder
+	types.UserOrder
 }
 
 type UserOrders []*UserOrder
 
 func NewUserOrder(order *entity.Order) *UserOrder {
 	return &UserOrder{
-		UserOrder: response.UserOrder{
+		UserOrder: types.UserOrder{
 			OrderID:   order.ID,
 			Status:    NewPaymentStatus(order.OrderPayment.Status).Response(),
 			SubTotal:  order.Subtotal,
@@ -25,7 +25,7 @@ func NewUserOrder(order *entity.Order) *UserOrder {
 	}
 }
 
-func (o *UserOrder) Response() *response.UserOrder {
+func (o *UserOrder) Response() *types.UserOrder {
 	return &o.UserOrder
 }
 
@@ -37,8 +37,8 @@ func NewUserOrders(orders entity.Orders) UserOrders {
 	return res
 }
 
-func (os UserOrders) Response() []*response.UserOrder {
-	res := make([]*response.UserOrder, len(os))
+func (os UserOrders) Response() []*types.UserOrder {
+	res := make([]*types.UserOrder, len(os))
 	for i := range os {
 		res[i] = os[i].Response()
 	}

@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
@@ -23,12 +23,12 @@ func (h *handler) guestLiveCommentRoutes(rg *gin.RouterGroup) {
 // @Router      /guests/schedules/{scheduleId}/comments [post]
 // @Param       scheduleId path string true "スケジュールID"
 // @Accept      json
-// @Param       request body request.CreateGuestLiveCommentRequest true "ゲストライブコメント作成"
+// @Param       request body types.CreateGuestLiveCommentRequest true "ゲストライブコメント作成"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateGuestLiveComment(ctx *gin.Context) {
-	req := &request.CreateGuestLiveCommentRequest{}
+	req := &types.CreateGuestLiveCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

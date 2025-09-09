@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 type OrderExperience struct {
-	response.OrderExperience
+	types.OrderExperience
 	orderID string
 }
 
@@ -37,7 +37,7 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 		requestedTime = jst.FormatHHMM(item.Remarks.RequestedTime)
 	}
 	return &OrderExperience{
-		OrderExperience: response.OrderExperience{
+		OrderExperience: types.OrderExperience{
 			ExperienceID:          experienceID,
 			AdultCount:            item.AdultCount,
 			AdultPrice:            adultPrice,
@@ -57,7 +57,7 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 	}
 }
 
-func (e *OrderExperience) Response() *response.OrderExperience {
+func (e *OrderExperience) Response() *types.OrderExperience {
 	if e == nil {
 		return nil
 	}
@@ -76,8 +76,8 @@ func NewOrderExperiences(items entity.OrderExperiences, experiences map[int64]*E
 	return res
 }
 
-func (es OrderExperiences) Response() []*response.OrderExperience {
-	res := make([]*response.OrderExperience, 0, len(es))
+func (es OrderExperiences) Response() []*types.OrderExperience {
+	res := make([]*types.OrderExperience, 0, len(es))
 	for _, e := range es {
 		if e == nil {
 			continue

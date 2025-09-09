@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -29,7 +29,7 @@ func TestSpotTypes(t *testing.T) {
 			},
 			expect: SpotTypes{
 				{
-					SpotType: response.SpotType{
+					SpotType: types.SpotType{
 						ID:        "spot-type-id",
 						Name:      "じゃがいも収穫",
 						CreatedAt: 1724491800,
@@ -54,13 +54,13 @@ func TestSpotTypes_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		spotTypes SpotTypes
-		expect    []*response.SpotType
+		expect    []*types.SpotType
 	}{
 		{
 			name: "success",
 			spotTypes: SpotTypes{
 				{
-					SpotType: response.SpotType{
+					SpotType: types.SpotType{
 						ID:        "spot-type-id",
 						Name:      "じゃがいも収穫",
 						CreatedAt: 1724491800,
@@ -68,7 +68,7 @@ func TestSpotTypes_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.SpotType{
+			expect: []*types.SpotType{
 				{
 					ID:        "spot-type-id",
 					Name:      "じゃがいも収穫",

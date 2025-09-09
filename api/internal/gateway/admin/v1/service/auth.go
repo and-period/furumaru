@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -30,13 +30,13 @@ func (t AuthProviderType) Response() int32 {
 }
 
 type Auth struct {
-	response.Auth
+	types.Auth
 	GroupIDs []string
 }
 
 func NewAuth(auth *uentity.AdminAuth) *Auth {
 	return &Auth{
-		Auth: response.Auth{
+		Auth: types.Auth{
 			AdminID:      auth.AdminID,
 			Type:         NewAdminType(auth.Type).Response(),
 			AccessToken:  auth.AccessToken,
@@ -48,34 +48,34 @@ func NewAuth(auth *uentity.AdminAuth) *Auth {
 	}
 }
 
-func (a *Auth) Response() *response.Auth {
+func (a *Auth) Response() *types.Auth {
 	return &a.Auth
 }
 
 type AuthUser struct {
-	response.AuthUser
+	types.AuthUser
 }
 
-func (a *AuthUser) Response() *response.AuthUser {
+func (a *AuthUser) Response() *types.AuthUser {
 	return &a.AuthUser
 }
 
 type AuthProvider struct {
-	response.AuthProvider
+	types.AuthProvider
 }
 
 type AuthProviders []*AuthProvider
 
 func NewAuthProvider(provider *uentity.AdminAuthProvider) *AuthProvider {
 	return &AuthProvider{
-		AuthProvider: response.AuthProvider{
+		AuthProvider: types.AuthProvider{
 			Type:        NewAuthProviderType(provider.ProviderType).Response(),
 			ConnectedAt: provider.UpdatedAt.Unix(),
 		},
 	}
 }
 
-func (p *AuthProvider) Response() *response.AuthProvider {
+func (p *AuthProvider) Response() *types.AuthProvider {
 	return &p.AuthProvider
 }
 
@@ -87,8 +87,8 @@ func NewAuthProviders(providers uentity.AdminAuthProviders) AuthProviders {
 	return res
 }
 
-func (ps AuthProviders) Response() []*response.AuthProvider {
-	res := make([]*response.AuthProvider, len(ps))
+func (ps AuthProviders) Response() []*types.AuthProvider {
+	res := make([]*types.AuthProvider, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

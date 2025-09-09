@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -30,7 +30,7 @@ const (
 )
 
 type Order struct {
-	response.Order
+	types.Order
 }
 
 type Orders []*Order
@@ -97,7 +97,7 @@ func (s OrderStatus) Response() int32 {
 
 func NewOrder(order *entity.Order, products map[int64]*Product) *Order {
 	return &Order{
-		Order: response.Order{
+		Order: types.Order{
 			ID:             order.ID,
 			CoordinatorID:  order.CoordinatorID,
 			PromotionID:    order.PromotionID,
@@ -113,12 +113,12 @@ func NewOrder(order *entity.Order, products map[int64]*Product) *Order {
 }
 
 func (o *Order) ProductIDs() []string {
-	return set.UniqBy(o.Items, func(i *response.OrderItem) string {
+	return set.UniqBy(o.Items, func(i *types.OrderItem) string {
 		return i.ProductID
 	})
 }
 
-func (o *Order) Response() *response.Order {
+func (o *Order) Response() *types.Order {
 	return &o.Order
 }
 
@@ -130,8 +130,8 @@ func NewOrders(orders entity.Orders, products map[int64]*Product) Orders {
 	return res
 }
 
-func (os Orders) Response() []*response.Order {
-	res := make([]*response.Order, len(os))
+func (os Orders) Response() []*types.Order {
+	res := make([]*types.Order, len(os))
 	for i := range os {
 		res[i] = os[i].Response()
 	}

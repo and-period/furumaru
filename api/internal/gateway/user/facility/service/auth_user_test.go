@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,17 +22,17 @@ func TestNewAuthUser(t *testing.T) {
 			user: &entity.User{
 				ID: "user-id",
 				FacilityUser: entity.FacilityUser{
-					Firstname:       "太郎",
-					Lastname:        "山田",
-					FirstnameKana:   "たろう",
-					LastnameKana:    "やまだ",
-					Email:           "test@example.com",
-					PhoneNumber:     "090-1234-5678",
-					LastCheckInAt:   time.Unix(1640995200, 0), // 2022-01-01 00:00:00 UTC
+					Firstname:     "太郎",
+					Lastname:      "山田",
+					FirstnameKana: "たろう",
+					LastnameKana:  "やまだ",
+					Email:         "test@example.com",
+					PhoneNumber:   "090-1234-5678",
+					LastCheckInAt: time.Unix(1640995200, 0), // 2022-01-01 00:00:00 UTC
 				},
 			},
 			expect: &AuthUser{
-				AuthUser: response.AuthUser{
+				AuthUser: types.AuthUser{
 					ID:            "user-id",
 					Firstname:     "太郎",
 					Lastname:      "山田",
@@ -49,17 +49,17 @@ func TestNewAuthUser(t *testing.T) {
 			user: &entity.User{
 				ID: "user-id",
 				FacilityUser: entity.FacilityUser{
-					Firstname:       "",
-					Lastname:        "",
-					FirstnameKana:   "",
-					LastnameKana:    "",
-					Email:           "",
-					PhoneNumber:     "",
-					LastCheckInAt:   time.Unix(0, 0),
+					Firstname:     "",
+					Lastname:      "",
+					FirstnameKana: "",
+					LastnameKana:  "",
+					Email:         "",
+					PhoneNumber:   "",
+					LastCheckInAt: time.Unix(0, 0),
 				},
 			},
 			expect: &AuthUser{
-				AuthUser: response.AuthUser{
+				AuthUser: types.AuthUser{
 					ID:            "user-id",
 					Firstname:     "",
 					Lastname:      "",
@@ -86,7 +86,7 @@ func TestAuthUser_Response(t *testing.T) {
 	t.Parallel()
 
 	authUser := &AuthUser{
-		AuthUser: response.AuthUser{
+		AuthUser: types.AuthUser{
 			ID:            "user-id",
 			Firstname:     "太郎",
 			Lastname:      "山田",
@@ -98,7 +98,7 @@ func TestAuthUser_Response(t *testing.T) {
 		},
 	}
 
-	expected := &response.AuthUser{
+	expected := &types.AuthUser{
 		ID:            "user-id",
 		Firstname:     "太郎",
 		Lastname:      "山田",

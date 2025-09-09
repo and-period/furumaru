@@ -68,9 +68,9 @@ func setup(_ context.Context) (*app, error) {
 	}
 
 	// 正規表現パターンを定義
-	// github_com_and-period_furumaru_api_internal_gateway_[^.]+\.(response|request)\.(\w+) または
+	// github_com_and-period_furumaru_api_internal_gateway_[^.]+\.(response|request|types)\.(\w+) または
 	// github_com_and-period_furumaru_api_internal_gateway_[^.]+\.(\w+) にマッチ
-	pattern := regexp.MustCompile(`github_com_and-period_furumaru_api_internal_gateway_[^.]+\.((?:response|request)\.)?(\w+)`)
+	pattern := regexp.MustCompile(`github_com_and-period_furumaru_api_internal_gateway_[^.]+\.((?:response|request|types)\.)?(\w+)`)
 
 	app := &app{
 		source:        sourceFile,

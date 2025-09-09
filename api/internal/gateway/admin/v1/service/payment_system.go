@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -16,7 +16,7 @@ const (
 )
 
 type PaymentSystem struct {
-	response.PaymentSystem
+	types.PaymentSystem
 }
 
 type PaymentSystems []*PaymentSystem
@@ -49,7 +49,7 @@ func (s PaymentSystemStatus) Response() int32 {
 
 func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {
 	return &PaymentSystem{
-		PaymentSystem: response.PaymentSystem{
+		PaymentSystem: types.PaymentSystem{
 			MethodType: NewPaymentMethodType(system.MethodType).Response(),
 			Status:     NewPaymentSystemStatus(system.Status).Response(),
 			CreatedAt:  jst.Unix(system.CreatedAt),
@@ -58,7 +58,7 @@ func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {
 	}
 }
 
-func (s *PaymentSystem) Response() *response.PaymentSystem {
+func (s *PaymentSystem) Response() *types.PaymentSystem {
 	return &s.PaymentSystem
 }
 
@@ -70,8 +70,8 @@ func NewPaymentSystems(systems entity.PaymentSystems) PaymentSystems {
 	return res
 }
 
-func (ss PaymentSystems) Response() []*response.PaymentSystem {
-	res := make([]*response.PaymentSystem, len(ss))
+func (ss PaymentSystems) Response() []*types.PaymentSystem {
+	res := make([]*types.PaymentSystem, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}

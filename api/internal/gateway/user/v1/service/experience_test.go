@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -117,7 +117,7 @@ func TestExperience_Calc(t *testing.T) {
 		{
 			name: "success when part of amount",
 			experience: &Experience{
-				Experience: response.Experience{
+				Experience: types.Experience{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
 					ProducerID:       "producer-id",
@@ -126,7 +126,7 @@ func TestExperience_Calc(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Status:           int32(ExperienceStatusAccepting),
 					ThumbnailURL:     "http://example.com/thumbnail.png",
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -150,7 +150,7 @@ func TestExperience_Calc(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					Rate: &response.ExperienceRate{
+					Rate: &types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -173,7 +173,7 @@ func TestExperience_Calc(t *testing.T) {
 				PreschoolCount:        0,
 				SeniorCount:           1,
 				Promotion: &Promotion{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -192,7 +192,7 @@ func TestExperience_Calc(t *testing.T) {
 		{
 			name: "success when full amount",
 			experience: &Experience{
-				Experience: response.Experience{
+				Experience: types.Experience{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
 					ProducerID:       "producer-id",
@@ -201,7 +201,7 @@ func TestExperience_Calc(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Status:           int32(ExperienceStatusAccepting),
 					ThumbnailURL:     "http://example.com/thumbnail.png",
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -225,7 +225,7 @@ func TestExperience_Calc(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					Rate: &response.ExperienceRate{
+					Rate: &types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -248,7 +248,7 @@ func TestExperience_Calc(t *testing.T) {
 				PreschoolCount:        0,
 				SeniorCount:           1,
 				Promotion: &Promotion{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -267,7 +267,7 @@ func TestExperience_Calc(t *testing.T) {
 		{
 			name: "success when rate",
 			experience: &Experience{
-				Experience: response.Experience{
+				Experience: types.Experience{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
 					ProducerID:       "producer-id",
@@ -276,7 +276,7 @@ func TestExperience_Calc(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Status:           int32(ExperienceStatusAccepting),
 					ThumbnailURL:     "http://example.com/thumbnail.png",
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -300,7 +300,7 @@ func TestExperience_Calc(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					Rate: &response.ExperienceRate{
+					Rate: &types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -323,7 +323,7 @@ func TestExperience_Calc(t *testing.T) {
 				PreschoolCount:        0,
 				SeniorCount:           1,
 				Promotion: &Promotion{
-					Promotion: response.Promotion{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -349,7 +349,7 @@ func TestExperience_Calc(t *testing.T) {
 		{
 			name: "promotion none",
 			experience: &Experience{
-				Experience: response.Experience{
+				Experience: types.Experience{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
 					ProducerID:       "producer-id",
@@ -358,7 +358,7 @@ func TestExperience_Calc(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Status:           int32(ExperienceStatusAccepting),
 					ThumbnailURL:     "http://example.com/thumbnail.png",
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -382,7 +382,7 @@ func TestExperience_Calc(t *testing.T) {
 					HostAddressLine2:      "",
 					HostLongitude:         136.251739,
 					HostLatitude:          35.276833,
-					Rate: &response.ExperienceRate{
+					Rate: &types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -487,7 +487,7 @@ func TestExperiences(t *testing.T) {
 			},
 			rates: map[string]*ExperienceRate{
 				"experience-id": {
-					ExperienceRate: response.ExperienceRate{
+					ExperienceRate: types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -503,7 +503,7 @@ func TestExperiences(t *testing.T) {
 			},
 			expect: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -512,7 +512,7 @@ func TestExperiences(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
 						ThumbnailURL:     "http://example.com/thumbnail.png",
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -536,7 +536,7 @@ func TestExperiences(t *testing.T) {
 						HostAddressLine2:      "",
 						HostLongitude:         136.251739,
 						HostLatitude:          35.276833,
-						Rate: &response.ExperienceRate{
+						Rate: &types.ExperienceRate{
 							Count:   4,
 							Average: 2.5,
 							Detail: map[int64]int64{
@@ -610,7 +610,7 @@ func TestExperiences(t *testing.T) {
 			rates: map[string]*ExperienceRate{},
 			expect: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -619,7 +619,7 @@ func TestExperiences(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
 						ThumbnailURL:     "http://example.com/thumbnail.png",
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -643,7 +643,7 @@ func TestExperiences(t *testing.T) {
 						HostAddressLine2:      "",
 						HostLongitude:         136.251739,
 						HostLatitude:          35.276833,
-						Rate: &response.ExperienceRate{
+						Rate: &types.ExperienceRate{
 							Count:   0,
 							Average: 0.0,
 							Detail: map[int64]int64{
@@ -686,7 +686,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 			name: "success",
 			experiences: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -695,7 +695,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
 						ThumbnailURL:     "http://example.com/thumbnail.png",
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -727,7 +727,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 			},
 			expect: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -736,7 +736,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
 						ThumbnailURL:     "http://example.com/thumbnail.png",
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -785,13 +785,13 @@ func TestExperiences_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		experiences Experiences
-		expect      []*response.Experience
+		expect      []*types.Experience
 	}{
 		{
 			name: "success",
 			experiences: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -800,7 +800,7 @@ func TestExperiences_Response(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
 						ThumbnailURL:     "http://example.com/thumbnail.png",
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -829,7 +829,7 @@ func TestExperiences_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Experience{
+			expect: []*types.Experience{
 				{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
@@ -839,7 +839,7 @@ func TestExperiences_Response(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Status:           int32(ExperienceStatusAccepting),
 					ThumbnailURL:     "http://example.com/thumbnail.png",
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -902,7 +902,7 @@ func TestExperienceRates(t *testing.T) {
 			},
 			expect: ExperienceRates{
 				{
-					ExperienceRate: response.ExperienceRate{
+					ExperienceRate: types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -938,7 +938,7 @@ func TestExperienceRates_MapByExperienceID(t *testing.T) {
 			name: "success",
 			rates: ExperienceRates{
 				{
-					ExperienceRate: response.ExperienceRate{
+					ExperienceRate: types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -954,7 +954,7 @@ func TestExperienceRates_MapByExperienceID(t *testing.T) {
 			},
 			expect: map[string]*ExperienceRate{
 				"experience-id": {
-					ExperienceRate: response.ExperienceRate{
+					ExperienceRate: types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -984,13 +984,13 @@ func TestExperienceRates_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		rates  ExperienceRates
-		expect []*response.ExperienceRate
+		expect []*types.ExperienceRate
 	}{
 		{
 			name: "success",
 			rates: ExperienceRates{
 				{
-					ExperienceRate: response.ExperienceRate{
+					ExperienceRate: types.ExperienceRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -1004,7 +1004,7 @@ func TestExperienceRates_Response(t *testing.T) {
 					experienceID: "experience-id",
 				},
 			},
-			expect: []*response.ExperienceRate{
+			expect: []*types.ExperienceRate{
 				{
 					Count:   4,
 					Average: 2.5,

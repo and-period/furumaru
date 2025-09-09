@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
@@ -37,7 +37,7 @@ const (
 )
 
 type Promotion struct {
-	response.Promotion
+	types.Promotion
 }
 
 type Promotions []*Promotion
@@ -113,7 +113,7 @@ func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrder
 		usedAmount = aggregate.DiscountTotal
 	}
 	return &Promotion{
-		Promotion: response.Promotion{
+		Promotion: types.Promotion{
 			ID:           promotion.ID,
 			ShopID:       promotion.ShopID,
 			Title:        promotion.Title,
@@ -134,7 +134,7 @@ func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrder
 	}
 }
 
-func (p *Promotion) Response() *response.Promotion {
+func (p *Promotion) Response() *types.Promotion {
 	if p == nil {
 		return nil
 	}
@@ -163,8 +163,8 @@ func (ps Promotions) Map() map[string]*Promotion {
 	return res
 }
 
-func (ps Promotions) Response() []*response.Promotion {
-	res := make([]*response.Promotion, len(ps))
+func (ps Promotions) Response() []*types.Promotion {
+	res := make([]*types.Promotion, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

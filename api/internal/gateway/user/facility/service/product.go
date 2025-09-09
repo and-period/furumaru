@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/format"
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -112,7 +112,7 @@ func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
 }
 
 type Product struct {
-	response.Product
+	types.Product
 	revisionID int64
 	cost       int64
 	status     ProductStatus
@@ -146,7 +146,7 @@ func NewProduct(product *entity.Product, category *Category, rate *ProductRate) 
 	}
 	media := NewMultiProductMedia(product.Media)
 	return &Product{
-		Product: response.Product{
+		Product: types.Product{
 			ID:                product.ID,
 			CoordinatorID:     product.CoordinatorID,
 			ProducerID:        product.ProducerID,
@@ -208,7 +208,7 @@ func (p *Product) MerchantCenterItemCondition() string {
 	}
 }
 
-func (p *Product) Response() *response.Product {
+func (p *Product) Response() *types.Product {
 	return &p.Product
 }
 
@@ -239,8 +239,8 @@ func (ps Products) MapByRevision() map[int64]*Product {
 	return res
 }
 
-func (ps Products) Response() []*response.Product {
-	res := make([]*response.Product, len(ps))
+func (ps Products) Response() []*types.Product {
+	res := make([]*types.Product, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}
@@ -248,21 +248,21 @@ func (ps Products) Response() []*response.Product {
 }
 
 type ProductMedia struct {
-	response.ProductMedia
+	types.ProductMedia
 }
 
 type MultiProductMedia []*ProductMedia
 
 func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 	return &ProductMedia{
-		ProductMedia: response.ProductMedia{
+		ProductMedia: types.ProductMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
 		},
 	}
 }
 
-func (m *ProductMedia) Response() *response.ProductMedia {
+func (m *ProductMedia) Response() *types.ProductMedia {
 	return &m.ProductMedia
 }
 
@@ -282,8 +282,8 @@ func (m MultiProductMedia) URLs() []string {
 	return res
 }
 
-func (m MultiProductMedia) Response() []*response.ProductMedia {
-	res := make([]*response.ProductMedia, len(m))
+func (m MultiProductMedia) Response() []*types.ProductMedia {
+	res := make([]*types.ProductMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
 	}
@@ -291,7 +291,7 @@ func (m MultiProductMedia) Response() []*response.ProductMedia {
 }
 
 type ProductRate struct {
-	response.ProductRate
+	types.ProductRate
 	productID string
 }
 
@@ -299,7 +299,7 @@ type ProductRates []*ProductRate
 
 func newProductRate(review *entity.AggregatedProductReview) *ProductRate {
 	return &ProductRate{
-		ProductRate: response.ProductRate{
+		ProductRate: types.ProductRate{
 			Count:   review.Count,
 			Average: format.Round(review.Average, 1),
 			Detail: map[int64]int64{
@@ -316,7 +316,7 @@ func newProductRate(review *entity.AggregatedProductReview) *ProductRate {
 
 func newEmptyProductRate() *ProductRate {
 	return &ProductRate{
-		ProductRate: response.ProductRate{
+		ProductRate: types.ProductRate{
 			Count:   0,
 			Average: 0.0,
 			Detail: map[int64]int64{
@@ -331,7 +331,7 @@ func newEmptyProductRate() *ProductRate {
 	}
 }
 
-func (r *ProductRate) Response() *response.ProductRate {
+func (r *ProductRate) Response() *types.ProductRate {
 	if r == nil {
 		return newEmptyProductRate().Response()
 	}
@@ -354,8 +354,8 @@ func (rs ProductRates) MapByProductID() map[string]*ProductRate {
 	return res
 }
 
-func (rs ProductRates) Response() []*response.ProductRate {
-	res := make([]*response.ProductRate, len(rs))
+func (rs ProductRates) Response() []*types.ProductRate {
+	res := make([]*types.ProductRate, len(rs))
 	for i := range rs {
 		res[i] = rs[i].Response()
 	}

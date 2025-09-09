@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +18,7 @@ func TestCoordinators(t *testing.T) {
 		coordinators uentity.Coordinators
 		shops        map[string]*Shop
 		expect       Coordinators
-		response     []*response.Coordinator
+		response     []*types.Coordinator
 	}{
 		{
 			name: "success",
@@ -80,7 +80,7 @@ func TestCoordinators(t *testing.T) {
 			},
 			shops: map[string]*Shop{
 				"coordinator-id01": {
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id01",
 						CoordinatorID:  "coordinator-id01",
 						ProducerIDs:    []string{"producer-id"},
@@ -92,7 +92,7 @@ func TestCoordinators(t *testing.T) {
 					},
 				},
 				"coordinator-id02": {
-					Shop: response.Shop{
+					Shop: types.Shop{
 						ID:             "shop-id02",
 						CoordinatorID:  "coordinator-id02",
 						ProducerIDs:    []string{"producer-id"},
@@ -106,7 +106,7 @@ func TestCoordinators(t *testing.T) {
 			},
 			expect: Coordinators{
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id01",
 						ShopID:            "shop-id01",
 						Status:            int32(AdminStatusActivated),
@@ -132,7 +132,7 @@ func TestCoordinators(t *testing.T) {
 					},
 				},
 				{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:                "coordinator-id02",
 						ShopID:            "shop-id02",
 						Status:            int32(AdminStatusActivated),
@@ -158,7 +158,7 @@ func TestCoordinators(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Coordinator{
+			response: []*types.Coordinator{
 				{
 					ID:                "coordinator-id01",
 					ShopID:            "shop-id01",

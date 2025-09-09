@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,12 +32,12 @@ func TestCart(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 			},
 			expect: &Cart{
-				Cart: response.Cart{
+				Cart: types.Cart{
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Rate:   80,
-					Items: []*response.CartItem{
+					Items: []*types.CartItem{
 						{
 							ProductID: "product-id",
 							Quantity:  1,
@@ -62,17 +62,17 @@ func TestCart_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		cart   *Cart
-		expect *response.Cart
+		expect *types.Cart
 	}{
 		{
 			name: "success",
 			cart: &Cart{
-				Cart: response.Cart{
+				Cart: types.Cart{
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Rate:   80,
-					Items: []*response.CartItem{
+					Items: []*types.CartItem{
 						{
 							ProductID: "product-id",
 							Quantity:  1,
@@ -81,12 +81,12 @@ func TestCart_Response(t *testing.T) {
 					CoordinatorID: "coordinator-id",
 				},
 			},
-			expect: &response.Cart{
+			expect: &types.Cart{
 				Number: 1,
 				Type:   ShippingTypeNormal.Response(),
 				Size:   ShippingSize60.Response(),
 				Rate:   80,
-				Items: []*response.CartItem{
+				Items: []*types.CartItem{
 					{
 						ProductID: "product-id",
 						Quantity:  1,
@@ -137,12 +137,12 @@ func TestCarts(t *testing.T) {
 			},
 			expect: Carts{
 				{
-					Cart: response.Cart{
+					Cart: types.Cart{
 						Number: 1,
 						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
 						Rate:   80,
-						Items: []*response.CartItem{
+						Items: []*types.CartItem{
 							{
 								ProductID: "product-id",
 								Quantity:  1,
@@ -173,18 +173,18 @@ func TestCarts_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		carts  Carts
-		expect []*response.Cart
+		expect []*types.Cart
 	}{
 		{
 			name: "success",
 			carts: Carts{
 				{
-					Cart: response.Cart{
+					Cart: types.Cart{
 						Number: 1,
 						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
 						Rate:   80,
-						Items: []*response.CartItem{
+						Items: []*types.CartItem{
 							{
 								ProductID: "product-id",
 								Quantity:  1,
@@ -194,13 +194,13 @@ func TestCarts_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Cart{
+			expect: []*types.Cart{
 				{
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Rate:   80,
-					Items: []*response.CartItem{
+					Items: []*types.CartItem{
 						{
 							ProductID: "product-id",
 							Quantity:  1,
@@ -233,7 +233,7 @@ func TestCartItem(t *testing.T) {
 				Quantity:  1,
 			},
 			expect: &CartItem{
-				CartItem: response.CartItem{
+				CartItem: types.CartItem{
 					ProductID: "product-id",
 					Quantity:  1,
 				},
@@ -254,17 +254,17 @@ func TestCartItem_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		item   *CartItem
-		expect *response.CartItem
+		expect *types.CartItem
 	}{
 		{
 			name: "success",
 			item: &CartItem{
-				CartItem: response.CartItem{
+				CartItem: types.CartItem{
 					ProductID: "product-id",
 					Quantity:  1,
 				},
 			},
-			expect: &response.CartItem{
+			expect: &types.CartItem{
 				ProductID: "product-id",
 				Quantity:  1,
 			},
@@ -295,7 +295,7 @@ func TestCartItems(t *testing.T) {
 			},
 			expect: CartItems{
 				{
-					CartItem: response.CartItem{
+					CartItem: types.CartItem{
 						ProductID: "product-id",
 						Quantity:  1,
 					},
@@ -317,19 +317,19 @@ func TestCartItems_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		items  CartItems
-		expect []*response.CartItem
+		expect []*types.CartItem
 	}{
 		{
 			name: "success",
 			items: CartItems{
 				{
-					CartItem: response.CartItem{
+					CartItem: types.CartItem{
 						ProductID: "product-id",
 						Quantity:  1,
 					},
 				},
 			},
-			expect: []*response.CartItem{
+			expect: []*types.CartItem{
 				{
 					ProductID: "product-id",
 					Quantity:  1,

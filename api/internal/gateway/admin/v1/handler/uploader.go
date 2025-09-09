@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
@@ -50,7 +49,7 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 // @Security    bearerauth
 // @Param       key query string true "アップロードキー" example("upload-key-123")
 // @Produce     json
-// @Success     200 {object} response.UploadStateResponse
+// @Success     200 {object} types.UploadStateResponse
 // @Failure     404 {object} util.ErrorResponse "アップロード情報が存在しない"
 func (h *handler) GetUploadState(ctx *gin.Context) {
 	in := &media.GetUploadEventInput{
@@ -61,7 +60,7 @@ func (h *handler) GetUploadState(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.UploadStateResponse{
+	res := &types.UploadStateResponse{
 		URL:    event.ReferenceURL,
 		Status: service.NewUploadStatus(event.Status).Response(),
 	}
@@ -75,12 +74,12 @@ func (h *handler) GetUploadState(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateBroadcastArchiveMP4UploadURL(ctx *gin.Context) {
-	req := &request.GetUploadURLRequest{}
+	req := &types.GetUploadURLRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -96,7 +95,7 @@ func (h *handler) CreateBroadcastArchiveMP4UploadURL(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.UploadURLResponse{
+	res := &types.UploadURLResponse{
 		Key: event.Key,
 		URL: event.UploadURL,
 	}
@@ -109,9 +108,9 @@ func (h *handler) CreateBroadcastArchiveMP4UploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/schedules/-/broadcasts/live [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateBroadcastLiveMP4UploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetBroadcastLiveMP4UploadURL)
@@ -123,9 +122,9 @@ func (h *handler) CreateBroadcastLiveMP4UploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/coordinators/thumbnail [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorThumbnailUploadURL)
@@ -137,9 +136,9 @@ func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/coordinators/header [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateCoordinatorHeaderUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorHeaderUploadURL)
@@ -151,9 +150,9 @@ func (h *handler) CreateCoordinatorHeaderUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/coordinators/promotion-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateCoordinatorPromotionVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorPromotionVideoUploadURL)
@@ -165,9 +164,9 @@ func (h *handler) CreateCoordinatorPromotionVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/coordinators/bonus-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorBonusVideoUploadURL)
@@ -179,9 +178,9 @@ func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/experiences/image [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateExperienceImageUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetExperienceMediaImageUploadURL)
@@ -193,9 +192,9 @@ func (h *handler) CreateExperienceImageUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/experiences/video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateExperienceVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetExperienceMediaVideoUploadURL)
@@ -207,9 +206,9 @@ func (h *handler) CreateExperienceVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/experiences/promotion-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateExperiencePromotionVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetExperiencePromotionVideoUploadURL)
@@ -221,9 +220,9 @@ func (h *handler) CreateExperiencePromotionVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/producers/thumbnail [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProducerThumbnailUploadURL)
@@ -235,9 +234,9 @@ func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/producers/header [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProducerHeaderUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProducerHeaderUploadURL)
@@ -249,9 +248,9 @@ func (h *handler) CreateProducerHeaderUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/producers/promotion-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProducerPromotionVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProducerPromotionVideoUploadURL)
@@ -263,9 +262,9 @@ func (h *handler) CreateProducerPromotionVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/producers/bonus-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProducerBonusVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProducerBonusVideoUploadURL)
@@ -277,9 +276,9 @@ func (h *handler) CreateProducerBonusVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/products/image [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProductImageUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProductMediaImageUploadURL)
@@ -291,9 +290,9 @@ func (h *handler) CreateProductImageUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/products/video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProductVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProductMediaVideoUploadURL)
@@ -305,9 +304,9 @@ func (h *handler) CreateProductVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/product-types/icon [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateProductTypeIconUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProductTypeIconUploadURL)
@@ -319,9 +318,9 @@ func (h *handler) CreateProductTypeIconUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/schedules/thumbnail [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateScheduleThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetScheduleThumbnailUploadURL)
@@ -333,9 +332,9 @@ func (h *handler) CreateScheduleThumbnailUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/schedules/image [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateScheduleImageUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetScheduleImageUploadURL)
@@ -347,9 +346,9 @@ func (h *handler) CreateScheduleImageUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/schedules/opening-video [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetScheduleOpeningVideoUploadURL)
@@ -361,9 +360,9 @@ func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/videos/thumbnail [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateVideoThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetVideoThumbnailUploadURL)
@@ -375,9 +374,9 @@ func (h *handler) CreateVideoThumbnailUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/videos/file [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateVideoFileUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetVideoFileUploadURL)
@@ -389,16 +388,16 @@ func (h *handler) CreateVideoFileUploadURL(ctx *gin.Context) {
 // @Router      /v1/upload/spots/thumbnail [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.GetUploadURLRequest true "アップロードファイル情報"
+// @Param       request body types.GetUploadURLRequest true "アップロードファイル情報"
 // @Produce     json
-// @Success     200 {object} response.UploadURLResponse
+// @Success     200 {object} types.UploadURLResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateSpotThumbnailURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetSpotThumbnailUploadURL)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {
-	req := &request.GetUploadURLRequest{}
+	req := &types.GetUploadURLRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -411,7 +410,7 @@ func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.UploadURLResponse{
+	res := &types.UploadURLResponse{
 		Key: event.Key,
 		URL: event.UploadURL,
 	}

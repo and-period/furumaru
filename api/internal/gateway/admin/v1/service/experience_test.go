@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -178,7 +178,7 @@ func TestExperiences(t *testing.T) {
 			},
 			expect: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -188,7 +188,7 @@ func TestExperiences(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -243,7 +243,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 			name: "success",
 			experiences: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -253,7 +253,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -285,7 +285,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 			},
 			expect: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -295,7 +295,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -343,13 +343,13 @@ func TestExperiences_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		experiences Experiences
-		expect      []*response.Experience
+		expect      []*types.Experience
 	}{
 		{
 			name: "success",
 			experiences: Experiences{
 				{
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -359,7 +359,7 @@ func TestExperiences_Response(t *testing.T) {
 						Public:           true,
 						SoldOut:          false,
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -389,7 +389,7 @@ func TestExperiences_Response(t *testing.T) {
 					revisionID: 1,
 				},
 			},
-			expect: []*response.Experience{
+			expect: []*types.Experience{
 				{
 					ID:               "experience-id",
 					CoordinatorID:    "coordinator-id",
@@ -400,7 +400,7 @@ func TestExperiences_Response(t *testing.T) {
 					Public:           true,
 					SoldOut:          false,
 					Status:           int32(ExperienceStatusAccepting),
-					Media: []*response.ExperienceMedia{
+					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -456,7 +456,7 @@ func TestMultiExperienceMedia(t *testing.T) {
 			},
 			expect: MultiExperienceMedia{
 				{
-					ExperienceMedia: response.ExperienceMedia{
+					ExperienceMedia: types.ExperienceMedia{
 						URL:         "http://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
@@ -479,19 +479,19 @@ func TestMultiExperienceMedia_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		media  MultiExperienceMedia
-		expect []*response.ExperienceMedia
+		expect []*types.ExperienceMedia
 	}{
 		{
 			name: "success",
 			media: MultiExperienceMedia{
 				{
-					ExperienceMedia: response.ExperienceMedia{
+					ExperienceMedia: types.ExperienceMedia{
 						URL:         "http://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 			},
-			expect: []*response.ExperienceMedia{
+			expect: []*types.ExperienceMedia{
 				{
 					URL:         "http://example.com/thumbnail01.png",
 					IsThumbnail: true,

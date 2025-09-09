@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,7 @@ func (h *handler) categoryRoutes(rg *gin.RouterGroup) {
 // @Param       name query string false "商品種別名(あいまい検索)(32文字以内)" example("野菜")
 // @Param       orders query string false "ソート(name,-name)" example("-name")
 // @Produce     json
-// @Success     200 {object} response.CategoriesResponse
+// @Success     200 {object} types.CategoriesResponse
 func (h *handler) ListCategories(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -69,7 +68,7 @@ func (h *handler) ListCategories(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CategoriesResponse{
+	res := &types.CategoriesResponse{
 		Categories: service.NewCategories(categories).Response(),
 		Total:      total,
 	}
@@ -101,13 +100,13 @@ func (h *handler) newCategoryOrders(ctx *gin.Context) ([]*store.ListCategoriesOr
 // @Router      /v1/categories [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateCategoryRequest true "商品種別情報"
+// @Param       request body types.CreateCategoryRequest true "商品種別情報"
 // @Produce     json
-// @Success     200 {object} response.CategoryResponse
+// @Success     200 {object} types.CategoryResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する商品種別名"
 func (h *handler) CreateCategory(ctx *gin.Context) {
-	req := &request.CreateCategoryRequest{}
+	req := &types.CreateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -122,7 +121,7 @@ func (h *handler) CreateCategory(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CategoryResponse{
+	res := &types.CategoryResponse{
 		Category: service.NewCategory(category).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -135,14 +134,14 @@ func (h *handler) CreateCategory(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       categoryId path string true "商品種別ID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateCategoryRequest true "商品種別情報"
+// @Param       request body types.UpdateCategoryRequest true "商品種別情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "商品種別が存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在する商品種別名"
 func (h *handler) UpdateCategory(ctx *gin.Context) {
-	req := &request.UpdateCategoryRequest{}
+	req := &types.UpdateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

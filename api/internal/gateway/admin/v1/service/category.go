@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type Category struct {
-	response.Category
+	types.Category
 }
 
 type Categories []*Category
 
 func NewCategory(category *entity.Category) *Category {
 	return &Category{
-		Category: response.Category{
+		Category: types.Category{
 			ID:        category.ID,
 			Name:      category.Name,
 			CreatedAt: category.CreatedAt.Unix(),
@@ -22,7 +22,7 @@ func NewCategory(category *entity.Category) *Category {
 	}
 }
 
-func (c *Category) Response() *response.Category {
+func (c *Category) Response() *types.Category {
 	return &c.Category
 }
 
@@ -42,8 +42,8 @@ func (cs Categories) Map() map[string]*Category {
 	return res
 }
 
-func (cs Categories) Response() []*response.Category {
-	res := make([]*response.Category, len(cs))
+func (cs Categories) Response() []*types.Category {
+	res := make([]*types.Category, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -31,7 +31,7 @@ func (h *handler) productRoutes(rg *gin.RouterGroup) {
 // @Param       offset query int64 false "取得開始位置(min:0)" default(0)
 // @Param       coordinatorId query string false "コーディネータID"
 // @Produce     json
-// @Success     200 {object} response.ProductsResponse
+// @Success     200 {object} types.ProductsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListProducts(ctx *gin.Context) {
 	const (
@@ -78,13 +78,13 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	}
 	if len(products) == 0 {
-		res := &response.ProductsResponse{
-			Products:     []*response.Product{},
-			Coordinators: []*response.Coordinator{},
-			Producers:    []*response.Producer{},
-			Categories:   []*response.Category{},
-			ProductTypes: []*response.ProductType{},
-			ProductTags:  []*response.ProductTag{},
+		res := &types.ProductsResponse{
+			Products:     []*types.Product{},
+			Coordinators: []*types.Coordinator{},
+			Producers:    []*types.Producer{},
+			Categories:   []*types.Category{},
+			ProductTypes: []*types.ProductType{},
+			ProductTags:  []*types.ProductTag{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -135,7 +135,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 	sproducts := service.NewProducts(products, details)
 
-	res := &response.ProductsResponse{
+	res := &types.ProductsResponse{
 		Products:     sproducts.Response(),
 		Coordinators: coordinators.Response(),
 		Producers:    producers.Response(),
@@ -153,7 +153,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 // @Router      /products/{productId} [get]
 // @Param       productId path string true "商品ID"
 // @Produce     json
-// @Success     200 {object} response.ProductResponse
+// @Success     200 {object} types.ProductResponse
 // @Failure     404 {object} util.ErrorResponse "商品が見つからない"
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
@@ -195,7 +195,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.ProductResponse{
+	res := &types.ProductResponse{
 		Product:     product.Response(),
 		Coordinator: coordinator.Response(),
 		Producer:    producer.Response(),
@@ -338,14 +338,14 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.MerchantCenterFeedResponse{
+	res := &types.MerchantCenterFeedResponse{
 		Version: version,
 		Xmlns:   xmlns,
-		Channel: &response.MerchantCenterChannel{
+		Channel: &types.MerchantCenterChannel{
 			Title:       title,
 			Link:        h.userWebURL().String(),
 			Description: description,
-			Items:       []*response.MerchantCenterItem{},
+			Items:       []*types.MerchantCenterItem{},
 		},
 	}
 	if len(products) == 0 {

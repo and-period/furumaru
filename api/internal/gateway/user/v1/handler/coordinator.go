@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -29,7 +29,7 @@ func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得件数" default(20)
 // @Param       offset query int64 false "取得開始位置" default(0)
 // @Produce     json
-// @Success     200 {object} response.CoordinatorsResponse
+// @Success     200 {object} types.CoordinatorsResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ListCoordinators(ctx *gin.Context) {
 	const (
@@ -58,9 +58,9 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 	if len(coordinators) == 0 {
-		res := &response.CoordinatorsResponse{
-			Coordinators: []*response.Coordinator{},
-			ProductTypes: []*response.ProductType{},
+		res := &types.CoordinatorsResponse{
+			Coordinators: []*types.Coordinator{},
+			ProductTypes: []*types.ProductType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -77,7 +77,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CoordinatorsResponse{
+	res := &types.CoordinatorsResponse{
 		Coordinators: service.NewCoordinators(coordinators, shops.MapByCoordinatorID()).Response(),
 		ProductTypes: productTypes.Response(),
 		Total:        total,
@@ -91,7 +91,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 // @Router      /coordinators/{coordinatorId} [get]
 // @Param       coordinatorId path string true "コーディネータID"
 // @Produce     json
-// @Success     200 {object} response.CoordinatorResponse
+// @Success     200 {object} types.CoordinatorResponse
 // @Failure     404 {object} util.ErrorResponse "コーディネータが見つからない"
 func (h *handler) GetCoordinator(ctx *gin.Context) {
 	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
@@ -163,7 +163,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CoordinatorResponse{
+	res := &types.CoordinatorResponse{
 		Coordinator:  coordinator.Response(),
 		Shipping:     shipping.Response(),
 		Lives:        lives.Response(),

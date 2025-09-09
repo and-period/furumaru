@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -35,7 +35,7 @@ func TestAdministrator(t *testing.T) {
 				UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Administrator{
-				Administrator: response.Administrator{
+				Administrator: types.Administrator{
 					ID:            "admin-id",
 					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
@@ -63,12 +63,12 @@ func TestAdministrator_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		admin  *Administrator
-		expect *response.Administrator
+		expect *types.Administrator
 	}{
 		{
 			name: "success",
 			admin: &Administrator{
-				Administrator: response.Administrator{
+				Administrator: types.Administrator{
 					ID:            "admin-id",
 					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
@@ -81,7 +81,7 @@ func TestAdministrator_Response(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 			},
-			expect: &response.Administrator{
+			expect: &types.Administrator{
 				ID:            "admin-id",
 				Status:        int32(AdminStatusActivated),
 				Lastname:      "&.",
@@ -148,7 +148,7 @@ func TestAdministrators(t *testing.T) {
 			},
 			expect: Administrators{
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id01",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -162,7 +162,7 @@ func TestAdministrators(t *testing.T) {
 					},
 				},
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id02",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -191,13 +191,13 @@ func TestAdministrators_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		admins Administrators
-		expect []*response.Administrator
+		expect []*types.Administrator
 	}{
 		{
 			name: "success",
 			admins: Administrators{
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id01",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -211,7 +211,7 @@ func TestAdministrators_Response(t *testing.T) {
 					},
 				},
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id02",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -225,7 +225,7 @@ func TestAdministrators_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Administrator{
+			expect: []*types.Administrator{
 				{
 					ID:            "admin-id01",
 					Status:        int32(AdminStatusActivated),
@@ -272,7 +272,7 @@ func TestAdministrator_Map(t *testing.T) {
 			name: "success",
 			administrators: Administrators{
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id01",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -286,7 +286,7 @@ func TestAdministrator_Map(t *testing.T) {
 					},
 				},
 				{
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id02",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -302,7 +302,7 @@ func TestAdministrator_Map(t *testing.T) {
 			},
 			expect: map[string]*Administrator{
 				"admin-id01": {
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id01",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
@@ -316,7 +316,7 @@ func TestAdministrator_Map(t *testing.T) {
 					},
 				},
 				"admin-id02": {
-					Administrator: response.Administrator{
+					Administrator: types.Administrator{
 						ID:            "admin-id02",
 						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",

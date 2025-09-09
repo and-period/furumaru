@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -259,13 +259,13 @@ func TestProduct(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			category: &Category{
-				Category: response.Category{
+				Category: types.Category{
 					ID:   "category-id",
 					Name: "野菜",
 				},
 			},
 			rate: &ProductRate{
-				ProductRate: response.ProductRate{
+				ProductRate: types.ProductRate{
 					Count:   4,
 					Average: 2.5,
 					Detail: map[int64]int64{
@@ -279,7 +279,7 @@ func TestProduct(t *testing.T) {
 				productID: "product-id",
 			},
 			expect: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
@@ -294,7 +294,7 @@ func TestProduct(t *testing.T) {
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
 					ThumbnailURL:    "https://example.com/thumbnail01.png",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
@@ -315,7 +315,7 @@ func TestProduct(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
-					Rate: &response.ProductRate{
+					Rate: &types.ProductRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -334,13 +334,13 @@ func TestProduct(t *testing.T) {
 				status:     ProductStatusForSale,
 				media: MultiProductMedia{
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 					},
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
@@ -402,7 +402,7 @@ func TestProduct(t *testing.T) {
 			category: nil,
 			rate:     nil,
 			expect: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
@@ -417,7 +417,7 @@ func TestProduct(t *testing.T) {
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
 					ThumbnailURL:    "https://example.com/thumbnail01.png",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
@@ -438,7 +438,7 @@ func TestProduct(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
-					Rate: &response.ProductRate{
+					Rate: &types.ProductRate{
 						Count:   0,
 						Average: 0.0,
 						Detail: map[int64]int64{
@@ -457,13 +457,13 @@ func TestProduct(t *testing.T) {
 				status:     ProductStatusForSale,
 				media: MultiProductMedia{
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 					},
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
@@ -492,13 +492,13 @@ func TestProduct_MediaURLs(t *testing.T) {
 			product: &Product{
 				media: MultiProductMedia{
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
 						},
 					},
 					{
-						ProductMedia: response.ProductMedia{
+						ProductMedia: types.ProductMedia{
 							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
 						},
@@ -536,7 +536,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "presale with inventory",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 100,
 				},
 				status: ProductStatusPresale,
@@ -546,7 +546,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "presale without inventory",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 0,
 				},
 				status: ProductStatusPresale,
@@ -556,7 +556,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "for sale with inventory",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 100,
 				},
 				status: ProductStatusForSale,
@@ -566,7 +566,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "for sale without inventory",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 0,
 				},
 				status: ProductStatusForSale,
@@ -576,7 +576,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "out of sale",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 100,
 				},
 				status: ProductStatusOutOfSale,
@@ -586,7 +586,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 		{
 			name: "unknown status",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					Inventory: 100,
 				},
 				status: ProductStatusUnknown,
@@ -607,12 +607,12 @@ func TestProduct_Response(t *testing.T) {
 	tests := []struct {
 		name    string
 		product *Product
-		expect  *response.Product
+		expect  *types.Product
 	}{
 		{
 			name: "success",
 			product: &Product{
-				Product: response.Product{
+				Product: types.Product{
 					ID:              "product-id",
 					ProductTypeID:   "product-type-id",
 					CategoryID:      "category-id",
@@ -625,7 +625,7 @@ func TestProduct_Response(t *testing.T) {
 					Weight:          1.3,
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
@@ -646,7 +646,7 @@ func TestProduct_Response(t *testing.T) {
 					EndAt:            1640962800,
 				},
 			},
-			expect: &response.Product{
+			expect: &types.Product{
 				ID:              "product-id",
 				ProductTypeID:   "product-type-id",
 				CategoryID:      "category-id",
@@ -659,7 +659,7 @@ func TestProduct_Response(t *testing.T) {
 				Weight:          1.3,
 				ItemUnit:        "袋",
 				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*response.ProductMedia{
+				Media: []*types.ProductMedia{
 					{
 						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
@@ -750,7 +750,7 @@ func TestProducts(t *testing.T) {
 			params: &ProductDetailsParams{
 				ProductTypes: map[string]*ProductType{
 					"product-type-id": {
-						ProductType: response.ProductType{
+						ProductType: types.ProductType{
 							ID:         "product-type-id",
 							CategoryID: "category-id",
 							Name:       "じゃがいも",
@@ -759,7 +759,7 @@ func TestProducts(t *testing.T) {
 				},
 				Categories: map[string]*Category{
 					"category-id": {
-						Category: response.Category{
+						Category: types.Category{
 							ID:   "category-id",
 							Name: "野菜",
 						},
@@ -767,7 +767,7 @@ func TestProducts(t *testing.T) {
 				},
 				ProductRates: map[string]*ProductRate{
 					"product-id": {
-						ProductRate: response.ProductRate{
+						ProductRate: types.ProductRate{
 							Count:   4,
 							Average: 2.5,
 							Detail: map[int64]int64{
@@ -784,7 +784,7 @@ func TestProducts(t *testing.T) {
 			},
 			expect: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -798,7 +798,7 @@ func TestProducts(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						ThumbnailURL:    "https://example.com/thumbnail01.png",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{
 								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
@@ -815,7 +815,7 @@ func TestProducts(t *testing.T) {
 						Box100Rate:       30,
 						OriginPrefecture: "滋賀県",
 						OriginCity:       "彦根市",
-						Rate: &response.ProductRate{
+						Rate: &types.ProductRate{
 							Count:   4,
 							Average: 2.5,
 							Detail: map[int64]int64{
@@ -834,13 +834,13 @@ func TestProducts(t *testing.T) {
 					status:     ProductStatusForSale,
 					media: MultiProductMedia{
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
 							},
 						},
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail02.png",
 								IsThumbnail: false,
 							},
@@ -870,7 +870,7 @@ func TestProducts_IDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -882,7 +882,7 @@ func TestProducts_IDs(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -918,7 +918,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -930,7 +930,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -946,7 +946,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 			},
 			expect: map[int64]*Product{
 				1: {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -958,7 +958,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -987,13 +987,13 @@ func TestProducts_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		products Products
-		expect   []*response.Product
+		expect   []*types.Product
 	}{
 		{
 			name: "success",
 			products: Products{
 				{
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -1007,7 +1007,7 @@ func TestProducts_Response(t *testing.T) {
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
 						ThumbnailURL:    "https://example.com/thumbnail01.png",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -1024,7 +1024,7 @@ func TestProducts_Response(t *testing.T) {
 					revisionID: 1,
 				},
 			},
-			expect: []*response.Product{
+			expect: []*types.Product{
 				{
 					ID:              "product-id",
 					ProductTypeID:   "product-type-id",
@@ -1039,7 +1039,7 @@ func TestProducts_Response(t *testing.T) {
 					ItemUnit:        "袋",
 					ItemDescription: "1袋あたり100gのじゃがいも",
 					ThumbnailURL:    "https://example.com/thumbnail01.png",
-					Media: []*response.ProductMedia{
+					Media: []*types.ProductMedia{
 						{URL: "https://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 					},
@@ -1078,7 +1078,7 @@ func TestProductMedia(t *testing.T) {
 				IsThumbnail: true,
 			},
 			expect: &ProductMedia{
-				ProductMedia: response.ProductMedia{
+				ProductMedia: types.ProductMedia{
 					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
@@ -1098,17 +1098,17 @@ func TestProductMedia_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		media  *ProductMedia
-		expect *response.ProductMedia
+		expect *types.ProductMedia
 	}{
 		{
 			name: "success",
 			media: &ProductMedia{
-				ProductMedia: response.ProductMedia{
+				ProductMedia: types.ProductMedia{
 					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
 				},
 			},
-			expect: &response.ProductMedia{
+			expect: &types.ProductMedia{
 				URL:         "https://example.com/thumbnail01.png",
 				IsThumbnail: true,
 			},
@@ -1143,13 +1143,13 @@ func TestMultiProductMedia(t *testing.T) {
 			},
 			expect: MultiProductMedia{
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
@@ -1176,13 +1176,13 @@ func TestMultiProductMedia_URLs(t *testing.T) {
 			name: "success",
 			media: MultiProductMedia{
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
@@ -1212,25 +1212,25 @@ func TestMultiProductMedia_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		media  MultiProductMedia
-		expect []*response.ProductMedia
+		expect []*types.ProductMedia
 	}{
 		{
 			name: "success",
 			media: MultiProductMedia{
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
 					},
 				},
 				{
-					ProductMedia: response.ProductMedia{
+					ProductMedia: types.ProductMedia{
 						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
 					},
 				},
 			},
-			expect: []*response.ProductMedia{
+			expect: []*types.ProductMedia{
 				{
 					URL:         "https://example.com/thumbnail01.png",
 					IsThumbnail: true,
@@ -1273,7 +1273,7 @@ func TestProductRates(t *testing.T) {
 			},
 			expect: ProductRates{
 				{
-					ProductRate: response.ProductRate{
+					ProductRate: types.ProductRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -1309,7 +1309,7 @@ func TestProductRates_MapByProductID(t *testing.T) {
 			name: "success",
 			rates: ProductRates{
 				{
-					ProductRate: response.ProductRate{
+					ProductRate: types.ProductRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -1325,7 +1325,7 @@ func TestProductRates_MapByProductID(t *testing.T) {
 			},
 			expect: map[string]*ProductRate{
 				"product-id": {
-					ProductRate: response.ProductRate{
+					ProductRate: types.ProductRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -1355,13 +1355,13 @@ func TestProductRates_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		rates  ProductRates
-		expect []*response.ProductRate
+		expect []*types.ProductRate
 	}{
 		{
 			name: "success",
 			rates: ProductRates{
 				{
-					ProductRate: response.ProductRate{
+					ProductRate: types.ProductRate{
 						Count:   4,
 						Average: 2.5,
 						Detail: map[int64]int64{
@@ -1375,7 +1375,7 @@ func TestProductRates_Response(t *testing.T) {
 					productID: "product-id",
 				},
 			},
-			expect: []*response.ProductRate{
+			expect: []*types.ProductRate{
 				{
 					Count:   4,
 					Average: 2.5,
@@ -1415,7 +1415,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			name: "success with all fields",
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
-					Product: response.Product{
+					Product: types.Product{
 						ID:                "product-id",
 						Name:              "新鮮なじゃがいも",
 						Description:       "新鮮なじゃがいもをお届けします。",
@@ -1434,13 +1434,13 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					status: ProductStatusForSale,
 					media: MultiProductMedia{
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
 							},
 						},
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail02.png",
 								IsThumbnail: false,
 							},
@@ -1448,17 +1448,17 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					},
 				},
 				Coordinator: &Coordinator{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						Username: "コーディネータ名",
 					},
 				},
 				ProductType: &ProductType{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						Name: "じゃがいも",
 					},
 				},
 				Category: &Category{
-					Category: response.Category{
+					Category: types.Category{
 						Name: "野菜",
 					},
 				},
@@ -1466,7 +1466,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                   "product-id",
 					Title:                "新鮮なじゃがいも",
 					Description:          "新鮮なじゃがいもをお届けします。",
@@ -1493,7 +1493,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			name: "success with empty description",
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
-					Product: response.Product{
+					Product: types.Product{
 						ID:                "product-id",
 						Name:              "新鮮なじゃがいも",
 						Description:       "",
@@ -1512,13 +1512,13 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					status: ProductStatusForSale,
 					media: MultiProductMedia{
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
 							},
 						},
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail02.png",
 								IsThumbnail: false,
 							},
@@ -1526,17 +1526,17 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					},
 				},
 				Coordinator: &Coordinator{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						Username: "コーディネータ名",
 					},
 				},
 				ProductType: &ProductType{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						Name: "じゃがいも",
 					},
 				},
 				Category: &Category{
-					Category: response.Category{
+					Category: types.Category{
 						Name: "野菜",
 					},
 				},
@@ -1544,7 +1544,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                   "product-id",
 					Title:                "新鮮なじゃがいも",
 					Description:          "新鮮なじゃがいも",
@@ -1571,7 +1571,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			name: "success with out of stock",
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
-					Product: response.Product{
+					Product: types.Product{
 						ID:            "product-id",
 						Name:          "新鮮なじゃがいも",
 						Description:   "新鮮なじゃがいもをお届けします。",
@@ -1588,17 +1588,17 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					media:  MultiProductMedia{},
 				},
 				Coordinator: &Coordinator{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						Username: "コーディネータ名",
 					},
 				},
 				ProductType: &ProductType{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						Name: "じゃがいも",
 					},
 				},
 				Category: &Category{
-					Category: response.Category{
+					Category: types.Category{
 						Name: "野菜",
 					},
 				},
@@ -1606,7 +1606,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                   "product-id",
 					Title:                "新鮮なじゃがいも",
 					Description:          "新鮮なじゃがいもをお届けします。",
@@ -1632,7 +1632,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			name: "success with nil values",
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
-					Product: response.Product{
+					Product: types.Product{
 						ID:            "product-id",
 						Name:          "新鮮なじゃがいも",
 						Description:   "新鮮なじゃがいもをお届けします。",
@@ -1655,7 +1655,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 				WebURL:      webURL,
 			},
 			expect: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                   "product-id",
 					Title:                "新鮮なじゃがいも",
 					Description:          "新鮮なじゃがいもをお届けします。",
@@ -1681,7 +1681,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 			name: "success with very long description",
 			params: &NewMerchantCenterItemParams{
 				Product: &Product{
-					Product: response.Product{
+					Product: types.Product{
 						ID:            "product-id",
 						Name:          "新鮮なじゃがいも",
 						Description:   string(make([]byte, 5010)),
@@ -1699,7 +1699,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					status: ProductStatusForSale,
 					media: MultiProductMedia{
 						{
-							ProductMedia: response.ProductMedia{
+							ProductMedia: types.ProductMedia{
 								URL:         "https://example.com/thumbnail01.png",
 								IsThumbnail: true,
 							},
@@ -1707,17 +1707,17 @@ func TestNewMerchantCenterItem(t *testing.T) {
 					},
 				},
 				Coordinator: &Coordinator{
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						Username: "コーディネータ名",
 					},
 				},
 				ProductType: &ProductType{
-					ProductType: response.ProductType{
+					ProductType: types.ProductType{
 						Name: "じゃがいも",
 					},
 				},
 				Category: &Category{
-					Category: response.Category{
+					Category: types.Category{
 						Name: "野菜",
 					},
 				},
@@ -1725,7 +1725,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 				WebURL: webURL,
 			},
 			expect: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                   "product-id",
 					Title:                "新鮮なじゃがいも",
 					Description:          string(make([]byte, 4997)) + "...",
@@ -1775,7 +1775,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 			params: &NewMerchantCenterItemsParams{
 				Products: Products{
 					{
-						Product: response.Product{
+						Product: types.Product{
 							ID:            "product-id-1",
 							Name:          "新鮮なじゃがいも",
 							Description:   "新鮮なじゃがいもをお届けします。",
@@ -1791,7 +1791,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 						status: ProductStatusForSale,
 						media: MultiProductMedia{
 							{
-								ProductMedia: response.ProductMedia{
+								ProductMedia: types.ProductMedia{
 									URL:         "https://example.com/thumbnail01.png",
 									IsThumbnail: true,
 								},
@@ -1799,7 +1799,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 						},
 					},
 					{
-						Product: response.Product{
+						Product: types.Product{
 							ID:            "product-id-2",
 							Name:          "新鮮な人参",
 							Description:   "新鮮な人参をお届けします。",
@@ -1815,13 +1815,13 @@ func TestNewMerchantCenterItems(t *testing.T) {
 						status: ProductStatusForSale,
 						media: MultiProductMedia{
 							{
-								ProductMedia: response.ProductMedia{
+								ProductMedia: types.ProductMedia{
 									URL:         "https://example.com/thumbnail02.png",
 									IsThumbnail: true,
 								},
 							},
 							{
-								ProductMedia: response.ProductMedia{
+								ProductMedia: types.ProductMedia{
 									URL:         "https://example.com/thumbnail03.png",
 									IsThumbnail: false,
 								},
@@ -1831,12 +1831,12 @@ func TestNewMerchantCenterItems(t *testing.T) {
 				},
 				Coordinators: map[string]*Coordinator{
 					"coordinator-id": {
-						Coordinator: response.Coordinator{
+						Coordinator: types.Coordinator{
 							Username: "コーディネータ名1",
 						},
 					},
 					"coordinator-id-2": {
-						Coordinator: response.Coordinator{
+						Coordinator: types.Coordinator{
 							Username: "コーディネータ名2",
 						},
 					},
@@ -1844,19 +1844,19 @@ func TestNewMerchantCenterItems(t *testing.T) {
 				Details: &ProductDetailsParams{
 					ProductTypes: map[string]*ProductType{
 						"product-type-id": {
-							ProductType: response.ProductType{
+							ProductType: types.ProductType{
 								Name: "じゃがいも",
 							},
 						},
 						"product-type-id-2": {
-							ProductType: response.ProductType{
+							ProductType: types.ProductType{
 								Name: "人参",
 							},
 						},
 					},
 					Categories: map[string]*Category{
 						"category-id": {
-							Category: response.Category{
+							Category: types.Category{
 								Name: "野菜",
 							},
 						},
@@ -1867,7 +1867,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 			},
 			expect: MerchantCenterItems{
 				{
-					MerchantCenterItem: response.MerchantCenterItem{
+					MerchantCenterItem: types.MerchantCenterItem{
 						ID:                   "product-id-1",
 						Title:                "新鮮なじゃがいも",
 						Description:          "新鮮なじゃがいもをお届けします。",
@@ -1889,7 +1889,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 					},
 				},
 				{
-					MerchantCenterItem: response.MerchantCenterItem{
+					MerchantCenterItem: types.MerchantCenterItem{
 						ID:                   "product-id-2",
 						Title:                "新鮮な人参",
 						Description:          "新鮮な人参をお届けします。",
@@ -1943,12 +1943,12 @@ func TestMerchantCenterItem_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		item   *MerchantCenterItem
-		expect *response.MerchantCenterItem
+		expect *types.MerchantCenterItem
 	}{
 		{
 			name: "success",
 			item: &MerchantCenterItem{
-				MerchantCenterItem: response.MerchantCenterItem{
+				MerchantCenterItem: types.MerchantCenterItem{
 					ID:                    "product-id",
 					Title:                 "新鮮なじゃがいも",
 					Description:           "新鮮なじゃがいもをお届けします。",
@@ -1963,7 +1963,7 @@ func TestMerchantCenterItem_Response(t *testing.T) {
 					ShippingWeight:        "1 g",
 				},
 			},
-			expect: &response.MerchantCenterItem{
+			expect: &types.MerchantCenterItem{
 				ID:                    "product-id",
 				Title:                 "新鮮なじゃがいも",
 				Description:           "新鮮なじゃがいもをお届けします。",
@@ -1993,13 +1993,13 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		items  MerchantCenterItems
-		expect []*response.MerchantCenterItem
+		expect []*types.MerchantCenterItem
 	}{
 		{
 			name: "success",
 			items: MerchantCenterItems{
 				{
-					MerchantCenterItem: response.MerchantCenterItem{
+					MerchantCenterItem: types.MerchantCenterItem{
 						ID:                    "product-id-1",
 						Title:                 "新鮮なじゃがいも",
 						Description:           "新鮮なじゃがいもをお届けします。",
@@ -2015,7 +2015,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 					},
 				},
 				{
-					MerchantCenterItem: response.MerchantCenterItem{
+					MerchantCenterItem: types.MerchantCenterItem{
 						ID:                    "product-id-2",
 						Title:                 "新鮮な人参",
 						Description:           "新鮮な人参をお届けします。",
@@ -2031,7 +2031,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.MerchantCenterItem{
+			expect: []*types.MerchantCenterItem{
 				{
 					ID:                    "product-id-1",
 					Title:                 "新鮮なじゃがいも",
@@ -2065,7 +2065,7 @@ func TestMerchantCenterItems_Response(t *testing.T) {
 		{
 			name:   "success with empty items",
 			items:  MerchantCenterItems{},
-			expect: []*response.MerchantCenterItem{},
+			expect: []*types.MerchantCenterItem{},
 		},
 	}
 	for _, tt := range tests {

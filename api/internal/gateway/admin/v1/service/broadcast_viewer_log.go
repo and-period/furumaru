@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
@@ -17,7 +17,7 @@ const (
 )
 
 type BroadcastViewerLog struct {
-	response.BroadcastViewerLog
+	types.BroadcastViewerLog
 }
 
 type BroadcastViewerLogs []*BroadcastViewerLog
@@ -54,7 +54,7 @@ func (i BroadcastViewerLogInterval) MediaEntity() entity.AggregateBroadcastViewe
 
 func NewBroadcastViewerLog(aggregate *entity.AggregatedBroadcastViewerLog, interval time.Duration) *BroadcastViewerLog {
 	return &BroadcastViewerLog{
-		BroadcastViewerLog: response.BroadcastViewerLog{
+		BroadcastViewerLog: types.BroadcastViewerLog{
 			BroadcastID: aggregate.BroadcastID,
 			StartAt:     aggregate.ReportedAt.Unix(),
 			EndAt:       aggregate.ReportedAt.Add(interval).Unix(),
@@ -72,7 +72,7 @@ func newEmptyBroadcastViewerLog(broadcastID string, startAt time.Time, interval 
 	return NewBroadcastViewerLog(aggregate, interval)
 }
 
-func (l *BroadcastViewerLog) Response() *response.BroadcastViewerLog {
+func (l *BroadcastViewerLog) Response() *types.BroadcastViewerLog {
 	return &l.BroadcastViewerLog
 }
 
@@ -100,8 +100,8 @@ func NewBroadcastViewerLogs(
 	return res
 }
 
-func (ls BroadcastViewerLogs) Response() []*response.BroadcastViewerLog {
-	res := make([]*response.BroadcastViewerLog, len(ls))
+func (ls BroadcastViewerLogs) Response() []*types.BroadcastViewerLog {
+	res := make([]*types.BroadcastViewerLog, len(ls))
 	for i := range ls {
 		res[i] = ls[i].Response()
 	}

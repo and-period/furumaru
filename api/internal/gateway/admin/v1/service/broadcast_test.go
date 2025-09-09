@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -77,7 +77,7 @@ func TestBroadcast(t *testing.T) {
 				UpdatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Broadcast{
-				Broadcast: response.Broadcast{
+				Broadcast: types.Broadcast{
 					ID:               "broadcast-id",
 					ScheduleID:       "schedule-id",
 					Status:           int32(BroadcastStatusIdle),
@@ -124,7 +124,7 @@ func TestBroadcasts(t *testing.T) {
 			},
 			expect: Broadcasts{
 				{
-					Broadcast: response.Broadcast{
+					Broadcast: types.Broadcast{
 						ID:         "broadcast-id",
 						ScheduleID: "schedule-id",
 						Status:     int32(BroadcastStatusIdle),
@@ -158,7 +158,7 @@ func TestGuestBroadcast(t *testing.T) {
 		{
 			name: "success",
 			schedule: &Schedule{
-				Schedule: response.Schedule{
+				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
 					Status:          ScheduleStatusLive.Response(),
@@ -176,7 +176,7 @@ func TestGuestBroadcast(t *testing.T) {
 				},
 			},
 			shop: &Shop{
-				Shop: response.Shop{
+				Shop: types.Shop{
 					ID:             "shop-id",
 					Name:           "&.マルシェ",
 					CoordinatorID:  "coordinator-id",
@@ -188,7 +188,7 @@ func TestGuestBroadcast(t *testing.T) {
 				},
 			},
 			coordinator: &Coordinator{
-				Coordinator: response.Coordinator{
+				Coordinator: types.Coordinator{
 					ID:                "coordinator-id",
 					Status:            int32(AdminStatusActivated),
 					Lastname:          "&.",
@@ -213,7 +213,7 @@ func TestGuestBroadcast(t *testing.T) {
 				},
 			},
 			expect: &GuestBroadcast{
-				GuestBroadcast: response.GuestBroadcast{
+				GuestBroadcast: types.GuestBroadcast{
 					Title:             "スケジュールタイトル",
 					Description:       "スケジュールの詳細です。",
 					StartAt:           1638284400,

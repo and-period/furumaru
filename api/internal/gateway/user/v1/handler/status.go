@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
@@ -24,7 +24,7 @@ func (h *handler) statusRoutes(rg *gin.RouterGroup) {
 // @Tags        Status
 // @Router      /statuses/payments [get]
 // @Produce     json
-// @Success     200 {object} response.PaymentSystemsResponse
+// @Success     200 {object} types.PaymentSystemsResponse
 func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 	methodTypes := []entity.PaymentMethodType{
 		entity.PaymentMethodTypeCash,
@@ -47,7 +47,7 @@ func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.PaymentSystemsResponse{
+	res := &types.PaymentSystemsResponse{
 		Systems: service.NewPaymentSystems(systems).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

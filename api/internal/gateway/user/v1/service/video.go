@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
 type Video struct {
-	response.Video
+	types.Video
 }
 
 type Videos []*Video
 
 func NewVideo(v *entity.Video) *Video {
 	return &Video{
-		Video: response.Video{
+		Video: types.Video{
 			ID:            v.ID,
 			CoordinatorID: v.CoordinatorID,
 			ProductIDs:    v.ProductIDs,
@@ -27,7 +27,7 @@ func NewVideo(v *entity.Video) *Video {
 	}
 }
 
-func (v *Video) Response() *response.Video {
+func (v *Video) Response() *types.Video {
 	return &v.Video
 }
 
@@ -39,8 +39,8 @@ func NewVideos(videos []*entity.Video) Videos {
 	return result
 }
 
-func (vs Videos) Response() []*response.Video {
-	result := make([]*response.Video, len(vs))
+func (vs Videos) Response() []*types.Video {
+	result := make([]*types.Video, len(vs))
 	for i, v := range vs {
 		result[i] = v.Response()
 	}

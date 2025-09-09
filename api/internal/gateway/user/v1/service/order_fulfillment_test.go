@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -248,7 +248,7 @@ func TestOrderFulfillment(t *testing.T) {
 				ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			address: &Address{
-				Address: response.Address{
+				Address: types.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
@@ -261,7 +261,7 @@ func TestOrderFulfillment(t *testing.T) {
 				revisionID: 1,
 			},
 			expect: &OrderFulfillment{
-				OrderFulfillment: response.OrderFulfillment{
+				OrderFulfillment: types.OrderFulfillment{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
 					Status:          FulfillmentStatusFulfilled.Response(),
@@ -288,12 +288,12 @@ func TestOrderFulfillment_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		fulfillment *OrderFulfillment
-		expect      *response.OrderFulfillment
+		expect      *types.OrderFulfillment
 	}{
 		{
 			name: "success",
 			fulfillment: &OrderFulfillment{
-				OrderFulfillment: response.OrderFulfillment{
+				OrderFulfillment: types.OrderFulfillment{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
 					Status:          FulfillmentStatusFulfilled.Response(),
@@ -305,7 +305,7 @@ func TestOrderFulfillment_Response(t *testing.T) {
 					ShippedAt:       1640962800,
 				},
 			},
-			expect: &response.OrderFulfillment{
+			expect: &types.OrderFulfillment{
 				FulfillmentID:   "fulfillment-id",
 				TrackingNumber:  "",
 				Status:          FulfillmentStatusFulfilled.Response(),
@@ -355,7 +355,7 @@ func TestOrderFulfillments(t *testing.T) {
 			},
 			addresses: map[int64]*Address{
 				1: {
-					Address: response.Address{
+					Address: types.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -370,7 +370,7 @@ func TestOrderFulfillments(t *testing.T) {
 			},
 			expect: OrderFulfillments{
 				{
-					OrderFulfillment: response.OrderFulfillment{
+					OrderFulfillment: types.OrderFulfillment{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
 						Status:          FulfillmentStatusFulfilled.Response(),
@@ -398,13 +398,13 @@ func TestOrderFulfillments_Response(t *testing.T) {
 	tests := []struct {
 		name         string
 		fulfillments OrderFulfillments
-		expect       []*response.OrderFulfillment
+		expect       []*types.OrderFulfillment
 	}{
 		{
 			name: "success",
 			fulfillments: OrderFulfillments{
 				{
-					OrderFulfillment: response.OrderFulfillment{
+					OrderFulfillment: types.OrderFulfillment{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
 						Status:          FulfillmentStatusFulfilled.Response(),
@@ -417,7 +417,7 @@ func TestOrderFulfillments_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.OrderFulfillment{
+			expect: []*types.OrderFulfillment{
 				{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",

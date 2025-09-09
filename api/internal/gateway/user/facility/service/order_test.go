@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -194,7 +194,6 @@ func TestNewOrderStatus(t *testing.T) {
 	}
 }
 
-
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -282,7 +281,7 @@ func TestOrder(t *testing.T) {
 			},
 			products: map[int64]*Product{
 				1: {
-					Product: response.Product{
+					Product: types.Product{
 						ID:              "product-id",
 						CoordinatorID:   "coordinator-id",
 						ProducerID:      "producer-id",
@@ -296,7 +295,7 @@ func TestOrder(t *testing.T) {
 						Weight:          1.3,
 						ItemUnit:        "袋",
 						ItemDescription: "1袋あたり100gのじゃがいも",
-						Media: []*response.ProductMedia{
+						Media: []*types.ProductMedia{
 							{
 								URL:         "https://and-period.jp/thumbnail01.png",
 								IsThumbnail: true,
@@ -322,13 +321,13 @@ func TestOrder(t *testing.T) {
 				},
 			},
 			expect: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Type:          int32(OrderTypeProduct),
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -339,14 +338,14 @@ func TestOrder(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -377,12 +376,12 @@ func TestOrder_ProductIDs(t *testing.T) {
 		{
 			name: "success",
 			order: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "",
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -393,14 +392,14 @@ func TestOrder_ProductIDs(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -427,17 +426,17 @@ func TestOrder_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		order  *Order
-		expect *response.Order
+		expect *types.Order
 	}{
 		{
 			name: "success",
 			order: &Order{
-				Order: response.Order{
+				Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
 					Status:        int32(OrderStatusPreparing),
-					Payment: &response.OrderPayment{
+					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
@@ -448,14 +447,14 @@ func TestOrder_Response(t *testing.T) {
 						OrderedAt:     1640962800,
 						PaidAt:        1640962800,
 					},
-					Refund: &response.OrderRefund{
+					Refund: &types.OrderRefund{
 						Total:      0,
 						Type:       RefundTypeNone.Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
 					},
-					Items: []*response.OrderItem{
+					Items: []*types.OrderItem{
 						{
 							FulfillmentID: "fulfillment-id",
 							ProductID:     "product-id",
@@ -467,12 +466,12 @@ func TestOrder_Response(t *testing.T) {
 					PickupLocation: "施設の入り口",
 				},
 			},
-			expect: &response.Order{
+			expect: &types.Order{
 				ID:            "order-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
 				Status:        int32(OrderStatusPreparing),
-				Payment: &response.OrderPayment{
+				Payment: &types.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
@@ -483,14 +482,14 @@ func TestOrder_Response(t *testing.T) {
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
 				},
-				Refund: &response.OrderRefund{
+				Refund: &types.OrderRefund{
 					Total:      0,
 					Type:       RefundTypeNone.Response(),
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
 				},
-				Items: []*response.OrderItem{
+				Items: []*types.OrderItem{
 					{
 						FulfillmentID: "fulfillment-id",
 						ProductID:     "product-id",

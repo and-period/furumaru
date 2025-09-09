@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -25,7 +25,7 @@ func TestCategory(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Category{
-				Category: response.Category{
+				Category: types.Category{
 					ID:        "category-id",
 					Name:      "野菜",
 					CreatedAt: 1640962800,
@@ -47,19 +47,19 @@ func TestCategory_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		category *Category
-		expect   *response.Category
+		expect   *types.Category
 	}{
 		{
 			name: "success",
 			category: &Category{
-				Category: response.Category{
+				Category: types.Category{
 					ID:        "category-id",
 					Name:      "野菜",
 					CreatedAt: 1640962800,
 					UpdatedAt: 1640962800,
 				},
 			},
-			expect: &response.Category{
+			expect: &types.Category{
 				ID:        "category-id",
 				Name:      "野菜",
 				CreatedAt: 1640962800,
@@ -94,7 +94,7 @@ func TestCategories(t *testing.T) {
 			},
 			expect: Categories{
 				{
-					Category: response.Category{
+					Category: types.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,
@@ -123,7 +123,7 @@ func TestCategories_Map(t *testing.T) {
 			name: "success",
 			categories: Categories{
 				{
-					Category: response.Category{
+					Category: types.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,
@@ -133,7 +133,7 @@ func TestCategories_Map(t *testing.T) {
 			},
 			expect: map[string]*Category{
 				"category-id": {
-					Category: response.Category{
+					Category: types.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,
@@ -156,13 +156,13 @@ func TestCategories_Response(t *testing.T) {
 	tests := []struct {
 		name       string
 		categories Categories
-		expect     []*response.Category
+		expect     []*types.Category
 	}{
 		{
 			name: "success",
 			categories: Categories{
 				{
-					Category: response.Category{
+					Category: types.Category{
 						ID:        "category-id",
 						Name:      "野菜",
 						CreatedAt: 1640962800,
@@ -170,7 +170,7 @@ func TestCategories_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Category{
+			expect: []*types.Category{
 				{
 					ID:        "category-id",
 					Name:      "野菜",

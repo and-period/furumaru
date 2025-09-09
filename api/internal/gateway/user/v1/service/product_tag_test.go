@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -25,7 +25,7 @@ func TestProductTag(t *testing.T) {
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &ProductTag{
-				ProductTag: response.ProductTag{
+				ProductTag: types.ProductTag{
 					ID:   "product-tag-id",
 					Name: "野菜",
 				},
@@ -45,17 +45,17 @@ func TestProductTag_Response(t *testing.T) {
 	tests := []struct {
 		name       string
 		productTag *ProductTag
-		expect     *response.ProductTag
+		expect     *types.ProductTag
 	}{
 		{
 			name: "success",
 			productTag: &ProductTag{
-				ProductTag: response.ProductTag{
+				ProductTag: types.ProductTag{
 					ID:   "product-tag-id",
 					Name: "野菜",
 				},
 			},
-			expect: &response.ProductTag{
+			expect: &types.ProductTag{
 				ID:   "product-tag-id",
 				Name: "野菜",
 			},
@@ -88,7 +88,7 @@ func TestProductTags(t *testing.T) {
 			},
 			expect: ProductTags{
 				{
-					ProductTag: response.ProductTag{
+					ProductTag: types.ProductTag{
 						ID:   "product-tag-id",
 						Name: "野菜",
 					},
@@ -109,19 +109,19 @@ func TestProductTags_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		productTags ProductTags
-		expect      []*response.ProductTag
+		expect      []*types.ProductTag
 	}{
 		{
 			name: "success",
 			productTags: ProductTags{
 				{
-					ProductTag: response.ProductTag{
+					ProductTag: types.ProductTag{
 						ID:   "product-tag-id",
 						Name: "野菜",
 					},
 				},
 			},
-			expect: []*response.ProductTag{
+			expect: []*types.ProductTag{
 				{
 					ID:   "product-tag-id",
 					Name: "野菜",

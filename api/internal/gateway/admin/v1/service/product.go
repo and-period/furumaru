@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
@@ -41,14 +41,14 @@ const (
 )
 
 type Product struct {
-	response.Product
+	types.Product
 	revisionID int64
 }
 
 type Products []*Product
 
 type ProductMedia struct {
-	response.ProductMedia
+	types.ProductMedia
 }
 
 type MultiProductMedia []*ProductMedia
@@ -178,7 +178,7 @@ func NewProduct(product *entity.Product) *Product {
 		point3 = product.RecommendedPoints[2]
 	}
 	return &Product{
-		Product: response.Product{
+		Product: types.Product{
 			ID:                   product.ID,
 			CoordinatorID:        product.CoordinatorID,
 			ProducerID:           product.ProducerID,
@@ -222,7 +222,7 @@ func (p *Product) Fill(category *Category) {
 	}
 }
 
-func (p *Product) Response() *response.Product {
+func (p *Product) Response() *types.Product {
 	return &p.Product
 }
 
@@ -278,8 +278,8 @@ func (ps Products) Fill(types map[string]*ProductType, categories map[string]*Ca
 	}
 }
 
-func (ps Products) Response() []*response.Product {
-	res := make([]*response.Product, len(ps))
+func (ps Products) Response() []*types.Product {
+	res := make([]*types.Product, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}
@@ -288,14 +288,14 @@ func (ps Products) Response() []*response.Product {
 
 func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 	return &ProductMedia{
-		ProductMedia: response.ProductMedia{
+		ProductMedia: types.ProductMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
 		},
 	}
 }
 
-func (m *ProductMedia) Response() *response.ProductMedia {
+func (m *ProductMedia) Response() *types.ProductMedia {
 	return &m.ProductMedia
 }
 
@@ -307,8 +307,8 @@ func NewMultiProductMedia(media entity.MultiProductMedia) MultiProductMedia {
 	return res
 }
 
-func (m MultiProductMedia) Response() []*response.ProductMedia {
-	res := make([]*response.ProductMedia, len(m))
+func (m MultiProductMedia) Response() []*types.ProductMedia {
+	res := make([]*types.ProductMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
 	}

@@ -1,26 +1,26 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
 type SpotType struct {
-	response.SpotType
+	types.SpotType
 }
 
 type SpotTypes []*SpotType
 
 func NewSpotType(spotType *entity.SpotType) *SpotType {
 	return &SpotType{
-		SpotType: response.SpotType{
+		SpotType: types.SpotType{
 			ID:   spotType.ID,
 			Name: spotType.Name,
 		},
 	}
 }
 
-func (t *SpotType) Response() *response.SpotType {
+func (t *SpotType) Response() *types.SpotType {
 	if t == nil {
 		return nil
 	}
@@ -35,8 +35,8 @@ func NewSpotTypes(spotTypes entity.SpotTypes) SpotTypes {
 	return res
 }
 
-func (ts SpotTypes) Response() []*response.SpotType {
-	res := make([]*response.SpotType, len(ts))
+func (ts SpotTypes) Response() []*types.SpotType {
+	res := make([]*types.SpotType, len(ts))
 	for i := range ts {
 		res[i] = ts[i].Response()
 	}

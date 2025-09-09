@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
@@ -23,12 +23,12 @@ func (h *handler) guestVideoCommentRoutes(rg *gin.RouterGroup) {
 // @Router      /guests/videos/{videoId}/comments [post]
 // @Param       videoId path string true "動町ID"
 // @Accept      json
-// @Param       request body request.CreateGuestVideoCommentRequest true "ゲスト動画コメント作成"
+// @Param       request body types.CreateGuestVideoCommentRequest true "ゲスト動画コメント作成"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) CreateGuestVideoComment(ctx *gin.Context) {
-	req := &request.CreateGuestVideoCommentRequest{}
+	req := &types.CreateGuestVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

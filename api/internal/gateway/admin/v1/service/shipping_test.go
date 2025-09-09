@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -45,19 +45,19 @@ func TestShipping(t *testing.T) {
 				},
 			},
 			expect: &Shipping{
-				Shipping: response.Shipping{
+				Shipping: types.Shipping{
 					ID:        "shipping-id",
 					Name:      "配送設定",
 					IsDefault: false,
-					Box60Rates: []*response.ShippingRate{
+					Box60Rates: []*types.ShippingRate{
 						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 					},
 					Box60Frozen: 800,
-					Box80Rates: []*response.ShippingRate{
+					Box80Rates: []*types.ShippingRate{
 						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 					},
 					Box80Frozen: 800,
-					Box100Rates: []*response.ShippingRate{
+					Box100Rates: []*types.ShippingRate{
 						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 					},
 					Box100Frozen:      800,
@@ -82,7 +82,7 @@ func TestShipping(t *testing.T) {
 
 func TestShipping_Response(t *testing.T) {
 	t.Parallel()
-	rates := []*response.ShippingRate{
+	rates := []*types.ShippingRate{
 		{
 			Number:          1,
 			Name:            "四国",
@@ -93,12 +93,12 @@ func TestShipping_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		shipping *Shipping
-		expect   *response.Shipping
+		expect   *types.Shipping
 	}{
 		{
 			name: "success",
 			shipping: &Shipping{
-				Shipping: response.Shipping{
+				Shipping: types.Shipping{
 					ID:                "shipping-id",
 					IsDefault:         false,
 					Box60Rates:        rates,
@@ -114,7 +114,7 @@ func TestShipping_Response(t *testing.T) {
 				},
 				coordinatorID: "coordinator-id",
 			},
-			expect: &response.Shipping{
+			expect: &types.Shipping{
 				ID:                "shipping-id",
 				IsDefault:         false,
 				Box60Rates:        rates,
@@ -175,18 +175,18 @@ func TestShippings(t *testing.T) {
 			},
 			expect: Shippings{
 				{
-					Shipping: response.Shipping{
+					Shipping: types.Shipping{
 						ID:        "shipping-id",
 						IsDefault: false,
-						Box60Rates: []*response.ShippingRate{
+						Box60Rates: []*types.ShippingRate{
 							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 						},
 						Box60Frozen: 800,
-						Box80Rates: []*response.ShippingRate{
+						Box80Rates: []*types.ShippingRate{
 							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 						},
 						Box80Frozen: 800,
-						Box100Rates: []*response.ShippingRate{
+						Box100Rates: []*types.ShippingRate{
 							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 						},
 						Box100Frozen:      800,
@@ -211,7 +211,7 @@ func TestShippings(t *testing.T) {
 
 func TestShippings_Response(t *testing.T) {
 	t.Parallel()
-	rates := []*response.ShippingRate{
+	rates := []*types.ShippingRate{
 		{
 			Number:          1,
 			Name:            "四国",
@@ -222,13 +222,13 @@ func TestShippings_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		shippings Shippings
-		expect    []*response.Shipping
+		expect    []*types.Shipping
 	}{
 		{
 			name: "success",
 			shippings: Shippings{
 				{
-					Shipping: response.Shipping{
+					Shipping: types.Shipping{
 						ID:                "shipping-id",
 						IsDefault:         false,
 						Box60Rates:        rates,
@@ -245,7 +245,7 @@ func TestShippings_Response(t *testing.T) {
 					coordinatorID: "coordinator-id",
 				},
 			},
-			expect: []*response.Shipping{
+			expect: []*types.Shipping{
 				{
 					ID:                "shipping-id",
 					IsDefault:         false,
@@ -287,7 +287,7 @@ func TestShippingRate(t *testing.T) {
 				PrefectureCodes: []int32{13},
 			},
 			expect: &ShippingRate{
-				ShippingRate: response.ShippingRate{
+				ShippingRate: types.ShippingRate{
 					Number:          1,
 					Name:            "東京都",
 					Price:           1200,
@@ -310,19 +310,19 @@ func TestShippingRate_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		rate   *ShippingRate
-		expect *response.ShippingRate
+		expect *types.ShippingRate
 	}{
 		{
 			name: "success",
 			rate: &ShippingRate{
-				ShippingRate: response.ShippingRate{
+				ShippingRate: types.ShippingRate{
 					Number:          1,
 					Name:            "東京都",
 					Price:           1200,
 					PrefectureCodes: []int32{13},
 				},
 			},
-			expect: &response.ShippingRate{
+			expect: &types.ShippingRate{
 				Number:          1,
 				Name:            "東京都",
 				Price:           1200,
@@ -357,7 +357,7 @@ func TestShippingRates(t *testing.T) {
 			},
 			expect: ShippingRates{
 				{
-					ShippingRate: response.ShippingRate{
+					ShippingRate: types.ShippingRate{
 						Number:          1,
 						Name:            "東京都",
 						Price:           1200,
@@ -381,13 +381,13 @@ func TestShippingRates_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		rates  ShippingRates
-		expect []*response.ShippingRate
+		expect []*types.ShippingRate
 	}{
 		{
 			name: "success",
 			rates: ShippingRates{
 				{
-					ShippingRate: response.ShippingRate{
+					ShippingRate: types.ShippingRate{
 						Number:          1,
 						Name:            "東京都",
 						Price:           1200,
@@ -395,7 +395,7 @@ func TestShippingRates_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.ShippingRate{
+			expect: []*types.ShippingRate{
 				{
 					Number:          1,
 					Name:            "東京都",

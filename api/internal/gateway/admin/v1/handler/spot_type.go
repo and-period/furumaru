@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
@@ -32,7 +31,7 @@ func (h *handler) spotTypeRoutes(rg *gin.RouterGroup) {
 // @Param       offset query integer false "取得開始位置(min:0)" default(0) example(0)
 // @Param       name query string false "スポットタイプ名(あいまい検索)" example("観光地")
 // @Produce     json
-// @Success     200 {object} response.SpotTypesResponse
+// @Success     200 {object} types.SpotTypesResponse
 func (h *handler) ListSpotTypes(ctx *gin.Context) {
 	const (
 		defaultLimit  = 20
@@ -55,14 +54,14 @@ func (h *handler) ListSpotTypes(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	types, total, err := h.store.ListSpotTypes(ctx, in)
+	stypes, total, err := h.store.ListSpotTypes(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
-	res := &response.SpotTypesResponse{
-		SpotTypes: service.NewSpotTypes(types).Response(),
+	res := &types.SpotTypesResponse{
+		SpotTypes: service.NewSpotTypes(stypes).Response(),
 		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -74,13 +73,13 @@ func (h *handler) ListSpotTypes(ctx *gin.Context) {
 // @Router      /v1/spot-types [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.CreateSpotTypeRequest true "スポットタイプ情報"
+// @Param       request body types.CreateSpotTypeRequest true "スポットタイプ情報"
 // @Produce     json
-// @Success     200 {object} response.SpotTypeResponse
+// @Success     200 {object} types.SpotTypeResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するスポットタイプ名"
 func (h *handler) CreateSpotType(ctx *gin.Context) {
-	req := &request.CreateSpotTypeRequest{}
+	req := &types.CreateSpotTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -95,7 +94,7 @@ func (h *handler) CreateSpotType(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.SpotTypeResponse{
+	res := &types.SpotTypeResponse{
 		SpotType: service.NewSpotType(spotType).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -108,14 +107,14 @@ func (h *handler) CreateSpotType(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       spotTypeId path string true "スポットタイプID" example("kSByoE6FetnPs5Byk3a9Zx")
 // @Accept      json
-// @Param       request body request.UpdateSpotTypeRequest true "スポットタイプ情報"
+// @Param       request body types.UpdateSpotTypeRequest true "スポットタイプ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     404 {object} util.ErrorResponse "スポットタイプが存在しない"
 // @Failure     409 {object} util.ErrorResponse "すでに存在するスポットタイプ名"
 func (h *handler) UpdateSpotType(ctx *gin.Context) {
-	req := &request.UpdateSpotTypeRequest{}
+	req := &types.UpdateSpotTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

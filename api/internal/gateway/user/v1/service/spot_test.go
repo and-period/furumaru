@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
@@ -59,7 +59,7 @@ func TestSpotsByUser(t *testing.T) {
 		spots    sentity.Spots
 		users    map[string]*uentity.User
 		expect   Spots
-		response []*response.Spot
+		response []*types.Spot
 	}{
 		{
 			name: "success",
@@ -93,7 +93,7 @@ func TestSpotsByUser(t *testing.T) {
 			},
 			expect: Spots{
 				{
-					Spot: response.Spot{
+					Spot: types.Spot{
 						ID:               "spot-id",
 						Name:             "name",
 						Description:      "description",
@@ -109,7 +109,7 @@ func TestSpotsByUser(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Spot{
+			response: []*types.Spot{
 				{
 					ID:               "spot-id",
 					Name:             "name",
@@ -160,7 +160,7 @@ func TestSpotsByUser(t *testing.T) {
 			},
 			users:    map[string]*uentity.User{},
 			expect:   Spots{},
-			response: []*response.Spot{},
+			response: []*types.Spot{},
 		},
 	}
 
@@ -184,7 +184,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 		spots    sentity.Spots
 		users    map[string]*Coordinator
 		expect   Spots
-		response []*response.Spot
+		response []*types.Spot
 	}{
 		{
 			name: "success",
@@ -206,7 +206,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 			},
 			users: map[string]*Coordinator{
 				"user-id": {
-					Coordinator: response.Coordinator{
+					Coordinator: types.Coordinator{
 						ID:           "user-id",
 						Username:     "username",
 						ThumbnailURL: "thumbnail",
@@ -215,7 +215,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 			},
 			expect: Spots{
 				{
-					Spot: response.Spot{
+					Spot: types.Spot{
 						ID:               "spot-id",
 						Name:             "name",
 						Description:      "description",
@@ -231,7 +231,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Spot{
+			response: []*types.Spot{
 				{
 					ID:               "spot-id",
 					Name:             "name",
@@ -282,7 +282,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 			},
 			users:    map[string]*Coordinator{},
 			expect:   Spots{},
-			response: []*response.Spot{},
+			response: []*types.Spot{},
 		},
 	}
 
@@ -306,7 +306,7 @@ func TestSpotsByProducer(t *testing.T) {
 		spots    sentity.Spots
 		users    map[string]*Producer
 		expect   Spots
-		response []*response.Spot
+		response []*types.Spot
 	}{
 		{
 			name: "success",
@@ -328,7 +328,7 @@ func TestSpotsByProducer(t *testing.T) {
 			},
 			users: map[string]*Producer{
 				"user-id": {
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:           "user-id",
 						Username:     "username",
 						ThumbnailURL: "thumbnail",
@@ -337,7 +337,7 @@ func TestSpotsByProducer(t *testing.T) {
 			},
 			expect: Spots{
 				{
-					Spot: response.Spot{
+					Spot: types.Spot{
 						ID:               "spot-id",
 						Name:             "name",
 						Description:      "description",
@@ -353,7 +353,7 @@ func TestSpotsByProducer(t *testing.T) {
 					},
 				},
 			},
-			response: []*response.Spot{
+			response: []*types.Spot{
 				{
 					ID:               "spot-id",
 					Name:             "name",
@@ -404,7 +404,7 @@ func TestSpotsByProducer(t *testing.T) {
 			},
 			users:    map[string]*Producer{},
 			expect:   Spots{},
-			response: []*response.Spot{},
+			response: []*types.Spot{},
 		},
 	}
 

@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -35,15 +34,15 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 // @Security    bearerauth
 // @Security    cookieauth
 // @Accept      json
-// @Param       request body request.CheckoutProductRequest true "商品決済"
+// @Param       request body types.CheckoutProductRequest true "商品決済"
 // @Produce     json
-// @Success     200 {object} response.CheckoutResponse
+// @Success     200 {object} types.CheckoutResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "決済システムがメンテナンス中 もしくは 店舗が利用停止中"
 // @Failure     412 {object} util.ErrorResponse "前提条件エラー(商品在庫が不足、無効なプロモーションなど...)"
 func (h *handler) CheckoutProduct(ctx *gin.Context) {
-	req := &request.CheckoutProductRequest{}
+	req := &types.CheckoutProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -83,7 +82,7 @@ func (h *handler) CheckoutProduct(ctx *gin.Context) {
 // @Security    cookieauth
 // @Param       experienceId path string true "体験ID"
 // @Produce     json
-// @Success     200 {object} response.PreCheckoutExperienceResponse
+// @Success     200 {object} types.PreCheckoutExperienceResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "体験が見つからない"
 func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
@@ -148,7 +147,7 @@ func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
 	}
 	subtotal, discount := experience.Calc(params)
 
-	res := &response.PreCheckoutExperienceResponse{
+	res := &types.PreCheckoutExperienceResponse{
 		RequestID:  h.generateID(),
 		Experience: experience.Response(),
 		Promotion:  promotion.Response(),
@@ -167,13 +166,13 @@ func (h *handler) PreCheckoutExperience(ctx *gin.Context) {
 // @Security    cookieauth
 // @Param       experienceId path string true "体験ID"
 // @Accept      json
-// @Param       request body request.CheckoutExperienceRequest true "体験決済"
+// @Param       request body types.CheckoutExperienceRequest true "体験決済"
 // @Produce     json
-// @Success     200 {object} response.CheckoutResponse
+// @Success     200 {object} types.CheckoutResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CheckoutExperience(ctx *gin.Context) {
-	req := &request.CheckoutExperienceRequest{}
+	req := &types.CheckoutExperienceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -228,7 +227,7 @@ func (h *handler) checkPaymentSystem(ctx *gin.Context, methodType service.Paymen
 type checkoutParams struct {
 	methodType service.PaymentMethodType
 	detail     *store.CheckoutDetail
-	creditCard *request.CheckoutCreditCard
+	creditCard *types.CheckoutCreditCard
 }
 
 func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
@@ -305,7 +304,7 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.CheckoutResponse{
+	res := &types.CheckoutResponse{
 		URL: redirectURL,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -319,7 +318,7 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 // @Security    cookieauth
 // @Param       transactionId path string true "トランザクションID"
 // @Produce     json
-// @Success     200 {object} response.CheckoutStateResponse
+// @Success     200 {object} types.CheckoutStateResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     404 {object} util.ErrorResponse "トランザクションが見つからない"
 func (h *handler) GetCheckoutState(ctx *gin.Context) {
@@ -332,7 +331,7 @@ func (h *handler) GetCheckoutState(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.CheckoutStateResponse{
+	res := &types.CheckoutStateResponse{
 		OrderID: orderID,
 		Status:  service.NewPaymentStatus(status).Response(),
 	}

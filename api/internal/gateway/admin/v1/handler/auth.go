@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -47,7 +46,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 // @Router      /v1/auth [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
@@ -65,7 +64,7 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -81,7 +80,7 @@ type authUser interface {
 // @Router      /v1/auth/user [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.AuthUserResponse
+// @Success     200 {object} types.AuthUserResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetAuthUser(ctx *gin.Context) {
 	adminID := getAdminID(ctx)
@@ -104,7 +103,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthUserResponse{
+	res := &types.AuthUserResponse{
 		AuthUser: auth.AuthUser().Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -115,12 +114,12 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /v1/auth [post]
 // @Accept      json
-// @Param       request body request.SignInRequest true "サインイン"
+// @Param       request body types.SignInRequest true "サインイン"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) SignIn(ctx *gin.Context) {
-	req := &request.SignInRequest{}
+	req := &types.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -136,7 +135,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -148,7 +147,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 // @Router      /v1/auth/providers [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.AuthProvidersResponse
+// @Success     200 {object} types.AuthProvidersResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListAuthProviders(ctx *gin.Context) {
 	in := &user.ListAdminAuthProvidersInput{
@@ -159,7 +158,7 @@ func (h *handler) ListAuthProviders(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthProvidersResponse{
+	res := &types.AuthProvidersResponse{
 		Providers: service.NewAuthProviders(providers).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -173,7 +172,7 @@ func (h *handler) ListAuthProviders(ctx *gin.Context) {
 // @Param       state query string true "CSRF対策用のstate" example("xxxxxxxxxx")
 // @Param       redirectUri query string false "認証後のリダイレクト先（変更したいときのみ指定）" example("https://example.com")
 // @Produce     json
-// @Success     200 {object} response.AuthGoogleAccountResponse
+// @Success     200 {object} types.AuthGoogleAccountResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     412 {object} util.ErrorResponse "すでに連携済み"
 func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
@@ -187,7 +186,7 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthGoogleAccountResponse{
+	res := &types.AuthGoogleAccountResponse{
 		URL: authURL,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -199,12 +198,12 @@ func (h *handler) AuthGoogleAccount(ctx *gin.Context) {
 // @Router      /v1/auth/google [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.ConnectGoogleAccountRequest true "連携リクエスト"
+// @Param       request body types.ConnectGoogleAccountRequest true "連携リクエスト"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
-	req := &request.ConnectGoogleAccountRequest{}
+	req := &types.ConnectGoogleAccountRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -230,7 +229,7 @@ func (h *handler) ConnectGoogleAccount(ctx *gin.Context) {
 // @Param       state query string true "CSRF対策用のstate" example("xxxxxxxxxx")
 // @Param       redirectUri query string false "認証後のリダイレクト先（変更したいときのみ指定）" example("https://example.com")
 // @Produce     json
-// @Success     200 {object} response.AuthLINEAccountResponse
+// @Success     200 {object} types.AuthLINEAccountResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     412 {object} util.ErrorResponse "すでに連携済み"
 func (h *handler) AuthLINEAccount(ctx *gin.Context) {
@@ -244,7 +243,7 @@ func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AuthLINEAccountResponse{
+	res := &types.AuthLINEAccountResponse{
 		URL: authURL,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -256,12 +255,12 @@ func (h *handler) AuthLINEAccount(ctx *gin.Context) {
 // @Router      /v1/auth/line [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.ConnectLINEAccountRequest true "連携リクエスト"
+// @Param       request body types.ConnectLINEAccountRequest true "連携リクエスト"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ConnectLINEAccount(ctx *gin.Context) {
-	req := &request.ConnectLINEAccountRequest{}
+	req := &types.ConnectLINEAccountRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -310,12 +309,12 @@ func (h *handler) SignOut(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /v1/auth/refresh-token [post]
 // @Accept      json
-// @Param       request body request.RefreshAuthTokenRequest true "トークン更新"
+// @Param       request body types.RefreshAuthTokenRequest true "トークン更新"
 // @Produce     json
-// @Success     200 {object} response.AuthResponse
+// @Success     200 {object} types.AuthResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RefreshAuthToken(ctx *gin.Context) {
-	req := &request.RefreshAuthTokenRequest{}
+	req := &types.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -330,7 +329,7 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AuthResponse{
+	res := &types.AuthResponse{
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -342,13 +341,13 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 // @Router      /v1/auth/device [post]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.RegisterAuthDeviceRequest true "デバイストークン"
+// @Param       request body types.RegisterAuthDeviceRequest true "デバイストークン"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) RegisterDevice(ctx *gin.Context) {
-	req := &request.RegisterAuthDeviceRequest{}
+	req := &types.RegisterAuthDeviceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -372,7 +371,7 @@ func (h *handler) RegisterDevice(ctx *gin.Context) {
 // @Router      /v1/auth/email [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateAuthEmailRequest true "メールアドレス"
+// @Param       request body types.UpdateAuthEmailRequest true "メールアドレス"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -385,7 +384,7 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	req := &request.UpdateAuthEmailRequest{}
+	req := &types.UpdateAuthEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -408,7 +407,7 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /v1/auth/email/verified [post]
 // @Accept      json
-// @Param       request body request.VerifyAuthEmailRequest true "検証コード"
+// @Param       request body types.VerifyAuthEmailRequest true "検証コード"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -419,7 +418,7 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	req := &request.VerifyAuthEmailRequest{}
+	req := &types.VerifyAuthEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -443,7 +442,7 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 // @Router      /v1/auth/password [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateAuthPasswordRequest true "パスワード"
+// @Param       request body types.UpdateAuthPasswordRequest true "パスワード"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -454,7 +453,7 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
-	req := &request.UpdateAuthPasswordRequest{}
+	req := &types.UpdateAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -479,12 +478,12 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /v1/auth/forgot-password [post]
 // @Accept      json
-// @Param       request body request.ForgotAuthPasswordRequest true "メールアドレス"
+// @Param       request body types.ForgotAuthPasswordRequest true "メールアドレス"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
-	req := &request.ForgotAuthPasswordRequest{}
+	req := &types.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -506,12 +505,12 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 // @Tags        Auth
 // @Router      /v1/auth/forgot-password/verified [post]
 // @Accept      json
-// @Param       request body request.ResetAuthPasswordRequest true "パスワードリセット"
+// @Param       request body types.ResetAuthPasswordRequest true "パスワードリセット"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) ResetAuthPassword(ctx *gin.Context) {
-	req := &request.ResetAuthPasswordRequest{}
+	req := &types.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -537,7 +536,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 // @Router      /v1/auth/coordinator [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.CoordinatorResponse
+// @Success     200 {object} types.CoordinatorResponse
 // @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
@@ -564,7 +563,7 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CoordinatorResponse{
+	res := &types.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
 		ProductTypes: productTypes.Response(),
 	}
@@ -577,7 +576,7 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 // @Router      /v1/auth/coordinator [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpdateCoordinatorRequest true "コーディネータ情報"
+// @Param       request body types.UpdateCoordinatorRequest true "コーディネータ情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -587,7 +586,7 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	req := &request.UpdateCoordinatorRequest{}
+	req := &types.UpdateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -628,7 +627,7 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 // @Router      /v1/auth/coordinator/shippings [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.ShippingResponse
+// @Success     200 {object} types.ShippingResponse
 func (h *handler) GetAuthShipping(ctx *gin.Context) {
 	if getAdminType(ctx) != service.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
@@ -648,7 +647,7 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.ShippingResponse{
+	res := &types.ShippingResponse{
 		Shipping: service.NewShipping(shipping).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -660,7 +659,7 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 // @Router      /v1/auth/coordinator/shippings [patch]
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.UpsertShippingRequest true "配送設定"
+// @Param       request body types.UpsertShippingRequest true "配送設定"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
@@ -670,7 +669,7 @@ func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
 		return
 	}
 
-	req := &request.UpsertShippingRequest{}
+	req := &types.UpsertShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

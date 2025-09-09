@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
 type ContactCategory struct {
-	response.ContactCategory
+	types.ContactCategory
 }
 
 type ContactCategories []*ContactCategory
 
 func NewContactCategory(contactCategory *entity.ContactCategory) *ContactCategory {
 	return &ContactCategory{
-		ContactCategory: response.ContactCategory{
+		ContactCategory: types.ContactCategory{
 			ID:        contactCategory.ID,
 			Title:     contactCategory.Title,
 			CreatedAt: contactCategory.CreatedAt.Unix(),
@@ -22,7 +22,7 @@ func NewContactCategory(contactCategory *entity.ContactCategory) *ContactCategor
 	}
 }
 
-func (c *ContactCategory) Response() *response.ContactCategory {
+func (c *ContactCategory) Response() *types.ContactCategory {
 	return &c.ContactCategory
 }
 
@@ -34,8 +34,8 @@ func NewContactCategories(contactCategories entity.ContactCategories) ContactCat
 	return res
 }
 
-func (cs ContactCategories) Response() []*response.ContactCategory {
-	res := make([]*response.ContactCategory, len(cs))
+func (cs ContactCategories) Response() []*types.ContactCategory {
+	res := make([]*types.ContactCategory, len(cs))
 	for i := range cs {
 		res[i] = cs[i].Response()
 	}

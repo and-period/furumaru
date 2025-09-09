@@ -3,19 +3,19 @@ package service
 import (
 	"strings"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Producer struct {
-	response.Producer
+	types.Producer
 }
 
 type Producers []*Producer
 
 func NewProducer(producer *entity.Producer) *Producer {
 	return &Producer{
-		Producer: response.Producer{
+		Producer: types.Producer{
 			ID:                producer.ID,
 			Status:            NewAdminStatus(producer.Status).Response(),
 			Lastname:          producer.Lastname,
@@ -45,7 +45,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 
 func (p *Producer) AuthUser() *AuthUser {
 	return &AuthUser{
-		AuthUser: response.AuthUser{
+		AuthUser: types.AuthUser{
 			AdminID:      p.ID,
 			Type:         AdminTypeProducer.Response(),
 			Username:     p.Username,
@@ -55,7 +55,7 @@ func (p *Producer) AuthUser() *AuthUser {
 	}
 }
 
-func (p *Producer) Response() *response.Producer {
+func (p *Producer) Response() *types.Producer {
 	return &p.Producer
 }
 
@@ -98,8 +98,8 @@ func (ps Producers) Contains(producerIDs ...string) bool {
 	return true
 }
 
-func (ps Producers) Response() []*response.Producer {
-	res := make([]*response.Producer, len(ps))
+func (ps Producers) Response() []*types.Producer {
+	res := make([]*types.Producer, len(ps))
 	for i := range ps {
 		res[i] = ps[i].Response()
 	}

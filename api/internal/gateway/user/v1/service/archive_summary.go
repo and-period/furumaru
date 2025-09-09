@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type ArchiveSummary struct {
-	response.ArchiveSummary
+	types.ArchiveSummary
 }
 
 type ArchiveSummaries []*ArchiveSummary
 
 func NewArchiveSummary(schedule *entity.Schedule) *ArchiveSummary {
 	return &ArchiveSummary{
-		ArchiveSummary: response.ArchiveSummary{
+		ArchiveSummary: types.ArchiveSummary{
 			ScheduleID:    schedule.ID,
 			CoordinatorID: schedule.CoordinatorID,
 			Title:         schedule.Title,
@@ -25,7 +25,7 @@ func NewArchiveSummary(schedule *entity.Schedule) *ArchiveSummary {
 	}
 }
 
-func (a *ArchiveSummary) Response() *response.ArchiveSummary {
+func (a *ArchiveSummary) Response() *types.ArchiveSummary {
 	return &a.ArchiveSummary
 }
 
@@ -43,8 +43,8 @@ func (as ArchiveSummaries) CoordinatorIDs() []string {
 	})
 }
 
-func (as ArchiveSummaries) Response() []*response.ArchiveSummary {
-	res := make([]*response.ArchiveSummary, len(as))
+func (as ArchiveSummaries) Response() []*types.ArchiveSummary {
+	res := make([]*types.ArchiveSummary, len(as))
 	for i := range as {
 		res[i] = as[i].Response()
 	}

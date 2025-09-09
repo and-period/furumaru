@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -27,7 +26,7 @@ func (h *handler) paymentSystemRoutes(rg *gin.RouterGroup) {
 // @Router      /v1/payment-systems [get]
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.PaymentSystemsResponse
+// @Success     200 {object} types.PaymentSystemsResponse
 func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 	methodTypes := []entity.PaymentMethodType{
 		entity.PaymentMethodTypeCreditCard,
@@ -45,7 +44,7 @@ func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.PaymentSystemsResponse{
+	res := &types.PaymentSystemsResponse{
 		Systems: service.NewPaymentSystems(systems).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -58,12 +57,12 @@ func (h *handler) ListPaymentSystems(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       methodType path integer true "決済手段タイプ" example(1)
 // @Accept      json
-// @Param       request body request.UpdatePaymentSystemRequest true "決済システム情報"
+// @Param       request body types.UpdatePaymentSystemRequest true "決済システム情報"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdatePaymentSystem(ctx *gin.Context) {
-	req := &request.UpdatePaymentSystemRequest{}
+	req := &types.UpdatePaymentSystemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

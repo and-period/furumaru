@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
@@ -32,7 +31,7 @@ func (h *handler) addressRoutes(rg *gin.RouterGroup) {
 // @Param       limit query int64 false "取得上限数(max:200)" default(20)
 // @Param       offset query int64 false "取得開始位置(min:0)" default(0)
 // @Produce     json
-// @Success     200 {object} response.AddressesResponse
+// @Success     200 {object} types.AddressesResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) ListAddresses(ctx *gin.Context) {
@@ -63,7 +62,7 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.AddressesResponse{
+	res := &types.AddressesResponse{
 		Addresses: service.NewAddresses(addresses).Response(),
 		Total:     total,
 	}
@@ -77,7 +76,7 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       addressId path string true "住所ID"
 // @Produce     json
-// @Success     200 {object} response.AddressResponse
+// @Success     200 {object} types.AddressResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "他のユーザーのアドレス情報"
 // @Failure     404 {object} util.ErrorResponse "アドレスが存在しない"
@@ -91,7 +90,7 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AddressResponse{
+	res := &types.AddressResponse{
 		Address: service.NewAddress(address).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -104,12 +103,12 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Produce     json
-// @Param       body body request.CreateAddressRequest true "住所情報"
-// @Success     200 {object} response.AddressResponse
+// @Param       body body types.CreateAddressRequest true "住所情報"
+// @Success     200 {object} types.AddressResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateAddress(ctx *gin.Context) {
-	req := &request.CreateAddressRequest{}
+	req := &types.CreateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
@@ -133,7 +132,7 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.AddressResponse{
+	res := &types.AddressResponse{
 		Address: service.NewAddress(address).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -146,14 +145,14 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Param       addressId path string true "住所ID"
-// @Param       body body request.UpdateAddressRequest true "更新する住所情報"
+// @Param       body body types.UpdateAddressRequest true "更新する住所情報"
 // @Success     204 "更新成功"
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 // @Failure     403 {object} util.ErrorResponse "他のユーザーのアドレス情報"
 // @Failure     404 {object} util.ErrorResponse "アドレスが存在しない"
 func (h *handler) UpdateAddress(ctx *gin.Context) {
-	req := &request.UpdateAddressRequest{}
+	req := &types.UpdateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

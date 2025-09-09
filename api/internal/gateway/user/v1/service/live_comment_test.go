@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/stretchr/testify/assert"
@@ -79,7 +79,7 @@ func TestLiveComments(t *testing.T) {
 			},
 			expect: LiveComments{
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						UserID:       "user-id",
 						Username:     "username",
 						AccountID:    "account-id",
@@ -89,7 +89,7 @@ func TestLiveComments(t *testing.T) {
 					},
 				},
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						UserID:       "",
 						Username:     "",
 						AccountID:    "",
@@ -116,13 +116,13 @@ func TestLiveComments_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		comments LiveComments
-		expect   []*response.LiveComment
+		expect   []*types.LiveComment
 	}{
 		{
 			name: "success",
 			comments: LiveComments{
 				{
-					LiveComment: response.LiveComment{
+					LiveComment: types.LiveComment{
 						UserID:       "user-id",
 						Username:     "username",
 						AccountID:    "account-id",
@@ -132,7 +132,7 @@ func TestLiveComments_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.LiveComment{
+			expect: []*types.LiveComment{
 				{
 					UserID:       "user-id",
 					Username:     "username",

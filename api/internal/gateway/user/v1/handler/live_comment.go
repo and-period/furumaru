@@ -3,9 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -28,7 +27,7 @@ func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 // @Param       scheduleId path string true "スケジュールID"
 // @Param       limit query int64 false "取得件数" default(20)
 // @Produce     json
-// @Success     200 {object} response.LiveCommentsResponse
+// @Success     200 {object} types.LiveCommentsResponse
 func (h *handler) ListLiveComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
@@ -67,8 +66,8 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 		return
 	}
 	if len(comments) == 0 {
-		res := &response.LiveCommentsResponse{
-			Comments: []*response.LiveComment{},
+		res := &types.LiveCommentsResponse{
+			Comments: []*types.LiveComment{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -79,7 +78,7 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.LiveCommentsResponse{
+	res := &types.LiveCommentsResponse{
 		Comments:  service.NewLiveComments(comments, users.Map()).Response(),
 		NextToken: token,
 	}
@@ -93,13 +92,13 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 // @Security    bearerauth
 // @Param       scheduleId path string true "スケジュールID"
 // @Accept      json
-// @Param       request body request.CreateLiveCommentRequest true "ライブコメント作成"
+// @Param       request body types.CreateLiveCommentRequest true "ライブコメント作成"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CreateLiveComment(ctx *gin.Context) {
-	req := &request.CreateLiveCommentRequest{}
+	req := &types.CreateLiveCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return

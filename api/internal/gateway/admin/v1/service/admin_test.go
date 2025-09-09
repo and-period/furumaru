@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -128,7 +128,7 @@ func TestAdmin(t *testing.T) {
 				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Admin{
-				Admin: response.Admin{
+				Admin: types.Admin{
 					ID:            "admin-id",
 					Type:          int32(AdminTypeAdministrator),
 					Lastname:      "&.",
@@ -160,7 +160,7 @@ func TestAdmin_Name(t *testing.T) {
 		{
 			name: "success",
 			admin: &Admin{
-				Admin: response.Admin{
+				Admin: types.Admin{
 					Lastname:  "&.",
 					Firstname: "管理者",
 				},
@@ -170,7 +170,7 @@ func TestAdmin_Name(t *testing.T) {
 		{
 			name: "success only lastname",
 			admin: &Admin{
-				Admin: response.Admin{
+				Admin: types.Admin{
 					Lastname:  "&.",
 					Firstname: "",
 				},
@@ -180,7 +180,7 @@ func TestAdmin_Name(t *testing.T) {
 		{
 			name: "success only firstname",
 			admin: &Admin{
-				Admin: response.Admin{
+				Admin: types.Admin{
 					Lastname:  "",
 					Firstname: "管理者",
 				},
@@ -201,12 +201,12 @@ func TestAdmin_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		admin  *Admin
-		expect *response.Admin
+		expect *types.Admin
 	}{
 		{
 			name: "success",
 			admin: &Admin{
-				Admin: response.Admin{
+				Admin: types.Admin{
 					ID:            "admin-id",
 					Type:          int32(AdminTypeAdministrator),
 					Lastname:      "&.",
@@ -218,7 +218,7 @@ func TestAdmin_Response(t *testing.T) {
 					UpdatedAt:     1640962800,
 				},
 			},
-			expect: &response.Admin{
+			expect: &types.Admin{
 				ID:            "admin-id",
 				Type:          int32(AdminTypeAdministrator),
 				Lastname:      "&.",
@@ -274,7 +274,7 @@ func TestAdmins(t *testing.T) {
 			},
 			expect: Admins{
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id01",
 						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
@@ -287,7 +287,7 @@ func TestAdmins(t *testing.T) {
 					},
 				},
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id02",
 						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
@@ -321,7 +321,7 @@ func TestAdmins_Map(t *testing.T) {
 			name: "success",
 			admins: Admins{
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id01",
 						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
@@ -334,7 +334,7 @@ func TestAdmins_Map(t *testing.T) {
 					},
 				},
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id02",
 						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
@@ -349,7 +349,7 @@ func TestAdmins_Map(t *testing.T) {
 			},
 			expect: map[string]*Admin{
 				"admin-id01": {
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id01",
 						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
@@ -362,7 +362,7 @@ func TestAdmins_Map(t *testing.T) {
 					},
 				},
 				"admin-id02": {
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id02",
 						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
@@ -390,13 +390,13 @@ func TestAdmins_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		admins Admins
-		expect []*response.Admin
+		expect []*types.Admin
 	}{
 		{
 			name: "success",
 			admins: Admins{
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id01",
 						Type:          int32(AdminTypeAdministrator),
 						Lastname:      "&.",
@@ -409,7 +409,7 @@ func TestAdmins_Response(t *testing.T) {
 					},
 				},
 				{
-					Admin: response.Admin{
+					Admin: types.Admin{
 						ID:            "admin-id02",
 						Type:          int32(AdminTypeCoordinator),
 						Lastname:      "&.",
@@ -422,7 +422,7 @@ func TestAdmins_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Admin{
+			expect: []*types.Admin{
 				{
 					ID:            "admin-id01",
 					Type:          int32(AdminTypeAdministrator),

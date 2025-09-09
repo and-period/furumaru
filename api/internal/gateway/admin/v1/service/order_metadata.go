@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 type OrderMetadata struct {
-	response.OrderMetadata
+	types.OrderMetadata
 	orderID string
 }
 
 func NewOrderMetadata(metadata *entity.OrderMetadata) *OrderMetadata {
 	return &OrderMetadata{
-		OrderMetadata: response.OrderMetadata{
+		OrderMetadata: types.OrderMetadata{
 			PickupAt:       jst.Unix(metadata.PickupAt),
 			PickupLocation: metadata.PickupLocation,
 		},
@@ -21,6 +21,6 @@ func NewOrderMetadata(metadata *entity.OrderMetadata) *OrderMetadata {
 	}
 }
 
-func (m *OrderMetadata) Response() *response.OrderMetadata {
+func (m *OrderMetadata) Response() *types.OrderMetadata {
 	return &m.OrderMetadata
 }

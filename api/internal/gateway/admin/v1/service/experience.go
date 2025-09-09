@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -19,14 +19,14 @@ const (
 )
 
 type Experience struct {
-	response.Experience
+	types.Experience
 	revisionID int64
 }
 
 type Experiences []*Experience
 
 type ExperienceMedia struct {
-	response.ExperienceMedia
+	types.ExperienceMedia
 }
 
 type MultiExperienceMedia []*ExperienceMedia
@@ -66,7 +66,7 @@ func NewExperience(experience *entity.Experience) *Experience {
 		point3 = experience.RecommendedPoints[2]
 	}
 	return &Experience{
-		Experience: response.Experience{
+		Experience: types.Experience{
 			ID:                    experience.ID,
 			CoordinatorID:         experience.CoordinatorID,
 			ProducerID:            experience.ProducerID,
@@ -104,7 +104,7 @@ func NewExperience(experience *entity.Experience) *Experience {
 	}
 }
 
-func (e *Experience) Response() *response.Experience {
+func (e *Experience) Response() *types.Experience {
 	if e == nil {
 		return nil
 	}
@@ -127,8 +127,8 @@ func (es Experiences) MapByRevision() map[int64]*Experience {
 	return res
 }
 
-func (es Experiences) Response() []*response.Experience {
-	res := make([]*response.Experience, len(es))
+func (es Experiences) Response() []*types.Experience {
+	res := make([]*types.Experience, len(es))
 	for i := range es {
 		res[i] = es[i].Response()
 	}
@@ -137,14 +137,14 @@ func (es Experiences) Response() []*response.Experience {
 
 func NewExperienceMedia(media *entity.ExperienceMedia) *ExperienceMedia {
 	return &ExperienceMedia{
-		ExperienceMedia: response.ExperienceMedia{
+		ExperienceMedia: types.ExperienceMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
 		},
 	}
 }
 
-func (m *ExperienceMedia) Response() *response.ExperienceMedia {
+func (m *ExperienceMedia) Response() *types.ExperienceMedia {
 	return &m.ExperienceMedia
 }
 
@@ -156,8 +156,8 @@ func NewMultiExperienceMedia(media entity.MultiExperienceMedia) MultiExperienceM
 	return res
 }
 
-func (m MultiExperienceMedia) Response() []*response.ExperienceMedia {
-	res := make([]*response.ExperienceMedia, len(m))
+func (m MultiExperienceMedia) Response() []*types.ExperienceMedia {
+	res := make([]*types.ExperienceMedia, len(m))
 	for i := range m {
 		res[i] = m[i].Response()
 	}

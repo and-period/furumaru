@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -85,7 +85,7 @@ func TestVideoViewerLog(t *testing.T) {
 			},
 			interval: time.Minute,
 			expect: &VideoViewerLog{
-				VideoViewerLog: response.VideoViewerLog{
+				VideoViewerLog: types.VideoViewerLog{
 					StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 					VideoID: "video-id",
@@ -108,19 +108,19 @@ func TestVideoViewerLog_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		log    *VideoViewerLog
-		expect *response.VideoViewerLog
+		expect *types.VideoViewerLog
 	}{
 		{
 			name: "success",
 			log: &VideoViewerLog{
-				VideoViewerLog: response.VideoViewerLog{
+				VideoViewerLog: types.VideoViewerLog{
 					StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 					VideoID: "video-id",
 					Total:   1,
 				},
 			},
-			expect: &response.VideoViewerLog{
+			expect: &types.VideoViewerLog{
 				StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 				EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 				VideoID: "video-id",
@@ -160,7 +160,7 @@ func TestVideoViewerLogs(t *testing.T) {
 			},
 			expect: VideoViewerLogs{
 				{
-					VideoViewerLog: response.VideoViewerLog{
+					VideoViewerLog: types.VideoViewerLog{
 						StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 						EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						VideoID: "video-id",
@@ -168,7 +168,7 @@ func TestVideoViewerLogs(t *testing.T) {
 					},
 				},
 				{
-					VideoViewerLog: response.VideoViewerLog{
+					VideoViewerLog: types.VideoViewerLog{
 						StartAt: time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						EndAt:   time.Date(2021, 1, 1, 0, 2, 0, 0, time.UTC).Unix(),
 						VideoID: "video-id",
@@ -200,13 +200,13 @@ func TestVideoViewerLogs_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		logs   VideoViewerLogs
-		expect []*response.VideoViewerLog
+		expect []*types.VideoViewerLog
 	}{
 		{
 			name: "success",
 			logs: VideoViewerLogs{
 				{
-					VideoViewerLog: response.VideoViewerLog{
+					VideoViewerLog: types.VideoViewerLog{
 						StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 						EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),
 						VideoID: "video-id",
@@ -214,7 +214,7 @@ func TestVideoViewerLogs_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.VideoViewerLog{
+			expect: []*types.VideoViewerLog{
 				{
 					StartAt: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 					EndAt:   time.Date(2021, 1, 1, 0, 1, 0, 0, time.UTC).Unix(),

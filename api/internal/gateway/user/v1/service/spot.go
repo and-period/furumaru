@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -35,14 +35,14 @@ func (t SpotUserType) Response() int32 {
 }
 
 type Spot struct {
-	response.Spot
+	types.Spot
 }
 
 type Spots []*Spot
 
 func NewSpotByUser(spot *sentity.Spot, user *uentity.User) *Spot {
 	return &Spot{
-		Spot: response.Spot{
+		Spot: types.Spot{
 			ID:               spot.ID,
 			TypeID:           spot.TypeID,
 			Name:             spot.Name,
@@ -62,7 +62,7 @@ func NewSpotByUser(spot *sentity.Spot, user *uentity.User) *Spot {
 
 func NewSpotByCoordinator(spot *sentity.Spot, coordinator *Coordinator) *Spot {
 	return &Spot{
-		Spot: response.Spot{
+		Spot: types.Spot{
 			ID:               spot.ID,
 			TypeID:           spot.TypeID,
 			Name:             spot.Name,
@@ -82,7 +82,7 @@ func NewSpotByCoordinator(spot *sentity.Spot, coordinator *Coordinator) *Spot {
 
 func NewSpotByProducer(spot *sentity.Spot, producer *Producer) *Spot {
 	return &Spot{
-		Spot: response.Spot{
+		Spot: types.Spot{
 			ID:               spot.ID,
 			TypeID:           spot.TypeID,
 			Name:             spot.Name,
@@ -100,7 +100,7 @@ func NewSpotByProducer(spot *sentity.Spot, producer *Producer) *Spot {
 	}
 }
 
-func (s *Spot) Response() *response.Spot {
+func (s *Spot) Response() *types.Spot {
 	return &s.Spot
 }
 
@@ -149,8 +149,8 @@ func NewSpotsByProducer(spots []*sentity.Spot, producers map[string]*Producer) S
 	return res
 }
 
-func (ss Spots) Response() []*response.Spot {
-	res := make([]*response.Spot, len(ss))
+func (ss Spots) Response() []*types.Spot {
+	res := make([]*types.Spot, len(ss))
 	for i := range ss {
 		res[i] = ss[i].Response()
 	}

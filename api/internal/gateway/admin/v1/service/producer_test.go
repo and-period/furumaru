@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -43,7 +43,7 @@ func TestProducer(t *testing.T) {
 				UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Producer{
-				Producer: response.Producer{
+				Producer: types.Producer{
 					ID:             "producer-id",
 					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
@@ -77,12 +77,12 @@ func TestProducer_Response(t *testing.T) {
 	tests := []struct {
 		name     string
 		producer *Producer
-		expect   *response.Producer
+		expect   *types.Producer
 	}{
 		{
 			name: "success",
 			producer: &Producer{
-				Producer: response.Producer{
+				Producer: types.Producer{
 					ID:             "producer-id",
 					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
@@ -101,7 +101,7 @@ func TestProducer_Response(t *testing.T) {
 					UpdatedAt:      1640962800,
 				},
 			},
-			expect: &response.Producer{
+			expect: &types.Producer{
 				ID:             "producer-id",
 				Status:         int32(AdminStatusActivated),
 				Lastname:       "&.",
@@ -140,7 +140,7 @@ func TestProducer_Name(t *testing.T) {
 		{
 			name: "success",
 			producer: &Producer{
-				Producer: response.Producer{
+				Producer: types.Producer{
 					ID:             "producer-id",
 					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
@@ -233,7 +233,7 @@ func TestProducers(t *testing.T) {
 			},
 			expect: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -253,7 +253,7 @@ func TestProducers(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id02",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -294,7 +294,7 @@ func TestProducers_IDs(t *testing.T) {
 			name: "success",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -336,7 +336,7 @@ func TestProducers_Map(t *testing.T) {
 			name: "success",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -356,7 +356,7 @@ func TestProducers_Map(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id02",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -378,7 +378,7 @@ func TestProducers_Map(t *testing.T) {
 			},
 			expect: map[string]*Producer{
 				"producer-id01": {
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -398,7 +398,7 @@ func TestProducers_Map(t *testing.T) {
 					},
 				},
 				"producer-id02": {
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id02",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -440,7 +440,7 @@ func TestProducers_Contains(t *testing.T) {
 			name: "contain",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -467,7 +467,7 @@ func TestProducers_Contains(t *testing.T) {
 			name: "not contain",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -504,13 +504,13 @@ func TestProducers_Response(t *testing.T) {
 	tests := []struct {
 		name      string
 		producers Producers
-		expect    []*response.Producer
+		expect    []*types.Producer
 	}{
 		{
 			name: "success",
 			producers: Producers{
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id01",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -529,7 +529,7 @@ func TestProducers_Response(t *testing.T) {
 					},
 				},
 				{
-					Producer: response.Producer{
+					Producer: types.Producer{
 						ID:             "producer-id02",
 						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
@@ -548,7 +548,7 @@ func TestProducers_Response(t *testing.T) {
 					},
 				},
 			},
-			expect: []*response.Producer{
+			expect: []*types.Producer{
 				{
 					ID:             "producer-id01",
 					Status:         int32(AdminStatusActivated),

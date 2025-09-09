@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type ProductType struct {
-	response.ProductType
+	types.ProductType
 }
 
 type ProductTypes []*ProductType
 
 func NewProductType(productType *entity.ProductType) *ProductType {
 	return &ProductType{
-		ProductType: response.ProductType{
+		ProductType: types.ProductType{
 			ID:         productType.ID,
 			CategoryID: productType.CategoryID,
 			Name:       productType.Name,
@@ -23,7 +23,7 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 	}
 }
 
-func (t *ProductType) Response() *response.ProductType {
+func (t *ProductType) Response() *types.ProductType {
 	return &t.ProductType
 }
 
@@ -49,8 +49,8 @@ func (ts ProductTypes) Map() map[string]*ProductType {
 	return res
 }
 
-func (ts ProductTypes) Response() []*response.ProductType {
-	res := make([]*response.ProductType, len(ts))
+func (ts ProductTypes) Response() []*types.ProductType {
+	res := make([]*types.ProductType, len(ts))
 	for i := range ts {
 		res[i] = ts[i].Response()
 	}

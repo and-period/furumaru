@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -43,7 +43,7 @@ func TestOrderExperiences(t *testing.T) {
 			},
 			experiences: map[int64]*Experience{
 				1: {
-					Experience: response.Experience{
+					Experience: types.Experience{
 						ID:               "experience-id",
 						CoordinatorID:    "coordinator-id",
 						ProducerID:       "producer-id",
@@ -51,7 +51,7 @@ func TestOrderExperiences(t *testing.T) {
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
 						Status:           int32(ExperienceStatusAccepting),
-						Media: []*response.ExperienceMedia{
+						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 						},
@@ -80,7 +80,7 @@ func TestOrderExperiences(t *testing.T) {
 			},
 			expect: OrderExperiences{
 				{
-					OrderExperience: response.OrderExperience{
+					OrderExperience: types.OrderExperience{
 						ExperienceID:          "experience-id",
 						AdultCount:            2,
 						AdultPrice:            1000,
@@ -123,7 +123,7 @@ func TestOrderExperiences(t *testing.T) {
 			experiences: map[int64]*Experience{},
 			expect: OrderExperiences{
 				{
-					OrderExperience: response.OrderExperience{
+					OrderExperience: types.OrderExperience{
 						ExperienceID:          "",
 						AdultCount:            2,
 						AdultPrice:            0,
@@ -160,13 +160,13 @@ func TestOrderExperiences_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		experiences OrderExperiences
-		expect      []*response.OrderExperience
+		expect      []*types.OrderExperience
 	}{
 		{
 			name: "success",
 			experiences: OrderExperiences{
 				{
-					OrderExperience: response.OrderExperience{
+					OrderExperience: types.OrderExperience{
 						ExperienceID:          "experience-id",
 						AdultCount:            2,
 						AdultPrice:            1000,
@@ -185,7 +185,7 @@ func TestOrderExperiences_Response(t *testing.T) {
 					orderID: "order-id",
 				},
 			},
-			expect: []*response.OrderExperience{
+			expect: []*types.OrderExperience{
 				{
 					ExperienceID:          "experience-id",
 					AdultCount:            2,

@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/request"
-	"github.com/and-period/furumaru/api/internal/gateway/user/facility/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/service"
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -33,7 +32,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.CartResponse
+// @Success     200 {object} types.CartResponse
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) GetCart(ctx *gin.Context) {
 	in := &store.GetCartInput{
@@ -63,7 +62,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CartResponse{
+	res := &types.CartResponse{
 		Carts:        service.NewCarts(cart).Response(),
 		Coordinators: coordinators.Response(),
 		Products:     products.Response(),
@@ -81,7 +80,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 // @Param       promotion query string false "プロモーションコード"
 // @Security    bearerauth
 // @Produce     json
-// @Success     200 {object} response.CalcCartResponse
+// @Success     200 {object} types.CalcCartResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) CalcCart(ctx *gin.Context) {
@@ -137,7 +136,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.CalcCartResponse{
+	res := &types.CalcCartResponse{
 		RequestID:   h.generateID(),
 		Carts:       service.NewCarts(cart).Response(),
 		Items:       service.NewCartItems(items).Response(),
@@ -159,13 +158,13 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 // @Param       facilityId path string true "施設ID"
 // @Security    bearerauth
 // @Accept      json
-// @Param       request body request.AddCartItemRequest true "カートに追加リクエスト"
+// @Param       request body types.AddCartItemRequest true "カートに追加リクエスト"
 // @Produce     json
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 // @Failure     401 {object} util.ErrorResponse "認証エラー"
 func (h *handler) AddCartItem(ctx *gin.Context) {
-	req := &request.AddCartItemRequest{}
+	req := &types.AddCartItemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
