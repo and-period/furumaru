@@ -4,6 +4,7 @@ import { useProductStore } from '~/stores/product';
 import { useShoppingCartStore } from '~/stores/shopping';
 
 const route = useRoute();
+const router = useRouter();
 
 const productStore = useProductStore();
 const shoppingCartStore = useShoppingCartStore();
@@ -68,7 +69,7 @@ if (!product.value) {
       <div class="flex items-center">
         <button
           class="flex items-center text-gray-600 hover:text-gray-800"
-          @click="$router.back()"
+          @click="router.back()"
         >
           <svg
             class="w-6 h-6 mr-2"
