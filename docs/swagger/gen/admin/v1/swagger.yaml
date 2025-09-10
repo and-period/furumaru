@@ -70,8 +70,7 @@ components:
                     description: トークン種別
                     type: string
                 type:
-                    description: 管理者種別
-                    type: integer
+                    $ref: '#/components/schemas/types.AdminType'
             type: object
         AuthUserResponse:
             properties:
@@ -93,6 +92,15 @@ components:
                 type:
                     description: 管理者種別
                     type: integer
+                    x-enum-comments:
+                        AdminTypeAdministrator: 管理者
+                        AdminTypeCoordinator: コーディネータ
+                        AdminTypeProducer: 生産者
+                    x-enum-varnames:
+                        - AdminTypeUnknown
+                        - AdminTypeAdministrator
+                        - AdminTypeCoordinator
+                        - AdminTypeProducer
                 username:
                     description: 表示名
                     type: string
@@ -180,8 +188,17 @@ components:
                     description: 店舗ID
                     type: string
                 status:
-                    description: コーディネータの状態
+                    description: 管理者の状態
                     type: integer
+                    x-enum-comments:
+                        AdminStatusActivated: 有効
+                        AdminStatusDeactivated: 無効
+                        AdminStatusInvited: 招待中
+                    x-enum-varnames:
+                        - AdminStatusUnknown
+                        - AdminStatusInvited
+                        - AdminStatusActivated
+                        - AdminStatusDeactivated
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
@@ -264,6 +281,30 @@ components:
                 - name
                 - spotTypeId
             type: object
+        DeliveryType:
+            description: 配送方法
+            type: integer
+            x-enum-comments:
+                DeliveryTypeFrozen: 冷凍便
+                DeliveryTypeNormal: 常温便
+                DeliveryTypeRefrigerated: 冷蔵便
+            x-enum-varnames:
+                - DeliveryTypeUnknown
+                - DeliveryTypeNormal
+                - DeliveryTypeRefrigerated
+                - DeliveryTypeFrozen
+        DiscountType:
+            description: 割引計算方法
+            type: integer
+            x-enum-comments:
+                DiscountTypeAmount: 固定額(円)
+                DiscountTypeFreeShipping: 送料無料
+                DiscountTypeRate: 料率計算(%)
+            x-enum-varnames:
+                - DiscountTypeUnknown
+                - DiscountTypeAmount
+                - DiscountTypeRate
+                - DiscountTypeFreeShipping
         Experience:
             description: 体験情報
             properties:
@@ -358,8 +399,7 @@ components:
                     description: 募集開始日時
                     type: integer
                 status:
-                    description: 販売状況
-                    type: integer
+                    $ref: '#/components/schemas/ExperienceStatus'
                 title:
                     description: タイトル
                     type: string
@@ -387,6 +427,24 @@ components:
                 producer:
                     $ref: '#/components/schemas/Producer'
             type: object
+        ExperienceStatus:
+            description: 販売状況
+            type: integer
+            x-enum-comments:
+                ExperienceStatusAccepting: 体験受付中
+                ExperienceStatusArchived: アーカイブ済み
+                ExperienceStatusFinished: 販売終了
+                ExperienceStatusPrivate: 非公開
+                ExperienceStatusSoldOut: 体験受付終了
+                ExperienceStatusWaiting: 販売開始前
+            x-enum-varnames:
+                - ExperienceStatusUnknown
+                - ExperienceStatusPrivate
+                - ExperienceStatusWaiting
+                - ExperienceStatusAccepting
+                - ExperienceStatusSoldOut
+                - ExperienceStatusFinished
+                - ExperienceStatusArchived
         ExperienceType:
             description: 体験種別情報
             properties:
@@ -441,6 +499,16 @@ components:
             required:
                 - email
             type: object
+        FulfillmentStatus:
+            description: 配送状況
+            type: integer
+            x-enum-comments:
+                FulfillmentStatusFulfilled: 発送済み
+                FulfillmentStatusUnfulfilled: 未発送
+            x-enum-varnames:
+                - FulfillmentStatusUnknown
+                - FulfillmentStatusUnfulfilled
+                - FulfillmentStatusFulfilled
         Live:
             description: ライブ配信情報
             properties:
@@ -559,11 +627,9 @@ components:
                     description: 発送連絡時のメッセージ
                     type: string
                 status:
-                    description: 注文ステータス
-                    type: integer
+                    $ref: '#/components/schemas/OrderStatus'
                 type:
-                    description: 注文種別
-                    type: integer
+                    $ref: '#/components/schemas/OrderType'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -628,8 +694,7 @@ components:
                     description: 箱の占有率
                     type: integer
                 boxSize:
-                    description: 箱の大きさ
-                    type: integer
+                    $ref: '#/components/schemas/ShippingSize'
                 city:
                     description: 市区町村
                     type: string
@@ -664,14 +729,11 @@ components:
                     description: 配送日時
                     type: integer
                 shippingCarrier:
-                    description: 配送会社
-                    type: integer
+                    $ref: '#/components/schemas/ShippingCarrier'
                 shippingType:
-                    description: 配送方法
-                    type: integer
+                    $ref: '#/components/schemas/ShippingType'
                 status:
-                    description: 配送状況
-                    type: integer
+                    $ref: '#/components/schemas/FulfillmentStatus'
                 trackingNumber:
                     description: 伝票番号
                     type: string
@@ -722,8 +784,7 @@ components:
                     description: 氏名(姓:かな)
                     type: string
                 methodType:
-                    description: 決済手段種別
-                    type: integer
+                    $ref: '#/components/schemas/PaymentMethodType'
                 orderedAt:
                     description: 注文日時
                     type: integer
@@ -746,8 +807,7 @@ components:
                     description: 配送手数料(税込)
                     type: integer
                 status:
-                    description: 支払い状況
-                    type: integer
+                    $ref: '#/components/schemas/PaymentStatus'
                 subtotal:
                     description: 購入金額(税込)
                     type: integer
@@ -774,8 +834,7 @@ components:
                     description: 返金金額
                     type: integer
                 type:
-                    description: 注文キャンセル種別
-                    type: integer
+                    $ref: '#/components/schemas/RefundType'
             type: object
         OrderResponse:
             properties:
@@ -796,6 +855,38 @@ components:
                 user:
                     $ref: '#/components/schemas/types.User'
             type: object
+        OrderStatus:
+            description: 注文ステータス
+            type: integer
+            x-enum-comments:
+                OrderStatusCanceled: キャンセル
+                OrderStatusCompleted: 完了
+                OrderStatusFailed: 失敗
+                OrderStatusPreparing: 発送準備中
+                OrderStatusRefunded: 返金
+                OrderStatusShipped: 発送完了
+                OrderStatusUnpaid: 支払い待ち
+                OrderStatusWaiting: 受注待ち
+            x-enum-varnames:
+                - OrderStatusUnknown
+                - OrderStatusUnpaid
+                - OrderStatusWaiting
+                - OrderStatusPreparing
+                - OrderStatusShipped
+                - OrderStatusCompleted
+                - OrderStatusCanceled
+                - OrderStatusRefunded
+                - OrderStatusFailed
+        OrderType:
+            description: 注文種別
+            type: integer
+            x-enum-comments:
+                OrderTypeExperience: 体験
+                OrderTypeProduct: 商品
+            x-enum-varnames:
+                - OrderTypeUnknown
+                - OrderTypeProduct
+                - OrderTypeExperience
         OrdersResponse:
             properties:
                 coordinators:
@@ -826,21 +917,103 @@ components:
                     type: array
                     uniqueItems: false
             type: object
+        PaymentMethodType:
+            description: 決済手段種別
+            type: integer
+            x-enum-comments:
+                PaymentMethodTypeAUPay: QR決済（au PAY）
+                PaymentMethodTypeBankTransfer: 銀行振込決済
+                PaymentMethodTypeCash: 代引支払い
+                PaymentMethodTypeCreditCard: クレジットカード決済
+                PaymentMethodTypeKonbini: コンビニ決済
+                PaymentMethodTypeLinePay: QR決済（LINE Pay）
+                PaymentMethodTypeMerpay: QR決済（メルペイ）
+                PaymentMethodTypeNone: 決済無し
+                PaymentMethodTypePaidy: ペイディ（Paidy）
+                PaymentMethodTypePayEasy: ペイジー（PayEasy）
+                PaymentMethodTypePayPay: QR決済（PayPay）
+                PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
+            x-enum-varnames:
+                - PaymentMethodTypeUnknown
+                - PaymentMethodTypeCash
+                - PaymentMethodTypeCreditCard
+                - PaymentMethodTypeKonbini
+                - PaymentMethodTypeBankTransfer
+                - PaymentMethodTypePayPay
+                - PaymentMethodTypeLinePay
+                - PaymentMethodTypeMerpay
+                - PaymentMethodTypeRakutenPay
+                - PaymentMethodTypeAUPay
+                - PaymentMethodTypeNone
+                - PaymentMethodTypePaidy
+                - PaymentMethodTypePayEasy
+        PaymentStatus:
+            description: 支払い状況
+            type: integer
+            x-enum-comments:
+                PaymentStatusAuthorized: オーソリ済み
+                PaymentStatusCanceled: キャンセル済み
+                PaymentStatusFailed: 失敗
+                PaymentStatusPaid: 支払い済み
+                PaymentStatusUnpaid: 未支払い
+            x-enum-varnames:
+                - PaymentStatusUnknown
+                - PaymentStatusUnpaid
+                - PaymentStatusAuthorized
+                - PaymentStatusPaid
+                - PaymentStatusCanceled
+                - PaymentStatusFailed
         PaymentSystem:
             properties:
                 createdAt:
                     description: 登録日時
                     type: integer
                 methodType:
-                    description: 決済システム種別
+                    description: 決済手段種別
                     type: integer
+                    x-enum-comments:
+                        PaymentMethodTypeAUPay: QR決済（au PAY）
+                        PaymentMethodTypeBankTransfer: 銀行振込決済
+                        PaymentMethodTypeCash: 代引支払い
+                        PaymentMethodTypeCreditCard: クレジットカード決済
+                        PaymentMethodTypeKonbini: コンビニ決済
+                        PaymentMethodTypeLinePay: QR決済（LINE Pay）
+                        PaymentMethodTypeMerpay: QR決済（メルペイ）
+                        PaymentMethodTypeNone: 決済無し
+                        PaymentMethodTypePaidy: ペイディ（Paidy）
+                        PaymentMethodTypePayEasy: ペイジー（PayEasy）
+                        PaymentMethodTypePayPay: QR決済（PayPay）
+                        PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
+                    x-enum-varnames:
+                        - PaymentMethodTypeUnknown
+                        - PaymentMethodTypeCash
+                        - PaymentMethodTypeCreditCard
+                        - PaymentMethodTypeKonbini
+                        - PaymentMethodTypeBankTransfer
+                        - PaymentMethodTypePayPay
+                        - PaymentMethodTypeLinePay
+                        - PaymentMethodTypeMerpay
+                        - PaymentMethodTypeRakutenPay
+                        - PaymentMethodTypeAUPay
+                        - PaymentMethodTypeNone
+                        - PaymentMethodTypePaidy
+                        - PaymentMethodTypePayEasy
                 status:
-                    description: 決済システム状態
-                    type: integer
+                    $ref: '#/components/schemas/PaymentSystemStatus'
                 updatedAt:
                     description: 更新日時
                     type: integer
             type: object
+        PaymentSystemStatus:
+            description: 決済システム状態
+            type: integer
+            x-enum-comments:
+                PaymentSystemStatusInUse: 利用可能
+                PaymentSystemStatusOutage: 停止中
+            x-enum-varnames:
+                - PaymentSystemStatusUnknown
+                - PaymentSystemStatusInUse
+                - PaymentSystemStatusOutage
         PaymentSystemsResponse:
             properties:
                 systems:
@@ -929,8 +1102,17 @@ components:
                     description: 紹介映像URL
                     type: string
                 status:
-                    description: 生産者の状態
+                    description: 管理者の状態
                     type: integer
+                    x-enum-comments:
+                        AdminStatusActivated: 有効
+                        AdminStatusDeactivated: 無効
+                        AdminStatusInvited: 招待中
+                    x-enum-varnames:
+                        - AdminStatusUnknown
+                        - AdminStatusInvited
+                        - AdminStatusActivated
+                        - AdminStatusDeactivated
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
@@ -1007,8 +1189,7 @@ components:
                     description: 登録日時
                     type: integer
                 deliveryType:
-                    description: 配送方法
-                    type: integer
+                    $ref: '#/components/schemas/DeliveryType'
                 description:
                     description: 商品説明
                     type: string
@@ -1076,11 +1257,9 @@ components:
                     description: 販売開始日時
                     type: integer
                 status:
-                    description: 販売状況
-                    type: integer
+                    $ref: '#/components/schemas/ProductStatus'
                 storageMethodType:
-                    description: 保存方法
-                    type: integer
+                    $ref: '#/components/schemas/StorageMethodType'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -1116,6 +1295,22 @@ components:
                 productType:
                     $ref: '#/components/schemas/ProductType'
             type: object
+        ProductStatus:
+            description: 販売状況
+            type: integer
+            x-enum-comments:
+                ProductStatusArchived: アーカイブ済み
+                ProductStatusForSale: 販売中
+                ProductStatusOutOfSale: 販売期間外
+                ProductStatusPresale: 予約受付中
+                ProductStatusPrivate: 非公開
+            x-enum-varnames:
+                - ProductStatusUnknown
+                - ProductStatusPrivate
+                - ProductStatusPresale
+                - ProductStatusForSale
+                - ProductStatusOutOfSale
+                - ProductStatusArchived
         ProductTag:
             description: 商品タグ情報
             properties:
@@ -1212,8 +1407,7 @@ components:
                     description: 割引額(%/円)
                     type: integer
                 discountType:
-                    description: 割引計算方法
-                    type: integer
+                    $ref: '#/components/schemas/DiscountType'
                 endAt:
                     description: クーポン使用可能日時(終了)
                     type: integer
@@ -1230,11 +1424,9 @@ components:
                     description: クーポン使用可能日時(開始)
                     type: integer
                 status:
-                    description: ステータス
-                    type: integer
+                    $ref: '#/components/schemas/PromotionStatus'
                 targetType:
-                    description: 対象商品
-                    type: integer
+                    $ref: '#/components/schemas/types.PromotionTargetType'
                 title:
                     description: タイトル
                     type: string
@@ -1255,6 +1447,20 @@ components:
                 shop:
                     $ref: '#/components/schemas/types.Shop'
             type: object
+        PromotionStatus:
+            description: ステータス
+            type: integer
+            x-enum-comments:
+                PromotionStatusEnabled: 利用可能
+                PromotionStatusFinished: 利用終了
+                PromotionStatusPrivate: 非公開
+                PromotionStatusWaiting: 利用開始前
+            x-enum-varnames:
+                - PromotionStatusUnknown
+                - PromotionStatusPrivate
+                - PromotionStatusWaiting
+                - PromotionStatusEnabled
+                - PromotionStatusFinished
         RefreshAuthTokenRequest:
             properties:
                 refreshToken:
@@ -1263,6 +1469,17 @@ components:
             required:
                 - refreshToken
             type: object
+        RefundType:
+            description: 注文キャンセル種別
+            type: integer
+            x-enum-comments:
+                RefundTypeCanceled: キャンセル
+                RefundTypeNone: キャンセルなし
+                RefundTypeRefunded: 返金
+            x-enum-varnames:
+                - RefundTypeNone
+                - RefundTypeCanceled
+                - RefundTypeRefunded
         ResetAuthPasswordRequest:
             properties:
                 email:
@@ -1321,8 +1538,7 @@ components:
                     description: 配信開始日時
                     type: integer
                 status:
-                    description: 開催状況
-                    type: integer
+                    $ref: '#/components/schemas/ScheduleStatus'
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
@@ -1340,6 +1556,22 @@ components:
                 schedule:
                     $ref: '#/components/schemas/Schedule'
             type: object
+        ScheduleStatus:
+            description: 開催状況
+            type: integer
+            x-enum-comments:
+                ScheduleStatusClosed: 開催終了
+                ScheduleStatusInProgress: 管理者承認前
+                ScheduleStatusLive: 開催中
+                ScheduleStatusPrivate: 非公開
+                ScheduleStatusWaiting: 開催前
+            x-enum-varnames:
+                - ScheduleStatusUnknown
+                - ScheduleStatusPrivate
+                - ScheduleStatusInProgress
+                - ScheduleStatusWaiting
+                - ScheduleStatusLive
+                - ScheduleStatusClosed
         Shipping:
             description: 配送設定情報
             properties:
@@ -1392,6 +1624,16 @@ components:
                     description: 更新日時
                     type: integer
             type: object
+        ShippingCarrier:
+            description: 配送会社
+            type: integer
+            x-enum-comments:
+                ShippingCarrierSagawa: 佐川急便
+                ShippingCarrierYamato: ヤマト運輸
+            x-enum-varnames:
+                - ShippingCarrierUnknown
+                - ShippingCarrierYamato
+                - ShippingCarrierSagawa
         ShippingRate:
             properties:
                 name:
@@ -1410,6 +1652,30 @@ components:
                     description: 配送料金(税込)
                     type: integer
             type: object
+        ShippingSize:
+            description: 箱の大きさ
+            type: integer
+            x-enum-comments:
+                ShippingSize60: 箱のサイズ:60
+                ShippingSize80: 箱のサイズ:80
+                ShippingSize100: 箱のサイズ:100
+            x-enum-varnames:
+                - ShippingSizeUnknown
+                - ShippingSize60
+                - ShippingSize80
+                - ShippingSize100
+        ShippingType:
+            description: 配送方法
+            type: integer
+            x-enum-comments:
+                ShippingTypeFrozen: 冷凍便
+                ShippingTypeNormal: 常温・冷蔵便
+                ShippingTypePickup: 店舗受取
+            x-enum-varnames:
+                - ShippingTypeUnknown
+                - ShippingTypeNormal
+                - ShippingTypeFrozen
+                - ShippingTypePickup
         SignInRequest:
             properties:
                 password:
@@ -1459,8 +1725,7 @@ components:
                     description: ユーザーID
                     type: string
                 userType:
-                    description: 投稿者の種別
-                    type: integer
+                    $ref: '#/components/schemas/SpotUserType'
             type: object
         SpotResponse:
             properties:
@@ -1503,6 +1768,18 @@ components:
                     description: 体験種別合計数
                     type: integer
             type: object
+        SpotUserType:
+            description: 投稿者の種別
+            type: integer
+            x-enum-comments:
+                SpotUserTypeCoordinator: コーディネータ
+                SpotUserTypeProducer: 生産者
+                SpotUserTypeUser: ユーザー
+            x-enum-varnames:
+                - SpotUserTypeUnknown
+                - SpotUserTypeUser
+                - SpotUserTypeCoordinator
+                - SpotUserTypeProducer
         SpotsResponse:
             properties:
                 coordinators:
@@ -1539,6 +1816,20 @@ components:
                     type: array
                     uniqueItems: false
             type: object
+        StorageMethodType:
+            description: 保存方法
+            type: integer
+            x-enum-comments:
+                StorageMethodTypeCoolDark: 冷暗所保存
+                StorageMethodTypeFrozen: 冷凍保存
+                StorageMethodTypeNormal: 常温保存
+                StorageMethodTypeRefrigerated: 冷蔵保存
+            x-enum-varnames:
+                - StorageMethodTypeUnknown
+                - StorageMethodTypeNormal
+                - StorageMethodTypeCoolDark
+                - StorageMethodTypeRefrigerated
+                - StorageMethodTypeFrozen
         UpdateAuthPasswordRequest:
             properties:
                 newPassword:
@@ -1631,8 +1922,7 @@ components:
                     description: 公開日時
                     type: integer
                 status:
-                    description: 配信状況
-                    type: integer
+                    $ref: '#/components/schemas/types.VideoStatus'
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
@@ -1745,12 +2035,23 @@ components:
         UploadStateResponse:
             properties:
                 status:
-                    description: アップロード結果
-                    type: integer
+                    $ref: '#/components/schemas/UploadStatus'
                 url:
                     description: 参照先URL
                     type: string
             type: object
+        UploadStatus:
+            description: アップロード結果
+            type: integer
+            x-enum-comments:
+                UploadStatusFailed: 失敗
+                UploadStatusSucceeded: 成功
+                UploadStatusWaiting: アップロード待ち
+            x-enum-varnames:
+                - UploadStatusUnknown
+                - UploadStatusWaiting
+                - UploadStatusSucceeded
+                - UploadStatusFailed
         UploadURLResponse:
             properties:
                 key:
@@ -1760,6 +2061,16 @@ components:
                     description: アップロード用の署名付きURL
                     type: string
             type: object
+        time.Weekday:
+            type: integer
+            x-enum-varnames:
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
         types.ActivateBroadcastMP4Request:
             properties:
                 inputUrl:
@@ -1795,10 +2106,43 @@ components:
                 role:
                     description: 管理者種別
                     type: integer
+                    x-enum-comments:
+                        AdminTypeAdministrator: 管理者
+                        AdminTypeCoordinator: コーディネータ
+                        AdminTypeProducer: 生産者
+                    x-enum-varnames:
+                        - AdminTypeUnknown
+                        - AdminTypeAdministrator
+                        - AdminTypeCoordinator
+                        - AdminTypeProducer
                 updateAt:
                     description: 更新日時
                     type: integer
             type: object
+        types.AdminStatus:
+            description: 管理者の状態
+            type: integer
+            x-enum-comments:
+                AdminStatusActivated: 有効
+                AdminStatusDeactivated: 無効
+                AdminStatusInvited: 招待中
+            x-enum-varnames:
+                - AdminStatusUnknown
+                - AdminStatusInvited
+                - AdminStatusActivated
+                - AdminStatusDeactivated
+        types.AdminType:
+            description: 管理者種別
+            type: integer
+            x-enum-comments:
+                AdminTypeAdministrator: 管理者
+                AdminTypeCoordinator: コーディネータ
+                AdminTypeProducer: 生産者
+            x-enum-varnames:
+                - AdminTypeUnknown
+                - AdminTypeAdministrator
+                - AdminTypeCoordinator
+                - AdminTypeProducer
         types.Administrator:
             description: システム管理者情報
             properties:
@@ -1827,8 +2171,7 @@ components:
                     description: 電話番号
                     type: string
                 status:
-                    description: 管理者の状態
-                    type: integer
+                    $ref: '#/components/schemas/types.AdminStatus'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -1892,9 +2235,15 @@ components:
                     description: 連携日時
                     type: integer
                 type:
-                    description: プロバイダ種別
-                    type: integer
+                    $ref: '#/components/schemas/types.AuthProviderType'
             type: object
+        types.AuthProviderType:
+            description: プロバイダ種別
+            type: integer
+            x-enum-varnames:
+                - AuthProviderTypeUnknown
+                - AuthProviderTypeGoogle
+                - AuthProviderTypeLINE
         types.AuthProvidersResponse:
             properties:
                 providers:
@@ -1940,8 +2289,7 @@ components:
                     description: 開催スケジュールID
                     type: string
                 status:
-                    description: ライブ配信状況
-                    type: integer
+                    $ref: '#/components/schemas/types.BroadcastStatus'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -1960,6 +2308,20 @@ components:
                 broadcast:
                     $ref: '#/components/schemas/types.Broadcast'
             type: object
+        types.BroadcastStatus:
+            description: ライブ配信状況
+            type: integer
+            x-enum-comments:
+                BroadcastStatusActive: 配信中
+                BroadcastStatusDisabled: リソース未作成
+                BroadcastStatusIdle: 停止中
+                BroadcastStatusWaiting: リソース作成/削除中
+            x-enum-varnames:
+                - BroadcastStatusUnknown
+                - BroadcastStatusDisabled
+                - BroadcastStatusWaiting
+                - BroadcastStatusIdle
+                - BroadcastStatusActive
         types.BroadcastViewerLog:
             properties:
                 broadcastId:
@@ -3143,8 +3505,7 @@ components:
                     description: メッセージ件名
                     type: string
                 type:
-                    description: メッセージ種別
-                    type: integer
+                    $ref: '#/components/schemas/types.MessageType'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -3154,6 +3515,14 @@ components:
                 message:
                     $ref: '#/components/schemas/types.Message'
             type: object
+        types.MessageType:
+            description: メッセージ種別
+            type: integer
+            x-enum-comments:
+                MessageTypeNotification: お知らせ
+            x-enum-varnames:
+                - MessageTypeUnknown
+                - MessageTypeNotification
         types.MessagesResponse:
             properties:
                 messages:
@@ -3191,20 +3560,18 @@ components:
                     description: 掲載開始日時
                     type: integer
                 status:
-                    description: お知らせ状態
-                    type: integer
+                    $ref: '#/components/schemas/types.NotificationStatus'
                 targets:
                     description: 掲載対象一覧
                     items:
-                        type: integer
+                        $ref: '#/components/schemas/types.NotificationTarget'
                     type: array
                     uniqueItems: false
                 title:
                     description: タイトル
                     type: string
                 type:
-                    description: お知らせ種別
-                    type: integer
+                    $ref: '#/components/schemas/types.NotificationType'
                 updatedAt:
                     description: 更新日時
                     type: integer
@@ -3219,6 +3586,43 @@ components:
                 notification:
                     $ref: '#/components/schemas/types.Notification'
             type: object
+        types.NotificationStatus:
+            description: お知らせ状態
+            type: integer
+            x-enum-comments:
+                NotificationStatusNotified: 投稿済み
+                NotificationStatusWaiting: 投稿前
+            x-enum-varnames:
+                - NotificationStatusUnknown
+                - NotificationStatusWaiting
+                - NotificationStatusNotified
+        types.NotificationTarget:
+            type: integer
+            x-enum-comments:
+                NotificationTargetAdministrators: 管理者
+                NotificationTargetCoordinators: コーディネータ
+                NotificationTargetProducers: 生産者
+                NotificationTargetUsers: ユーザー
+            x-enum-varnames:
+                - NotificationTargetUnknown
+                - NotificationTargetUsers
+                - NotificationTargetProducers
+                - NotificationTargetCoordinators
+                - NotificationTargetAdministrators
+        types.NotificationType:
+            description: お知らせ種別
+            type: integer
+            x-enum-comments:
+                NotificationTypeLive: ライブ関連
+                NotificationTypeOther: その他
+                NotificationTypePromotion: セール関連
+                NotificationTypeSystem: システム関連
+            x-enum-varnames:
+                - NotificationTypeUnknown
+                - NotificationTypeOther
+                - NotificationTypeSystem
+                - NotificationTypeLive
+                - NotificationTypePromotion
         types.NotificationsResponse:
             properties:
                 admins:
@@ -3302,6 +3706,16 @@ components:
                     description: 品目合計数
                     type: integer
             type: object
+        types.PromotionTargetType:
+            description: 対象商品
+            type: integer
+            x-enum-comments:
+                PromotionTargetTypeAllShop: すべての店舗
+                PromotionTargetTypeSpecificShop: 特定の店舗のみ
+            x-enum-varnames:
+                - PromotionTargetTypeUnknown
+                - PromotionTargetTypeAllShop
+                - PromotionTargetTypeSpecificShop
         types.PromotionsResponse:
             properties:
                 promotions:
@@ -3392,7 +3806,7 @@ components:
                 businessDays:
                     description: 営業曜日(発送可能日)
                     items:
-                        type: integer
+                        $ref: '#/components/schemas/time.Weekday'
                     type: array
                     uniqueItems: false
                 coordinatorId:
@@ -3469,8 +3883,7 @@ components:
                     description: 送信者ID
                     type: string
                 userType:
-                    description: 送信者タイプ
-                    type: integer
+                    $ref: '#/components/schemas/types.ThreadUserType'
             type: object
         types.ThreadResponse:
             properties:
@@ -3481,6 +3894,19 @@ components:
                 user:
                     $ref: '#/components/schemas/types.User'
             type: object
+        types.ThreadUserType:
+            description: 送信者タイプ
+            type: integer
+            x-enum-comments:
+                ThreadUserTypeAdmin: 管理者
+                ThreadUserTypeGuest: ゲスト(ユーザIDなし)
+                ThreadUserTypeUnknown: 不明
+                ThreadUserTypeUser: ユーザー
+            x-enum-varnames:
+                - ThreadUserTypeUnknown
+                - ThreadUserTypeAdmin
+                - ThreadUserTypeUser
+                - ThreadUserTypeGuest
         types.ThreadsResponse:
             properties:
                 admins:
@@ -3511,8 +3937,35 @@ components:
                     description: 注文数
                     type: integer
                 paymentMethodType:
-                    description: 支払い方法
+                    description: 決済手段種別
                     type: integer
+                    x-enum-comments:
+                        PaymentMethodTypeAUPay: QR決済（au PAY）
+                        PaymentMethodTypeBankTransfer: 銀行振込決済
+                        PaymentMethodTypeCash: 代引支払い
+                        PaymentMethodTypeCreditCard: クレジットカード決済
+                        PaymentMethodTypeKonbini: コンビニ決済
+                        PaymentMethodTypeLinePay: QR決済（LINE Pay）
+                        PaymentMethodTypeMerpay: QR決済（メルペイ）
+                        PaymentMethodTypeNone: 決済無し
+                        PaymentMethodTypePaidy: ペイディ（Paidy）
+                        PaymentMethodTypePayEasy: ペイジー（PayEasy）
+                        PaymentMethodTypePayPay: QR決済（PayPay）
+                        PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
+                    x-enum-varnames:
+                        - PaymentMethodTypeUnknown
+                        - PaymentMethodTypeCash
+                        - PaymentMethodTypeCreditCard
+                        - PaymentMethodTypeKonbini
+                        - PaymentMethodTypeBankTransfer
+                        - PaymentMethodTypePayPay
+                        - PaymentMethodTypeLinePay
+                        - PaymentMethodTypeMerpay
+                        - PaymentMethodTypeRakutenPay
+                        - PaymentMethodTypeAUPay
+                        - PaymentMethodTypeNone
+                        - PaymentMethodTypePaidy
+                        - PaymentMethodTypePayEasy
                 rate:
                     description: 割合（支払い方法別注文数 / 注文数）
                     type: number
@@ -3523,6 +3976,17 @@ components:
                     description: ユーザー数
                     type: integer
             type: object
+        types.TopOrderPeriodType:
+            description: 期間種別
+            type: string
+            x-enum-comments:
+                TopOrderPeriodTypeDay: 日
+                TopOrderPeriodTypeMonth: 月
+                TopOrderPeriodTypeWeek: 週
+            x-enum-varnames:
+                - TopOrderPeriodTypeDay
+                - TopOrderPeriodTypeWeek
+                - TopOrderPeriodTypeMonth
         types.TopOrderSalesTrend:
             properties:
                 period:
@@ -3556,8 +4020,7 @@ components:
                     type: array
                     uniqueItems: false
                 periodType:
-                    description: 期間種別
-                    type: string
+                    $ref: '#/components/schemas/types.TopOrderPeriodType'
                 sales:
                     $ref: '#/components/schemas/types.TopOrderValue'
                 salesTrends:
@@ -4293,6 +4756,14 @@ components:
                     description: 営業曜日(発送可能日)
                     items:
                         type: integer
+                        x-enum-varnames:
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
                     maxItems: 7
                     type: array
                     uniqueItems: true
@@ -4505,8 +4976,7 @@ components:
                     description: 会員登録フラグ
                     type: boolean
                 status:
-                    description: 購入者ステータス
-                    type: integer
+                    $ref: '#/components/schemas/types.UserStatus'
                 thumbnailUrl:
                     description: サムネイルURL
                     type: string
@@ -4531,6 +5001,19 @@ components:
                 status:
                     description: 支払い状況
                     type: integer
+                    x-enum-comments:
+                        PaymentStatusAuthorized: オーソリ済み
+                        PaymentStatusCanceled: キャンセル済み
+                        PaymentStatusFailed: 失敗
+                        PaymentStatusPaid: 支払い済み
+                        PaymentStatusUnpaid: 未支払い
+                    x-enum-varnames:
+                        - PaymentStatusUnknown
+                        - PaymentStatusUnpaid
+                        - PaymentStatusAuthorized
+                        - PaymentStatusPaid
+                        - PaymentStatusCanceled
+                        - PaymentStatusFailed
                 subtotal:
                     description: 商品合計金額
                     type: integer
@@ -4566,6 +5049,20 @@ components:
                 user:
                     $ref: '#/components/schemas/types.User'
             type: object
+        types.UserStatus:
+            description: 購入者ステータス
+            type: integer
+            x-enum-comments:
+                UserStatusDeactivated: 無効
+                UserStatusGuest: 未登録
+                UserStatusProvisional: 仮登録
+                UserStatusVerified: 認証済み
+            x-enum-varnames:
+                - UserStatusUnknown
+                - UserStatusGuest
+                - UserStatusProvisional
+                - UserStatusVerified
+                - UserStatusDeactivated
         types.UserToList:
             properties:
                 city:
@@ -4595,6 +5092,17 @@ components:
                 status:
                     description: 購入者ステータス
                     type: integer
+                    x-enum-comments:
+                        UserStatusDeactivated: 無効
+                        UserStatusGuest: 未登録
+                        UserStatusProvisional: 仮登録
+                        UserStatusVerified: 認証済み
+                    x-enum-varnames:
+                        - UserStatusUnknown
+                        - UserStatusGuest
+                        - UserStatusProvisional
+                        - UserStatusVerified
+                        - UserStatusDeactivated
             type: object
         types.UsersResponse:
             properties:
@@ -4616,6 +5124,20 @@ components:
             required:
                 - verifyCode
             type: object
+        types.VideoStatus:
+            description: 配信状況
+            type: integer
+            x-enum-comments:
+                VideoStatusLimited: 限定公開
+                VideoStatusPrivate: 非公開
+                VideoStatusPublished: 公開済み
+                VideoStatusWaiting: 公開前
+            x-enum-varnames:
+                - VideoStatusUnknown
+                - VideoStatusPrivate
+                - VideoStatusWaiting
+                - VideoStatusLimited
+                - VideoStatusPublished
         types.VideoViewerLog:
             properties:
                 endAt:

@@ -1,15 +1,5 @@
 components:
   schemas:
-    time.Weekday:
-      type: integer
-      x-enum-varnames:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
     types.AddCartItemRequest:
       properties:
         productId:
@@ -125,11 +115,9 @@ components:
           description: 箱の占有率
           type: integer
         size:
-          description: 箱のサイズ
-          type: integer
+          $ref: '#/components/schemas/types.ShippingSize'
         type:
-          description: 箱の種別
-          type: integer
+          $ref: '#/components/schemas/types.ShippingType'
       type: object
     types.CartItem:
       properties:
@@ -244,8 +232,7 @@ components:
           description: 注文履歴ID
           type: string
         status:
-          description: 注文ステータス
-          type: integer
+          $ref: '#/components/schemas/types.PaymentStatus'
       type: object
     types.Coordinator:
       description: コーディネータ情報
@@ -253,7 +240,7 @@ components:
         businessDays:
           description: 営業曜日(発送可能日)
           items:
-            $ref: '#/components/schemas/time.Weekday'
+            type: integer
           type: array
           uniqueItems: false
         city:
@@ -332,6 +319,30 @@ components:
       - lastnameKana
       - phoneNumber
       type: object
+    types.DeliveryType:
+      description: 配送方法
+      type: integer
+      x-enum-comments:
+        DeliveryTypeFrozen: 冷凍便
+        DeliveryTypeNormal: 常温便
+        DeliveryTypeRefrigerated: 冷蔵便
+      x-enum-varnames:
+      - DeliveryTypeUnknown
+      - DeliveryTypeNormal
+      - DeliveryTypeRefrigerated
+      - DeliveryTypeFrozen
+    types.DiscountType:
+      description: 割引計算方法
+      type: integer
+      x-enum-comments:
+        DiscountTypeAmount: 固定額(円)
+        DiscountTypeFreeShipping: 送料無料
+        DiscountTypeRate: 料率計算(%)
+      x-enum-varnames:
+      - DiscountTypeUnknown
+      - DiscountTypeAmount
+      - DiscountTypeRate
+      - DiscountTypeFreeShipping
     types.GetAccessTokenRequest:
       properties:
         refreshToken:
@@ -369,11 +380,9 @@ components:
         refund:
           $ref: '#/components/schemas/types.OrderRefund'
         status:
-          description: 注文ステータス
-          type: integer
+          $ref: '#/components/schemas/types.OrderStatus'
         type:
-          description: 注文種別
-          type: integer
+          $ref: '#/components/schemas/types.OrderType'
       type: object
     types.OrderItem:
       properties:
@@ -397,8 +406,7 @@ components:
           description: 割引金額(税込)
           type: integer
         methodType:
-          description: 決済手段種別
-          type: integer
+          $ref: '#/components/schemas/types.PaymentMethodType'
         orderedAt:
           description: 注文日時
           type: integer
@@ -409,8 +417,19 @@ components:
           description: 配送手数料(税込)
           type: integer
         status:
-          description: 支払い状況
+          description: 注文ステータス
           type: integer
+          x-enum-comments:
+            PaymentStatusCanceled: キャンセル済み
+            PaymentStatusFailed: 失敗
+            PaymentStatusPaid: 支払い済み
+            PaymentStatusUnpaid: 未支払い
+          x-enum-varnames:
+          - PaymentStatusUnknown
+          - PaymentStatusUnpaid
+          - PaymentStatusPaid
+          - PaymentStatusCanceled
+          - PaymentStatusFailed
         subtotal:
           description: 購入金額(税込)
           type: integer
@@ -437,8 +456,7 @@ components:
           description: 返金金額
           type: integer
         type:
-          description: 注文キャンセル種別
-          type: integer
+          $ref: '#/components/schemas/types.RefundType'
       type: object
     types.OrderResponse:
       properties:
@@ -455,6 +473,34 @@ components:
         promotion:
           $ref: '#/components/schemas/types.Promotion'
       type: object
+    types.OrderStatus:
+      description: 注文ステータス
+      type: integer
+      x-enum-comments:
+        OrderStatusCanceled: キャンセル
+        OrderStatusCompleted: 完了
+        OrderStatusFailed: 失敗
+        OrderStatusPreparing: 発送対応中
+        OrderStatusRefunded: 返金
+        OrderStatusUnpaid: 支払い待ち
+      x-enum-varnames:
+      - OrderStatusUnknown
+      - OrderStatusUnpaid
+      - OrderStatusPreparing
+      - OrderStatusCompleted
+      - OrderStatusCanceled
+      - OrderStatusRefunded
+      - OrderStatusFailed
+    types.OrderType:
+      description: 注文種別
+      type: integer
+      x-enum-comments:
+        OrderTypeExperience: 体験
+        OrderTypeProduct: 商品
+      x-enum-varnames:
+      - OrderTypeUnknown
+      - OrderTypeProduct
+      - OrderTypeExperience
     types.OrdersResponse:
       properties:
         coordinators:
@@ -485,6 +531,50 @@ components:
           description: 合計数
           type: integer
       type: object
+    types.PaymentMethodType:
+      description: 決済手段種別
+      type: integer
+      x-enum-comments:
+        PaymentMethodTypeAUPay: QR決済（au PAY）
+        PaymentMethodTypeBankTransfer: 銀行振込決済
+        PaymentMethodTypeCash: 代引支払い
+        PaymentMethodTypeCreditCard: クレジットカード決済
+        PaymentMethodTypeFree: 決済無し
+        PaymentMethodTypeKonbini: コンビニ決済
+        PaymentMethodTypeLinePay: QR決済（LINE Pay）
+        PaymentMethodTypeMerpay: QR決済（メルペイ）
+        PaymentMethodTypePaidy: ペイディ（Paidy）
+        PaymentMethodTypePayEasy: ペイジー（Pay-easy）
+        PaymentMethodTypePayPay: QR決済（PayPay）
+        PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
+      x-enum-varnames:
+      - PaymentMethodTypeUnknown
+      - PaymentMethodTypeCash
+      - PaymentMethodTypeCreditCard
+      - PaymentMethodTypeKonbini
+      - PaymentMethodTypeBankTransfer
+      - PaymentMethodTypePayPay
+      - PaymentMethodTypeLinePay
+      - PaymentMethodTypeMerpay
+      - PaymentMethodTypeRakutenPay
+      - PaymentMethodTypeAUPay
+      - PaymentMethodTypeFree
+      - PaymentMethodTypePaidy
+      - PaymentMethodTypePayEasy
+    types.PaymentStatus:
+      description: 注文ステータス
+      type: integer
+      x-enum-comments:
+        PaymentStatusCanceled: キャンセル済み
+        PaymentStatusFailed: 失敗
+        PaymentStatusPaid: 支払い済み
+        PaymentStatusUnpaid: 未支払い
+      x-enum-varnames:
+      - PaymentStatusUnknown
+      - PaymentStatusUnpaid
+      - PaymentStatusPaid
+      - PaymentStatusCanceled
+      - PaymentStatusFailed
     types.Producer:
       description: 生産者情報
       properties:
@@ -541,8 +631,7 @@ components:
           description: コーディネータID
           type: string
         deliveryType:
-          description: 配送方法
-          type: integer
+          $ref: '#/components/schemas/types.DeliveryType'
         description:
           description: 商品説明
           type: string
@@ -609,11 +698,9 @@ components:
           description: 販売開始日時
           type: integer
         status:
-          description: 販売状況
-          type: integer
+          $ref: '#/components/schemas/types.ProductStatus'
         storageMethodType:
-          description: 保存方法
-          type: integer
+          $ref: '#/components/schemas/types.StorageMethodType'
         thumbnailUrl:
           description: サムネイルURL
           type: string
@@ -664,6 +751,18 @@ components:
         productType:
           $ref: '#/components/schemas/types.ProductType'
       type: object
+    types.ProductStatus:
+      description: 販売状況
+      type: integer
+      x-enum-comments:
+        ProductStatusForSale: 販売中
+        ProductStatusOutOfSale: 販売期間外
+        ProductStatusPresale: 予約受付中
+      x-enum-varnames:
+      - ProductStatusUnknown
+      - ProductStatusPresale
+      - ProductStatusForSale
+      - ProductStatusOutOfSale
     types.ProductTag:
       properties:
         id:
@@ -744,8 +843,7 @@ components:
           description: 割引額(%/円)
           type: integer
         discountType:
-          description: 割引計算方法
-          type: integer
+          $ref: '#/components/schemas/types.DiscountType'
         endAt:
           description: クーポン使用可能日時(終了)
           type: integer
@@ -756,12 +854,60 @@ components:
           description: クーポン使用可能日時(開始)
           type: integer
         status:
-          description: ステータス
-          type: integer
+          $ref: '#/components/schemas/types.PromotionStatus'
         title:
           description: タイトル
           type: string
       type: object
+    types.PromotionStatus:
+      description: ステータス
+      type: integer
+      x-enum-comments:
+        PromotionStatusEnabled: 利用可能
+        PromotionStatusFinished: 利用終了
+        PromotionStatusPrivate: 非公開
+        PromotionStatusWaiting: 利用開始前
+      x-enum-varnames:
+      - PromotionStatusUnknown
+      - PromotionStatusPrivate
+      - PromotionStatusWaiting
+      - PromotionStatusEnabled
+      - PromotionStatusFinished
+    types.RefundType:
+      description: 注文キャンセル種別
+      type: integer
+      x-enum-comments:
+        RefundTypeCanceled: キャンセル
+        RefundTypeNone: キャンセルなし
+        RefundTypeRefunded: 返金
+      x-enum-varnames:
+      - RefundTypeNone
+      - RefundTypeCanceled
+      - RefundTypeRefunded
+    types.ShippingSize:
+      description: 箱のサイズ
+      type: integer
+      x-enum-comments:
+        ShippingSize60: 箱のサイズ:60
+        ShippingSize80: 箱のサイズ:80
+        ShippingSize100: 箱のサイズ:100
+      x-enum-varnames:
+      - ShippingSizeUnknown
+      - ShippingSize60
+      - ShippingSize80
+      - ShippingSize100
+    types.ShippingType:
+      description: 箱の種別
+      type: integer
+      x-enum-comments:
+        ShippingTypeFrozen: 冷凍便
+        ShippingTypeNormal: 常温・冷蔵便
+        ShippingTypePickup: 店舗受取
+      x-enum-varnames:
+      - ShippingTypeUnknown
+      - ShippingTypeNormal
+      - ShippingTypeFrozen
+      - ShippingTypePickup
     types.SignInRequest:
       properties:
         authToken:
@@ -770,6 +916,20 @@ components:
       required:
       - authToken
       type: object
+    types.StorageMethodType:
+      description: 保存方法
+      type: integer
+      x-enum-comments:
+        StorageMethodTypeCoolDark: 冷暗所保存
+        StorageMethodTypeFrozen: 冷凍保存
+        StorageMethodTypeNormal: 常温保存
+        StorageMethodTypeRefrigerated: 冷蔵保存
+      x-enum-varnames:
+      - StorageMethodTypeUnknown
+      - StorageMethodTypeNormal
+      - StorageMethodTypeCoolDark
+      - StorageMethodTypeRefrigerated
+      - StorageMethodTypeFrozen
     types.UpdateAuthUserRequest:
       properties:
         firstname:
