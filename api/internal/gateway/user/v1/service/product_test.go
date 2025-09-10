@@ -16,32 +16,32 @@ func TestProductStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ProductStatus
-		expect ProductStatus
+		expect types.ProductStatus
 	}{
 		{
 			name:   "private",
 			status: entity.ProductStatusPrivate,
-			expect: ProductStatusUnknown,
+			expect: types.ProductStatusUnknown,
 		},
 		{
 			name:   "presale",
 			status: entity.ProductStatusPresale,
-			expect: ProductStatusPresale,
+			expect: types.ProductStatusPresale,
 		},
 		{
 			name:   "for sale",
 			status: entity.ProductStatusForSale,
-			expect: ProductStatusForSale,
+			expect: types.ProductStatusForSale,
 		},
 		{
 			name:   "out of sale",
 			status: entity.ProductStatusOutOfSale,
-			expect: ProductStatusOutOfSale,
+			expect: types.ProductStatusOutOfSale,
 		},
 		{
 			name:   "unknown",
 			status: entity.ProductStatusUnknown,
-			expect: ProductStatusUnknown,
+			expect: types.ProductStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -61,28 +61,28 @@ func TestStorageMethodType(t *testing.T) {
 	}{
 		{
 			name:              "success to normal",
-			storageMethodType: entity.StorageMethodTypeNormal,
-			expect:            StorageMethodTypeNormal,
+			storageMethodType: entity.StorageMethodType(types.StorageMethodTypeNormal),
+			expect:            StorageMethodType(types.StorageMethodTypeNormal),
 		},
 		{
 			name:              "success to cook dark",
-			storageMethodType: entity.StorageMethodTypeCoolDark,
-			expect:            StorageMethodTypeCoolDark,
+			storageMethodType: entity.StorageMethodType(types.StorageMethodTypeCoolDark),
+			expect:            StorageMethodType(types.StorageMethodTypeCoolDark),
 		},
 		{
 			name:              "success to refrigerated",
-			storageMethodType: entity.StorageMethodTypeRefrigerated,
-			expect:            StorageMethodTypeRefrigerated,
+			storageMethodType: entity.StorageMethodType(types.StorageMethodTypeRefrigerated),
+			expect:            StorageMethodType(types.StorageMethodTypeRefrigerated),
 		},
 		{
 			name:              "success to frozen",
-			storageMethodType: entity.StorageMethodTypeFrozen,
-			expect:            StorageMethodTypeFrozen,
+			storageMethodType: entity.StorageMethodType(types.StorageMethodTypeFrozen),
+			expect:            StorageMethodType(types.StorageMethodTypeFrozen),
 		},
 		{
 			name:              "success to unknown",
-			storageMethodType: entity.StorageMethodTypeUnknown,
-			expect:            StorageMethodTypeUnknown,
+			storageMethodType: entity.StorageMethodType(types.StorageMethodTypeUnknown),
+			expect:            StorageMethodType(types.StorageMethodTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -102,23 +102,23 @@ func TestDeliveryType(t *testing.T) {
 	}{
 		{
 			name:         "success to normal",
-			deliveryType: entity.DeliveryTypeNormal,
-			expect:       DeliveryTypeNormal,
+			deliveryType: entity.DeliveryType(types.DeliveryTypeNormal),
+			expect:       DeliveryType(types.DeliveryTypeNormal),
 		},
 		{
 			name:         "success to frozen",
-			deliveryType: entity.DeliveryTypeFrozen,
-			expect:       DeliveryTypeFrozen,
+			deliveryType: entity.DeliveryType(types.DeliveryTypeFrozen),
+			expect:       DeliveryType(types.DeliveryTypeFrozen),
 		},
 		{
 			name:         "success to refrigerated",
-			deliveryType: entity.DeliveryTypeRefrigerated,
-			expect:       DeliveryTypeRefrigerated,
+			deliveryType: entity.DeliveryType(types.DeliveryTypeRefrigerated),
+			expect:       DeliveryType(types.DeliveryTypeRefrigerated),
 		},
 		{
 			name:         "success to unknown",
-			deliveryType: entity.DeliveryTypeUnknown,
-			expect:       DeliveryTypeUnknown,
+			deliveryType: entity.DeliveryType(types.DeliveryTypeUnknown),
+			expect:       DeliveryType(types.DeliveryTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -134,12 +134,12 @@ func TestDeliveryType_Response(t *testing.T) {
 	tests := []struct {
 		name         string
 		deliveryType DeliveryType
-		expect       int32
+		expect       types.DeliveryType
 	}{
 		{
 			name:         "success",
-			deliveryType: DeliveryTypeNormal,
-			expect:       1,
+			deliveryType: DeliveryType(types.DeliveryTypeNormal),
+			expect:       types.DeliveryTypeNormal,
 		},
 	}
 	for _, tt := range tests {
@@ -237,8 +237,8 @@ func TestProduct(t *testing.T) {
 					},
 				},
 				RecommendedPoints:    []string{"ポイント1", "ポイント2", "ポイント3"},
-				StorageMethodType:    entity.StorageMethodTypeNormal,
-				DeliveryType:         entity.DeliveryTypeNormal,
+				StorageMethodType:    entity.StorageMethodType(types.StorageMethodTypeNormal),
+				DeliveryType:         entity.DeliveryType(types.DeliveryTypeNormal),
 				Box60Rate:            50,
 				Box80Rate:            40,
 				Box100Rate:           30,
@@ -308,8 +308,8 @@ func TestProduct(t *testing.T) {
 					RecommendedPoint1: "ポイント1",
 					RecommendedPoint2: "ポイント2",
 					RecommendedPoint3: "ポイント3",
-					StorageMethodType: int32(StorageMethodTypeNormal),
-					DeliveryType:      int32(DeliveryTypeNormal),
+					StorageMethodType: int32(StorageMethodType(types.StorageMethodTypeNormal)),
+					DeliveryType:      int32(DeliveryType(types.DeliveryTypeNormal)),
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
@@ -378,8 +378,8 @@ func TestProduct(t *testing.T) {
 					},
 				},
 				RecommendedPoints:    []string{"ポイント1", "ポイント2", "ポイント3"},
-				StorageMethodType:    entity.StorageMethodTypeNormal,
-				DeliveryType:         entity.DeliveryTypeNormal,
+				StorageMethodType:    entity.StorageMethodType(types.StorageMethodTypeNormal),
+				DeliveryType:         entity.DeliveryType(types.DeliveryTypeNormal),
 				Box60Rate:            50,
 				Box80Rate:            40,
 				Box100Rate:           30,
@@ -431,8 +431,8 @@ func TestProduct(t *testing.T) {
 					RecommendedPoint1: "ポイント1",
 					RecommendedPoint2: "ポイント2",
 					RecommendedPoint3: "ポイント3",
-					StorageMethodType: int32(StorageMethodTypeNormal),
-					DeliveryType:      int32(DeliveryTypeNormal),
+					StorageMethodType: int32(StorageMethodType(types.StorageMethodTypeNormal)),
+					DeliveryType:      int32(DeliveryType(types.DeliveryTypeNormal)),
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
@@ -539,7 +539,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: ProductStatusPresale,
+				status: types.ProductStatusPresale,
 			},
 			expect: "preorder",
 		},
@@ -549,7 +549,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 0,
 				},
-				status: ProductStatusPresale,
+				status: types.ProductStatusPresale,
 			},
 			expect: "out_of_stock",
 		},
@@ -559,7 +559,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: ProductStatusForSale,
+				status: types.ProductStatusForSale,
 			},
 			expect: "in_stock",
 		},
@@ -569,7 +569,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 0,
 				},
-				status: ProductStatusForSale,
+				status: types.ProductStatusForSale,
 			},
 			expect: "out_of_stock",
 		},
@@ -579,7 +579,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: ProductStatusOutOfSale,
+				status: types.ProductStatusOutOfSale,
 			},
 			expect: "out_of_stock",
 		},
@@ -589,7 +589,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: ProductStatusUnknown,
+				status: types.ProductStatusUnknown,
 			},
 			expect: "new",
 		},
@@ -636,7 +636,7 @@ func TestProduct_Response(t *testing.T) {
 						},
 					},
 					Price:            400,
-					DeliveryType:     int32(DeliveryTypeNormal),
+					DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
@@ -670,7 +670,7 @@ func TestProduct_Response(t *testing.T) {
 					},
 				},
 				Price:            400,
-				DeliveryType:     int32(DeliveryTypeNormal),
+				DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
 				Box60Rate:        50,
 				Box80Rate:        40,
 				Box100Rate:       30,
@@ -726,7 +726,7 @@ func TestProducts(t *testing.T) {
 							IsThumbnail: false,
 						},
 					},
-					DeliveryType:         entity.DeliveryTypeNormal,
+					DeliveryType:         entity.DeliveryType(types.DeliveryTypeNormal),
 					Box60Rate:            50,
 					Box80Rate:            40,
 					Box100Rate:           30,
@@ -809,7 +809,7 @@ func TestProducts(t *testing.T) {
 							},
 						},
 						Price:            400,
-						DeliveryType:     int32(DeliveryTypeNormal),
+						DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
@@ -887,7 +887,7 @@ func TestProducts_IDs(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryTypeNormal),
+						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -935,7 +935,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryTypeNormal),
+						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -963,7 +963,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryTypeNormal),
+						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -1012,7 +1012,7 @@ func TestProducts_Response(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:            400,
-						DeliveryType:     int32(DeliveryTypeNormal),
+						DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
@@ -1044,7 +1044,7 @@ func TestProducts_Response(t *testing.T) {
 						{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 					},
 					Price:            400,
-					DeliveryType:     int32(DeliveryTypeNormal),
+					DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
@@ -1431,7 +1431,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
 					},
 					cost:   300,
-					status: ProductStatusForSale,
+					status: types.ProductStatusForSale,
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1509,7 +1509,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
 					},
 					cost:   300,
-					status: ProductStatusForSale,
+					status: types.ProductStatusForSale,
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1584,7 +1584,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   300,
-					status: ProductStatusForSale,
+					status: types.ProductStatusForSale,
 					media:  MultiProductMedia{},
 				},
 				Coordinator: &Coordinator{
@@ -1645,7 +1645,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   0,
-					status: ProductStatusUnknown,
+					status: types.ProductStatusUnknown,
 					media:  MultiProductMedia{},
 				},
 				Coordinator: nil,
@@ -1696,7 +1696,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   300,
-					status: ProductStatusForSale,
+					status: types.ProductStatusForSale,
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1788,7 +1788,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 							CoordinatorID: "coordinator-id",
 						},
 						cost:   300,
-						status: ProductStatusForSale,
+						status: types.ProductStatusForSale,
 						media: MultiProductMedia{
 							{
 								ProductMedia: types.ProductMedia{
@@ -1812,7 +1812,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 							CoordinatorID: "coordinator-id-2",
 						},
 						cost:   150,
-						status: ProductStatusForSale,
+						status: types.ProductStatusForSale,
 						media: MultiProductMedia{
 							{
 								ProductMedia: types.ProductMedia{

@@ -19,28 +19,28 @@ func TestBroadcastStatus(t *testing.T) {
 	}{
 		{
 			name:   "disabled",
-			status: entity.BroadcastStatusDisabled,
-			expect: BroadcastStatusDisabled,
+			status: entity.BroadcastStatus(types.BroadcastStatusDisabled),
+			expect: BroadcastStatus(types.BroadcastStatusDisabled),
 		},
 		{
 			name:   "waiting",
-			status: entity.BroadcastStatusWaiting,
-			expect: BroadcastStatusWaiting,
+			status: entity.BroadcastStatus(types.BroadcastStatusWaiting),
+			expect: BroadcastStatus(types.BroadcastStatusWaiting),
 		},
 		{
 			name:   "idle",
-			status: entity.BroadcastStatusIdle,
-			expect: BroadcastStatusIdle,
+			status: entity.BroadcastStatus(types.BroadcastStatusIdle),
+			expect: BroadcastStatus(types.BroadcastStatusIdle),
 		},
 		{
 			name:   "active",
-			status: entity.BroadcastStatusActive,
-			expect: BroadcastStatusActive,
+			status: entity.BroadcastStatus(types.BroadcastStatusActive),
+			expect: BroadcastStatus(types.BroadcastStatusActive),
 		},
 		{
 			name:   "unknown",
-			status: entity.BroadcastStatusUnknown,
-			expect: BroadcastStatusUnknown,
+			status: entity.BroadcastStatus(types.BroadcastStatusUnknown),
+			expect: BroadcastStatus(types.BroadcastStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -63,7 +63,7 @@ func TestBroadcast(t *testing.T) {
 			broadcast: &entity.Broadcast{
 				ID:                 "broadcast-id",
 				ScheduleID:         "schedule-id",
-				Status:             entity.BroadcastStatusIdle,
+				Status:             entity.BroadcastStatus(types.BroadcastStatusIdle),
 				InputURL:           "rtmp://127.0.0.1:1935/app/instance",
 				OutputURL:          "http://example.com/index.m3u8",
 				ArchiveURL:         "http://example.com/index.mp4",
@@ -80,7 +80,7 @@ func TestBroadcast(t *testing.T) {
 				Broadcast: types.Broadcast{
 					ID:               "broadcast-id",
 					ScheduleID:       "schedule-id",
-					Status:           int32(BroadcastStatusIdle),
+					Status:           types.BroadcastStatusIdle,
 					InputURL:         "rtmp://127.0.0.1:1935/app/instance",
 					OutputURL:        "http://example.com/index.m3u8",
 					ArchiveURL:       "http://example.com/index.mp4",
@@ -114,7 +114,7 @@ func TestBroadcasts(t *testing.T) {
 				{
 					ID:         "broadcast-id",
 					ScheduleID: "schedule-id",
-					Status:     entity.BroadcastStatusIdle,
+					Status:     entity.BroadcastStatus(types.BroadcastStatusIdle),
 					InputURL:   "rtmp://127.0.0.1:1935/app/instance",
 					OutputURL:  "http://example.com/index.m3u8",
 					ArchiveURL: "http://example.com/index.mp4",
@@ -127,7 +127,7 @@ func TestBroadcasts(t *testing.T) {
 					Broadcast: types.Broadcast{
 						ID:         "broadcast-id",
 						ScheduleID: "schedule-id",
-						Status:     int32(BroadcastStatusIdle),
+						Status:     types.BroadcastStatusIdle,
 						InputURL:   "rtmp://127.0.0.1:1935/app/instance",
 						OutputURL:  "http://example.com/index.m3u8",
 						ArchiveURL: "http://example.com/index.mp4",
@@ -161,7 +161,7 @@ func TestGuestBroadcast(t *testing.T) {
 				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusLive.Response(),
+					Status:          ScheduleStatus(types.ScheduleStatusLive).Response(),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -190,7 +190,7 @@ func TestGuestBroadcast(t *testing.T) {
 			coordinator: &Coordinator{
 				Coordinator: types.Coordinator{
 					ID:                "coordinator-id",
-					Status:            int32(AdminStatusActivated),
+					Status:            types.AdminStatusActivated,
 					Lastname:          "&.",
 					Firstname:         "管理者",
 					LastnameKana:      "あんどどっと",

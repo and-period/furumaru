@@ -7,49 +7,43 @@ import (
 )
 
 // ExperienceReviewReactionType - 体験レビューのリアクション種別
-type ExperienceReviewReactionType int32
-
-const (
-	ExperienceReviewReactionTypeUnknown ExperienceReviewReactionType = 0
-	ExperienceReviewReactionTypeLike    ExperienceReviewReactionType = 1 // いいね
-	ExperienceReviewReactionTypeDislike ExperienceReviewReactionType = 2 // いまいち
-)
+type ExperienceReviewReactionType types.ExperienceReviewReactionType
 
 func NewExperienceReviewReactionType(typ entity.ExperienceReviewReactionType) ExperienceReviewReactionType {
 	switch typ {
 	case entity.ExperienceReviewReactionTypeLike:
-		return ExperienceReviewReactionTypeLike
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeLike)
 	case entity.ExperienceReviewReactionTypeDislike:
-		return ExperienceReviewReactionTypeDislike
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeDislike)
 	default:
-		return ExperienceReviewReactionTypeUnknown
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeUnknown)
 	}
 }
 
 func NewExperienceReviewReactionTypeFromRequest(typ int32) (ExperienceReviewReactionType, bool) {
 	switch typ {
 	case 1:
-		return ExperienceReviewReactionTypeLike, true
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeLike), true
 	case 2:
-		return ExperienceReviewReactionTypeDislike, true
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeDislike), true
 	default:
-		return ExperienceReviewReactionTypeUnknown, false
+		return ExperienceReviewReactionType(types.ExperienceReviewReactionTypeUnknown), false
 	}
 }
 
 func (t ExperienceReviewReactionType) StoreEntity() entity.ExperienceReviewReactionType {
 	switch t {
-	case ExperienceReviewReactionTypeLike:
+	case ExperienceReviewReactionType(types.ExperienceReviewReactionTypeLike):
 		return entity.ExperienceReviewReactionTypeLike
-	case ExperienceReviewReactionTypeDislike:
+	case ExperienceReviewReactionType(types.ExperienceReviewReactionTypeDislike):
 		return entity.ExperienceReviewReactionTypeDislike
 	default:
 		return entity.ExperienceReviewReactionTypeUnknown
 	}
 }
 
-func (t ExperienceReviewReactionType) Response() int32 {
-	return int32(t)
+func (t ExperienceReviewReactionType) Response() types.ExperienceReviewReactionType {
+	return types.ExperienceReviewReactionType(t)
 }
 
 type ExperienceReview struct {

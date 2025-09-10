@@ -110,7 +110,7 @@ func TestPaymentSystem(t *testing.T) {
 			},
 			expect: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
+					MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 				},
 			},
@@ -136,12 +136,12 @@ func TestPaymentSystem_Response(t *testing.T) {
 			name: "success",
 			system: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
+					MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 				},
 			},
 			expect: &types.PaymentSystem{
-				MethodType: PaymentMethodTypeCreditCard.Response(),
+				MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 				Status:     PaymentSystemStatusInUse.Response(),
 			},
 		},
@@ -174,7 +174,7 @@ func TestPaymentSystems(t *testing.T) {
 			expect: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: PaymentMethodTypeCreditCard.Response(),
+						MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 					},
 				},
@@ -202,14 +202,14 @@ func TestPaymentSystems_Response(t *testing.T) {
 			systems: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: PaymentMethodTypeCreditCard.Response(),
+						MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 						Status:     PaymentSystemStatusInUse.Response(),
 					},
 				},
 			},
 			expect: []*types.PaymentSystem{
 				{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
+					MethodType: NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
 					Status:     PaymentSystemStatusInUse.Response(),
 				},
 			},

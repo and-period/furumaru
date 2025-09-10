@@ -48,7 +48,7 @@ func (c *Coordinator) AuthUser() *AuthUser {
 		AuthUser: types.AuthUser{
 			AdminID:      c.ID,
 			ShopIDs:      []string{c.ShopID},
-			Type:         AdminTypeCoordinator.Response(),
+			Type:         AdminType(types.AdminTypeCoordinator).Response(),
 			Username:     c.Username,
 			Email:        c.Email,
 			ThumbnailURL: c.ThumbnailURL,

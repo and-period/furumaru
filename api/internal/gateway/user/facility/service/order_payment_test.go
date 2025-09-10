@@ -15,72 +15,72 @@ func TestPaymentMethodType(t *testing.T) {
 	tests := []struct {
 		name       string
 		methodType entity.PaymentMethodType
-		expect     PaymentMethodType
+		expect     types.PaymentMethodType
 	}{
 		{
 			name:       "cash",
 			methodType: entity.PaymentMethodTypeCash,
-			expect:     PaymentMethodTypeCash,
+			expect:     types.PaymentMethodTypeCash,
 		},
 		{
 			name:       "credit card",
 			methodType: entity.PaymentMethodTypeCreditCard,
-			expect:     PaymentMethodTypeCreditCard,
+			expect:     types.PaymentMethodTypeCreditCard,
 		},
 		{
 			name:       "konbini",
 			methodType: entity.PaymentMethodTypeKonbini,
-			expect:     PaymentMethodTypeKonbini,
+			expect:     types.PaymentMethodTypeKonbini,
 		},
 		{
 			name:       "bank transfer",
 			methodType: entity.PaymentMethodTypeBankTransfer,
-			expect:     PaymentMethodTypeBankTransfer,
+			expect:     types.PaymentMethodTypeBankTransfer,
 		},
 		{
 			name:       "paypay",
 			methodType: entity.PaymentMethodTypePayPay,
-			expect:     PaymentMethodTypePayPay,
+			expect:     types.PaymentMethodTypePayPay,
 		},
 		{
 			name:       "line pay",
 			methodType: entity.PaymentMethodTypeLinePay,
-			expect:     PaymentMethodTypeLinePay,
+			expect:     types.PaymentMethodTypeLinePay,
 		},
 		{
 			name:       "merpay",
 			methodType: entity.PaymentMethodTypeMerpay,
-			expect:     PaymentMethodTypeMerpay,
+			expect:     types.PaymentMethodTypeMerpay,
 		},
 		{
 			name:       "rakuten pay",
 			methodType: entity.PaymentMethodTypeRakutenPay,
-			expect:     PaymentMethodTypeRakutenPay,
+			expect:     types.PaymentMethodTypeRakutenPay,
 		},
 		{
 			name:       "au pay",
 			methodType: entity.PaymentMethodTypeAUPay,
-			expect:     PaymentMethodTypeAUPay,
+			expect:     types.PaymentMethodTypeAUPay,
 		},
 		{
 			name:       "paidy",
 			methodType: entity.PaymentMethodTypePaidy,
-			expect:     PaymentMethodTypePaidy,
+			expect:     types.PaymentMethodTypePaidy,
 		},
 		{
 			name:       "pay easy",
 			methodType: entity.PaymentMethodTypePayEasy,
-			expect:     PaymentMethodTypePayEasy,
+			expect:     types.PaymentMethodTypePayEasy,
 		},
 		{
 			name:       "free",
 			methodType: entity.PaymentMethodTypeNone,
-			expect:     PaymentMethodTypeFree,
+			expect:     types.PaymentMethodTypeFree,
 		},
 		{
 			name:       "unknown",
 			methodType: entity.PaymentMethodTypeUnknown,
-			expect:     PaymentMethodTypeUnknown,
+			expect:     types.PaymentMethodTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -100,67 +100,67 @@ func TestPaymentMethodType_StoreEntity(t *testing.T) {
 	}{
 		{
 			name:       "cash",
-			methodType: PaymentMethodTypeCash,
+			methodType: PaymentMethodType(types.PaymentMethodTypeCash),
 			expect:     entity.PaymentMethodTypeCash,
 		},
 		{
 			name:       "credit card",
-			methodType: PaymentMethodTypeCreditCard,
+			methodType: PaymentMethodType(types.PaymentMethodTypeCreditCard),
 			expect:     entity.PaymentMethodTypeCreditCard,
 		},
 		{
 			name:       "konbini",
-			methodType: PaymentMethodTypeKonbini,
+			methodType: PaymentMethodType(types.PaymentMethodTypeKonbini),
 			expect:     entity.PaymentMethodTypeKonbini,
 		},
 		{
 			name:       "bank transfer",
-			methodType: PaymentMethodTypeBankTransfer,
+			methodType: PaymentMethodType(types.PaymentMethodTypeBankTransfer),
 			expect:     entity.PaymentMethodTypeBankTransfer,
 		},
 		{
 			name:       "paypay",
-			methodType: PaymentMethodTypePayPay,
+			methodType: PaymentMethodType(types.PaymentMethodTypePayPay),
 			expect:     entity.PaymentMethodTypePayPay,
 		},
 		{
 			name:       "line pay",
-			methodType: PaymentMethodTypeLinePay,
+			methodType: PaymentMethodType(types.PaymentMethodTypeLinePay),
 			expect:     entity.PaymentMethodTypeLinePay,
 		},
 		{
 			name:       "merpay",
-			methodType: PaymentMethodTypeMerpay,
+			methodType: PaymentMethodType(types.PaymentMethodTypeMerpay),
 			expect:     entity.PaymentMethodTypeMerpay,
 		},
 		{
 			name:       "rakuten pay",
-			methodType: PaymentMethodTypeRakutenPay,
+			methodType: PaymentMethodType(types.PaymentMethodTypeRakutenPay),
 			expect:     entity.PaymentMethodTypeRakutenPay,
 		},
 		{
 			name:       "au pay",
-			methodType: PaymentMethodTypeAUPay,
+			methodType: PaymentMethodType(types.PaymentMethodTypeAUPay),
 			expect:     entity.PaymentMethodTypeAUPay,
 		},
 		{
 			name:       "paidy",
-			methodType: PaymentMethodTypePaidy,
+			methodType: PaymentMethodType(types.PaymentMethodTypePaidy),
 			expect:     entity.PaymentMethodTypePaidy,
 		},
 		{
 			name:       "pay easy",
-			methodType: PaymentMethodTypePayEasy,
+			methodType: PaymentMethodType(types.PaymentMethodTypePayEasy),
 			expect:     entity.PaymentMethodTypePayEasy,
 		},
 		{
 			name:       "none",
-			methodType: PaymentMethodTypeFree,
+			methodType: PaymentMethodType(types.PaymentMethodTypeFree),
 			expect:     entity.PaymentMethodTypeNone,
 		},
 		{
 			name:       "unknown",
-			methodType: PaymentMethodTypeUnknown,
+			methodType: PaymentMethodType(types.PaymentMethodTypeUnknown),
 			expect:     entity.PaymentMethodTypeUnknown,
 		},
 	}
@@ -176,19 +176,19 @@ func TestPaymentMethodType_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name              string
-		PaymentMethodType PaymentMethodType
+		methodType        PaymentMethodType
 		expect            int32
 	}{
 		{
 			name:              "success",
-			PaymentMethodType: PaymentMethodTypeCreditCard,
+			methodType: PaymentMethodType(types.PaymentMethodTypeCreditCard),
 			expect:            2,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.PaymentMethodType.Response())
+			assert.Equal(t, tt.expect, tt.methodType.Response())
 		})
 	}
 }
@@ -203,32 +203,32 @@ func TestPaymentStatus(t *testing.T) {
 		{
 			name:   "pending",
 			status: entity.PaymentStatusPending,
-			expect: PaymentStatusUnpaid,
+			expect: PaymentStatus(types.PaymentStatusUnpaid),
 		},
 		{
 			name:   "paid",
 			status: entity.PaymentStatusCaptured,
-			expect: PaymentStatusPaid,
+			expect: PaymentStatus(types.PaymentStatusPaid),
 		},
 		{
 			name:   "canceled",
 			status: entity.PaymentStatusCanceled,
-			expect: PaymentStatusCanceled,
+			expect: PaymentStatus(types.PaymentStatusCanceled),
 		},
 		{
 			name:   "refunded",
 			status: entity.PaymentStatusRefunded,
-			expect: PaymentStatusCanceled,
+			expect: PaymentStatus(types.PaymentStatusCanceled),
 		},
 		{
 			name:   "expired",
 			status: entity.PaymentStatusFailed,
-			expect: PaymentStatusFailed,
+			expect: PaymentStatus(types.PaymentStatusFailed),
 		},
 		{
 			name:   "unknown",
 			status: entity.PaymentStatusUnknown,
-			expect: PaymentStatusUnknown,
+			expect: PaymentStatus(types.PaymentStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -248,7 +248,7 @@ func TestPaymentStatus_Response(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			status: PaymentStatusPaid,
+			status: PaymentStatus(types.PaymentStatusPaid),
 			expect: 2,
 		},
 	}
@@ -292,8 +292,8 @@ func TestOrderPayment(t *testing.T) {
 			expect: &OrderPayment{
 				OrderPayment: types.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
+					MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+					Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 					Subtotal:      1980,
 					Discount:      0,
 					ShippingFee:   550,
@@ -323,21 +323,21 @@ func TestOrderPayment_Response(t *testing.T) {
 			name: "success",
 			payment: &OrderPayment{
 				OrderPayment: types.OrderPayment{
-					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
-					Subtotal:      1100,
-					Discount:      0,
-					ShippingFee:   500,
-					Total:         1600,
-					OrderedAt:     1640962800,
-					PaidAt:        1640962800,
+				TransactionID: "transaction-id",
+				MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+				Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
+				Subtotal:      1100,
+				Discount:      0,
+				ShippingFee:   500,
+				Total:         1600,
+				OrderedAt:     1640962800,
+				PaidAt:        1640962800,
 				},
 			},
 			expect: &types.OrderPayment{
 				TransactionID: "transaction-id",
-				MethodType:    PaymentMethodTypeCreditCard.Response(),
-				Status:        PaymentStatusPaid.Response(),
+				MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+				Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,

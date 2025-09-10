@@ -31,7 +31,7 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 // @Produce     json
 // @Success     200 {object} types.TopOrdersResponse
 func (h *handler) TopOrders(ctx *gin.Context) {
-	const defaultPeriodType = service.TopOrderPeriodTypeDay
+	const defaultPeriodType = types.TopOrderPeriodTypeDay
 
 	defaultEndAt := h.now()
 	defaultStartAt := defaultEndAt.AddDate(0, 0, -7)
@@ -47,10 +47,10 @@ func (h *handler) TopOrders(ctx *gin.Context) {
 		return
 	}
 	shopID := util.GetQuery(ctx, "shopId", "")
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		shopID = getShopID(ctx)
 	}
-	periodTypeStr := util.GetQuery(ctx, "periodType", defaultPeriodType.Response())
+	periodTypeStr := util.GetQuery(ctx, "periodType", string(defaultPeriodType))
 
 	startAt := jst.ParseFromUnix(startAtUnix)
 	endAt := jst.ParseFromUnix(endAtUnix)

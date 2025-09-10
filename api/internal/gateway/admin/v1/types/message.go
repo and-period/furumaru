@@ -1,16 +1,24 @@
 package types
 
+// MessageType - メッセージ種別
+type MessageType int32
+
+const (
+	MessageTypeUnknown      MessageType = 0
+	MessageTypeNotification MessageType = 1 // お知らせ
+)
+
 // Message - メッセージ情報
 type Message struct {
-	ID         string `json:"id"`         // メッセージID
-	Type       int32  `json:"type"`       // メッセージ種別
-	Title      string `json:"title"`      // メッセージ件名
-	Body       string `json:"body"`       // メッセージ内容
-	Link       string `json:"link"`       // 遷移先リンク
-	Read       bool   `json:"read"`       // 既読フラグ
-	ReceivedAt int64  `json:"receivedAt"` // 受信日時
-	CreatedAt  int64  `json:"createdAt"`  // 登録日時
-	UpdatedAt  int64  `json:"updatedAt"`  // 更新日時
+	ID         string      `json:"id"`         // メッセージID
+	Type       MessageType `json:"type"`       // メッセージ種別
+	Title      string      `json:"title"`      // メッセージ件名
+	Body       string      `json:"body"`       // メッセージ内容
+	Link       string      `json:"link"`       // 遷移先リンク
+	Read       bool        `json:"read"`       // 既読フラグ
+	ReceivedAt int64       `json:"receivedAt"` // 受信日時
+	CreatedAt  int64       `json:"createdAt"`  // 登録日時
+	UpdatedAt  int64       `json:"updatedAt"`  // 更新日時
 }
 
 type MessageResponse struct {

@@ -6,25 +6,10 @@ import (
 )
 
 // PromotionStatus - プロモーションの状態
-type PromotionStatus int32
-
-const (
-	PromotionStatusUnknown  PromotionStatus = 0
-	PromotionStatusPrivate  PromotionStatus = 1 // 非公開
-	PromotionStatusWaiting  PromotionStatus = 2 // 利用開始前
-	PromotionStatusEnabled  PromotionStatus = 3 // 利用可能
-	PromotionStatusFinished PromotionStatus = 4 // 利用終了
-)
+type PromotionStatus types.PromotionStatus
 
 // DiscountType - 割引計算方法
-type DiscountType int32
-
-const (
-	DiscountTypeUnknown      DiscountType = 0
-	DiscountTypeAmount       DiscountType = 1 // 固定額(円)
-	DiscountTypeRate         DiscountType = 2 // 料率計算(%)
-	DiscountTypeFreeShipping DiscountType = 3 // 送料無料
-)
+type DiscountType types.DiscountType
 
 type Promotion struct {
 	types.Promotion
@@ -35,50 +20,50 @@ type Promotions []*Promotion
 func NewPromotionStatus(typ entity.PromotionStatus) PromotionStatus {
 	switch typ {
 	case entity.PromotionStatusPrivate:
-		return PromotionStatusPrivate
+		return PromotionStatus(types.PromotionStatusPrivate)
 	case entity.PromotionStatusWaiting:
-		return PromotionStatusWaiting
+		return PromotionStatus(types.PromotionStatusWaiting)
 	case entity.PromotionStatusEnabled:
-		return PromotionStatusEnabled
+		return PromotionStatus(types.PromotionStatusEnabled)
 	case entity.PromotionStatusFinished:
-		return PromotionStatusFinished
+		return PromotionStatus(types.PromotionStatusFinished)
 	default:
-		return PromotionStatusUnknown
+		return PromotionStatus(types.PromotionStatusUnknown)
 	}
 }
 
-func (s PromotionStatus) Response() int32 {
-	return int32(s)
+func (s PromotionStatus) Response() types.PromotionStatus {
+	return types.PromotionStatus(s)
 }
 
 func NewDiscountType(typ entity.DiscountType) DiscountType {
 	switch typ {
 	case entity.DiscountTypeAmount:
-		return DiscountTypeAmount
+		return DiscountType(types.DiscountTypeAmount)
 	case entity.DiscountTypeRate:
-		return DiscountTypeRate
+		return DiscountType(types.DiscountTypeRate)
 	case entity.DiscountTypeFreeShipping:
-		return DiscountTypeFreeShipping
+		return DiscountType(types.DiscountTypeFreeShipping)
 	default:
-		return DiscountTypeUnknown
+		return DiscountType(types.DiscountTypeUnknown)
 	}
 }
 
 func (t DiscountType) StoreEntity() entity.DiscountType {
-	switch t {
-	case DiscountTypeAmount:
+	switch types.DiscountType(t) {
+	case types.DiscountTypeAmount:
 		return entity.DiscountTypeAmount
-	case DiscountTypeRate:
+	case types.DiscountTypeRate:
 		return entity.DiscountTypeRate
-	case DiscountTypeFreeShipping:
+	case types.DiscountTypeFreeShipping:
 		return entity.DiscountTypeFreeShipping
 	default:
 		return entity.DiscountTypeUnknown
 	}
 }
 
-func (t DiscountType) Response() int32 {
-	return int32(t)
+func (t DiscountType) Response() types.DiscountType {
+	return types.DiscountType(t)
 }
 
 func NewPromotion(promotion *entity.Promotion) *Promotion {

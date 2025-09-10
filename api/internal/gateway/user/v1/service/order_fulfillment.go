@@ -7,42 +7,16 @@ import (
 )
 
 // FulfillmentStatus - 配送状況
-type FulfillmentStatus int32
-
-const (
-	FulfillmentStatusUnknown     FulfillmentStatus = 0
-	FulfillmentStatusUnfulfilled FulfillmentStatus = 1 // 未発送
-	FulfillmentStatusFulfilled   FulfillmentStatus = 2 // 発送済み
-)
+type FulfillmentStatus types.FulfillmentStatus
 
 // ShippingCarrier - 配送会社
-type ShippingCarrier int32
-
-const (
-	ShippingCarrierUnknown ShippingCarrier = 0
-	ShippingCarrierYamato  ShippingCarrier = 1 // ヤマト運輸
-	ShippingCarrierSagawa  ShippingCarrier = 2 // 佐川急便
-)
+type ShippingCarrier types.ShippingCarrier
 
 // ShippingSize - 配送時の箱の大きさ
-type ShippingSize int32
-
-const (
-	ShippingSizeUnknown ShippingSize = 0
-	ShippingSize60      ShippingSize = 1 // 箱のサイズ:60
-	ShippingSize80      ShippingSize = 2 // 箱のサイズ:80
-	ShippingSize100     ShippingSize = 3 // 箱のサイズ:100
-)
+type ShippingSize types.ShippingSize
 
 // ShippingType - 配送方法
-type ShippingType int32
-
-const (
-	ShippingTypeUnknown ShippingType = 0
-	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
-	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
-	ShippingTypePickup  ShippingType = 3 // 店舗受取
-)
+type ShippingType types.ShippingType
 
 type OrderFulfillment struct {
 	types.OrderFulfillment
@@ -53,65 +27,65 @@ type OrderFulfillments []*OrderFulfillment
 func NewFulfillmentStatus(status entity.FulfillmentStatus) FulfillmentStatus {
 	switch status {
 	case entity.FulfillmentStatusUnfulfilled:
-		return FulfillmentStatusUnfulfilled
+		return FulfillmentStatus(types.FulfillmentStatusUnfulfilled)
 	case entity.FulfillmentStatusFulfilled:
-		return FulfillmentStatusFulfilled
+		return FulfillmentStatus(types.FulfillmentStatusFulfilled)
 	default:
-		return FulfillmentStatusUnknown
+		return FulfillmentStatus(types.FulfillmentStatusUnknown)
 	}
 }
 
-func (s FulfillmentStatus) Response() int32 {
-	return int32(s)
+func (s FulfillmentStatus) Response() types.FulfillmentStatus {
+	return types.FulfillmentStatus(s)
 }
 
 func NewShippingCarrier(carrier entity.ShippingCarrier) ShippingCarrier {
 	switch carrier {
 	case entity.ShippingCarrierYamato:
-		return ShippingCarrierYamato
+		return ShippingCarrier(types.ShippingCarrierYamato)
 	case entity.ShippingCarrierSagawa:
-		return ShippingCarrierSagawa
+		return ShippingCarrier(types.ShippingCarrierSagawa)
 	default:
-		return ShippingCarrierUnknown
+		return ShippingCarrier(types.ShippingCarrierUnknown)
 	}
 }
 
-func (c ShippingCarrier) Response() int32 {
-	return int32(c)
+func (c ShippingCarrier) Response() types.ShippingCarrier {
+	return types.ShippingCarrier(c)
 }
 
 func NewShippingSize(size entity.ShippingSize) ShippingSize {
 	switch size {
 	case entity.ShippingSize60:
-		return ShippingSize60
+		return ShippingSize(types.ShippingSize60)
 	case entity.ShippingSize80:
-		return ShippingSize80
+		return ShippingSize(types.ShippingSize80)
 	case entity.ShippingSize100:
-		return ShippingSize100
+		return ShippingSize(types.ShippingSize100)
 	default:
-		return ShippingSizeUnknown
+		return ShippingSize(types.ShippingSizeUnknown)
 	}
 }
 
-func (s ShippingSize) Response() int32 {
-	return int32(s)
+func (s ShippingSize) Response() types.ShippingSize {
+	return types.ShippingSize(s)
 }
 
 func NewShippingType(typ entity.ShippingType) ShippingType {
 	switch typ {
 	case entity.ShippingTypeNormal:
-		return ShippingTypeNormal
+		return ShippingType(types.ShippingTypeNormal)
 	case entity.ShippingTypeFrozen:
-		return ShippingTypeFrozen
+		return ShippingType(types.ShippingTypeFrozen)
 	case entity.ShippingTypePickup:
-		return ShippingTypePickup
+		return ShippingType(types.ShippingTypePickup)
 	default:
-		return ShippingTypeUnknown
+		return ShippingType(types.ShippingTypeUnknown)
 	}
 }
 
-func (t ShippingType) Response() int32 {
-	return int32(t)
+func (t ShippingType) Response() types.ShippingType {
+	return types.ShippingType(t)
 }
 
 func NewOrderFulfillment(fulfillment *entity.OrderFulfillment) *OrderFulfillment {

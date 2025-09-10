@@ -22,7 +22,7 @@ func TestAdministrator(t *testing.T) {
 				Admin: entity.Admin{
 					ID:            "admin-id",
 					Type:          entity.AdminTypeAdministrator,
-					Status:        entity.AdminStatusActivated,
+					Status:        entity.AdminStatus(types.AdminStatusActivated),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -37,7 +37,7 @@ func TestAdministrator(t *testing.T) {
 			expect: &Administrator{
 				Administrator: types.Administrator{
 					ID:            "admin-id",
-					Status:        int32(AdminStatusActivated),
+					Status:        types.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -70,7 +70,7 @@ func TestAdministrator_Response(t *testing.T) {
 			admin: &Administrator{
 				Administrator: types.Administrator{
 					ID:            "admin-id",
-					Status:        int32(AdminStatusActivated),
+					Status:        types.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -83,7 +83,7 @@ func TestAdministrator_Response(t *testing.T) {
 			},
 			expect: &types.Administrator{
 				ID:            "admin-id",
-				Status:        int32(AdminStatusActivated),
+				Status:        types.AdminStatusActivated,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -117,7 +117,7 @@ func TestAdministrators(t *testing.T) {
 					Admin: entity.Admin{
 						ID:            "admin-id01",
 						Type:          entity.AdminTypeAdministrator,
-						Status:        entity.AdminStatusActivated,
+						Status:        entity.AdminStatus(types.AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -133,7 +133,7 @@ func TestAdministrators(t *testing.T) {
 					Admin: entity.Admin{
 						ID:            "admin-id02",
 						Type:          entity.AdminTypeAdministrator,
-						Status:        entity.AdminStatusActivated,
+						Status:        entity.AdminStatus(types.AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -150,7 +150,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id01",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -164,7 +164,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id02",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -199,7 +199,7 @@ func TestAdministrators_Response(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id01",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -213,7 +213,7 @@ func TestAdministrators_Response(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id02",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -228,7 +228,7 @@ func TestAdministrators_Response(t *testing.T) {
 			expect: []*types.Administrator{
 				{
 					ID:            "admin-id01",
-					Status:        int32(AdminStatusActivated),
+					Status:        types.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -240,7 +240,7 @@ func TestAdministrators_Response(t *testing.T) {
 				},
 				{
 					ID:            "admin-id02",
-					Status:        int32(AdminStatusActivated),
+					Status:        types.AdminStatusActivated,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -274,7 +274,7 @@ func TestAdministrator_Map(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id01",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -288,7 +288,7 @@ func TestAdministrator_Map(t *testing.T) {
 				{
 					Administrator: types.Administrator{
 						ID:            "admin-id02",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -304,7 +304,7 @@ func TestAdministrator_Map(t *testing.T) {
 				"admin-id01": {
 					Administrator: types.Administrator{
 						ID:            "admin-id01",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -318,7 +318,7 @@ func TestAdministrator_Map(t *testing.T) {
 				"admin-id02": {
 					Administrator: types.Administrator{
 						ID:            "admin-id02",
-						Status:        int32(AdminStatusActivated),
+						Status:        types.AdminStatusActivated,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",

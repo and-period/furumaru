@@ -6,12 +6,7 @@ import (
 )
 
 // MessageType - メッセージ種別
-type MessageType int32
-
-const (
-	MessageTypeUnknown      MessageType = 0
-	MessageTypeNotification MessageType = 1 // お知らせ
-)
+type MessageType types.MessageType
 
 type Message struct {
 	types.Message
@@ -22,14 +17,14 @@ type Messages []*Message
 func NewMessageType(typ entity.MessageType) MessageType {
 	switch typ {
 	case entity.MessageTypeNotification:
-		return MessageTypeNotification
+		return MessageType(types.MessageTypeNotification)
 	default:
-		return MessageTypeUnknown
+		return MessageType(types.MessageTypeUnknown)
 	}
 }
 
-func (t MessageType) Response() int32 {
-	return int32(t)
+func (t MessageType) Response() types.MessageType {
+	return types.MessageType(t)
 }
 
 func NewMessage(message *entity.Message) *Message {

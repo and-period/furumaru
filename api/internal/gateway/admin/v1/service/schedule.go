@@ -6,36 +6,27 @@ import (
 )
 
 // ScheduleStatus - 開催状況
-type ScheduleStatus int32
-
-const (
-	ScheduleStatusUnknown    ScheduleStatus = 0
-	ScheduleStatusPrivate    ScheduleStatus = 1 // 非公開
-	ScheduleStatusInProgress ScheduleStatus = 2 // 管理者承認前
-	ScheduleStatusWaiting    ScheduleStatus = 3 // 開催前
-	ScheduleStatusLive       ScheduleStatus = 4 // 開催中
-	ScheduleStatusClosed     ScheduleStatus = 5 // 開催終了
-)
+type ScheduleStatus types.ScheduleStatus
 
 func NewScheduleStatus(status entity.ScheduleStatus) ScheduleStatus {
 	switch status {
 	case entity.ScheduleStatusPrivate:
-		return ScheduleStatusPrivate
+		return ScheduleStatus(types.ScheduleStatusPrivate)
 	case entity.ScheduleStatusInProgress:
-		return ScheduleStatusInProgress
+		return ScheduleStatus(types.ScheduleStatusInProgress)
 	case entity.ScheduleStatusWaiting:
-		return ScheduleStatusWaiting
+		return ScheduleStatus(types.ScheduleStatusWaiting)
 	case entity.ScheduleStatusLive:
-		return ScheduleStatusLive
+		return ScheduleStatus(types.ScheduleStatusLive)
 	case entity.ScheduleStatusClosed:
-		return ScheduleStatusClosed
+		return ScheduleStatus(types.ScheduleStatusClosed)
 	default:
-		return ScheduleStatusUnknown
+		return ScheduleStatus(types.ScheduleStatusUnknown)
 	}
 }
 
-func (s ScheduleStatus) Response() int32 {
-	return int32(s)
+func (s ScheduleStatus) Response() types.ScheduleStatus {
+	return types.ScheduleStatus(s)
 }
 
 type Schedule struct {

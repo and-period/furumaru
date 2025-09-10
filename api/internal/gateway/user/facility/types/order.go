@@ -1,12 +1,34 @@
 package types
 
+// OrderType - 注文種別
+type OrderType int32
+
+const (
+	OrderTypeUnknown    OrderType = 0
+	OrderTypeProduct    OrderType = 1 // 商品
+	OrderTypeExperience OrderType = 2 // 体験
+)
+
+// OrderStatus - 注文ステータス
+type OrderStatus int32
+
+const (
+	OrderStatusUnknown   OrderStatus = 0
+	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
+	OrderStatusPreparing OrderStatus = 2 // 発送対応中
+	OrderStatusCompleted OrderStatus = 3 // 完了
+	OrderStatusCanceled  OrderStatus = 4 // キャンセル
+	OrderStatusRefunded  OrderStatus = 5 // 返金
+	OrderStatusFailed    OrderStatus = 6 // 失敗
+)
+
 // Order - 注文履歴情報
 type Order struct {
 	ID             string        `json:"id"`             // 注文履歴ID
 	CoordinatorID  string        `json:"coordinatorId"`  // コーディネータID
 	PromotionID    string        `json:"promotionId"`    // プロモーションID
-	Type           int32         `json:"type"`           // 注文種別
-	Status         int32         `json:"status"`         // 注文ステータス
+	Type           OrderType     `json:"type"`           // 注文種別
+	Status         OrderStatus   `json:"status"`         // 注文ステータス
 	PickupAt       int64         `json:"pickupAt"`       // 受け取り日時
 	PickupLocation string        `json:"pickupLocation"` // 受け取り場所
 	Payment        *OrderPayment `json:"payment"`        // 支払い情報
@@ -16,24 +38,24 @@ type Order struct {
 
 // OrderPayment - 支払い情報
 type OrderPayment struct {
-	TransactionID string `json:"transactionId"` // 取引ID
-	MethodType    int32  `json:"methodType"`    // 決済手段種別
-	Status        int32  `json:"status"`        // 支払い状況
-	Subtotal      int64  `json:"subtotal"`      // 購入金額(税込)
-	Discount      int64  `json:"discount"`      // 割引金額(税込)
-	ShippingFee   int64  `json:"shippingFee"`   // 配送手数料(税込)
-	Total         int64  `json:"total"`         // 合計金額(税込)
-	OrderedAt     int64  `json:"orderedAt"`     // 注文日時
-	PaidAt        int64  `json:"paidAt"`        // 支払日時
+	TransactionID string            `json:"transactionId"` // 取引ID
+	MethodType    PaymentMethodType `json:"methodType"`    // 決済手段種別
+	Status        PaymentStatus     `json:"status"`        // 支払い状況
+	Subtotal      int64             `json:"subtotal"`      // 購入金額(税込)
+	Discount      int64             `json:"discount"`      // 割引金額(税込)
+	ShippingFee   int64             `json:"shippingFee"`   // 配送手数料(税込)
+	Total         int64             `json:"total"`         // 合計金額(税込)
+	OrderedAt     int64             `json:"orderedAt"`     // 注文日時
+	PaidAt        int64             `json:"paidAt"`        // 支払日時
 }
 
 // OrderRefund - 注文キャンセル情報
 type OrderRefund struct {
-	Total      int64  `json:"total"`      // 返金金額
-	Type       int32  `json:"type"`       // 注文キャンセル種別
-	Reason     string `json:"reason"`     // 注文キャンセル理由
-	Canceled   bool   `json:"canceled"`   // 注文キャンセルフラグ
-	CanceledAt int64  `json:"canceledAt"` // 注文キャンセル日時
+	Total      int64      `json:"total"`      // 返金金額
+	Type       RefundType `json:"type"`       // 注文キャンセル種別
+	Reason     string     `json:"reason"`     // 注文キャンセル理由
+	Canceled   bool       `json:"canceled"`   // 注文キャンセルフラグ
+	CanceledAt int64      `json:"canceledAt"` // 注文キャンセル日時
 }
 
 // OrderItem - 注文商品情報

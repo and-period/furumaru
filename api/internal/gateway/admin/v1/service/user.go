@@ -9,15 +9,7 @@ import (
 )
 
 // UserStatus - 購入者の状態
-type UserStatus int32
-
-const (
-	UserStatusUnknown     UserStatus = 0
-	UserStatusGuest       UserStatus = 1 // 未登録
-	UserStatusProvisional UserStatus = 2 // 仮登録
-	UserStatusVerified    UserStatus = 3 // 認証済み
-	UserStatusDeactivated UserStatus = 4 // 無効
-)
+type UserStatus types.UserStatus
 
 type User struct {
 	types.User
@@ -35,20 +27,20 @@ type UsersToList []*UserToList
 func NewUserStatus(status uentity.UserStatus) UserStatus {
 	switch status {
 	case uentity.UserStatusGuest:
-		return UserStatusGuest
+		return UserStatus(types.UserStatusGuest)
 	case uentity.UserStatusProvisional:
-		return UserStatusProvisional
+		return UserStatus(types.UserStatusProvisional)
 	case uentity.UserStatusVerified:
-		return UserStatusVerified
+		return UserStatus(types.UserStatusVerified)
 	case uentity.UserStatusDeactivated:
-		return UserStatusDeactivated
+		return UserStatus(types.UserStatusDeactivated)
 	default:
-		return UserStatusUnknown
+		return UserStatus(types.UserStatusUnknown)
 	}
 }
 
-func (s UserStatus) Response() int32 {
-	return int32(s)
+func (s UserStatus) Response() types.UserStatus {
+	return types.UserStatus(s)
 }
 
 func NewUser(user *uentity.User, address *uentity.Address) *User {

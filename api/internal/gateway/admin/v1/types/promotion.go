@@ -1,23 +1,53 @@
 package types
 
+// PromotionStatus - プロモーションの状態
+type PromotionStatus int32
+
+const (
+	PromotionStatusUnknown  PromotionStatus = 0
+	PromotionStatusPrivate  PromotionStatus = 1 // 非公開
+	PromotionStatusWaiting  PromotionStatus = 2 // 利用開始前
+	PromotionStatusEnabled  PromotionStatus = 3 // 利用可能
+	PromotionStatusFinished PromotionStatus = 4 // 利用終了
+)
+
+// DiscountType - 割引計算方法
+type DiscountType int32
+
+const (
+	DiscountTypeUnknown      DiscountType = 0
+	DiscountTypeAmount       DiscountType = 1 // 固定額(円)
+	DiscountTypeRate         DiscountType = 2 // 料率計算(%)
+	DiscountTypeFreeShipping DiscountType = 3 // 送料無料
+)
+
+// PromotionTargetType - プロモーションの対象
+type PromotionTargetType int32
+
+const (
+	PromotionTargetTypeUnknown      PromotionTargetType = 0
+	PromotionTargetTypeAllShop      PromotionTargetType = 1 // すべての店舗
+	PromotionTargetTypeSpecificShop PromotionTargetType = 2 // 特定の店舗のみ
+)
+
 // Promotion - プロモーション情報
 type Promotion struct {
-	ID           string `json:"id"`           // プロモーションID
-	ShopID       string `json:"shopId"`       // 店舗ID
-	Title        string `json:"title"`        // タイトル
-	Description  string `json:"description"`  // 詳細説明
-	Status       int32  `json:"status"`       // ステータス
-	Public       bool   `json:"public"`       // 公開フラグ
-	TargetType   int32  `json:"targetType"`   // 対象商品
-	DiscountType int32  `json:"discountType"` // 割引計算方法
-	DiscountRate int64  `json:"discountRate"` // 割引額(%/円)
-	Code         string `json:"code"`         // クーポンコード
-	StartAt      int64  `json:"startAt"`      // クーポン使用可能日時(開始)
-	EndAt        int64  `json:"endAt"`        // クーポン使用可能日時(終了)
-	UsedCount    int64  `json:"usedCount"`    // 使用回数
-	UsedAmount   int64  `json:"usedAmount"`   // 使用による割引合計額
-	CreatedAt    int64  `json:"createdAt"`    // 登録日時
-	UpdatedAt    int64  `json:"updatedAt"`    // 更新日時
+	ID           string              `json:"id"`           // プロモーションID
+	ShopID       string              `json:"shopId"`       // 店舗ID
+	Title        string              `json:"title"`        // タイトル
+	Description  string              `json:"description"`  // 詳細説明
+	Status       PromotionStatus     `json:"status"`       // ステータス
+	Public       bool                `json:"public"`       // 公開フラグ
+	TargetType   PromotionTargetType `json:"targetType"`   // 対象商品
+	DiscountType DiscountType        `json:"discountType"` // 割引計算方法
+	DiscountRate int64               `json:"discountRate"` // 割引額(%/円)
+	Code         string              `json:"code"`         // クーポンコード
+	StartAt      int64               `json:"startAt"`      // クーポン使用可能日時(開始)
+	EndAt        int64               `json:"endAt"`        // クーポン使用可能日時(終了)
+	UsedCount    int64               `json:"usedCount"`    // 使用回数
+	UsedAmount   int64               `json:"usedAmount"`   // 使用による割引合計額
+	CreatedAt    int64               `json:"createdAt"`    // 登録日時
+	UpdatedAt    int64               `json:"updatedAt"`    // 更新日時
 }
 
 type CreatePromotionRequest struct {

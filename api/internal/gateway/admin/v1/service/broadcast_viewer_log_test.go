@@ -25,27 +25,27 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 			name:    "second",
 			request: "second",
 			want: want{
-				interval:    BroadcastViewerLogIntervalSecond,
+				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalSecond),
 				duration:    time.Second,
-				mediaEntity: entity.AggregateBroadcastViewerLogIntervalSecond,
+				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalSecond),
 			},
 		},
 		{
 			name:    "minute",
 			request: "minute",
 			want: want{
-				interval:    BroadcastViewerLogIntervalMinute,
+				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalMinute),
 				duration:    time.Minute,
-				mediaEntity: entity.AggregateBroadcastViewerLogIntervalMinute,
+				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalMinute),
 			},
 		},
 		{
 			name:    "hour",
 			request: "hour",
 			want: want{
-				interval:    BroadcastViewerLogIntervalHour,
+				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalHour),
 				duration:    time.Hour,
-				mediaEntity: entity.AggregateBroadcastViewerLogIntervalHour,
+				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalHour),
 			},
 		},
 		{
@@ -60,7 +60,7 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewBroadcastViewerLogIntervalFromRequest(tt.request)
+			actual := NewBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalFromRequest)(tt.request)
 			assert.Equal(t, tt.want.interval, actual)
 			assert.Equal(t, tt.want.duration, actual.Duration())
 			assert.Equal(t, tt.want.mediaEntity, actual.MediaEntity())
@@ -150,7 +150,7 @@ func TestBroadcastViewerLogs(t *testing.T) {
 			name:     "success",
 			startAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 			endAt:    time.Date(2021, 1, 1, 0, 2, 0, 0, time.UTC),
-			interval: BroadcastViewerLogIntervalMinute,
+			interval: BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalMinute),
 			aggregates: entity.AggregatedBroadcastViewerLogs{
 				{
 					BroadcastID: "broadcast-id",

@@ -1,5 +1,14 @@
 package types
 
+// ExperienceReviewReactionType - 体験レビューのリアクション種別
+type ExperienceReviewReactionType int32
+
+const (
+	ExperienceReviewReactionTypeUnknown ExperienceReviewReactionType = 0
+	ExperienceReviewReactionTypeLike    ExperienceReviewReactionType = 1 // いいね
+	ExperienceReviewReactionTypeDislike ExperienceReviewReactionType = 2 // いまいち
+)
+
 // ExperienceReview - 体験レビュー
 type ExperienceReview struct {
 	ID           string `json:"id"`           // 体験レビューID
@@ -18,8 +27,8 @@ type ExperienceReview struct {
 
 // ExperienceReviewReaction - 体験レビューのリアクション
 type ExperienceReviewReaction struct {
-	ReviewID     string `json:"reviewId"`     // 体験レビューID
-	ReactionType int32  `json:"reactionType"` // リアクションタイプ
+	ReviewID     string                       `json:"reviewId"`     // 体験レビューID
+	ReactionType ExperienceReviewReactionType `json:"reactionType"` // リアクションタイプ
 }
 
 type CreateExperienceReviewRequest struct {

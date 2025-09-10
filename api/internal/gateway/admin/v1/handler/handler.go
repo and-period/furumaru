@@ -14,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
@@ -382,17 +383,17 @@ func (h *handler) setShop(ctx *gin.Context, auth *service.Auth) error {
 	if auth == nil {
 		return nil
 	}
-	switch service.AdminType(auth.Type) {
-	case service.AdminTypeAdministrator:
+	switch auth.Type {
+	case types.AdminTypeAdministrator:
 		return nil // 管理者は店舗を指定しない
-	case service.AdminTypeCoordinator:
+	case types.AdminTypeCoordinator:
 		shop, err := h.getShopByCoordinatorID(ctx, auth.AdminID)
 		if err != nil {
 			return err
 		}
 		ctx.Request.Header.Set("Shopid", shop.ID)
 		return nil
-	case service.AdminTypeProducer:
+	case types.AdminTypeProducer:
 		in := &store.ListShopsInput{
 			ProducerIDs: []string{auth.AdminID},
 		}
@@ -447,10 +448,10 @@ type filterAccessParams struct {
 }
 
 func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
-	switch getAdminType(ctx) {
-	case service.AdminTypeAdministrator:
+	switch getAdminType(ctx).Response() {
+	case types.AdminTypeAdministrator:
 		return nil
-	case service.AdminTypeCoordinator:
+	case types.AdminTypeCoordinator:
 		if params == nil || params.coordinator == nil {
 			return nil
 		}
@@ -458,7 +459,7 @@ func filterAccess(ctx *gin.Context, params *filterAccessParams) error {
 			return err
 		}
 		return fmt.Errorf("handler: this coordinator is unauthenticated: %w", exception.ErrForbidden)
-	case service.AdminTypeProducer:
+	case types.AdminTypeProducer:
 		if params == nil || params.producer == nil {
 			return nil
 		}

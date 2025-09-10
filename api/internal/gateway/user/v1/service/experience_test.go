@@ -20,32 +20,32 @@ func TestExperienceStatus(t *testing.T) {
 		{
 			name:   "private",
 			status: entity.ExperienceStatusPrivate,
-			expect: ExperienceStatusUnknown,
+			expect: ExperienceStatus(types.ExperienceStatusUnknown),
 		},
 		{
 			name:   "waiting",
 			status: entity.ExperienceStatusWaiting,
-			expect: ExperienceStatusWaiting,
+			expect: ExperienceStatus(types.ExperienceStatusWaiting),
 		},
 		{
 			name:   "accepting",
 			status: entity.ExperienceStatusAccepting,
-			expect: ExperienceStatusAccepting,
+			expect: ExperienceStatus(types.ExperienceStatusAccepting),
 		},
 		{
 			name:   "sold out",
 			status: entity.ExperienceStatusSoldOut,
-			expect: ExperienceStatusSoldOut,
+			expect: ExperienceStatus(types.ExperienceStatusSoldOut),
 		},
 		{
 			name:   "finished",
 			status: entity.ExperienceStatusFinished,
-			expect: ExperienceStatusFinished,
+			expect: ExperienceStatus(types.ExperienceStatusFinished),
 		},
 		{
 			name:   "unknown",
 			status: entity.ExperienceStatus(-1),
-			expect: ExperienceStatusUnknown,
+			expect: ExperienceStatus(types.ExperienceStatusUnknown),
 		},
 	}
 
@@ -68,27 +68,27 @@ func TestExperienceStatus_Response(t *testing.T) {
 	}{
 		{
 			name:   "unknown",
-			status: ExperienceStatusUnknown,
+			status: ExperienceStatus(types.ExperienceStatusUnknown),
 			expect: 0,
 		},
 		{
 			name:   "waiting",
-			status: ExperienceStatusWaiting,
+			status: ExperienceStatus(types.ExperienceStatusWaiting),
 			expect: 1,
 		},
 		{
 			name:   "accepting",
-			status: ExperienceStatusAccepting,
+			status: ExperienceStatus(types.ExperienceStatusAccepting),
 			expect: 2,
 		},
 		{
 			name:   "sold out",
-			status: ExperienceStatusSoldOut,
+			status: ExperienceStatus(types.ExperienceStatusSoldOut),
 			expect: 3,
 		},
 		{
 			name:   "finished",
-			status: ExperienceStatusFinished,
+			status: ExperienceStatus(types.ExperienceStatusFinished),
 			expect: 4,
 		},
 	}
@@ -124,7 +124,7 @@ func TestExperience_Calc(t *testing.T) {
 					ExperienceTypeID: "experience-type-id",
 					Title:            "じゃがいも収穫",
 					Description:      "じゃがいもを収穫する体験です。",
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					ThumbnailURL:     "http://example.com/thumbnail.png",
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -177,8 +177,8 @@ func TestExperience_Calc(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-						Status:       int32(PromotionStatusEnabled),
-						DiscountType: DiscountTypeAmount.Response(),
+						Status:       types.PromotionStatusEnabled,
+						DiscountType: DiscountType(types.DiscountTypeAmount).Response(),
 						DiscountRate: 200,
 						Code:         "code0001",
 						StartAt:      1640962800,
@@ -199,7 +199,7 @@ func TestExperience_Calc(t *testing.T) {
 					ExperienceTypeID: "experience-type-id",
 					Title:            "じゃがいも収穫",
 					Description:      "じゃがいもを収穫する体験です。",
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					ThumbnailURL:     "http://example.com/thumbnail.png",
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -252,8 +252,8 @@ func TestExperience_Calc(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-						Status:       int32(PromotionStatusEnabled),
-						DiscountType: DiscountTypeAmount.Response(),
+						Status:       types.PromotionStatusEnabled,
+						DiscountType: DiscountType(types.DiscountTypeAmount).Response(),
 						DiscountRate: 4000,
 						Code:         "code0001",
 						StartAt:      1640962800,
@@ -274,7 +274,7 @@ func TestExperience_Calc(t *testing.T) {
 					ExperienceTypeID: "experience-type-id",
 					Title:            "じゃがいも収穫",
 					Description:      "じゃがいもを収穫する体験です。",
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					ThumbnailURL:     "http://example.com/thumbnail.png",
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -327,8 +327,8 @@ func TestExperience_Calc(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-						Status:       int32(PromotionStatusEnabled),
-						DiscountType: DiscountTypeRate.Response(),
+						Status:       types.PromotionStatusEnabled,
+						DiscountType: DiscountType(types.DiscountTypeRate).Response(),
 						DiscountRate: 50,
 						Code:         "code0001",
 						StartAt:      1640962800,
@@ -356,7 +356,7 @@ func TestExperience_Calc(t *testing.T) {
 					ExperienceTypeID: "experience-type-id",
 					Title:            "じゃがいも収穫",
 					Description:      "じゃがいもを収穫する体験です。",
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					ThumbnailURL:     "http://example.com/thumbnail.png",
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -510,7 +510,7 @@ func TestExperiences(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						ThumbnailURL:     "http://example.com/thumbnail.png",
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -617,7 +617,7 @@ func TestExperiences(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						ThumbnailURL:     "http://example.com/thumbnail.png",
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -693,7 +693,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						ThumbnailURL:     "http://example.com/thumbnail.png",
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -734,7 +734,7 @@ func TestExperiences_MapByRevision(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						ThumbnailURL:     "http://example.com/thumbnail.png",
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -798,7 +798,7 @@ func TestExperiences_Response(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						ThumbnailURL:     "http://example.com/thumbnail.png",
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
@@ -837,7 +837,7 @@ func TestExperiences_Response(t *testing.T) {
 					ExperienceTypeID: "experience-type-id",
 					Title:            "じゃがいも収穫",
 					Description:      "じゃがいもを収穫する体験です。",
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					ThumbnailURL:     "http://example.com/thumbnail.png",
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},

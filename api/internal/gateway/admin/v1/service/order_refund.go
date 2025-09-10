@@ -7,13 +7,7 @@ import (
 )
 
 // RefundType - 注文キャンセル種別
-type RefundType int32
-
-const (
-	RefundTypeNone     RefundType = 0 // キャンセルなし
-	RefundTypeCanceled RefundType = 1 // キャンセル
-	RefundTypeRefunded RefundType = 2 // 返金
-)
+type RefundType types.RefundType
 
 type OrderRefund struct {
 	types.OrderRefund
@@ -25,16 +19,16 @@ type OrderRefunds []*OrderRefund
 func NewRefundType(typ entity.RefundType) RefundType {
 	switch typ {
 	case entity.RefundTypeCanceled:
-		return RefundTypeCanceled
+		return RefundType(types.RefundTypeCanceled)
 	case entity.RefundTypeRefunded:
-		return RefundTypeRefunded
+		return RefundType(types.RefundTypeRefunded)
 	default:
-		return RefundTypeNone
+		return RefundType(types.RefundTypeNone)
 	}
 }
 
-func (t RefundType) Response() int32 {
-	return int32(t)
+func (t RefundType) Response() types.RefundType {
+	return types.RefundType(t)
 }
 
 func NewOrderRefund(payment *entity.OrderPayment) *OrderRefund {

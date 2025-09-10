@@ -235,8 +235,8 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 		redirectURL string
 		err         error
 	)
-	switch params.methodType {
-	case service.PaymentMethodTypeCreditCard:
+	switch types.PaymentMethodType(params.methodType) {
+	case types.PaymentMethodTypeCreditCard:
 		if params.creditCard == nil {
 			h.badRequest(ctx, errors.New("handler: credit card is required"))
 			break
@@ -250,47 +250,47 @@ func (h *handler) checkout(ctx *gin.Context, params *checkoutParams) {
 			VerificationValue: params.creditCard.VerificationValue,
 		}
 		redirectURL, err = h.store.CheckoutCreditCard(ctx, in)
-	case service.PaymentMethodTypePayPay:
+	case types.PaymentMethodTypePayPay:
 		in := &store.CheckoutPayPayInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutPayPay(ctx, in)
-	case service.PaymentMethodTypeLinePay:
+	case types.PaymentMethodTypeLinePay:
 		in := &store.CheckoutLinePayInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutLinePay(ctx, in)
-	case service.PaymentMethodTypeMerpay:
+	case types.PaymentMethodTypeMerpay:
 		in := &store.CheckoutMerpayInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutMerpay(ctx, in)
-	case service.PaymentMethodTypeRakutenPay:
+	case types.PaymentMethodTypeRakutenPay:
 		in := &store.CheckoutRakutenPayInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutRakutenPay(ctx, in)
-	case service.PaymentMethodTypeAUPay:
+	case types.PaymentMethodTypeAUPay:
 		in := &store.CheckoutAUPayInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutAUPay(ctx, in)
-	case service.PaymentMethodTypePaidy:
+	case types.PaymentMethodTypePaidy:
 		in := &store.CheckoutPaidyInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutPaidy(ctx, in)
-	case service.PaymentMethodTypeBankTransfer:
+	case types.PaymentMethodTypeBankTransfer:
 		in := &store.CheckoutBankTransferInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutBankTransfer(ctx, in)
-	case service.PaymentMethodTypePayEasy:
+	case types.PaymentMethodTypePayEasy:
 		in := &store.CheckoutPayEasyInput{
 			CheckoutDetail: *params.detail,
 		}
 		redirectURL, err = h.store.CheckoutPayEasy(ctx, in)
-	case service.PaymentMethodTypeFree:
+	case types.PaymentMethodTypeFree:
 		in := &store.CheckoutFreeInput{
 			CheckoutDetail: *params.detail,
 		}

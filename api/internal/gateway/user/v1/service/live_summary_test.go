@@ -23,7 +23,7 @@ func TestLiveSummary(t *testing.T) {
 			schedule: &entity.Schedule{
 				ID:              "schedule-id",
 				CoordinatorID:   "coordinator-id",
-				Status:          entity.ScheduleStatusLive,
+				Status:          entity.ScheduleStatus(types.ScheduleStatusLive),
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
 				ThumbnailURL:    "https://example.com/thumbnail.png",
@@ -86,7 +86,7 @@ func TestLiveSummary(t *testing.T) {
 				LiveSummary: types.LiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
-					Status:        int32(ScheduleStatusLive),
+					Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,
@@ -126,7 +126,7 @@ func TestLiveSummary_Response(t *testing.T) {
 				LiveSummary: types.LiveSummary{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
-					Status:        int32(ScheduleStatusLive),
+					Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,
@@ -145,7 +145,7 @@ func TestLiveSummary_Response(t *testing.T) {
 			expect: &types.LiveSummary{
 				ScheduleID:    "schedule-id",
 				CoordinatorID: "coordinator-id",
-				Status:        int32(ScheduleStatusLive),
+				Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 				Title:         "スケジュールタイトル",
 				ThumbnailURL:  "https://example.com/thumbnail.png",
 				StartAt:       1638284400,
@@ -186,7 +186,7 @@ func TestLiveSummaries(t *testing.T) {
 				{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          entity.ScheduleStatusLive,
+					Status:          entity.ScheduleStatus(types.ScheduleStatusLive),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://example.com/thumbnail.png",
@@ -264,7 +264,7 @@ func TestLiveSummaries(t *testing.T) {
 					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
-						Status:        int32(ScheduleStatusLive),
+						Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
@@ -306,7 +306,7 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
-						Status:        int32(ScheduleStatusLive),
+						Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
@@ -348,7 +348,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 					LiveSummary: types.LiveSummary{
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
-						Status:        int32(ScheduleStatusLive),
+						Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						StartAt:       1638284400,
@@ -369,7 +369,7 @@ func TestLiveSummaries_Response(t *testing.T) {
 				{
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
-					Status:        int32(ScheduleStatusLive),
+					Status:        int32(ScheduleStatus(types.ScheduleStatusLive)),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					StartAt:       1638284400,

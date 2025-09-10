@@ -7,35 +7,10 @@ import (
 )
 
 // PaymentMethodType - 決済手段
-type PaymentMethodType int32
-
-const (
-	PaymentMethodTypeUnknown      PaymentMethodType = 0
-	PaymentMethodTypeCash         PaymentMethodType = 1  // 代引支払い
-	PaymentMethodTypeCreditCard   PaymentMethodType = 2  // クレジットカード決済
-	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済
-	PaymentMethodTypeBankTransfer PaymentMethodType = 4  // 銀行振込決済
-	PaymentMethodTypePayPay       PaymentMethodType = 5  // QR決済（PayPay）
-	PaymentMethodTypeLinePay      PaymentMethodType = 6  // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay       PaymentMethodType = 7  // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
-	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済無し
-	PaymentMethodTypePaidy        PaymentMethodType = 11 // ペイディ（Paidy）
-	PaymentMethodTypePayEasy      PaymentMethodType = 12 // ペイジー（PayEasy）
-)
+type PaymentMethodType types.PaymentMethodType
 
 // PaymentStatus - 支払い状況
-type PaymentStatus int32
-
-const (
-	PaymentStatusUnknown    PaymentStatus = 0
-	PaymentStatusUnpaid     PaymentStatus = 1 // 未支払い
-	PaymentStatusAuthorized PaymentStatus = 2 // オーソリ済み
-	PaymentStatusPaid       PaymentStatus = 3 // 支払い済み
-	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル済み
-	PaymentStatusFailed     PaymentStatus = 5 // 失敗
-)
+type PaymentStatus types.PaymentStatus
 
 type OrderPayment struct {
 	types.OrderPayment
@@ -47,88 +22,88 @@ type OrderPayments []*OrderPayment
 func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 	switch typ {
 	case entity.PaymentMethodTypeCash:
-		return PaymentMethodTypeCash
+		return PaymentMethodType(types.PaymentMethodTypeCash)
 	case entity.PaymentMethodTypeCreditCard:
-		return PaymentMethodTypeCreditCard
+		return PaymentMethodType(types.PaymentMethodTypeCreditCard)
 	case entity.PaymentMethodTypeKonbini:
-		return PaymentMethodTypeKonbini
+		return PaymentMethodType(types.PaymentMethodTypeKonbini)
 	case entity.PaymentMethodTypeBankTransfer:
-		return PaymentMethodTypeBankTransfer
+		return PaymentMethodType(types.PaymentMethodTypeBankTransfer)
 	case entity.PaymentMethodTypePayPay:
-		return PaymentMethodTypePayPay
+		return PaymentMethodType(types.PaymentMethodTypePayPay)
 	case entity.PaymentMethodTypeLinePay:
-		return PaymentMethodTypeLinePay
+		return PaymentMethodType(types.PaymentMethodTypeLinePay)
 	case entity.PaymentMethodTypeMerpay:
-		return PaymentMethodTypeMerpay
+		return PaymentMethodType(types.PaymentMethodTypeMerpay)
 	case entity.PaymentMethodTypeRakutenPay:
-		return PaymentMethodTypeRakutenPay
+		return PaymentMethodType(types.PaymentMethodTypeRakutenPay)
 	case entity.PaymentMethodTypeAUPay:
-		return PaymentMethodTypeAUPay
+		return PaymentMethodType(types.PaymentMethodTypeAUPay)
 	case entity.PaymentMethodTypePaidy:
-		return PaymentMethodTypePaidy
+		return PaymentMethodType(types.PaymentMethodTypePaidy)
 	case entity.PaymentMethodTypePayEasy:
-		return PaymentMethodTypePayEasy
+		return PaymentMethodType(types.PaymentMethodTypePayEasy)
 	case entity.PaymentMethodTypeNone:
-		return PaymentMethodTypeNone
+		return PaymentMethodType(types.PaymentMethodTypeNone)
 	default:
-		return PaymentMethodTypeUnknown
+		return PaymentMethodType(types.PaymentMethodTypeUnknown)
 	}
 }
 
 func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
-	switch t {
-	case PaymentMethodTypeCash:
+	switch types.PaymentMethodType(t) {
+	case types.PaymentMethodTypeCash:
 		return entity.PaymentMethodTypeCash
-	case PaymentMethodTypeCreditCard:
+	case types.PaymentMethodTypeCreditCard:
 		return entity.PaymentMethodTypeCreditCard
-	case PaymentMethodTypeKonbini:
+	case types.PaymentMethodTypeKonbini:
 		return entity.PaymentMethodTypeKonbini
-	case PaymentMethodTypeBankTransfer:
+	case types.PaymentMethodTypeBankTransfer:
 		return entity.PaymentMethodTypeBankTransfer
-	case PaymentMethodTypePayPay:
+	case types.PaymentMethodTypePayPay:
 		return entity.PaymentMethodTypePayPay
-	case PaymentMethodTypeLinePay:
+	case types.PaymentMethodTypeLinePay:
 		return entity.PaymentMethodTypeLinePay
-	case PaymentMethodTypeMerpay:
+	case types.PaymentMethodTypeMerpay:
 		return entity.PaymentMethodTypeMerpay
-	case PaymentMethodTypeRakutenPay:
+	case types.PaymentMethodTypeRakutenPay:
 		return entity.PaymentMethodTypeRakutenPay
-	case PaymentMethodTypeAUPay:
+	case types.PaymentMethodTypeAUPay:
 		return entity.PaymentMethodTypeAUPay
-	case PaymentMethodTypePaidy:
+	case types.PaymentMethodTypePaidy:
 		return entity.PaymentMethodTypePaidy
-	case PaymentMethodTypePayEasy:
+	case types.PaymentMethodTypePayEasy:
 		return entity.PaymentMethodTypePayEasy
-	case PaymentMethodTypeNone:
+	case types.PaymentMethodTypeNone:
 		return entity.PaymentMethodTypeNone
 	default:
 		return entity.PaymentMethodTypeUnknown
 	}
 }
 
-func (t PaymentMethodType) Response() int32 {
-	return int32(t)
+func (t PaymentMethodType) Response() types.PaymentMethodType {
+	return types.PaymentMethodType(t)
 }
 
 func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
 	switch status {
 	case entity.PaymentStatusPending:
-		return PaymentStatusUnpaid
+		return PaymentStatus(types.PaymentStatusUnpaid)
 	case entity.PaymentStatusAuthorized:
-		return PaymentStatusAuthorized
+		return PaymentStatus(types.PaymentStatusAuthorized)
 	case entity.PaymentStatusCaptured:
-		return PaymentStatusPaid
+		return PaymentStatus(types.PaymentStatusPaid)
 	case entity.PaymentStatusCanceled, entity.PaymentStatusRefunded:
-		return PaymentStatusCanceled
+		return PaymentStatus(types.PaymentStatusCanceled)
 	case entity.PaymentStatusFailed, entity.PaymentStatusExpired:
-		return PaymentStatusFailed
+		return PaymentStatus(types.PaymentStatusFailed)
 	default:
-		return PaymentStatusUnknown
+		return PaymentStatus(types.PaymentStatusUnknown)
 	}
 }
 
-func (s PaymentStatus) Response() int32 {
-	return int32(s)
+func (s PaymentStatus) Response() types.PaymentStatus {
+	return types.PaymentStatus(s)
 }
 
 func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayment {

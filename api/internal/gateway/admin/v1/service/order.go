@@ -8,38 +8,13 @@ import (
 )
 
 // OrderType - 注文種別
-type OrderType int32
-
-const (
-	OrderTypeUnknown    OrderType = 0
-	OrderTypeProduct    OrderType = 1 // 商品
-	OrderTypeExperience OrderType = 2 // 体験
-)
+type OrderType types.OrderType
 
 // OrderStatus - 注文ステータス
-type OrderStatus int32
-
-const (
-	OrderStatusUnknown   OrderStatus = 0
-	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
-	OrderStatusWaiting   OrderStatus = 2 // 受注待ち
-	OrderStatusPreparing OrderStatus = 3 // 発送準備中
-	OrderStatusShipped   OrderStatus = 4 // 発送完了
-	OrderStatusCompleted OrderStatus = 5 // 完了
-	OrderStatusCanceled  OrderStatus = 6 // キャンセル
-	OrderStatusRefunded  OrderStatus = 7 // 返金
-	OrderStatusFailed    OrderStatus = 8 // 失敗
-)
+type OrderStatus types.OrderStatus
 
 // OrderShippingType - 発送方法
-type OrderShippingType int32
-
-const (
-	OrderShippingTypeUnknown  OrderShippingType = 0
-	OrderShippingTypeNone     OrderShippingType = 1 // 発送なし
-	OrderShippingTypeStandard OrderShippingType = 2 // 通常配送
-	OrderShippingTypePickup   OrderShippingType = 3 // 店舗受取
-)
+type OrderShippingType types.OrderShippingType
 
 type Order struct {
 	types.Order
@@ -50,82 +25,82 @@ type Orders []*Order
 func NewOrderType(typ entity.OrderType) OrderType {
 	switch typ {
 	case entity.OrderTypeProduct:
-		return OrderTypeProduct
+		return OrderType(types.OrderTypeProduct)
 	case entity.OrderTypeExperience:
-		return OrderTypeExperience
+		return OrderType(types.OrderTypeExperience)
 	default:
-		return OrderTypeUnknown
+		return OrderType(types.OrderTypeUnknown)
 	}
 }
 
 func NewOrderTypeFromString(typ string) OrderType {
 	switch typ {
 	case "product":
-		return OrderTypeProduct
+		return OrderType(types.OrderTypeProduct)
 	case "experience":
-		return OrderTypeExperience
+		return OrderType(types.OrderTypeExperience)
 	default:
-		return OrderTypeUnknown
+		return OrderType(types.OrderTypeUnknown)
 	}
 }
 
 func (t OrderType) StoreEntity() entity.OrderType {
-	switch t {
-	case OrderTypeProduct:
+	switch types.OrderType(t) {
+	case types.OrderTypeProduct:
 		return entity.OrderTypeProduct
-	case OrderTypeExperience:
+	case types.OrderTypeExperience:
 		return entity.OrderTypeExperience
 	default:
 		return entity.OrderTypeUnknown
 	}
 }
 
-func (t OrderType) Response() int32 {
-	return int32(t)
+func (t OrderType) Response() types.OrderType {
+	return types.OrderType(t)
 }
 
 func NewOrderStatus(status entity.OrderStatus) OrderStatus {
 	switch status {
 	case entity.OrderStatusUnpaid:
-		return OrderStatusUnpaid
+		return OrderStatus(types.OrderStatusUnpaid)
 	case entity.OrderStatusWaiting:
-		return OrderStatusWaiting
+		return OrderStatus(types.OrderStatusWaiting)
 	case entity.OrderStatusPreparing:
-		return OrderStatusPreparing
+		return OrderStatus(types.OrderStatusPreparing)
 	case entity.OrderStatusShipped:
-		return OrderStatusShipped
+		return OrderStatus(types.OrderStatusShipped)
 	case entity.OrderStatusCompleted:
-		return OrderStatusCompleted
+		return OrderStatus(types.OrderStatusCompleted)
 	case entity.OrderStatusCanceled:
-		return OrderStatusCanceled
+		return OrderStatus(types.OrderStatusCanceled)
 	case entity.OrderStatusRefunded:
-		return OrderStatusRefunded
+		return OrderStatus(types.OrderStatusRefunded)
 	case entity.OrderStatusFailed:
-		return OrderStatusFailed
+		return OrderStatus(types.OrderStatusFailed)
 	default:
-		return OrderStatusUnknown
+		return OrderStatus(types.OrderStatusUnknown)
 	}
 }
 
-func (s OrderStatus) Response() int32 {
-	return int32(s)
+func (s OrderStatus) Response() types.OrderStatus {
+	return types.OrderStatus(s)
 }
 
 func NewOrderShippingType(typ entity.OrderShippingType) OrderShippingType {
 	switch typ {
 	case entity.OrderShippingTypeNone:
-		return OrderShippingTypeNone
+		return OrderShippingType(types.OrderShippingTypeNone)
 	case entity.OrderShippingTypeStandard:
-		return OrderShippingTypeStandard
+		return OrderShippingType(types.OrderShippingTypeStandard)
 	case entity.OrderShippingTypePickup:
-		return OrderShippingTypePickup
+		return OrderShippingType(types.OrderShippingTypePickup)
 	default:
-		return OrderShippingTypeUnknown
+		return OrderShippingType(types.OrderShippingTypeUnknown)
 	}
 }
 
-func (t OrderShippingType) Response() int32 {
-	return int32(t)
+func (t OrderShippingType) Response() types.OrderShippingType {
+	return types.OrderShippingType(t)
 }
 
 func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {

@@ -3,6 +3,7 @@ package service
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -12,27 +13,27 @@ func TestShippingSize(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingSize
-		expect ShippingSize
+		expect types.ShippingSize
 	}{
 		{
 			name:   "size 60",
 			status: entity.ShippingSize60,
-			expect: ShippingSize60,
+			expect: types.ShippingSize60,
 		},
 		{
 			name:   "size 80",
 			status: entity.ShippingSize80,
-			expect: ShippingSize80,
+			expect: types.ShippingSize80,
 		},
 		{
 			name:   "size 100",
 			status: entity.ShippingSize100,
-			expect: ShippingSize100,
+			expect: types.ShippingSize100,
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingSizeUnknown,
-			expect: ShippingSizeUnknown,
+			expect: types.ShippingSizeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -52,7 +53,7 @@ func TestShippingSize_Response(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			status: ShippingSize60,
+			status: ShippingSize(types.ShippingSize60),
 			expect: 1,
 		},
 	}
@@ -69,22 +70,22 @@ func TestShippingType(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingType
-		expect ShippingType
+		expect types.ShippingType
 	}{
 		{
 			name:   "normal",
 			status: entity.ShippingTypeNormal,
-			expect: ShippingTypeNormal,
+			expect: types.ShippingTypeNormal,
 		},
 		{
 			name:   "frozen",
 			status: entity.ShippingTypeFrozen,
-			expect: ShippingTypeFrozen,
+			expect: types.ShippingTypeFrozen,
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingTypeUnknown,
-			expect: ShippingTypeUnknown,
+			expect: types.ShippingTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -104,7 +105,7 @@ func TestShippingType_Response(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			status: ShippingTypeNormal,
+			status: ShippingType(types.ShippingTypeNormal),
 			expect: 1,
 		},
 	}

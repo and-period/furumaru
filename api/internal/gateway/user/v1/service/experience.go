@@ -8,35 +8,27 @@ import (
 )
 
 // ExperienceStatus - 体験受付状況
-type ExperienceStatus int32
-
-const (
-	ExperienceStatusUnknown   ExperienceStatus = 0
-	ExperienceStatusWaiting   ExperienceStatus = 1 // 販売開始前
-	ExperienceStatusAccepting ExperienceStatus = 2 // 体験受付中
-	ExperienceStatusSoldOut   ExperienceStatus = 3 // 体験受付終了
-	ExperienceStatusFinished  ExperienceStatus = 4 // 販売終了
-)
+type ExperienceStatus types.ExperienceStatus
 
 func NewExperienceStatus(status entity.ExperienceStatus) ExperienceStatus {
 	switch status {
 	case entity.ExperienceStatusPrivate:
-		return ExperienceStatusUnknown
+		return ExperienceStatus(types.ExperienceStatusUnknown)
 	case entity.ExperienceStatusWaiting:
-		return ExperienceStatusWaiting
+		return ExperienceStatus(types.ExperienceStatusWaiting)
 	case entity.ExperienceStatusAccepting:
-		return ExperienceStatusAccepting
+		return ExperienceStatus(types.ExperienceStatusAccepting)
 	case entity.ExperienceStatusSoldOut:
-		return ExperienceStatusSoldOut
+		return ExperienceStatus(types.ExperienceStatusSoldOut)
 	case entity.ExperienceStatusFinished:
-		return ExperienceStatusFinished
+		return ExperienceStatus(types.ExperienceStatusFinished)
 	default:
-		return ExperienceStatusUnknown
+		return ExperienceStatus(types.ExperienceStatusUnknown)
 	}
 }
 
-func (s ExperienceStatus) Response() int32 {
-	return int32(s)
+func (s ExperienceStatus) Response() types.ExperienceStatus {
+	return types.ExperienceStatus(s)
 }
 
 type Experience struct {
@@ -124,13 +116,13 @@ func (e *Experience) Calc(params *CalcExperienceParams) (subtotal int64, discoun
 	}
 
 	switch DiscountType(params.Promotion.DiscountType) {
-	case DiscountTypeAmount:
+	case DiscountType(types.DiscountTypeAmount):
 		if subtotal < params.Promotion.DiscountRate {
 			discount = subtotal
 		} else {
 			discount = params.Promotion.DiscountRate
 		}
-	case DiscountTypeRate:
+	case DiscountType(types.DiscountTypeRate):
 		if params.Promotion.DiscountRate <= 0 {
 			return
 		}

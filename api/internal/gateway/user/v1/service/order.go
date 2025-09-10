@@ -7,26 +7,10 @@ import (
 )
 
 // OrderType - 注文種別
-type OrderType int32
-
-const (
-	OrderTypeUnknown    OrderType = 0
-	OrderTypeProduct    OrderType = 1 // 商品
-	OrderTypeExperience OrderType = 2 // 体験
-)
+type OrderType types.OrderType
 
 // OrderStatus - 注文ステータス
-type OrderStatus int32
-
-const (
-	OrderStatusUnknown   OrderStatus = 0
-	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
-	OrderStatusPreparing OrderStatus = 2 // 発送対応中
-	OrderStatusCompleted OrderStatus = 3 // 完了
-	OrderStatusCanceled  OrderStatus = 4 // キャンセル
-	OrderStatusRefunded  OrderStatus = 5 // 返金
-	OrderStatusFailed    OrderStatus = 6 // 失敗
-)
+type OrderStatus types.OrderStatus
 
 type Order struct {
 	types.Order
@@ -37,61 +21,61 @@ type Orders []*Order
 func NewOrderType(typ entity.OrderType) OrderType {
 	switch typ {
 	case entity.OrderTypeProduct:
-		return OrderTypeProduct
+		return OrderType(types.OrderTypeProduct)
 	case entity.OrderTypeExperience:
-		return OrderTypeExperience
+		return OrderType(types.OrderTypeExperience)
 	default:
-		return OrderTypeUnknown
+		return OrderType(types.OrderTypeUnknown)
 	}
 }
 
 func NewOrderTypeFromString(typ string) OrderType {
 	switch typ {
 	case "product":
-		return OrderTypeProduct
+		return OrderType(types.OrderTypeProduct)
 	case "experience":
-		return OrderTypeExperience
+		return OrderType(types.OrderTypeExperience)
 	default:
-		return OrderTypeUnknown
+		return OrderType(types.OrderTypeUnknown)
 	}
 }
 
 func (t OrderType) StoreEntity() entity.OrderType {
-	switch t {
-	case OrderTypeProduct:
+	switch types.OrderType(t) {
+	case types.OrderTypeProduct:
 		return entity.OrderTypeProduct
-	case OrderTypeExperience:
+	case types.OrderTypeExperience:
 		return entity.OrderTypeExperience
 	default:
 		return entity.OrderTypeUnknown
 	}
 }
 
-func (t OrderType) Response() int32 {
-	return int32(t)
+func (t OrderType) Response() types.OrderType {
+	return types.OrderType(t)
 }
 
 func NewOrderStatus(status entity.OrderStatus) OrderStatus {
 	switch status {
 	case entity.OrderStatusUnpaid:
-		return OrderStatusUnpaid
+		return OrderStatus(types.OrderStatusUnpaid)
 	case entity.OrderStatusWaiting, entity.OrderStatusPreparing, entity.OrderStatusShipped:
-		return OrderStatusPreparing
+		return OrderStatus(types.OrderStatusPreparing)
 	case entity.OrderStatusCompleted:
-		return OrderStatusCompleted
+		return OrderStatus(types.OrderStatusCompleted)
 	case entity.OrderStatusCanceled:
-		return OrderStatusCanceled
+		return OrderStatus(types.OrderStatusCanceled)
 	case entity.OrderStatusRefunded:
-		return OrderStatusRefunded
+		return OrderStatus(types.OrderStatusRefunded)
 	case entity.OrderStatusFailed:
-		return OrderStatusFailed
+		return OrderStatus(types.OrderStatusFailed)
 	default:
-		return OrderStatusUnknown
+		return OrderStatus(types.OrderStatusUnknown)
 	}
 }
 
-func (s OrderStatus) Response() int32 {
-	return int32(s)
+func (s OrderStatus) Response() types.OrderStatus {
+	return types.OrderStatus(s)
 }
 
 func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {

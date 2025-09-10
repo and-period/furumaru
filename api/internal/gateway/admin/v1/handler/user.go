@@ -58,8 +58,8 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		users service.Users
 		total int64
 	)
-	switch getAdminType(ctx) {
-	case service.AdminTypeAdministrator:
+	switch getAdminType(ctx).Response() {
+	case types.AdminTypeAdministrator:
 		// 管理者の場合、すべての購入者情報を取得する
 		usersIn := &user.ListUsersInput{
 			Limit:       limit,
@@ -84,7 +84,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 			return
 		}
 		users = service.NewUsers(us, addresses.MapByUserID())
-	case service.AdminTypeCoordinator:
+	case types.AdminTypeCoordinator:
 		// コーディネータの場合、注文した購入者のみを取得する
 		in := &store.ListOrderUserIDsInput{
 			ShopID: getShopID(ctx),

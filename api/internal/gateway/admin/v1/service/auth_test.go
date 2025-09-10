@@ -19,20 +19,20 @@ func TestAuthProviderType(t *testing.T) {
 	}{
 		{
 			name:         "google",
-			providerType: entity.AdminAuthProviderTypeGoogle,
-			expect:       AuthProviderTypeGoogle,
+			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeGoogle),
+			expect:       AuthProviderType(types.AuthProviderTypeGoogle),
 			response:     1,
 		},
 		{
 			name:         "line",
-			providerType: entity.AdminAuthProviderTypeLINE,
-			expect:       AuthProviderTypeLINE,
+			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeLINE),
+			expect:       AuthProviderType(types.AuthProviderTypeLINE),
 			response:     2,
 		},
 		{
 			name:         "unknown",
-			providerType: entity.AdminAuthProviderTypeUnknown,
-			expect:       AuthProviderTypeUnknown,
+			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeUnknown),
+			expect:       AuthProviderType(types.AuthProviderTypeUnknown),
 			response:     0,
 		},
 	}
@@ -57,7 +57,7 @@ func TestAuth(t *testing.T) {
 			name: "success",
 			auth: &entity.AdminAuth{
 				AdminID:      "admin-id",
-				Type:         entity.AdminTypeAdministrator,
+				Type:         entity.AdminType(types.AdminTypeAdministrator),
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
@@ -65,7 +65,7 @@ func TestAuth(t *testing.T) {
 			expect: &Auth{
 				Auth: types.Auth{
 					AdminID:      "admin-id",
-					Type:         int32(AdminTypeAdministrator),
+					Type:         types.AdminTypeAdministrator,
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
 					ExpiresIn:    3600,
@@ -94,7 +94,7 @@ func TestAuth_Response(t *testing.T) {
 			auth: &Auth{
 				Auth: types.Auth{
 					AdminID:      "admin-id",
-					Type:         int32(AdminTypeAdministrator),
+					Type:         types.AdminTypeAdministrator,
 					AccessToken:  "access-token",
 					RefreshToken: "refresh-token",
 					ExpiresIn:    3600,
@@ -103,7 +103,7 @@ func TestAuth_Response(t *testing.T) {
 			},
 			expect: &types.Auth{
 				AdminID:      "admin-id",
-				Type:         int32(AdminTypeAdministrator),
+				Type:         types.AdminTypeAdministrator,
 				AccessToken:  "access-token",
 				RefreshToken: "refresh-token",
 				ExpiresIn:    3600,
@@ -133,7 +133,7 @@ func TestAuthProviders(t *testing.T) {
 			providers: entity.AdminAuthProviders{
 				{
 					AdminID:      "admin-id",
-					ProviderType: entity.AdminAuthProviderTypeGoogle,
+					ProviderType: entity.AdminAuthProviderType(types.AuthProviderTypeGoogle),
 					AccountID:    "account-id",
 					Email:        "test@example.com",
 					CreatedAt:    now,

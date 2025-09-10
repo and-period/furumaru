@@ -6,15 +6,7 @@ import (
 )
 
 // VideoStatus - オンデマンド配信状況
-type VideoStatus int32
-
-const (
-	VideoStatusUnknown   VideoStatus = 0
-	VideoStatusPrivate   VideoStatus = 1 // 非公開
-	VideoStatusWaiting   VideoStatus = 2 // 公開前
-	VideoStatusLimited   VideoStatus = 3 // 限定公開
-	VideoStatusPublished VideoStatus = 4 // 公開済み
-)
+type VideoStatus types.VideoStatus
 
 type Video struct {
 	types.Video
@@ -25,20 +17,20 @@ type Videos []*Video
 func NewVideoStatus(status entity.VideoStatus) VideoStatus {
 	switch status {
 	case entity.VideoStatusPrivate:
-		return VideoStatusPrivate
+		return VideoStatus(types.VideoStatusPrivate)
 	case entity.VideoStatusWaiting:
-		return VideoStatusWaiting
+		return VideoStatus(types.VideoStatusWaiting)
 	case entity.VideoStatusLimited:
-		return VideoStatusLimited
+		return VideoStatus(types.VideoStatusLimited)
 	case entity.VideoStatusPublished:
-		return VideoStatusPublished
+		return VideoStatus(types.VideoStatusPublished)
 	default:
-		return VideoStatusUnknown
+		return VideoStatus(types.VideoStatusUnknown)
 	}
 }
 
-func (s VideoStatus) Response() int32 {
-	return int32(s)
+func (s VideoStatus) Response() types.VideoStatus {
+	return types.VideoStatus(s)
 }
 
 func NewVideo(video *entity.Video) *Video {

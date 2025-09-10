@@ -27,7 +27,7 @@ func TestCoordinators(t *testing.T) {
 					Admin: uentity.Admin{
 						ID:            "coordinator-id01",
 						Type:          uentity.AdminTypeCoordinator,
-						Status:        uentity.AdminStatusActivated,
+						Status:        uentity.AdminStatus(types.AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -54,7 +54,7 @@ func TestCoordinators(t *testing.T) {
 					Admin: uentity.Admin{
 						ID:            "coordinator-id02",
 						Type:          uentity.AdminTypeCoordinator,
-						Status:        uentity.AdminStatusActivated,
+						Status:        uentity.AdminStatus(types.AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -109,7 +109,7 @@ func TestCoordinators(t *testing.T) {
 					Coordinator: types.Coordinator{
 						ID:                "coordinator-id01",
 						ShopID:            "shop-id01",
-						Status:            int32(AdminStatusActivated),
+						Status:            types.AdminStatusActivated,
 						Lastname:          "&.",
 						Firstname:         "管理者",
 						LastnameKana:      "あんどどっと",
@@ -135,7 +135,7 @@ func TestCoordinators(t *testing.T) {
 					Coordinator: types.Coordinator{
 						ID:                "coordinator-id02",
 						ShopID:            "shop-id02",
-						Status:            int32(AdminStatusActivated),
+						Status:            types.AdminStatusActivated,
 						Lastname:          "&.",
 						Firstname:         "管理者",
 						LastnameKana:      "あんどどっと",
@@ -162,7 +162,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					ID:                "coordinator-id01",
 					ShopID:            "shop-id01",
-					Status:            int32(AdminStatusActivated),
+					Status:            types.AdminStatusActivated,
 					Lastname:          "&.",
 					Firstname:         "管理者",
 					LastnameKana:      "あんどどっと",
@@ -186,7 +186,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					ID:                "coordinator-id02",
 					ShopID:            "shop-id02",
-					Status:            int32(AdminStatusActivated),
+					Status:            types.AdminStatusActivated,
 					Lastname:          "&.",
 					Firstname:         "管理者",
 					LastnameKana:      "あんどどっと",

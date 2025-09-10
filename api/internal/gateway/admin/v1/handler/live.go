@@ -182,7 +182,7 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 		return
 	}
 
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		shop, err := h.getShop(ctx, getShopID(ctx))
 		if err != nil {
 			h.httpError(ctx, err)

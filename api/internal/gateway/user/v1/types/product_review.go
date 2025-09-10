@@ -1,5 +1,14 @@
 package types
 
+// ProductReviewReactionType - 商品レビューのリアクション種別
+type ProductReviewReactionType int32
+
+const (
+	ProductReviewReactionTypeUnknown ProductReviewReactionType = 0
+	ProductReviewReactionTypeLike    ProductReviewReactionType = 1 // いいね
+	ProductReviewReactionTypeDislike ProductReviewReactionType = 2 // いまいち
+)
+
 // ProductReview - 商品レビュー
 type ProductReview struct {
 	ID           string `json:"id"`           // 商品レビューID
@@ -18,8 +27,8 @@ type ProductReview struct {
 
 // ProductReviewReaction - 商品レビューのリアクション
 type ProductReviewReaction struct {
-	ReviewID     string `json:"reviewId"`     // 商品レビューID
-	ReactionType int32  `json:"reactionType"` // リアクションタイプ
+	ReviewID     string                    `json:"reviewId"`     // 商品レビューID
+	ReactionType ProductReviewReactionType `json:"reactionType"` // リアクションタイプ
 }
 
 type CreateProductReviewRequest struct {

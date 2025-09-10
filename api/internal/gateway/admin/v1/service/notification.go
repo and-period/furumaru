@@ -7,37 +7,15 @@ import (
 )
 
 // お知らせ種別
-type NotificationType int32
-
-const (
-	NotificationTypeUnknown   NotificationType = 0
-	NotificationTypeOther     NotificationType = 1 // その他
-	NotificationTypeSystem    NotificationType = 2 // システム関連
-	NotificationTypeLive      NotificationType = 3 // ライブ関連
-	NotificationTypePromotion NotificationType = 4 // セール関連
-)
+type NotificationType types.NotificationType
 
 // お知らせ通知先
-type NotificationTarget int32
+type NotificationTarget types.NotificationTarget
 
 type NotificationTargets []NotificationTarget
 
-const (
-	NotificationTargetUnknown        NotificationTarget = 0
-	NotificationTargetUsers          NotificationTarget = 1 // ユーザー
-	NotificationTargetProducers      NotificationTarget = 2 // 生産者
-	NotificationTargetCoordinators   NotificationTarget = 3 // コーディネータ
-	NotificationTargetAdministrators NotificationTarget = 4 // 管理者
-)
-
 // お知らせ状態
-type NotificationStatus int32
-
-const (
-	NotificationStatusUnknown  NotificationStatus = 0
-	NotificationStatusWaiting  NotificationStatus = 1 // 投稿前
-	NotificationStatusNotified NotificationStatus = 2 // 投稿済み
-)
+type NotificationStatus types.NotificationStatus
 
 type Notification struct {
 	types.Notification
@@ -48,69 +26,69 @@ type Notifications []*Notification
 func NewNotificationType(typ entity.NotificationType) NotificationType {
 	switch typ {
 	case entity.NotificationTypeSystem:
-		return NotificationTypeSystem
+		return NotificationType(types.NotificationTypeSystem)
 	case entity.NotificationTypeLive:
-		return NotificationTypeLive
+		return NotificationType(types.NotificationTypeLive)
 	case entity.NotificationTypePromotion:
-		return NotificationTypePromotion
+		return NotificationType(types.NotificationTypePromotion)
 	case entity.NotificationTypeOther:
-		return NotificationTypeOther
+		return NotificationType(types.NotificationTypeOther)
 	default:
-		return NotificationTypeUnknown
+		return NotificationType(types.NotificationTypeUnknown)
 	}
 }
 
 func (t NotificationType) MessengerEntity() entity.NotificationType {
-	switch t {
-	case NotificationTypeSystem:
+	switch types.NotificationType(t) {
+	case types.NotificationTypeSystem:
 		return entity.NotificationTypeSystem
-	case NotificationTypeLive:
+	case types.NotificationTypeLive:
 		return entity.NotificationTypeLive
-	case NotificationTypePromotion:
+	case types.NotificationTypePromotion:
 		return entity.NotificationTypePromotion
-	case NotificationTypeOther:
+	case types.NotificationTypeOther:
 		return entity.NotificationTypeOther
 	default:
 		return entity.NotificationTypeUnknown
 	}
 }
 
-func (t NotificationType) Response() int32 {
-	return int32(t)
+func (t NotificationType) Response() types.NotificationType {
+	return types.NotificationType(t)
 }
 
 func NewNotificationTarget(target entity.NotificationTarget) NotificationTarget {
 	switch target {
 	case entity.NotificationTargetAdministrators:
-		return NotificationTargetAdministrators
+		return NotificationTarget(types.NotificationTargetAdministrators)
 	case entity.NotificationTargetCoordinators:
-		return NotificationTargetCoordinators
+		return NotificationTarget(types.NotificationTargetCoordinators)
 	case entity.NotificationTargetProducers:
-		return NotificationTargetProducers
+		return NotificationTarget(types.NotificationTargetProducers)
 	case entity.NotificationTargetUsers:
-		return NotificationTargetUsers
+		return NotificationTarget(types.NotificationTargetUsers)
 	default:
-		return NotificationTargetUnknown
+		return NotificationTarget(types.NotificationTargetUnknown)
 	}
 }
 
 func (t NotificationTarget) MessengerEntity() entity.NotificationTarget {
-	switch t {
-	case NotificationTargetAdministrators:
+	switch types.NotificationTarget(t) {
+	case types.NotificationTargetAdministrators:
 		return entity.NotificationTargetAdministrators
-	case NotificationTargetCoordinators:
+	case types.NotificationTargetCoordinators:
 		return entity.NotificationTargetCoordinators
-	case NotificationTargetProducers:
+	case types.NotificationTargetProducers:
 		return entity.NotificationTargetProducers
-	case NotificationTargetUsers:
+	case types.NotificationTargetUsers:
 		return entity.NotificationTargetUsers
 	default:
 		return entity.NotificationTargetUnknown
 	}
 }
 
-func (t NotificationTarget) Response() int32 {
-	return int32(t)
+func (t NotificationTarget) Response() types.NotificationTarget {
+	return types.NotificationTarget(t)
 }
 
 func NewNotificationTargets(targets []entity.NotificationTarget) NotificationTargets {
@@ -132,31 +110,31 @@ func (ts NotificationTargets) MessengerEntities() []entity.NotificationTarget {
 func NewNotificationStatus(status entity.NotificationStatus) NotificationStatus {
 	switch status {
 	case entity.NotificationStatusWaiting:
-		return NotificationStatusWaiting
+		return NotificationStatus(types.NotificationStatusWaiting)
 	case entity.NotificationStatusNotified:
-		return NotificationStatusNotified
+		return NotificationStatus(types.NotificationStatusNotified)
 	default:
-		return NotificationStatusUnknown
+		return NotificationStatus(types.NotificationStatusUnknown)
 	}
 }
 
 func (s NotificationStatus) MessengerEntity() entity.NotificationStatus {
-	switch s {
-	case NotificationStatusWaiting:
+	switch types.NotificationStatus(s) {
+	case types.NotificationStatusWaiting:
 		return entity.NotificationStatusWaiting
-	case NotificationStatusNotified:
+	case types.NotificationStatusNotified:
 		return entity.NotificationStatusNotified
 	default:
 		return entity.NotificationStatusUnknown
 	}
 }
 
-func (s NotificationStatus) Response() int32 {
-	return int32(s)
+func (s NotificationStatus) Response() types.NotificationStatus {
+	return types.NotificationStatus(s)
 }
 
-func (ts NotificationTargets) Response() []int32 {
-	res := make([]int32, len(ts))
+func (ts NotificationTargets) Response() []types.NotificationTarget {
+	res := make([]types.NotificationTarget, len(ts))
 	for i := range ts {
 		res[i] = ts[i].Response()
 	}
@@ -184,7 +162,7 @@ func NewNotification(notification *entity.Notification) *Notification {
 }
 
 func (n *Notification) Fill(promotion *Promotion) {
-	if NotificationType(n.Type) == NotificationTypePromotion && promotion != nil {
+	if types.NotificationType(n.Type) == types.NotificationTypePromotion && promotion != nil {
 		n.Title = promotion.Title
 	}
 }

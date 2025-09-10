@@ -20,21 +20,21 @@ func TestProductReviewReactionType(t *testing.T) {
 	}{
 		{
 			name:         "like",
-			reactionType: entity.ProductReviewReactionTypeLike,
+			reactionType: entity.ProductReviewReactionType(types.ProductReviewReactionTypeLike),
 			request:      1,
-			expect:       ProductReviewReactionTypeLike,
+			expect:       ProductReviewReactionType(types.ProductReviewReactionTypeLike),
 		},
 		{
 			name:         "dislike",
-			reactionType: entity.ProductReviewReactionTypeDislike,
+			reactionType: entity.ProductReviewReactionType(types.ProductReviewReactionTypeDislike),
 			request:      2,
-			expect:       ProductReviewReactionTypeDislike,
+			expect:       ProductReviewReactionType(types.ProductReviewReactionTypeDislike),
 		},
 		{
 			name:         "unknown",
-			reactionType: entity.ProductReviewReactionTypeUnknown,
+			reactionType: entity.ProductReviewReactionType(types.ProductReviewReactionTypeUnknown),
 			request:      0,
-			expect:       ProductReviewReactionTypeUnknown,
+			expect:       ProductReviewReactionType(types.ProductReviewReactionTypeUnknown),
 		},
 	}
 
@@ -206,7 +206,7 @@ func TestProductReviewReactions(t *testing.T) {
 				{
 					ReviewID:     "review-id",
 					UserID:       "user-id",
-					ReactionType: entity.ProductReviewReactionTypeLike,
+					ReactionType: entity.ProductReviewReactionType(types.ProductReviewReactionTypeLike),
 					CreatedAt:    now,
 					UpdatedAt:    now,
 				},
@@ -215,7 +215,7 @@ func TestProductReviewReactions(t *testing.T) {
 				{
 					ProductReviewReaction: types.ProductReviewReaction{
 						ReviewID:     "review-id",
-						ReactionType: int32(ProductReviewReactionTypeLike),
+						ReactionType: types.ProductReviewReactionTypeLike,
 					},
 				},
 			},
@@ -243,14 +243,14 @@ func TestProductReviewReactions_Response(t *testing.T) {
 				{
 					ProductReviewReaction: types.ProductReviewReaction{
 						ReviewID:     "review-id",
-						ReactionType: int32(ProductReviewReactionTypeLike),
+						ReactionType: types.ProductReviewReactionTypeLike,
 					},
 				},
 			},
 			expect: []*types.ProductReviewReaction{
 				{
 					ReviewID:     "review-id",
-					ReactionType: int32(ProductReviewReactionTypeLike),
+					ReactionType: types.ProductReviewReactionTypeLike,
 				},
 			},
 		},

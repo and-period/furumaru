@@ -22,19 +22,19 @@ func TestExperienceReviewReactionType(t *testing.T) {
 			name:         "like",
 			reactionType: entity.ExperienceReviewReactionTypeLike,
 			request:      1,
-			expect:       ExperienceReviewReactionTypeLike,
+			expect:       ExperienceReviewReactionType(types.ExperienceReviewReactionTypeLike),
 		},
 		{
 			name:         "dislike",
 			reactionType: entity.ExperienceReviewReactionTypeDislike,
 			request:      2,
-			expect:       ExperienceReviewReactionTypeDislike,
+			expect:       ExperienceReviewReactionType(types.ExperienceReviewReactionTypeDislike),
 		},
 		{
 			name:         "unknown",
 			reactionType: entity.ExperienceReviewReactionTypeUnknown,
 			request:      0,
-			expect:       ExperienceReviewReactionTypeUnknown,
+			expect:       ExperienceReviewReactionType(types.ExperienceReviewReactionTypeUnknown),
 		},
 	}
 
@@ -215,7 +215,7 @@ func TestExperienceReviewReactions(t *testing.T) {
 				{
 					ExperienceReviewReaction: types.ExperienceReviewReaction{
 						ReviewID:     "review-id",
-						ReactionType: int32(ExperienceReviewReactionTypeLike),
+						ReactionType: types.ExperienceReviewReactionTypeLike,
 					},
 				},
 			},
@@ -243,14 +243,14 @@ func TestExperienceReviewReactions_Response(t *testing.T) {
 				{
 					ExperienceReviewReaction: types.ExperienceReviewReaction{
 						ReviewID:     "review-id",
-						ReactionType: int32(ExperienceReviewReactionTypeLike),
+						ReactionType: types.ExperienceReviewReactionTypeLike,
 					},
 				},
 			},
 			expect: []*types.ExperienceReviewReaction{
 				{
 					ReviewID:     "review-id",
-					ReactionType: int32(ExperienceReviewReactionTypeLike),
+					ReactionType: types.ExperienceReviewReactionTypeLike,
 				},
 			},
 		},
