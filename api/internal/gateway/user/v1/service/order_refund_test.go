@@ -15,22 +15,22 @@ func TestRefundType(t *testing.T) {
 	tests := []struct {
 		name   string
 		typ    entity.RefundType
-		expect RefundType
+		expect types.RefundType
 	}{
 		{
 			name:   "canceled",
 			typ:    entity.RefundTypeCanceled,
-			expect: RefundTypeCanceled,
+			expect: types.RefundTypeCanceled,
 		},
 		{
 			name:   "refunded",
 			typ:    entity.RefundTypeRefunded,
-			expect: RefundTypeRefunded,
+			expect: types.RefundTypeRefunded,
 		},
 		{
 			name:   "none",
 			typ:    entity.RefundTypeNone,
-			expect: RefundTypeNone,
+			expect: types.RefundTypeNone,
 		},
 	}
 	for _, tt := range tests {
@@ -50,7 +50,7 @@ func TestRefundType_Response(t *testing.T) {
 	}{
 		{
 			name:   "none",
-			typ:    RefundTypeNone,
+			typ:    RefundType(types.RefundTypeNone),
 			expect: 0,
 		},
 	}
@@ -94,7 +94,7 @@ func TestOrderRefund(t *testing.T) {
 			expect: &OrderRefund{
 				OrderRefund: types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       RefundType(RefundType(types.RefundTypeNone)).Response(),
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
@@ -123,7 +123,7 @@ func TestOrderRefund_Response(t *testing.T) {
 			refund: &OrderRefund{
 				OrderRefund: types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       RefundType(RefundType(types.RefundTypeNone)).Response(),
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
@@ -131,7 +131,7 @@ func TestOrderRefund_Response(t *testing.T) {
 			},
 			expect: &types.OrderRefund{
 				Total:      0,
-				Type:       RefundTypeNone.Response(),
+				Type:       RefundType(RefundType(types.RefundTypeNone)).Response(),
 				Reason:     "",
 				Canceled:   false,
 				CanceledAt: 0,
@@ -186,7 +186,7 @@ func TestOrderRefunds(t *testing.T) {
 				{
 					OrderRefund: types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       RefundType(RefundType(types.RefundTypeNone)).Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,

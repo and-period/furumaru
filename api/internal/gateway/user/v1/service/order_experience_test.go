@@ -50,7 +50,7 @@ func TestOrderExperiences(t *testing.T) {
 						ExperienceTypeID: "experience-type-id",
 						Title:            "じゃがいも収穫",
 						Description:      "じゃがいもを収穫する体験です。",
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},

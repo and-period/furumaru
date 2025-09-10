@@ -7,30 +7,23 @@ import (
 )
 
 // SpotUserType - 投稿者の種別
-type SpotUserType int32
-
-const (
-	SpotUserTypeUnknown     SpotUserType = 0
-	SpotUserTypeUser        SpotUserType = 1 // ユーザー
-	SpotUserTypeCoordinator SpotUserType = 2 // コーディネータ
-	SpotUserTypeProducer    SpotUserType = 3 // 生産者
-)
+type SpotUserType types.SpotUserType
 
 func NewSpotUserType(userType entity.SpotUserType) SpotUserType {
 	switch userType {
 	case entity.SpotUserTypeUser:
-		return SpotUserTypeUser
+		return SpotUserType(types.SpotUserTypeUser)
 	case entity.SpotUserTypeCoordinator:
-		return SpotUserTypeCoordinator
+		return SpotUserType(types.SpotUserTypeCoordinator)
 	case entity.SpotUserTypeProducer:
-		return SpotUserTypeProducer
+		return SpotUserType(types.SpotUserTypeProducer)
 	default:
-		return SpotUserTypeUnknown
+		return SpotUserType(types.SpotUserTypeUnknown)
 	}
 }
 
-func (t SpotUserType) Response() int32 {
-	return int32(t)
+func (t SpotUserType) Response() types.SpotUserType {
+	return types.SpotUserType(t)
 }
 
 type Spot struct {

@@ -5,39 +5,36 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
-type ThreadUserType int32
-
-const (
-	ThreadUserTypeUnknown ThreadUserType = iota // 不明
-	ThreadUserTypeAdmin                         // 管理者
-	ThreadUserTypeUser                          // ユーザー
-	ThreadUserTypeGuest                         // ゲスト(ユーザIDなし)
-)
+type ThreadUserType types.ThreadUserType
 
 func NewThreadUserType(typ entity.ThreadUserType) ThreadUserType {
 	switch typ {
 	case entity.ThreadUserTypeAdmin:
-		return ThreadUserTypeAdmin
+		return ThreadUserType(types.ThreadUserTypeAdmin)
 	case entity.ThreadUserTypeUser:
-		return ThreadUserTypeUser
+		return ThreadUserType(types.ThreadUserTypeUser)
 	case entity.ThreadUserTypeGuest:
-		return ThreadUserTypeGuest
+		return ThreadUserType(types.ThreadUserTypeGuest)
 	default:
-		return ThreadUserTypeUnknown
+		return ThreadUserType(types.ThreadUserTypeUnknown)
 	}
 }
 
 func (t ThreadUserType) StoreEntity() entity.ThreadUserType {
-	switch t {
-	case ThreadUserTypeAdmin:
+	switch types.ThreadUserType(t) {
+	case types.ThreadUserTypeAdmin:
 		return entity.ThreadUserTypeAdmin
-	case ThreadUserTypeUser:
+	case types.ThreadUserTypeUser:
 		return entity.ThreadUserTypeUser
-	case ThreadUserTypeGuest:
+	case types.ThreadUserTypeGuest:
 		return entity.ThreadUserTypeGuest
 	default:
 		return entity.ThreadUserTypeUnknown
 	}
+}
+
+func (t ThreadUserType) Response() types.ThreadUserType {
+	return types.ThreadUserType(t)
 }
 
 type Thread struct {
@@ -45,10 +42,6 @@ type Thread struct {
 }
 
 type Threads []*Thread
-
-func (t ThreadUserType) Response() int32 {
-	return int32(t)
-}
 
 func NewThread(thread *entity.Thread) *Thread {
 	return &Thread{

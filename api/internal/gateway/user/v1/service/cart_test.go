@@ -34,8 +34,8 @@ func TestCart(t *testing.T) {
 			expect: &Cart{
 				Cart: types.Cart{
 					Number: 1,
-					Type:   ShippingTypeNormal.Response(),
-					Size:   ShippingSize60.Response(),
+					Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+					Size:   int32(NewShippingSize(entity.ShippingSize60)),
 					Rate:   80,
 					Items: []*types.CartItem{
 						{
@@ -69,8 +69,8 @@ func TestCart_Response(t *testing.T) {
 			cart: &Cart{
 				Cart: types.Cart{
 					Number: 1,
-					Type:   ShippingTypeNormal.Response(),
-					Size:   ShippingSize60.Response(),
+					Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+					Size:   int32(NewShippingSize(entity.ShippingSize60)),
 					Rate:   80,
 					Items: []*types.CartItem{
 						{
@@ -83,8 +83,8 @@ func TestCart_Response(t *testing.T) {
 			},
 			expect: &types.Cart{
 				Number: 1,
-				Type:   ShippingTypeNormal.Response(),
-				Size:   ShippingSize60.Response(),
+				Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+				Size:   int32(NewShippingSize(entity.ShippingSize60)),
 				Rate:   80,
 				Items: []*types.CartItem{
 					{
@@ -139,8 +139,8 @@ func TestCarts(t *testing.T) {
 				{
 					Cart: types.Cart{
 						Number: 1,
-						Type:   ShippingTypeNormal.Response(),
-						Size:   ShippingSize60.Response(),
+						Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+						Size:   int32(NewShippingSize(entity.ShippingSize60)),
 						Rate:   80,
 						Items: []*types.CartItem{
 							{
@@ -181,8 +181,8 @@ func TestCarts_Response(t *testing.T) {
 				{
 					Cart: types.Cart{
 						Number: 1,
-						Type:   ShippingTypeNormal.Response(),
-						Size:   ShippingSize60.Response(),
+						Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+						Size:   int32(NewShippingSize(entity.ShippingSize60)),
 						Rate:   80,
 						Items: []*types.CartItem{
 							{
@@ -197,8 +197,8 @@ func TestCarts_Response(t *testing.T) {
 			expect: []*types.Cart{
 				{
 					Number: 1,
-					Type:   ShippingTypeNormal.Response(),
-					Size:   ShippingSize60.Response(),
+					Type:   int32(NewShippingType(entity.ShippingTypeNormal)),
+					Size:   int32(NewShippingSize(entity.ShippingSize60)),
 					Rate:   80,
 					Items: []*types.CartItem{
 						{

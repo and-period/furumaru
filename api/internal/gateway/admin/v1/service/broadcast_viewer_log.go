@@ -10,12 +10,6 @@ import (
 // BroadcastViewerLogInterval - ライブ配信視聴ログ取得間隔
 type BroadcastViewerLogInterval string
 
-const (
-	BroadcastViewerLogIntervalSecond BroadcastViewerLogInterval = "second"
-	BroadcastViewerLogIntervalMinute BroadcastViewerLogInterval = "minute"
-	BroadcastViewerLogIntervalHour   BroadcastViewerLogInterval = "hour"
-)
-
 type BroadcastViewerLog struct {
 	types.BroadcastViewerLog
 }
@@ -27,12 +21,12 @@ func NewBroadcastViewerLogIntervalFromRequest(interval string) BroadcastViewerLo
 }
 
 func (i BroadcastViewerLogInterval) Duration() time.Duration {
-	switch i {
-	case BroadcastViewerLogIntervalSecond:
+	switch types.BroadcastViewerLogInterval(i) {
+	case types.BroadcastViewerLogIntervalSecond:
 		return time.Second
-	case BroadcastViewerLogIntervalMinute:
+	case types.BroadcastViewerLogIntervalMinute:
 		return time.Minute
-	case BroadcastViewerLogIntervalHour:
+	case types.BroadcastViewerLogIntervalHour:
 		return time.Hour
 	default:
 		return 0
@@ -40,12 +34,12 @@ func (i BroadcastViewerLogInterval) Duration() time.Duration {
 }
 
 func (i BroadcastViewerLogInterval) MediaEntity() entity.AggregateBroadcastViewerLogInterval {
-	switch i {
-	case BroadcastViewerLogIntervalSecond:
+	switch types.BroadcastViewerLogInterval(i) {
+	case types.BroadcastViewerLogIntervalSecond:
 		return entity.AggregateBroadcastViewerLogIntervalSecond
-	case BroadcastViewerLogIntervalMinute:
+	case types.BroadcastViewerLogIntervalMinute:
 		return entity.AggregateBroadcastViewerLogIntervalMinute
-	case BroadcastViewerLogIntervalHour:
+	case types.BroadcastViewerLogIntervalHour:
 		return entity.AggregateBroadcastViewerLogIntervalHour
 	default:
 		return ""

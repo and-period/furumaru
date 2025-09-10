@@ -35,7 +35,7 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+			if promotion.TargetType == types.PromotionTargetTypeAllShop {
 				return true, nil
 			}
 			shop, err := h.getShop(ctx, getShopID(ctx))
@@ -49,7 +49,7 @@ func (h *handler) filterAccessPromotion(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if service.PromotionTargetType(promotion.TargetType) == service.PromotionTargetTypeAllShop {
+			if promotion.TargetType == types.PromotionTargetTypeAllShop {
 				return true, nil
 			}
 			shop, err := h.getShop(ctx, promotion.ID)
@@ -109,7 +109,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		Offset: offset,
 		Orders: orders,
 	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		withAllTarget, err := util.GetQueryBool(ctx, "withAllTarget", true)
 		if err != nil {
 			h.badRequest(ctx, err)

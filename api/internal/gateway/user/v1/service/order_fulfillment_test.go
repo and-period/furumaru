@@ -14,22 +14,22 @@ func TestFulfillmentStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.FulfillmentStatus
-		expect FulfillmentStatus
+		expect types.FulfillmentStatus
 	}{
 		{
 			name:   "unfulfilled",
 			status: entity.FulfillmentStatusUnfulfilled,
-			expect: FulfillmentStatusUnfulfilled,
+			expect: types.FulfillmentStatusUnfulfilled,
 		},
 		{
 			name:   "fulfilled",
 			status: entity.FulfillmentStatusFulfilled,
-			expect: FulfillmentStatusFulfilled,
+			expect: types.FulfillmentStatusFulfilled,
 		},
 		{
 			name:   "unknown",
 			status: entity.FulfillmentStatusUnknown,
-			expect: FulfillmentStatusUnknown,
+			expect: types.FulfillmentStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -45,12 +45,12 @@ func TestFulfillmentStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status FulfillmentStatus
-		expect int32
+		expect types.FulfillmentStatus
 	}{
 		{
 			name:   "success",
-			status: FulfillmentStatusFulfilled,
-			expect: 2,
+			status: FulfillmentStatus(types.FulfillmentStatusFulfilled),
+			expect: types.FulfillmentStatusFulfilled,
 		},
 	}
 	for _, tt := range tests {
@@ -70,18 +70,18 @@ func TestShippingCarrier(t *testing.T) {
 	}{
 		{
 			name:   "yamato",
-			status: entity.ShippingCarrierYamato,
-			expect: ShippingCarrierYamato,
+			status: entity.ShippingCarrier(types.ShippingCarrierYamato),
+			expect: ShippingCarrier(types.ShippingCarrierYamato),
 		},
 		{
 			name:   "sagawa",
-			status: entity.ShippingCarrierSagawa,
-			expect: ShippingCarrierSagawa,
+			status: entity.ShippingCarrier(types.ShippingCarrierSagawa),
+			expect: ShippingCarrier(types.ShippingCarrierSagawa),
 		},
 		{
 			name:   "unknown",
-			status: entity.ShippingCarrierUnknown,
-			expect: ShippingCarrierUnknown,
+			status: entity.ShippingCarrier(types.ShippingCarrierUnknown),
+			expect: ShippingCarrier(types.ShippingCarrierUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -101,7 +101,7 @@ func TestShippingCarrier_Response(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			status: ShippingCarrierYamato,
+			status: ShippingCarrier(types.ShippingCarrierYamato),
 			expect: 1,
 		},
 	}
@@ -118,27 +118,27 @@ func TestShippingSize(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingSize
-		expect ShippingSize
+		expect types.ShippingSize
 	}{
 		{
 			name:   "size 60",
 			status: entity.ShippingSize60,
-			expect: ShippingSize60,
+			expect: types.ShippingSize60,
 		},
 		{
 			name:   "size 80",
 			status: entity.ShippingSize80,
-			expect: ShippingSize80,
+			expect: types.ShippingSize80,
 		},
 		{
 			name:   "size 100",
 			status: entity.ShippingSize100,
-			expect: ShippingSize100,
+			expect: types.ShippingSize100,
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingSizeUnknown,
-			expect: ShippingSizeUnknown,
+			expect: types.ShippingSizeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -154,12 +154,12 @@ func TestShippingSize_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ShippingSize
-		expect int32
+		expect types.ShippingSize
 	}{
 		{
 			name:   "success",
-			status: ShippingSize60,
-			expect: 1,
+			status: ShippingSize(types.ShippingSize60),
+			expect: types.ShippingSize60,
 		},
 	}
 	for _, tt := range tests {
@@ -175,22 +175,22 @@ func TestShippingType(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingType
-		expect ShippingType
+		expect types.ShippingType
 	}{
 		{
 			name:   "normal",
 			status: entity.ShippingTypeNormal,
-			expect: ShippingTypeNormal,
+			expect: types.ShippingTypeNormal,
 		},
 		{
 			name:   "frozen",
 			status: entity.ShippingTypeFrozen,
-			expect: ShippingTypeFrozen,
+			expect: types.ShippingTypeFrozen,
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingTypeUnknown,
-			expect: ShippingTypeUnknown,
+			expect: types.ShippingTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -206,12 +206,12 @@ func TestShippingType_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ShippingType
-		expect int32
+		expect types.ShippingType
 	}{
 		{
 			name:   "success",
-			status: ShippingTypeNormal,
-			expect: 1,
+			status: ShippingType(types.ShippingTypeNormal),
+			expect: types.ShippingTypeNormal,
 		},
 	}
 	for _, tt := range tests {
@@ -238,7 +238,7 @@ func TestOrderFulfillment(t *testing.T) {
 				AddressRevisionID: 1,
 				TrackingNumber:    "",
 				Status:            entity.FulfillmentStatusFulfilled,
-				ShippingCarrier:   entity.ShippingCarrierUnknown,
+				ShippingCarrier:   entity.ShippingCarrier(types.ShippingCarrierUnknown),
 				ShippingType:      entity.ShippingTypeNormal,
 				BoxNumber:         1,
 				BoxSize:           entity.ShippingSize60,
@@ -264,11 +264,11 @@ func TestOrderFulfillment(t *testing.T) {
 				OrderFulfillment: types.OrderFulfillment{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
-					Status:          FulfillmentStatusFulfilled.Response(),
-					ShippingCarrier: ShippingCarrierUnknown.Response(),
-					ShippingType:    ShippingTypeNormal.Response(),
+					Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+					ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+					ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 					BoxNumber:       1,
-					BoxSize:         ShippingSize60.Response(),
+					BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
 				},
@@ -296,11 +296,11 @@ func TestOrderFulfillment_Response(t *testing.T) {
 				OrderFulfillment: types.OrderFulfillment{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
-					Status:          FulfillmentStatusFulfilled.Response(),
-					ShippingCarrier: ShippingCarrierUnknown.Response(),
-					ShippingType:    ShippingTypeNormal.Response(),
+					Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+					ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+					ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 					BoxNumber:       1,
-					BoxSize:         ShippingSize60.Response(),
+					BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
 				},
@@ -308,11 +308,11 @@ func TestOrderFulfillment_Response(t *testing.T) {
 			expect: &types.OrderFulfillment{
 				FulfillmentID:   "fulfillment-id",
 				TrackingNumber:  "",
-				Status:          FulfillmentStatusFulfilled.Response(),
-				ShippingCarrier: ShippingCarrierUnknown.Response(),
-				ShippingType:    ShippingTypeNormal.Response(),
+				Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+				ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+				ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 				BoxNumber:       1,
-				BoxSize:         ShippingSize60.Response(),
+				BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 				BoxRate:         80,
 				ShippedAt:       1640962800,
 			},
@@ -343,7 +343,7 @@ func TestOrderFulfillments(t *testing.T) {
 					AddressRevisionID: 1,
 					TrackingNumber:    "",
 					Status:            entity.FulfillmentStatusFulfilled,
-					ShippingCarrier:   entity.ShippingCarrierUnknown,
+					ShippingCarrier:   entity.ShippingCarrier(types.ShippingCarrierUnknown),
 					ShippingType:      entity.ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           entity.ShippingSize60,
@@ -373,11 +373,11 @@ func TestOrderFulfillments(t *testing.T) {
 					OrderFulfillment: types.OrderFulfillment{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
-						Status:          FulfillmentStatusFulfilled.Response(),
-						ShippingCarrier: ShippingCarrierUnknown.Response(),
-						ShippingType:    ShippingTypeNormal.Response(),
+						Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+						ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+						ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 						BoxNumber:       1,
-						BoxSize:         ShippingSize60.Response(),
+						BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 						BoxRate:         80,
 						ShippedAt:       1640962800,
 					},
@@ -407,11 +407,11 @@ func TestOrderFulfillments_Response(t *testing.T) {
 					OrderFulfillment: types.OrderFulfillment{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
-						Status:          FulfillmentStatusFulfilled.Response(),
-						ShippingCarrier: ShippingCarrierUnknown.Response(),
-						ShippingType:    ShippingTypeNormal.Response(),
+						Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+						ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+						ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 						BoxNumber:       1,
-						BoxSize:         ShippingSize60.Response(),
+						BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 						BoxRate:         80,
 						ShippedAt:       1640962800,
 					},
@@ -421,11 +421,11 @@ func TestOrderFulfillments_Response(t *testing.T) {
 				{
 					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
-					Status:          FulfillmentStatusFulfilled.Response(),
-					ShippingCarrier: ShippingCarrierUnknown.Response(),
-					ShippingType:    ShippingTypeNormal.Response(),
+					Status:          FulfillmentStatus(types.FulfillmentStatusFulfilled).Response(),
+					ShippingCarrier: ShippingCarrier(types.ShippingCarrierUnknown).Response(),
+					ShippingType:    ShippingType(types.ShippingTypeNormal).Response(),
 					BoxNumber:       1,
-					BoxSize:         ShippingSize60.Response(),
+					BoxSize:         ShippingSize(types.ShippingSize60).Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
 				},

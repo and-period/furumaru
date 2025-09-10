@@ -8,30 +8,23 @@ import (
 )
 
 // SpotUserType - 投稿者の種別
-type SpotUserType int32
-
-const (
-	SpotUserTypeUnknown     SpotUserType = 0
-	SpotUserTypeUser        SpotUserType = 1 // ユーザー
-	SpotUserTypeCoordinator SpotUserType = 2 // コーディネータ
-	SpotUserTypeProducer    SpotUserType = 3 // 生産者
-)
+type SpotUserType types.SpotUserType
 
 func NewSpotUserType(t sentity.SpotUserType) SpotUserType {
 	switch t {
 	case sentity.SpotUserTypeUser:
-		return SpotUserTypeUser
+		return SpotUserType(types.SpotUserTypeUser)
 	case sentity.SpotUserTypeCoordinator:
-		return SpotUserTypeCoordinator
+		return SpotUserType(types.SpotUserTypeCoordinator)
 	case sentity.SpotUserTypeProducer:
-		return SpotUserTypeProducer
+		return SpotUserType(types.SpotUserTypeProducer)
 	default:
-		return SpotUserTypeUnknown
+		return SpotUserType(types.SpotUserTypeUnknown)
 	}
 }
 
-func (t SpotUserType) Response() int32 {
-	return int32(t)
+func (t SpotUserType) Response() types.SpotUserType {
+	return types.SpotUserType(t)
 }
 
 type Spot struct {
@@ -50,7 +43,7 @@ func NewSpotByUser(spot *sentity.Spot, user *uentity.User) *Spot {
 			ThumbnailURL:     spot.ThumbnailURL,
 			Longitude:        spot.Longitude,
 			Latitude:         spot.Latitude,
-			UserType:         SpotUserTypeUser.Response(),
+			UserType:         types.SpotUserTypeUser,
 			UserID:           spot.UserID,
 			Username:         user.Username(),
 			UserThumbnailURL: user.ThumbnailURL,
@@ -70,7 +63,7 @@ func NewSpotByCoordinator(spot *sentity.Spot, coordinator *Coordinator) *Spot {
 			ThumbnailURL:     spot.ThumbnailURL,
 			Longitude:        spot.Longitude,
 			Latitude:         spot.Latitude,
-			UserType:         SpotUserTypeCoordinator.Response(),
+			UserType:         types.SpotUserTypeCoordinator,
 			UserID:           spot.UserID,
 			Username:         coordinator.Username,
 			UserThumbnailURL: coordinator.ThumbnailURL,
@@ -90,7 +83,7 @@ func NewSpotByProducer(spot *sentity.Spot, producer *Producer) *Spot {
 			ThumbnailURL:     spot.ThumbnailURL,
 			Longitude:        spot.Longitude,
 			Latitude:         spot.Latitude,
-			UserType:         SpotUserTypeProducer.Response(),
+			UserType:         types.SpotUserTypeProducer,
 			UserID:           spot.UserID,
 			Username:         producer.Username,
 			UserThumbnailURL: producer.ThumbnailURL,

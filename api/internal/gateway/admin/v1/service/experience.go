@@ -6,17 +6,7 @@ import (
 )
 
 // ExperienceStatus - 体験受付状況
-type ExperienceStatus int32
-
-const (
-	ExperienceStatusUnknown   ExperienceStatus = 0
-	ExperienceStatusPrivate   ExperienceStatus = 1 // 非公開
-	ExperienceStatusWaiting   ExperienceStatus = 2 // 販売開始前
-	ExperienceStatusAccepting ExperienceStatus = 3 // 体験受付中
-	ExperienceStatusSoldOut   ExperienceStatus = 4 // 体験受付終了
-	ExperienceStatusFinished  ExperienceStatus = 5 // 販売終了
-	ExperienceStatusArchived  ExperienceStatus = 6 // アーカイブ済み
-)
+type ExperienceStatus types.ExperienceStatus
 
 type Experience struct {
 	types.Experience
@@ -34,24 +24,24 @@ type MultiExperienceMedia []*ExperienceMedia
 func NewExperienceStatus(status entity.ExperienceStatus) ExperienceStatus {
 	switch status {
 	case entity.ExperienceStatusPrivate:
-		return ExperienceStatusPrivate
+		return ExperienceStatus(types.ExperienceStatusPrivate)
 	case entity.ExperienceStatusWaiting:
-		return ExperienceStatusWaiting
+		return ExperienceStatus(types.ExperienceStatusWaiting)
 	case entity.ExperienceStatusAccepting:
-		return ExperienceStatusAccepting
+		return ExperienceStatus(types.ExperienceStatusAccepting)
 	case entity.ExperienceStatusSoldOut:
-		return ExperienceStatusSoldOut
+		return ExperienceStatus(types.ExperienceStatusSoldOut)
 	case entity.ExperienceStatusFinished:
-		return ExperienceStatusFinished
+		return ExperienceStatus(types.ExperienceStatusFinished)
 	case entity.ExperienceStatusArchived:
-		return ExperienceStatusArchived
+		return ExperienceStatus(types.ExperienceStatusArchived)
 	default:
-		return ExperienceStatusUnknown
+		return ExperienceStatus(types.ExperienceStatusUnknown)
 	}
 }
 
-func (s ExperienceStatus) Response() int32 {
-	return int32(s)
+func (s ExperienceStatus) Response() types.ExperienceStatus {
+	return types.ExperienceStatus(s)
 }
 
 func NewExperience(experience *entity.Experience) *Experience {

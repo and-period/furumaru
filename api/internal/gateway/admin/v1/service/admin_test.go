@@ -22,7 +22,7 @@ func TestAdminType(t *testing.T) {
 		{
 			name:                "administrator",
 			Type:                entity.AdminTypeAdministrator,
-			expect:              AdminTypeAdministrator,
+			expect:              AdminType(types.AdminTypeAdministrator),
 			expectString:        "administrator",
 			expectIsCoordinator: false,
 			expectResponse:      1,
@@ -30,7 +30,7 @@ func TestAdminType(t *testing.T) {
 		{
 			name:                "coordinator",
 			Type:                entity.AdminTypeCoordinator,
-			expect:              AdminTypeCoordinator,
+			expect:              AdminType(types.AdminTypeCoordinator),
 			expectString:        "coordinator",
 			expectIsCoordinator: true,
 			expectResponse:      2,
@@ -38,7 +38,7 @@ func TestAdminType(t *testing.T) {
 		{
 			name:                "producer",
 			Type:                entity.AdminTypeProducer,
-			expect:              AdminTypeProducer,
+			expect:              AdminType(types.AdminTypeProducer),
 			expectString:        "producer",
 			expectIsCoordinator: false,
 			expectResponse:      3,
@@ -46,7 +46,7 @@ func TestAdminType(t *testing.T) {
 		{
 			name:                "unknown",
 			Type:                entity.AdminTypeUnknown,
-			expect:              AdminTypeUnknown,
+			expect:              AdminType(types.AdminTypeUnknown),
 			expectString:        "unknown",
 			expectIsCoordinator: false,
 			expectResponse:      0,
@@ -75,25 +75,25 @@ func TestAdminStatus(t *testing.T) {
 		{
 			name:           "invited",
 			Type:           entity.AdminStatusInvited,
-			expect:         AdminStatusInvited,
+			expect:         AdminStatus(types.AdminStatusInvited),
 			expectResponse: 1,
 		},
 		{
 			name:           "activated",
 			Type:           entity.AdminStatusActivated,
-			expect:         AdminStatusActivated,
+			expect:         AdminStatus(types.AdminStatusActivated),
 			expectResponse: 2,
 		},
 		{
 			name:           "deactivated",
 			Type:           entity.AdminStatusDeactivated,
-			expect:         AdminStatusDeactivated,
+			expect:         AdminStatus(types.AdminStatusDeactivated),
 			expectResponse: 3,
 		},
 		{
 			name:           "unknown",
 			Type:           entity.AdminStatusUnknown,
-			expect:         AdminStatusUnknown,
+			expect:         AdminStatus(types.AdminStatusUnknown),
 			expectResponse: 0,
 		},
 	}
@@ -130,7 +130,7 @@ func TestAdmin(t *testing.T) {
 			expect: &Admin{
 				Admin: types.Admin{
 					ID:            "admin-id",
-					Type:          int32(AdminTypeAdministrator),
+					Type:          types.AdminTypeAdministrator,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -208,7 +208,7 @@ func TestAdmin_Response(t *testing.T) {
 			admin: &Admin{
 				Admin: types.Admin{
 					ID:            "admin-id",
-					Type:          int32(AdminTypeAdministrator),
+					Type:          types.AdminTypeAdministrator,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -220,7 +220,7 @@ func TestAdmin_Response(t *testing.T) {
 			},
 			expect: &types.Admin{
 				ID:            "admin-id",
-				Type:          int32(AdminTypeAdministrator),
+				Type:          types.AdminTypeAdministrator,
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどぴりおど",
@@ -276,7 +276,7 @@ func TestAdmins(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id01",
-						Type:          int32(AdminTypeAdministrator),
+						Type:          types.AdminTypeAdministrator,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -289,7 +289,7 @@ func TestAdmins(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id02",
-						Type:          int32(AdminTypeCoordinator),
+						Type:          types.AdminTypeCoordinator,
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -323,7 +323,7 @@ func TestAdmins_Map(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id01",
-						Type:          int32(AdminTypeAdministrator),
+						Type:          types.AdminTypeAdministrator,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -336,7 +336,7 @@ func TestAdmins_Map(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id02",
-						Type:          int32(AdminTypeCoordinator),
+						Type:          types.AdminTypeCoordinator,
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -351,7 +351,7 @@ func TestAdmins_Map(t *testing.T) {
 				"admin-id01": {
 					Admin: types.Admin{
 						ID:            "admin-id01",
-						Type:          int32(AdminTypeAdministrator),
+						Type:          types.AdminTypeAdministrator,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -364,7 +364,7 @@ func TestAdmins_Map(t *testing.T) {
 				"admin-id02": {
 					Admin: types.Admin{
 						ID:            "admin-id02",
-						Type:          int32(AdminTypeCoordinator),
+						Type:          types.AdminTypeCoordinator,
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -398,7 +398,7 @@ func TestAdmins_Response(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id01",
-						Type:          int32(AdminTypeAdministrator),
+						Type:          types.AdminTypeAdministrator,
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどぴりおど",
@@ -411,7 +411,7 @@ func TestAdmins_Response(t *testing.T) {
 				{
 					Admin: types.Admin{
 						ID:            "admin-id02",
-						Type:          int32(AdminTypeCoordinator),
+						Type:          types.AdminTypeCoordinator,
 						Lastname:      "&.",
 						Firstname:     "コーディネータ",
 						LastnameKana:  "あんどぴりおど",
@@ -425,7 +425,7 @@ func TestAdmins_Response(t *testing.T) {
 			expect: []*types.Admin{
 				{
 					ID:            "admin-id01",
-					Type:          int32(AdminTypeAdministrator),
+					Type:          types.AdminTypeAdministrator,
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどぴりおど",
@@ -436,7 +436,7 @@ func TestAdmins_Response(t *testing.T) {
 				},
 				{
 					ID:            "admin-id02",
-					Type:          int32(AdminTypeCoordinator),
+					Type:          types.AdminTypeCoordinator,
 					Lastname:      "&.",
 					Firstname:     "コーディネータ",
 					LastnameKana:  "あんどぴりおど",

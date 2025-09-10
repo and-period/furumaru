@@ -1,30 +1,26 @@
 package service
 
-import "github.com/and-period/furumaru/api/internal/media/entity"
+import (
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
+	"github.com/and-period/furumaru/api/internal/media/entity"
+)
 
 // UploadStatus - ファイルアップロード状況
-type UploadStatus int32
-
-const (
-	UploadStatusUnknown   UploadStatus = 0
-	UploadStatusWaiting   UploadStatus = 1 // アップロード待ち
-	UploadStatusSucceeded UploadStatus = 2 // 成功
-	UploadStatusFailed    UploadStatus = 3 // 失敗
-)
+type UploadStatus types.UploadStatus
 
 func NewUploadStatus(status entity.UploadStatus) UploadStatus {
 	switch status {
 	case entity.UploadStatusSucceeded:
-		return UploadStatusSucceeded
+		return UploadStatus(types.UploadStatusSucceeded)
 	case entity.UploadStatusFailed:
-		return UploadStatusFailed
+		return UploadStatus(types.UploadStatusFailed)
 	case entity.UploadStatusWaiting:
-		return UploadStatusWaiting
+		return UploadStatus(types.UploadStatusWaiting)
 	default:
-		return UploadStatusUnknown
+		return UploadStatus(types.UploadStatusUnknown)
 	}
 }
 
-func (s UploadStatus) Response() int32 {
-	return int32(s)
+func (s UploadStatus) Response() types.UploadStatus {
+	return types.UploadStatus(s)
 }

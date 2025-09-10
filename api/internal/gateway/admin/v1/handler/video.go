@@ -81,7 +81,7 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
 	videos, total, err := h.media.ListVideos(ctx, in)
@@ -233,7 +233,7 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 		return
 	}
 
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		if !currentAdmin(ctx, req.CoordinatorID) {
 			h.httpError(ctx, exception.ErrForbidden)
 			return
@@ -351,7 +351,7 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 // @Failure     403 {object} util.ErrorResponse "動画の参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "動画が存在しない"
 func (h *handler) AnalyzeVideo(ctx *gin.Context) {
-	const defaultViewerLogInterval = service.VideoViewerLogIntervalMinute
+	const defaultViewerLogInterval = types.VideoViewerLogIntervalMinute
 
 	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 	if err != nil {

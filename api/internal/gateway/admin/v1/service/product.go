@@ -8,37 +8,13 @@ import (
 )
 
 // ProductStatus - 商品販売状況
-type ProductStatus int32
-
-const (
-	ProductStatusUnknown   ProductStatus = 0
-	ProductStatusPrivate   ProductStatus = 1 // 非公開
-	ProductStatusPresale   ProductStatus = 2 // 予約受付中
-	ProductStatusForSale   ProductStatus = 3 // 販売中
-	ProductStatusOutOfSale ProductStatus = 4 // 販売期間外
-	ProductStatusArchived  ProductStatus = 5 // アーカイブ済み
-)
+type ProductStatus types.ProductStatus
 
 // StorageMethodType - 保存方法
-type StorageMethodType int32
-
-const (
-	StorageMethodTypeUnknown      StorageMethodType = 0
-	StorageMethodTypeNormal       StorageMethodType = 1 // 常温保存
-	StorageMethodTypeCoolDark     StorageMethodType = 2 // 冷暗所保存
-	StorageMethodTypeRefrigerated StorageMethodType = 3 // 冷蔵保存
-	StorageMethodTypeFrozen       StorageMethodType = 4 // 冷凍保存
-)
+type StorageMethodType types.StorageMethodType
 
 // DeliveryType - 配送方法
-type DeliveryType int32
-
-const (
-	DeliveryTypeUnknown      DeliveryType = 0
-	DeliveryTypeNormal       DeliveryType = 1 // 常温便
-	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
-	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
-)
+type DeliveryType types.DeliveryType
 
 type Product struct {
 	types.Product
@@ -56,86 +32,86 @@ type MultiProductMedia []*ProductMedia
 func NewProductStatus(status entity.ProductStatus) ProductStatus {
 	switch status {
 	case entity.ProductStatusPrivate:
-		return ProductStatusPrivate
+		return ProductStatus(types.ProductStatusPrivate)
 	case entity.ProductStatusPresale:
-		return ProductStatusPresale
+		return ProductStatus(types.ProductStatusPresale)
 	case entity.ProductStatusForSale:
-		return ProductStatusForSale
+		return ProductStatus(types.ProductStatusForSale)
 	case entity.ProductStatusOutOfSale:
-		return ProductStatusOutOfSale
+		return ProductStatus(types.ProductStatusOutOfSale)
 	case entity.ProductStatusArchived:
-		return ProductStatusArchived
+		return ProductStatus(types.ProductStatusArchived)
 	default:
-		return ProductStatusUnknown
+		return ProductStatus(types.ProductStatusUnknown)
 	}
 }
 
-func (s ProductStatus) Response() int32 {
-	return int32(s)
+func (s ProductStatus) Response() types.ProductStatus {
+	return types.ProductStatus(s)
 }
 
 func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
 	switch typ {
 	case entity.StorageMethodTypeNormal:
-		return StorageMethodTypeNormal
+		return StorageMethodType(types.StorageMethodTypeNormal)
 	case entity.StorageMethodTypeCoolDark:
-		return StorageMethodTypeCoolDark
+		return StorageMethodType(types.StorageMethodTypeCoolDark)
 	case entity.StorageMethodTypeRefrigerated:
-		return StorageMethodTypeRefrigerated
+		return StorageMethodType(types.StorageMethodTypeRefrigerated)
 	case entity.StorageMethodTypeFrozen:
-		return StorageMethodTypeFrozen
+		return StorageMethodType(types.StorageMethodTypeFrozen)
 	default:
-		return StorageMethodTypeUnknown
+		return StorageMethodType(types.StorageMethodTypeUnknown)
 	}
 }
 
 func (t StorageMethodType) StoreEntity() entity.StorageMethodType {
-	switch t {
-	case StorageMethodTypeNormal:
+	switch types.StorageMethodType(t) {
+	case types.StorageMethodTypeNormal:
 		return entity.StorageMethodTypeNormal
-	case StorageMethodTypeCoolDark:
+	case types.StorageMethodTypeCoolDark:
 		return entity.StorageMethodTypeCoolDark
-	case StorageMethodTypeRefrigerated:
+	case types.StorageMethodTypeRefrigerated:
 		return entity.StorageMethodTypeRefrigerated
-	case StorageMethodTypeFrozen:
+	case types.StorageMethodTypeFrozen:
 		return entity.StorageMethodTypeFrozen
 	default:
 		return entity.StorageMethodTypeUnknown
 	}
 }
 
-func (t StorageMethodType) Response() int32 {
-	return int32(t)
+func (t StorageMethodType) Response() types.StorageMethodType {
+	return types.StorageMethodType(t)
 }
 
 func NewDeliveryType(typ entity.DeliveryType) DeliveryType {
 	switch typ {
 	case entity.DeliveryTypeNormal:
-		return DeliveryTypeNormal
+		return DeliveryType(types.DeliveryTypeNormal)
 	case entity.DeliveryTypeFrozen:
-		return DeliveryTypeFrozen
+		return DeliveryType(types.DeliveryTypeFrozen)
 	case entity.DeliveryTypeRefrigerated:
-		return DeliveryTypeRefrigerated
+		return DeliveryType(types.DeliveryTypeRefrigerated)
 	default:
-		return DeliveryTypeUnknown
+		return DeliveryType(types.DeliveryTypeUnknown)
 	}
 }
 
 func (t DeliveryType) StoreEntity() entity.DeliveryType {
-	switch t {
-	case DeliveryTypeNormal:
+	switch types.DeliveryType(t) {
+	case types.DeliveryTypeNormal:
 		return entity.DeliveryTypeNormal
-	case DeliveryTypeFrozen:
+	case types.DeliveryTypeFrozen:
 		return entity.DeliveryTypeFrozen
-	case DeliveryTypeRefrigerated:
+	case types.DeliveryTypeRefrigerated:
 		return entity.DeliveryTypeRefrigerated
 	default:
 		return entity.DeliveryTypeUnknown
 	}
 }
 
-func (t DeliveryType) Response() int32 {
-	return int32(t)
+func (t DeliveryType) Response() types.DeliveryType {
+	return types.DeliveryType(t)
 }
 
 func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {

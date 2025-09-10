@@ -21,19 +21,19 @@ func TestNewOrderType(t *testing.T) {
 		{
 			name:     "product",
 			typ:      entity.OrderTypeProduct,
-			expect:   OrderTypeProduct,
+			expect:   OrderType(types.OrderTypeProduct),
 			response: 1,
 		},
 		{
 			name:     "experience",
 			typ:      entity.OrderTypeExperience,
-			expect:   OrderTypeExperience,
+			expect:   OrderType(types.OrderTypeExperience),
 			response: 2,
 		},
 		{
 			name:     "unknown",
 			typ:      entity.OrderTypeUnknown,
-			expect:   OrderTypeUnknown,
+			expect:   OrderType(types.OrderTypeUnknown),
 			response: 0,
 		},
 	}
@@ -58,25 +58,25 @@ func TestNewOrderTypeFromString(t *testing.T) {
 		{
 			name:     "product",
 			typ:      "product",
-			expect:   OrderTypeProduct,
+			expect:   OrderType(types.OrderTypeProduct),
 			response: 1,
 		},
 		{
 			name:     "experience",
 			typ:      "experience",
-			expect:   OrderTypeExperience,
+			expect:   OrderType(types.OrderTypeExperience),
 			response: 2,
 		},
 		{
 			name:     "unknown",
 			typ:      "unknown",
-			expect:   OrderTypeUnknown,
+			expect:   OrderType(types.OrderTypeUnknown),
 			response: 0,
 		},
 		{
 			name:     "empty",
 			typ:      "",
-			expect:   OrderTypeUnknown,
+			expect:   OrderType(types.OrderTypeUnknown),
 			response: 0,
 		},
 	}
@@ -99,17 +99,17 @@ func TestOrderType_StoreEntity(t *testing.T) {
 	}{
 		{
 			name:   "product",
-			typ:    OrderTypeProduct,
+			typ:    OrderType(types.OrderTypeProduct),
 			expect: entity.OrderTypeProduct,
 		},
 		{
 			name:   "experience",
-			typ:    OrderTypeExperience,
+			typ:    OrderType(types.OrderTypeExperience),
 			expect: entity.OrderTypeExperience,
 		},
 		{
 			name:   "unknown",
-			typ:    OrderTypeUnknown,
+			typ:    OrderType(types.OrderTypeUnknown),
 			expect: entity.OrderTypeUnknown,
 		},
 	}
@@ -132,55 +132,55 @@ func TestNewOrderStatus(t *testing.T) {
 		{
 			name:     "unpaid",
 			status:   entity.OrderStatusUnpaid,
-			expect:   OrderStatusUnpaid,
+			expect:   OrderStatus(types.OrderStatusUnpaid),
 			response: 1,
 		},
 		{
 			name:     "waiting",
 			status:   entity.OrderStatusWaiting,
-			expect:   OrderStatusPreparing,
+			expect:   OrderStatus(types.OrderStatusPreparing),
 			response: 2,
 		},
 		{
 			name:     "preparing",
 			status:   entity.OrderStatusPreparing,
-			expect:   OrderStatusPreparing,
+			expect:   OrderStatus(types.OrderStatusPreparing),
 			response: 2,
 		},
 		{
 			name:     "shipped",
 			status:   entity.OrderStatusShipped,
-			expect:   OrderStatusPreparing,
+			expect:   OrderStatus(types.OrderStatusPreparing),
 			response: 2,
 		},
 		{
 			name:     "completed",
 			status:   entity.OrderStatusCompleted,
-			expect:   OrderStatusCompleted,
+			expect:   OrderStatus(types.OrderStatusCompleted),
 			response: 3,
 		},
 		{
 			name:     "canceled",
 			status:   entity.OrderStatusCanceled,
-			expect:   OrderStatusCanceled,
+			expect:   OrderStatus(types.OrderStatusCanceled),
 			response: 4,
 		},
 		{
 			name:     "refunded",
 			status:   entity.OrderStatusRefunded,
-			expect:   OrderStatusRefunded,
+			expect:   OrderStatus(types.OrderStatusRefunded),
 			response: 5,
 		},
 		{
 			name:     "failed",
 			status:   entity.OrderStatusFailed,
-			expect:   OrderStatusFailed,
+			expect:   OrderStatus(types.OrderStatusFailed),
 			response: 6,
 		},
 		{
 			name:     "unknown",
 			status:   entity.OrderStatusUnknown,
-			expect:   OrderStatusUnknown,
+			expect:   OrderStatus(types.OrderStatusUnknown),
 			response: 0,
 		},
 	}
@@ -290,7 +290,7 @@ func TestOrder(t *testing.T) {
 						ProductTagIDs:   []string{"product-tag-id"},
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
-						Status:          int32(ProductStatusForSale),
+						Status:          types.ProductStatusForSale,
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -309,8 +309,8 @@ func TestOrder(t *testing.T) {
 						RecommendedPoint1: "ポイント1",
 						RecommendedPoint2: "ポイント2",
 						RecommendedPoint3: "ポイント3",
-						StorageMethodType: int32(StorageMethodTypeNormal),
-						DeliveryType:      int32(DeliveryTypeNormal),
+						StorageMethodType: types.StorageMethodTypeNormal,
+						DeliveryType:      types.DeliveryTypeNormal,
 						Box60Rate:         50,
 						Box80Rate:         40,
 						Box100Rate:        30,
@@ -325,12 +325,12 @@ func TestOrder(t *testing.T) {
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
-					Type:          int32(OrderTypeProduct),
-					Status:        int32(OrderStatusPreparing),
+					Type:          types.OrderTypeProduct,
+					Status:        types.OrderStatusPreparing,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+						Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 						Subtotal:      1980,
 						Discount:      0,
 						ShippingFee:   550,
@@ -340,7 +340,7 @@ func TestOrder(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       NewRefundType(entity.RefundTypeNone).Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -375,16 +375,15 @@ func TestOrder_ProductIDs(t *testing.T) {
 	}{
 		{
 			name: "success",
-			order: &Order{
-				Order: types.Order{
+			order: &Order{Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "",
-					Status:        int32(OrderStatusPreparing),
+					Status:        types.OrderStatusPreparing,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+						Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -394,7 +393,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       NewRefundType(entity.RefundTypeNone).Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -430,16 +429,15 @@ func TestOrder_Response(t *testing.T) {
 	}{
 		{
 			name: "success",
-			order: &Order{
-				Order: types.Order{
+			order: &Order{Order: types.Order{
 					ID:            "order-id",
 					CoordinatorID: "coordinator-id",
 					PromotionID:   "promotion-id",
-					Status:        int32(OrderStatusPreparing),
+					Status:        types.OrderStatusPreparing,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+						Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 						Subtotal:      1980,
 						Discount:      0,
 						ShippingFee:   550,
@@ -449,7 +447,7 @@ func TestOrder_Response(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       NewRefundType(entity.RefundTypeNone).Response(),
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -470,11 +468,11 @@ func TestOrder_Response(t *testing.T) {
 				ID:            "order-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
-				Status:        int32(OrderStatusPreparing),
+				Status:        types.OrderStatusPreparing,
 				Payment: &types.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
+					MethodType:    NewPaymentMethodType(entity.PaymentMethodTypeCreditCard).Response(),
+					Status:        NewPaymentStatus(entity.PaymentStatusCaptured).Response(),
 					Subtotal:      1980,
 					Discount:      0,
 					ShippingFee:   550,
@@ -484,7 +482,7 @@ func TestOrder_Response(t *testing.T) {
 				},
 				Refund: &types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       NewRefundType(entity.RefundTypeNone).Response(),
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,

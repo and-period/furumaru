@@ -14,32 +14,32 @@ func TestPromotionStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.PromotionStatus
-		expect PromotionStatus
+		expect types.PromotionStatus
 	}{
 		{
 			name:   "private",
 			status: entity.PromotionStatusPrivate,
-			expect: PromotionStatusPrivate,
+			expect: types.PromotionStatusPrivate,
 		},
 		{
 			name:   "waiting",
 			status: entity.PromotionStatusWaiting,
-			expect: PromotionStatusWaiting,
+			expect: types.PromotionStatusWaiting,
 		},
 		{
 			name:   "enabled",
 			status: entity.PromotionStatusEnabled,
-			expect: PromotionStatusEnabled,
+			expect: types.PromotionStatusEnabled,
 		},
 		{
 			name:   "finisihed",
 			status: entity.PromotionStatusFinished,
-			expect: PromotionStatusFinished,
+			expect: types.PromotionStatusFinished,
 		},
 		{
 			name:   "unknown",
 			status: entity.PromotionStatusUnknown,
-			expect: PromotionStatusUnknown,
+			expect: types.PromotionStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -60,7 +60,7 @@ func TestPromotionStatus_Response(t *testing.T) {
 	}{
 		{
 			name:   "success",
-			status: PromotionStatusEnabled,
+			status: PromotionStatus(types.PromotionStatusEnabled),
 			expect: 3,
 		},
 	}
@@ -77,27 +77,27 @@ func TestDiscountType(t *testing.T) {
 	tests := []struct {
 		name         string
 		discountType entity.DiscountType
-		expect       DiscountType
+		expect       types.DiscountType
 	}{
 		{
 			name:         "success to amount",
 			discountType: entity.DiscountTypeAmount,
-			expect:       DiscountTypeAmount,
+			expect:       types.DiscountTypeAmount,
 		},
 		{
 			name:         "success to rate",
 			discountType: entity.DiscountTypeRate,
-			expect:       DiscountTypeRate,
+			expect:       types.DiscountTypeRate,
 		},
 		{
 			name:         "success to free shipping",
 			discountType: entity.DiscountTypeFreeShipping,
-			expect:       DiscountTypeFreeShipping,
+			expect:       types.DiscountTypeFreeShipping,
 		},
 		{
 			name:         "success to unknown",
 			discountType: entity.DiscountTypeUnknown,
-			expect:       DiscountTypeUnknown,
+			expect:       types.DiscountTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
@@ -117,22 +117,22 @@ func TestDiscountType_StoreEntity(t *testing.T) {
 	}{
 		{
 			name:         "success to amount",
-			discountType: DiscountTypeAmount,
+			discountType: DiscountType(types.DiscountTypeAmount),
 			expect:       entity.DiscountTypeAmount,
 		},
 		{
 			name:         "success to rate",
-			discountType: DiscountTypeRate,
+			discountType: DiscountType(types.DiscountTypeRate),
 			expect:       entity.DiscountTypeRate,
 		},
 		{
 			name:         "success to free shipping",
-			discountType: DiscountTypeFreeShipping,
+			discountType: DiscountType(types.DiscountTypeFreeShipping),
 			expect:       entity.DiscountTypeFreeShipping,
 		},
 		{
 			name:         "success to unknown",
-			discountType: DiscountTypeUnknown,
+			discountType: DiscountType(types.DiscountTypeUnknown),
 			expect:       entity.DiscountTypeUnknown,
 		},
 	}
@@ -153,7 +153,7 @@ func TestDiscountType_Response(t *testing.T) {
 	}{
 		{
 			name:         "success",
-			discountType: DiscountTypeAmount,
+			discountType: DiscountType(types.DiscountTypeAmount),
 			expect:       1,
 		},
 	}
@@ -195,8 +195,8 @@ func TestPromotion(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-					Status:       int32(PromotionStatusEnabled),
-					DiscountType: DiscountTypeFreeShipping.Response(),
+					Status:       types.PromotionStatusEnabled,
+					DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
 					StartAt:      1640962800,
@@ -227,8 +227,8 @@ func TestPromotion_Response(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-					Status:       int32(PromotionStatusEnabled),
-					DiscountType: DiscountTypeFreeShipping.Response(),
+					Status:       types.PromotionStatusEnabled,
+					DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
 					StartAt:      1640962800,
@@ -239,8 +239,8 @@ func TestPromotion_Response(t *testing.T) {
 				ID:           "promotion-id",
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-				Status:       int32(PromotionStatusEnabled),
-				DiscountType: DiscountTypeFreeShipping.Response(),
+				Status:       NewPromotionStatus(entity.PromotionStatusEnabled).Response(),
+				DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 				DiscountRate: 0,
 				Code:         "code0001",
 				StartAt:      1640962800,
@@ -267,7 +267,7 @@ func TestPromotions(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions entity.Promotions
-		expect     Promotions
+		expect     []*types.Promotion
 	}{
 		{
 			name: "success",
@@ -288,19 +288,17 @@ func TestPromotions(t *testing.T) {
 					UpdatedAt:    now,
 				},
 			},
-			expect: Promotions{
+			expect: []*types.Promotion{
 				{
-					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-						Status:       int32(PromotionStatusEnabled),
-						DiscountType: DiscountTypeFreeShipping.Response(),
+						Status:       types.PromotionStatusEnabled,
+						DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
 						StartAt:      1640962800,
 						EndAt:        1643641200,
-					},
 				},
 			},
 		},
@@ -328,8 +326,8 @@ func TestPromotions_Response(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-						Status:       int32(PromotionStatusEnabled),
-						DiscountType: DiscountTypeFreeShipping.Response(),
+						Status:       types.PromotionStatusEnabled,
+						DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
 						StartAt:      1640962800,
@@ -342,8 +340,8 @@ func TestPromotions_Response(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
-					Status:       int32(PromotionStatusEnabled),
-					DiscountType: DiscountTypeFreeShipping.Response(),
+					Status:       types.PromotionStatusEnabled,
+					DiscountType: NewDiscountType(entity.DiscountTypeFreeShipping).Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
 					StartAt:      1640962800,

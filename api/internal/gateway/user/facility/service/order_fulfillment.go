@@ -1,57 +1,44 @@
 package service
 
-import "github.com/and-period/furumaru/api/internal/store/entity"
-
-// ShippingSize - 配送時の箱の大きさ
-type ShippingSize int32
-
-const (
-	ShippingSizeUnknown ShippingSize = 0
-	ShippingSize60      ShippingSize = 1 // 箱のサイズ:60
-	ShippingSize80      ShippingSize = 2 // 箱のサイズ:80
-	ShippingSize100     ShippingSize = 3 // 箱のサイズ:100
+import (
+	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-// ShippingType - 配送方法
-type ShippingType int32
+type ShippingSize types.ShippingSize
 
-const (
-	ShippingTypeUnknown ShippingType = 0
-	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
-	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
-	ShippingTypePickup  ShippingType = 3 // 店舗受取
-)
+type ShippingType types.ShippingType
 
 func NewShippingSize(size entity.ShippingSize) ShippingSize {
 	switch size {
 	case entity.ShippingSize60:
-		return ShippingSize60
+		return ShippingSize(types.ShippingSize60)
 	case entity.ShippingSize80:
-		return ShippingSize80
+		return ShippingSize(types.ShippingSize80)
 	case entity.ShippingSize100:
-		return ShippingSize100
+		return ShippingSize(types.ShippingSize100)
 	default:
-		return ShippingSizeUnknown
+		return ShippingSize(types.ShippingSizeUnknown)
 	}
 }
 
-func (s ShippingSize) Response() int32 {
-	return int32(s)
+func (s ShippingSize) Response() types.ShippingSize {
+	return types.ShippingSize(s)
 }
 
 func NewShippingType(typ entity.ShippingType) ShippingType {
 	switch typ {
 	case entity.ShippingTypeNormal:
-		return ShippingTypeNormal
+		return ShippingType(types.ShippingTypeNormal)
 	case entity.ShippingTypeFrozen:
-		return ShippingTypeFrozen
+		return ShippingType(types.ShippingTypeFrozen)
 	case entity.ShippingTypePickup:
-		return ShippingTypePickup
+		return ShippingType(types.ShippingTypePickup)
 	default:
-		return ShippingTypeUnknown
+		return ShippingType(types.ShippingTypeUnknown)
 	}
 }
 
-func (t ShippingType) Response() int32 {
-	return int32(t)
+func (t ShippingType) Response() types.ShippingType {
+	return types.ShippingType(t)
 }

@@ -35,7 +35,7 @@ func (a *Administrator) AuthUser() *AuthUser {
 		AuthUser: types.AuthUser{
 			AdminID:  a.ID,
 			ShopIDs:  []string{},
-			Type:     AdminTypeAdministrator.Response(),
+			Type:     types.AdminTypeAdministrator,
 			Username: fmt.Sprintf("%s %s", a.Lastname, a.Firstname),
 			Email:    a.Email,
 		},

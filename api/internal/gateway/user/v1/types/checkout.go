@@ -44,8 +44,8 @@ type CheckoutResponse struct {
 }
 
 type CheckoutStateResponse struct {
-	OrderID string `json:"orderId"` // 注文履歴ID
-	Status  int32  `json:"status"`  // 注文ステータス
+	OrderID string        `json:"orderId"` // 注文履歴ID
+	Status  PaymentStatus `json:"status"`  // 注文ステータス
 }
 
 type PreCheckoutExperienceResponse struct {
@@ -109,6 +109,6 @@ type GuestCheckoutResponse struct {
 }
 
 type GuestCheckoutStateResponse struct {
-	OrderID string `json:"orderId"` // 注文履歴ID
-	Status  int32  `json:"status"`  // 注文ステータス
+	OrderID string        `json:"orderId"` // 注文履歴ID
+	Status  PaymentStatus `json:"status"`  // 注文ステータス
 }

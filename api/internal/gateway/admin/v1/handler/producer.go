@@ -75,7 +75,7 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		producers service.Producers
 		total     int64
 	)
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		in := &store.ListShopProducersInput{
 			ShopID: getShopID(ctx),
 			Limit:  limit,
@@ -185,7 +185,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	if getAdminType(ctx) == service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() == types.AdminTypeCoordinator {
 		if !currentAdmin(ctx, req.CoordinatorID) {
 			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return

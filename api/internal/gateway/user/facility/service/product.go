@@ -9,89 +9,67 @@ import (
 )
 
 // ProductStatus - 商品販売状況
-type ProductStatus int32
-
-const (
-	ProductStatusUnknown   ProductStatus = 0
-	ProductStatusPresale   ProductStatus = 1 // 予約受付中
-	ProductStatusForSale   ProductStatus = 2 // 販売中
-	ProductStatusOutOfSale ProductStatus = 3 // 販売期間外
-)
+type ProductStatus types.ProductStatus
 
 func NewProductStatus(status entity.ProductStatus) ProductStatus {
 	switch status {
 	case entity.ProductStatusPrivate:
-		return ProductStatusUnknown
+		return ProductStatus(types.ProductStatusUnknown)
 	case entity.ProductStatusPresale:
-		return ProductStatusPresale
+		return ProductStatus(types.ProductStatusPresale)
 	case entity.ProductStatusForSale:
-		return ProductStatusForSale
+		return ProductStatus(types.ProductStatusForSale)
 	case entity.ProductStatusOutOfSale:
-		return ProductStatusOutOfSale
+		return ProductStatus(types.ProductStatusOutOfSale)
 	default:
-		return ProductStatusUnknown
+		return ProductStatus(types.ProductStatusUnknown)
 	}
 }
 
-func (s ProductStatus) Response() int32 {
-	return int32(s)
+func (s ProductStatus) Response() types.ProductStatus {
+	return types.ProductStatus(s)
 }
 
 // StorageMethodType - 保存方法
-type StorageMethodType int32
-
-const (
-	StorageMethodTypeUnknown      StorageMethodType = 0
-	StorageMethodTypeNormal       StorageMethodType = 1 // 常温保存
-	StorageMethodTypeCoolDark     StorageMethodType = 2 // 冷暗所保存
-	StorageMethodTypeRefrigerated StorageMethodType = 3 // 冷蔵保存
-	StorageMethodTypeFrozen       StorageMethodType = 4 // 冷凍保存
-)
+type StorageMethodType types.StorageMethodType
 
 func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
 	switch typ {
 	case entity.StorageMethodTypeNormal:
-		return StorageMethodTypeNormal
+		return StorageMethodType(types.StorageMethodTypeNormal)
 	case entity.StorageMethodTypeCoolDark:
-		return StorageMethodTypeCoolDark
+		return StorageMethodType(types.StorageMethodTypeCoolDark)
 	case entity.StorageMethodTypeRefrigerated:
-		return StorageMethodTypeRefrigerated
+		return StorageMethodType(types.StorageMethodTypeRefrigerated)
 	case entity.StorageMethodTypeFrozen:
-		return StorageMethodTypeFrozen
+		return StorageMethodType(types.StorageMethodTypeFrozen)
 	default:
-		return StorageMethodTypeUnknown
+		return StorageMethodType(types.StorageMethodTypeUnknown)
 	}
 }
 
-func (t StorageMethodType) Response() int32 {
-	return int32(t)
+func (t StorageMethodType) Response() types.StorageMethodType {
+	return types.StorageMethodType(t)
 }
 
 // DeliveryType - 配送方法
 type DeliveryType int32
 
-const (
-	DeliveryTypeUnknown      DeliveryType = 0
-	DeliveryTypeNormal       DeliveryType = 1 // 常温便
-	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
-	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
-)
-
 func NewDeliveryType(typ entity.DeliveryType) DeliveryType {
 	switch typ {
 	case entity.DeliveryTypeNormal:
-		return DeliveryTypeNormal
+		return DeliveryType(types.DeliveryTypeNormal)
 	case entity.DeliveryTypeFrozen:
-		return DeliveryTypeFrozen
+		return DeliveryType(types.DeliveryTypeFrozen)
 	case entity.DeliveryTypeRefrigerated:
-		return DeliveryTypeRefrigerated
+		return DeliveryType(types.DeliveryTypeRefrigerated)
 	default:
-		return DeliveryTypeUnknown
+		return DeliveryType(types.DeliveryTypeUnknown)
 	}
 }
 
-func (t DeliveryType) Response() int32 {
-	return int32(t)
+func (t DeliveryType) Response() types.DeliveryType {
+	return types.DeliveryType(t)
 }
 
 func NewProductWeight(weight int64, unit entity.WeightUnit) float64 {
@@ -190,18 +168,18 @@ func (p *Product) MediaURLs() []string {
 }
 
 func (p *Product) MerchantCenterItemCondition() string {
-	switch p.status {
-	case ProductStatusPresale:
+	switch types.ProductStatus(p.status) {
+	case types.ProductStatusPresale:
 		if p.Inventory > 0 {
 			return "preorder"
 		}
 		return "out_of_stock"
-	case ProductStatusForSale:
+	case types.ProductStatusForSale:
 		if p.Inventory > 0 {
 			return "in_stock"
 		}
 		return "out_of_stock"
-	case ProductStatusOutOfSale:
+	case types.ProductStatusOutOfSale:
 		return "out_of_stock"
 	default:
 		return "new"

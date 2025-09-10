@@ -8,24 +8,10 @@ import (
 )
 
 // AdminType - 管理者ロール
-type AdminType int32
-
-const (
-	AdminTypeUnknown       AdminType = 0
-	AdminTypeAdministrator AdminType = 1 // 管理者
-	AdminTypeCoordinator   AdminType = 2 // コーディネータ
-	AdminTypeProducer      AdminType = 3 // 生産者
-)
+type AdminType types.AdminType
 
 // AdminStatus - 管理者ステータス
-type AdminStatus int32
-
-const (
-	AdminStatusUnknown     AdminStatus = 0
-	AdminStatusInvited     AdminStatus = 1 // 招待中
-	AdminStatusActivated   AdminStatus = 2 // 有効
-	AdminStatusDeactivated AdminStatus = 3 // 無効
-)
+type AdminStatus types.AdminStatus
 
 type Admin struct {
 	types.Admin
@@ -36,23 +22,23 @@ type Admins []*Admin
 func NewAdminType(role entity.AdminType) AdminType {
 	switch role {
 	case entity.AdminTypeAdministrator:
-		return AdminTypeAdministrator
+		return AdminType(types.AdminTypeAdministrator)
 	case entity.AdminTypeCoordinator:
-		return AdminTypeCoordinator
+		return AdminType(types.AdminTypeCoordinator)
 	case entity.AdminTypeProducer:
-		return AdminTypeProducer
+		return AdminType(types.AdminTypeProducer)
 	default:
-		return AdminTypeUnknown
+		return AdminType(types.AdminTypeUnknown)
 	}
 }
 
 func (r AdminType) String() string {
-	switch r {
-	case AdminTypeAdministrator:
+	switch types.AdminType(r) {
+	case types.AdminTypeAdministrator:
 		return "administrator"
-	case AdminTypeCoordinator:
+	case types.AdminTypeCoordinator:
 		return "coordinator"
-	case AdminTypeProducer:
+	case types.AdminTypeProducer:
 		return "producer"
 	default:
 		return "unknown"
@@ -60,28 +46,28 @@ func (r AdminType) String() string {
 }
 
 func (r AdminType) IsCoordinator() bool {
-	return r == AdminTypeCoordinator
+	return types.AdminType(r) == types.AdminTypeCoordinator
 }
 
-func (r AdminType) Response() int32 {
-	return int32(r)
+func (r AdminType) Response() types.AdminType {
+	return types.AdminType(r)
 }
 
 func NewAdminStatus(status entity.AdminStatus) AdminStatus {
 	switch status {
 	case entity.AdminStatusInvited:
-		return AdminStatusInvited
+		return AdminStatus(types.AdminStatusInvited)
 	case entity.AdminStatusActivated:
-		return AdminStatusActivated
+		return AdminStatus(types.AdminStatusActivated)
 	case entity.AdminStatusDeactivated:
-		return AdminStatusDeactivated
+		return AdminStatus(types.AdminStatusDeactivated)
 	default:
-		return AdminStatusUnknown
+		return AdminStatus(types.AdminStatusUnknown)
 	}
 }
 
-func (s AdminStatus) Response() int32 {
-	return int32(s)
+func (s AdminStatus) Response() types.AdminStatus {
+	return types.AdminStatus(s)
 }
 
 func NewAdmin(admin *entity.Admin) *Admin {

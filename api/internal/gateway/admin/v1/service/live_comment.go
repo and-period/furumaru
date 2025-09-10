@@ -20,7 +20,7 @@ func NewLiveComment(comment *mentity.BroadcastComment, user *User) *LiveComment 
 			PublishedAt: comment.CreatedAt.Unix(),
 		},
 	}
-	if user == nil || UserStatus(user.Status) != UserStatusVerified {
+	if user == nil || UserStatus(user.Status) != UserStatus(types.UserStatusVerified) {
 		return res
 	}
 	res.UserID = user.ID

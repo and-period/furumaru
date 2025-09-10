@@ -32,11 +32,11 @@ func TestSetAuth(t *testing.T) {
 	ctx.Request = &http.Request{Header: http.Header{}}
 	auth := &service.Auth{Auth: types.Auth{
 		AdminID: "admin-id",
-		Type:    service.AdminTypeAdministrator.Response(),
+		Type:    types.AdminTypeAdministrator,
 	}}
 	setAuth(ctx, auth)
 	assert.Equal(t, "admin-id", getAdminID(ctx))
-	assert.Equal(t, service.AdminTypeAdministrator, getAdminType(ctx))
+	assert.Equal(t, types.AdminTypeAdministrator, getAdminType(ctx).Response())
 	assert.True(t, currentAdmin(ctx, "admin-id"))
 	assert.False(t, currentAdmin(ctx, "other-id"))
 }
@@ -46,19 +46,19 @@ func TestFilterAccess(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	tests := []struct {
 		name   string
-		role   service.AdminType
+		role   types.AdminType
 		params *filterAccessParams
 		expect error
 	}{
 		{
 			name:   "success administrator",
-			role:   service.AdminTypeAdministrator,
+			role:   types.AdminTypeAdministrator,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "success coordinator",
-			role: service.AdminTypeCoordinator,
+			role: types.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return true, nil
@@ -68,13 +68,13 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "success coordinator for no filter",
-			role:   service.AdminTypeCoordinator,
+			role:   types.AdminTypeCoordinator,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "failed coordinator for failed to execute function",
-			role: service.AdminTypeCoordinator,
+			role: types.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return false, assert.AnError
@@ -84,7 +84,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "failed coordinator for invalid coordinator",
-			role: service.AdminTypeCoordinator,
+			role: types.AdminTypeCoordinator,
 			params: &filterAccessParams{
 				coordinator: func(_ *gin.Context) (bool, error) {
 					return false, nil
@@ -94,7 +94,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "success producer",
-			role: service.AdminTypeProducer,
+			role: types.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return true, nil
@@ -104,13 +104,13 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "success producer for no filter",
-			role:   service.AdminTypeProducer,
+			role:   types.AdminTypeProducer,
 			params: &filterAccessParams{},
 			expect: nil,
 		},
 		{
 			name: "failed producer for failed to execute function",
-			role: service.AdminTypeProducer,
+			role: types.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return false, assert.AnError
@@ -120,7 +120,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name: "failed producer for invalid producer",
-			role: service.AdminTypeProducer,
+			role: types.AdminTypeProducer,
 			params: &filterAccessParams{
 				producer: func(_ *gin.Context) (bool, error) {
 					return false, nil
@@ -130,7 +130,7 @@ func TestFilterAccess(t *testing.T) {
 		},
 		{
 			name:   "failed unknown admin role",
-			role:   service.AdminTypeUnknown,
+			role:   types.AdminTypeUnknown,
 			params: &filterAccessParams{},
 			expect: exception.ErrForbidden,
 		},
@@ -143,7 +143,7 @@ func TestFilterAccess(t *testing.T) {
 			ctx.Request = &http.Request{Header: http.Header{}}
 			auth := &service.Auth{Auth: types.Auth{
 				AdminID: "admin-id",
-				Type:    int32(tt.role),
+				Type:    tt.role,
 			}}
 			setAuth(ctx, auth)
 			assert.ErrorIs(t, filterAccess(ctx, tt.params), tt.expect)

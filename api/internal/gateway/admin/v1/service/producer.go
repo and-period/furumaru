@@ -47,7 +47,7 @@ func (p *Producer) AuthUser() *AuthUser {
 	return &AuthUser{
 		AuthUser: types.AuthUser{
 			AdminID:      p.ID,
-			Type:         AdminTypeProducer.Response(),
+			Type:         AdminType(types.AdminTypeProducer).Response(),
 			Username:     p.Username,
 			Email:        p.Email,
 			ThumbnailURL: p.ThumbnailURL,

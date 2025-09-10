@@ -8,13 +8,7 @@ import (
 )
 
 // VideoViewerLogInterval - ライブ配信視聴ログ取得間隔
-type VideoViewerLogInterval string
-
-const (
-	VideoViewerLogIntervalSecond VideoViewerLogInterval = "second"
-	VideoViewerLogIntervalMinute VideoViewerLogInterval = "minute"
-	VideoViewerLogIntervalHour   VideoViewerLogInterval = "hour"
-)
+type VideoViewerLogInterval types.VideoViewerLogInterval
 
 type VideoViewerLog struct {
 	types.VideoViewerLog
@@ -27,12 +21,12 @@ func NewVideoViewerLogIntervalFromRequest(interval string) VideoViewerLogInterva
 }
 
 func (i VideoViewerLogInterval) Duration() time.Duration {
-	switch i {
-	case VideoViewerLogIntervalSecond:
+	switch types.VideoViewerLogInterval(i) {
+	case types.VideoViewerLogIntervalSecond:
 		return time.Second
-	case VideoViewerLogIntervalMinute:
+	case types.VideoViewerLogIntervalMinute:
 		return time.Minute
-	case VideoViewerLogIntervalHour:
+	case types.VideoViewerLogIntervalHour:
 		return time.Hour
 	default:
 		return 0
@@ -40,12 +34,12 @@ func (i VideoViewerLogInterval) Duration() time.Duration {
 }
 
 func (i VideoViewerLogInterval) MediaEntity() entity.AggregateVideoViewerLogInterval {
-	switch i {
-	case VideoViewerLogIntervalSecond:
+	switch types.VideoViewerLogInterval(i) {
+	case types.VideoViewerLogIntervalSecond:
 		return entity.AggregateVideoViewerLogIntervalSecond
-	case VideoViewerLogIntervalMinute:
+	case types.VideoViewerLogIntervalMinute:
 		return entity.AggregateVideoViewerLogIntervalMinute
-	case VideoViewerLogIntervalHour:
+	case types.VideoViewerLogIntervalHour:
 		return entity.AggregateVideoViewerLogIntervalHour
 	default:
 		return ""

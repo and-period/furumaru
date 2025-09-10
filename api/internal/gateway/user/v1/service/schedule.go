@@ -7,34 +7,26 @@ import (
 )
 
 // ScheduleStatus - 開催状況
-type ScheduleStatus int32
-
-const (
-	ScheduleStatusUnknown  ScheduleStatus = 0
-	ScheduleStatusWaiting  ScheduleStatus = 1 // ライブ配信前
-	ScheduleStatusLive     ScheduleStatus = 2 // ライブ配信中
-	ScheduleStatusClosed   ScheduleStatus = 3 // ライブ配信終了
-	ScheduleStatusArchived ScheduleStatus = 4 // アーカイブ配信
-)
+type ScheduleStatus types.ScheduleStatus
 
 func NewScheduleStatus(status sentity.ScheduleStatus, archived bool) ScheduleStatus {
 	switch status {
 	case sentity.ScheduleStatusWaiting:
-		return ScheduleStatusWaiting
+		return ScheduleStatus(types.ScheduleStatusWaiting)
 	case sentity.ScheduleStatusLive:
-		return ScheduleStatusLive
+		return ScheduleStatus(types.ScheduleStatusLive)
 	case sentity.ScheduleStatusClosed:
 		if archived {
-			return ScheduleStatusArchived
+			return ScheduleStatus(types.ScheduleStatusArchived)
 		}
-		return ScheduleStatusClosed
+		return ScheduleStatus(types.ScheduleStatusClosed)
 	default:
-		return ScheduleStatusUnknown
+		return ScheduleStatus(types.ScheduleStatusUnknown)
 	}
 }
 
-func (s ScheduleStatus) Response() int32 {
-	return int32(s)
+func (s ScheduleStatus) Response() types.ScheduleStatus {
+	return types.ScheduleStatus(s)
 }
 
 type Schedule struct {

@@ -6,13 +6,7 @@ import (
 )
 
 // PaymentSystemStatus - 決済システム状態
-type PaymentSystemStatus int32
-
-const (
-	PaymentSystemStatusUnknown PaymentSystemStatus = 0
-	PaymentSystemStatusInUse   PaymentSystemStatus = 1 // 利用可能
-	PaymentSystemStatusOutage  PaymentSystemStatus = 2 // 停止中
-)
+type PaymentSystemStatus types.PaymentSystemStatus
 
 type PaymentSystem struct {
 	types.PaymentSystem
@@ -23,27 +17,27 @@ type PaymentSystems []*PaymentSystem
 func NewPaymentSystemStatus(status entity.PaymentSystemStatus) PaymentSystemStatus {
 	switch status {
 	case entity.PaymentSystemStatusInUse:
-		return PaymentSystemStatusInUse
+		return PaymentSystemStatus(types.PaymentSystemStatusInUse)
 	case entity.PaymentSystemStatusOutage:
-		return PaymentSystemStatusOutage
+		return PaymentSystemStatus(types.PaymentSystemStatusOutage)
 	default:
-		return PaymentSystemStatusUnknown
+		return PaymentSystemStatus(types.PaymentSystemStatusUnknown)
 	}
 }
 
 func (s PaymentSystemStatus) StoreEntity() entity.PaymentSystemStatus {
-	switch s {
-	case PaymentSystemStatusInUse:
+	switch types.PaymentSystemStatus(s) {
+	case types.PaymentSystemStatusInUse:
 		return entity.PaymentSystemStatusInUse
-	case PaymentSystemStatusOutage:
+	case types.PaymentSystemStatusOutage:
 		return entity.PaymentSystemStatusOutage
 	default:
 		return entity.PaymentSystemStatusUnknown
 	}
 }
 
-func (s PaymentSystemStatus) Response() int32 {
-	return int32(s)
+func (s PaymentSystemStatus) Response() types.PaymentSystemStatus {
+	return types.PaymentSystemStatus(s)
 }
 
 func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {
@@ -56,7 +50,7 @@ func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {
 }
 
 func (s *PaymentSystem) InService() bool {
-	return PaymentSystemStatus(s.Status) == PaymentSystemStatusInUse
+	return types.PaymentSystemStatus(s.Status) == types.PaymentSystemStatusInUse
 }
 
 func (s *PaymentSystem) Response() *types.PaymentSystem {

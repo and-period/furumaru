@@ -336,7 +336,7 @@ func (h *handler) PublishSchedule(ctx *gin.Context) {
 // @Failure     403 {object} util.ErrorResponse "スケジュールの参照権限がない"
 // @Failure     404 {object} util.ErrorResponse "スケジュールが存在しない"
 func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
-	const defaultViewerLogInterval = service.BroadcastViewerLogIntervalMinute
+	const defaultViewerLogInterval = types.BroadcastViewerLogIntervalMinute
 
 	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
 	if err != nil {

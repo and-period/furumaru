@@ -35,7 +35,7 @@ func (h *handler) filterAccessSpot(ctx *gin.Context) {
 			if err != nil {
 				return false, err
 			}
-			if spot.UserType != service.SpotUserTypeCoordinator {
+			if types.SpotUserType(spot.UserType) != types.SpotUserTypeCoordinator {
 				return false, nil
 			}
 			return spot.UserID == getAdminID(ctx), nil
@@ -168,22 +168,22 @@ func (h *handler) GetSpot(ctx *gin.Context) {
 		SpotType: spotType.Response(),
 	}
 
-	switch spot.UserType {
-	case service.SpotUserTypeUser:
+	switch types.SpotUserType(spot.UserType) {
+	case types.SpotUserTypeUser:
 		user, err := h.getUser(ctx, spot.UserID)
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
 		res.User = user.Response()
-	case service.SpotUserTypeCoordinator:
+	case types.SpotUserTypeCoordinator:
 		coordinator, err := h.getCoordinator(ctx, spot.UserID)
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
 		res.Coordinator = coordinator.Response()
-	case service.SpotUserTypeProducer:
+	case types.SpotUserTypeProducer:
 		producer, err := h.getProducer(ctx, spot.UserID)
 		if err != nil {
 			h.httpError(ctx, err)
@@ -220,15 +220,15 @@ func (h *handler) CreateSpot(ctx *gin.Context) {
 	adminID := getAdminID(ctx)
 
 	res := &types.SpotResponse{}
-	switch getAdminType(ctx) {
-	case service.AdminTypeCoordinator:
+	switch getAdminType(ctx).Response() {
+	case types.AdminTypeCoordinator:
 		coordinator, err := h.getCoordinator(ctx, adminID)
 		if err != nil {
 			h.httpError(ctx, err)
 			return
 		}
 		res.Coordinator = coordinator.Response()
-	case service.AdminTypeProducer:
+	case types.AdminTypeProducer:
 		producer, err := h.getProducer(ctx, adminID)
 		if err != nil {
 			h.httpError(ctx, err)

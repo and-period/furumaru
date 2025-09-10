@@ -6,27 +6,21 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-type AuthProviderType int32
-
-const (
-	AuthProviderTypeUnknown AuthProviderType = 0
-	AuthProviderTypeGoogle  AuthProviderType = 1
-	AuthProviderTypeLINE    AuthProviderType = 2
-)
+type AuthProviderType types.AuthProviderType
 
 func NewAuthProviderType(t uentity.AdminAuthProviderType) AuthProviderType {
 	switch t {
 	case uentity.AdminAuthProviderTypeGoogle:
-		return AuthProviderTypeGoogle
+		return AuthProviderType(types.AuthProviderTypeGoogle)
 	case uentity.AdminAuthProviderTypeLINE:
-		return AuthProviderTypeLINE
+		return AuthProviderType(types.AuthProviderTypeLINE)
 	default:
-		return AuthProviderTypeUnknown
+		return AuthProviderType(types.AuthProviderTypeUnknown)
 	}
 }
 
-func (t AuthProviderType) Response() int32 {
-	return int32(t)
+func (t AuthProviderType) Response() types.AuthProviderType {
+	return types.AuthProviderType(t)
 }
 
 type Auth struct {

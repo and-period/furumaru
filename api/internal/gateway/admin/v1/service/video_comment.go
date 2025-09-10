@@ -20,7 +20,7 @@ func NewVideoComment(comment *mentity.VideoComment, user *User) *VideoComment {
 			PublishedAt: comment.CreatedAt.Unix(),
 		},
 	}
-	if user == nil || UserStatus(user.Status) != UserStatusVerified {
+	if user == nil || types.UserStatus(user.Status) != types.UserStatusVerified {
 		return res
 	}
 	res.UserID = user.ID

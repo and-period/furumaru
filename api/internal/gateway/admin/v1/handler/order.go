@@ -331,14 +331,14 @@ func (h *handler) CompleteOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	switch service.OrderType(order.Type) {
-	case service.OrderTypeProduct:
+	switch order.Type {
+	case types.OrderTypeProduct:
 		in := &store.CompleteProductOrderInput{
 			OrderID:         order.ID,
 			ShippingMessage: req.ShippingMessage,
 		}
 		err = h.store.CompleteProductOrder(ctx, in)
-	case service.OrderTypeExperience:
+	case types.OrderTypeExperience:
 		in := &store.CompleteExperienceOrderInput{
 			OrderID: order.ID,
 		}

@@ -10,22 +10,16 @@ import (
 )
 
 // TopOrderPeriodType - 期間種別
-type TopOrderPeriodType string
-
-const (
-	TopOrderPeriodTypeDay   TopOrderPeriodType = "day"   // 日
-	TopOrderPeriodTypeWeek  TopOrderPeriodType = "week"  // 週
-	TopOrderPeriodTypeMonth TopOrderPeriodType = "month" // 月
-)
+type TopOrderPeriodType types.TopOrderPeriodType
 
 func NewTopOrderPeriodType(periodType entity.AggregateOrderPeriodType) TopOrderPeriodType {
 	switch periodType {
 	case entity.AggregateOrderPeriodTypeDay:
-		return TopOrderPeriodTypeDay
+		return TopOrderPeriodType(types.TopOrderPeriodTypeDay)
 	case entity.AggregateOrderPeriodTypeWeek:
-		return TopOrderPeriodTypeWeek
+		return TopOrderPeriodType(types.TopOrderPeriodTypeWeek)
 	case entity.AggregateOrderPeriodTypeMonth:
-		return TopOrderPeriodTypeMonth
+		return TopOrderPeriodType(types.TopOrderPeriodTypeMonth)
 	default:
 		return ""
 	}
@@ -36,14 +30,14 @@ func NewTopOrderPeriodTypeFromRequest(periodType string) TopOrderPeriodType {
 }
 
 func (t TopOrderPeriodType) String(period time.Time) string {
-	switch t {
-	case TopOrderPeriodTypeDay:
+	switch types.TopOrderPeriodType(t) {
+	case types.TopOrderPeriodTypeDay:
 		return period.Format(time.DateOnly)
-	case TopOrderPeriodTypeWeek:
+	case types.TopOrderPeriodTypeWeek:
 		days := int(period.Weekday())
 		week := jst.Date(period.Year(), period.Month(), period.Day()-days, 0, 0, 0, 0)
 		return week.Format(time.DateOnly)
-	case TopOrderPeriodTypeMonth:
+	case types.TopOrderPeriodTypeMonth:
 		month := jst.Date(period.Year(), period.Month(), 1, 0, 0, 0, 0)
 		return month.Format(time.DateOnly)
 	default:
@@ -52,12 +46,12 @@ func (t TopOrderPeriodType) String(period time.Time) string {
 }
 
 func (t TopOrderPeriodType) Add(ts time.Time) time.Time {
-	switch t {
-	case TopOrderPeriodTypeDay:
+	switch types.TopOrderPeriodType(t) {
+	case types.TopOrderPeriodTypeDay:
 		return ts.AddDate(0, 0, 1)
-	case TopOrderPeriodTypeWeek:
+	case types.TopOrderPeriodTypeWeek:
 		return ts.AddDate(0, 0, 7)
-	case TopOrderPeriodTypeMonth:
+	case types.TopOrderPeriodTypeMonth:
 		return ts.AddDate(0, 1, 0)
 	default:
 		return ts
@@ -65,13 +59,13 @@ func (t TopOrderPeriodType) Add(ts time.Time) time.Time {
 }
 
 func (t TopOrderPeriodType) Truncate(ts time.Time) time.Time {
-	switch t {
-	case TopOrderPeriodTypeDay:
+	switch types.TopOrderPeriodType(t) {
+	case types.TopOrderPeriodTypeDay:
 		return jst.Date(ts.Year(), ts.Month(), ts.Day(), 0, 0, 0, 0)
-	case TopOrderPeriodTypeWeek:
+	case types.TopOrderPeriodTypeWeek:
 		days := int(ts.Weekday())
 		return jst.Date(ts.Year(), ts.Month(), ts.Day()-days, 0, 0, 0, 0)
-	case TopOrderPeriodTypeMonth:
+	case types.TopOrderPeriodTypeMonth:
 		return jst.Date(ts.Year(), ts.Month(), 1, 0, 0, 0, 0)
 	default:
 		return ts
@@ -79,25 +73,25 @@ func (t TopOrderPeriodType) Truncate(ts time.Time) time.Time {
 }
 
 func (t TopOrderPeriodType) StoreEntity() entity.AggregateOrderPeriodType {
-	switch t {
-	case TopOrderPeriodTypeDay:
+	switch types.TopOrderPeriodType(t) {
+	case types.TopOrderPeriodTypeDay:
 		return entity.AggregateOrderPeriodTypeDay
-	case TopOrderPeriodTypeWeek:
+	case types.TopOrderPeriodTypeWeek:
 		return entity.AggregateOrderPeriodTypeWeek
-	case TopOrderPeriodTypeMonth:
+	case types.TopOrderPeriodTypeMonth:
 		return entity.AggregateOrderPeriodTypeMonth
 	default:
 		return ""
 	}
 }
 
-func (t TopOrderPeriodType) Response() string {
-	switch t {
-	case TopOrderPeriodTypeDay:
+func (t TopOrderPeriodType) Response() types.TopOrderPeriodType {
+	switch types.TopOrderPeriodType(t) {
+	case types.TopOrderPeriodTypeDay:
 		return "day"
-	case TopOrderPeriodTypeWeek:
+	case types.TopOrderPeriodTypeWeek:
 		return "week"
-	case TopOrderPeriodTypeMonth:
+	case types.TopOrderPeriodTypeMonth:
 		return "month"
 	default:
 		return ""

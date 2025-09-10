@@ -1,5 +1,18 @@
 package types
 
+// ExperienceStatus - 体験受付状況
+type ExperienceStatus int32
+
+const (
+	ExperienceStatusUnknown   ExperienceStatus = 0
+	ExperienceStatusPrivate   ExperienceStatus = 1 // 非公開
+	ExperienceStatusWaiting   ExperienceStatus = 2 // 販売開始前
+	ExperienceStatusAccepting ExperienceStatus = 3 // 体験受付中
+	ExperienceStatusSoldOut   ExperienceStatus = 4 // 体験受付終了
+	ExperienceStatusFinished  ExperienceStatus = 5 // 販売終了
+	ExperienceStatusArchived  ExperienceStatus = 6 // アーカイブ済み
+)
+
 // Experience - 体験情報
 type Experience struct {
 	ID                    string             `json:"id"`                    // 体験ID
@@ -10,7 +23,7 @@ type Experience struct {
 	Description           string             `json:"description"`           // 説明
 	Public                bool               `json:"public"`                // 公開設定
 	SoldOut               bool               `json:"soldOut"`               // 定員オーバー設定
-	Status                int32              `json:"status"`                // 販売状況
+	Status                ExperienceStatus   `json:"status"`                // 販売状況
 	Media                 []*ExperienceMedia `json:"media"`                 // メディア一覧
 	PriceAdult            int64              `json:"priceAdult"`            // 大人料金
 	PriceJuniorHighSchool int64              `json:"priceJuniorHighSchool"` // 中学生料金

@@ -7,49 +7,43 @@ import (
 )
 
 // ProductReviewReactionType - 商品レビューのリアクション種別
-type ProductReviewReactionType int32
-
-const (
-	ProductReviewReactionTypeUnknown ProductReviewReactionType = 0
-	ProductReviewReactionTypeLike    ProductReviewReactionType = 1 // いいね
-	ProductReviewReactionTypeDislike ProductReviewReactionType = 2 // いまいち
-)
+type ProductReviewReactionType types.ProductReviewReactionType
 
 func NewProductReviewReactionType(typ entity.ProductReviewReactionType) ProductReviewReactionType {
 	switch typ {
 	case entity.ProductReviewReactionTypeLike:
-		return ProductReviewReactionTypeLike
+		return ProductReviewReactionType(types.ProductReviewReactionTypeLike)
 	case entity.ProductReviewReactionTypeDislike:
-		return ProductReviewReactionTypeDislike
+		return ProductReviewReactionType(types.ProductReviewReactionTypeDislike)
 	default:
-		return ProductReviewReactionTypeUnknown
+		return ProductReviewReactionType(types.ProductReviewReactionTypeUnknown)
 	}
 }
 
 func NewProductReviewReactionTypeFromRequest(typ int32) (ProductReviewReactionType, bool) {
 	switch typ {
 	case 1:
-		return ProductReviewReactionTypeLike, true
+		return ProductReviewReactionType(types.ProductReviewReactionTypeLike), true
 	case 2:
-		return ProductReviewReactionTypeDislike, true
+		return ProductReviewReactionType(types.ProductReviewReactionTypeDislike), true
 	default:
-		return ProductReviewReactionTypeUnknown, false
+		return ProductReviewReactionType(types.ProductReviewReactionTypeUnknown), false
 	}
 }
 
 func (t ProductReviewReactionType) StoreEntity() entity.ProductReviewReactionType {
-	switch t {
-	case ProductReviewReactionTypeLike:
+	switch types.ProductReviewReactionType(t) {
+	case types.ProductReviewReactionTypeLike:
 		return entity.ProductReviewReactionTypeLike
-	case ProductReviewReactionTypeDislike:
+	case types.ProductReviewReactionTypeDislike:
 		return entity.ProductReviewReactionTypeDislike
 	default:
 		return entity.ProductReviewReactionTypeUnknown
 	}
 }
 
-func (t ProductReviewReactionType) Response() int32 {
-	return int32(t)
+func (t ProductReviewReactionType) Response() types.ProductReviewReactionType {
+	return types.ProductReviewReactionType(int32(t))
 }
 
 type ProductReview struct {

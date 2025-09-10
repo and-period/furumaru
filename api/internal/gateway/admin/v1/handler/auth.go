@@ -88,12 +88,12 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 		auth authUser
 		err  error
 	)
-	switch getAdminType(ctx) {
-	case service.AdminTypeAdministrator:
+	switch getAdminType(ctx).Response() {
+	case types.AdminTypeAdministrator:
 		auth, err = h.getAdministrator(ctx, adminID)
-	case service.AdminTypeCoordinator:
+	case types.AdminTypeCoordinator:
 		auth, err = h.getCoordinator(ctx, adminID)
-	case service.AdminTypeProducer:
+	case types.AdminTypeProducer:
 		auth, err = h.getProducer(ctx, adminID)
 	default:
 		h.forbidden(ctx, errors.New("handler: unknown admin role"))
@@ -539,7 +539,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 // @Success     200 {object} types.CoordinatorResponse
 // @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
-	if getAdminType(ctx) != service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -581,7 +581,7 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
-	if getAdminType(ctx) != service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -629,7 +629,7 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} types.ShippingResponse
 func (h *handler) GetAuthShipping(ctx *gin.Context) {
-	if getAdminType(ctx) != service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}
@@ -664,7 +664,7 @@ func (h *handler) GetAuthShipping(ctx *gin.Context) {
 // @Success     204
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
 func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
-	if getAdminType(ctx) != service.AdminTypeCoordinator {
+	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
 		h.forbidden(ctx, errors.New("this user is not coordinator"))
 		return
 	}

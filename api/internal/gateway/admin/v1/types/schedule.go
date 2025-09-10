@@ -1,22 +1,34 @@
 package types
 
+// ScheduleStatus - 開催状況
+type ScheduleStatus int32
+
+const (
+	ScheduleStatusUnknown    ScheduleStatus = 0
+	ScheduleStatusPrivate    ScheduleStatus = 1 // 非公開
+	ScheduleStatusInProgress ScheduleStatus = 2 // 管理者承認前
+	ScheduleStatusWaiting    ScheduleStatus = 3 // 開催前
+	ScheduleStatusLive       ScheduleStatus = 4 // 開催中
+	ScheduleStatusClosed     ScheduleStatus = 5 // 開催終了
+)
+
 // Schedule - マルシェ開催情報
 type Schedule struct {
-	ID              string `json:"id"`              // スケジュールID
-	ShopID          string `json:"shopId"`          // 店舗ID
-	CoordinatorID   string `json:"coordinatorId"`   // コーディネータID
-	Status          int32  `json:"status"`          // 開催状況
-	Title           string `json:"title"`           // タイトル
-	Description     string `json:"description"`     // 説明
-	ThumbnailURL    string `json:"thumbnailUrl"`    // サムネイルURL
-	ImageURL        string `json:"imageUrl"`        // 蓋絵URL
-	OpeningVideoURL string `json:"openingVideoUrl"` // オープニング動画URL
-	Public          bool   `json:"public"`          // 公開フラグ
-	Approved        bool   `json:"approved"`        // 承認フラグ
-	StartAt         int64  `json:"startAt"`         // 配信開始日時
-	EndAt           int64  `json:"endAt"`           // 配信終了日時
-	CreatedAt       int64  `json:"createdAt"`       // 登録日時
-	UpdatedAt       int64  `json:"updatedAt"`       // 更新日時
+	ID              string         `json:"id"`              // スケジュールID
+	ShopID          string         `json:"shopId"`          // 店舗ID
+	CoordinatorID   string         `json:"coordinatorId"`   // コーディネータID
+	Status          ScheduleStatus `json:"status"`          // 開催状況
+	Title           string         `json:"title"`           // タイトル
+	Description     string         `json:"description"`     // 説明
+	ThumbnailURL    string         `json:"thumbnailUrl"`    // サムネイルURL
+	ImageURL        string         `json:"imageUrl"`        // 蓋絵URL
+	OpeningVideoURL string         `json:"openingVideoUrl"` // オープニング動画URL
+	Public          bool           `json:"public"`          // 公開フラグ
+	Approved        bool           `json:"approved"`        // 承認フラグ
+	StartAt         int64          `json:"startAt"`         // 配信開始日時
+	EndAt           int64          `json:"endAt"`           // 配信終了日時
+	CreatedAt       int64          `json:"createdAt"`       // 登録日時
+	UpdatedAt       int64          `json:"updatedAt"`       // 更新日時
 }
 
 type CreateScheduleRequest struct {

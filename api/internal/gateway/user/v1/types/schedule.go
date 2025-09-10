@@ -1,10 +1,21 @@
 package types
 
+// ScheduleStatus - 開催状況
+type ScheduleStatus int32
+
+const (
+	ScheduleStatusUnknown  ScheduleStatus = 0
+	ScheduleStatusWaiting  ScheduleStatus = 1 // ライブ配信前
+	ScheduleStatusLive     ScheduleStatus = 2 // ライブ配信中
+	ScheduleStatusClosed   ScheduleStatus = 3 // ライブ配信終了
+	ScheduleStatusArchived ScheduleStatus = 4 // アーカイブ配信
+)
+
 // Schedule - マルシェ開催情報
 type Schedule struct {
 	ID                   string                        `json:"id"`                   // スケジュールID
 	CoordinatorID        string                        `json:"coordinatorId"`        // コーディネータID
-	Status               int32                         `json:"status"`               // 開催状況
+	Status               ScheduleStatus                `json:"status"`               // 開催状況
 	Title                string                        `json:"title"`                // タイトル
 	Description          string                        `json:"description"`          // 説明
 	ThumbnailURL         string                        `json:"thumbnailUrl"`         // サムネイルURL
