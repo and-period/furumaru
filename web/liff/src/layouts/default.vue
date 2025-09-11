@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import liff from '@line/liff';
-import { useAuthStore } from '~/stores/auth';
 import { useShoppingCartStore } from '~/stores/shopping';
+import { useLiffInit } from '~/composables/useLiffInit';
+import { useAuthStore } from '~/stores/auth';
 import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
 const router = useRouter();
-const runtimeConfig = useRuntimeConfig();
 
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
@@ -30,52 +30,39 @@ const goToCheckout = async () => {
 };
 
 // マウント時に認証処理とカート取得を実行
+const { init: initLiff } = useLiffInit();
+const runtimeConfig = useRuntimeConfig();
 onMounted(async () => {
-  const liffId = runtimeConfig.public.LIFF_ID;
-  if (!liffId) {
-    console.error('Please set LIFF_ID in .env file');
-  }
-  else {
-    try {
-      console.log(liffId);
-      await liff.init({ liffId });
-    }
-    catch (error) {
-      console.error('LIFF init failed', error);
-    }
-  }
+  await initLiff(runtimeConfig.public.LIFF_ID);
 
+  // ログイン済みであれば、サインインとカート取得を実行
   if (!liff.isLoggedIn()) {
-    liff.login();
     return;
   }
 
-  // サインイン（LIFFログイン済みの場合のみ）
-  if (liff.isLoggedIn()) {
-    const liffIDToken = liff.getIDToken();
-    if (liffIDToken) {
-      try {
-        await authStore.signIn(liffIDToken);
-        // 認証処理の後にカート情報を取得（トークン付与のため）
-        await shoppingCartStore.getCart();
-      }
-      catch (err) {
-        if (err instanceof ResponseError) {
-          if (err.response.status === 404) {
-            // 404 Error の場合は新規登録へリダイレクト
-            const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
-            await router.push(path);
-            return;
-          }
-          if (err.response.status === 401) {
-            // 401 Error の場合は再ログイン
-            liff.logout();
-            return;
-          }
+  const liffIDToken = liff.getIDToken();
+  if (liffIDToken) {
+    try {
+      await authStore.signIn(liffIDToken);
+      // 認証処理の後にカート情報を取得（トークン付与のため）
+      await shoppingCartStore.getCart();
+    }
+    catch (err) {
+      if (err instanceof ResponseError) {
+        if (err.response.status === 404) {
+          // 404 Error の場合は新規登録へリダイレクト
+          const path = facilityId.value ? `/${facilityId.value}/checkin/new` : '/checkin/new';
+          await router.push(path);
+          return;
         }
-
-        console.error('Auth signIn or redirect failed:', err);
+        if (err.response.status === 401) {
+          // 401 Error の場合は再ログイン
+          liff.logout();
+          return;
+        }
       }
+
+      console.error('Auth signIn or redirect failed:', err);
     }
   }
 });

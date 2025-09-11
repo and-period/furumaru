@@ -118,8 +118,6 @@ async function onSubmit() {
     isSubmitting.value = false;
   }
 }
-
-// エラーメッセージは共通関数で整形
 </script>
 
 <template>
