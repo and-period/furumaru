@@ -15,87 +15,87 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesAuthUserResponse,
-  TypesCreateAuthUserRequest,
-  TypesCreateAuthUserResponse,
-  TypesCreateAuthUserWithGoogleRequest,
-  TypesCreateAuthUserWithLINERequest,
-  TypesUpdateAuthUserAccountIDRequest,
-  TypesUpdateAuthUserEmailRequest,
-  TypesUpdateAuthUserNotificationRequest,
-  TypesUpdateAuthUserThumbnailRequest,
-  TypesUpdateAuthUserUsernameRequest,
-  TypesVerifyAuthUserEmailRequest,
-  TypesVerifyAuthUserRequest,
-  UtilErrorResponse,
+  AuthUserResponse,
+  CreateAuthUserRequest,
+  CreateAuthUserResponse,
+  CreateAuthUserWithGoogleRequest,
+  CreateAuthUserWithLINERequest,
+  ErrorResponse,
+  UpdateAuthUserAccountIDRequest,
+  UpdateAuthUserEmailRequest,
+  UpdateAuthUserNotificationRequest,
+  UpdateAuthUserThumbnailRequest,
+  UpdateAuthUserUsernameRequest,
+  VerifyAuthUserEmailRequest,
+  VerifyAuthUserRequest,
 } from '../models/index';
 import {
-    TypesAuthUserResponseFromJSON,
-    TypesAuthUserResponseToJSON,
-    TypesCreateAuthUserRequestFromJSON,
-    TypesCreateAuthUserRequestToJSON,
-    TypesCreateAuthUserResponseFromJSON,
-    TypesCreateAuthUserResponseToJSON,
-    TypesCreateAuthUserWithGoogleRequestFromJSON,
-    TypesCreateAuthUserWithGoogleRequestToJSON,
-    TypesCreateAuthUserWithLINERequestFromJSON,
-    TypesCreateAuthUserWithLINERequestToJSON,
-    TypesUpdateAuthUserAccountIDRequestFromJSON,
-    TypesUpdateAuthUserAccountIDRequestToJSON,
-    TypesUpdateAuthUserEmailRequestFromJSON,
-    TypesUpdateAuthUserEmailRequestToJSON,
-    TypesUpdateAuthUserNotificationRequestFromJSON,
-    TypesUpdateAuthUserNotificationRequestToJSON,
-    TypesUpdateAuthUserThumbnailRequestFromJSON,
-    TypesUpdateAuthUserThumbnailRequestToJSON,
-    TypesUpdateAuthUserUsernameRequestFromJSON,
-    TypesUpdateAuthUserUsernameRequestToJSON,
-    TypesVerifyAuthUserEmailRequestFromJSON,
-    TypesVerifyAuthUserEmailRequestToJSON,
-    TypesVerifyAuthUserRequestFromJSON,
-    TypesVerifyAuthUserRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    AuthUserResponseFromJSON,
+    AuthUserResponseToJSON,
+    CreateAuthUserRequestFromJSON,
+    CreateAuthUserRequestToJSON,
+    CreateAuthUserResponseFromJSON,
+    CreateAuthUserResponseToJSON,
+    CreateAuthUserWithGoogleRequestFromJSON,
+    CreateAuthUserWithGoogleRequestToJSON,
+    CreateAuthUserWithLINERequestFromJSON,
+    CreateAuthUserWithLINERequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    UpdateAuthUserAccountIDRequestFromJSON,
+    UpdateAuthUserAccountIDRequestToJSON,
+    UpdateAuthUserEmailRequestFromJSON,
+    UpdateAuthUserEmailRequestToJSON,
+    UpdateAuthUserNotificationRequestFromJSON,
+    UpdateAuthUserNotificationRequestToJSON,
+    UpdateAuthUserThumbnailRequestFromJSON,
+    UpdateAuthUserThumbnailRequestToJSON,
+    UpdateAuthUserUsernameRequestFromJSON,
+    UpdateAuthUserUsernameRequestToJSON,
+    VerifyAuthUserEmailRequestFromJSON,
+    VerifyAuthUserEmailRequestToJSON,
+    VerifyAuthUserRequestFromJSON,
+    VerifyAuthUserRequestToJSON,
 } from '../models/index';
 
 export interface UsersMeAccountIdPatchRequest {
-    typesUpdateAuthUserAccountIDRequest: TypesUpdateAuthUserAccountIDRequest;
+    updateAuthUserAccountIDRequest: UpdateAuthUserAccountIDRequest;
 }
 
 export interface UsersMeEmailPatchRequest {
-    typesUpdateAuthUserEmailRequest: TypesUpdateAuthUserEmailRequest;
+    updateAuthUserEmailRequest: UpdateAuthUserEmailRequest;
 }
 
 export interface UsersMeEmailVerifiedPostRequest {
-    typesVerifyAuthUserEmailRequest: TypesVerifyAuthUserEmailRequest;
+    verifyAuthUserEmailRequest: VerifyAuthUserEmailRequest;
 }
 
 export interface UsersMeGooglePostRequest {
-    typesCreateAuthUserWithGoogleRequest: TypesCreateAuthUserWithGoogleRequest;
+    createAuthUserWithGoogleRequest: CreateAuthUserWithGoogleRequest;
 }
 
 export interface UsersMeLinePostRequest {
-    typesCreateAuthUserWithLINERequest: TypesCreateAuthUserWithLINERequest;
+    createAuthUserWithLINERequest: CreateAuthUserWithLINERequest;
 }
 
 export interface UsersMeNotificationPatchRequest {
-    typesUpdateAuthUserNotificationRequest: TypesUpdateAuthUserNotificationRequest;
+    updateAuthUserNotificationRequest: UpdateAuthUserNotificationRequest;
 }
 
 export interface UsersMePostRequest {
-    typesCreateAuthUserRequest: TypesCreateAuthUserRequest;
+    createAuthUserRequest: CreateAuthUserRequest;
 }
 
 export interface UsersMeThumbnailPatchRequest {
-    typesUpdateAuthUserThumbnailRequest: TypesUpdateAuthUserThumbnailRequest;
+    updateAuthUserThumbnailRequest: UpdateAuthUserThumbnailRequest;
 }
 
 export interface UsersMeUsernamePatchRequest {
-    typesUpdateAuthUserUsernameRequest: TypesUpdateAuthUserUsernameRequest;
+    updateAuthUserUsernameRequest: UpdateAuthUserUsernameRequest;
 }
 
 export interface UsersMeVerifiedPostRequest {
-    typesVerifyAuthUserRequest: TypesVerifyAuthUserRequest;
+    verifyAuthUserRequest: VerifyAuthUserRequest;
 }
 
 /**
@@ -108,10 +108,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * アカウントID更新
      */
     async usersMeAccountIdPatchRaw(requestParameters: UsersMeAccountIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthUserAccountIDRequest'] == null) {
+        if (requestParameters['updateAuthUserAccountIDRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthUserAccountIDRequest',
-                'Required parameter "typesUpdateAuthUserAccountIDRequest" was null or undefined when calling usersMeAccountIdPatch().'
+                'updateAuthUserAccountIDRequest',
+                'Required parameter "updateAuthUserAccountIDRequest" was null or undefined when calling usersMeAccountIdPatch().'
             );
         }
 
@@ -134,7 +134,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthUserAccountIDRequestToJSON(requestParameters['typesUpdateAuthUserAccountIDRequest']),
+            body: UpdateAuthUserAccountIDRequestToJSON(requestParameters['updateAuthUserAccountIDRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -188,10 +188,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * メールアドレス更新
      */
     async usersMeEmailPatchRaw(requestParameters: UsersMeEmailPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthUserEmailRequest'] == null) {
+        if (requestParameters['updateAuthUserEmailRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthUserEmailRequest',
-                'Required parameter "typesUpdateAuthUserEmailRequest" was null or undefined when calling usersMeEmailPatch().'
+                'updateAuthUserEmailRequest',
+                'Required parameter "updateAuthUserEmailRequest" was null or undefined when calling usersMeEmailPatch().'
             );
         }
 
@@ -214,7 +214,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthUserEmailRequestToJSON(requestParameters['typesUpdateAuthUserEmailRequest']),
+            body: UpdateAuthUserEmailRequestToJSON(requestParameters['updateAuthUserEmailRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -233,10 +233,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * メールアドレス更新確認
      */
     async usersMeEmailVerifiedPostRaw(requestParameters: UsersMeEmailVerifiedPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesVerifyAuthUserEmailRequest'] == null) {
+        if (requestParameters['verifyAuthUserEmailRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesVerifyAuthUserEmailRequest',
-                'Required parameter "typesVerifyAuthUserEmailRequest" was null or undefined when calling usersMeEmailVerifiedPost().'
+                'verifyAuthUserEmailRequest',
+                'Required parameter "verifyAuthUserEmailRequest" was null or undefined when calling usersMeEmailVerifiedPost().'
             );
         }
 
@@ -259,7 +259,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesVerifyAuthUserEmailRequestToJSON(requestParameters['typesVerifyAuthUserEmailRequest']),
+            body: VerifyAuthUserEmailRequestToJSON(requestParameters['verifyAuthUserEmailRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -277,7 +277,7 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ログイン中のユーザー情報を取得します。
      * 認証ユーザー情報取得
      */
-    async usersMeGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthUserResponse>> {
+    async usersMeGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -297,14 +297,14 @@ export class AuthUserApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * ログイン中のユーザー情報を取得します。
      * 認証ユーザー情報取得
      */
-    async usersMeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthUserResponse> {
+    async usersMeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
         const response = await this.usersMeGetRaw(initOverrides);
         return await response.value();
     }
@@ -313,11 +313,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * Googleアカウントを使用してユーザー登録を行います。
      * Googleアカウントでユーザー登録
      */
-    async usersMeGooglePostRaw(requestParameters: UsersMeGooglePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthUserResponse>> {
-        if (requestParameters['typesCreateAuthUserWithGoogleRequest'] == null) {
+    async usersMeGooglePostRaw(requestParameters: UsersMeGooglePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+        if (requestParameters['createAuthUserWithGoogleRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateAuthUserWithGoogleRequest',
-                'Required parameter "typesCreateAuthUserWithGoogleRequest" was null or undefined when calling usersMeGooglePost().'
+                'createAuthUserWithGoogleRequest',
+                'Required parameter "createAuthUserWithGoogleRequest" was null or undefined when calling usersMeGooglePost().'
             );
         }
 
@@ -332,17 +332,17 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateAuthUserWithGoogleRequestToJSON(requestParameters['typesCreateAuthUserWithGoogleRequest']),
+            body: CreateAuthUserWithGoogleRequestToJSON(requestParameters['createAuthUserWithGoogleRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Googleアカウントを使用してユーザー登録を行います。
      * Googleアカウントでユーザー登録
      */
-    async usersMeGooglePost(requestParameters: UsersMeGooglePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthUserResponse> {
+    async usersMeGooglePost(requestParameters: UsersMeGooglePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
         const response = await this.usersMeGooglePostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -351,11 +351,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * LINEアカウントを使用してユーザー登録を行います。
      * LINEアカウントでユーザー登録
      */
-    async usersMeLinePostRaw(requestParameters: UsersMeLinePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthUserResponse>> {
-        if (requestParameters['typesCreateAuthUserWithLINERequest'] == null) {
+    async usersMeLinePostRaw(requestParameters: UsersMeLinePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+        if (requestParameters['createAuthUserWithLINERequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateAuthUserWithLINERequest',
-                'Required parameter "typesCreateAuthUserWithLINERequest" was null or undefined when calling usersMeLinePost().'
+                'createAuthUserWithLINERequest',
+                'Required parameter "createAuthUserWithLINERequest" was null or undefined when calling usersMeLinePost().'
             );
         }
 
@@ -370,17 +370,17 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateAuthUserWithLINERequestToJSON(requestParameters['typesCreateAuthUserWithLINERequest']),
+            body: CreateAuthUserWithLINERequestToJSON(requestParameters['createAuthUserWithLINERequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * LINEアカウントを使用してユーザー登録を行います。
      * LINEアカウントでユーザー登録
      */
-    async usersMeLinePost(requestParameters: UsersMeLinePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthUserResponse> {
+    async usersMeLinePost(requestParameters: UsersMeLinePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
         const response = await this.usersMeLinePostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -390,10 +390,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 通知設定更新
      */
     async usersMeNotificationPatchRaw(requestParameters: UsersMeNotificationPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthUserNotificationRequest'] == null) {
+        if (requestParameters['updateAuthUserNotificationRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthUserNotificationRequest',
-                'Required parameter "typesUpdateAuthUserNotificationRequest" was null or undefined when calling usersMeNotificationPatch().'
+                'updateAuthUserNotificationRequest',
+                'Required parameter "updateAuthUserNotificationRequest" was null or undefined when calling usersMeNotificationPatch().'
             );
         }
 
@@ -416,7 +416,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthUserNotificationRequestToJSON(requestParameters['typesUpdateAuthUserNotificationRequest']),
+            body: UpdateAuthUserNotificationRequestToJSON(requestParameters['updateAuthUserNotificationRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -434,11 +434,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 新しいユーザーを登録します。
      * ユーザー登録
      */
-    async usersMePostRaw(requestParameters: UsersMePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCreateAuthUserResponse>> {
-        if (requestParameters['typesCreateAuthUserRequest'] == null) {
+    async usersMePostRaw(requestParameters: UsersMePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateAuthUserResponse>> {
+        if (requestParameters['createAuthUserRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateAuthUserRequest',
-                'Required parameter "typesCreateAuthUserRequest" was null or undefined when calling usersMePost().'
+                'createAuthUserRequest',
+                'Required parameter "createAuthUserRequest" was null or undefined when calling usersMePost().'
             );
         }
 
@@ -453,17 +453,17 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateAuthUserRequestToJSON(requestParameters['typesCreateAuthUserRequest']),
+            body: CreateAuthUserRequestToJSON(requestParameters['createAuthUserRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCreateAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateAuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * 新しいユーザーを登録します。
      * ユーザー登録
      */
-    async usersMePost(requestParameters: UsersMePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCreateAuthUserResponse> {
+    async usersMePost(requestParameters: UsersMePostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateAuthUserResponse> {
         const response = await this.usersMePostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -473,10 +473,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * サムネイル更新
      */
     async usersMeThumbnailPatchRaw(requestParameters: UsersMeThumbnailPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthUserThumbnailRequest'] == null) {
+        if (requestParameters['updateAuthUserThumbnailRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthUserThumbnailRequest',
-                'Required parameter "typesUpdateAuthUserThumbnailRequest" was null or undefined when calling usersMeThumbnailPatch().'
+                'updateAuthUserThumbnailRequest',
+                'Required parameter "updateAuthUserThumbnailRequest" was null or undefined when calling usersMeThumbnailPatch().'
             );
         }
 
@@ -499,7 +499,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthUserThumbnailRequestToJSON(requestParameters['typesUpdateAuthUserThumbnailRequest']),
+            body: UpdateAuthUserThumbnailRequestToJSON(requestParameters['updateAuthUserThumbnailRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -518,10 +518,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザー名更新
      */
     async usersMeUsernamePatchRaw(requestParameters: UsersMeUsernamePatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthUserUsernameRequest'] == null) {
+        if (requestParameters['updateAuthUserUsernameRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthUserUsernameRequest',
-                'Required parameter "typesUpdateAuthUserUsernameRequest" was null or undefined when calling usersMeUsernamePatch().'
+                'updateAuthUserUsernameRequest',
+                'Required parameter "updateAuthUserUsernameRequest" was null or undefined when calling usersMeUsernamePatch().'
             );
         }
 
@@ -544,7 +544,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthUserUsernameRequestToJSON(requestParameters['typesUpdateAuthUserUsernameRequest']),
+            body: UpdateAuthUserUsernameRequestToJSON(requestParameters['updateAuthUserUsernameRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -563,10 +563,10 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザー登録確認
      */
     async usersMeVerifiedPostRaw(requestParameters: UsersMeVerifiedPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesVerifyAuthUserRequest'] == null) {
+        if (requestParameters['verifyAuthUserRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesVerifyAuthUserRequest',
-                'Required parameter "typesVerifyAuthUserRequest" was null or undefined when calling usersMeVerifiedPost().'
+                'verifyAuthUserRequest',
+                'Required parameter "verifyAuthUserRequest" was null or undefined when calling usersMeVerifiedPost().'
             );
         }
 
@@ -581,7 +581,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesVerifyAuthUserRequestToJSON(requestParameters['typesVerifyAuthUserRequest']),
+            body: VerifyAuthUserRequestToJSON(requestParameters['verifyAuthUserRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

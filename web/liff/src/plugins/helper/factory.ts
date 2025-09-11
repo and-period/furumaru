@@ -1,4 +1,4 @@
-import { Configuration } from '@/types/api';
+import { Configuration } from '@/types/api/v1';
 import { Configuration as FacilityConfiguration } from '@/types/api/facility';
 
 /**

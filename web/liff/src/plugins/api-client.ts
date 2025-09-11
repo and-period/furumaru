@@ -1,6 +1,6 @@
 import type { PiniaPluginContext } from 'pinia';
 import ApiClientFactory from './helper/factory';
-import { ProductApi } from '@/types/api/';
+import { ProductApi } from '@/types/api/v1';
 import { AuthApi, ProductApi as FacilityProductApi } from '@/types/api/facility';
 
 function apiClientInjector({ store }: PiniaPluginContext) {

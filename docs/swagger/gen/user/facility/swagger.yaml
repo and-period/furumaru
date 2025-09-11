@@ -1,6 +1,6 @@
 components:
   schemas:
-    types.AddCartItemRequest:
+    AddCartItemRequest:
       properties:
         productId:
           description: 商品ID
@@ -12,7 +12,7 @@ components:
       required:
       - productId
       type: object
-    types.AuthResponse:
+    AuthResponse:
       properties:
         accessToken:
           description: アクセストークン
@@ -30,7 +30,7 @@ components:
           description: ユーザーID
           type: string
       type: object
-    types.AuthUserResponse:
+    AuthUserResponse:
       properties:
         email:
           description: メールアドレス
@@ -57,33 +57,33 @@ components:
           description: 電話番号
           type: string
       type: object
-    types.CalcCartResponse:
+    CalcCartResponse:
       properties:
         carts:
           description: カート一覧
           items:
-            $ref: '#/components/schemas/types.Cart'
+            $ref: '#/components/schemas/Cart'
           type: array
           uniqueItems: false
         coordinator:
-          $ref: '#/components/schemas/types.Coordinator'
+          $ref: '#/components/schemas/Coordinator'
         discount:
           description: 割引金額(税込)
           type: integer
         items:
           description: カート内の商品一覧(集計結果)
           items:
-            $ref: '#/components/schemas/types.CartItem'
+            $ref: '#/components/schemas/CartItem'
           type: array
           uniqueItems: false
         products:
           description: 商品一覧
           items:
-            $ref: '#/components/schemas/types.Product'
+            $ref: '#/components/schemas/Product'
           type: array
           uniqueItems: false
         promotion:
-          $ref: '#/components/schemas/types.Promotion'
+          $ref: '#/components/schemas/Promotion'
         requestId:
           description: 支払い時にAPIへ送信するキー(重複判定用)
           type: string
@@ -97,7 +97,7 @@ components:
           description: 合計金額(税込)
           type: integer
       type: object
-    types.Cart:
+    Cart:
       properties:
         coordinatorId:
           description: コーディネータID
@@ -105,7 +105,7 @@ components:
         items:
           description: 箱の商品一覧
           items:
-            $ref: '#/components/schemas/types.CartItem'
+            $ref: '#/components/schemas/CartItem'
           type: array
           uniqueItems: false
         number:
@@ -115,11 +115,11 @@ components:
           description: 箱の占有率
           type: integer
         size:
-          $ref: '#/components/schemas/types.ShippingSize'
+          $ref: '#/components/schemas/ShippingSize'
         type:
-          $ref: '#/components/schemas/types.ShippingType'
+          $ref: '#/components/schemas/ShippingType'
       type: object
-    types.CartItem:
+    CartItem:
       properties:
         productId:
           description: 商品ID
@@ -128,28 +128,28 @@ components:
           description: 数量
           type: integer
       type: object
-    types.CartResponse:
+    CartResponse:
       properties:
         carts:
           description: カート一覧
           items:
-            $ref: '#/components/schemas/types.Cart'
+            $ref: '#/components/schemas/Cart'
           type: array
           uniqueItems: false
         coordinators:
           description: コーディネータ一覧
           items:
-            $ref: '#/components/schemas/types.Coordinator'
+            $ref: '#/components/schemas/Coordinator'
           type: array
           uniqueItems: false
         products:
           description: 商品一覧
           items:
-            $ref: '#/components/schemas/types.Product'
+            $ref: '#/components/schemas/Product'
           type: array
           uniqueItems: false
       type: object
-    types.Category:
+    Category:
       description: 商品種別情報
       properties:
         id:
@@ -159,7 +159,7 @@ components:
           description: 商品種別名
           type: string
       type: object
-    types.CheckoutCreditCard:
+    CheckoutCreditCard:
       description: クレジットカード決済情報
       properties:
         month:
@@ -187,7 +187,7 @@ components:
       - name
       - number
       type: object
-    types.CheckoutRequest:
+    CheckoutRequest:
       properties:
         boxNumber:
           description: 箱の通番（箱単位で購入する場合）
@@ -200,9 +200,9 @@ components:
           description: コーディネータID
           type: string
         creditCard:
-          $ref: '#/components/schemas/types.CheckoutCreditCard'
+          $ref: '#/components/schemas/CheckoutCreditCard'
         paymentMethod:
-          $ref: '#/components/schemas/types.PaymentMethodType'
+          $ref: '#/components/schemas/PaymentMethodType'
         promotionCode:
           description: プロモーションコード
           type: string
@@ -219,21 +219,21 @@ components:
       - paymentMethod
       - requestId
       type: object
-    types.CheckoutResponse:
+    CheckoutResponse:
       properties:
         url:
           description: 遷移先URL
           type: string
       type: object
-    types.CheckoutStateResponse:
+    CheckoutStateResponse:
       properties:
         orderId:
           description: 注文履歴ID
           type: string
         status:
-          $ref: '#/components/schemas/types.PaymentStatus'
+          $ref: '#/components/schemas/PaymentStatus'
       type: object
-    types.Coordinator:
+    Coordinator:
       description: コーディネータ情報
       properties:
         businessDays:
@@ -282,7 +282,7 @@ components:
           description: 表示名
           type: string
       type: object
-    types.CreateAuthUserRequest:
+    CreateAuthUserRequest:
       properties:
         authToken:
           description: LINEの認証トークン
@@ -318,7 +318,7 @@ components:
       - lastnameKana
       - phoneNumber
       type: object
-    types.DeliveryType:
+    DeliveryType:
       description: 配送方法
       type: integer
       x-enum-comments:
@@ -330,7 +330,7 @@ components:
       - DeliveryTypeNormal
       - DeliveryTypeRefrigerated
       - DeliveryTypeFrozen
-    types.DiscountType:
+    DiscountType:
       description: 割引計算方法
       type: integer
       x-enum-comments:
@@ -342,7 +342,7 @@ components:
       - DiscountTypeAmount
       - DiscountTypeRate
       - DiscountTypeFreeShipping
-    types.GetAccessTokenRequest:
+    GetAccessTokenRequest:
       properties:
         refreshToken:
           description: 更新トークン
@@ -350,7 +350,7 @@ components:
       required:
       - refreshToken
       type: object
-    types.Order:
+    Order:
       description: 注文履歴情報
       properties:
         coordinatorId:
@@ -362,11 +362,11 @@ components:
         items:
           description: 注文商品一覧
           items:
-            $ref: '#/components/schemas/types.OrderItem'
+            $ref: '#/components/schemas/OrderItem'
           type: array
           uniqueItems: false
         payment:
-          $ref: '#/components/schemas/types.OrderPayment'
+          $ref: '#/components/schemas/OrderPayment'
         pickupAt:
           description: 受け取り日時
           type: integer
@@ -377,13 +377,13 @@ components:
           description: プロモーションID
           type: string
         refund:
-          $ref: '#/components/schemas/types.OrderRefund'
+          $ref: '#/components/schemas/OrderRefund'
         status:
-          $ref: '#/components/schemas/types.OrderStatus'
+          $ref: '#/components/schemas/OrderStatus'
         type:
-          $ref: '#/components/schemas/types.OrderType'
+          $ref: '#/components/schemas/OrderType'
       type: object
-    types.OrderItem:
+    OrderItem:
       properties:
         fulfillmentId:
           description: 配送情報ID
@@ -398,7 +398,7 @@ components:
           description: 購入数量
           type: integer
       type: object
-    types.OrderPayment:
+    OrderPayment:
       description: 支払い情報
       properties:
         discount:
@@ -467,7 +467,7 @@ components:
           description: 取引ID
           type: string
       type: object
-    types.OrderRefund:
+    OrderRefund:
       description: 注文キャンセル情報
       properties:
         canceled:
@@ -483,24 +483,24 @@ components:
           description: 返金金額
           type: integer
         type:
-          $ref: '#/components/schemas/types.RefundType'
+          $ref: '#/components/schemas/RefundType'
       type: object
-    types.OrderResponse:
+    OrderResponse:
       properties:
         coordinator:
-          $ref: '#/components/schemas/types.Coordinator'
+          $ref: '#/components/schemas/Coordinator'
         order:
-          $ref: '#/components/schemas/types.Order'
+          $ref: '#/components/schemas/Order'
         products:
           description: 商品一覧
           items:
-            $ref: '#/components/schemas/types.Product'
+            $ref: '#/components/schemas/Product'
           type: array
           uniqueItems: false
         promotion:
-          $ref: '#/components/schemas/types.Promotion'
+          $ref: '#/components/schemas/Promotion'
       type: object
-    types.OrderStatus:
+    OrderStatus:
       description: 注文ステータス
       type: integer
       x-enum-comments:
@@ -518,7 +518,7 @@ components:
       - OrderStatusCanceled
       - OrderStatusRefunded
       - OrderStatusFailed
-    types.OrderType:
+    OrderType:
       description: 注文種別
       type: integer
       x-enum-comments:
@@ -528,37 +528,37 @@ components:
       - OrderTypeUnknown
       - OrderTypeProduct
       - OrderTypeExperience
-    types.OrdersResponse:
+    OrdersResponse:
       properties:
         coordinators:
           description: コーディネータ一覧
           items:
-            $ref: '#/components/schemas/types.Coordinator'
+            $ref: '#/components/schemas/Coordinator'
           type: array
           uniqueItems: false
         orders:
           description: 注文履歴一覧
           items:
-            $ref: '#/components/schemas/types.Order'
+            $ref: '#/components/schemas/Order'
           type: array
           uniqueItems: false
         products:
           description: 商品一覧
           items:
-            $ref: '#/components/schemas/types.Product'
+            $ref: '#/components/schemas/Product'
           type: array
           uniqueItems: false
         promotions:
           description: プロモーション一覧
           items:
-            $ref: '#/components/schemas/types.Promotion'
+            $ref: '#/components/schemas/Promotion'
           type: array
           uniqueItems: false
         total:
           description: 合計数
           type: integer
       type: object
-    types.PaymentMethodType:
+    PaymentMethodType:
       description: 支払い方法
       type: integer
       x-enum-comments:
@@ -588,7 +588,7 @@ components:
       - PaymentMethodTypeFree
       - PaymentMethodTypePaidy
       - PaymentMethodTypePayEasy
-    types.PaymentStatus:
+    PaymentStatus:
       description: 注文ステータス
       type: integer
       x-enum-comments:
@@ -602,7 +602,7 @@ components:
       - PaymentStatusPaid
       - PaymentStatusCanceled
       - PaymentStatusFailed
-    types.Producer:
+    Producer:
       description: 生産者情報
       properties:
         city:
@@ -639,7 +639,7 @@ components:
           description: 生産者名
           type: string
       type: object
-    types.Product:
+    Product:
       description: 商品情報
       properties:
         box60Rate:
@@ -658,7 +658,7 @@ components:
           description: コーディネータID
           type: string
         deliveryType:
-          $ref: '#/components/schemas/types.DeliveryType'
+          $ref: '#/components/schemas/DeliveryType'
         description:
           description: 商品説明
           type: string
@@ -683,7 +683,7 @@ components:
         media:
           description: メディア一覧
           items:
-            $ref: '#/components/schemas/types.ProductMedia'
+            $ref: '#/components/schemas/ProductMedia'
           type: array
           uniqueItems: false
         name:
@@ -711,7 +711,7 @@ components:
           description: 品目ID
           type: string
         rate:
-          $ref: '#/components/schemas/types.ProductRate'
+          $ref: '#/components/schemas/ProductRate'
         recommendedPoint1:
           description: おすすめポイント1
           type: string
@@ -725,9 +725,9 @@ components:
           description: 販売開始日時
           type: integer
         status:
-          $ref: '#/components/schemas/types.ProductStatus'
+          $ref: '#/components/schemas/ProductStatus'
         storageMethodType:
-          $ref: '#/components/schemas/types.StorageMethodType'
+          $ref: '#/components/schemas/StorageMethodType'
         thumbnailUrl:
           description: サムネイルURL
           type: string
@@ -735,7 +735,7 @@ components:
           description: 重量(kg,少数第一位まで)
           type: number
       type: object
-    types.ProductMedia:
+    ProductMedia:
       properties:
         isThumbnail:
           description: サムネイルとして使用
@@ -744,7 +744,7 @@ components:
           description: メディアURL
           type: string
       type: object
-    types.ProductRate:
+    ProductRate:
       description: 商品評価
       properties:
         average:
@@ -759,26 +759,26 @@ components:
           description: 評価詳細
           type: object
       type: object
-    types.ProductResponse:
+    ProductResponse:
       properties:
         category:
-          $ref: '#/components/schemas/types.Category'
+          $ref: '#/components/schemas/Category'
         coordinator:
-          $ref: '#/components/schemas/types.Coordinator'
+          $ref: '#/components/schemas/Coordinator'
         producer:
-          $ref: '#/components/schemas/types.Producer'
+          $ref: '#/components/schemas/Producer'
         product:
-          $ref: '#/components/schemas/types.Product'
+          $ref: '#/components/schemas/Product'
         productTags:
           description: 商品タグ一覧
           items:
-            $ref: '#/components/schemas/types.ProductTag'
+            $ref: '#/components/schemas/ProductTag'
           type: array
           uniqueItems: false
         productType:
-          $ref: '#/components/schemas/types.ProductType'
+          $ref: '#/components/schemas/ProductType'
       type: object
-    types.ProductStatus:
+    ProductStatus:
       description: 販売状況
       type: integer
       x-enum-comments:
@@ -790,7 +790,7 @@ components:
       - ProductStatusPresale
       - ProductStatusForSale
       - ProductStatusOutOfSale
-    types.ProductTag:
+    ProductTag:
       properties:
         id:
           description: 商品タグID
@@ -799,7 +799,7 @@ components:
           description: 商品タグ名
           type: string
       type: object
-    types.ProductType:
+    ProductType:
       description: 品目情報
       properties:
         categoryId:
@@ -815,49 +815,49 @@ components:
           description: 品目名
           type: string
       type: object
-    types.ProductsResponse:
+    ProductsResponse:
       properties:
         categories:
           description: 商品種別一覧
           items:
-            $ref: '#/components/schemas/types.Category'
+            $ref: '#/components/schemas/Category'
           type: array
           uniqueItems: false
         coordinators:
           description: コーディネータ一覧
           items:
-            $ref: '#/components/schemas/types.Coordinator'
+            $ref: '#/components/schemas/Coordinator'
           type: array
           uniqueItems: false
         producers:
           description: 生産者一覧
           items:
-            $ref: '#/components/schemas/types.Producer'
+            $ref: '#/components/schemas/Producer'
           type: array
           uniqueItems: false
         productTags:
           description: 商品タグ一覧
           items:
-            $ref: '#/components/schemas/types.ProductTag'
+            $ref: '#/components/schemas/ProductTag'
           type: array
           uniqueItems: false
         productTypes:
           description: 品目一覧
           items:
-            $ref: '#/components/schemas/types.ProductType'
+            $ref: '#/components/schemas/ProductType'
           type: array
           uniqueItems: false
         products:
           description: 商品一覧
           items:
-            $ref: '#/components/schemas/types.Product'
+            $ref: '#/components/schemas/Product'
           type: array
           uniqueItems: false
         total:
           description: 商品合計数
           type: integer
       type: object
-    types.Promotion:
+    Promotion:
       description: プロモーション情報
       properties:
         code:
@@ -870,7 +870,7 @@ components:
           description: 割引額(%/円)
           type: integer
         discountType:
-          $ref: '#/components/schemas/types.DiscountType'
+          $ref: '#/components/schemas/DiscountType'
         endAt:
           description: クーポン使用可能日時(終了)
           type: integer
@@ -881,12 +881,12 @@ components:
           description: クーポン使用可能日時(開始)
           type: integer
         status:
-          $ref: '#/components/schemas/types.PromotionStatus'
+          $ref: '#/components/schemas/PromotionStatus'
         title:
           description: タイトル
           type: string
       type: object
-    types.PromotionStatus:
+    PromotionStatus:
       description: ステータス
       type: integer
       x-enum-comments:
@@ -900,7 +900,7 @@ components:
       - PromotionStatusWaiting
       - PromotionStatusEnabled
       - PromotionStatusFinished
-    types.RefundType:
+    RefundType:
       description: 注文キャンセル種別
       type: integer
       x-enum-comments:
@@ -911,7 +911,7 @@ components:
       - RefundTypeNone
       - RefundTypeCanceled
       - RefundTypeRefunded
-    types.ShippingSize:
+    ShippingSize:
       description: 箱のサイズ
       type: integer
       x-enum-comments:
@@ -923,7 +923,7 @@ components:
       - ShippingSize60
       - ShippingSize80
       - ShippingSize100
-    types.ShippingType:
+    ShippingType:
       description: 箱の種別
       type: integer
       x-enum-comments:
@@ -935,7 +935,7 @@ components:
       - ShippingTypeNormal
       - ShippingTypeFrozen
       - ShippingTypePickup
-    types.SignInRequest:
+    SignInRequest:
       properties:
         authToken:
           description: LINEの認証トークン
@@ -943,7 +943,7 @@ components:
       required:
       - authToken
       type: object
-    types.StorageMethodType:
+    StorageMethodType:
       description: 保存方法
       type: integer
       x-enum-comments:
@@ -957,7 +957,7 @@ components:
       - StorageMethodTypeCoolDark
       - StorageMethodTypeRefrigerated
       - StorageMethodTypeFrozen
-    types.UpdateAuthUserRequest:
+    UpdateAuthUserRequest:
       properties:
         firstname:
           description: 名
@@ -989,7 +989,7 @@ components:
       - lastnameKana
       - phoneNumber
       type: object
-    util.ErrorResponse:
+    ErrorResponse:
       properties:
         detail:
           description: エラー詳細
@@ -1032,7 +1032,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1052,7 +1052,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.SignInRequest'
+              $ref: '#/components/schemas/SignInRequest'
         description: サインイン
         required: true
       responses:
@@ -1060,31 +1060,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.AuthResponse'
+                $ref: '#/components/schemas/AuthResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
         "403":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 退会済み
         "404":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: ユーザーが存在しない
       summary: サインイン
       tags:
@@ -1103,7 +1103,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.GetAccessTokenRequest'
+              $ref: '#/components/schemas/GetAccessTokenRequest'
         description: アクセストークンの再発行
         required: true
       responses:
@@ -1111,25 +1111,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.AuthResponse'
+                $ref: '#/components/schemas/AuthResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
         "403":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: リフレッシュトークンが無効
       security:
       - bearerauth: []
@@ -1151,13 +1151,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.CartResponse'
+                $ref: '#/components/schemas/CartResponse'
           description: OK
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1178,7 +1178,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.AddCartItemRequest'
+              $ref: '#/components/schemas/AddCartItemRequest'
         description: カートに追加リクエスト
         required: true
       responses:
@@ -1188,13 +1188,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1224,7 +1224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1262,19 +1262,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.CalcCartResponse'
+                $ref: '#/components/schemas/CalcCartResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1295,7 +1295,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.CheckoutRequest'
+              $ref: '#/components/schemas/CheckoutRequest'
         description: チェックアウト情報
         required: true
       responses:
@@ -1303,19 +1303,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.CheckoutResponse'
+                $ref: '#/components/schemas/CheckoutResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1343,25 +1343,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.CheckoutStateResponse'
+                $ref: '#/components/schemas/CheckoutStateResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
         "404":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 取引が見つからない
       security:
       - bearerauth: []
@@ -1403,19 +1403,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.OrdersResponse'
+                $ref: '#/components/schemas/OrdersResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1443,19 +1443,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.OrderResponse'
+                $ref: '#/components/schemas/OrderResponse'
           description: OK
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
         "404":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 注文が見つからない
       security:
       - bearerauth: []
@@ -1489,13 +1489,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.ProductsResponse'
+                $ref: '#/components/schemas/ProductsResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
       summary: 商品一覧取得
       tags:
@@ -1521,13 +1521,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.ProductResponse'
+                $ref: '#/components/schemas/ProductResponse'
           description: OK
         "404":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 商品が見つからない
       summary: 商品詳細取得
       tags:
@@ -1546,7 +1546,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.CreateAuthUserRequest'
+              $ref: '#/components/schemas/CreateAuthUserRequest'
         description: ユーザー情報
         required: true
       responses:
@@ -1554,25 +1554,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.AuthUserResponse'
+                $ref: '#/components/schemas/AuthUserResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー。不正なトークン
         "409":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: ユーザーが既に存在する
       summary: ユーザー情報登録
       tags:
@@ -1592,19 +1592,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/types.AuthUserResponse'
+                $ref: '#/components/schemas/AuthUserResponse'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
@@ -1624,7 +1624,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/types.UpdateAuthUserRequest'
+              $ref: '#/components/schemas/UpdateAuthUserRequest'
         description: ユーザー情報
         required: true
       responses:
@@ -1634,13 +1634,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
         "401":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/util.ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
       - bearerauth: []
