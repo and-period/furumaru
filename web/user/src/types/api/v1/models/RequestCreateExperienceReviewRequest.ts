@@ -24,7 +24,7 @@ export interface RequestCreateExperienceReviewRequest {
      * @type {string}
      * @memberof RequestCreateExperienceReviewRequest
      */
-    comment?: string;
+    comment: string;
     /**
      * 評価
      * @type {number}
@@ -36,13 +36,15 @@ export interface RequestCreateExperienceReviewRequest {
      * @type {string}
      * @memberof RequestCreateExperienceReviewRequest
      */
-    title?: string;
+    title: string;
 }
 
 /**
  * Check if a given object implements the RequestCreateExperienceReviewRequest interface.
  */
 export function instanceOfRequestCreateExperienceReviewRequest(value: object): value is RequestCreateExperienceReviewRequest {
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -56,9 +58,9 @@ export function RequestCreateExperienceReviewRequestFromJSONTyped(json: any, ign
     }
     return {
         
-        'comment': json['comment'] == null ? undefined : json['comment'],
+        'comment': json['comment'],
         'rate': json['rate'] == null ? undefined : json['rate'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'title': json['title'],
     };
 }
 
