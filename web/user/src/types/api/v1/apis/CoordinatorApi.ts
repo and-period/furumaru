@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseCoordinatorResponse,
-  ResponseCoordinatorsResponse,
+  TypesCoordinatorResponse,
+  TypesCoordinatorsResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseCoordinatorResponseFromJSON,
-    ResponseCoordinatorResponseToJSON,
-    ResponseCoordinatorsResponseFromJSON,
-    ResponseCoordinatorsResponseToJSON,
+    TypesCoordinatorResponseFromJSON,
+    TypesCoordinatorResponseToJSON,
+    TypesCoordinatorsResponseFromJSON,
+    TypesCoordinatorsResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -46,7 +46,7 @@ export class CoordinatorApi extends runtime.BaseAPI {
      * コーディネータの詳細情報を取得します。
      * コーディネータ詳細取得
      */
-    async coordinatorsCoordinatorIdGetRaw(requestParameters: CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCoordinatorResponse>> {
+    async coordinatorsCoordinatorIdGetRaw(requestParameters: CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCoordinatorResponse>> {
         if (requestParameters['coordinatorId'] == null) {
             throw new runtime.RequiredError(
                 'coordinatorId',
@@ -65,14 +65,14 @@ export class CoordinatorApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCoordinatorResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCoordinatorResponseFromJSON(jsonValue));
     }
 
     /**
      * コーディネータの詳細情報を取得します。
      * コーディネータ詳細取得
      */
-    async coordinatorsCoordinatorIdGet(requestParameters: CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCoordinatorResponse> {
+    async coordinatorsCoordinatorIdGet(requestParameters: CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCoordinatorResponse> {
         const response = await this.coordinatorsCoordinatorIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -81,7 +81,7 @@ export class CoordinatorApi extends runtime.BaseAPI {
      * コーディネータの一覧を取得します。
      * コーディネータ一覧取得
      */
-    async coordinatorsGetRaw(requestParameters: CoordinatorsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCoordinatorsResponse>> {
+    async coordinatorsGetRaw(requestParameters: CoordinatorsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCoordinatorsResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -101,14 +101,14 @@ export class CoordinatorApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCoordinatorsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCoordinatorsResponseFromJSON(jsonValue));
     }
 
     /**
      * コーディネータの一覧を取得します。
      * コーディネータ一覧取得
      */
-    async coordinatorsGet(requestParameters: CoordinatorsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCoordinatorsResponse> {
+    async coordinatorsGet(requestParameters: CoordinatorsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCoordinatorsResponse> {
         const response = await this.coordinatorsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

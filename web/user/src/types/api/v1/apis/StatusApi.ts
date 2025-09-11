@@ -15,11 +15,11 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponsePaymentSystemsResponse,
+  TypesPaymentSystemsResponse,
 } from '../models/index';
 import {
-    ResponsePaymentSystemsResponseFromJSON,
-    ResponsePaymentSystemsResponseToJSON,
+    TypesPaymentSystemsResponseFromJSON,
+    TypesPaymentSystemsResponseToJSON,
 } from '../models/index';
 
 /**
@@ -31,7 +31,7 @@ export class StatusApi extends runtime.BaseAPI {
      * 利用可能な支払手段の一覧を取得します。
      * 支払手段一覧取得
      */
-    async statusesPaymentsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponsePaymentSystemsResponse>> {
+    async statusesPaymentsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPaymentSystemsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -43,14 +43,14 @@ export class StatusApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponsePaymentSystemsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPaymentSystemsResponseFromJSON(jsonValue));
     }
 
     /**
      * 利用可能な支払手段の一覧を取得します。
      * 支払手段一覧取得
      */
-    async statusesPaymentsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponsePaymentSystemsResponse> {
+    async statusesPaymentsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPaymentSystemsResponse> {
         const response = await this.statusesPaymentsGetRaw(initOverrides);
         return await response.value();
     }

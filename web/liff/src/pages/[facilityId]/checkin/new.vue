@@ -4,7 +4,7 @@ import { FmTextInput } from '@furumaru/shared';
 import ApiClientFactory from '@/plugins/helper/factory';
 import { buildApiErrorMessage } from '@/plugins/helper/error';
 import { AuthUserApi } from '@/types/api/facility';
-import type { RequestCreateAuthUserRequest } from '@/types/api/facility';
+import type { TypesCreateAuthUserRequest } from '@/types/api/facility';
 import liff from '@line/liff';
 
 const route = useRoute();
@@ -91,7 +91,7 @@ async function onSubmit() {
       throw new Error('LIFFの認証トークン取得に失敗しました。');
     }
 
-    const payload: RequestCreateAuthUserRequest = {
+    const payload: TypesCreateAuthUserRequest = {
       authToken: liffToken,
       firstname: firstName.value,
       firstnameKana: firstNameKana.value,
@@ -105,7 +105,7 @@ async function onSubmit() {
     const api = factory.createFacility<AuthUserApi>(AuthUserApi);
     await api.facilitiesFacilityIdUsersPost({
       facilityId,
-      requestCreateAuthUserRequest: payload,
+      typesCreateAuthUserRequest: payload,
     });
 
     await router.push({ path: `/${facilityId}/checkin` });

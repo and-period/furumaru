@@ -15,18 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestGetAccessTokenRequest,
-  RequestSignInRequest,
-  ResponseAuthResponse,
+  TypesAuthResponse,
+  TypesGetAccessTokenRequest,
+  TypesSignInRequest,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestGetAccessTokenRequestFromJSON,
-    RequestGetAccessTokenRequestToJSON,
-    RequestSignInRequestFromJSON,
-    RequestSignInRequestToJSON,
-    ResponseAuthResponseFromJSON,
-    ResponseAuthResponseToJSON,
+    TypesAuthResponseFromJSON,
+    TypesAuthResponseToJSON,
+    TypesGetAccessTokenRequestFromJSON,
+    TypesGetAccessTokenRequestToJSON,
+    TypesSignInRequestFromJSON,
+    TypesSignInRequestToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -37,12 +37,12 @@ export interface FacilitiesFacilityIdAuthDeleteRequest {
 
 export interface FacilitiesFacilityIdAuthPostRequest {
     facilityId: string;
-    requestSignInRequest: RequestSignInRequest;
+    typesSignInRequest: TypesSignInRequest;
 }
 
 export interface FacilitiesFacilityIdAuthRefreshTokenPostRequest {
     facilityId: string;
-    requestGetAccessTokenRequest: RequestGetAccessTokenRequest;
+    typesGetAccessTokenRequest: TypesGetAccessTokenRequest;
 }
 
 /**
@@ -96,7 +96,7 @@ export class AuthApi extends runtime.BaseAPI {
      * LINEの認証トークンを渡すことで、ふるマルへサインインします。
      * サインイン
      */
-    async facilitiesFacilityIdAuthPostRaw(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthResponse>> {
+    async facilitiesFacilityIdAuthPostRaw(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -104,10 +104,10 @@ export class AuthApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestSignInRequest'] == null) {
+        if (requestParameters['typesSignInRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestSignInRequest',
-                'Required parameter "requestSignInRequest" was null or undefined when calling facilitiesFacilityIdAuthPost().'
+                'typesSignInRequest',
+                'Required parameter "typesSignInRequest" was null or undefined when calling facilitiesFacilityIdAuthPost().'
             );
         }
 
@@ -122,17 +122,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestSignInRequestToJSON(requestParameters['requestSignInRequest']),
+            body: TypesSignInRequestToJSON(requestParameters['typesSignInRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthResponseFromJSON(jsonValue));
     }
 
     /**
      * LINEの認証トークンを渡すことで、ふるマルへサインインします。
      * サインイン
      */
-    async facilitiesFacilityIdAuthPost(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthResponse> {
+    async facilitiesFacilityIdAuthPost(requestParameters: FacilitiesFacilityIdAuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthResponse> {
         const response = await this.facilitiesFacilityIdAuthPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -141,7 +141,7 @@ export class AuthApi extends runtime.BaseAPI {
      * 更新トークンを渡すことで、アクセストークンを再発行します。
      * アクセストークンの再発行
      */
-    async facilitiesFacilityIdAuthRefreshTokenPostRaw(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthResponse>> {
+    async facilitiesFacilityIdAuthRefreshTokenPostRaw(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -149,10 +149,10 @@ export class AuthApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestGetAccessTokenRequest'] == null) {
+        if (requestParameters['typesGetAccessTokenRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestGetAccessTokenRequest',
-                'Required parameter "requestGetAccessTokenRequest" was null or undefined when calling facilitiesFacilityIdAuthRefreshTokenPost().'
+                'typesGetAccessTokenRequest',
+                'Required parameter "typesGetAccessTokenRequest" was null or undefined when calling facilitiesFacilityIdAuthRefreshTokenPost().'
             );
         }
 
@@ -175,17 +175,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestGetAccessTokenRequestToJSON(requestParameters['requestGetAccessTokenRequest']),
+            body: TypesGetAccessTokenRequestToJSON(requestParameters['typesGetAccessTokenRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthResponseFromJSON(jsonValue));
     }
 
     /**
      * 更新トークンを渡すことで、アクセストークンを再発行します。
      * アクセストークンの再発行
      */
-    async facilitiesFacilityIdAuthRefreshTokenPost(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthResponse> {
+    async facilitiesFacilityIdAuthRefreshTokenPost(requestParameters: FacilitiesFacilityIdAuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthResponse> {
         const response = await this.facilitiesFacilityIdAuthRefreshTokenPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

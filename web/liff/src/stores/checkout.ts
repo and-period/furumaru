@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { CheckoutApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
 import type {
-  RequestCheckoutRequest,
-  RequestCheckoutCreditCard,
-  ResponseCheckoutResponse,
-  ResponseCheckoutStateResponse,
+  TypesCheckoutRequest,
+  TypesCheckoutCreditCard,
+  TypesCheckoutResponse,
+  TypesCheckoutStateResponse,
 } from '@/types/api/facility';
 import { useAuthStore } from '~/stores/auth';
 import { useShoppingCartStore } from '~/stores/shopping';
@@ -13,8 +13,8 @@ interface CheckoutState {
   isLoading: boolean;
   error: string | null;
   redirectUrl: string | null;
-  lastResponse: ResponseCheckoutResponse | null;
-  lastStatus: ResponseCheckoutStateResponse | null;
+  lastResponse: TypesCheckoutResponse | null;
+  lastStatus: TypesCheckoutStateResponse | null;
 }
 
 export interface StartCheckoutPayload {
@@ -23,7 +23,7 @@ export interface StartCheckoutPayload {
   requestId?: string;
   coordinatorId?: string; // 未指定時はカートから推定
   boxNumber?: number;
-  creditCard?: RequestCheckoutCreditCard;
+  creditCard?: TypesCheckoutCreditCard;
   promotionCode?: string;
   total?: number;
 }
@@ -61,7 +61,7 @@ export const useCheckoutStore = defineStore('checkout', {
     },
 
     // チェックアウト開始
-    async startCheckout(payload: StartCheckoutPayload): Promise<ResponseCheckoutResponse> {
+    async startCheckout(payload: StartCheckoutPayload): Promise<TypesCheckoutResponse> {
       this.isLoading = true;
       this.error = null;
       this.redirectUrl = null;
@@ -84,7 +84,7 @@ export const useCheckoutStore = defineStore('checkout', {
 
         const requestId = payload.requestId || this.generateRequestId();
 
-        const body: RequestCheckoutRequest = {
+        const body: TypesCheckoutRequest = {
           boxNumber: payload.boxNumber,
           callbackUrl: payload.callbackUrl,
           coordinatorId,
@@ -98,7 +98,7 @@ export const useCheckoutStore = defineStore('checkout', {
         const api = this.checkoutApiClient();
         const res = await api.facilitiesFacilityIdCheckoutsPost({
           facilityId,
-          requestCheckoutRequest: body,
+          typesCheckoutRequest: body,
         });
 
         this.lastResponse = res;
@@ -117,7 +117,7 @@ export const useCheckoutStore = defineStore('checkout', {
     },
 
     // 支払い状態の取得
-    async fetchCheckoutState(transactionId: string): Promise<ResponseCheckoutStateResponse> {
+    async fetchCheckoutState(transactionId: string): Promise<TypesCheckoutStateResponse> {
       this.isLoading = true;
       this.error = null;
       try {

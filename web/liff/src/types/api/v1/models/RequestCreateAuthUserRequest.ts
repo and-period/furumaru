@@ -24,37 +24,37 @@ export interface RequestCreateAuthUserRequest {
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    accountId: string;
+    accountId?: string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    email: string;
+    email?: string;
     /**
      * 名
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    firstname: string;
+    firstname?: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    firstnameKana: string;
+    firstnameKana?: string;
     /**
      * 姓
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    lastname: string;
+    lastname?: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    lastnameKana: string;
+    lastnameKana?: string;
     /**
      * パスワード
      * @type {string}
@@ -66,34 +66,25 @@ export interface RequestCreateAuthUserRequest {
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    passwordConfirmation: string;
+    passwordConfirmation?: string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    phoneNumber: string;
+    phoneNumber?: string;
     /**
      * ユーザー名(表示名)
      * @type {string}
      * @memberof RequestCreateAuthUserRequest
      */
-    username: string;
+    username?: string;
 }
 
 /**
  * Check if a given object implements the RequestCreateAuthUserRequest interface.
  */
 export function instanceOfRequestCreateAuthUserRequest(value: object): value is RequestCreateAuthUserRequest {
-    if (!('accountId' in value) || value['accountId'] === undefined) return false;
-    if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('firstname' in value) || value['firstname'] === undefined) return false;
-    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
-    if (!('lastname' in value) || value['lastname'] === undefined) return false;
-    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
-    if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
-    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -107,16 +98,16 @@ export function RequestCreateAuthUserRequestFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'accountId': json['accountId'],
-        'email': json['email'],
-        'firstname': json['firstname'],
-        'firstnameKana': json['firstnameKana'],
-        'lastname': json['lastname'],
-        'lastnameKana': json['lastnameKana'],
+        'accountId': json['accountId'] == null ? undefined : json['accountId'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'firstname': json['firstname'] == null ? undefined : json['firstname'],
+        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
+        'lastname': json['lastname'] == null ? undefined : json['lastname'],
+        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
         'password': json['password'] == null ? undefined : json['password'],
-        'passwordConfirmation': json['passwordConfirmation'],
-        'phoneNumber': json['phoneNumber'],
-        'username': json['username'],
+        'passwordConfirmation': json['passwordConfirmation'] == null ? undefined : json['passwordConfirmation'],
+        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
+        'username': json['username'] == null ? undefined : json['username'],
     };
 }
 

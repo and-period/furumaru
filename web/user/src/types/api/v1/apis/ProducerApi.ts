@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseProducerResponse,
-  ResponseProducersResponse,
+  TypesProducerResponse,
+  TypesProducersResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseProducerResponseFromJSON,
-    ResponseProducerResponseToJSON,
-    ResponseProducersResponseFromJSON,
-    ResponseProducersResponseToJSON,
+    TypesProducerResponseFromJSON,
+    TypesProducerResponseToJSON,
+    TypesProducersResponseFromJSON,
+    TypesProducersResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -46,7 +46,7 @@ export class ProducerApi extends runtime.BaseAPI {
      * 生産者の一覧を取得します。
      * 生産者一覧取得
      */
-    async producersGetRaw(requestParameters: ProducersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProducersResponse>> {
+    async producersGetRaw(requestParameters: ProducersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProducersResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -66,14 +66,14 @@ export class ProducerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProducersResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProducersResponseFromJSON(jsonValue));
     }
 
     /**
      * 生産者の一覧を取得します。
      * 生産者一覧取得
      */
-    async producersGet(requestParameters: ProducersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProducersResponse> {
+    async producersGet(requestParameters: ProducersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProducersResponse> {
         const response = await this.producersGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -82,7 +82,7 @@ export class ProducerApi extends runtime.BaseAPI {
      * 生産者の詳細情報を取得します。
      * 生産者詳細取得
      */
-    async producersProducerIdGetRaw(requestParameters: ProducersProducerIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProducerResponse>> {
+    async producersProducerIdGetRaw(requestParameters: ProducersProducerIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProducerResponse>> {
         if (requestParameters['producerId'] == null) {
             throw new runtime.RequiredError(
                 'producerId',
@@ -101,14 +101,14 @@ export class ProducerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProducerResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProducerResponseFromJSON(jsonValue));
     }
 
     /**
      * 生産者の詳細情報を取得します。
      * 生産者詳細取得
      */
-    async producersProducerIdGet(requestParameters: ProducersProducerIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProducerResponse> {
+    async producersProducerIdGet(requestParameters: ProducersProducerIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProducerResponse> {
         const response = await this.producersProducerIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

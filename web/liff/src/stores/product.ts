@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { ProductApi } from '@/types/api';
-import type { ProductApi as FacilityProductApi, ResponseProductsResponse } from '@/types/api/facility';
+import type { ProductApi as FacilityProductApi, TypesProductsResponse } from '@/types/api/facility';
 
 declare module 'pinia' {
   export interface PiniaCustomProperties {
@@ -11,7 +11,7 @@ declare module 'pinia' {
 
 export const useProductStore = defineStore('product', {
   state: () => ({
-    products: [] as ResponseProductsResponse['products'],
+    products: [] as TypesProductsResponse['products'],
     isLoading: false,
     error: null as string | null,
   }),
@@ -47,7 +47,7 @@ export const useProductStore = defineStore('product', {
     },
 
     getProductById(id: string) {
-      return this.products.find(product => product.id === id);
+      return this.products?.find(product => product.id === id);
     },
   },
 });

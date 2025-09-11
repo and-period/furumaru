@@ -24,7 +24,7 @@ export interface RequestUpdateProductReviewRequest {
      * @type {string}
      * @memberof RequestUpdateProductReviewRequest
      */
-    comment: string;
+    comment?: string;
     /**
      * 評価
      * @type {number}
@@ -36,15 +36,13 @@ export interface RequestUpdateProductReviewRequest {
      * @type {string}
      * @memberof RequestUpdateProductReviewRequest
      */
-    title: string;
+    title?: string;
 }
 
 /**
  * Check if a given object implements the RequestUpdateProductReviewRequest interface.
  */
 export function instanceOfRequestUpdateProductReviewRequest(value: object): value is RequestUpdateProductReviewRequest {
-    if (!('comment' in value) || value['comment'] === undefined) return false;
-    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -58,9 +56,9 @@ export function RequestUpdateProductReviewRequestFromJSONTyped(json: any, ignore
     }
     return {
         
-        'comment': json['comment'],
+        'comment': json['comment'] == null ? undefined : json['comment'],
         'rate': json['rate'] == null ? undefined : json['rate'],
-        'title': json['title'],
+        'title': json['title'] == null ? undefined : json['title'],
     };
 }
 

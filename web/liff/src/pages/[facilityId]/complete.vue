@@ -87,7 +87,9 @@ const goToTop = () => {
       <button
         class="mt-8 w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.85]"
         @click="goToTop"
-      >トップに戻る</button>
+      >
+        トップに戻る
+      </button>
     </div>
   </div>
 </template>

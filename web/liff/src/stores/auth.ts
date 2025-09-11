@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
-import type { AuthApi, AuthResponse, RequestSignInRequest } from '@/types/api/facility';
+import type { AuthApi, TypesAuthResponse, TypesSignInRequest } from '@/types/api/facility';
 
 interface AuthState {
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
-  token: Pick<AuthResponse, 'accessToken' | 'refreshToken' | 'expiresIn' | 'tokenType' | 'userId'> | null;
+  token: Pick<TypesAuthResponse, 'accessToken' | 'refreshToken' | 'expiresIn' | 'tokenType' | 'userId'> | null;
 }
 
 /**
@@ -35,13 +35,13 @@ export const useAuthStore = defineStore('auth', {
 
         const api = this.facilityAuthApiClient();
 
-        const payload: RequestSignInRequest = {
+        const payload: TypesSignInRequest = {
           authToken: liffIDToken,
         };
 
         const res = await api.facilitiesFacilityIdAuthPost({
           facilityId,
-          requestSignInRequest: payload,
+          typesSignInRequest: payload,
         });
 
         // ステート更新（サーバー側Cookieでも管理される前提だが、UI用に保持）

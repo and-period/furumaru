@@ -24,7681 +24,7436 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
- * 
- * @export
- * @interface RequestActivateBroadcastMP4Request
- */
-export interface RequestActivateBroadcastMP4Request {
-    /**
-     * 配信動画URL
-     * @type {string}
-     * @memberof RequestActivateBroadcastMP4Request
-     */
-    'inputUrl': string;
-}
-/**
- * 
- * @export
- * @interface RequestApproveScheduleRequest
- */
-export interface RequestApproveScheduleRequest {
-    /**
-     * 承認フラグ
-     * @type {boolean}
-     * @memberof RequestApproveScheduleRequest
-     */
-    'approved'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestApproveSpotRequest
- */
-export interface RequestApproveSpotRequest {
-    /**
-     * 承認フラグ
-     * @type {boolean}
-     * @memberof RequestApproveSpotRequest
-     */
-    'approved'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestAuthYoutubeBroadcastRequest
- */
-export interface RequestAuthYoutubeBroadcastRequest {
-    /**
-     * 連携先Youtubeアカウント
-     * @type {string}
-     * @memberof RequestAuthYoutubeBroadcastRequest
-     */
-    'youtubeHandle': string;
-}
-/**
- * 
- * @export
- * @interface RequestCallbackAuthYoutubeBroadcastRequest
- */
-export interface RequestCallbackAuthYoutubeBroadcastRequest {
-    /**
-     * Google認証時に取得したcode
-     * @type {string}
-     * @memberof RequestCallbackAuthYoutubeBroadcastRequest
-     */
-    'authCode': string;
-    /**
-     * Google認証時に取得したstate
-     * @type {string}
-     * @memberof RequestCallbackAuthYoutubeBroadcastRequest
-     */
-    'state': string;
-}
-/**
- * 
- * @export
- * @interface RequestCompleteOrderRequest
- */
-export interface RequestCompleteOrderRequest {
-    /**
-     * 発送連絡時のメッセージ
-     * @type {string}
-     * @memberof RequestCompleteOrderRequest
-     */
-    'shippingMessage'?: string;
-}
-/**
- * 
- * @export
- * @interface RequestConnectGoogleAccountRequest
- */
-export interface RequestConnectGoogleAccountRequest {
-    /**
-     * 認証コード
-     * @type {string}
-     * @memberof RequestConnectGoogleAccountRequest
-     */
-    'code': string;
-    /**
-     * セキュア文字列（リプレイアタック対策）
-     * @type {string}
-     * @memberof RequestConnectGoogleAccountRequest
-     */
-    'nonce': string;
-    /**
-     * リダイレクトURI
-     * @type {string}
-     * @memberof RequestConnectGoogleAccountRequest
-     */
-    'redirectUri': string;
-}
-/**
- * 
- * @export
- * @interface RequestConnectLINEAccountRequest
- */
-export interface RequestConnectLINEAccountRequest {
-    /**
-     * 認証コード
-     * @type {string}
-     * @memberof RequestConnectLINEAccountRequest
-     */
-    'code': string;
-    /**
-     * セキュア文字列（リプレイアタック対策）
-     * @type {string}
-     * @memberof RequestConnectLINEAccountRequest
-     */
-    'nonce': string;
-    /**
-     * リダイレクトURI
-     * @type {string}
-     * @memberof RequestConnectLINEAccountRequest
-     */
-    'redirectUri': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateAdministratorRequest
- */
-export interface RequestCreateAdministratorRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'email': string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'firstname': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'firstnameKana': string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'lastname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'lastnameKana': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestCreateAdministratorRequest
-     */
-    'phoneNumber': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateCategoryRequest
- */
-export interface RequestCreateCategoryRequest {
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof RequestCreateCategoryRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateContactReadRequest
- */
-export interface RequestCreateContactReadRequest {
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof RequestCreateContactReadRequest
-     */
-    'contactId': string;
-    /**
-     * 送信者ID
-     * @type {string}
-     * @memberof RequestCreateContactReadRequest
-     */
-    'userId': string;
-    /**
-     * 送信者種別(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
-     * @memberof RequestCreateContactReadRequest
-     */
-    'userType'?: number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateContactRequest
- */
-export interface RequestCreateContactRequest {
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'categoryId': string;
-    /**
-     * お問い合わせ内容
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'content': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'email': string;
-    /**
-     * 対応者メモ
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'note'?: string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'phoneNumber': string;
-    /**
-     * 対応者ID(null許容)
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'responderId'?: string;
-    /**
-     * お問い合わせ件名
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'title': string;
-    /**
-     * 問い合わせ作成者ID(null許容)
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'userId'?: string;
-    /**
-     * 氏名
-     * @type {string}
-     * @memberof RequestCreateContactRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateExperienceMedia
- */
-export interface RequestCreateExperienceMedia {
-    /**
-     * サムネイルとして使用
-     * @type {boolean}
-     * @memberof RequestCreateExperienceMedia
-     */
-    'isThumbnail'?: boolean;
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof RequestCreateExperienceMedia
-     */
-    'url': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateExperienceRequest
- */
-export interface RequestCreateExperienceRequest {
-    /**
-     * 営業終了時間
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'businessCloseTime'?: string;
-    /**
-     * 営業開始時間
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'businessOpenTime'?: string;
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'description': string;
-    /**
-     * アクセス方法
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'direction'?: string;
-    /**
-     * 体験時間(分)
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'duration'?: number;
-    /**
-     * 募集終了日時
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'endAt': number;
-    /**
-     * 体験種別ID
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'experienceTypeId': string;
-    /**
-     * 開催場所(住所1)
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'hostAddressLine1': string;
-    /**
-     * 開催場所(住所2)
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'hostAddressLine2'?: string;
-    /**
-     * 開催場所(市区町村)
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'hostCity': string;
-    /**
-     * 開催場所(郵便番号)
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'hostPostalCode': string;
-    /**
-     * 開催場所(都道府県コード)
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'hostPrefectureCode': number;
-    /**
-     * メディア一覧
-     * @type {Array<RequestCreateExperienceMedia>}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'media': Array<RequestCreateExperienceMedia>;
-    /**
-     * 大人料金
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'priceAdult': number;
-    /**
-     * 小学生料金
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'priceElementarySchool': number;
-    /**
-     * 中学生料金
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'priceJuniorHighSchool': number;
-    /**
-     * 幼児料金
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'pricePreschool': number;
-    /**
-     * シニア料金
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'priceSenior': number;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'producerId': string;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'promotionVideoUrl'?: string;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'public'?: boolean;
-    /**
-     * おすすめポイント1
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'recommendedPoint1'?: string;
-    /**
-     * おすすめポイント2
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'recommendedPoint2'?: string;
-    /**
-     * おすすめポイント3
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'recommendedPoint3'?: string;
-    /**
-     * 定員オーバーフラグ
-     * @type {boolean}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'soldOut'?: boolean;
-    /**
-     * 募集開始日時
-     * @type {number}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'startAt': number;
-    /**
-     * 体験名
-     * @type {string}
-     * @memberof RequestCreateExperienceRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateExperienceTypeRequest
- */
-export interface RequestCreateExperienceTypeRequest {
-    /**
-     * 体験種別名
-     * @type {string}
-     * @memberof RequestCreateExperienceTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateLiveRequest
- */
-export interface RequestCreateLiveRequest {
-    /**
-     * コメント
-     * @type {string}
-     * @memberof RequestCreateLiveRequest
-     */
-    'comment': string;
-    /**
-     * 配信終了日時
-     * @type {number}
-     * @memberof RequestCreateLiveRequest
-     */
-    'endAt': number;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof RequestCreateLiveRequest
-     */
-    'producerId': string;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof RequestCreateLiveRequest
-     */
-    'productIds': Array<string>;
-    /**
-     * 配信開始日時
-     * @type {number}
-     * @memberof RequestCreateLiveRequest
-     */
-    'startAt': number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateNotificationRequest
- */
-export interface RequestCreateNotificationRequest {
-    /**
-     * 本文
-     * @type {string}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'body': string;
-    /**
-     * 備考
-     * @type {string}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'note'?: string;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'promotionId'?: string;
-    /**
-     * 掲載開始日
-     * @type {number}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'publishedAt': number;
-    /**
-     * 掲載対象一覧
-     * @type {Array<number>}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'targets': Array<number>;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'title': string;
-    /**
-     * お知らせ種別
-     * @type {number}
-     * @memberof RequestCreateNotificationRequest
-     */
-    'type': number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateProducerRequest
- */
-export interface RequestCreateProducerRequest {
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'addressLine1'?: string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'addressLine2'?: string;
-    /**
-     * 購入特典映像URL
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'bonusVideoUrl'?: string;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'city'?: string;
-    /**
-     * 担当コーディネータ名
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'coordinatorId': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'email'?: string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'facebookId'?: string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'firstname': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'firstnameKana': string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'headerUrl'?: string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'instagramId'?: string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'lastname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'lastnameKana': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'phoneNumber'?: string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'postalCode'?: string;
-    /**
-     * 都道府県
-     * @type {number}
-     * @memberof RequestCreateProducerRequest
-     */
-    'prefectureCode'?: number;
-    /**
-     * 紹介文
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'profile'?: string;
-    /**
-     * 紹介映像URL
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'promotionVideoUrl'?: string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * 表示名
-     * @type {string}
-     * @memberof RequestCreateProducerRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateProductMedia
- */
-export interface RequestCreateProductMedia {
-    /**
-     * サムネイルとして使用
-     * @type {boolean}
-     * @memberof RequestCreateProductMedia
-     */
-    'isThumbnail'?: boolean;
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof RequestCreateProductMedia
-     */
-    'url': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateProductRequest
- */
-export interface RequestCreateProductRequest {
-    /**
-     * 箱の占有率(サイズ:60)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'box60Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:80)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'box80Rate'?: number;
-    /**
-     * 箱の占有率(サイズ:100)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'box100Rate'?: number;
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 原価(税込)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'cost'?: number;
-    /**
-     * 配送方法
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'deliveryType': number;
-    /**
-     * 商品説明
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'description': string;
-    /**
-     * 販売終了日時
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'endAt': number;
-    /**
-     * 賞味期限(単位:日)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'expirationDate'?: number;
-    /**
-     * 在庫数
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'inventory'?: number;
-    /**
-     * 数量単位説明
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'itemDescription': string;
-    /**
-     * 数量単位
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'itemUnit': string;
-    /**
-     * メディア一覧
-     * @type {Array<RequestCreateProductMedia>}
-     * @memberof RequestCreateProductRequest
-     */
-    'media'?: Array<RequestCreateProductMedia>;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'name': string;
-    /**
-     * 原産地(市区町村)
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'originCity'?: string;
-    /**
-     * 原産地(都道府県)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'originPrefectureCode': number;
-    /**
-     * 販売価格(税込)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'price'?: number;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'producerId': string;
-    /**
-     * 商品タグID一覧
-     * @type {Array<string>}
-     * @memberof RequestCreateProductRequest
-     */
-    'productTagIds': Array<string>;
-    /**
-     * 品目ID
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'productTypeId': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof RequestCreateProductRequest
-     */
-    'public'?: boolean;
-    /**
-     * おすすめポイント1
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'recommendedPoint1'?: string;
-    /**
-     * おすすめポイント2
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'recommendedPoint2'?: string;
-    /**
-     * おすすめポイント3
-     * @type {string}
-     * @memberof RequestCreateProductRequest
-     */
-    'recommendedPoint3'?: string;
-    /**
-     * 販売開始日時
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'startAt': number;
-    /**
-     * 保存方法
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'storageMethodType': number;
-    /**
-     * 重量(kg,少数第一位まで)
-     * @type {number}
-     * @memberof RequestCreateProductRequest
-     */
-    'weight'?: number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateProductTagRequest
- */
-export interface RequestCreateProductTagRequest {
-    /**
-     * 商品タグ名
-     * @type {string}
-     * @memberof RequestCreateProductTagRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateProductTypeRequest
- */
-export interface RequestCreateProductTypeRequest {
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof RequestCreateProductTypeRequest
-     */
-    'iconUrl': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof RequestCreateProductTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreatePromotionRequest
- */
-export interface RequestCreatePromotionRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'code'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'description': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'discountRate'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'discountType': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'endAt': number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'public'?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'startAt': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestCreatePromotionRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateScheduleRequest
- */
-export interface RequestCreateScheduleRequest {
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'description': string;
-    /**
-     * 配信終了日時
-     * @type {number}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'endAt': number;
-    /**
-     * 蓋絵URL
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'imageUrl'?: string;
-    /**
-     * オープニング動画URL
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'openingVideoUrl'?: string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'public'?: boolean;
-    /**
-     * 配信開始日時
-     * @type {number}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'startAt': number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestCreateScheduleRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateShippingRate
- */
-export interface RequestCreateShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof RequestCreateShippingRate
-     */
-    'name': string;
-    /**
-     * 対象都道府県一覧
-     * @type {Array<number>}
-     * @memberof RequestCreateShippingRate
-     */
-    'prefectureCodes': Array<number>;
-    /**
-     * 配送料金(税込)
-     * @type {number}
-     * @memberof RequestCreateShippingRate
-     */
-    'price': number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateShippingRequest
- */
-export interface RequestCreateShippingRequest {
-    /**
-     * 箱サイズ60の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ60の通常便配送料一覧
-     * @type {Array<RequestCreateShippingRate>}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box60Rates': Array<RequestCreateShippingRate>;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ80の通常便配送料一覧
-     * @type {Array<RequestCreateShippingRate>}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box80Rates': Array<RequestCreateShippingRate>;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 箱サイズ100の通常便配送料一覧
-     * @type {Array<RequestCreateShippingRate>}
-     * @memberof RequestCreateShippingRequest
-     */
-    'box100Rates': Array<RequestCreateShippingRate>;
-    /**
-     * 送料無料になる金額(税込)
-     * @type {number}
-     * @memberof RequestCreateShippingRequest
-     */
-    'freeShippingRates'?: number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof RequestCreateShippingRequest
-     */
-    'hasFreeShipping'?: boolean;
-    /**
-     * 配送設定名
-     * @type {string}
-     * @memberof RequestCreateShippingRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateSpotRequest
- */
-export interface RequestCreateSpotRequest {
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestCreateSpotRequest
-     */
-    'description'?: string;
-    /**
-     * 緯度
-     * @type {number}
-     * @memberof RequestCreateSpotRequest
-     */
-    'latitude': number;
-    /**
-     * 経度
-     * @type {number}
-     * @memberof RequestCreateSpotRequest
-     */
-    'longitude': number;
-    /**
-     * スポット名
-     * @type {string}
-     * @memberof RequestCreateSpotRequest
-     */
-    'name': string;
-    /**
-     * スポット種別ID
-     * @type {string}
-     * @memberof RequestCreateSpotRequest
-     */
-    'spotTypeId': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestCreateSpotRequest
-     */
-    'thumbnailUrl'?: string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateSpotTypeRequest
- */
-export interface RequestCreateSpotTypeRequest {
-    /**
-     * スポット種別名
-     * @type {string}
-     * @memberof RequestCreateSpotTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateThreadRequest
- */
-export interface RequestCreateThreadRequest {
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof RequestCreateThreadRequest
-     */
-    'contactId': string;
-    /**
-     * 内容
-     * @type {string}
-     * @memberof RequestCreateThreadRequest
-     */
-    'content': string;
-    /**
-     * 送信者ID
-     * @type {string}
-     * @memberof RequestCreateThreadRequest
-     */
-    'userId': string;
-    /**
-     * 送信者種別(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
-     * @memberof RequestCreateThreadRequest
-     */
-    'userType'?: number;
-}
-/**
- * 
- * @export
- * @interface RequestCreateVideoRequest
- */
-export interface RequestCreateVideoRequest {
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof RequestCreateVideoRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestCreateVideoRequest
-     */
-    'description': string;
-    /**
-     * 体験への表示設定
-     * @type {boolean}
-     * @memberof RequestCreateVideoRequest
-     */
-    'displayExperience'?: boolean;
-    /**
-     * 商品への表示設定
-     * @type {boolean}
-     * @memberof RequestCreateVideoRequest
-     */
-    'displayProduct'?: boolean;
-    /**
-     * 体験ID一覧
-     * @type {Array<string>}
-     * @memberof RequestCreateVideoRequest
-     */
-    'experienceIds': Array<string>;
-    /**
-     * 限定公開設定
-     * @type {boolean}
-     * @memberof RequestCreateVideoRequest
-     */
-    'limited'?: boolean;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof RequestCreateVideoRequest
-     */
-    'productIds': Array<string>;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof RequestCreateVideoRequest
-     */
-    'public'?: boolean;
-    /**
-     * 公開日時
-     * @type {number}
-     * @memberof RequestCreateVideoRequest
-     */
-    'publishedAt': number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestCreateVideoRequest
-     */
-    'thumbnailUrl': string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestCreateVideoRequest
-     */
-    'title': string;
-    /**
-     * 動画URL
-     * @type {string}
-     * @memberof RequestCreateVideoRequest
-     */
-    'videoUrl': string;
-}
-/**
- * 
- * @export
- * @interface RequestCreateYoutubeBroadcastRequest
- */
-export interface RequestCreateYoutubeBroadcastRequest {
-    /**
-     * ライブ配信説明
-     * @type {string}
-     * @memberof RequestCreateYoutubeBroadcastRequest
-     */
-    'description'?: string;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof RequestCreateYoutubeBroadcastRequest
-     */
-    'public'?: boolean;
-    /**
-     * ライブ配信タイトル
-     * @type {string}
-     * @memberof RequestCreateYoutubeBroadcastRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestDraftOrderRequest
- */
-export interface RequestDraftOrderRequest {
-    /**
-     * 発送連絡時のメッセージ
-     * @type {string}
-     * @memberof RequestDraftOrderRequest
-     */
-    'shippingMessage'?: string;
-}
-/**
- * 
- * @export
- * @interface RequestExportOrdersRequest
- */
-export interface RequestExportOrdersRequest {
-    /**
-     * 文字コード種別
-     * @type {number}
-     * @memberof RequestExportOrdersRequest
-     */
-    'characterEncodingType'?: number;
-    /**
-     * 配送会社
-     * @type {number}
-     * @memberof RequestExportOrdersRequest
-     */
-    'shippingCarrier': number;
-}
-/**
- * 
- * @export
- * @interface RequestForgotAuthPasswordRequest
- */
-export interface RequestForgotAuthPasswordRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestForgotAuthPasswordRequest
-     */
-    'email': string;
-}
-/**
- * 
- * @export
- * @interface RequestGetUploadURLRequest
- */
-export interface RequestGetUploadURLRequest {
-    /**
-     * ファイル種別
-     * @type {string}
-     * @memberof RequestGetUploadURLRequest
-     */
-    'fileType': string;
-}
-/**
- * 
- * @export
- * @interface RequestPublishScheduleRequest
- */
-export interface RequestPublishScheduleRequest {
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof RequestPublishScheduleRequest
-     */
-    'public'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestRefreshAuthTokenRequest
- */
-export interface RequestRefreshAuthTokenRequest {
-    /**
-     * 更新トークン
-     * @type {string}
-     * @memberof RequestRefreshAuthTokenRequest
-     */
-    'refreshToken': string;
-}
-/**
- * 
- * @export
- * @interface RequestRefundOrderRequest
- */
-export interface RequestRefundOrderRequest {
-    /**
-     * 返金理由
-     * @type {string}
-     * @memberof RequestRefundOrderRequest
-     */
-    'description': string;
-}
-/**
- * 
- * @export
- * @interface RequestRegisterAuthDeviceRequest
- */
-export interface RequestRegisterAuthDeviceRequest {
-    /**
-     * デバイスID
-     * @type {string}
-     * @memberof RequestRegisterAuthDeviceRequest
-     */
-    'device': string;
-}
-/**
- * 
- * @export
- * @interface RequestResetAuthPasswordRequest
- */
-export interface RequestResetAuthPasswordRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestResetAuthPasswordRequest
-     */
-    'email': string;
-    /**
-     * パスワード
-     * @type {string}
-     * @memberof RequestResetAuthPasswordRequest
-     */
-    'password'?: string;
-    /**
-     * パスワード (確認用)
-     * @type {string}
-     * @memberof RequestResetAuthPasswordRequest
-     */
-    'passwordConfirmation': string;
-    /**
-     * 検証コード
-     * @type {string}
-     * @memberof RequestResetAuthPasswordRequest
-     */
-    'verifyCode': string;
-}
-/**
- * 
- * @export
- * @interface RequestSignInRequest
- */
-export interface RequestSignInRequest {
-    /**
-     * パスワード
-     * @type {string}
-     * @memberof RequestSignInRequest
-     */
-    'password': string;
-    /**
-     * ユーザー名 (メールアドレス)
-     * @type {string}
-     * @memberof RequestSignInRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateAdministratorEmailRequest
- */
-export interface RequestUpdateAdministratorEmailRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestUpdateAdministratorEmailRequest
-     */
-    'email': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateAdministratorRequest
- */
-export interface RequestUpdateAdministratorRequest {
-    /**
-     * 名
-     * @type {string}
-     * @memberof RequestUpdateAdministratorRequest
-     */
-    'firstname': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof RequestUpdateAdministratorRequest
-     */
-    'firstnameKana': string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof RequestUpdateAdministratorRequest
-     */
-    'lastname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof RequestUpdateAdministratorRequest
-     */
-    'lastnameKana': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestUpdateAdministratorRequest
-     */
-    'phoneNumber': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateAuthEmailRequest
- */
-export interface RequestUpdateAuthEmailRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestUpdateAuthEmailRequest
-     */
-    'email': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateAuthPasswordRequest
- */
-export interface RequestUpdateAuthPasswordRequest {
-    /**
-     * 新しいパスワード
-     * @type {string}
-     * @memberof RequestUpdateAuthPasswordRequest
-     */
-    'newPassword'?: string;
-    /**
-     * 現在のパスワード
-     * @type {string}
-     * @memberof RequestUpdateAuthPasswordRequest
-     */
-    'oldPassword': string;
-    /**
-     * パスワード (確認用)
-     * @type {string}
-     * @memberof RequestUpdateAuthPasswordRequest
-     */
-    'passwordConfirmation': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateBroadcastArchiveRequest
- */
-export interface RequestUpdateBroadcastArchiveRequest {
-    /**
-     * アーカイブ動画URL
-     * @type {string}
-     * @memberof RequestUpdateBroadcastArchiveRequest
-     */
-    'archiveUrl': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateCategoryRequest
- */
-export interface RequestUpdateCategoryRequest {
-    /**
-     * 商品種別名
-     * @type {string}
-     * @memberof RequestUpdateCategoryRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateContactRequest
- */
-export interface RequestUpdateContactRequest {
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'categoryId': string;
-    /**
-     * お問い合わせ内容
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'content': string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'email': string;
-    /**
-     * 対応者メモ
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'note'?: string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'phoneNumber': string;
-    /**
-     * 対応者ID(null許容)
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'responderId'?: string;
-    /**
-     * お問い合わせステータス
-     * @type {number}
-     * @memberof RequestUpdateContactRequest
-     */
-    'status'?: number;
-    /**
-     * お問い合わせ件名
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'title': string;
-    /**
-     * 問い合わせ作成者ID(null許容)
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'userId'?: string;
-    /**
-     * 氏名
-     * @type {string}
-     * @memberof RequestUpdateContactRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateCoordinatorRequest
- */
-export interface RequestUpdateCoordinatorRequest {
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'addressLine1': string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'addressLine2'?: string;
-    /**
-     * 購入特典映像URL
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'bonusVideoUrl'?: string;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'city': string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'facebookId'?: string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'firstname': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'firstnameKana': string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'headerUrl'?: string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'instagramId'?: string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'lastname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'lastnameKana': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'phoneNumber': string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'postalCode'?: string;
-    /**
-     * 都道府県
-     * @type {number}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'prefectureCode': number;
-    /**
-     * 紹介文
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'profile': string;
-    /**
-     * 紹介映像URL
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'promotionVideoUrl'?: string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * 表示名
-     * @type {string}
-     * @memberof RequestUpdateCoordinatorRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateDefaultShippingRate
- */
-export interface RequestUpdateDefaultShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof RequestUpdateDefaultShippingRate
-     */
-    'name': string;
-    /**
-     * 対象都道府県一覧
-     * @type {Array<number>}
-     * @memberof RequestUpdateDefaultShippingRate
-     */
-    'prefectureCodes': Array<number>;
-    /**
-     * 配送料金(税込)
-     * @type {number}
-     * @memberof RequestUpdateDefaultShippingRate
-     */
-    'price': number;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateDefaultShippingRequest
- */
-export interface RequestUpdateDefaultShippingRequest {
-    /**
-     * 箱サイズ60の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ60の通常便配送料一覧
-     * @type {Array<RequestUpdateDefaultShippingRate>}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box60Rates': Array<RequestUpdateDefaultShippingRate>;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ80の通常便配送料一覧
-     * @type {Array<RequestUpdateDefaultShippingRate>}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box80Rates': Array<RequestUpdateDefaultShippingRate>;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 箱サイズ100の通常便配送料一覧
-     * @type {Array<RequestUpdateDefaultShippingRate>}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'box100Rates': Array<RequestUpdateDefaultShippingRate>;
-    /**
-     * 送料無料になる金額(税込)
-     * @type {number}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'freeShippingRates'?: number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof RequestUpdateDefaultShippingRequest
-     */
-    'hasFreeShipping'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateExperienceMedia
- */
-export interface RequestUpdateExperienceMedia {
-    /**
-     * サムネイルとして使用
-     * @type {boolean}
-     * @memberof RequestUpdateExperienceMedia
-     */
-    'isThumbnail'?: boolean;
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof RequestUpdateExperienceMedia
-     */
-    'url': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateExperienceRequest
- */
-export interface RequestUpdateExperienceRequest {
-    /**
-     * 営業終了時間
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'businessCloseTime'?: string;
-    /**
-     * 営業開始時間
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'businessOpenTime'?: string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'description': string;
-    /**
-     * アクセス方法
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'direction'?: string;
-    /**
-     * 体験時間(分)
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'duration'?: number;
-    /**
-     * 募集終了日時
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'endAt': number;
-    /**
-     * 体験種別ID
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'experienceTypeId': string;
-    /**
-     * 開催場所(住所1)
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'hostAddressLine1': string;
-    /**
-     * 開催場所(住所2)
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'hostAddressLine2'?: string;
-    /**
-     * 開催場所(市区町村)
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'hostCity': string;
-    /**
-     * 開催場所(郵便番号)
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'hostPostalCode': string;
-    /**
-     * 開催場所(都道府県コード)
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'hostPrefectureCode': number;
-    /**
-     * メディア一覧
-     * @type {Array<RequestUpdateExperienceMedia>}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'media': Array<RequestUpdateExperienceMedia>;
-    /**
-     * 大人料金
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'priceAdult': number;
-    /**
-     * 小学生料金
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'priceElementarySchool': number;
-    /**
-     * 中学生料金
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'priceJuniorHighSchool': number;
-    /**
-     * 幼児料金
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'pricePreschool': number;
-    /**
-     * シニア料金
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'priceSenior': number;
-    /**
-     * 紹介動画URL
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'promotionVideoUrl'?: string;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'public'?: boolean;
-    /**
-     * おすすめポイント1
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'recommendedPoint1'?: string;
-    /**
-     * おすすめポイント2
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'recommendedPoint2'?: string;
-    /**
-     * おすすめポイント3
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'recommendedPoint3'?: string;
-    /**
-     * 定員オーバーフラグ
-     * @type {boolean}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'soldOut'?: boolean;
-    /**
-     * 募集開始日時
-     * @type {number}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'startAt': number;
-    /**
-     * 体験名
-     * @type {string}
-     * @memberof RequestUpdateExperienceRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateExperienceTypeRequest
- */
-export interface RequestUpdateExperienceTypeRequest {
-    /**
-     * 体験種別名
-     * @type {string}
-     * @memberof RequestUpdateExperienceTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateLiveCommentRequest
- */
-export interface RequestUpdateLiveCommentRequest {
-    /**
-     * コメント無効フラグ
-     * @type {boolean}
-     * @memberof RequestUpdateLiveCommentRequest
-     */
-    'disabled'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateLiveRequest
- */
-export interface RequestUpdateLiveRequest {
-    /**
-     * コメント
-     * @type {string}
-     * @memberof RequestUpdateLiveRequest
-     */
-    'comment': string;
-    /**
-     * 配信終了日時
-     * @type {number}
-     * @memberof RequestUpdateLiveRequest
-     */
-    'endAt': number;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof RequestUpdateLiveRequest
-     */
-    'productIds': Array<string>;
-    /**
-     * 配信開始日時
-     * @type {number}
-     * @memberof RequestUpdateLiveRequest
-     */
-    'startAt': number;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateNotificationRequest
- */
-export interface RequestUpdateNotificationRequest {
-    /**
-     * 本文
-     * @type {string}
-     * @memberof RequestUpdateNotificationRequest
-     */
-    'body': string;
-    /**
-     * 備考
-     * @type {string}
-     * @memberof RequestUpdateNotificationRequest
-     */
-    'note'?: string;
-    /**
-     * 掲載開始日
-     * @type {number}
-     * @memberof RequestUpdateNotificationRequest
-     */
-    'publishedAt': number;
-    /**
-     * 掲載対象一覧
-     * @type {Array<number>}
-     * @memberof RequestUpdateNotificationRequest
-     */
-    'targets': Array<number>;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestUpdateNotificationRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdatePaymentSystemRequest
- */
-export interface RequestUpdatePaymentSystemRequest {
-    /**
-     * 決済システム状態
-     * @type {number}
-     * @memberof RequestUpdatePaymentSystemRequest
-     */
-    'status': number;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateProducerRequest
- */
-export interface RequestUpdateProducerRequest {
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'addressLine1'?: string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'addressLine2'?: string;
-    /**
-     * 購入特典映像URL
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'bonusVideoUrl'?: string;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'city'?: string;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'email'?: string;
-    /**
-     * Facebookアカウント
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'facebookId'?: string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'firstname': string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'firstnameKana': string;
-    /**
-     * ヘッダー画像URL
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'headerUrl'?: string;
-    /**
-     * Instagramアカウント
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'instagramId'?: string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'lastname': string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'lastnameKana': string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'phoneNumber'?: string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'postalCode'?: string;
-    /**
-     * 都道府県
-     * @type {number}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'prefectureCode'?: number;
-    /**
-     * 紹介文
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'profile'?: string;
-    /**
-     * 紹介映像URL
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'promotionVideoUrl'?: string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * 表示名
-     * @type {string}
-     * @memberof RequestUpdateProducerRequest
-     */
-    'username': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateProductTagRequest
- */
-export interface RequestUpdateProductTagRequest {
-    /**
-     * 商品タグ名
-     * @type {string}
-     * @memberof RequestUpdateProductTagRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateProductTypeRequest
- */
-export interface RequestUpdateProductTypeRequest {
-    /**
-     * アイコンURL
-     * @type {string}
-     * @memberof RequestUpdateProductTypeRequest
-     */
-    'iconUrl': string;
-    /**
-     * 品目名
-     * @type {string}
-     * @memberof RequestUpdateProductTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdatePromotionRequest
- */
-export interface RequestUpdatePromotionRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'code'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'description': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'discountRate'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'discountType': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'endAt': number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'public'?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'startAt': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RequestUpdatePromotionRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateScheduleRequest
- */
-export interface RequestUpdateScheduleRequest {
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'description': string;
-    /**
-     * 配信終了日時
-     * @type {number}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'endAt': number;
-    /**
-     * 蓋絵URL
-     * @type {string}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'imageUrl'?: string;
-    /**
-     * オープニング動画URL
-     * @type {string}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'openingVideoUrl'?: string;
-    /**
-     * 配信開始日時
-     * @type {number}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'startAt': number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestUpdateScheduleRequest
-     */
-    'title': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateShippingRate
- */
-export interface RequestUpdateShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof RequestUpdateShippingRate
-     */
-    'name': string;
-    /**
-     * 対象都道府県一覧
-     * @type {Array<number>}
-     * @memberof RequestUpdateShippingRate
-     */
-    'prefectureCodes': Array<number>;
-    /**
-     * 配送料金(税込)
-     * @type {number}
-     * @memberof RequestUpdateShippingRate
-     */
-    'price': number;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateShippingRequest
- */
-export interface RequestUpdateShippingRequest {
-    /**
-     * 箱サイズ60の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ60の通常便配送料一覧
-     * @type {Array<RequestUpdateShippingRate>}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box60Rates': Array<RequestUpdateShippingRate>;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ80の通常便配送料一覧
-     * @type {Array<RequestUpdateShippingRate>}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box80Rates': Array<RequestUpdateShippingRate>;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 箱サイズ100の通常便配送料一覧
-     * @type {Array<RequestUpdateShippingRate>}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'box100Rates': Array<RequestUpdateShippingRate>;
-    /**
-     * 送料無料になる金額(税込)
-     * @type {number}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'freeShippingRates'?: number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'hasFreeShipping'?: boolean;
-    /**
-     * 配送設定名
-     * @type {string}
-     * @memberof RequestUpdateShippingRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateShopRequest
- */
-export interface RequestUpdateShopRequest {
-    /**
-     * 営業曜日(発送可能日)
-     * @type {Set<number>}
-     * @memberof RequestUpdateShopRequest
-     */
-    'businessDays'?: Set<number>;
-    /**
-     * 店舗名
-     * @type {string}
-     * @memberof RequestUpdateShopRequest
-     */
-    'name': string;
-    /**
-     * 取り扱い品目一覧
-     * @type {Array<string>}
-     * @memberof RequestUpdateShopRequest
-     */
-    'productTypeIds': Array<string>;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateSpotRequest
- */
-export interface RequestUpdateSpotRequest {
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'description'?: string;
-    /**
-     * 緯度
-     * @type {number}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'latitude': number;
-    /**
-     * 経度
-     * @type {number}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'longitude': number;
-    /**
-     * スポット名
-     * @type {string}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'name': string;
-    /**
-     * スポット種別ID
-     * @type {string}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'spotTypeId': string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestUpdateSpotRequest
-     */
-    'thumbnailUrl'?: string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateSpotTypeRequest
- */
-export interface RequestUpdateSpotTypeRequest {
-    /**
-     * スポット種別名
-     * @type {string}
-     * @memberof RequestUpdateSpotTypeRequest
-     */
-    'name': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateThreadRequest
- */
-export interface RequestUpdateThreadRequest {
-    /**
-     * 内容
-     * @type {string}
-     * @memberof RequestUpdateThreadRequest
-     */
-    'content': string;
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof RequestUpdateThreadRequest
-     */
-    'threadId': string;
-    /**
-     * 送信者ID
-     * @type {string}
-     * @memberof RequestUpdateThreadRequest
-     */
-    'userId': string;
-    /**
-     * 送信者種別(不明:0, admin:1, uer:2, guest:3)
-     * @type {number}
-     * @memberof RequestUpdateThreadRequest
-     */
-    'userType'?: number;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateVideoCommentRequest
- */
-export interface RequestUpdateVideoCommentRequest {
-    /**
-     * コメント無効フラグ
-     * @type {boolean}
-     * @memberof RequestUpdateVideoCommentRequest
-     */
-    'disabled'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestUpdateVideoRequest
- */
-export interface RequestUpdateVideoRequest {
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'description': string;
-    /**
-     * 体験への表示設定
-     * @type {boolean}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'displayExperience'?: boolean;
-    /**
-     * 商品への表示設定
-     * @type {boolean}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'displayProduct'?: boolean;
-    /**
-     * 体験ID一覧
-     * @type {Array<string>}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'experienceIds': Array<string>;
-    /**
-     * 限定公開設定
-     * @type {boolean}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'limited'?: boolean;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'productIds': Array<string>;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'public'?: boolean;
-    /**
-     * 公開日時
-     * @type {number}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'publishedAt': number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'thumbnailUrl': string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'title': string;
-    /**
-     * 動画URL
-     * @type {string}
-     * @memberof RequestUpdateVideoRequest
-     */
-    'videoUrl': string;
-}
-/**
- * 
- * @export
- * @interface RequestUpsertShippingRate
- */
-export interface RequestUpsertShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof RequestUpsertShippingRate
-     */
-    'name': string;
-    /**
-     * 対象都道府県一覧
-     * @type {Array<number>}
-     * @memberof RequestUpsertShippingRate
-     */
-    'prefectureCodes': Array<number>;
-    /**
-     * 配送料金(税込)
-     * @type {number}
-     * @memberof RequestUpsertShippingRate
-     */
-    'price': number;
-}
-/**
- * 
- * @export
- * @interface RequestUpsertShippingRequest
- */
-export interface RequestUpsertShippingRequest {
-    /**
-     * 箱サイズ60の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ60の通常便配送料一覧
-     * @type {Array<RequestUpsertShippingRate>}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box60Rates': Array<RequestUpsertShippingRate>;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ80の通常便配送料一覧
-     * @type {Array<RequestUpsertShippingRate>}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box80Rates': Array<RequestUpsertShippingRate>;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(税込)
-     * @type {number}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 箱サイズ100の通常便配送料一覧
-     * @type {Array<RequestUpsertShippingRate>}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'box100Rates': Array<RequestUpsertShippingRate>;
-    /**
-     * 送料無料になる金額(税込)
-     * @type {number}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'freeShippingRates'?: number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof RequestUpsertShippingRequest
-     */
-    'hasFreeShipping'?: boolean;
-}
-/**
- * 
- * @export
- * @interface RequestVerifyAuthEmailRequest
- */
-export interface RequestVerifyAuthEmailRequest {
-    /**
-     * 検証コード
-     * @type {string}
-     * @memberof RequestVerifyAuthEmailRequest
-     */
-    'verifyCode': string;
-}
-/**
  * デフォルト設定の住所情報
  * @export
- * @interface ResponseAddress
+ * @interface Address
  */
-export interface ResponseAddress {
+export interface Address {
     /**
      * 住所ID
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'addressId'?: string;
     /**
      * 町名・番地
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'addressLine1'?: string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'addressLine2'?: string;
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'city'?: string;
     /**
      * 氏名（名）
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'firstname'?: string;
     /**
      * 氏名(名:かな)
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'firstnameKana'?: string;
     /**
      * 氏名（姓）
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'lastname'?: string;
     /**
      * 氏名(姓:かな)
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'lastnameKana'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'phoneNumber'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'postalCode'?: string;
     /**
      * 都道府県
      * @type {string}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'prefecture'?: string;
     /**
      * 都道府県コード
      * @type {number}
-     * @memberof ResponseAddress
+     * @memberof Address
      */
     'prefectureCode'?: number;
 }
 /**
- * 対応者情報
- * @export
- * @interface ResponseAdmin
- */
-export interface ResponseAdmin {
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseAdmin
-     */
-    'createdAt'?: number;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'email'?: string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'firstname'?: string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'firstnameKana'?: string;
-    /**
-     * 管理者ID
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'id'?: string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'lastname'?: string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof ResponseAdmin
-     */
-    'lastnameKana'?: string;
-    /**
-     * 管理者種別
-     * @type {number}
-     * @memberof ResponseAdmin
-     */
-    'role'?: number;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseAdmin
-     */
-    'updateAt'?: number;
-}
-/**
- * システム管理者情報
- * @export
- * @interface ResponseAdministrator
- */
-export interface ResponseAdministrator {
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseAdministrator
-     */
-    'createdAt'?: number;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'email'?: string;
-    /**
-     * 名
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'firstname'?: string;
-    /**
-     * 名(かな)
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'firstnameKana'?: string;
-    /**
-     * 管理者ID
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'id'?: string;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'lastname'?: string;
-    /**
-     * 姓(かな)
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'lastnameKana'?: string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof ResponseAdministrator
-     */
-    'phoneNumber'?: string;
-    /**
-     * 管理者の状態
-     * @type {number}
-     * @memberof ResponseAdministrator
-     */
-    'status'?: number;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseAdministrator
-     */
-    'updatedAt'?: number;
-}
-/**
  * 
  * @export
- * @interface ResponseAdministratorResponse
+ * @interface AuthGoogleAccountResponse
  */
-export interface ResponseAdministratorResponse {
-    /**
-     * 
-     * @type {ResponseAdministrator}
-     * @memberof ResponseAdministratorResponse
-     */
-    'administrator'?: ResponseAdministrator;
-}
-/**
- * 
- * @export
- * @interface ResponseAdministratorsResponse
- */
-export interface ResponseAdministratorsResponse {
-    /**
-     * システム管理者一覧
-     * @type {Array<ResponseAdministrator>}
-     * @memberof ResponseAdministratorsResponse
-     */
-    'administrators'?: Array<ResponseAdministrator>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ResponseAdministratorsResponse
-     */
-    'total'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseAnalyzeScheduleResponse
- */
-export interface ResponseAnalyzeScheduleResponse {
-    /**
-     * 合計視聴者数
-     * @type {number}
-     * @memberof ResponseAnalyzeScheduleResponse
-     */
-    'totalViewers'?: number;
-    /**
-     * 視聴者数ログ
-     * @type {Array<ResponseBroadcastViewerLog>}
-     * @memberof ResponseAnalyzeScheduleResponse
-     */
-    'viewerLogs'?: Array<ResponseBroadcastViewerLog>;
-}
-/**
- * 
- * @export
- * @interface ResponseAnalyzeVideoResponse
- */
-export interface ResponseAnalyzeVideoResponse {
-    /**
-     * 合計視聴者数
-     * @type {number}
-     * @memberof ResponseAnalyzeVideoResponse
-     */
-    'totalViewers'?: number;
-    /**
-     * 視聴者数ログ
-     * @type {Array<ResponseVideoViewerLog>}
-     * @memberof ResponseAnalyzeVideoResponse
-     */
-    'viewerLogs'?: Array<ResponseVideoViewerLog>;
-}
-/**
- * 
- * @export
- * @interface ResponseAuthGoogleAccountResponse
- */
-export interface ResponseAuthGoogleAccountResponse {
+export interface AuthGoogleAccountResponse {
     /**
      * Googleアカウント連携URL
      * @type {string}
-     * @memberof ResponseAuthGoogleAccountResponse
+     * @memberof AuthGoogleAccountResponse
      */
     'url'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseAuthLINEAccountResponse
+ * @interface AuthLINEAccountResponse
  */
-export interface ResponseAuthLINEAccountResponse {
+export interface AuthLINEAccountResponse {
     /**
      * LINEアカウント連携URL
      * @type {string}
-     * @memberof ResponseAuthLINEAccountResponse
+     * @memberof AuthLINEAccountResponse
      */
     'url'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseAuthProvider
+ * @interface AuthResponse
  */
-export interface ResponseAuthProvider {
-    /**
-     * 連携日時
-     * @type {number}
-     * @memberof ResponseAuthProvider
-     */
-    'connectedAt'?: number;
-    /**
-     * プロバイダ種別
-     * @type {number}
-     * @memberof ResponseAuthProvider
-     */
-    'type'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseAuthProvidersResponse
- */
-export interface ResponseAuthProvidersResponse {
-    /**
-     * プロバイダ一覧
-     * @type {Array<ResponseAuthProvider>}
-     * @memberof ResponseAuthProvidersResponse
-     */
-    'providers'?: Array<ResponseAuthProvider>;
-}
-/**
- * 
- * @export
- * @interface ResponseAuthResponse
- */
-export interface ResponseAuthResponse {
+export interface AuthResponse {
     /**
      * アクセストークン
      * @type {string}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'accessToken'?: string;
     /**
      * 管理者ID
      * @type {string}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'adminId'?: string;
     /**
      * 有効期限
      * @type {number}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'expiresIn'?: number;
     /**
      * 更新トークン
      * @type {string}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'refreshToken'?: string;
     /**
      * トークン種別
      * @type {string}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'tokenType'?: string;
     /**
      * 管理者種別
      * @type {number}
-     * @memberof ResponseAuthResponse
+     * @memberof AuthResponse
      */
     'type'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseAuthUserResponse
+ * @interface AuthUserResponse
  */
-export interface ResponseAuthUserResponse {
+export interface AuthUserResponse {
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'email'?: string;
     /**
      * 管理者ID
      * @type {string}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'id'?: string;
     /**
      * 店舗ID一覧
      * @type {Array<string>}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'shopIds'?: Array<string>;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'thumbnailUrl'?: string;
     /**
      * 管理者種別
      * @type {number}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'type'?: number;
     /**
      * 表示名
      * @type {string}
-     * @memberof ResponseAuthUserResponse
+     * @memberof AuthUserResponse
      */
     'username'?: string;
 }
 /**
- * 
- * @export
- * @interface ResponseAuthYoutubeBroadcastResponse
- */
-export interface ResponseAuthYoutubeBroadcastResponse {
-    /**
-     * 認証URL
-     * @type {string}
-     * @memberof ResponseAuthYoutubeBroadcastResponse
-     */
-    'url'?: string;
-}
-/**
- * ライブ配信情報
- * @export
- * @interface ResponseBroadcast
- */
-export interface ResponseBroadcast {
-    /**
-     * オンデマンド配信URL
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'archiveUrl'?: string;
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseBroadcast
-     */
-    'createdAt'?: number;
-    /**
-     * ライブ配信ID
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'id'?: string;
-    /**
-     * ライブ配信URL(入力)
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'inputUrl'?: string;
-    /**
-     * ライブ配信URL(出力)
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'outputUrl'?: string;
-    /**
-     * 開催スケジュールID
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'scheduleId'?: string;
-    /**
-     * ライブ配信状況
-     * @type {number}
-     * @memberof ResponseBroadcast
-     */
-    'status'?: number;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseBroadcast
-     */
-    'updatedAt'?: number;
-    /**
-     * Youtubeアカウント
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'youtubeAccount'?: string;
-    /**
-     * Youtube管理画面URL
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'youtubeAdminUrl'?: string;
-    /**
-     * Youtube視聴画面URL
-     * @type {string}
-     * @memberof ResponseBroadcast
-     */
-    'youtubeViewerUrl'?: string;
-}
-/**
- * 
- * @export
- * @interface ResponseBroadcastResponse
- */
-export interface ResponseBroadcastResponse {
-    /**
-     * 
-     * @type {ResponseBroadcast}
-     * @memberof ResponseBroadcastResponse
-     */
-    'broadcast'?: ResponseBroadcast;
-}
-/**
- * 
- * @export
- * @interface ResponseBroadcastViewerLog
- */
-export interface ResponseBroadcastViewerLog {
-    /**
-     * ライブ配信ID
-     * @type {string}
-     * @memberof ResponseBroadcastViewerLog
-     */
-    'broadcastId'?: string;
-    /**
-     * 集計終了日時
-     * @type {number}
-     * @memberof ResponseBroadcastViewerLog
-     */
-    'endAt'?: number;
-    /**
-     * 集計開始日時
-     * @type {number}
-     * @memberof ResponseBroadcastViewerLog
-     */
-    'startAt'?: number;
-    /**
-     * 合計視聴者数
-     * @type {number}
-     * @memberof ResponseBroadcastViewerLog
-     */
-    'total'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseCategoriesResponse
- */
-export interface ResponseCategoriesResponse {
-    /**
-     * 商品種別一覧
-     * @type {Array<ResponseCategory>}
-     * @memberof ResponseCategoriesResponse
-     */
-    'categories'?: Array<ResponseCategory>;
-    /**
-     * 商品種別合計数
-     * @type {number}
-     * @memberof ResponseCategoriesResponse
-     */
-    'total'?: number;
-}
-/**
  * 商品種別情報
  * @export
- * @interface ResponseCategory
+ * @interface Category
  */
-export interface ResponseCategory {
+export interface Category {
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseCategory
+     * @memberof Category
      */
     'createdAt'?: number;
     /**
      * 商品種別ID
      * @type {string}
-     * @memberof ResponseCategory
+     * @memberof Category
      */
     'id'?: string;
     /**
      * 商品種別名
      * @type {string}
-     * @memberof ResponseCategory
+     * @memberof Category
      */
     'name'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseCategory
+     * @memberof Category
      */
     'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseCategoryResponse
- */
-export interface ResponseCategoryResponse {
-    /**
-     * 
-     * @type {ResponseCategory}
-     * @memberof ResponseCategoryResponse
-     */
-    'category'?: ResponseCategory;
-}
-/**
- * お問い合わせ情報
- * @export
- * @interface ResponseContact
- */
-export interface ResponseContact {
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'categoryId'?: string;
-    /**
-     * 内容
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'content'?: string;
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseContact
-     */
-    'createdAt'?: number;
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'email'?: string;
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'id'?: string;
-    /**
-     * 対応者メモ
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'note'?: string;
-    /**
-     * 電話番号
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'phoneNumber'?: string;
-    /**
-     * 対応者ID
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'responderId'?: string;
-    /**
-     * お問い合わせステータス
-     * @type {number}
-     * @memberof ResponseContact
-     */
-    'status'?: number;
-    /**
-     * 件名
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'title'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseContact
-     */
-    'updatedAt'?: number;
-    /**
-     * ユーザーID
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'userId'?: string;
-    /**
-     * 氏名
-     * @type {string}
-     * @memberof ResponseContact
-     */
-    'username'?: string;
-}
-/**
- * 
- * @export
- * @interface ResponseContactCategoriesResponse
- */
-export interface ResponseContactCategoriesResponse {
-    /**
-     * お問い合わせ種別一覧
-     * @type {Array<ResponseContactCategory>}
-     * @memberof ResponseContactCategoriesResponse
-     */
-    'contactCategories'?: Array<ResponseContactCategory>;
-}
-/**
- * お問い合わせ種別情報
- * @export
- * @interface ResponseContactCategory
- */
-export interface ResponseContactCategory {
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseContactCategory
-     */
-    'createdAt'?: number;
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof ResponseContactCategory
-     */
-    'id'?: string;
-    /**
-     * お問い合わせ種別名
-     * @type {string}
-     * @memberof ResponseContactCategory
-     */
-    'title'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseContactCategory
-     */
-    'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseContactCategoryResponse
- */
-export interface ResponseContactCategoryResponse {
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseContactCategoryResponse
-     */
-    'createdAt'?: number;
-    /**
-     * お問い合わせ種別ID
-     * @type {string}
-     * @memberof ResponseContactCategoryResponse
-     */
-    'id'?: string;
-    /**
-     * お問い合わせ種別名
-     * @type {string}
-     * @memberof ResponseContactCategoryResponse
-     */
-    'title'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseContactCategoryResponse
-     */
-    'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseContactReadResponse
- */
-export interface ResponseContactReadResponse {
-    /**
-     * お問い合わせID
-     * @type {string}
-     * @memberof ResponseContactReadResponse
-     */
-    'contactId'?: string;
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseContactReadResponse
-     */
-    'createdAt'?: number;
-    /**
-     * お問い合わせ既読管理ID
-     * @type {string}
-     * @memberof ResponseContactReadResponse
-     */
-    'id'?: string;
-    /**
-     * 既読フラグ
-     * @type {boolean}
-     * @memberof ResponseContactReadResponse
-     */
-    'read'?: boolean;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseContactReadResponse
-     */
-    'updatedAt'?: number;
-    /**
-     * 既読ユーザーID
-     * @type {string}
-     * @memberof ResponseContactReadResponse
-     */
-    'userId'?: string;
-    /**
-     * 既読ユーザータイプ
-     * @type {number}
-     * @memberof ResponseContactReadResponse
-     */
-    'userType'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseContactResponse
- */
-export interface ResponseContactResponse {
-    /**
-     * 
-     * @type {ResponseContactCategory}
-     * @memberof ResponseContactResponse
-     */
-    'category'?: ResponseContactCategory;
-    /**
-     * 
-     * @type {ResponseContact}
-     * @memberof ResponseContactResponse
-     */
-    'contact'?: ResponseContact;
-    /**
-     * 
-     * @type {ResponseAdmin}
-     * @memberof ResponseContactResponse
-     */
-    'responder'?: ResponseAdmin;
-    /**
-     * お問い合わせ会話履歴一覧
-     * @type {Array<ResponseThread>}
-     * @memberof ResponseContactResponse
-     */
-    'threads'?: Array<ResponseThread>;
-    /**
-     * 
-     * @type {ResponseUser}
-     * @memberof ResponseContactResponse
-     */
-    'user'?: ResponseUser;
-}
-/**
- * 
- * @export
- * @interface ResponseContactsResponse
- */
-export interface ResponseContactsResponse {
-    /**
-     * 管理者一覧
-     * @type {Array<ResponseAdmin>}
-     * @memberof ResponseContactsResponse
-     */
-    'admins'?: Array<ResponseAdmin>;
-    /**
-     * お問い合わせ種別一覧
-     * @type {Array<ResponseContactCategory>}
-     * @memberof ResponseContactsResponse
-     */
-    'categories'?: Array<ResponseContactCategory>;
-    /**
-     * お問い合わせ一覧
-     * @type {Array<ResponseContact>}
-     * @memberof ResponseContactsResponse
-     */
-    'contacts'?: Array<ResponseContact>;
-    /**
-     * お問い合わせ会話履歴一覧
-     * @type {Array<ResponseThread>}
-     * @memberof ResponseContactsResponse
-     */
-    'threads'?: Array<ResponseThread>;
-    /**
-     * お問い合わせ合計
-     * @type {number}
-     * @memberof ResponseContactsResponse
-     */
-    'total'?: number;
-    /**
-     * ユーザー一覧
-     * @type {Array<ResponseUser>}
-     * @memberof ResponseContactsResponse
-     */
-    'users'?: Array<ResponseUser>;
 }
 /**
  * コーディネータ情報
  * @export
- * @interface ResponseCoordinator
+ * @interface Coordinator
  */
-export interface ResponseCoordinator {
+export interface Coordinator {
     /**
      * 町名・番地
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'addressLine1'?: string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'addressLine2'?: string;
     /**
      * 購入特典映像URL
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'bonusVideoUrl'?: string;
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'city'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'createdAt'?: number;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'email'?: string;
     /**
      * Facebookアカウント
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'facebookId'?: string;
     /**
      * 名
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'firstname'?: string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'firstnameKana'?: string;
     /**
      * ヘッダー画像URL
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'headerUrl'?: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'id'?: string;
     /**
      * Instagramアカウント
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'instagramId'?: string;
     /**
      * 姓
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'lastname'?: string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'lastnameKana'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'phoneNumber'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'postalCode'?: string;
     /**
      * 都道府県
      * @type {number}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'prefectureCode'?: number;
     /**
      * 担当する生産者数
      * @type {number}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'producerTotal'?: number;
     /**
      * 紹介文
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'profile'?: string;
     /**
      * 紹介映像URL
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'promotionVideoUrl'?: string;
     /**
      * 店舗ID
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'shopId'?: string;
     /**
-     * コーディネータの状態
+     * 管理者の状態
      * @type {number}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'status'?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'thumbnailUrl'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'updatedAt'?: number;
     /**
      * 表示名
      * @type {string}
-     * @memberof ResponseCoordinator
+     * @memberof Coordinator
      */
     'username'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseCoordinatorResponse
+ * @interface CoordinatorResponse
  */
-export interface ResponseCoordinatorResponse {
+export interface CoordinatorResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseCoordinatorResponse
+     * @type {Coordinator}
+     * @memberof CoordinatorResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * パスワード（登録時のみ）
      * @type {string}
-     * @memberof ResponseCoordinatorResponse
+     * @memberof CoordinatorResponse
      */
     'password'?: string;
     /**
      * 品目一覧
-     * @type {Array<ResponseProductType>}
-     * @memberof ResponseCoordinatorResponse
+     * @type {Array<ProductType>}
+     * @memberof CoordinatorResponse
      */
-    'productTypes'?: Array<ResponseProductType>;
+    'productTypes'?: Array<ProductType>;
     /**
      * 
-     * @type {ResponseShop}
-     * @memberof ResponseCoordinatorResponse
+     * @type {TypesShop}
+     * @memberof CoordinatorResponse
      */
-    'shop'?: ResponseShop;
+    'shop'?: TypesShop;
 }
 /**
  * 
  * @export
- * @interface ResponseCoordinatorsResponse
+ * @interface CoordinatorsResponse
  */
-export interface ResponseCoordinatorsResponse {
+export interface CoordinatorsResponse {
     /**
      * 生産者一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseCoordinatorsResponse
+     * @type {Array<Coordinator>}
+     * @memberof CoordinatorsResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 品目一覧
-     * @type {Array<ResponseProductType>}
-     * @memberof ResponseCoordinatorsResponse
+     * @type {Array<ProductType>}
+     * @memberof CoordinatorsResponse
      */
-    'productTypes'?: Array<ResponseProductType>;
+    'productTypes'?: Array<ProductType>;
     /**
      * 店舗一覧
-     * @type {Array<ResponseShop>}
-     * @memberof ResponseCoordinatorsResponse
+     * @type {Array<TypesShop>}
+     * @memberof CoordinatorsResponse
      */
-    'shops'?: Array<ResponseShop>;
+    'shops'?: Array<TypesShop>;
     /**
      * 合計数
      * @type {number}
-     * @memberof ResponseCoordinatorsResponse
+     * @memberof CoordinatorsResponse
      */
     'total'?: number;
 }
 /**
+ * 
+ * @export
+ * @interface CreateSpotRequest
+ */
+export interface CreateSpotRequest {
+    /**
+     * 説明
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'description'?: string;
+    /**
+     * 緯度
+     * @type {number}
+     * @memberof CreateSpotRequest
+     */
+    'latitude': number;
+    /**
+     * 経度
+     * @type {number}
+     * @memberof CreateSpotRequest
+     */
+    'longitude': number;
+    /**
+     * スポット名
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'name': string;
+    /**
+     * スポット種別ID
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'spotTypeId': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateSpotRequest
+     */
+    'thumbnailUrl'?: string;
+}
+/**
  * 体験情報
  * @export
- * @interface ResponseExperience
+ * @interface Experience
  */
-export interface ResponseExperience {
+export interface Experience {
     /**
      * 営業終了時間
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'businessCloseTime'?: string;
     /**
      * 営業開始時間
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'businessOpenTime'?: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'coordinatorId'?: string;
     /**
      * 作成日時
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'createdAt'?: number;
     /**
      * 説明
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'description'?: string;
     /**
      * アクセス方法
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'direction'?: string;
     /**
      * 体験時間(分)
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'duration'?: number;
     /**
      * 募集終了日時
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'endAt'?: number;
     /**
      * 体験種別ID
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'experienceTypeId'?: string;
     /**
      * 開催場所(住所1)
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'hostAddressLine1'?: string;
     /**
      * 開催場所(住所2)
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'hostAddressLine2'?: string;
     /**
      * 開催場所(市区町村)
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'hostCity'?: string;
     /**
      * 開催場所(郵便番号)
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'hostPostalCode'?: string;
     /**
      * 開催場所(都道府県コード)
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'hostPrefectureCode'?: number;
     /**
      * 体験ID
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'id'?: string;
     /**
      * メディア一覧
-     * @type {Array<ResponseExperienceMedia>}
-     * @memberof ResponseExperience
+     * @type {Array<ExperienceMedia>}
+     * @memberof Experience
      */
-    'media'?: Array<ResponseExperienceMedia>;
+    'media'?: Array<ExperienceMedia>;
     /**
      * 大人料金
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'priceAdult'?: number;
     /**
      * 小学生料金
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'priceElementarySchool'?: number;
     /**
      * 中学生料金
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'priceJuniorHighSchool'?: number;
     /**
      * 幼児料金
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'pricePreschool'?: number;
     /**
      * シニア料金
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'priceSenior'?: number;
     /**
      * プロデューサーID
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'producerId'?: string;
     /**
      * 紹介動画URL
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'promotionVideoUrl'?: string;
     /**
      * 公開設定
      * @type {boolean}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'public'?: boolean;
     /**
      * おすすめポイント1
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'recommendedPoint1'?: string;
     /**
      * おすすめポイント2
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'recommendedPoint2'?: string;
     /**
      * おすすめポイント3
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'recommendedPoint3'?: string;
     /**
      * 定員オーバー設定
      * @type {boolean}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'soldOut'?: boolean;
     /**
      * 募集開始日時
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'startAt'?: number;
     /**
      * 販売状況
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'status'?: number;
     /**
      * タイトル
      * @type {string}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'title'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseExperience
+     * @memberof Experience
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseExperienceMedia
+ * @interface ExperienceMedia
  */
-export interface ResponseExperienceMedia {
+export interface ExperienceMedia {
     /**
      * サムネイルとして使用
      * @type {boolean}
-     * @memberof ResponseExperienceMedia
+     * @memberof ExperienceMedia
      */
     'isThumbnail'?: boolean;
     /**
      * メディアURL
      * @type {string}
-     * @memberof ResponseExperienceMedia
+     * @memberof ExperienceMedia
      */
     'url'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseExperienceResponse
+ * @interface ExperienceResponse
  */
-export interface ResponseExperienceResponse {
+export interface ExperienceResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseExperienceResponse
+     * @type {Coordinator}
+     * @memberof ExperienceResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * 
-     * @type {ResponseExperience}
-     * @memberof ResponseExperienceResponse
+     * @type {Experience}
+     * @memberof ExperienceResponse
      */
-    'experience'?: ResponseExperience;
+    'experience'?: Experience;
     /**
      * 
-     * @type {ResponseExperienceType}
-     * @memberof ResponseExperienceResponse
+     * @type {ExperienceType}
+     * @memberof ExperienceResponse
      */
-    'experienceType'?: ResponseExperienceType;
+    'experienceType'?: ExperienceType;
     /**
      * 
-     * @type {ResponseProducer}
-     * @memberof ResponseExperienceResponse
+     * @type {Producer}
+     * @memberof ExperienceResponse
      */
-    'producer'?: ResponseProducer;
+    'producer'?: Producer;
 }
 /**
  * 体験種別情報
  * @export
- * @interface ResponseExperienceType
+ * @interface ExperienceType
  */
-export interface ResponseExperienceType {
+export interface ExperienceType {
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseExperienceType
+     * @memberof ExperienceType
      */
     'createdAt'?: number;
     /**
      * 体験種別ID
      * @type {string}
-     * @memberof ResponseExperienceType
+     * @memberof ExperienceType
      */
     'id'?: string;
     /**
      * 体験種別名
      * @type {string}
-     * @memberof ResponseExperienceType
+     * @memberof ExperienceType
      */
     'name'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseExperienceType
+     * @memberof ExperienceType
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseExperienceTypeResponse
+ * @interface ExperiencesResponse
  */
-export interface ResponseExperienceTypeResponse {
-    /**
-     * 
-     * @type {ResponseExperienceType}
-     * @memberof ResponseExperienceTypeResponse
-     */
-    'experienceType'?: ResponseExperienceType;
-}
-/**
- * 
- * @export
- * @interface ResponseExperienceTypesResponse
- */
-export interface ResponseExperienceTypesResponse {
-    /**
-     * 体験種別一覧
-     * @type {Array<ResponseExperienceType>}
-     * @memberof ResponseExperienceTypesResponse
-     */
-    'experienceTypes'?: Array<ResponseExperienceType>;
-    /**
-     * 体験種別合計数
-     * @type {number}
-     * @memberof ResponseExperienceTypesResponse
-     */
-    'total'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseExperiencesResponse
- */
-export interface ResponseExperiencesResponse {
+export interface ExperiencesResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseExperiencesResponse
+     * @type {Array<Coordinator>}
+     * @memberof ExperiencesResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 体験種別一覧
-     * @type {Array<ResponseExperienceType>}
-     * @memberof ResponseExperiencesResponse
+     * @type {Array<ExperienceType>}
+     * @memberof ExperiencesResponse
      */
-    'experienceTypes'?: Array<ResponseExperienceType>;
+    'experienceTypes'?: Array<ExperienceType>;
     /**
      * 体験一覧
-     * @type {Array<ResponseExperience>}
-     * @memberof ResponseExperiencesResponse
+     * @type {Array<Experience>}
+     * @memberof ExperiencesResponse
      */
-    'experiences'?: Array<ResponseExperience>;
+    'experiences'?: Array<Experience>;
     /**
      * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseExperiencesResponse
+     * @type {Array<Producer>}
+     * @memberof ExperiencesResponse
      */
-    'producers'?: Array<ResponseProducer>;
+    'producers'?: Array<Producer>;
     /**
      * 体験合計数
      * @type {number}
-     * @memberof ResponseExperiencesResponse
+     * @memberof ExperiencesResponse
      */
     'total'?: number;
 }
 /**
- * ゲスト用ライブ配信情報
+ * 
  * @export
- * @interface ResponseGuestBroadcast
+ * @interface ForgotAuthPasswordRequest
  */
-export interface ResponseGuestBroadcast {
+export interface ForgotAuthPasswordRequest {
     /**
-     * ライブ配信担当者(マルシェ)
+     * メールアドレス
      * @type {string}
-     * @memberof ResponseGuestBroadcast
+     * @memberof ForgotAuthPasswordRequest
      */
-    'coordinatorMarche'?: string;
-    /**
-     * ライブ配信担当者(名前)
-     * @type {string}
-     * @memberof ResponseGuestBroadcast
-     */
-    'coordinatorName'?: string;
-    /**
-     * ライブ配信説明
-     * @type {string}
-     * @memberof ResponseGuestBroadcast
-     */
-    'description'?: string;
-    /**
-     * ライブ配信終了日時
-     * @type {number}
-     * @memberof ResponseGuestBroadcast
-     */
-    'endAt'?: number;
-    /**
-     * ライブ配信開始日時
-     * @type {number}
-     * @memberof ResponseGuestBroadcast
-     */
-    'startAt'?: number;
-    /**
-     * ライブ配信タイトル
-     * @type {string}
-     * @memberof ResponseGuestBroadcast
-     */
-    'title'?: string;
+    'email': string;
 }
 /**
  * 
  * @export
- * @interface ResponseGuestBroadcastResponse
+ * @interface GetUploadURLRequest
  */
-export interface ResponseGuestBroadcastResponse {
+export interface GetUploadURLRequest {
     /**
-     * 
-     * @type {ResponseGuestBroadcast}
-     * @memberof ResponseGuestBroadcastResponse
+     * ファイル種別
+     * @type {string}
+     * @memberof GetUploadURLRequest
      */
-    'broadcast'?: ResponseGuestBroadcast;
+    'fileType': string;
 }
 /**
  * ライブ配信情報
  * @export
- * @interface ResponseLive
+ * @interface Live
  */
-export interface ResponseLive {
+export interface Live {
     /**
      * コメント
      * @type {string}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'comment'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'createdAt'?: number;
     /**
      * ライブ配信終了日時
      * @type {number}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'endAt'?: number;
     /**
      * ライブ配信ID
      * @type {string}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'id'?: string;
     /**
      * 生産者ID
      * @type {string}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'producerId'?: string;
     /**
      * 商品ID一覧
      * @type {Array<string>}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'productIds'?: Array<string>;
     /**
      * マルシェ開催スケジュールID
      * @type {string}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'scheduleId'?: string;
     /**
      * ライブ配信開始日時
      * @type {number}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'startAt'?: number;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseLive
+     * @memberof Live
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseLiveComment
+ * @interface LiveComment
  */
-export interface ResponseLiveComment {
+export interface LiveComment {
     /**
      * アカウントID
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'accountId'?: string;
     /**
      * コメント
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'comment'?: string;
     /**
      * コメント無効フラグ
      * @type {boolean}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'disabled'?: boolean;
     /**
      * コメントID
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'id'?: string;
     /**
      * 投稿日時
      * @type {number}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'publishedAt'?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'thumbnailUrl'?: string;
     /**
      * ユーザーID
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'userId'?: string;
     /**
      * ユーザー名
      * @type {string}
-     * @memberof ResponseLiveComment
+     * @memberof LiveComment
      */
     'username'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseLiveCommentsResponse
+ * @interface LiveCommentsResponse
  */
-export interface ResponseLiveCommentsResponse {
+export interface LiveCommentsResponse {
     /**
      * コメント一覧
-     * @type {Array<ResponseLiveComment>}
-     * @memberof ResponseLiveCommentsResponse
+     * @type {Array<LiveComment>}
+     * @memberof LiveCommentsResponse
      */
-    'comments'?: Array<ResponseLiveComment>;
+    'comments'?: Array<LiveComment>;
     /**
      * 次の取得開始位置
      * @type {string}
-     * @memberof ResponseLiveCommentsResponse
+     * @memberof LiveCommentsResponse
      */
     'nextToken'?: string;
 }
 /**
- * 
- * @export
- * @interface ResponseLiveResponse
- */
-export interface ResponseLiveResponse {
-    /**
-     * 
-     * @type {ResponseLive}
-     * @memberof ResponseLiveResponse
-     */
-    'live'?: ResponseLive;
-    /**
-     * 
-     * @type {ResponseProducer}
-     * @memberof ResponseLiveResponse
-     */
-    'producer'?: ResponseProducer;
-    /**
-     * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseLiveResponse
-     */
-    'products'?: Array<ResponseProduct>;
-}
-/**
- * 
- * @export
- * @interface ResponseLivesResponse
- */
-export interface ResponseLivesResponse {
-    /**
-     * ライブ配信一覧
-     * @type {Array<ResponseLive>}
-     * @memberof ResponseLivesResponse
-     */
-    'lives'?: Array<ResponseLive>;
-    /**
-     * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseLivesResponse
-     */
-    'producers'?: Array<ResponseProducer>;
-    /**
-     * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseLivesResponse
-     */
-    'products'?: Array<ResponseProduct>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ResponseLivesResponse
-     */
-    'total'?: number;
-}
-/**
- * メッセージ情報
- * @export
- * @interface ResponseMessage
- */
-export interface ResponseMessage {
-    /**
-     * メッセージ内容
-     * @type {string}
-     * @memberof ResponseMessage
-     */
-    'body'?: string;
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseMessage
-     */
-    'createdAt'?: number;
-    /**
-     * メッセージID
-     * @type {string}
-     * @memberof ResponseMessage
-     */
-    'id'?: string;
-    /**
-     * 遷移先リンク
-     * @type {string}
-     * @memberof ResponseMessage
-     */
-    'link'?: string;
-    /**
-     * 既読フラグ
-     * @type {boolean}
-     * @memberof ResponseMessage
-     */
-    'read'?: boolean;
-    /**
-     * 受信日時
-     * @type {number}
-     * @memberof ResponseMessage
-     */
-    'receivedAt'?: number;
-    /**
-     * メッセージ件名
-     * @type {string}
-     * @memberof ResponseMessage
-     */
-    'title'?: string;
-    /**
-     * メッセージ種別
-     * @type {number}
-     * @memberof ResponseMessage
-     */
-    'type'?: number;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseMessage
-     */
-    'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseMessageResponse
- */
-export interface ResponseMessageResponse {
-    /**
-     * 
-     * @type {ResponseMessage}
-     * @memberof ResponseMessageResponse
-     */
-    'message'?: ResponseMessage;
-}
-/**
- * 
- * @export
- * @interface ResponseMessagesResponse
- */
-export interface ResponseMessagesResponse {
-    /**
-     * メッセージ一覧
-     * @type {Array<ResponseMessage>}
-     * @memberof ResponseMessagesResponse
-     */
-    'messages'?: Array<ResponseMessage>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ResponseMessagesResponse
-     */
-    'total'?: number;
-}
-/**
- * お知らせ情報
- * @export
- * @interface ResponseNotification
- */
-export interface ResponseNotification {
-    /**
-     * 本文
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'body'?: string;
-    /**
-     * 作成日時
-     * @type {number}
-     * @memberof ResponseNotification
-     */
-    'createdAt'?: number;
-    /**
-     * 登録者ID
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'createdBy'?: string;
-    /**
-     * お知らせID
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'id'?: string;
-    /**
-     * 備考
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'note'?: string;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'promotionId'?: string;
-    /**
-     * 掲載開始日時
-     * @type {number}
-     * @memberof ResponseNotification
-     */
-    'publishedAt'?: number;
-    /**
-     * お知らせ状態
-     * @type {number}
-     * @memberof ResponseNotification
-     */
-    'status'?: number;
-    /**
-     * 掲載対象一覧
-     * @type {Array<number>}
-     * @memberof ResponseNotification
-     */
-    'targets'?: Array<number>;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'title'?: string;
-    /**
-     * お知らせ種別
-     * @type {number}
-     * @memberof ResponseNotification
-     */
-    'type'?: number;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseNotification
-     */
-    'updatedAt'?: number;
-    /**
-     * 更新者ID
-     * @type {string}
-     * @memberof ResponseNotification
-     */
-    'updatedBy'?: string;
-}
-/**
- * 
- * @export
- * @interface ResponseNotificationResponse
- */
-export interface ResponseNotificationResponse {
-    /**
-     * 
-     * @type {ResponseAdmin}
-     * @memberof ResponseNotificationResponse
-     */
-    'admin'?: ResponseAdmin;
-    /**
-     * 
-     * @type {ResponseNotification}
-     * @memberof ResponseNotificationResponse
-     */
-    'notification'?: ResponseNotification;
-}
-/**
- * 
- * @export
- * @interface ResponseNotificationsResponse
- */
-export interface ResponseNotificationsResponse {
-    /**
-     * 登録者情報一覧
-     * @type {Array<ResponseAdmin>}
-     * @memberof ResponseNotificationsResponse
-     */
-    'admins'?: Array<ResponseAdmin>;
-    /**
-     * お知らせ一覧
-     * @type {Array<ResponseNotification>}
-     * @memberof ResponseNotificationsResponse
-     */
-    'notifications'?: Array<ResponseNotification>;
-    /**
-     * お知らせ合計数
-     * @type {number}
-     * @memberof ResponseNotificationsResponse
-     */
-    'total'?: number;
-}
-/**
  * 注文履歴情報
  * @export
- * @interface ResponseOrder
+ * @interface Order
  */
-export interface ResponseOrder {
+export interface Order {
     /**
      * 対応完了日時
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'completedAt'?: number;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'coordinatorId'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'createdAt'?: number;
     /**
      * 
-     * @type {ResponseOrderExperience}
-     * @memberof ResponseOrder
+     * @type {OrderExperience}
+     * @memberof Order
      */
-    'experience'?: ResponseOrderExperience;
+    'experience'?: OrderExperience;
     /**
      * 配送情報一覧
-     * @type {Array<ResponseOrderFulfillment>}
-     * @memberof ResponseOrder
+     * @type {Array<OrderFulfillment>}
+     * @memberof Order
      */
-    'fulfillments'?: Array<ResponseOrderFulfillment>;
+    'fulfillments'?: Array<OrderFulfillment>;
     /**
      * 注文履歴ID
      * @type {string}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'id'?: string;
     /**
      * 注文商品一覧
-     * @type {Array<ResponseOrderItem>}
-     * @memberof ResponseOrder
+     * @type {Array<OrderItem>}
+     * @memberof Order
      */
-    'items'?: Array<ResponseOrderItem>;
+    'items'?: Array<OrderItem>;
     /**
      * 注文管理用ID
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'managementId'?: number;
     /**
      * 
-     * @type {ResponseOrderMetadata}
-     * @memberof ResponseOrder
+     * @type {TypesOrderMetadata}
+     * @memberof Order
      */
-    'metadata'?: ResponseOrderMetadata;
+    'metadata'?: TypesOrderMetadata;
     /**
      * 
-     * @type {ResponseOrderPayment}
-     * @memberof ResponseOrder
+     * @type {OrderPayment}
+     * @memberof Order
      */
-    'payment'?: ResponseOrderPayment;
+    'payment'?: OrderPayment;
     /**
      * プロモーションID
      * @type {string}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'promotionId'?: string;
     /**
      * 
-     * @type {ResponseOrderRefund}
-     * @memberof ResponseOrder
+     * @type {OrderRefund}
+     * @memberof Order
      */
-    'refund'?: ResponseOrderRefund;
+    'refund'?: OrderRefund;
     /**
      * 発送連絡時のメッセージ
      * @type {string}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'shippingMessage'?: string;
     /**
      * 注文ステータス
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'status'?: number;
     /**
      * 注文種別
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'type'?: number;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'updatedAt'?: number;
     /**
      * ユーザーID
      * @type {string}
-     * @memberof ResponseOrder
+     * @memberof Order
      */
     'userId'?: string;
 }
 /**
  * 注文体験情報
  * @export
- * @interface ResponseOrderExperience
+ * @interface OrderExperience
  */
-export interface ResponseOrderExperience {
+export interface OrderExperience {
     /**
      * 大人人数
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'adultCount'?: number;
     /**
      * 大人価格
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'adultPrice'?: number;
     /**
      * 小学生人数
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'elementarySchoolCount'?: number;
     /**
      * 小学生価格
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'elementarySchoolPrice'?: number;
     /**
      * 体験ID
      * @type {string}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'experienceId'?: string;
     /**
      * 中学生人数
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'juniorHighSchoolCount'?: number;
     /**
      * 中学生価格
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'juniorHighSchoolPrice'?: number;
     /**
      * 幼児人数
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'preschoolCount'?: number;
     /**
      * 幼児価格
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'preschoolPrice'?: number;
     /**
      * 
-     * @type {ResponseOrderExperienceRemarks}
-     * @memberof ResponseOrderExperience
+     * @type {TypesOrderExperienceRemarks}
+     * @memberof OrderExperience
      */
-    'remarks'?: ResponseOrderExperienceRemarks;
+    'remarks'?: TypesOrderExperienceRemarks;
     /**
      * シニア人数
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'seniorCount'?: number;
     /**
      * シニア価格
      * @type {number}
-     * @memberof ResponseOrderExperience
+     * @memberof OrderExperience
      */
     'seniorPrice'?: number;
 }
 /**
- * 備考
- * @export
- * @interface ResponseOrderExperienceRemarks
- */
-export interface ResponseOrderExperienceRemarks {
-    /**
-     * 体験希望日
-     * @type {string}
-     * @memberof ResponseOrderExperienceRemarks
-     */
-    'requestedDate'?: string;
-    /**
-     * 体験希望時間
-     * @type {string}
-     * @memberof ResponseOrderExperienceRemarks
-     */
-    'requestedTime'?: string;
-    /**
-     * 交通手段
-     * @type {string}
-     * @memberof ResponseOrderExperienceRemarks
-     */
-    'transportation'?: string;
-}
-/**
  * 
  * @export
- * @interface ResponseOrderFulfillment
+ * @interface OrderFulfillment
  */
-export interface ResponseOrderFulfillment {
+export interface OrderFulfillment {
     /**
      * 住所ID
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'addressId'?: string;
     /**
      * 町名・番地
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'addressLine1'?: string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'addressLine2'?: string;
     /**
      * 箱の通番
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'boxNumber'?: number;
     /**
      * 箱の占有率
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'boxRate'?: number;
     /**
      * 箱の大きさ
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'boxSize'?: number;
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'city'?: string;
     /**
      * 氏名（名）
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'firstname'?: string;
     /**
      * 氏名(名:かな)
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'firstnameKana'?: string;
     /**
      * 配送情報ID
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'fulfillmentId'?: string;
     /**
      * 氏名（姓）
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'lastname'?: string;
     /**
      * 氏名(姓:かな)
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'lastnameKana'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'phoneNumber'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'postalCode'?: string;
     /**
      * 都道府県
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'prefecture'?: string;
     /**
      * 都道府県コード
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'prefectureCode'?: number;
     /**
      * 配送日時
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'shippedAt'?: number;
     /**
      * 配送会社
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'shippingCarrier'?: number;
     /**
      * 配送方法
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'shippingType'?: number;
     /**
      * 配送状況
      * @type {number}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'status'?: number;
     /**
      * 伝票番号
      * @type {string}
-     * @memberof ResponseOrderFulfillment
+     * @memberof OrderFulfillment
      */
     'trackingNumber'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseOrderItem
+ * @interface OrderItem
  */
-export interface ResponseOrderItem {
+export interface OrderItem {
     /**
      * 配送情報ID
      * @type {string}
-     * @memberof ResponseOrderItem
+     * @memberof OrderItem
      */
     'fulfillmentId'?: string;
     /**
      * 購入価格(税込)
      * @type {number}
-     * @memberof ResponseOrderItem
+     * @memberof OrderItem
      */
     'price'?: number;
     /**
      * 商品ID
      * @type {string}
-     * @memberof ResponseOrderItem
+     * @memberof OrderItem
      */
     'productId'?: string;
     /**
      * 購入数量
      * @type {number}
-     * @memberof ResponseOrderItem
+     * @memberof OrderItem
      */
     'quantity'?: number;
 }
 /**
- * 注文付加情報
- * @export
- * @interface ResponseOrderMetadata
- */
-export interface ResponseOrderMetadata {
-    /**
-     * 受け取り日時
-     * @type {number}
-     * @memberof ResponseOrderMetadata
-     */
-    'pickupAt'?: number;
-    /**
-     * 受け取り場所
-     * @type {string}
-     * @memberof ResponseOrderMetadata
-     */
-    'pickupLocation'?: string;
-}
-/**
  * 支払い情報
  * @export
- * @interface ResponseOrderPayment
+ * @interface OrderPayment
  */
-export interface ResponseOrderPayment {
+export interface OrderPayment {
     /**
      * 住所ID
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'addressId'?: string;
     /**
      * 町名・番地
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'addressLine1'?: string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'addressLine2'?: string;
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'city'?: string;
     /**
      * 割引金額(税込)
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'discount'?: number;
     /**
      * 氏名（名）
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'firstname'?: string;
     /**
      * 氏名(名:かな)
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'firstnameKana'?: string;
     /**
      * 氏名（姓）
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'lastname'?: string;
     /**
      * 氏名(姓:かな)
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'lastnameKana'?: string;
     /**
      * 決済手段種別
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'methodType'?: number;
     /**
      * 注文日時
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'orderedAt'?: number;
     /**
      * 支払日時
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'paidAt'?: number;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'phoneNumber'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'postalCode'?: string;
     /**
      * 都道府県
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'prefecture'?: string;
     /**
      * 都道府県コード
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'prefectureCode'?: number;
     /**
      * 配送手数料(税込)
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'shippingFee'?: number;
     /**
      * 支払い状況
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'status'?: number;
     /**
      * 購入金額(税込)
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'subtotal'?: number;
     /**
      * 合計金額(税込)
      * @type {number}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'total'?: number;
     /**
      * 取引ID
      * @type {string}
-     * @memberof ResponseOrderPayment
+     * @memberof OrderPayment
      */
     'transactionId'?: string;
 }
 /**
  * 注文キャンセル情報
  * @export
- * @interface ResponseOrderRefund
+ * @interface OrderRefund
  */
-export interface ResponseOrderRefund {
+export interface OrderRefund {
     /**
      * 注文キャンセルフラグ
      * @type {boolean}
-     * @memberof ResponseOrderRefund
+     * @memberof OrderRefund
      */
     'canceled'?: boolean;
     /**
      * 注文キャンセル日時
      * @type {number}
-     * @memberof ResponseOrderRefund
+     * @memberof OrderRefund
      */
     'canceledAt'?: number;
     /**
      * 注文キャンセル理由
      * @type {string}
-     * @memberof ResponseOrderRefund
+     * @memberof OrderRefund
      */
     'reason'?: string;
     /**
      * 返金金額
      * @type {number}
-     * @memberof ResponseOrderRefund
+     * @memberof OrderRefund
      */
     'total'?: number;
     /**
      * 注文キャンセル種別
      * @type {number}
-     * @memberof ResponseOrderRefund
+     * @memberof OrderRefund
      */
     'type'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseOrderResponse
+ * @interface OrderResponse
  */
-export interface ResponseOrderResponse {
+export interface OrderResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseOrderResponse
+     * @type {Coordinator}
+     * @memberof OrderResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * 
-     * @type {ResponseExperience}
-     * @memberof ResponseOrderResponse
+     * @type {Experience}
+     * @memberof OrderResponse
      */
-    'experience'?: ResponseExperience;
+    'experience'?: Experience;
     /**
      * 
-     * @type {ResponseOrder}
-     * @memberof ResponseOrderResponse
+     * @type {Order}
+     * @memberof OrderResponse
      */
-    'order'?: ResponseOrder;
+    'order'?: Order;
     /**
      * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseOrderResponse
+     * @type {Array<Product>}
+     * @memberof OrderResponse
      */
-    'products'?: Array<ResponseProduct>;
+    'products'?: Array<Product>;
     /**
      * 
-     * @type {ResponsePromotion}
-     * @memberof ResponseOrderResponse
+     * @type {Promotion}
+     * @memberof OrderResponse
      */
-    'promotion'?: ResponsePromotion;
+    'promotion'?: Promotion;
     /**
      * 
-     * @type {ResponseUser}
-     * @memberof ResponseOrderResponse
+     * @type {TypesUser}
+     * @memberof OrderResponse
      */
-    'user'?: ResponseUser;
+    'user'?: TypesUser;
 }
 /**
  * 
  * @export
- * @interface ResponseOrdersResponse
+ * @interface OrdersResponse
  */
-export interface ResponseOrdersResponse {
+export interface OrdersResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseOrdersResponse
+     * @type {Array<Coordinator>}
+     * @memberof OrdersResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 注文履歴一覧
-     * @type {Array<ResponseOrder>}
-     * @memberof ResponseOrdersResponse
+     * @type {Array<Order>}
+     * @memberof OrdersResponse
      */
-    'orders'?: Array<ResponseOrder>;
+    'orders'?: Array<Order>;
     /**
      * プロモーション一覧
-     * @type {Array<ResponsePromotion>}
-     * @memberof ResponseOrdersResponse
+     * @type {Array<Promotion>}
+     * @memberof OrdersResponse
      */
-    'promotions'?: Array<ResponsePromotion>;
+    'promotions'?: Array<Promotion>;
     /**
      * 注文履歴合計数
      * @type {number}
-     * @memberof ResponseOrdersResponse
+     * @memberof OrdersResponse
      */
     'total'?: number;
     /**
      * 購入者一覧
-     * @type {Array<ResponseUser>}
-     * @memberof ResponseOrdersResponse
+     * @type {Array<TypesUser>}
+     * @memberof OrdersResponse
      */
-    'users'?: Array<ResponseUser>;
+    'users'?: Array<TypesUser>;
 }
 /**
  * 
  * @export
- * @interface ResponsePaymentSystem
+ * @interface PaymentSystem
  */
-export interface ResponsePaymentSystem {
+export interface PaymentSystem {
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponsePaymentSystem
+     * @memberof PaymentSystem
      */
     'createdAt'?: number;
     /**
-     * 決済システム種別
+     * 決済手段種別
      * @type {number}
-     * @memberof ResponsePaymentSystem
+     * @memberof PaymentSystem
      */
     'methodType'?: number;
     /**
      * 決済システム状態
      * @type {number}
-     * @memberof ResponsePaymentSystem
+     * @memberof PaymentSystem
      */
     'status'?: number;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponsePaymentSystem
+     * @memberof PaymentSystem
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponsePaymentSystemsResponse
+ * @interface PaymentSystemsResponse
  */
-export interface ResponsePaymentSystemsResponse {
+export interface PaymentSystemsResponse {
     /**
      * 決済システム一覧
-     * @type {Array<ResponsePaymentSystem>}
-     * @memberof ResponsePaymentSystemsResponse
+     * @type {Array<PaymentSystem>}
+     * @memberof PaymentSystemsResponse
      */
-    'systems'?: Array<ResponsePaymentSystem>;
+    'systems'?: Array<PaymentSystem>;
 }
 /**
  * 
  * @export
- * @interface ResponsePostalCodeResponse
+ * @interface PostalCodeResponse
  */
-export interface ResponsePostalCodeResponse {
+export interface PostalCodeResponse {
     /**
      * 市区町村名
      * @type {string}
-     * @memberof ResponsePostalCodeResponse
+     * @memberof PostalCodeResponse
      */
     'city'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponsePostalCodeResponse
+     * @memberof PostalCodeResponse
      */
     'postalCode'?: string;
     /**
      * 都道府県名
      * @type {string}
-     * @memberof ResponsePostalCodeResponse
+     * @memberof PostalCodeResponse
      */
     'prefecture'?: string;
     /**
      * 都道府県コード
      * @type {number}
-     * @memberof ResponsePostalCodeResponse
+     * @memberof PostalCodeResponse
      */
     'prefectureCode'?: number;
     /**
      * 町域名
      * @type {string}
-     * @memberof ResponsePostalCodeResponse
+     * @memberof PostalCodeResponse
      */
     'town'?: string;
 }
 /**
  * 生産者情報
  * @export
- * @interface ResponseProducer
+ * @interface Producer
  */
-export interface ResponseProducer {
+export interface Producer {
     /**
      * 町名・番地
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'addressLine1'?: string;
     /**
      * ビル名・号室など
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'addressLine2'?: string;
     /**
      * 購入特典映像URL
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'bonusVideoUrl'?: string;
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'city'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'createdAt'?: number;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'email'?: string;
     /**
      * Facebookアカウント
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'facebookId'?: string;
     /**
      * 名
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'firstname'?: string;
     /**
      * 名(かな)
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'firstnameKana'?: string;
     /**
      * ヘッダー画像URL
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'headerUrl'?: string;
     /**
      * 生産者ID
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'id'?: string;
     /**
      * Instagramアカウント
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'instagramId'?: string;
     /**
      * 姓
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'lastname'?: string;
     /**
      * 姓(かな)
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'lastnameKana'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'phoneNumber'?: string;
     /**
      * 郵便番号
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'postalCode'?: string;
     /**
      * 都道府県
      * @type {number}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'prefectureCode'?: number;
     /**
      * 紹介文
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'profile'?: string;
     /**
      * 紹介映像URL
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'promotionVideoUrl'?: string;
     /**
-     * 生産者の状態
+     * 管理者の状態
      * @type {number}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'status'?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'thumbnailUrl'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'updatedAt'?: number;
     /**
      * 生産者名
      * @type {string}
-     * @memberof ResponseProducer
+     * @memberof Producer
      */
     'username'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseProducerResponse
+ * @interface ProducerResponse
  */
-export interface ResponseProducerResponse {
+export interface ProducerResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseProducerResponse
+     * @type {Array<Coordinator>}
+     * @memberof ProducerResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 
-     * @type {ResponseProducer}
-     * @memberof ResponseProducerResponse
+     * @type {Producer}
+     * @memberof ProducerResponse
      */
-    'producer'?: ResponseProducer;
+    'producer'?: Producer;
     /**
      * 店舗情報
-     * @type {Array<ResponseShop>}
-     * @memberof ResponseProducerResponse
+     * @type {Array<TypesShop>}
+     * @memberof ProducerResponse
      */
-    'shops'?: Array<ResponseShop>;
+    'shops'?: Array<TypesShop>;
 }
 /**
  * 
  * @export
- * @interface ResponseProducersResponse
+ * @interface ProducersResponse
  */
-export interface ResponseProducersResponse {
+export interface ProducersResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseProducersResponse
+     * @type {Array<Coordinator>}
+     * @memberof ProducersResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseProducersResponse
+     * @type {Array<Producer>}
+     * @memberof ProducersResponse
      */
-    'producers'?: Array<ResponseProducer>;
+    'producers'?: Array<Producer>;
     /**
      * 店舗一覧
-     * @type {Array<ResponseShop>}
-     * @memberof ResponseProducersResponse
+     * @type {Array<TypesShop>}
+     * @memberof ProducersResponse
      */
-    'shops'?: Array<ResponseShop>;
+    'shops'?: Array<TypesShop>;
     /**
      * 合計数
      * @type {number}
-     * @memberof ResponseProducersResponse
+     * @memberof ProducersResponse
      */
     'total'?: number;
 }
 /**
  * 商品情報
  * @export
- * @interface ResponseProduct
+ * @interface Product
  */
-export interface ResponseProduct {
+export interface Product {
     /**
      * 箱の占有率(サイズ:60)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'box60Rate'?: number;
     /**
      * 箱の占有率(サイズ:80)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'box80Rate'?: number;
     /**
      * 箱の占有率(サイズ:100)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'box100Rate'?: number;
     /**
      * 商品種別ID
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'categoryId'?: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'coordinatorId'?: string;
     /**
      * 原価
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'cost'?: number;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'createdAt'?: number;
     /**
      * 配送方法
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'deliveryType'?: number;
     /**
      * 商品説明
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'description'?: string;
     /**
      * 販売終了日時
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'endAt'?: number;
     /**
      * 賞味期限(単位:日)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'expirationDate'?: number;
     /**
      * 商品ID
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'id'?: string;
     /**
      * 在庫数
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'inventory'?: number;
     /**
      * 数量単位説明
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'itemDescription'?: string;
     /**
      * 数量単位
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'itemUnit'?: string;
     /**
      * メディア一覧
-     * @type {Array<ResponseProductMedia>}
-     * @memberof ResponseProduct
+     * @type {Array<ProductMedia>}
+     * @memberof Product
      */
-    'media'?: Array<ResponseProductMedia>;
+    'media'?: Array<ProductMedia>;
     /**
      * 商品名
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'name'?: string;
     /**
      * 原産地(市区町村)
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'originCity'?: string;
     /**
      * 原産地(都道府県)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'originPrefectureCode'?: number;
     /**
      * 販売価格(税込)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'price'?: number;
     /**
      * 生産者ID
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'producerId'?: string;
     /**
      * 商品タグID一覧
      * @type {Array<string>}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'productTagIds'?: Array<string>;
     /**
      * 品目ID
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'productTypeId'?: string;
     /**
      * 公開フラグ
      * @type {boolean}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'public'?: boolean;
     /**
      * おすすめポイント1
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'recommendedPoint1'?: string;
     /**
      * おすすめポイント2
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'recommendedPoint2'?: string;
     /**
      * おすすめポイント3
      * @type {string}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'recommendedPoint3'?: string;
     /**
      * 販売開始日時
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'startAt'?: number;
     /**
      * 販売状況
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'status'?: number;
     /**
      * 保存方法
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'storageMethodType'?: number;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'updatedAt'?: number;
     /**
      * 重量(kg,少数第一位まで)
      * @type {number}
-     * @memberof ResponseProduct
+     * @memberof Product
      */
     'weight'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseProductMedia
+ * @interface ProductMedia
  */
-export interface ResponseProductMedia {
+export interface ProductMedia {
     /**
      * サムネイルとして使用
      * @type {boolean}
-     * @memberof ResponseProductMedia
+     * @memberof ProductMedia
      */
     'isThumbnail'?: boolean;
     /**
      * メディアURL
      * @type {string}
-     * @memberof ResponseProductMedia
+     * @memberof ProductMedia
      */
     'url'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseProductResponse
+ * @interface ProductResponse
  */
-export interface ResponseProductResponse {
+export interface ProductResponse {
     /**
      * 
-     * @type {ResponseCategory}
-     * @memberof ResponseProductResponse
+     * @type {Category}
+     * @memberof ProductResponse
      */
-    'category'?: ResponseCategory;
+    'category'?: Category;
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseProductResponse
+     * @type {Coordinator}
+     * @memberof ProductResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * 
-     * @type {ResponseProducer}
-     * @memberof ResponseProductResponse
+     * @type {Producer}
+     * @memberof ProductResponse
      */
-    'producer'?: ResponseProducer;
+    'producer'?: Producer;
     /**
      * 
-     * @type {ResponseProduct}
-     * @memberof ResponseProductResponse
+     * @type {Product}
+     * @memberof ProductResponse
      */
-    'product'?: ResponseProduct;
+    'product'?: Product;
     /**
      * 商品タグ一覧
-     * @type {Array<ResponseProductTag>}
-     * @memberof ResponseProductResponse
+     * @type {Array<ProductTag>}
+     * @memberof ProductResponse
      */
-    'productTags'?: Array<ResponseProductTag>;
+    'productTags'?: Array<ProductTag>;
     /**
      * 
-     * @type {ResponseProductType}
-     * @memberof ResponseProductResponse
+     * @type {ProductType}
+     * @memberof ProductResponse
      */
-    'productType'?: ResponseProductType;
+    'productType'?: ProductType;
 }
 /**
  * 商品タグ情報
  * @export
- * @interface ResponseProductTag
+ * @interface ProductTag
  */
-export interface ResponseProductTag {
+export interface ProductTag {
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseProductTag
+     * @memberof ProductTag
      */
     'createdAt'?: number;
     /**
      * 商品タグID
      * @type {string}
-     * @memberof ResponseProductTag
+     * @memberof ProductTag
      */
     'id'?: string;
     /**
      * 商品タグ名
      * @type {string}
-     * @memberof ResponseProductTag
+     * @memberof ProductTag
      */
     'name'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseProductTag
+     * @memberof ProductTag
      */
     'updatedAt'?: number;
 }
 /**
- * 
- * @export
- * @interface ResponseProductTagResponse
- */
-export interface ResponseProductTagResponse {
-    /**
-     * 
-     * @type {ResponseProductTag}
-     * @memberof ResponseProductTagResponse
-     */
-    'productTag'?: ResponseProductTag;
-}
-/**
- * 
- * @export
- * @interface ResponseProductTagsResponse
- */
-export interface ResponseProductTagsResponse {
-    /**
-     * 商品タグ一覧
-     * @type {Array<ResponseProductTag>}
-     * @memberof ResponseProductTagsResponse
-     */
-    'productTags'?: Array<ResponseProductTag>;
-    /**
-     * 商品タグ合計数
-     * @type {number}
-     * @memberof ResponseProductTagsResponse
-     */
-    'total'?: number;
-}
-/**
  * 品目情報
  * @export
- * @interface ResponseProductType
+ * @interface ProductType
  */
-export interface ResponseProductType {
+export interface ProductType {
     /**
      * 商品種別ID
      * @type {string}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'categoryId'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'createdAt'?: number;
     /**
      * アイコンURL
      * @type {string}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'iconUrl'?: string;
     /**
      * 品目ID
      * @type {string}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'id'?: string;
     /**
      * 品目名
      * @type {string}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'name'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseProductType
+     * @memberof ProductType
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseProductTypeResponse
+ * @interface ProductsResponse
  */
-export interface ResponseProductTypeResponse {
-    /**
-     * 
-     * @type {ResponseCategory}
-     * @memberof ResponseProductTypeResponse
-     */
-    'category'?: ResponseCategory;
-    /**
-     * 
-     * @type {ResponseProductType}
-     * @memberof ResponseProductTypeResponse
-     */
-    'productType'?: ResponseProductType;
-}
-/**
- * 
- * @export
- * @interface ResponseProductTypesResponse
- */
-export interface ResponseProductTypesResponse {
+export interface ProductsResponse {
     /**
      * 商品種別一覧
-     * @type {Array<ResponseCategory>}
-     * @memberof ResponseProductTypesResponse
+     * @type {Array<Category>}
+     * @memberof ProductsResponse
      */
-    'categories'?: Array<ResponseCategory>;
-    /**
-     * 品目一覧
-     * @type {Array<ResponseProductType>}
-     * @memberof ResponseProductTypesResponse
-     */
-    'productTypes'?: Array<ResponseProductType>;
-    /**
-     * 品目合計数
-     * @type {number}
-     * @memberof ResponseProductTypesResponse
-     */
-    'total'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseProductsResponse
- */
-export interface ResponseProductsResponse {
-    /**
-     * 商品種別一覧
-     * @type {Array<ResponseCategory>}
-     * @memberof ResponseProductsResponse
-     */
-    'categories'?: Array<ResponseCategory>;
+    'categories'?: Array<Category>;
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseProductsResponse
+     * @type {Array<Coordinator>}
+     * @memberof ProductsResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
      * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseProductsResponse
+     * @type {Array<Producer>}
+     * @memberof ProductsResponse
      */
-    'producers'?: Array<ResponseProducer>;
+    'producers'?: Array<Producer>;
     /**
      * 商品タグ一覧
-     * @type {Array<ResponseProductTag>}
-     * @memberof ResponseProductsResponse
+     * @type {Array<ProductTag>}
+     * @memberof ProductsResponse
      */
-    'productTags'?: Array<ResponseProductTag>;
+    'productTags'?: Array<ProductTag>;
     /**
      * 品目一覧
-     * @type {Array<ResponseProductType>}
-     * @memberof ResponseProductsResponse
+     * @type {Array<ProductType>}
+     * @memberof ProductsResponse
      */
-    'productTypes'?: Array<ResponseProductType>;
+    'productTypes'?: Array<ProductType>;
     /**
      * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseProductsResponse
+     * @type {Array<Product>}
+     * @memberof ProductsResponse
      */
-    'products'?: Array<ResponseProduct>;
+    'products'?: Array<Product>;
     /**
      * 商品合計数
      * @type {number}
-     * @memberof ResponseProductsResponse
+     * @memberof ProductsResponse
      */
     'total'?: number;
 }
 /**
  * プロモーション情報
  * @export
- * @interface ResponsePromotion
+ * @interface Promotion
  */
-export interface ResponsePromotion {
+export interface Promotion {
     /**
      * クーポンコード
      * @type {string}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'code'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'createdAt'?: number;
     /**
      * 詳細説明
      * @type {string}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'description'?: string;
     /**
      * 割引額(%/円)
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'discountRate'?: number;
     /**
      * 割引計算方法
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'discountType'?: number;
     /**
      * クーポン使用可能日時(終了)
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'endAt'?: number;
     /**
      * プロモーションID
      * @type {string}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'id'?: string;
     /**
      * 公開フラグ
      * @type {boolean}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'public'?: boolean;
     /**
      * 店舗ID
      * @type {string}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'shopId'?: string;
     /**
      * クーポン使用可能日時(開始)
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'startAt'?: number;
     /**
      * ステータス
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'status'?: number;
     /**
      * 対象商品
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'targetType'?: number;
     /**
      * タイトル
      * @type {string}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'title'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'updatedAt'?: number;
     /**
      * 使用による割引合計額
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'usedAmount'?: number;
     /**
      * 使用回数
      * @type {number}
-     * @memberof ResponsePromotion
+     * @memberof Promotion
      */
     'usedCount'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponsePromotionResponse
+ * @interface PromotionResponse
  */
-export interface ResponsePromotionResponse {
+export interface PromotionResponse {
     /**
      * 
-     * @type {ResponsePromotion}
-     * @memberof ResponsePromotionResponse
+     * @type {Promotion}
+     * @memberof PromotionResponse
      */
-    'promotion'?: ResponsePromotion;
+    'promotion'?: Promotion;
     /**
      * 
-     * @type {ResponseShop}
-     * @memberof ResponsePromotionResponse
+     * @type {TypesShop}
+     * @memberof PromotionResponse
      */
-    'shop'?: ResponseShop;
+    'shop'?: TypesShop;
 }
 /**
  * 
  * @export
- * @interface ResponsePromotionsResponse
+ * @interface RefreshAuthTokenRequest
  */
-export interface ResponsePromotionsResponse {
+export interface RefreshAuthTokenRequest {
     /**
-     * プロモーション情報一覧
-     * @type {Array<ResponsePromotion>}
-     * @memberof ResponsePromotionsResponse
+     * 更新トークン
+     * @type {string}
+     * @memberof RefreshAuthTokenRequest
      */
-    'promotions'?: Array<ResponsePromotion>;
+    'refreshToken': string;
+}
+/**
+ * 
+ * @export
+ * @interface ResetAuthPasswordRequest
+ */
+export interface ResetAuthPasswordRequest {
     /**
-     * 店舗情報一覧
-     * @type {Array<ResponseShop>}
-     * @memberof ResponsePromotionsResponse
+     * メールアドレス
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
      */
-    'shops'?: Array<ResponseShop>;
+    'email': string;
     /**
-     * プロモーション合計数
-     * @type {number}
-     * @memberof ResponsePromotionsResponse
+     * パスワード
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
      */
-    'total'?: number;
+    'password'?: string;
+    /**
+     * パスワード (確認用)
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'passwordConfirmation': string;
+    /**
+     * 検証コード
+     * @type {string}
+     * @memberof ResetAuthPasswordRequest
+     */
+    'verifyCode': string;
 }
 /**
  * マルシェ開催情報
  * @export
- * @interface ResponseSchedule
+ * @interface Schedule
  */
-export interface ResponseSchedule {
+export interface Schedule {
     /**
      * 承認フラグ
      * @type {boolean}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'approved'?: boolean;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'coordinatorId'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'createdAt'?: number;
     /**
      * 説明
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'description'?: string;
     /**
      * 配信終了日時
      * @type {number}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'endAt'?: number;
     /**
      * スケジュールID
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'id'?: string;
     /**
      * 蓋絵URL
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'imageUrl'?: string;
     /**
      * オープニング動画URL
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'openingVideoUrl'?: string;
     /**
      * 公開フラグ
      * @type {boolean}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'public'?: boolean;
     /**
      * 店舗ID
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'shopId'?: string;
     /**
      * 配信開始日時
      * @type {number}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'startAt'?: number;
     /**
      * 開催状況
      * @type {number}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'status'?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'thumbnailUrl'?: string;
     /**
      * タイトル
      * @type {string}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'title'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseSchedule
+     * @memberof Schedule
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseScheduleResponse
+ * @interface ScheduleResponse
  */
-export interface ResponseScheduleResponse {
+export interface ScheduleResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseScheduleResponse
+     * @type {Coordinator}
+     * @memberof ScheduleResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * 
-     * @type {ResponseSchedule}
-     * @memberof ResponseScheduleResponse
+     * @type {Schedule}
+     * @memberof ScheduleResponse
      */
-    'schedule'?: ResponseSchedule;
-}
-/**
- * 
- * @export
- * @interface ResponseSchedulesResponse
- */
-export interface ResponseSchedulesResponse {
-    /**
-     * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseSchedulesResponse
-     */
-    'coordinators'?: Array<ResponseCoordinator>;
-    /**
-     * マルシェ開催一覧
-     * @type {Array<ResponseSchedule>}
-     * @memberof ResponseSchedulesResponse
-     */
-    'schedules'?: Array<ResponseSchedule>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ResponseSchedulesResponse
-     */
-    'total'?: number;
+    'schedule'?: Schedule;
 }
 /**
  * 配送設定情報
  * @export
- * @interface ResponseShipping
+ * @interface Shipping
  */
-export interface ResponseShipping {
+export interface Shipping {
     /**
      * 箱サイズ60の追加（冷凍便）追加配送料(税込)
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'box60Frozen'?: number;
     /**
      * 箱サイズ60の通常（常温・冷蔵便）配送料一覧
-     * @type {Array<ResponseShippingRate>}
-     * @memberof ResponseShipping
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
      */
-    'box60Rates'?: Array<ResponseShippingRate>;
+    'box60Rates'?: Array<ShippingRate>;
     /**
      * 箱サイズ80の追加（冷凍便）追加配送料(税込)
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'box80Frozen'?: number;
     /**
      * 箱サイズ80の通常（常温・冷蔵便）配送料一覧
-     * @type {Array<ResponseShippingRate>}
-     * @memberof ResponseShipping
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
      */
-    'box80Rates'?: Array<ResponseShippingRate>;
+    'box80Rates'?: Array<ShippingRate>;
     /**
      * 箱サイズ100の追加（冷凍便）追加配送料(税込)
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'box100Frozen'?: number;
     /**
      * 箱サイズ100の通常（常温・冷蔵便）配送料一覧
-     * @type {Array<ResponseShippingRate>}
-     * @memberof ResponseShipping
+     * @type {Array<ShippingRate>}
+     * @memberof Shipping
      */
-    'box100Rates'?: Array<ResponseShippingRate>;
+    'box100Rates'?: Array<ShippingRate>;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'createdAt'?: number;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'freeShippingRates'?: number;
     /**
      * 送料無料オプションの有無
      * @type {boolean}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'hasFreeShipping'?: boolean;
     /**
      * 配送設定ID
      * @type {string}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'id'?: string;
     /**
      * デフォルト設定フラグ
      * @type {boolean}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'isDefault'?: boolean;
     /**
      * 配送設定名
      * @type {string}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'name'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseShipping
+     * @memberof Shipping
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseShippingRate
+ * @interface ShippingRate
  */
-export interface ResponseShippingRate {
+export interface ShippingRate {
     /**
      * 配送料金設定名
      * @type {string}
-     * @memberof ResponseShippingRate
+     * @memberof ShippingRate
      */
     'name'?: string;
     /**
      * No.
      * @type {number}
-     * @memberof ResponseShippingRate
+     * @memberof ShippingRate
      */
     'number'?: number;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
-     * @memberof ResponseShippingRate
+     * @memberof ShippingRate
      */
     'prefectureCodes'?: Array<number>;
     /**
      * 配送料金(税込)
      * @type {number}
-     * @memberof ResponseShippingRate
+     * @memberof ShippingRate
      */
     'price'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseShippingResponse
+ * @interface SignInRequest
  */
-export interface ResponseShippingResponse {
+export interface SignInRequest {
     /**
-     * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseShippingResponse
+     * パスワード
+     * @type {string}
+     * @memberof SignInRequest
      */
-    'coordinator'?: ResponseCoordinator;
+    'password': string;
     /**
-     * 
-     * @type {ResponseShipping}
-     * @memberof ResponseShippingResponse
+     * ユーザー名 (メールアドレス)
+     * @type {string}
+     * @memberof SignInRequest
      */
-    'shipping'?: ResponseShipping;
+    'username': string;
+}
+/**
+ * スポット情報
+ * @export
+ * @interface Spot
+ */
+export interface Spot {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof Spot
+     */
+    'approved'?: boolean;
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof Spot
+     */
+    'createdAt'?: number;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof Spot
+     */
+    'description'?: string;
+    /**
+     * スポットID
+     * @type {string}
+     * @memberof Spot
+     */
+    'id'?: string;
+    /**
+     * 座標情報:緯度
+     * @type {number}
+     * @memberof Spot
+     */
+    'latitude'?: number;
+    /**
+     * 座標情報:経度
+     * @type {number}
+     * @memberof Spot
+     */
+    'longitude'?: number;
+    /**
+     * スポット名
+     * @type {string}
+     * @memberof Spot
+     */
+    'name'?: string;
+    /**
+     * スポット種別ID
+     * @type {string}
+     * @memberof Spot
+     */
+    'spotTypeId'?: string;
+    /**
+     * サムネイル画像URL
+     * @type {string}
+     * @memberof Spot
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof Spot
+     */
+    'updatedAt'?: number;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof Spot
+     */
+    'userId'?: string;
+    /**
+     * 投稿者の種別
+     * @type {number}
+     * @memberof Spot
+     */
+    'userType'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseShippingsResponse
+ * @interface SpotResponse
  */
-export interface ResponseShippingsResponse {
+export interface SpotResponse {
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof SpotResponse
+     */
+    'coordinator'?: Coordinator;
+    /**
+     * 
+     * @type {Producer}
+     * @memberof SpotResponse
+     */
+    'producer'?: Producer;
+    /**
+     * 
+     * @type {Spot}
+     * @memberof SpotResponse
+     */
+    'spot'?: Spot;
+    /**
+     * 
+     * @type {SpotType}
+     * @memberof SpotResponse
+     */
+    'spotType'?: SpotType;
+    /**
+     * 
+     * @type {TypesUser}
+     * @memberof SpotResponse
+     */
+    'user'?: TypesUser;
+}
+/**
+ * スポット種別情報
+ * @export
+ * @interface SpotType
+ */
+export interface SpotType {
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof SpotType
+     */
+    'createdAt'?: number;
+    /**
+     * スポット種別ID
+     * @type {string}
+     * @memberof SpotType
+     */
+    'id'?: string;
+    /**
+     * スポット種別名
+     * @type {string}
+     * @memberof SpotType
+     */
+    'name'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof SpotType
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface SpotTypesResponse
+ */
+export interface SpotTypesResponse {
+    /**
+     * 体験種別一覧
+     * @type {Array<SpotType>}
+     * @memberof SpotTypesResponse
+     */
+    'spotTypes'?: Array<SpotType>;
+    /**
+     * 体験種別合計数
+     * @type {number}
+     * @memberof SpotTypesResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface SpotsResponse
+ */
+export interface SpotsResponse {
     /**
      * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseShippingsResponse
+     * @type {Array<Coordinator>}
+     * @memberof SpotsResponse
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'coordinators'?: Array<Coordinator>;
     /**
-     * 配送設定一覧
-     * @type {Array<ResponseShipping>}
-     * @memberof ResponseShippingsResponse
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof SpotsResponse
      */
-    'shippings'?: Array<ResponseShipping>;
+    'producers'?: Array<Producer>;
+    /**
+     * スポット種別一覧
+     * @type {Array<SpotType>}
+     * @memberof SpotsResponse
+     */
+    'spotTypes'?: Array<SpotType>;
+    /**
+     * スポット一覧
+     * @type {Array<Spot>}
+     * @memberof SpotsResponse
+     */
+    'spots'?: Array<Spot>;
     /**
      * 合計数
      * @type {number}
-     * @memberof ResponseShippingsResponse
+     * @memberof SpotsResponse
+     */
+    'total'?: number;
+    /**
+     * ユーザ一覧
+     * @type {Array<TypesUser>}
+     * @memberof SpotsResponse
+     */
+    'users'?: Array<TypesUser>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesActivateBroadcastMP4Request
+ */
+export interface TypesActivateBroadcastMP4Request {
+    /**
+     * 配信動画URL
+     * @type {string}
+     * @memberof TypesActivateBroadcastMP4Request
+     */
+    'inputUrl': string;
+}
+/**
+ * 対応者情報
+ * @export
+ * @interface TypesAdmin
+ */
+export interface TypesAdmin {
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesAdmin
+     */
+    'createdAt'?: number;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'email'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'firstname'?: string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'firstnameKana'?: string;
+    /**
+     * 管理者ID
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'id'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'lastname'?: string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesAdmin
+     */
+    'lastnameKana'?: string;
+    /**
+     * 管理者種別
+     * @type {number}
+     * @memberof TypesAdmin
+     */
+    'role'?: number;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesAdmin
+     */
+    'updateAt'?: number;
+}
+/**
+ * システム管理者情報
+ * @export
+ * @interface TypesAdministrator
+ */
+export interface TypesAdministrator {
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesAdministrator
+     */
+    'createdAt'?: number;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'email'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'firstname'?: string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'firstnameKana'?: string;
+    /**
+     * 管理者ID
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'id'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'lastname'?: string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'lastnameKana'?: string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesAdministrator
+     */
+    'phoneNumber'?: string;
+    /**
+     * 管理者の状態
+     * @type {number}
+     * @memberof TypesAdministrator
+     */
+    'status'?: number;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesAdministrator
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAdministratorResponse
+ */
+export interface TypesAdministratorResponse {
+    /**
+     * 
+     * @type {TypesAdministrator}
+     * @memberof TypesAdministratorResponse
+     */
+    'administrator'?: TypesAdministrator;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAdministratorsResponse
+ */
+export interface TypesAdministratorsResponse {
+    /**
+     * システム管理者一覧
+     * @type {Array<TypesAdministrator>}
+     * @memberof TypesAdministratorsResponse
+     */
+    'administrators'?: Array<TypesAdministrator>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof TypesAdministratorsResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAnalyzeScheduleResponse
+ */
+export interface TypesAnalyzeScheduleResponse {
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof TypesAnalyzeScheduleResponse
+     */
+    'totalViewers'?: number;
+    /**
+     * 視聴者数ログ
+     * @type {Array<TypesBroadcastViewerLog>}
+     * @memberof TypesAnalyzeScheduleResponse
+     */
+    'viewerLogs'?: Array<TypesBroadcastViewerLog>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAnalyzeVideoResponse
+ */
+export interface TypesAnalyzeVideoResponse {
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof TypesAnalyzeVideoResponse
+     */
+    'totalViewers'?: number;
+    /**
+     * 視聴者数ログ
+     * @type {Array<TypesVideoViewerLog>}
+     * @memberof TypesAnalyzeVideoResponse
+     */
+    'viewerLogs'?: Array<TypesVideoViewerLog>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesApproveScheduleRequest
+ */
+export interface TypesApproveScheduleRequest {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof TypesApproveScheduleRequest
+     */
+    'approved'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesApproveSpotRequest
+ */
+export interface TypesApproveSpotRequest {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof TypesApproveSpotRequest
+     */
+    'approved'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAuthProvider
+ */
+export interface TypesAuthProvider {
+    /**
+     * 連携日時
+     * @type {number}
+     * @memberof TypesAuthProvider
+     */
+    'connectedAt'?: number;
+    /**
+     * プロバイダ種別
+     * @type {number}
+     * @memberof TypesAuthProvider
+     */
+    'type'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAuthProvidersResponse
+ */
+export interface TypesAuthProvidersResponse {
+    /**
+     * プロバイダ一覧
+     * @type {Array<TypesAuthProvider>}
+     * @memberof TypesAuthProvidersResponse
+     */
+    'providers'?: Array<TypesAuthProvider>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAuthYoutubeBroadcastRequest
+ */
+export interface TypesAuthYoutubeBroadcastRequest {
+    /**
+     * 連携先Youtubeアカウント
+     * @type {string}
+     * @memberof TypesAuthYoutubeBroadcastRequest
+     */
+    'youtubeHandle': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesAuthYoutubeBroadcastResponse
+ */
+export interface TypesAuthYoutubeBroadcastResponse {
+    /**
+     * 認証URL
+     * @type {string}
+     * @memberof TypesAuthYoutubeBroadcastResponse
+     */
+    'url'?: string;
+}
+/**
+ * ライブ配信情報
+ * @export
+ * @interface TypesBroadcast
+ */
+export interface TypesBroadcast {
+    /**
+     * オンデマンド配信URL
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'archiveUrl'?: string;
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesBroadcast
+     */
+    'createdAt'?: number;
+    /**
+     * ライブ配信ID
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'id'?: string;
+    /**
+     * ライブ配信URL(入力)
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'inputUrl'?: string;
+    /**
+     * ライブ配信URL(出力)
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'outputUrl'?: string;
+    /**
+     * 開催スケジュールID
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'scheduleId'?: string;
+    /**
+     * ライブ配信状況
+     * @type {number}
+     * @memberof TypesBroadcast
+     */
+    'status'?: number;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesBroadcast
+     */
+    'updatedAt'?: number;
+    /**
+     * Youtubeアカウント
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'youtubeAccount'?: string;
+    /**
+     * Youtube管理画面URL
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'youtubeAdminUrl'?: string;
+    /**
+     * Youtube視聴画面URL
+     * @type {string}
+     * @memberof TypesBroadcast
+     */
+    'youtubeViewerUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesBroadcastResponse
+ */
+export interface TypesBroadcastResponse {
+    /**
+     * 
+     * @type {TypesBroadcast}
+     * @memberof TypesBroadcastResponse
+     */
+    'broadcast'?: TypesBroadcast;
+}
+/**
+ * 
+ * @export
+ * @interface TypesBroadcastViewerLog
+ */
+export interface TypesBroadcastViewerLog {
+    /**
+     * ライブ配信ID
+     * @type {string}
+     * @memberof TypesBroadcastViewerLog
+     */
+    'broadcastId'?: string;
+    /**
+     * 集計終了日時
+     * @type {number}
+     * @memberof TypesBroadcastViewerLog
+     */
+    'endAt'?: number;
+    /**
+     * 集計開始日時
+     * @type {number}
+     * @memberof TypesBroadcastViewerLog
+     */
+    'startAt'?: number;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof TypesBroadcastViewerLog
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCallbackAuthYoutubeBroadcastRequest
+ */
+export interface TypesCallbackAuthYoutubeBroadcastRequest {
+    /**
+     * Google認証時に取得したcode
+     * @type {string}
+     * @memberof TypesCallbackAuthYoutubeBroadcastRequest
+     */
+    'authCode': string;
+    /**
+     * Google認証時に取得したstate
+     * @type {string}
+     * @memberof TypesCallbackAuthYoutubeBroadcastRequest
+     */
+    'state': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCategoriesResponse
+ */
+export interface TypesCategoriesResponse {
+    /**
+     * 商品種別一覧
+     * @type {Array<Category>}
+     * @memberof TypesCategoriesResponse
+     */
+    'categories'?: Array<Category>;
+    /**
+     * 商品種別合計数
+     * @type {number}
+     * @memberof TypesCategoriesResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCategoryResponse
+ */
+export interface TypesCategoryResponse {
+    /**
+     * 
+     * @type {Category}
+     * @memberof TypesCategoryResponse
+     */
+    'category'?: Category;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCompleteOrderRequest
+ */
+export interface TypesCompleteOrderRequest {
+    /**
+     * 発送連絡時のメッセージ
+     * @type {string}
+     * @memberof TypesCompleteOrderRequest
+     */
+    'shippingMessage'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesConnectGoogleAccountRequest
+ */
+export interface TypesConnectGoogleAccountRequest {
+    /**
+     * 認証コード
+     * @type {string}
+     * @memberof TypesConnectGoogleAccountRequest
+     */
+    'code': string;
+    /**
+     * セキュア文字列（リプレイアタック対策）
+     * @type {string}
+     * @memberof TypesConnectGoogleAccountRequest
+     */
+    'nonce': string;
+    /**
+     * リダイレクトURI
+     * @type {string}
+     * @memberof TypesConnectGoogleAccountRequest
+     */
+    'redirectUri': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesConnectLINEAccountRequest
+ */
+export interface TypesConnectLINEAccountRequest {
+    /**
+     * 認証コード
+     * @type {string}
+     * @memberof TypesConnectLINEAccountRequest
+     */
+    'code': string;
+    /**
+     * セキュア文字列（リプレイアタック対策）
+     * @type {string}
+     * @memberof TypesConnectLINEAccountRequest
+     */
+    'nonce': string;
+    /**
+     * リダイレクトURI
+     * @type {string}
+     * @memberof TypesConnectLINEAccountRequest
+     */
+    'redirectUri': string;
+}
+/**
+ * お問い合わせ情報
+ * @export
+ * @interface TypesContact
+ */
+export interface TypesContact {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'categoryId'?: string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'content'?: string;
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesContact
+     */
+    'createdAt'?: number;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'email'?: string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'id'?: string;
+    /**
+     * 対応者メモ
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'note'?: string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'phoneNumber'?: string;
+    /**
+     * 対応者ID
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'responderId'?: string;
+    /**
+     * お問い合わせステータス
+     * @type {number}
+     * @memberof TypesContact
+     */
+    'status'?: number;
+    /**
+     * 件名
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'title'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesContact
+     */
+    'updatedAt'?: number;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'userId'?: string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof TypesContact
+     */
+    'username'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesContactCategoriesResponse
+ */
+export interface TypesContactCategoriesResponse {
+    /**
+     * お問い合わせ種別一覧
+     * @type {Array<TypesContactCategory>}
+     * @memberof TypesContactCategoriesResponse
+     */
+    'contactCategories'?: Array<TypesContactCategory>;
+}
+/**
+ * お問い合わせ種別情報
+ * @export
+ * @interface TypesContactCategory
+ */
+export interface TypesContactCategory {
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesContactCategory
+     */
+    'createdAt'?: number;
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof TypesContactCategory
+     */
+    'id'?: string;
+    /**
+     * お問い合わせ種別名
+     * @type {string}
+     * @memberof TypesContactCategory
+     */
+    'title'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesContactCategory
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesContactCategoryResponse
+ */
+export interface TypesContactCategoryResponse {
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesContactCategoryResponse
+     */
+    'createdAt'?: number;
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof TypesContactCategoryResponse
+     */
+    'id'?: string;
+    /**
+     * お問い合わせ種別名
+     * @type {string}
+     * @memberof TypesContactCategoryResponse
+     */
+    'title'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesContactCategoryResponse
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesContactReadResponse
+ */
+export interface TypesContactReadResponse {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof TypesContactReadResponse
+     */
+    'contactId'?: string;
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesContactReadResponse
+     */
+    'createdAt'?: number;
+    /**
+     * お問い合わせ既読管理ID
+     * @type {string}
+     * @memberof TypesContactReadResponse
+     */
+    'id'?: string;
+    /**
+     * 既読フラグ
+     * @type {boolean}
+     * @memberof TypesContactReadResponse
+     */
+    'read'?: boolean;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesContactReadResponse
+     */
+    'updatedAt'?: number;
+    /**
+     * 既読ユーザーID
+     * @type {string}
+     * @memberof TypesContactReadResponse
+     */
+    'userId'?: string;
+    /**
+     * 既読ユーザータイプ
+     * @type {number}
+     * @memberof TypesContactReadResponse
+     */
+    'userType'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesContactResponse
+ */
+export interface TypesContactResponse {
+    /**
+     * 
+     * @type {TypesContactCategory}
+     * @memberof TypesContactResponse
+     */
+    'category'?: TypesContactCategory;
+    /**
+     * 
+     * @type {TypesContact}
+     * @memberof TypesContactResponse
+     */
+    'contact'?: TypesContact;
+    /**
+     * 
+     * @type {TypesAdmin}
+     * @memberof TypesContactResponse
+     */
+    'responder'?: TypesAdmin;
+    /**
+     * お問い合わせ会話履歴一覧
+     * @type {Array<TypesThread>}
+     * @memberof TypesContactResponse
+     */
+    'threads'?: Array<TypesThread>;
+    /**
+     * 
+     * @type {TypesUser}
+     * @memberof TypesContactResponse
+     */
+    'user'?: TypesUser;
+}
+/**
+ * 
+ * @export
+ * @interface TypesContactsResponse
+ */
+export interface TypesContactsResponse {
+    /**
+     * 管理者一覧
+     * @type {Array<TypesAdmin>}
+     * @memberof TypesContactsResponse
+     */
+    'admins'?: Array<TypesAdmin>;
+    /**
+     * お問い合わせ種別一覧
+     * @type {Array<TypesContactCategory>}
+     * @memberof TypesContactsResponse
+     */
+    'categories'?: Array<TypesContactCategory>;
+    /**
+     * お問い合わせ一覧
+     * @type {Array<TypesContact>}
+     * @memberof TypesContactsResponse
+     */
+    'contacts'?: Array<TypesContact>;
+    /**
+     * お問い合わせ会話履歴一覧
+     * @type {Array<TypesThread>}
+     * @memberof TypesContactsResponse
+     */
+    'threads'?: Array<TypesThread>;
+    /**
+     * お問い合わせ合計
+     * @type {number}
+     * @memberof TypesContactsResponse
+     */
+    'total'?: number;
+    /**
+     * ユーザー一覧
+     * @type {Array<TypesUser>}
+     * @memberof TypesContactsResponse
+     */
+    'users'?: Array<TypesUser>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateAdministratorRequest
+ */
+export interface TypesCreateAdministratorRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'email': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'firstname': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'firstnameKana': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'lastname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesCreateAdministratorRequest
+     */
+    'phoneNumber': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateCategoryRequest
+ */
+export interface TypesCreateCategoryRequest {
+    /**
+     * 商品種別名
+     * @type {string}
+     * @memberof TypesCreateCategoryRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateContactReadRequest
+ */
+export interface TypesCreateContactReadRequest {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof TypesCreateContactReadRequest
+     */
+    'contactId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof TypesCreateContactReadRequest
+     */
+    'userId': string;
+    /**
+     * 送信者種別(不明:0, admin:1, uer:2, guest:3)
+     * @type {number}
+     * @memberof TypesCreateContactReadRequest
+     */
+    'userType'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateContactRequest
+ */
+export interface TypesCreateContactRequest {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ内容
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'content': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'email': string;
+    /**
+     * 対応者メモ
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'note'?: string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 対応者ID(null許容)
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'responderId'?: string;
+    /**
+     * お問い合わせ件名
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'title': string;
+    /**
+     * 問い合わせ作成者ID(null許容)
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof TypesCreateContactRequest
+     */
+    'username': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateExperienceMedia
+ */
+export interface TypesCreateExperienceMedia {
+    /**
+     * サムネイルとして使用
+     * @type {boolean}
+     * @memberof TypesCreateExperienceMedia
+     */
+    'isThumbnail'?: boolean;
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof TypesCreateExperienceMedia
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateExperienceRequest
+ */
+export interface TypesCreateExperienceRequest {
+    /**
+     * 営業終了時間
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'businessCloseTime'?: string;
+    /**
+     * 営業開始時間
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'businessOpenTime'?: string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'description': string;
+    /**
+     * アクセス方法
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'direction'?: string;
+    /**
+     * 体験時間(分)
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'duration'?: number;
+    /**
+     * 募集終了日時
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'endAt': number;
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'experienceTypeId': string;
+    /**
+     * 開催場所(住所1)
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'hostAddressLine1': string;
+    /**
+     * 開催場所(住所2)
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'hostAddressLine2'?: string;
+    /**
+     * 開催場所(市区町村)
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'hostCity': string;
+    /**
+     * 開催場所(郵便番号)
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'hostPostalCode': string;
+    /**
+     * 開催場所(都道府県コード)
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'hostPrefectureCode': number;
+    /**
+     * メディア一覧
+     * @type {Array<TypesCreateExperienceMedia>}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'media': Array<TypesCreateExperienceMedia>;
+    /**
+     * 大人料金
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'priceAdult': number;
+    /**
+     * 小学生料金
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'priceElementarySchool': number;
+    /**
+     * 中学生料金
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'priceJuniorHighSchool': number;
+    /**
+     * 幼児料金
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'pricePreschool': number;
+    /**
+     * シニア料金
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'priceSenior': number;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'producerId': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'promotionVideoUrl'?: string;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'public'?: boolean;
+    /**
+     * おすすめポイント1
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'recommendedPoint1'?: string;
+    /**
+     * おすすめポイント2
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'recommendedPoint2'?: string;
+    /**
+     * おすすめポイント3
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'recommendedPoint3'?: string;
+    /**
+     * 定員オーバーフラグ
+     * @type {boolean}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'soldOut'?: boolean;
+    /**
+     * 募集開始日時
+     * @type {number}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'startAt': number;
+    /**
+     * 体験名
+     * @type {string}
+     * @memberof TypesCreateExperienceRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateExperienceTypeRequest
+ */
+export interface TypesCreateExperienceTypeRequest {
+    /**
+     * 体験種別名
+     * @type {string}
+     * @memberof TypesCreateExperienceTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateLiveRequest
+ */
+export interface TypesCreateLiveRequest {
+    /**
+     * コメント
+     * @type {string}
+     * @memberof TypesCreateLiveRequest
+     */
+    'comment': string;
+    /**
+     * 配信終了日時
+     * @type {number}
+     * @memberof TypesCreateLiveRequest
+     */
+    'endAt': number;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof TypesCreateLiveRequest
+     */
+    'producerId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof TypesCreateLiveRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 配信開始日時
+     * @type {number}
+     * @memberof TypesCreateLiveRequest
+     */
+    'startAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateNotificationRequest
+ */
+export interface TypesCreateNotificationRequest {
+    /**
+     * 本文
+     * @type {string}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'note'?: string;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'promotionId'?: string;
+    /**
+     * 掲載開始日
+     * @type {number}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'publishedAt': number;
+    /**
+     * 掲載対象一覧
+     * @type {Array<number>}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'targets': Array<number>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'title': string;
+    /**
+     * お知らせ種別
+     * @type {number}
+     * @memberof TypesCreateNotificationRequest
+     */
+    'type': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateProducerRequest
+ */
+export interface TypesCreateProducerRequest {
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'addressLine1'?: string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'addressLine2'?: string;
+    /**
+     * 購入特典映像URL
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'bonusVideoUrl'?: string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'city'?: string;
+    /**
+     * 担当コーディネータ名
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'coordinatorId': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'email'?: string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'facebookId'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'firstname': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'firstnameKana': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'headerUrl'?: string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'instagramId'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'lastname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'phoneNumber'?: string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'postalCode'?: string;
+    /**
+     * 都道府県
+     * @type {number}
+     * @memberof TypesCreateProducerRequest
+     */
+    'prefectureCode'?: number;
+    /**
+     * 紹介文
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'profile'?: string;
+    /**
+     * 紹介映像URL
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'promotionVideoUrl'?: string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof TypesCreateProducerRequest
+     */
+    'username': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateProductMedia
+ */
+export interface TypesCreateProductMedia {
+    /**
+     * サムネイルとして使用
+     * @type {boolean}
+     * @memberof TypesCreateProductMedia
+     */
+    'isThumbnail'?: boolean;
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof TypesCreateProductMedia
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateProductRequest
+ */
+export interface TypesCreateProductRequest {
+    /**
+     * 箱の占有率(サイズ:60)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'box60Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:80)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'box80Rate'?: number;
+    /**
+     * 箱の占有率(サイズ:100)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'box100Rate'?: number;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 原価(税込)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'cost'?: number;
+    /**
+     * 配送方法
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'deliveryType': number;
+    /**
+     * 商品説明
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'description': string;
+    /**
+     * 販売終了日時
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'endAt': number;
+    /**
+     * 賞味期限(単位:日)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'expirationDate'?: number;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'inventory'?: number;
+    /**
+     * 数量単位説明
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'itemDescription': string;
+    /**
+     * 数量単位
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'itemUnit': string;
+    /**
+     * メディア一覧
+     * @type {Array<TypesCreateProductMedia>}
+     * @memberof TypesCreateProductRequest
+     */
+    'media'?: Array<TypesCreateProductMedia>;
+    /**
+     * 商品名
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'name': string;
+    /**
+     * 原産地(市区町村)
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'originCity'?: string;
+    /**
+     * 原産地(都道府県)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'originPrefectureCode': number;
+    /**
+     * 販売価格(税込)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'price'?: number;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'producerId': string;
+    /**
+     * 商品タグID一覧
+     * @type {Array<string>}
+     * @memberof TypesCreateProductRequest
+     */
+    'productTagIds': Array<string>;
+    /**
+     * 品目ID
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'productTypeId': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof TypesCreateProductRequest
+     */
+    'public'?: boolean;
+    /**
+     * おすすめポイント1
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'recommendedPoint1'?: string;
+    /**
+     * おすすめポイント2
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'recommendedPoint2'?: string;
+    /**
+     * おすすめポイント3
+     * @type {string}
+     * @memberof TypesCreateProductRequest
+     */
+    'recommendedPoint3'?: string;
+    /**
+     * 販売開始日時
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'startAt': number;
+    /**
+     * 保存方法
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'storageMethodType': number;
+    /**
+     * 重量(kg,少数第一位まで)
+     * @type {number}
+     * @memberof TypesCreateProductRequest
+     */
+    'weight'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateProductTagRequest
+ */
+export interface TypesCreateProductTagRequest {
+    /**
+     * 商品タグ名
+     * @type {string}
+     * @memberof TypesCreateProductTagRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateProductTypeRequest
+ */
+export interface TypesCreateProductTypeRequest {
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof TypesCreateProductTypeRequest
+     */
+    'iconUrl': string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof TypesCreateProductTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreatePromotionRequest
+ */
+export interface TypesCreatePromotionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'code'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'discountRate'?: number;
+    /**
+     * 割引計算方法
+     * @type {number}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'discountType': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'endAt': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'public'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'startAt': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesCreatePromotionRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateScheduleRequest
+ */
+export interface TypesCreateScheduleRequest {
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'description': string;
+    /**
+     * 配信終了日時
+     * @type {number}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'endAt': number;
+    /**
+     * 蓋絵URL
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'imageUrl'?: string;
+    /**
+     * オープニング動画URL
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'openingVideoUrl'?: string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'public'?: boolean;
+    /**
+     * 配信開始日時
+     * @type {number}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'startAt': number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesCreateScheduleRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateShippingRate
+ */
+export interface TypesCreateShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof TypesCreateShippingRate
+     */
+    'name': string;
+    /**
+     * 対象都道府県一覧
+     * @type {Array<number>}
+     * @memberof TypesCreateShippingRate
+     */
+    'prefectureCodes': Array<number>;
+    /**
+     * 配送料金(税込)
+     * @type {number}
+     * @memberof TypesCreateShippingRate
+     */
+    'price': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateShippingRequest
+ */
+export interface TypesCreateShippingRequest {
+    /**
+     * 箱サイズ60の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ60の通常便配送料一覧
+     * @type {Array<TypesCreateShippingRate>}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box60Rates': Array<TypesCreateShippingRate>;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ80の通常便配送料一覧
+     * @type {Array<TypesCreateShippingRate>}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box80Rates': Array<TypesCreateShippingRate>;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 箱サイズ100の通常便配送料一覧
+     * @type {Array<TypesCreateShippingRate>}
+     * @memberof TypesCreateShippingRequest
+     */
+    'box100Rates': Array<TypesCreateShippingRate>;
+    /**
+     * 送料無料になる金額(税込)
+     * @type {number}
+     * @memberof TypesCreateShippingRequest
+     */
+    'freeShippingRates'?: number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof TypesCreateShippingRequest
+     */
+    'hasFreeShipping'?: boolean;
+    /**
+     * 配送設定名
+     * @type {string}
+     * @memberof TypesCreateShippingRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateSpotTypeRequest
+ */
+export interface TypesCreateSpotTypeRequest {
+    /**
+     * スポット種別名
+     * @type {string}
+     * @memberof TypesCreateSpotTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateThreadRequest
+ */
+export interface TypesCreateThreadRequest {
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof TypesCreateThreadRequest
+     */
+    'contactId': string;
+    /**
+     * 内容
+     * @type {string}
+     * @memberof TypesCreateThreadRequest
+     */
+    'content': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof TypesCreateThreadRequest
+     */
+    'userId': string;
+    /**
+     * 送信者タイプ
+     * @type {number}
+     * @memberof TypesCreateThreadRequest
+     */
+    'userType'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateVideoRequest
+ */
+export interface TypesCreateVideoRequest {
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TypesCreateVideoRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesCreateVideoRequest
+     */
+    'description': string;
+    /**
+     * 体験への表示設定
+     * @type {boolean}
+     * @memberof TypesCreateVideoRequest
+     */
+    'displayExperience'?: boolean;
+    /**
+     * 商品への表示設定
+     * @type {boolean}
+     * @memberof TypesCreateVideoRequest
+     */
+    'displayProduct'?: boolean;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof TypesCreateVideoRequest
+     */
+    'experienceIds': Array<string>;
+    /**
+     * 限定公開設定
+     * @type {boolean}
+     * @memberof TypesCreateVideoRequest
+     */
+    'limited'?: boolean;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof TypesCreateVideoRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof TypesCreateVideoRequest
+     */
+    'public'?: boolean;
+    /**
+     * 公開日時
+     * @type {number}
+     * @memberof TypesCreateVideoRequest
+     */
+    'publishedAt': number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesCreateVideoRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesCreateVideoRequest
+     */
+    'title': string;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof TypesCreateVideoRequest
+     */
+    'videoUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesCreateYoutubeBroadcastRequest
+ */
+export interface TypesCreateYoutubeBroadcastRequest {
+    /**
+     * ライブ配信説明
+     * @type {string}
+     * @memberof TypesCreateYoutubeBroadcastRequest
+     */
+    'description'?: string;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof TypesCreateYoutubeBroadcastRequest
+     */
+    'public'?: boolean;
+    /**
+     * ライブ配信タイトル
+     * @type {string}
+     * @memberof TypesCreateYoutubeBroadcastRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesDraftOrderRequest
+ */
+export interface TypesDraftOrderRequest {
+    /**
+     * 発送連絡時のメッセージ
+     * @type {string}
+     * @memberof TypesDraftOrderRequest
+     */
+    'shippingMessage'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesExperienceTypeResponse
+ */
+export interface TypesExperienceTypeResponse {
+    /**
+     * 
+     * @type {ExperienceType}
+     * @memberof TypesExperienceTypeResponse
+     */
+    'experienceType'?: ExperienceType;
+}
+/**
+ * 
+ * @export
+ * @interface TypesExperienceTypesResponse
+ */
+export interface TypesExperienceTypesResponse {
+    /**
+     * 体験種別一覧
+     * @type {Array<ExperienceType>}
+     * @memberof TypesExperienceTypesResponse
+     */
+    'experienceTypes'?: Array<ExperienceType>;
+    /**
+     * 体験種別合計数
+     * @type {number}
+     * @memberof TypesExperienceTypesResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesExportOrdersRequest
+ */
+export interface TypesExportOrdersRequest {
+    /**
+     * 文字コード種別
+     * @type {number}
+     * @memberof TypesExportOrdersRequest
+     */
+    'characterEncodingType'?: number;
+    /**
+     * 配送会社
+     * @type {number}
+     * @memberof TypesExportOrdersRequest
+     */
+    'shippingCarrier': number;
+}
+/**
+ * ゲスト用ライブ配信情報
+ * @export
+ * @interface TypesGuestBroadcast
+ */
+export interface TypesGuestBroadcast {
+    /**
+     * ライブ配信担当者(マルシェ)
+     * @type {string}
+     * @memberof TypesGuestBroadcast
+     */
+    'coordinatorMarche'?: string;
+    /**
+     * ライブ配信担当者(名前)
+     * @type {string}
+     * @memberof TypesGuestBroadcast
+     */
+    'coordinatorName'?: string;
+    /**
+     * ライブ配信説明
+     * @type {string}
+     * @memberof TypesGuestBroadcast
+     */
+    'description'?: string;
+    /**
+     * ライブ配信終了日時
+     * @type {number}
+     * @memberof TypesGuestBroadcast
+     */
+    'endAt'?: number;
+    /**
+     * ライブ配信開始日時
+     * @type {number}
+     * @memberof TypesGuestBroadcast
+     */
+    'startAt'?: number;
+    /**
+     * ライブ配信タイトル
+     * @type {string}
+     * @memberof TypesGuestBroadcast
+     */
+    'title'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesGuestBroadcastResponse
+ */
+export interface TypesGuestBroadcastResponse {
+    /**
+     * 
+     * @type {TypesGuestBroadcast}
+     * @memberof TypesGuestBroadcastResponse
+     */
+    'broadcast'?: TypesGuestBroadcast;
+}
+/**
+ * 
+ * @export
+ * @interface TypesLiveResponse
+ */
+export interface TypesLiveResponse {
+    /**
+     * 
+     * @type {Live}
+     * @memberof TypesLiveResponse
+     */
+    'live'?: Live;
+    /**
+     * 
+     * @type {Producer}
+     * @memberof TypesLiveResponse
+     */
+    'producer'?: Producer;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof TypesLiveResponse
+     */
+    'products'?: Array<Product>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesLivesResponse
+ */
+export interface TypesLivesResponse {
+    /**
+     * ライブ配信一覧
+     * @type {Array<Live>}
+     * @memberof TypesLivesResponse
+     */
+    'lives'?: Array<Live>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof TypesLivesResponse
+     */
+    'producers'?: Array<Producer>;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof TypesLivesResponse
+     */
+    'products'?: Array<Product>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof TypesLivesResponse
+     */
+    'total'?: number;
+}
+/**
+ * メッセージ情報
+ * @export
+ * @interface TypesMessage
+ */
+export interface TypesMessage {
+    /**
+     * メッセージ内容
+     * @type {string}
+     * @memberof TypesMessage
+     */
+    'body'?: string;
+    /**
+     * 登録日時
+     * @type {number}
+     * @memberof TypesMessage
+     */
+    'createdAt'?: number;
+    /**
+     * メッセージID
+     * @type {string}
+     * @memberof TypesMessage
+     */
+    'id'?: string;
+    /**
+     * 遷移先リンク
+     * @type {string}
+     * @memberof TypesMessage
+     */
+    'link'?: string;
+    /**
+     * 既読フラグ
+     * @type {boolean}
+     * @memberof TypesMessage
+     */
+    'read'?: boolean;
+    /**
+     * 受信日時
+     * @type {number}
+     * @memberof TypesMessage
+     */
+    'receivedAt'?: number;
+    /**
+     * メッセージ件名
+     * @type {string}
+     * @memberof TypesMessage
+     */
+    'title'?: string;
+    /**
+     * メッセージ種別
+     * @type {number}
+     * @memberof TypesMessage
+     */
+    'type'?: number;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesMessage
+     */
+    'updatedAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesMessageResponse
+ */
+export interface TypesMessageResponse {
+    /**
+     * 
+     * @type {TypesMessage}
+     * @memberof TypesMessageResponse
+     */
+    'message'?: TypesMessage;
+}
+/**
+ * 
+ * @export
+ * @interface TypesMessagesResponse
+ */
+export interface TypesMessagesResponse {
+    /**
+     * メッセージ一覧
+     * @type {Array<TypesMessage>}
+     * @memberof TypesMessagesResponse
+     */
+    'messages'?: Array<TypesMessage>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof TypesMessagesResponse
+     */
+    'total'?: number;
+}
+/**
+ * お知らせ情報
+ * @export
+ * @interface TypesNotification
+ */
+export interface TypesNotification {
+    /**
+     * 本文
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'body'?: string;
+    /**
+     * 作成日時
+     * @type {number}
+     * @memberof TypesNotification
+     */
+    'createdAt'?: number;
+    /**
+     * 登録者ID
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'createdBy'?: string;
+    /**
+     * お知らせID
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'id'?: string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'note'?: string;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'promotionId'?: string;
+    /**
+     * 掲載開始日時
+     * @type {number}
+     * @memberof TypesNotification
+     */
+    'publishedAt'?: number;
+    /**
+     * お知らせ状態
+     * @type {number}
+     * @memberof TypesNotification
+     */
+    'status'?: number;
+    /**
+     * 掲載対象一覧
+     * @type {Array<number>}
+     * @memberof TypesNotification
+     */
+    'targets'?: Array<number>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'title'?: string;
+    /**
+     * お知らせ種別
+     * @type {number}
+     * @memberof TypesNotification
+     */
+    'type'?: number;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof TypesNotification
+     */
+    'updatedAt'?: number;
+    /**
+     * 更新者ID
+     * @type {string}
+     * @memberof TypesNotification
+     */
+    'updatedBy'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesNotificationResponse
+ */
+export interface TypesNotificationResponse {
+    /**
+     * 
+     * @type {TypesAdmin}
+     * @memberof TypesNotificationResponse
+     */
+    'admin'?: TypesAdmin;
+    /**
+     * 
+     * @type {TypesNotification}
+     * @memberof TypesNotificationResponse
+     */
+    'notification'?: TypesNotification;
+}
+/**
+ * 
+ * @export
+ * @interface TypesNotificationsResponse
+ */
+export interface TypesNotificationsResponse {
+    /**
+     * 登録者情報一覧
+     * @type {Array<TypesAdmin>}
+     * @memberof TypesNotificationsResponse
+     */
+    'admins'?: Array<TypesAdmin>;
+    /**
+     * お知らせ一覧
+     * @type {Array<TypesNotification>}
+     * @memberof TypesNotificationsResponse
+     */
+    'notifications'?: Array<TypesNotification>;
+    /**
+     * お知らせ合計数
+     * @type {number}
+     * @memberof TypesNotificationsResponse
+     */
+    'total'?: number;
+}
+/**
+ * 備考
+ * @export
+ * @interface TypesOrderExperienceRemarks
+ */
+export interface TypesOrderExperienceRemarks {
+    /**
+     * 体験希望日
+     * @type {string}
+     * @memberof TypesOrderExperienceRemarks
+     */
+    'requestedDate'?: string;
+    /**
+     * 体験希望時間
+     * @type {string}
+     * @memberof TypesOrderExperienceRemarks
+     */
+    'requestedTime'?: string;
+    /**
+     * 交通手段
+     * @type {string}
+     * @memberof TypesOrderExperienceRemarks
+     */
+    'transportation'?: string;
+}
+/**
+ * 注文付加情報
+ * @export
+ * @interface TypesOrderMetadata
+ */
+export interface TypesOrderMetadata {
+    /**
+     * 受け取り日時
+     * @type {number}
+     * @memberof TypesOrderMetadata
+     */
+    'pickupAt'?: number;
+    /**
+     * 受け取り場所
+     * @type {string}
+     * @memberof TypesOrderMetadata
+     */
+    'pickupLocation'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesProductTagResponse
+ */
+export interface TypesProductTagResponse {
+    /**
+     * 
+     * @type {ProductTag}
+     * @memberof TypesProductTagResponse
+     */
+    'productTag'?: ProductTag;
+}
+/**
+ * 
+ * @export
+ * @interface TypesProductTagsResponse
+ */
+export interface TypesProductTagsResponse {
+    /**
+     * 商品タグ一覧
+     * @type {Array<ProductTag>}
+     * @memberof TypesProductTagsResponse
+     */
+    'productTags'?: Array<ProductTag>;
+    /**
+     * 商品タグ合計数
+     * @type {number}
+     * @memberof TypesProductTagsResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesProductTypeResponse
+ */
+export interface TypesProductTypeResponse {
+    /**
+     * 
+     * @type {Category}
+     * @memberof TypesProductTypeResponse
+     */
+    'category'?: Category;
+    /**
+     * 
+     * @type {ProductType}
+     * @memberof TypesProductTypeResponse
+     */
+    'productType'?: ProductType;
+}
+/**
+ * 
+ * @export
+ * @interface TypesProductTypesResponse
+ */
+export interface TypesProductTypesResponse {
+    /**
+     * 商品種別一覧
+     * @type {Array<Category>}
+     * @memberof TypesProductTypesResponse
+     */
+    'categories'?: Array<Category>;
+    /**
+     * 品目一覧
+     * @type {Array<ProductType>}
+     * @memberof TypesProductTypesResponse
+     */
+    'productTypes'?: Array<ProductType>;
+    /**
+     * 品目合計数
+     * @type {number}
+     * @memberof TypesProductTypesResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesPromotionsResponse
+ */
+export interface TypesPromotionsResponse {
+    /**
+     * プロモーション情報一覧
+     * @type {Array<Promotion>}
+     * @memberof TypesPromotionsResponse
+     */
+    'promotions'?: Array<Promotion>;
+    /**
+     * 店舗情報一覧
+     * @type {Array<TypesShop>}
+     * @memberof TypesPromotionsResponse
+     */
+    'shops'?: Array<TypesShop>;
+    /**
+     * プロモーション合計数
+     * @type {number}
+     * @memberof TypesPromotionsResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesPublishScheduleRequest
+ */
+export interface TypesPublishScheduleRequest {
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof TypesPublishScheduleRequest
+     */
+    'public'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesRefundOrderRequest
+ */
+export interface TypesRefundOrderRequest {
+    /**
+     * 返金理由
+     * @type {string}
+     * @memberof TypesRefundOrderRequest
+     */
+    'description': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesRegisterAuthDeviceRequest
+ */
+export interface TypesRegisterAuthDeviceRequest {
+    /**
+     * デバイスID
+     * @type {string}
+     * @memberof TypesRegisterAuthDeviceRequest
+     */
+    'device': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesSchedulesResponse
+ */
+export interface TypesSchedulesResponse {
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof TypesSchedulesResponse
+     */
+    'coordinators'?: Array<Coordinator>;
+    /**
+     * マルシェ開催一覧
+     * @type {Array<Schedule>}
+     * @memberof TypesSchedulesResponse
+     */
+    'schedules'?: Array<Schedule>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof TypesSchedulesResponse
+     */
+    'total'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesShippingResponse
+ */
+export interface TypesShippingResponse {
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof TypesShippingResponse
+     */
+    'coordinator'?: Coordinator;
+    /**
+     * 
+     * @type {Shipping}
+     * @memberof TypesShippingResponse
+     */
+    'shipping'?: Shipping;
+}
+/**
+ * 
+ * @export
+ * @interface TypesShippingsResponse
+ */
+export interface TypesShippingsResponse {
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof TypesShippingsResponse
+     */
+    'coordinators'?: Array<Coordinator>;
+    /**
+     * 配送設定一覧
+     * @type {Array<Shipping>}
+     * @memberof TypesShippingsResponse
+     */
+    'shippings'?: Array<Shipping>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof TypesShippingsResponse
      */
     'total'?: number;
 }
 /**
  * 店舗情報
  * @export
- * @interface ResponseShop
+ * @interface TypesShop
  */
-export interface ResponseShop {
+export interface TypesShop {
     /**
      * 営業曜日(発送可能日)
      * @type {Array<number>}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'businessDays'?: Array<number>;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'coordinatorId'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'createdAt'?: number;
     /**
      * 店舗ID
      * @type {string}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'id'?: string;
     /**
      * 店舗名
      * @type {string}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'name'?: string;
     /**
      * 生産者ID一覧
      * @type {Array<string>}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'producerIds'?: Array<string>;
     /**
      * 取り扱い品目一覧
      * @type {Array<string>}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'productTypeIds'?: Array<string>;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseShop
+     * @memberof TypesShop
      */
     'updatedAt'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseShopResponse
+ * @interface TypesShopResponse
  */
-export interface ResponseShopResponse {
+export interface TypesShopResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseShopResponse
+     * @type {Coordinator}
+     * @memberof TypesShopResponse
      */
-    'coordinator'?: ResponseCoordinator;
+    'coordinator'?: Coordinator;
     /**
      * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseShopResponse
+     * @type {Array<Producer>}
+     * @memberof TypesShopResponse
      */
-    'producers'?: Array<ResponseProducer>;
+    'producers'?: Array<Producer>;
     /**
      * 品目一覧
-     * @type {Array<ResponseProductType>}
-     * @memberof ResponseShopResponse
+     * @type {Array<ProductType>}
+     * @memberof TypesShopResponse
      */
-    'productTypes'?: Array<ResponseProductType>;
+    'productTypes'?: Array<ProductType>;
     /**
      * 
-     * @type {ResponseShop}
-     * @memberof ResponseShopResponse
+     * @type {TypesShop}
+     * @memberof TypesShopResponse
      */
-    'shop'?: ResponseShop;
-}
-/**
- * スポット情報
- * @export
- * @interface ResponseSpot
- */
-export interface ResponseSpot {
-    /**
-     * 承認フラグ
-     * @type {boolean}
-     * @memberof ResponseSpot
-     */
-    'approved'?: boolean;
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseSpot
-     */
-    'createdAt'?: number;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'description'?: string;
-    /**
-     * スポットID
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'id'?: string;
-    /**
-     * 座標情報:緯度
-     * @type {number}
-     * @memberof ResponseSpot
-     */
-    'latitude'?: number;
-    /**
-     * 座標情報:経度
-     * @type {number}
-     * @memberof ResponseSpot
-     */
-    'longitude'?: number;
-    /**
-     * スポット名
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'name'?: string;
-    /**
-     * スポット種別ID
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'spotTypeId'?: string;
-    /**
-     * サムネイル画像URL
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseSpot
-     */
-    'updatedAt'?: number;
-    /**
-     * ユーザーID
-     * @type {string}
-     * @memberof ResponseSpot
-     */
-    'userId'?: string;
-    /**
-     * 投稿者の種別
-     * @type {number}
-     * @memberof ResponseSpot
-     */
-    'userType'?: number;
+    'shop'?: TypesShop;
 }
 /**
  * 
  * @export
- * @interface ResponseSpotResponse
+ * @interface TypesSpotTypeResponse
  */
-export interface ResponseSpotResponse {
+export interface TypesSpotTypeResponse {
     /**
      * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseSpotResponse
+     * @type {SpotType}
+     * @memberof TypesSpotTypeResponse
      */
-    'coordinator'?: ResponseCoordinator;
-    /**
-     * 
-     * @type {ResponseProducer}
-     * @memberof ResponseSpotResponse
-     */
-    'producer'?: ResponseProducer;
-    /**
-     * 
-     * @type {ResponseSpot}
-     * @memberof ResponseSpotResponse
-     */
-    'spot'?: ResponseSpot;
-    /**
-     * 
-     * @type {ResponseSpotType}
-     * @memberof ResponseSpotResponse
-     */
-    'spotType'?: ResponseSpotType;
-    /**
-     * 
-     * @type {ResponseUser}
-     * @memberof ResponseSpotResponse
-     */
-    'user'?: ResponseUser;
-}
-/**
- * スポット種別情報
- * @export
- * @interface ResponseSpotType
- */
-export interface ResponseSpotType {
-    /**
-     * 登録日時
-     * @type {number}
-     * @memberof ResponseSpotType
-     */
-    'createdAt'?: number;
-    /**
-     * スポット種別ID
-     * @type {string}
-     * @memberof ResponseSpotType
-     */
-    'id'?: string;
-    /**
-     * スポット種別名
-     * @type {string}
-     * @memberof ResponseSpotType
-     */
-    'name'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseSpotType
-     */
-    'updatedAt'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseSpotTypeResponse
- */
-export interface ResponseSpotTypeResponse {
-    /**
-     * 
-     * @type {ResponseSpotType}
-     * @memberof ResponseSpotTypeResponse
-     */
-    'spotType'?: ResponseSpotType;
-}
-/**
- * 
- * @export
- * @interface ResponseSpotTypesResponse
- */
-export interface ResponseSpotTypesResponse {
-    /**
-     * 体験種別一覧
-     * @type {Array<ResponseSpotType>}
-     * @memberof ResponseSpotTypesResponse
-     */
-    'spotTypes'?: Array<ResponseSpotType>;
-    /**
-     * 体験種別合計数
-     * @type {number}
-     * @memberof ResponseSpotTypesResponse
-     */
-    'total'?: number;
-}
-/**
- * 
- * @export
- * @interface ResponseSpotsResponse
- */
-export interface ResponseSpotsResponse {
-    /**
-     * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseSpotsResponse
-     */
-    'coordinators'?: Array<ResponseCoordinator>;
-    /**
-     * 生産者一覧
-     * @type {Array<ResponseProducer>}
-     * @memberof ResponseSpotsResponse
-     */
-    'producers'?: Array<ResponseProducer>;
-    /**
-     * スポット種別一覧
-     * @type {Array<ResponseSpotType>}
-     * @memberof ResponseSpotsResponse
-     */
-    'spotTypes'?: Array<ResponseSpotType>;
-    /**
-     * スポット一覧
-     * @type {Array<ResponseSpot>}
-     * @memberof ResponseSpotsResponse
-     */
-    'spots'?: Array<ResponseSpot>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ResponseSpotsResponse
-     */
-    'total'?: number;
-    /**
-     * ユーザ一覧
-     * @type {Array<ResponseUser>}
-     * @memberof ResponseSpotsResponse
-     */
-    'users'?: Array<ResponseUser>;
+    'spotType'?: SpotType;
 }
 /**
  * お問い合わせ会話履歴
  * @export
- * @interface ResponseThread
+ * @interface TypesThread
  */
-export interface ResponseThread {
+export interface TypesThread {
     /**
      * お問い合わせID
      * @type {string}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'contactId'?: string;
     /**
      * 会話内容
      * @type {string}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'content'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'createdAt'?: number;
     /**
      * お問い合わせ会話履歴ID
      * @type {string}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'id'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'updatedAt'?: number;
     /**
      * 送信者ID
      * @type {string}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'userId'?: string;
     /**
      * 送信者タイプ
      * @type {number}
-     * @memberof ResponseThread
+     * @memberof TypesThread
      */
     'userType'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseThreadResponse
+ * @interface TypesThreadResponse
  */
-export interface ResponseThreadResponse {
+export interface TypesThreadResponse {
     /**
      * 
-     * @type {ResponseAdmin}
-     * @memberof ResponseThreadResponse
+     * @type {TypesAdmin}
+     * @memberof TypesThreadResponse
      */
-    'admin'?: ResponseAdmin;
+    'admin'?: TypesAdmin;
     /**
      * 
-     * @type {ResponseThread}
-     * @memberof ResponseThreadResponse
+     * @type {TypesThread}
+     * @memberof TypesThreadResponse
      */
-    'thread'?: ResponseThread;
+    'thread'?: TypesThread;
     /**
      * 
-     * @type {ResponseUser}
-     * @memberof ResponseThreadResponse
+     * @type {TypesUser}
+     * @memberof TypesThreadResponse
      */
-    'user'?: ResponseUser;
+    'user'?: TypesUser;
 }
 /**
  * 
  * @export
- * @interface ResponseThreadsResponse
+ * @interface TypesThreadsResponse
  */
-export interface ResponseThreadsResponse {
+export interface TypesThreadsResponse {
     /**
      * 送信者一覧
-     * @type {Array<ResponseAdmin>}
-     * @memberof ResponseThreadsResponse
+     * @type {Array<TypesAdmin>}
+     * @memberof TypesThreadsResponse
      */
-    'admins'?: Array<ResponseAdmin>;
+    'admins'?: Array<TypesAdmin>;
     /**
      * お問い合わせ会話履歴一覧
-     * @type {Array<ResponseThread>}
-     * @memberof ResponseThreadsResponse
+     * @type {Array<TypesThread>}
+     * @memberof TypesThreadsResponse
      */
-    'threads'?: Array<ResponseThread>;
+    'threads'?: Array<TypesThread>;
     /**
      * 会話履歴合計
      * @type {number}
-     * @memberof ResponseThreadsResponse
+     * @memberof TypesThreadsResponse
      */
     'total'?: number;
     /**
      * 送信者一覧
-     * @type {Array<ResponseUser>}
-     * @memberof ResponseThreadsResponse
+     * @type {Array<TypesUser>}
+     * @memberof TypesThreadsResponse
      */
-    'users'?: Array<ResponseUser>;
+    'users'?: Array<TypesUser>;
 }
 /**
  * 
  * @export
- * @interface ResponseTopOrderPayment
+ * @interface TypesTopOrderPayment
  */
-export interface ResponseTopOrderPayment {
+export interface TypesTopOrderPayment {
     /**
      * 注文数
      * @type {number}
-     * @memberof ResponseTopOrderPayment
+     * @memberof TypesTopOrderPayment
      */
     'orderCount'?: number;
     /**
-     * 支払い方法
+     * 決済手段種別
      * @type {number}
-     * @memberof ResponseTopOrderPayment
+     * @memberof TypesTopOrderPayment
      */
     'paymentMethodType'?: number;
     /**
      * 割合（支払い方法別注文数 / 注文数）
      * @type {number}
-     * @memberof ResponseTopOrderPayment
+     * @memberof TypesTopOrderPayment
      */
     'rate'?: number;
     /**
      * 売上合計
      * @type {number}
-     * @memberof ResponseTopOrderPayment
+     * @memberof TypesTopOrderPayment
      */
     'salesTotal'?: number;
     /**
      * ユーザー数
      * @type {number}
-     * @memberof ResponseTopOrderPayment
+     * @memberof TypesTopOrderPayment
      */
     'userCount'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseTopOrderSalesTrend
+ * @interface TypesTopOrderSalesTrend
  */
-export interface ResponseTopOrderSalesTrend {
+export interface TypesTopOrderSalesTrend {
     /**
      * 期間
      * @type {string}
-     * @memberof ResponseTopOrderSalesTrend
+     * @memberof TypesTopOrderSalesTrend
      */
     'period'?: string;
     /**
      * 売上合計
      * @type {number}
-     * @memberof ResponseTopOrderSalesTrend
+     * @memberof TypesTopOrderSalesTrend
      */
     'salesTotal'?: number;
 }
 /**
  * 注文数
  * @export
- * @interface ResponseTopOrderValue
+ * @interface TypesTopOrderValue
  */
-export interface ResponseTopOrderValue {
+export interface TypesTopOrderValue {
     /**
      * 比較値（％：前日比など）
      * @type {number}
-     * @memberof ResponseTopOrderValue
+     * @memberof TypesTopOrderValue
      */
     'comparison'?: number;
     /**
      * 値
      * @type {number}
-     * @memberof ResponseTopOrderValue
+     * @memberof TypesTopOrderValue
      */
     'value'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseTopOrdersResponse
+ * @interface TypesTopOrdersResponse
  */
-export interface ResponseTopOrdersResponse {
+export interface TypesTopOrdersResponse {
     /**
      * 終了日時
      * @type {number}
-     * @memberof ResponseTopOrdersResponse
+     * @memberof TypesTopOrdersResponse
      */
     'endAt'?: number;
     /**
      * 
-     * @type {ResponseTopOrderValue}
-     * @memberof ResponseTopOrdersResponse
+     * @type {TypesTopOrderValue}
+     * @memberof TypesTopOrdersResponse
      */
-    'orders'?: ResponseTopOrderValue;
+    'orders'?: TypesTopOrderValue;
     /**
      * 支払い方法別情報
-     * @type {Array<ResponseTopOrderPayment>}
-     * @memberof ResponseTopOrdersResponse
+     * @type {Array<TypesTopOrderPayment>}
+     * @memberof TypesTopOrdersResponse
      */
-    'payments'?: Array<ResponseTopOrderPayment>;
+    'payments'?: Array<TypesTopOrderPayment>;
     /**
      * 期間種別
      * @type {string}
-     * @memberof ResponseTopOrdersResponse
+     * @memberof TypesTopOrdersResponse
      */
     'periodType'?: string;
     /**
      * 
-     * @type {ResponseTopOrderValue}
-     * @memberof ResponseTopOrdersResponse
+     * @type {TypesTopOrderValue}
+     * @memberof TypesTopOrdersResponse
      */
-    'sales'?: ResponseTopOrderValue;
+    'sales'?: TypesTopOrderValue;
     /**
      * 売上推移（グラフ描画用）
-     * @type {Array<ResponseTopOrderSalesTrend>}
-     * @memberof ResponseTopOrdersResponse
+     * @type {Array<TypesTopOrderSalesTrend>}
+     * @memberof TypesTopOrdersResponse
      */
-    'salesTrends'?: Array<ResponseTopOrderSalesTrend>;
+    'salesTrends'?: Array<TypesTopOrderSalesTrend>;
     /**
      * 開始日時
      * @type {number}
-     * @memberof ResponseTopOrdersResponse
+     * @memberof TypesTopOrdersResponse
      */
     'startAt'?: number;
     /**
      * 
-     * @type {ResponseTopOrderValue}
-     * @memberof ResponseTopOrdersResponse
+     * @type {TypesTopOrderValue}
+     * @memberof TypesTopOrdersResponse
      */
-    'users'?: ResponseTopOrderValue;
+    'users'?: TypesTopOrderValue;
 }
 /**
  * 
  * @export
- * @interface ResponseUploadStateResponse
+ * @interface TypesUpdateAdministratorEmailRequest
  */
-export interface ResponseUploadStateResponse {
+export interface TypesUpdateAdministratorEmailRequest {
     /**
-     * アップロード結果
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesUpdateAdministratorEmailRequest
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateAdministratorRequest
+ */
+export interface TypesUpdateAdministratorRequest {
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesUpdateAdministratorRequest
+     */
+    'firstname': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesUpdateAdministratorRequest
+     */
+    'firstnameKana': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesUpdateAdministratorRequest
+     */
+    'lastname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesUpdateAdministratorRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesUpdateAdministratorRequest
+     */
+    'phoneNumber': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateAuthEmailRequest
+ */
+export interface TypesUpdateAuthEmailRequest {
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesUpdateAuthEmailRequest
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateBroadcastArchiveRequest
+ */
+export interface TypesUpdateBroadcastArchiveRequest {
+    /**
+     * アーカイブ動画URL
+     * @type {string}
+     * @memberof TypesUpdateBroadcastArchiveRequest
+     */
+    'archiveUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateCategoryRequest
+ */
+export interface TypesUpdateCategoryRequest {
+    /**
+     * 商品種別名
+     * @type {string}
+     * @memberof TypesUpdateCategoryRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateContactRequest
+ */
+export interface TypesUpdateContactRequest {
+    /**
+     * お問い合わせ種別ID
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'categoryId': string;
+    /**
+     * お問い合わせ内容
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'content': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'email': string;
+    /**
+     * 対応者メモ
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'note'?: string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 対応者ID(null許容)
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'responderId'?: string;
+    /**
+     * お問い合わせステータス
      * @type {number}
-     * @memberof ResponseUploadStateResponse
+     * @memberof TypesUpdateContactRequest
      */
     'status'?: number;
     /**
-     * 参照先URL
+     * お問い合わせ件名
      * @type {string}
-     * @memberof ResponseUploadStateResponse
+     * @memberof TypesUpdateContactRequest
      */
-    'url'?: string;
+    'title': string;
+    /**
+     * 問い合わせ作成者ID(null許容)
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'userId'?: string;
+    /**
+     * 氏名
+     * @type {string}
+     * @memberof TypesUpdateContactRequest
+     */
+    'username': string;
 }
 /**
  * 
  * @export
- * @interface ResponseUploadURLResponse
+ * @interface TypesUpdateCoordinatorRequest
  */
-export interface ResponseUploadURLResponse {
+export interface TypesUpdateCoordinatorRequest {
     /**
-     * アップロード後の状態参照用キー
+     * 町名・番地
      * @type {string}
-     * @memberof ResponseUploadURLResponse
+     * @memberof TypesUpdateCoordinatorRequest
      */
-    'key'?: string;
+    'addressLine1': string;
     /**
-     * アップロード用の署名付きURL
+     * ビル名・号室など
      * @type {string}
-     * @memberof ResponseUploadURLResponse
+     * @memberof TypesUpdateCoordinatorRequest
      */
-    'url'?: string;
+    'addressLine2'?: string;
+    /**
+     * 購入特典映像URL
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'bonusVideoUrl'?: string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'city': string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'facebookId'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'firstname': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'firstnameKana': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'headerUrl'?: string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'instagramId'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'lastname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'phoneNumber': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'postalCode'?: string;
+    /**
+     * 都道府県
+     * @type {number}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'prefectureCode': number;
+    /**
+     * 紹介文
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'profile': string;
+    /**
+     * 紹介映像URL
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'promotionVideoUrl'?: string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof TypesUpdateCoordinatorRequest
+     */
+    'username': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateDefaultShippingRate
+ */
+export interface TypesUpdateDefaultShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof TypesUpdateDefaultShippingRate
+     */
+    'name': string;
+    /**
+     * 対象都道府県一覧
+     * @type {Array<number>}
+     * @memberof TypesUpdateDefaultShippingRate
+     */
+    'prefectureCodes': Array<number>;
+    /**
+     * 配送料金(税込)
+     * @type {number}
+     * @memberof TypesUpdateDefaultShippingRate
+     */
+    'price': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateDefaultShippingRequest
+ */
+export interface TypesUpdateDefaultShippingRequest {
+    /**
+     * 箱サイズ60の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ60の通常便配送料一覧
+     * @type {Array<TypesUpdateDefaultShippingRate>}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box60Rates': Array<TypesUpdateDefaultShippingRate>;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ80の通常便配送料一覧
+     * @type {Array<TypesUpdateDefaultShippingRate>}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box80Rates': Array<TypesUpdateDefaultShippingRate>;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 箱サイズ100の通常便配送料一覧
+     * @type {Array<TypesUpdateDefaultShippingRate>}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'box100Rates': Array<TypesUpdateDefaultShippingRate>;
+    /**
+     * 送料無料になる金額(税込)
+     * @type {number}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'freeShippingRates'?: number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof TypesUpdateDefaultShippingRequest
+     */
+    'hasFreeShipping'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateExperienceMedia
+ */
+export interface TypesUpdateExperienceMedia {
+    /**
+     * サムネイルとして使用
+     * @type {boolean}
+     * @memberof TypesUpdateExperienceMedia
+     */
+    'isThumbnail'?: boolean;
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof TypesUpdateExperienceMedia
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateExperienceRequest
+ */
+export interface TypesUpdateExperienceRequest {
+    /**
+     * 営業終了時間
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'businessCloseTime'?: string;
+    /**
+     * 営業開始時間
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'businessOpenTime'?: string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'description': string;
+    /**
+     * アクセス方法
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'direction'?: string;
+    /**
+     * 体験時間(分)
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'duration'?: number;
+    /**
+     * 募集終了日時
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'endAt': number;
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'experienceTypeId': string;
+    /**
+     * 開催場所(住所1)
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'hostAddressLine1': string;
+    /**
+     * 開催場所(住所2)
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'hostAddressLine2'?: string;
+    /**
+     * 開催場所(市区町村)
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'hostCity': string;
+    /**
+     * 開催場所(郵便番号)
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'hostPostalCode': string;
+    /**
+     * 開催場所(都道府県コード)
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'hostPrefectureCode': number;
+    /**
+     * メディア一覧
+     * @type {Array<TypesUpdateExperienceMedia>}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'media': Array<TypesUpdateExperienceMedia>;
+    /**
+     * 大人料金
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'priceAdult': number;
+    /**
+     * 小学生料金
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'priceElementarySchool': number;
+    /**
+     * 中学生料金
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'priceJuniorHighSchool': number;
+    /**
+     * 幼児料金
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'pricePreschool': number;
+    /**
+     * シニア料金
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'priceSenior': number;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'promotionVideoUrl'?: string;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'public'?: boolean;
+    /**
+     * おすすめポイント1
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'recommendedPoint1'?: string;
+    /**
+     * おすすめポイント2
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'recommendedPoint2'?: string;
+    /**
+     * おすすめポイント3
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'recommendedPoint3'?: string;
+    /**
+     * 定員オーバーフラグ
+     * @type {boolean}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'soldOut'?: boolean;
+    /**
+     * 募集開始日時
+     * @type {number}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'startAt': number;
+    /**
+     * 体験名
+     * @type {string}
+     * @memberof TypesUpdateExperienceRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateExperienceTypeRequest
+ */
+export interface TypesUpdateExperienceTypeRequest {
+    /**
+     * 体験種別名
+     * @type {string}
+     * @memberof TypesUpdateExperienceTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateLiveCommentRequest
+ */
+export interface TypesUpdateLiveCommentRequest {
+    /**
+     * コメント無効フラグ
+     * @type {boolean}
+     * @memberof TypesUpdateLiveCommentRequest
+     */
+    'disabled'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateLiveRequest
+ */
+export interface TypesUpdateLiveRequest {
+    /**
+     * コメント
+     * @type {string}
+     * @memberof TypesUpdateLiveRequest
+     */
+    'comment': string;
+    /**
+     * 配信終了日時
+     * @type {number}
+     * @memberof TypesUpdateLiveRequest
+     */
+    'endAt': number;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof TypesUpdateLiveRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 配信開始日時
+     * @type {number}
+     * @memberof TypesUpdateLiveRequest
+     */
+    'startAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateNotificationRequest
+ */
+export interface TypesUpdateNotificationRequest {
+    /**
+     * 本文
+     * @type {string}
+     * @memberof TypesUpdateNotificationRequest
+     */
+    'body': string;
+    /**
+     * 備考
+     * @type {string}
+     * @memberof TypesUpdateNotificationRequest
+     */
+    'note'?: string;
+    /**
+     * 掲載開始日
+     * @type {number}
+     * @memberof TypesUpdateNotificationRequest
+     */
+    'publishedAt': number;
+    /**
+     * 掲載対象一覧
+     * @type {Array<number>}
+     * @memberof TypesUpdateNotificationRequest
+     */
+    'targets': Array<number>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesUpdateNotificationRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdatePaymentSystemRequest
+ */
+export interface TypesUpdatePaymentSystemRequest {
+    /**
+     * 決済システム状態
+     * @type {number}
+     * @memberof TypesUpdatePaymentSystemRequest
+     */
+    'status': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateProducerRequest
+ */
+export interface TypesUpdateProducerRequest {
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'addressLine1'?: string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'addressLine2'?: string;
+    /**
+     * 購入特典映像URL
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'bonusVideoUrl'?: string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'city'?: string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'email'?: string;
+    /**
+     * Facebookアカウント
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'facebookId'?: string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'firstname': string;
+    /**
+     * 名(かな)
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'firstnameKana': string;
+    /**
+     * ヘッダー画像URL
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'headerUrl'?: string;
+    /**
+     * Instagramアカウント
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'instagramId'?: string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'lastname': string;
+    /**
+     * 姓(かな)
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'lastnameKana': string;
+    /**
+     * 電話番号
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'phoneNumber'?: string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'postalCode'?: string;
+    /**
+     * 都道府県
+     * @type {number}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'prefectureCode'?: number;
+    /**
+     * 紹介文
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'profile'?: string;
+    /**
+     * 紹介映像URL
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'promotionVideoUrl'?: string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * 表示名
+     * @type {string}
+     * @memberof TypesUpdateProducerRequest
+     */
+    'username': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateProductTagRequest
+ */
+export interface TypesUpdateProductTagRequest {
+    /**
+     * 商品タグ名
+     * @type {string}
+     * @memberof TypesUpdateProductTagRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateProductTypeRequest
+ */
+export interface TypesUpdateProductTypeRequest {
+    /**
+     * アイコンURL
+     * @type {string}
+     * @memberof TypesUpdateProductTypeRequest
+     */
+    'iconUrl': string;
+    /**
+     * 品目名
+     * @type {string}
+     * @memberof TypesUpdateProductTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdatePromotionRequest
+ */
+export interface TypesUpdatePromotionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'code'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'discountRate'?: number;
+    /**
+     * 割引計算方法
+     * @type {number}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'discountType': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'endAt': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'public'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'startAt': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TypesUpdatePromotionRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateScheduleRequest
+ */
+export interface TypesUpdateScheduleRequest {
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'description': string;
+    /**
+     * 配信終了日時
+     * @type {number}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'endAt': number;
+    /**
+     * 蓋絵URL
+     * @type {string}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'imageUrl'?: string;
+    /**
+     * オープニング動画URL
+     * @type {string}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'openingVideoUrl'?: string;
+    /**
+     * 配信開始日時
+     * @type {number}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'startAt': number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesUpdateScheduleRequest
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateShippingRate
+ */
+export interface TypesUpdateShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof TypesUpdateShippingRate
+     */
+    'name': string;
+    /**
+     * 対象都道府県一覧
+     * @type {Array<number>}
+     * @memberof TypesUpdateShippingRate
+     */
+    'prefectureCodes': Array<number>;
+    /**
+     * 配送料金(税込)
+     * @type {number}
+     * @memberof TypesUpdateShippingRate
+     */
+    'price': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateShippingRequest
+ */
+export interface TypesUpdateShippingRequest {
+    /**
+     * 箱サイズ60の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ60の通常便配送料一覧
+     * @type {Array<TypesUpdateShippingRate>}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box60Rates': Array<TypesUpdateShippingRate>;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ80の通常便配送料一覧
+     * @type {Array<TypesUpdateShippingRate>}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box80Rates': Array<TypesUpdateShippingRate>;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 箱サイズ100の通常便配送料一覧
+     * @type {Array<TypesUpdateShippingRate>}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'box100Rates': Array<TypesUpdateShippingRate>;
+    /**
+     * 送料無料になる金額(税込)
+     * @type {number}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'freeShippingRates'?: number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'hasFreeShipping'?: boolean;
+    /**
+     * 配送設定名
+     * @type {string}
+     * @memberof TypesUpdateShippingRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateShopRequest
+ */
+export interface TypesUpdateShopRequest {
+    /**
+     * 営業曜日(発送可能日)
+     * @type {Set<number>}
+     * @memberof TypesUpdateShopRequest
+     */
+    'businessDays'?: Set<number>;
+    /**
+     * 店舗名
+     * @type {string}
+     * @memberof TypesUpdateShopRequest
+     */
+    'name': string;
+    /**
+     * 取り扱い品目一覧
+     * @type {Array<string>}
+     * @memberof TypesUpdateShopRequest
+     */
+    'productTypeIds': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateSpotTypeRequest
+ */
+export interface TypesUpdateSpotTypeRequest {
+    /**
+     * スポット種別名
+     * @type {string}
+     * @memberof TypesUpdateSpotTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateThreadRequest
+ */
+export interface TypesUpdateThreadRequest {
+    /**
+     * 内容
+     * @type {string}
+     * @memberof TypesUpdateThreadRequest
+     */
+    'content': string;
+    /**
+     * お問い合わせID
+     * @type {string}
+     * @memberof TypesUpdateThreadRequest
+     */
+    'threadId': string;
+    /**
+     * 送信者ID
+     * @type {string}
+     * @memberof TypesUpdateThreadRequest
+     */
+    'userId': string;
+    /**
+     * 送信者タイプ
+     * @type {number}
+     * @memberof TypesUpdateThreadRequest
+     */
+    'userType'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateVideoCommentRequest
+ */
+export interface TypesUpdateVideoCommentRequest {
+    /**
+     * コメント無効フラグ
+     * @type {boolean}
+     * @memberof TypesUpdateVideoCommentRequest
+     */
+    'disabled'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpdateVideoRequest
+ */
+export interface TypesUpdateVideoRequest {
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'description': string;
+    /**
+     * 体験への表示設定
+     * @type {boolean}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'displayExperience'?: boolean;
+    /**
+     * 商品への表示設定
+     * @type {boolean}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'displayProduct'?: boolean;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'experienceIds': Array<string>;
+    /**
+     * 限定公開設定
+     * @type {boolean}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'limited'?: boolean;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'public'?: boolean;
+    /**
+     * 公開日時
+     * @type {number}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'publishedAt': number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'title': string;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof TypesUpdateVideoRequest
+     */
+    'videoUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpsertShippingRate
+ */
+export interface TypesUpsertShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof TypesUpsertShippingRate
+     */
+    'name': string;
+    /**
+     * 対象都道府県一覧
+     * @type {Array<number>}
+     * @memberof TypesUpsertShippingRate
+     */
+    'prefectureCodes': Array<number>;
+    /**
+     * 配送料金(税込)
+     * @type {number}
+     * @memberof TypesUpsertShippingRate
+     */
+    'price': number;
+}
+/**
+ * 
+ * @export
+ * @interface TypesUpsertShippingRequest
+ */
+export interface TypesUpsertShippingRequest {
+    /**
+     * 箱サイズ60の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ60の通常便配送料一覧
+     * @type {Array<TypesUpsertShippingRate>}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box60Rates': Array<TypesUpsertShippingRate>;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ80の通常便配送料一覧
+     * @type {Array<TypesUpsertShippingRate>}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box80Rates': Array<TypesUpsertShippingRate>;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(税込)
+     * @type {number}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 箱サイズ100の通常便配送料一覧
+     * @type {Array<TypesUpsertShippingRate>}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'box100Rates': Array<TypesUpsertShippingRate>;
+    /**
+     * 送料無料になる金額(税込)
+     * @type {number}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'freeShippingRates'?: number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof TypesUpsertShippingRequest
+     */
+    'hasFreeShipping'?: boolean;
 }
 /**
  * ユーザー情報
  * @export
- * @interface ResponseUser
+ * @interface TypesUser
  */
-export interface ResponseUser {
+export interface TypesUser {
     /**
      * ユーザー名（検索用）
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'accountId'?: string;
     /**
      * 登録日時
      * @type {number}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'createdAt'?: number;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'email'?: string;
     /**
      * 氏名（名）
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'firstname'?: string;
     /**
      * 氏名(名:かな)
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'firstnameKana'?: string;
     /**
      * 購入者ID
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'id'?: string;
     /**
      * 氏名（姓）
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'lastname'?: string;
     /**
      * 氏名(姓:かな)
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'lastnameKana'?: string;
     /**
      * 電話番号
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'phoneNumber'?: string;
     /**
      * 会員登録フラグ
      * @type {boolean}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'registered'?: boolean;
     /**
      * 購入者ステータス
      * @type {number}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'status'?: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'thumbnailUrl'?: string;
     /**
      * 更新日時
      * @type {number}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'updateAt'?: number;
     /**
      * ユーザー名（表示名）
      * @type {string}
-     * @memberof ResponseUser
+     * @memberof TypesUser
      */
     'username'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseUserOrder
+ * @interface TypesUserOrder
  */
-export interface ResponseUserOrder {
+export interface TypesUserOrder {
     /**
      * 注文情報ID
      * @type {string}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'orderId'?: string;
     /**
      * 注文日時
      * @type {number}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'orderedAt'?: number;
     /**
      * 支払日時
      * @type {number}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'paidAt'?: number;
     /**
      * 支払い状況
      * @type {number}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'status'?: number;
     /**
      * 商品合計金額
      * @type {number}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'subtotal'?: number;
     /**
      * 支払い合計金額
      * @type {number}
-     * @memberof ResponseUserOrder
+     * @memberof TypesUserOrder
      */
     'total'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseUserOrdersResponse
+ * @interface TypesUserOrdersResponse
  */
-export interface ResponseUserOrdersResponse {
+export interface TypesUserOrdersResponse {
     /**
      * 注文合計回数
      * @type {number}
-     * @memberof ResponseUserOrdersResponse
+     * @memberof TypesUserOrdersResponse
      */
     'orderTotalCount'?: number;
     /**
      * 注文履歴一覧
-     * @type {Array<ResponseUserOrder>}
-     * @memberof ResponseUserOrdersResponse
+     * @type {Array<TypesUserOrder>}
+     * @memberof TypesUserOrdersResponse
      */
-    'orders'?: Array<ResponseUserOrder>;
+    'orders'?: Array<TypesUserOrder>;
     /**
      * 支払い合計金額
      * @type {number}
-     * @memberof ResponseUserOrdersResponse
+     * @memberof TypesUserOrdersResponse
      */
     'paymentTotalAmount'?: number;
     /**
      * 支払い合計回数
      * @type {number}
-     * @memberof ResponseUserOrdersResponse
+     * @memberof TypesUserOrdersResponse
      */
     'paymentTotalCount'?: number;
     /**
      * 購入商品合計金額
      * @type {number}
-     * @memberof ResponseUserOrdersResponse
+     * @memberof TypesUserOrdersResponse
      */
     'productTotalAmount'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseUserResponse
+ * @interface TypesUserResponse
  */
-export interface ResponseUserResponse {
+export interface TypesUserResponse {
     /**
      * 
-     * @type {ResponseAddress}
-     * @memberof ResponseUserResponse
+     * @type {Address}
+     * @memberof TypesUserResponse
      */
-    'address'?: ResponseAddress;
+    'address'?: Address;
     /**
      * 
-     * @type {ResponseUser}
-     * @memberof ResponseUserResponse
+     * @type {TypesUser}
+     * @memberof TypesUserResponse
      */
-    'user'?: ResponseUser;
+    'user'?: TypesUser;
 }
 /**
  * 
  * @export
- * @interface ResponseUserToList
+ * @interface TypesUserToList
  */
-export interface ResponseUserToList {
+export interface TypesUserToList {
     /**
      * 市区町村
      * @type {string}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'city'?: string;
     /**
      * メールアドレス
      * @type {string}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'email'?: string;
     /**
      * 名
      * @type {string}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'firstname'?: string;
     /**
      * 購入者ID
      * @type {string}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'id'?: string;
     /**
      * 姓
      * @type {string}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'lastname'?: string;
     /**
      * 支払い回数
      * @type {number}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'paymentTotalCount'?: number;
     /**
      * 都道府県
      * @type {number}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'prefectureCode'?: number;
     /**
      * 会員登録フラグ
      * @type {boolean}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'registered'?: boolean;
     /**
      * 購入者ステータス
      * @type {number}
-     * @memberof ResponseUserToList
+     * @memberof TypesUserToList
      */
     'status'?: number;
 }
 /**
  * 
  * @export
- * @interface ResponseUsersResponse
+ * @interface TypesUsersResponse
  */
-export interface ResponseUsersResponse {
+export interface TypesUsersResponse {
     /**
      * 購入者合計数
      * @type {number}
-     * @memberof ResponseUsersResponse
+     * @memberof TypesUsersResponse
      */
     'total'?: number;
     /**
      * 購入者一覧
-     * @type {Array<ResponseUserToList>}
-     * @memberof ResponseUsersResponse
+     * @type {Array<TypesUserToList>}
+     * @memberof TypesUsersResponse
      */
-    'users'?: Array<ResponseUserToList>;
-}
-/**
- * オンデマンド動画情報
- * @export
- * @interface ResponseVideo
- */
-export interface ResponseVideo {
-    /**
-     * コーディネータID
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'coordinatorId'?: string;
-    /**
-     * 作成日時
-     * @type {number}
-     * @memberof ResponseVideo
-     */
-    'createdAt'?: number;
-    /**
-     * 説明
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'description'?: string;
-    /**
-     * 体験への表示設定
-     * @type {boolean}
-     * @memberof ResponseVideo
-     */
-    'displayExperience'?: boolean;
-    /**
-     * 商品への表示設定
-     * @type {boolean}
-     * @memberof ResponseVideo
-     */
-    'displayProduct'?: boolean;
-    /**
-     * 体験ID一覧
-     * @type {Array<string>}
-     * @memberof ResponseVideo
-     */
-    'experienceIds'?: Array<string>;
-    /**
-     * オンデマンド動画ID
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'id'?: string;
-    /**
-     * 限定公開設定
-     * @type {boolean}
-     * @memberof ResponseVideo
-     */
-    'limited'?: boolean;
-    /**
-     * 商品ID一覧
-     * @type {Array<string>}
-     * @memberof ResponseVideo
-     */
-    'productIds'?: Array<string>;
-    /**
-     * 公開設定
-     * @type {boolean}
-     * @memberof ResponseVideo
-     */
-    'public'?: boolean;
-    /**
-     * 公開日時
-     * @type {number}
-     * @memberof ResponseVideo
-     */
-    'publishedAt'?: number;
-    /**
-     * 配信状況
-     * @type {number}
-     * @memberof ResponseVideo
-     */
-    'status'?: number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * タイトル
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'title'?: string;
-    /**
-     * 更新日時
-     * @type {number}
-     * @memberof ResponseVideo
-     */
-    'updatedAt'?: number;
-    /**
-     * 動画URL
-     * @type {string}
-     * @memberof ResponseVideo
-     */
-    'videoUrl'?: string;
+    'users'?: Array<TypesUserToList>;
 }
 /**
  * 
  * @export
- * @interface ResponseVideoComment
+ * @interface TypesVerifyAuthEmailRequest
  */
-export interface ResponseVideoComment {
+export interface TypesVerifyAuthEmailRequest {
     /**
-     * アカウントID
+     * 検証コード
      * @type {string}
-     * @memberof ResponseVideoComment
+     * @memberof TypesVerifyAuthEmailRequest
      */
-    'accountId'?: string;
-    /**
-     * コメント
-     * @type {string}
-     * @memberof ResponseVideoComment
-     */
-    'comment'?: string;
-    /**
-     * コメント無効フラグ
-     * @type {boolean}
-     * @memberof ResponseVideoComment
-     */
-    'disabled'?: boolean;
-    /**
-     * コメントID
-     * @type {string}
-     * @memberof ResponseVideoComment
-     */
-    'id'?: string;
-    /**
-     * 投稿日時
-     * @type {number}
-     * @memberof ResponseVideoComment
-     */
-    'publishedAt'?: number;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof ResponseVideoComment
-     */
-    'thumbnailUrl'?: string;
-    /**
-     * ユーザーID
-     * @type {string}
-     * @memberof ResponseVideoComment
-     */
-    'userId'?: string;
-    /**
-     * ユーザー名
-     * @type {string}
-     * @memberof ResponseVideoComment
-     */
-    'username'?: string;
+    'verifyCode': string;
 }
 /**
  * 
  * @export
- * @interface ResponseVideoCommentsResponse
+ * @interface TypesVideoViewerLog
  */
-export interface ResponseVideoCommentsResponse {
-    /**
-     * コメント一覧
-     * @type {Array<ResponseVideoComment>}
-     * @memberof ResponseVideoCommentsResponse
-     */
-    'comments'?: Array<ResponseVideoComment>;
-    /**
-     * 次の取得開始位置
-     * @type {string}
-     * @memberof ResponseVideoCommentsResponse
-     */
-    'nextToken'?: string;
-}
-/**
- * 
- * @export
- * @interface ResponseVideoResponse
- */
-export interface ResponseVideoResponse {
-    /**
-     * 
-     * @type {ResponseCoordinator}
-     * @memberof ResponseVideoResponse
-     */
-    'coordinator'?: ResponseCoordinator;
-    /**
-     * 体験一覧
-     * @type {Array<ResponseExperience>}
-     * @memberof ResponseVideoResponse
-     */
-    'experiences'?: Array<ResponseExperience>;
-    /**
-     * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseVideoResponse
-     */
-    'products'?: Array<ResponseProduct>;
-    /**
-     * 
-     * @type {ResponseVideo}
-     * @memberof ResponseVideoResponse
-     */
-    'video'?: ResponseVideo;
-}
-/**
- * 
- * @export
- * @interface ResponseVideoViewerLog
- */
-export interface ResponseVideoViewerLog {
+export interface TypesVideoViewerLog {
     /**
      * 集計終了日時
      * @type {number}
-     * @memberof ResponseVideoViewerLog
+     * @memberof TypesVideoViewerLog
      */
     'endAt'?: number;
     /**
      * 集計開始日時
      * @type {number}
-     * @memberof ResponseVideoViewerLog
+     * @memberof TypesVideoViewerLog
      */
     'startAt'?: number;
     /**
      * 合計視聴者数
      * @type {number}
-     * @memberof ResponseVideoViewerLog
+     * @memberof TypesVideoViewerLog
      */
     'total'?: number;
     /**
      * オンデマンド動画ID
      * @type {string}
-     * @memberof ResponseVideoViewerLog
+     * @memberof TypesVideoViewerLog
      */
     'videoId'?: string;
 }
 /**
  * 
  * @export
- * @interface ResponseVideosResponse
+ * @interface UpdateAuthPasswordRequest
  */
-export interface ResponseVideosResponse {
+export interface UpdateAuthPasswordRequest {
     /**
-     * コーディネータ一覧
-     * @type {Array<ResponseCoordinator>}
-     * @memberof ResponseVideosResponse
+     * 新しいパスワード
+     * @type {string}
+     * @memberof UpdateAuthPasswordRequest
      */
-    'coordinators'?: Array<ResponseCoordinator>;
+    'newPassword'?: string;
     /**
-     * 体験一覧
-     * @type {Array<ResponseExperience>}
-     * @memberof ResponseVideosResponse
+     * 現在のパスワード
+     * @type {string}
+     * @memberof UpdateAuthPasswordRequest
      */
-    'experiences'?: Array<ResponseExperience>;
+    'oldPassword': string;
     /**
-     * 商品一覧
-     * @type {Array<ResponseProduct>}
-     * @memberof ResponseVideosResponse
+     * パスワード (確認用)
+     * @type {string}
+     * @memberof UpdateAuthPasswordRequest
      */
-    'products'?: Array<ResponseProduct>;
+    'passwordConfirmation': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateSpotRequest
+ */
+export interface UpdateSpotRequest {
     /**
-     * オンデマンド動画合計数
+     * 説明
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'description'?: string;
+    /**
+     * 緯度
      * @type {number}
-     * @memberof ResponseVideosResponse
+     * @memberof UpdateSpotRequest
      */
-    'total'?: number;
+    'latitude': number;
     /**
-     * オンデマンド動画一覧
-     * @type {Array<ResponseVideo>}
-     * @memberof ResponseVideosResponse
+     * 経度
+     * @type {number}
+     * @memberof UpdateSpotRequest
      */
-    'videos'?: Array<ResponseVideo>;
+    'longitude': number;
+    /**
+     * スポット名
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'name': string;
+    /**
+     * スポット種別ID
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'spotTypeId': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UpdateSpotRequest
+     */
+    'thumbnailUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UploadStateResponse
+ */
+export interface UploadStateResponse {
+    /**
+     * アップロード結果
+     * @type {number}
+     * @memberof UploadStateResponse
+     */
+    'status'?: number;
+    /**
+     * 参照先URL
+     * @type {string}
+     * @memberof UploadStateResponse
+     */
+    'url'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UploadURLResponse
+ */
+export interface UploadURLResponse {
+    /**
+     * アップロード後の状態参照用キー
+     * @type {string}
+     * @memberof UploadURLResponse
+     */
+    'key'?: string;
+    /**
+     * アップロード用の署名付きURL
+     * @type {string}
+     * @memberof UploadURLResponse
+     */
+    'url'?: string;
 }
 /**
  * 
@@ -7724,6 +7479,251 @@ export interface UtilErrorResponse {
      * @memberof UtilErrorResponse
      */
     'status'?: number;
+}
+/**
+ * オンデマンド動画情報
+ * @export
+ * @interface Video
+ */
+export interface Video {
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Video
+     */
+    'coordinatorId'?: string;
+    /**
+     * 作成日時
+     * @type {number}
+     * @memberof Video
+     */
+    'createdAt'?: number;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof Video
+     */
+    'description'?: string;
+    /**
+     * 体験への表示設定
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayExperience'?: boolean;
+    /**
+     * 商品への表示設定
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayProduct'?: boolean;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof Video
+     */
+    'experienceIds'?: Array<string>;
+    /**
+     * オンデマンド動画ID
+     * @type {string}
+     * @memberof Video
+     */
+    'id'?: string;
+    /**
+     * 限定公開設定
+     * @type {boolean}
+     * @memberof Video
+     */
+    'limited'?: boolean;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof Video
+     */
+    'productIds'?: Array<string>;
+    /**
+     * 公開設定
+     * @type {boolean}
+     * @memberof Video
+     */
+    'public'?: boolean;
+    /**
+     * 公開日時
+     * @type {number}
+     * @memberof Video
+     */
+    'publishedAt'?: number;
+    /**
+     * 配信状況
+     * @type {number}
+     * @memberof Video
+     */
+    'status'?: number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof Video
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof Video
+     */
+    'title'?: string;
+    /**
+     * 更新日時
+     * @type {number}
+     * @memberof Video
+     */
+    'updatedAt'?: number;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof Video
+     */
+    'videoUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface VideoComment
+ */
+export interface VideoComment {
+    /**
+     * アカウントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'accountId'?: string;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'comment'?: string;
+    /**
+     * コメント無効フラグ
+     * @type {boolean}
+     * @memberof VideoComment
+     */
+    'disabled'?: boolean;
+    /**
+     * コメントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'id'?: string;
+    /**
+     * 投稿日時
+     * @type {number}
+     * @memberof VideoComment
+     */
+    'publishedAt'?: number;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'thumbnailUrl'?: string;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'userId'?: string;
+    /**
+     * ユーザー名
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'username'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface VideoCommentsResponse
+ */
+export interface VideoCommentsResponse {
+    /**
+     * コメント一覧
+     * @type {Array<VideoComment>}
+     * @memberof VideoCommentsResponse
+     */
+    'comments'?: Array<VideoComment>;
+    /**
+     * 次の取得開始位置
+     * @type {string}
+     * @memberof VideoCommentsResponse
+     */
+    'nextToken'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface VideoResponse
+ */
+export interface VideoResponse {
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof VideoResponse
+     */
+    'coordinator'?: Coordinator;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof VideoResponse
+     */
+    'experiences'?: Array<Experience>;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof VideoResponse
+     */
+    'products'?: Array<Product>;
+    /**
+     * 
+     * @type {Video}
+     * @memberof VideoResponse
+     */
+    'video'?: Video;
+}
+/**
+ * 
+ * @export
+ * @interface VideosResponse
+ */
+export interface VideosResponse {
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof VideosResponse
+     */
+    'coordinators'?: Array<Coordinator>;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof VideosResponse
+     */
+    'experiences'?: Array<Experience>;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof VideosResponse
+     */
+    'products'?: Array<Product>;
+    /**
+     * オンデマンド動画合計数
+     * @type {number}
+     * @memberof VideosResponse
+     */
+    'total'?: number;
+    /**
+     * オンデマンド動画一覧
+     * @type {Array<Video>}
+     * @memberof VideosResponse
+     */
+    'videos'?: Array<Video>;
 }
 
 /**
@@ -7774,15 +7774,15 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
          * システム管理者のメールアドレスを更新します。
          * @summary システム管理者メールアドレス更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorEmailRequest} requestUpdateAdministratorEmailRequest メールアドレス
+         * @param {TypesUpdateAdministratorEmailRequest} typesUpdateAdministratorEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsAdminIdEmailPatch: async (adminId: string, requestUpdateAdministratorEmailRequest: RequestUpdateAdministratorEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1AdministratorsAdminIdEmailPatch: async (adminId: string, typesUpdateAdministratorEmailRequest: TypesUpdateAdministratorEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'adminId' is not null or undefined
             assertParamExists('v1AdministratorsAdminIdEmailPatch', 'adminId', adminId)
-            // verify required parameter 'requestUpdateAdministratorEmailRequest' is not null or undefined
-            assertParamExists('v1AdministratorsAdminIdEmailPatch', 'requestUpdateAdministratorEmailRequest', requestUpdateAdministratorEmailRequest)
+            // verify required parameter 'typesUpdateAdministratorEmailRequest' is not null or undefined
+            assertParamExists('v1AdministratorsAdminIdEmailPatch', 'typesUpdateAdministratorEmailRequest', typesUpdateAdministratorEmailRequest)
             const localVarPath = `/v1/administrators/{adminId}/email`
                 .replace(`{${"adminId"}}`, encodeURIComponent(String(adminId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7807,7 +7807,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateAdministratorEmailRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateAdministratorEmailRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7898,15 +7898,15 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
          * システム管理者の情報を更新します。
          * @summary システム管理者更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorRequest} requestUpdateAdministratorRequest システム管理者情報
+         * @param {TypesUpdateAdministratorRequest} typesUpdateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsAdminIdPatch: async (adminId: string, requestUpdateAdministratorRequest: RequestUpdateAdministratorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1AdministratorsAdminIdPatch: async (adminId: string, typesUpdateAdministratorRequest: TypesUpdateAdministratorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'adminId' is not null or undefined
             assertParamExists('v1AdministratorsAdminIdPatch', 'adminId', adminId)
-            // verify required parameter 'requestUpdateAdministratorRequest' is not null or undefined
-            assertParamExists('v1AdministratorsAdminIdPatch', 'requestUpdateAdministratorRequest', requestUpdateAdministratorRequest)
+            // verify required parameter 'typesUpdateAdministratorRequest' is not null or undefined
+            assertParamExists('v1AdministratorsAdminIdPatch', 'typesUpdateAdministratorRequest', typesUpdateAdministratorRequest)
             const localVarPath = `/v1/administrators/{adminId}`
                 .replace(`{${"adminId"}}`, encodeURIComponent(String(adminId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7931,7 +7931,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateAdministratorRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateAdministratorRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7985,13 +7985,13 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 新しいシステム管理者を登録します。
          * @summary システム管理者登録
-         * @param {RequestCreateAdministratorRequest} requestCreateAdministratorRequest システム管理者情報
+         * @param {TypesCreateAdministratorRequest} typesCreateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsPost: async (requestCreateAdministratorRequest: RequestCreateAdministratorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateAdministratorRequest' is not null or undefined
-            assertParamExists('v1AdministratorsPost', 'requestCreateAdministratorRequest', requestCreateAdministratorRequest)
+        v1AdministratorsPost: async (typesCreateAdministratorRequest: TypesCreateAdministratorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateAdministratorRequest' is not null or undefined
+            assertParamExists('v1AdministratorsPost', 'typesCreateAdministratorRequest', typesCreateAdministratorRequest)
             const localVarPath = `/v1/administrators`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8015,7 +8015,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateAdministratorRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateAdministratorRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8049,12 +8049,12 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
          * システム管理者のメールアドレスを更新します。
          * @summary システム管理者メールアドレス更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorEmailRequest} requestUpdateAdministratorEmailRequest メールアドレス
+         * @param {TypesUpdateAdministratorEmailRequest} typesUpdateAdministratorEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AdministratorsAdminIdEmailPatch(adminId: string, requestUpdateAdministratorEmailRequest: RequestUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsAdminIdEmailPatch(adminId, requestUpdateAdministratorEmailRequest, options);
+        async v1AdministratorsAdminIdEmailPatch(adminId: string, typesUpdateAdministratorEmailRequest: TypesUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsAdminIdEmailPatch(adminId, typesUpdateAdministratorEmailRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdministratorApi.v1AdministratorsAdminIdEmailPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -8066,7 +8066,7 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AdministratorsAdminIdGet(adminId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAdministratorResponse>> {
+        async v1AdministratorsAdminIdGet(adminId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAdministratorResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsAdminIdGet(adminId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdministratorApi.v1AdministratorsAdminIdGet']?.[localVarOperationServerIndex]?.url;
@@ -8090,12 +8090,12 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
          * システム管理者の情報を更新します。
          * @summary システム管理者更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorRequest} requestUpdateAdministratorRequest システム管理者情報
+         * @param {TypesUpdateAdministratorRequest} typesUpdateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AdministratorsAdminIdPatch(adminId: string, requestUpdateAdministratorRequest: RequestUpdateAdministratorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsAdminIdPatch(adminId, requestUpdateAdministratorRequest, options);
+        async v1AdministratorsAdminIdPatch(adminId: string, typesUpdateAdministratorRequest: TypesUpdateAdministratorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsAdminIdPatch(adminId, typesUpdateAdministratorRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdministratorApi.v1AdministratorsAdminIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -8108,7 +8108,7 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AdministratorsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAdministratorsResponse>> {
+        async v1AdministratorsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAdministratorsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsGet(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdministratorApi.v1AdministratorsGet']?.[localVarOperationServerIndex]?.url;
@@ -8117,12 +8117,12 @@ export const AdministratorApiFp = function(configuration?: Configuration) {
         /**
          * 新しいシステム管理者を登録します。
          * @summary システム管理者登録
-         * @param {RequestCreateAdministratorRequest} requestCreateAdministratorRequest システム管理者情報
+         * @param {TypesCreateAdministratorRequest} typesCreateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AdministratorsPost(requestCreateAdministratorRequest: RequestCreateAdministratorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAdministratorResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsPost(requestCreateAdministratorRequest, options);
+        async v1AdministratorsPost(typesCreateAdministratorRequest: TypesCreateAdministratorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAdministratorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AdministratorsPost(typesCreateAdministratorRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdministratorApi.v1AdministratorsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -8151,12 +8151,12 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * システム管理者のメールアドレスを更新します。
          * @summary システム管理者メールアドレス更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorEmailRequest} requestUpdateAdministratorEmailRequest メールアドレス
+         * @param {TypesUpdateAdministratorEmailRequest} typesUpdateAdministratorEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsAdminIdEmailPatch(adminId: string, requestUpdateAdministratorEmailRequest: RequestUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AdministratorsAdminIdEmailPatch(adminId, requestUpdateAdministratorEmailRequest, options).then((request) => request(axios, basePath));
+        v1AdministratorsAdminIdEmailPatch(adminId: string, typesUpdateAdministratorEmailRequest: TypesUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AdministratorsAdminIdEmailPatch(adminId, typesUpdateAdministratorEmailRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * システム管理者の詳細情報を取得します。
@@ -8165,7 +8165,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsAdminIdGet(adminId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAdministratorResponse> {
+        v1AdministratorsAdminIdGet(adminId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesAdministratorResponse> {
             return localVarFp.v1AdministratorsAdminIdGet(adminId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8183,12 +8183,12 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * システム管理者の情報を更新します。
          * @summary システム管理者更新
          * @param {string} adminId システム管理者ID
-         * @param {RequestUpdateAdministratorRequest} requestUpdateAdministratorRequest システム管理者情報
+         * @param {TypesUpdateAdministratorRequest} typesUpdateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsAdminIdPatch(adminId: string, requestUpdateAdministratorRequest: RequestUpdateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AdministratorsAdminIdPatch(adminId, requestUpdateAdministratorRequest, options).then((request) => request(axios, basePath));
+        v1AdministratorsAdminIdPatch(adminId: string, typesUpdateAdministratorRequest: TypesUpdateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AdministratorsAdminIdPatch(adminId, typesUpdateAdministratorRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * システム管理者の一覧を取得します。
@@ -8198,18 +8198,18 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAdministratorsResponse> {
+        v1AdministratorsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesAdministratorsResponse> {
             return localVarFp.v1AdministratorsGet(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいシステム管理者を登録します。
          * @summary システム管理者登録
-         * @param {RequestCreateAdministratorRequest} requestCreateAdministratorRequest システム管理者情報
+         * @param {TypesCreateAdministratorRequest} typesCreateAdministratorRequest システム管理者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AdministratorsPost(requestCreateAdministratorRequest: RequestCreateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAdministratorResponse> {
-            return localVarFp.v1AdministratorsPost(requestCreateAdministratorRequest, options).then((request) => request(axios, basePath));
+        v1AdministratorsPost(typesCreateAdministratorRequest: TypesCreateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesAdministratorResponse> {
+            return localVarFp.v1AdministratorsPost(typesCreateAdministratorRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8237,13 +8237,13 @@ export class AdministratorApi extends BaseAPI {
      * システム管理者のメールアドレスを更新します。
      * @summary システム管理者メールアドレス更新
      * @param {string} adminId システム管理者ID
-     * @param {RequestUpdateAdministratorEmailRequest} requestUpdateAdministratorEmailRequest メールアドレス
+     * @param {TypesUpdateAdministratorEmailRequest} typesUpdateAdministratorEmailRequest メールアドレス
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdministratorApi
      */
-    public v1AdministratorsAdminIdEmailPatch(adminId: string, requestUpdateAdministratorEmailRequest: RequestUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig) {
-        return AdministratorApiFp(this.configuration).v1AdministratorsAdminIdEmailPatch(adminId, requestUpdateAdministratorEmailRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AdministratorsAdminIdEmailPatch(adminId: string, typesUpdateAdministratorEmailRequest: TypesUpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1AdministratorsAdminIdEmailPatch(adminId, typesUpdateAdministratorEmailRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8275,13 +8275,13 @@ export class AdministratorApi extends BaseAPI {
      * システム管理者の情報を更新します。
      * @summary システム管理者更新
      * @param {string} adminId システム管理者ID
-     * @param {RequestUpdateAdministratorRequest} requestUpdateAdministratorRequest システム管理者情報
+     * @param {TypesUpdateAdministratorRequest} typesUpdateAdministratorRequest システム管理者情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdministratorApi
      */
-    public v1AdministratorsAdminIdPatch(adminId: string, requestUpdateAdministratorRequest: RequestUpdateAdministratorRequest, options?: RawAxiosRequestConfig) {
-        return AdministratorApiFp(this.configuration).v1AdministratorsAdminIdPatch(adminId, requestUpdateAdministratorRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AdministratorsAdminIdPatch(adminId: string, typesUpdateAdministratorRequest: TypesUpdateAdministratorRequest, options?: RawAxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1AdministratorsAdminIdPatch(adminId, typesUpdateAdministratorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8300,13 +8300,13 @@ export class AdministratorApi extends BaseAPI {
     /**
      * 新しいシステム管理者を登録します。
      * @summary システム管理者登録
-     * @param {RequestCreateAdministratorRequest} requestCreateAdministratorRequest システム管理者情報
+     * @param {TypesCreateAdministratorRequest} typesCreateAdministratorRequest システム管理者情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdministratorApi
      */
-    public v1AdministratorsPost(requestCreateAdministratorRequest: RequestCreateAdministratorRequest, options?: RawAxiosRequestConfig) {
-        return AdministratorApiFp(this.configuration).v1AdministratorsPost(requestCreateAdministratorRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AdministratorsPost(typesCreateAdministratorRequest: TypesCreateAdministratorRequest, options?: RawAxiosRequestConfig) {
+        return AdministratorApiFp(this.configuration).v1AdministratorsPost(typesCreateAdministratorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -8355,13 +8355,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * ログイン中のコーディネータの情報を更新します。
          * @summary 自身のコーディネータ情報更新
-         * @param {RequestUpdateCoordinatorRequest} requestUpdateCoordinatorRequest コーディネータ情報
+         * @param {TypesUpdateCoordinatorRequest} typesUpdateCoordinatorRequest コーディネータ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorPatch: async (requestUpdateCoordinatorRequest: RequestUpdateCoordinatorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestUpdateCoordinatorRequest' is not null or undefined
-            assertParamExists('v1AuthCoordinatorPatch', 'requestUpdateCoordinatorRequest', requestUpdateCoordinatorRequest)
+        v1AuthCoordinatorPatch: async (typesUpdateCoordinatorRequest: TypesUpdateCoordinatorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesUpdateCoordinatorRequest' is not null or undefined
+            assertParamExists('v1AuthCoordinatorPatch', 'typesUpdateCoordinatorRequest', typesUpdateCoordinatorRequest)
             const localVarPath = `/v1/auth/coordinator`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8385,7 +8385,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateCoordinatorRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateCoordinatorRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8429,13 +8429,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * ログイン中のコーディネータの配送設定を更新します。
          * @summary 自身の配送設定更新
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorShippingsPatch: async (requestUpsertShippingRequest: RequestUpsertShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestUpsertShippingRequest' is not null or undefined
-            assertParamExists('v1AuthCoordinatorShippingsPatch', 'requestUpsertShippingRequest', requestUpsertShippingRequest)
+        v1AuthCoordinatorShippingsPatch: async (typesUpsertShippingRequest: TypesUpsertShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesUpsertShippingRequest' is not null or undefined
+            assertParamExists('v1AuthCoordinatorShippingsPatch', 'typesUpsertShippingRequest', typesUpsertShippingRequest)
             const localVarPath = `/v1/auth/coordinator/shippings`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8459,7 +8459,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpsertShippingRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpsertShippingRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8503,13 +8503,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * プッシュ通知用のデバイストークンを登録します。
          * @summary デバイストークン登録
-         * @param {RequestRegisterAuthDeviceRequest} requestRegisterAuthDeviceRequest デバイストークン
+         * @param {TypesRegisterAuthDeviceRequest} typesRegisterAuthDeviceRequest デバイストークン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthDevicePost: async (requestRegisterAuthDeviceRequest: RequestRegisterAuthDeviceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestRegisterAuthDeviceRequest' is not null or undefined
-            assertParamExists('v1AuthDevicePost', 'requestRegisterAuthDeviceRequest', requestRegisterAuthDeviceRequest)
+        v1AuthDevicePost: async (typesRegisterAuthDeviceRequest: TypesRegisterAuthDeviceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesRegisterAuthDeviceRequest' is not null or undefined
+            assertParamExists('v1AuthDevicePost', 'typesRegisterAuthDeviceRequest', typesRegisterAuthDeviceRequest)
             const localVarPath = `/v1/auth/device`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8533,7 +8533,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestRegisterAuthDeviceRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesRegisterAuthDeviceRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8543,13 +8543,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * ログイン中のユーザーのメールアドレスを更新します。
          * @summary メールアドレス更新
-         * @param {RequestUpdateAuthEmailRequest} requestUpdateAuthEmailRequest メールアドレス
+         * @param {TypesUpdateAuthEmailRequest} typesUpdateAuthEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthEmailPatch: async (requestUpdateAuthEmailRequest: RequestUpdateAuthEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestUpdateAuthEmailRequest' is not null or undefined
-            assertParamExists('v1AuthEmailPatch', 'requestUpdateAuthEmailRequest', requestUpdateAuthEmailRequest)
+        v1AuthEmailPatch: async (typesUpdateAuthEmailRequest: TypesUpdateAuthEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesUpdateAuthEmailRequest' is not null or undefined
+            assertParamExists('v1AuthEmailPatch', 'typesUpdateAuthEmailRequest', typesUpdateAuthEmailRequest)
             const localVarPath = `/v1/auth/email`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8573,7 +8573,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateAuthEmailRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateAuthEmailRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8583,13 +8583,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * メールアドレス更新用の検証コードを確認します。
          * @summary メールアドレス更新 - コード検証
-         * @param {RequestVerifyAuthEmailRequest} requestVerifyAuthEmailRequest 検証コード
+         * @param {TypesVerifyAuthEmailRequest} typesVerifyAuthEmailRequest 検証コード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthEmailVerifiedPost: async (requestVerifyAuthEmailRequest: RequestVerifyAuthEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestVerifyAuthEmailRequest' is not null or undefined
-            assertParamExists('v1AuthEmailVerifiedPost', 'requestVerifyAuthEmailRequest', requestVerifyAuthEmailRequest)
+        v1AuthEmailVerifiedPost: async (typesVerifyAuthEmailRequest: TypesVerifyAuthEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesVerifyAuthEmailRequest' is not null or undefined
+            assertParamExists('v1AuthEmailVerifiedPost', 'typesVerifyAuthEmailRequest', typesVerifyAuthEmailRequest)
             const localVarPath = `/v1/auth/email/verified`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8609,7 +8609,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestVerifyAuthEmailRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesVerifyAuthEmailRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8619,13 +8619,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * パスワードリセット用のメールを送信します。
          * @summary パスワードリセット
-         * @param {RequestForgotAuthPasswordRequest} requestForgotAuthPasswordRequest メールアドレス
+         * @param {ForgotAuthPasswordRequest} forgotAuthPasswordRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthForgotPasswordPost: async (requestForgotAuthPasswordRequest: RequestForgotAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestForgotAuthPasswordRequest' is not null or undefined
-            assertParamExists('v1AuthForgotPasswordPost', 'requestForgotAuthPasswordRequest', requestForgotAuthPasswordRequest)
+        v1AuthForgotPasswordPost: async (forgotAuthPasswordRequest: ForgotAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'forgotAuthPasswordRequest' is not null or undefined
+            assertParamExists('v1AuthForgotPasswordPost', 'forgotAuthPasswordRequest', forgotAuthPasswordRequest)
             const localVarPath = `/v1/auth/forgot-password`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8645,7 +8645,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestForgotAuthPasswordRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(forgotAuthPasswordRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8655,13 +8655,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * パスワードリセット用の検証コードを確認し、新しいパスワードを設定します。
          * @summary パスワードリセット - コード検証
-         * @param {RequestResetAuthPasswordRequest} requestResetAuthPasswordRequest パスワードリセット
+         * @param {ResetAuthPasswordRequest} resetAuthPasswordRequest パスワードリセット
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthForgotPasswordVerifiedPost: async (requestResetAuthPasswordRequest: RequestResetAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestResetAuthPasswordRequest' is not null or undefined
-            assertParamExists('v1AuthForgotPasswordVerifiedPost', 'requestResetAuthPasswordRequest', requestResetAuthPasswordRequest)
+        v1AuthForgotPasswordVerifiedPost: async (resetAuthPasswordRequest: ResetAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resetAuthPasswordRequest' is not null or undefined
+            assertParamExists('v1AuthForgotPasswordVerifiedPost', 'resetAuthPasswordRequest', resetAuthPasswordRequest)
             const localVarPath = `/v1/auth/forgot-password/verified`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8681,7 +8681,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestResetAuthPasswordRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(resetAuthPasswordRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8771,13 +8771,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * Googleアカウントを連携します。
          * @summary Googleアカウントの連携
-         * @param {RequestConnectGoogleAccountRequest} requestConnectGoogleAccountRequest 連携リクエスト
+         * @param {TypesConnectGoogleAccountRequest} typesConnectGoogleAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGooglePost: async (requestConnectGoogleAccountRequest: RequestConnectGoogleAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestConnectGoogleAccountRequest' is not null or undefined
-            assertParamExists('v1AuthGooglePost', 'requestConnectGoogleAccountRequest', requestConnectGoogleAccountRequest)
+        v1AuthGooglePost: async (typesConnectGoogleAccountRequest: TypesConnectGoogleAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesConnectGoogleAccountRequest' is not null or undefined
+            assertParamExists('v1AuthGooglePost', 'typesConnectGoogleAccountRequest', typesConnectGoogleAccountRequest)
             const localVarPath = `/v1/auth/google`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8801,7 +8801,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestConnectGoogleAccountRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesConnectGoogleAccountRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8857,13 +8857,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * LINEアカウントを連携します。
          * @summary LINEアカウントの連携
-         * @param {RequestConnectLINEAccountRequest} requestConnectLINEAccountRequest 連携リクエスト
+         * @param {TypesConnectLINEAccountRequest} typesConnectLINEAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthLinePost: async (requestConnectLINEAccountRequest: RequestConnectLINEAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestConnectLINEAccountRequest' is not null or undefined
-            assertParamExists('v1AuthLinePost', 'requestConnectLINEAccountRequest', requestConnectLINEAccountRequest)
+        v1AuthLinePost: async (typesConnectLINEAccountRequest: TypesConnectLINEAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesConnectLINEAccountRequest' is not null or undefined
+            assertParamExists('v1AuthLinePost', 'typesConnectLINEAccountRequest', typesConnectLINEAccountRequest)
             const localVarPath = `/v1/auth/line`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8887,7 +8887,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestConnectLINEAccountRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesConnectLINEAccountRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8897,13 +8897,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * ログイン中のユーザーのパスワードを更新します。
          * @summary パスワード更新
-         * @param {RequestUpdateAuthPasswordRequest} requestUpdateAuthPasswordRequest パスワード
+         * @param {UpdateAuthPasswordRequest} updateAuthPasswordRequest パスワード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthPasswordPatch: async (requestUpdateAuthPasswordRequest: RequestUpdateAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestUpdateAuthPasswordRequest' is not null or undefined
-            assertParamExists('v1AuthPasswordPatch', 'requestUpdateAuthPasswordRequest', requestUpdateAuthPasswordRequest)
+        v1AuthPasswordPatch: async (updateAuthPasswordRequest: UpdateAuthPasswordRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateAuthPasswordRequest' is not null or undefined
+            assertParamExists('v1AuthPasswordPatch', 'updateAuthPasswordRequest', updateAuthPasswordRequest)
             const localVarPath = `/v1/auth/password`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8927,7 +8927,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateAuthPasswordRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(updateAuthPasswordRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8937,13 +8937,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * メールアドレスとパスワードでサインインします。
          * @summary サインイン
-         * @param {RequestSignInRequest} requestSignInRequest サインイン
+         * @param {SignInRequest} signInRequest サインイン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthPost: async (requestSignInRequest: RequestSignInRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestSignInRequest' is not null or undefined
-            assertParamExists('v1AuthPost', 'requestSignInRequest', requestSignInRequest)
+        v1AuthPost: async (signInRequest: SignInRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'signInRequest' is not null or undefined
+            assertParamExists('v1AuthPost', 'signInRequest', signInRequest)
             const localVarPath = `/v1/auth`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8963,7 +8963,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestSignInRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(signInRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9007,13 +9007,13 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * リフレッシュトークンを使用してアクセストークンを更新します。
          * @summary トークン更新
-         * @param {RequestRefreshAuthTokenRequest} requestRefreshAuthTokenRequest トークン更新
+         * @param {RefreshAuthTokenRequest} refreshAuthTokenRequest トークン更新
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthRefreshTokenPost: async (requestRefreshAuthTokenRequest: RequestRefreshAuthTokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestRefreshAuthTokenRequest' is not null or undefined
-            assertParamExists('v1AuthRefreshTokenPost', 'requestRefreshAuthTokenRequest', requestRefreshAuthTokenRequest)
+        v1AuthRefreshTokenPost: async (refreshAuthTokenRequest: RefreshAuthTokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'refreshAuthTokenRequest' is not null or undefined
+            assertParamExists('v1AuthRefreshTokenPost', 'refreshAuthTokenRequest', refreshAuthTokenRequest)
             const localVarPath = `/v1/auth/refresh-token`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9033,7 +9033,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestRefreshAuthTokenRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(refreshAuthTokenRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9090,7 +9090,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthCoordinatorGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCoordinatorResponse>> {
+        async v1AuthCoordinatorGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthCoordinatorGet']?.[localVarOperationServerIndex]?.url;
@@ -9099,12 +9099,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * ログイン中のコーディネータの情報を更新します。
          * @summary 自身のコーディネータ情報更新
-         * @param {RequestUpdateCoordinatorRequest} requestUpdateCoordinatorRequest コーディネータ情報
+         * @param {TypesUpdateCoordinatorRequest} typesUpdateCoordinatorRequest コーディネータ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest: RequestUpdateCoordinatorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest, options);
+        async v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest: TypesUpdateCoordinatorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthCoordinatorPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9115,7 +9115,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthCoordinatorShippingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingResponse>> {
+        async v1AuthCoordinatorShippingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorShippingsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthCoordinatorShippingsGet']?.[localVarOperationServerIndex]?.url;
@@ -9124,12 +9124,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * ログイン中のコーディネータの配送設定を更新します。
          * @summary 自身の配送設定更新
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest, options);
+        async v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthCoordinatorShippingsPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9149,12 +9149,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * プッシュ通知用のデバイストークンを登録します。
          * @summary デバイストークン登録
-         * @param {RequestRegisterAuthDeviceRequest} requestRegisterAuthDeviceRequest デバイストークン
+         * @param {TypesRegisterAuthDeviceRequest} typesRegisterAuthDeviceRequest デバイストークン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthDevicePost(requestRegisterAuthDeviceRequest: RequestRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthDevicePost(requestRegisterAuthDeviceRequest, options);
+        async v1AuthDevicePost(typesRegisterAuthDeviceRequest: TypesRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthDevicePost(typesRegisterAuthDeviceRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthDevicePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9162,12 +9162,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * ログイン中のユーザーのメールアドレスを更新します。
          * @summary メールアドレス更新
-         * @param {RequestUpdateAuthEmailRequest} requestUpdateAuthEmailRequest メールアドレス
+         * @param {TypesUpdateAuthEmailRequest} typesUpdateAuthEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthEmailPatch(requestUpdateAuthEmailRequest: RequestUpdateAuthEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthEmailPatch(requestUpdateAuthEmailRequest, options);
+        async v1AuthEmailPatch(typesUpdateAuthEmailRequest: TypesUpdateAuthEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthEmailPatch(typesUpdateAuthEmailRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthEmailPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9175,12 +9175,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * メールアドレス更新用の検証コードを確認します。
          * @summary メールアドレス更新 - コード検証
-         * @param {RequestVerifyAuthEmailRequest} requestVerifyAuthEmailRequest 検証コード
+         * @param {TypesVerifyAuthEmailRequest} typesVerifyAuthEmailRequest 検証コード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest: RequestVerifyAuthEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest, options);
+        async v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest: TypesVerifyAuthEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthEmailVerifiedPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9188,12 +9188,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * パスワードリセット用のメールを送信します。
          * @summary パスワードリセット
-         * @param {RequestForgotAuthPasswordRequest} requestForgotAuthPasswordRequest メールアドレス
+         * @param {ForgotAuthPasswordRequest} forgotAuthPasswordRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest: RequestForgotAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest, options);
+        async v1AuthForgotPasswordPost(forgotAuthPasswordRequest: ForgotAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthForgotPasswordPost(forgotAuthPasswordRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthForgotPasswordPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9201,12 +9201,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * パスワードリセット用の検証コードを確認し、新しいパスワードを設定します。
          * @summary パスワードリセット - コード検証
-         * @param {RequestResetAuthPasswordRequest} requestResetAuthPasswordRequest パスワードリセット
+         * @param {ResetAuthPasswordRequest} resetAuthPasswordRequest パスワードリセット
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest: RequestResetAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest, options);
+        async v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest: ResetAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthForgotPasswordVerifiedPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9217,7 +9217,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthResponse>> {
+        async v1AuthGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthGet']?.[localVarOperationServerIndex]?.url;
@@ -9231,7 +9231,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthGoogleGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthGoogleAccountResponse>> {
+        async v1AuthGoogleGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthGoogleAccountResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGoogleGet(state, redirectUri, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthGoogleGet']?.[localVarOperationServerIndex]?.url;
@@ -9240,12 +9240,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * Googleアカウントを連携します。
          * @summary Googleアカウントの連携
-         * @param {RequestConnectGoogleAccountRequest} requestConnectGoogleAccountRequest 連携リクエスト
+         * @param {TypesConnectGoogleAccountRequest} typesConnectGoogleAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthGooglePost(requestConnectGoogleAccountRequest: RequestConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGooglePost(requestConnectGoogleAccountRequest, options);
+        async v1AuthGooglePost(typesConnectGoogleAccountRequest: TypesConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthGooglePost(typesConnectGoogleAccountRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthGooglePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9258,7 +9258,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthLineGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthLINEAccountResponse>> {
+        async v1AuthLineGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthLINEAccountResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthLineGet(state, redirectUri, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthLineGet']?.[localVarOperationServerIndex]?.url;
@@ -9267,12 +9267,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * LINEアカウントを連携します。
          * @summary LINEアカウントの連携
-         * @param {RequestConnectLINEAccountRequest} requestConnectLINEAccountRequest 連携リクエスト
+         * @param {TypesConnectLINEAccountRequest} typesConnectLINEAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthLinePost(requestConnectLINEAccountRequest: RequestConnectLINEAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthLinePost(requestConnectLINEAccountRequest, options);
+        async v1AuthLinePost(typesConnectLINEAccountRequest: TypesConnectLINEAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthLinePost(typesConnectLINEAccountRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthLinePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9280,12 +9280,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * ログイン中のユーザーのパスワードを更新します。
          * @summary パスワード更新
-         * @param {RequestUpdateAuthPasswordRequest} requestUpdateAuthPasswordRequest パスワード
+         * @param {UpdateAuthPasswordRequest} updateAuthPasswordRequest パスワード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthPasswordPatch(requestUpdateAuthPasswordRequest: RequestUpdateAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthPasswordPatch(requestUpdateAuthPasswordRequest, options);
+        async v1AuthPasswordPatch(updateAuthPasswordRequest: UpdateAuthPasswordRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthPasswordPatch(updateAuthPasswordRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthPasswordPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9293,12 +9293,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * メールアドレスとパスワードでサインインします。
          * @summary サインイン
-         * @param {RequestSignInRequest} requestSignInRequest サインイン
+         * @param {SignInRequest} signInRequest サインイン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthPost(requestSignInRequest: RequestSignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthPost(requestSignInRequest, options);
+        async v1AuthPost(signInRequest: SignInRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthPost(signInRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9309,7 +9309,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthProvidersGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthProvidersResponse>> {
+        async v1AuthProvidersGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAuthProvidersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthProvidersGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthProvidersGet']?.[localVarOperationServerIndex]?.url;
@@ -9318,12 +9318,12 @@ export const AuthApiFp = function(configuration?: Configuration) {
         /**
          * リフレッシュトークンを使用してアクセストークンを更新します。
          * @summary トークン更新
-         * @param {RequestRefreshAuthTokenRequest} requestRefreshAuthTokenRequest トークン更新
+         * @param {RefreshAuthTokenRequest} refreshAuthTokenRequest トークン更新
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest: RequestRefreshAuthTokenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest, options);
+        async v1AuthRefreshTokenPost(refreshAuthTokenRequest: RefreshAuthTokenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthRefreshTokenPost(refreshAuthTokenRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthRefreshTokenPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9334,7 +9334,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AuthUserGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthUserResponse>> {
+        async v1AuthUserGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1AuthUserGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthApi.v1AuthUserGet']?.[localVarOperationServerIndex]?.url;
@@ -9356,18 +9356,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseCoordinatorResponse> {
+        v1AuthCoordinatorGet(options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1AuthCoordinatorGet(options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中のコーディネータの情報を更新します。
          * @summary 自身のコーディネータ情報更新
-         * @param {RequestUpdateCoordinatorRequest} requestUpdateCoordinatorRequest コーディネータ情報
+         * @param {TypesUpdateCoordinatorRequest} typesUpdateCoordinatorRequest コーディネータ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest: RequestUpdateCoordinatorRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest, options).then((request) => request(axios, basePath));
+        v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest: TypesUpdateCoordinatorRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中のコーディネータの配送設定を取得します。
@@ -9375,18 +9375,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorShippingsGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingResponse> {
+        v1AuthCoordinatorShippingsGet(options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingResponse> {
             return localVarFp.v1AuthCoordinatorShippingsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中のコーディネータの配送設定を更新します。
          * @summary 自身の配送設定更新
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest, options).then((request) => request(axios, basePath));
+        v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * サインアウトします。
@@ -9400,52 +9400,52 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         /**
          * プッシュ通知用のデバイストークンを登録します。
          * @summary デバイストークン登録
-         * @param {RequestRegisterAuthDeviceRequest} requestRegisterAuthDeviceRequest デバイストークン
+         * @param {TypesRegisterAuthDeviceRequest} typesRegisterAuthDeviceRequest デバイストークン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthDevicePost(requestRegisterAuthDeviceRequest: RequestRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthDevicePost(requestRegisterAuthDeviceRequest, options).then((request) => request(axios, basePath));
+        v1AuthDevicePost(typesRegisterAuthDeviceRequest: TypesRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthDevicePost(typesRegisterAuthDeviceRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中のユーザーのメールアドレスを更新します。
          * @summary メールアドレス更新
-         * @param {RequestUpdateAuthEmailRequest} requestUpdateAuthEmailRequest メールアドレス
+         * @param {TypesUpdateAuthEmailRequest} typesUpdateAuthEmailRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthEmailPatch(requestUpdateAuthEmailRequest: RequestUpdateAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthEmailPatch(requestUpdateAuthEmailRequest, options).then((request) => request(axios, basePath));
+        v1AuthEmailPatch(typesUpdateAuthEmailRequest: TypesUpdateAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthEmailPatch(typesUpdateAuthEmailRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * メールアドレス更新用の検証コードを確認します。
          * @summary メールアドレス更新 - コード検証
-         * @param {RequestVerifyAuthEmailRequest} requestVerifyAuthEmailRequest 検証コード
+         * @param {TypesVerifyAuthEmailRequest} typesVerifyAuthEmailRequest 検証コード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest: RequestVerifyAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest, options).then((request) => request(axios, basePath));
+        v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest: TypesVerifyAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * パスワードリセット用のメールを送信します。
          * @summary パスワードリセット
-         * @param {RequestForgotAuthPasswordRequest} requestForgotAuthPasswordRequest メールアドレス
+         * @param {ForgotAuthPasswordRequest} forgotAuthPasswordRequest メールアドレス
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest: RequestForgotAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest, options).then((request) => request(axios, basePath));
+        v1AuthForgotPasswordPost(forgotAuthPasswordRequest: ForgotAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthForgotPasswordPost(forgotAuthPasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * パスワードリセット用の検証コードを確認し、新しいパスワードを設定します。
          * @summary パスワードリセット - コード検証
-         * @param {RequestResetAuthPasswordRequest} requestResetAuthPasswordRequest パスワードリセット
+         * @param {ResetAuthPasswordRequest} resetAuthPasswordRequest パスワードリセット
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest: RequestResetAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest, options).then((request) => request(axios, basePath));
+        v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest: ResetAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 認証トークンを検証し、認証情報を取得します。
@@ -9453,7 +9453,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthResponse> {
+        v1AuthGet(options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
             return localVarFp.v1AuthGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -9464,18 +9464,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGoogleGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthGoogleAccountResponse> {
+        v1AuthGoogleGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): AxiosPromise<AuthGoogleAccountResponse> {
             return localVarFp.v1AuthGoogleGet(state, redirectUri, options).then((request) => request(axios, basePath));
         },
         /**
          * Googleアカウントを連携します。
          * @summary Googleアカウントの連携
-         * @param {RequestConnectGoogleAccountRequest} requestConnectGoogleAccountRequest 連携リクエスト
+         * @param {TypesConnectGoogleAccountRequest} typesConnectGoogleAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthGooglePost(requestConnectGoogleAccountRequest: RequestConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthResponse> {
-            return localVarFp.v1AuthGooglePost(requestConnectGoogleAccountRequest, options).then((request) => request(axios, basePath));
+        v1AuthGooglePost(typesConnectGoogleAccountRequest: TypesConnectGoogleAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
+            return localVarFp.v1AuthGooglePost(typesConnectGoogleAccountRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * LINEアカウント連携用の認証URLを発行します。
@@ -9485,38 +9485,38 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthLineGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthLINEAccountResponse> {
+        v1AuthLineGet(state: string, redirectUri?: string, options?: RawAxiosRequestConfig): AxiosPromise<AuthLINEAccountResponse> {
             return localVarFp.v1AuthLineGet(state, redirectUri, options).then((request) => request(axios, basePath));
         },
         /**
          * LINEアカウントを連携します。
          * @summary LINEアカウントの連携
-         * @param {RequestConnectLINEAccountRequest} requestConnectLINEAccountRequest 連携リクエスト
+         * @param {TypesConnectLINEAccountRequest} typesConnectLINEAccountRequest 連携リクエスト
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthLinePost(requestConnectLINEAccountRequest: RequestConnectLINEAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthResponse> {
-            return localVarFp.v1AuthLinePost(requestConnectLINEAccountRequest, options).then((request) => request(axios, basePath));
+        v1AuthLinePost(typesConnectLINEAccountRequest: TypesConnectLINEAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
+            return localVarFp.v1AuthLinePost(typesConnectLINEAccountRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中のユーザーのパスワードを更新します。
          * @summary パスワード更新
-         * @param {RequestUpdateAuthPasswordRequest} requestUpdateAuthPasswordRequest パスワード
+         * @param {UpdateAuthPasswordRequest} updateAuthPasswordRequest パスワード
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthPasswordPatch(requestUpdateAuthPasswordRequest: RequestUpdateAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1AuthPasswordPatch(requestUpdateAuthPasswordRequest, options).then((request) => request(axios, basePath));
+        v1AuthPasswordPatch(updateAuthPasswordRequest: UpdateAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1AuthPasswordPatch(updateAuthPasswordRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * メールアドレスとパスワードでサインインします。
          * @summary サインイン
-         * @param {RequestSignInRequest} requestSignInRequest サインイン
+         * @param {SignInRequest} signInRequest サインイン
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthPost(requestSignInRequest: RequestSignInRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthResponse> {
-            return localVarFp.v1AuthPost(requestSignInRequest, options).then((request) => request(axios, basePath));
+        v1AuthPost(signInRequest: SignInRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
+            return localVarFp.v1AuthPost(signInRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 連携済みの外部認証プロバイダ一覧を取得します。
@@ -9524,18 +9524,18 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthProvidersGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthProvidersResponse> {
+        v1AuthProvidersGet(options?: RawAxiosRequestConfig): AxiosPromise<TypesAuthProvidersResponse> {
             return localVarFp.v1AuthProvidersGet(options).then((request) => request(axios, basePath));
         },
         /**
          * リフレッシュトークンを使用してアクセストークンを更新します。
          * @summary トークン更新
-         * @param {RequestRefreshAuthTokenRequest} requestRefreshAuthTokenRequest トークン更新
+         * @param {RefreshAuthTokenRequest} refreshAuthTokenRequest トークン更新
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest: RequestRefreshAuthTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthResponse> {
-            return localVarFp.v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest, options).then((request) => request(axios, basePath));
+        v1AuthRefreshTokenPost(refreshAuthTokenRequest: RefreshAuthTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
+            return localVarFp.v1AuthRefreshTokenPost(refreshAuthTokenRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ログイン中の管理者情報を取得します。
@@ -9543,7 +9543,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthUserGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthUserResponse> {
+        v1AuthUserGet(options?: RawAxiosRequestConfig): AxiosPromise<AuthUserResponse> {
             return localVarFp.v1AuthUserGet(options).then((request) => request(axios, basePath));
         },
     };
@@ -9570,13 +9570,13 @@ export class AuthApi extends BaseAPI {
     /**
      * ログイン中のコーディネータの情報を更新します。
      * @summary 自身のコーディネータ情報更新
-     * @param {RequestUpdateCoordinatorRequest} requestUpdateCoordinatorRequest コーディネータ情報
+     * @param {TypesUpdateCoordinatorRequest} typesUpdateCoordinatorRequest コーディネータ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest: RequestUpdateCoordinatorRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthCoordinatorPatch(requestUpdateCoordinatorRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest: TypesUpdateCoordinatorRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthCoordinatorPatch(typesUpdateCoordinatorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9593,13 +9593,13 @@ export class AuthApi extends BaseAPI {
     /**
      * ログイン中のコーディネータの配送設定を更新します。
      * @summary 自身の配送設定更新
-     * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定
+     * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthCoordinatorShippingsPatch(requestUpsertShippingRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthCoordinatorShippingsPatch(typesUpsertShippingRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9616,61 +9616,61 @@ export class AuthApi extends BaseAPI {
     /**
      * プッシュ通知用のデバイストークンを登録します。
      * @summary デバイストークン登録
-     * @param {RequestRegisterAuthDeviceRequest} requestRegisterAuthDeviceRequest デバイストークン
+     * @param {TypesRegisterAuthDeviceRequest} typesRegisterAuthDeviceRequest デバイストークン
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthDevicePost(requestRegisterAuthDeviceRequest: RequestRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthDevicePost(requestRegisterAuthDeviceRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthDevicePost(typesRegisterAuthDeviceRequest: TypesRegisterAuthDeviceRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthDevicePost(typesRegisterAuthDeviceRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ログイン中のユーザーのメールアドレスを更新します。
      * @summary メールアドレス更新
-     * @param {RequestUpdateAuthEmailRequest} requestUpdateAuthEmailRequest メールアドレス
+     * @param {TypesUpdateAuthEmailRequest} typesUpdateAuthEmailRequest メールアドレス
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthEmailPatch(requestUpdateAuthEmailRequest: RequestUpdateAuthEmailRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthEmailPatch(requestUpdateAuthEmailRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthEmailPatch(typesUpdateAuthEmailRequest: TypesUpdateAuthEmailRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthEmailPatch(typesUpdateAuthEmailRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * メールアドレス更新用の検証コードを確認します。
      * @summary メールアドレス更新 - コード検証
-     * @param {RequestVerifyAuthEmailRequest} requestVerifyAuthEmailRequest 検証コード
+     * @param {TypesVerifyAuthEmailRequest} typesVerifyAuthEmailRequest 検証コード
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest: RequestVerifyAuthEmailRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthEmailVerifiedPost(requestVerifyAuthEmailRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest: TypesVerifyAuthEmailRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthEmailVerifiedPost(typesVerifyAuthEmailRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * パスワードリセット用のメールを送信します。
      * @summary パスワードリセット
-     * @param {RequestForgotAuthPasswordRequest} requestForgotAuthPasswordRequest メールアドレス
+     * @param {ForgotAuthPasswordRequest} forgotAuthPasswordRequest メールアドレス
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest: RequestForgotAuthPasswordRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthForgotPasswordPost(requestForgotAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthForgotPasswordPost(forgotAuthPasswordRequest: ForgotAuthPasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthForgotPasswordPost(forgotAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * パスワードリセット用の検証コードを確認し、新しいパスワードを設定します。
      * @summary パスワードリセット - コード検証
-     * @param {RequestResetAuthPasswordRequest} requestResetAuthPasswordRequest パスワードリセット
+     * @param {ResetAuthPasswordRequest} resetAuthPasswordRequest パスワードリセット
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest: RequestResetAuthPasswordRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthForgotPasswordVerifiedPost(requestResetAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest: ResetAuthPasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthForgotPasswordVerifiedPost(resetAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9700,13 +9700,13 @@ export class AuthApi extends BaseAPI {
     /**
      * Googleアカウントを連携します。
      * @summary Googleアカウントの連携
-     * @param {RequestConnectGoogleAccountRequest} requestConnectGoogleAccountRequest 連携リクエスト
+     * @param {TypesConnectGoogleAccountRequest} typesConnectGoogleAccountRequest 連携リクエスト
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthGooglePost(requestConnectGoogleAccountRequest: RequestConnectGoogleAccountRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthGooglePost(requestConnectGoogleAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthGooglePost(typesConnectGoogleAccountRequest: TypesConnectGoogleAccountRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthGooglePost(typesConnectGoogleAccountRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9725,37 +9725,37 @@ export class AuthApi extends BaseAPI {
     /**
      * LINEアカウントを連携します。
      * @summary LINEアカウントの連携
-     * @param {RequestConnectLINEAccountRequest} requestConnectLINEAccountRequest 連携リクエスト
+     * @param {TypesConnectLINEAccountRequest} typesConnectLINEAccountRequest 連携リクエスト
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthLinePost(requestConnectLINEAccountRequest: RequestConnectLINEAccountRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthLinePost(requestConnectLINEAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthLinePost(typesConnectLINEAccountRequest: TypesConnectLINEAccountRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthLinePost(typesConnectLINEAccountRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ログイン中のユーザーのパスワードを更新します。
      * @summary パスワード更新
-     * @param {RequestUpdateAuthPasswordRequest} requestUpdateAuthPasswordRequest パスワード
+     * @param {UpdateAuthPasswordRequest} updateAuthPasswordRequest パスワード
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthPasswordPatch(requestUpdateAuthPasswordRequest: RequestUpdateAuthPasswordRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthPasswordPatch(requestUpdateAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthPasswordPatch(updateAuthPasswordRequest: UpdateAuthPasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthPasswordPatch(updateAuthPasswordRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * メールアドレスとパスワードでサインインします。
      * @summary サインイン
-     * @param {RequestSignInRequest} requestSignInRequest サインイン
+     * @param {SignInRequest} signInRequest サインイン
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthPost(requestSignInRequest: RequestSignInRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthPost(requestSignInRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthPost(signInRequest: SignInRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthPost(signInRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9772,13 +9772,13 @@ export class AuthApi extends BaseAPI {
     /**
      * リフレッシュトークンを使用してアクセストークンを更新します。
      * @summary トークン更新
-     * @param {RequestRefreshAuthTokenRequest} requestRefreshAuthTokenRequest トークン更新
+     * @param {RefreshAuthTokenRequest} refreshAuthTokenRequest トークン更新
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest: RequestRefreshAuthTokenRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).v1AuthRefreshTokenPost(requestRefreshAuthTokenRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1AuthRefreshTokenPost(refreshAuthTokenRequest: RefreshAuthTokenRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1AuthRefreshTokenPost(refreshAuthTokenRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9836,13 +9836,13 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost: async (requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCallbackAuthYoutubeBroadcastRequest' is not null or undefined
-            assertParamExists('v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost', 'requestCallbackAuthYoutubeBroadcastRequest', requestCallbackAuthYoutubeBroadcastRequest)
+        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost: async (typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCallbackAuthYoutubeBroadcastRequest' is not null or undefined
+            assertParamExists('v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost', 'typesCallbackAuthYoutubeBroadcastRequest', typesCallbackAuthYoutubeBroadcastRequest)
             const localVarPath = `/v1/guests/schedules/-/broadcasts/youtube/auth/complete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9862,7 +9862,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCallbackAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCallbackAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9872,13 +9872,13 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubePost: async (requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateYoutubeBroadcastRequest' is not null or undefined
-            assertParamExists('v1GuestsSchedulesBroadcastsYoutubePost', 'requestCreateYoutubeBroadcastRequest', requestCreateYoutubeBroadcastRequest)
+        v1GuestsSchedulesBroadcastsYoutubePost: async (typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateYoutubeBroadcastRequest' is not null or undefined
+            assertParamExists('v1GuestsSchedulesBroadcastsYoutubePost', 'typesCreateYoutubeBroadcastRequest', typesCreateYoutubeBroadcastRequest)
             const localVarPath = `/v1/guests/schedules/-/broadcasts/youtube`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9900,7 +9900,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateYoutubeBroadcastRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateYoutubeBroadcastRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -9911,15 +9911,15 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
          * ライブ配信終了後にオンデマンド配信用の映像をアップロードします。
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestUpdateBroadcastArchiveRequest} requestUpdateBroadcastArchiveRequest アーカイブURL
+         * @param {TypesUpdateBroadcastArchiveRequest} typesUpdateBroadcastArchiveRequest アーカイブURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsArchiveVideoPost: async (scheduleId: string, requestUpdateBroadcastArchiveRequest: RequestUpdateBroadcastArchiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdBroadcastsArchiveVideoPost: async (scheduleId: string, typesUpdateBroadcastArchiveRequest: TypesUpdateBroadcastArchiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdBroadcastsArchiveVideoPost', 'scheduleId', scheduleId)
-            // verify required parameter 'requestUpdateBroadcastArchiveRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdBroadcastsArchiveVideoPost', 'requestUpdateBroadcastArchiveRequest', requestUpdateBroadcastArchiveRequest)
+            // verify required parameter 'typesUpdateBroadcastArchiveRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdBroadcastsArchiveVideoPost', 'typesUpdateBroadcastArchiveRequest', typesUpdateBroadcastArchiveRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/archive-video`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9944,7 +9944,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateBroadcastArchiveRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateBroadcastArchiveRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10031,15 +10031,15 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
          * ライブ配信の入力ソースをMP4ファイルに切り替えます。
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestActivateBroadcastMP4Request} requestActivateBroadcastMP4Request MP4ファイルURL
+         * @param {TypesActivateBroadcastMP4Request} typesActivateBroadcastMP4Request MP4ファイルURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsMp4Post: async (scheduleId: string, requestActivateBroadcastMP4Request: RequestActivateBroadcastMP4Request, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdBroadcastsMp4Post: async (scheduleId: string, typesActivateBroadcastMP4Request: TypesActivateBroadcastMP4Request, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdBroadcastsMp4Post', 'scheduleId', scheduleId)
-            // verify required parameter 'requestActivateBroadcastMP4Request' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdBroadcastsMp4Post', 'requestActivateBroadcastMP4Request', requestActivateBroadcastMP4Request)
+            // verify required parameter 'typesActivateBroadcastMP4Request' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdBroadcastsMp4Post', 'typesActivateBroadcastMP4Request', typesActivateBroadcastMP4Request)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/mp4`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -10064,7 +10064,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestActivateBroadcastMP4Request, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesActivateBroadcastMP4Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10227,15 +10227,15 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
          * Youtube配信用の認証URLを取得します。
          * @summary マルシェライブ配信のYoutube連携を認証
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestAuthYoutubeBroadcastRequest} requestAuthYoutubeBroadcastRequest Youtubeハンドル
+         * @param {TypesAuthYoutubeBroadcastRequest} typesAuthYoutubeBroadcastRequest Youtubeハンドル
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsYoutubeAuthPost: async (scheduleId: string, requestAuthYoutubeBroadcastRequest: RequestAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdBroadcastsYoutubeAuthPost: async (scheduleId: string, typesAuthYoutubeBroadcastRequest: TypesAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdBroadcastsYoutubeAuthPost', 'scheduleId', scheduleId)
-            // verify required parameter 'requestAuthYoutubeBroadcastRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdBroadcastsYoutubeAuthPost', 'requestAuthYoutubeBroadcastRequest', requestAuthYoutubeBroadcastRequest)
+            // verify required parameter 'typesAuthYoutubeBroadcastRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdBroadcastsYoutubeAuthPost', 'typesAuthYoutubeBroadcastRequest', typesAuthYoutubeBroadcastRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/youtube/auth`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -10260,7 +10260,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10283,7 +10283,7 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGuestBroadcastResponse>> {
+        async v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesGuestBroadcastResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1GuestsSchedulesBroadcastsGet']?.[localVarOperationServerIndex]?.url;
@@ -10292,12 +10292,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGuestBroadcastResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options);
+        async v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesGuestBroadcastResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10305,12 +10305,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options);
+        async v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1GuestsSchedulesBroadcastsYoutubePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10319,12 +10319,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * ライブ配信終了後にオンデマンド配信用の映像をアップロードします。
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestUpdateBroadcastArchiveRequest} requestUpdateBroadcastArchiveRequest アーカイブURL
+         * @param {TypesUpdateBroadcastArchiveRequest} typesUpdateBroadcastArchiveRequest アーカイブURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, requestUpdateBroadcastArchiveRequest: RequestUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, requestUpdateBroadcastArchiveRequest, options);
+        async v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, typesUpdateBroadcastArchiveRequest: TypesUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, typesUpdateBroadcastArchiveRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1SchedulesScheduleIdBroadcastsArchiveVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10349,7 +10349,7 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdBroadcastsGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseBroadcastResponse>> {
+        async v1SchedulesScheduleIdBroadcastsGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesBroadcastResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsGet(scheduleId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1SchedulesScheduleIdBroadcastsGet']?.[localVarOperationServerIndex]?.url;
@@ -10359,12 +10359,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * ライブ配信の入力ソースをMP4ファイルに切り替えます。
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestActivateBroadcastMP4Request} requestActivateBroadcastMP4Request MP4ファイルURL
+         * @param {TypesActivateBroadcastMP4Request} typesActivateBroadcastMP4Request MP4ファイルURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, requestActivateBroadcastMP4Request: RequestActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, requestActivateBroadcastMP4Request, options);
+        async v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, typesActivateBroadcastMP4Request: TypesActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, typesActivateBroadcastMP4Request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1SchedulesScheduleIdBroadcastsMp4Post']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10425,12 +10425,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * Youtube配信用の認証URLを取得します。
          * @summary マルシェライブ配信のYoutube連携を認証
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestAuthYoutubeBroadcastRequest} requestAuthYoutubeBroadcastRequest Youtubeハンドル
+         * @param {TypesAuthYoutubeBroadcastRequest} typesAuthYoutubeBroadcastRequest Youtubeハンドル
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, requestAuthYoutubeBroadcastRequest: RequestAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAuthYoutubeBroadcastResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, requestAuthYoutubeBroadcastRequest, options);
+        async v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, typesAuthYoutubeBroadcastRequest: TypesAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAuthYoutubeBroadcastResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, typesAuthYoutubeBroadcastRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1SchedulesScheduleIdBroadcastsYoutubeAuthPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10451,39 +10451,39 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseGuestBroadcastResponse> {
+        v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): AxiosPromise<TypesGuestBroadcastResponse> {
             return localVarFp.v1GuestsSchedulesBroadcastsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseGuestBroadcastResponse> {
-            return localVarFp.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
+        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesGuestBroadcastResponse> {
+            return localVarFp.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
+        v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ライブ配信終了後にオンデマンド配信用の映像をアップロードします。
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestUpdateBroadcastArchiveRequest} requestUpdateBroadcastArchiveRequest アーカイブURL
+         * @param {TypesUpdateBroadcastArchiveRequest} typesUpdateBroadcastArchiveRequest アーカイブURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, requestUpdateBroadcastArchiveRequest: RequestUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, requestUpdateBroadcastArchiveRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, typesUpdateBroadcastArchiveRequest: TypesUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, typesUpdateBroadcastArchiveRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ライブ配信を一時停止します。
@@ -10502,19 +10502,19 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseBroadcastResponse> {
+        v1SchedulesScheduleIdBroadcastsGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesBroadcastResponse> {
             return localVarFp.v1SchedulesScheduleIdBroadcastsGet(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
          * ライブ配信の入力ソースをMP4ファイルに切り替えます。
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestActivateBroadcastMP4Request} requestActivateBroadcastMP4Request MP4ファイルURL
+         * @param {TypesActivateBroadcastMP4Request} typesActivateBroadcastMP4Request MP4ファイルURL
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, requestActivateBroadcastMP4Request: RequestActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, requestActivateBroadcastMP4Request, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, typesActivateBroadcastMP4Request: TypesActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, typesActivateBroadcastMP4Request, options).then((request) => request(axios, basePath));
         },
         /**
          * ライブ配信の一時停止を解除します。
@@ -10560,12 +10560,12 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * Youtube配信用の認証URLを取得します。
          * @summary マルシェライブ配信のYoutube連携を認証
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {RequestAuthYoutubeBroadcastRequest} requestAuthYoutubeBroadcastRequest Youtubeハンドル
+         * @param {TypesAuthYoutubeBroadcastRequest} typesAuthYoutubeBroadcastRequest Youtubeハンドル
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, requestAuthYoutubeBroadcastRequest: RequestAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAuthYoutubeBroadcastResponse> {
-            return localVarFp.v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, requestAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, typesAuthYoutubeBroadcastRequest: TypesAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesAuthYoutubeBroadcastResponse> {
+            return localVarFp.v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, typesAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -10591,38 +10591,38 @@ export class BroadcastApi extends BaseAPI {
     /**
      * Youtube認証完了後のコールバック処理を行います。
      * @summary マルシェライブ配信のYoutube認証後処理
-     * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+     * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Youtube側でライブ配信を作成します。
      * @summary マルシェライブ配信のYoutube連携
-     * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+     * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ライブ配信終了後にオンデマンド配信用の映像をアップロードします。
      * @summary オンデマンド配信用の映像をアップロード
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {RequestUpdateBroadcastArchiveRequest} requestUpdateBroadcastArchiveRequest アーカイブURL
+     * @param {TypesUpdateBroadcastArchiveRequest} typesUpdateBroadcastArchiveRequest アーカイブURL
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, requestUpdateBroadcastArchiveRequest: RequestUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, requestUpdateBroadcastArchiveRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId: string, typesUpdateBroadcastArchiveRequest: TypesUpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsArchiveVideoPost(scheduleId, typesUpdateBroadcastArchiveRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -10653,13 +10653,13 @@ export class BroadcastApi extends BaseAPI {
      * ライブ配信の入力ソースをMP4ファイルに切り替えます。
      * @summary ライブ配信中の入力をMP4へ切り替え
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {RequestActivateBroadcastMP4Request} requestActivateBroadcastMP4Request MP4ファイルURL
+     * @param {TypesActivateBroadcastMP4Request} typesActivateBroadcastMP4Request MP4ファイルURL
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, requestActivateBroadcastMP4Request: RequestActivateBroadcastMP4Request, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, requestActivateBroadcastMP4Request, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId: string, typesActivateBroadcastMP4Request: TypesActivateBroadcastMP4Request, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsMp4Post(scheduleId, typesActivateBroadcastMP4Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -10714,13 +10714,13 @@ export class BroadcastApi extends BaseAPI {
      * Youtube配信用の認証URLを取得します。
      * @summary マルシェライブ配信のYoutube連携を認証
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {RequestAuthYoutubeBroadcastRequest} requestAuthYoutubeBroadcastRequest Youtubeハンドル
+     * @param {TypesAuthYoutubeBroadcastRequest} typesAuthYoutubeBroadcastRequest Youtubeハンドル
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, requestAuthYoutubeBroadcastRequest: RequestAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, requestAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId: string, typesAuthYoutubeBroadcastRequest: TypesAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(scheduleId, typesAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -10774,15 +10774,15 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
          * 商品種別の情報を更新します。
          * @summary 商品種別更新
          * @param {string} categoryId 商品種別ID
-         * @param {RequestUpdateCategoryRequest} requestUpdateCategoryRequest 商品種別情報
+         * @param {TypesUpdateCategoryRequest} typesUpdateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdPatch: async (categoryId: string, requestUpdateCategoryRequest: RequestUpdateCategoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CategoriesCategoryIdPatch: async (categoryId: string, typesUpdateCategoryRequest: TypesUpdateCategoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'categoryId' is not null or undefined
             assertParamExists('v1CategoriesCategoryIdPatch', 'categoryId', categoryId)
-            // verify required parameter 'requestUpdateCategoryRequest' is not null or undefined
-            assertParamExists('v1CategoriesCategoryIdPatch', 'requestUpdateCategoryRequest', requestUpdateCategoryRequest)
+            // verify required parameter 'typesUpdateCategoryRequest' is not null or undefined
+            assertParamExists('v1CategoriesCategoryIdPatch', 'typesUpdateCategoryRequest', typesUpdateCategoryRequest)
             const localVarPath = `/v1/categories/{categoryId}`
                 .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -10807,7 +10807,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateCategoryRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateCategoryRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10871,13 +10871,13 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 新しい商品種別を登録します。
          * @summary 商品種別登録
-         * @param {RequestCreateCategoryRequest} requestCreateCategoryRequest 商品種別情報
+         * @param {TypesCreateCategoryRequest} typesCreateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesPost: async (requestCreateCategoryRequest: RequestCreateCategoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateCategoryRequest' is not null or undefined
-            assertParamExists('v1CategoriesPost', 'requestCreateCategoryRequest', requestCreateCategoryRequest)
+        v1CategoriesPost: async (typesCreateCategoryRequest: TypesCreateCategoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateCategoryRequest' is not null or undefined
+            assertParamExists('v1CategoriesPost', 'typesCreateCategoryRequest', typesCreateCategoryRequest)
             const localVarPath = `/v1/categories`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10901,7 +10901,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateCategoryRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateCategoryRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10935,12 +10935,12 @@ export const CategoryApiFp = function(configuration?: Configuration) {
          * 商品種別の情報を更新します。
          * @summary 商品種別更新
          * @param {string} categoryId 商品種別ID
-         * @param {RequestUpdateCategoryRequest} requestUpdateCategoryRequest 商品種別情報
+         * @param {TypesUpdateCategoryRequest} typesUpdateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesCategoryIdPatch(categoryId: string, requestUpdateCategoryRequest: RequestUpdateCategoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdPatch(categoryId, requestUpdateCategoryRequest, options);
+        async v1CategoriesCategoryIdPatch(categoryId: string, typesUpdateCategoryRequest: TypesUpdateCategoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdPatch(categoryId, typesUpdateCategoryRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryApi.v1CategoriesCategoryIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10955,7 +10955,7 @@ export const CategoryApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCategoriesResponse>> {
+        async v1CategoriesGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesCategoriesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesGet(limit, offset, name, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryApi.v1CategoriesGet']?.[localVarOperationServerIndex]?.url;
@@ -10964,12 +10964,12 @@ export const CategoryApiFp = function(configuration?: Configuration) {
         /**
          * 新しい商品種別を登録します。
          * @summary 商品種別登録
-         * @param {RequestCreateCategoryRequest} requestCreateCategoryRequest 商品種別情報
+         * @param {TypesCreateCategoryRequest} typesCreateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesPost(requestCreateCategoryRequest: RequestCreateCategoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCategoryResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesPost(requestCreateCategoryRequest, options);
+        async v1CategoriesPost(typesCreateCategoryRequest: TypesCreateCategoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesCategoryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesPost(typesCreateCategoryRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryApi.v1CategoriesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -10998,12 +10998,12 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * 商品種別の情報を更新します。
          * @summary 商品種別更新
          * @param {string} categoryId 商品種別ID
-         * @param {RequestUpdateCategoryRequest} requestUpdateCategoryRequest 商品種別情報
+         * @param {TypesUpdateCategoryRequest} typesUpdateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdPatch(categoryId: string, requestUpdateCategoryRequest: RequestUpdateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1CategoriesCategoryIdPatch(categoryId, requestUpdateCategoryRequest, options).then((request) => request(axios, basePath));
+        v1CategoriesCategoryIdPatch(categoryId: string, typesUpdateCategoryRequest: TypesUpdateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1CategoriesCategoryIdPatch(categoryId, typesUpdateCategoryRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 商品種別の一覧を取得します。
@@ -11015,18 +11015,18 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseCategoriesResponse> {
+        v1CategoriesGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesCategoriesResponse> {
             return localVarFp.v1CategoriesGet(limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい商品種別を登録します。
          * @summary 商品種別登録
-         * @param {RequestCreateCategoryRequest} requestCreateCategoryRequest 商品種別情報
+         * @param {TypesCreateCategoryRequest} typesCreateCategoryRequest 商品種別情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesPost(requestCreateCategoryRequest: RequestCreateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseCategoryResponse> {
-            return localVarFp.v1CategoriesPost(requestCreateCategoryRequest, options).then((request) => request(axios, basePath));
+        v1CategoriesPost(typesCreateCategoryRequest: TypesCreateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesCategoryResponse> {
+            return localVarFp.v1CategoriesPost(typesCreateCategoryRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11054,13 +11054,13 @@ export class CategoryApi extends BaseAPI {
      * 商品種別の情報を更新します。
      * @summary 商品種別更新
      * @param {string} categoryId 商品種別ID
-     * @param {RequestUpdateCategoryRequest} requestUpdateCategoryRequest 商品種別情報
+     * @param {TypesUpdateCategoryRequest} typesUpdateCategoryRequest 商品種別情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CategoryApi
      */
-    public v1CategoriesCategoryIdPatch(categoryId: string, requestUpdateCategoryRequest: RequestUpdateCategoryRequest, options?: RawAxiosRequestConfig) {
-        return CategoryApiFp(this.configuration).v1CategoriesCategoryIdPatch(categoryId, requestUpdateCategoryRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CategoriesCategoryIdPatch(categoryId: string, typesUpdateCategoryRequest: TypesUpdateCategoryRequest, options?: RawAxiosRequestConfig) {
+        return CategoryApiFp(this.configuration).v1CategoriesCategoryIdPatch(categoryId, typesUpdateCategoryRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11081,13 +11081,13 @@ export class CategoryApi extends BaseAPI {
     /**
      * 新しい商品種別を登録します。
      * @summary 商品種別登録
-     * @param {RequestCreateCategoryRequest} requestCreateCategoryRequest 商品種別情報
+     * @param {TypesCreateCategoryRequest} typesCreateCategoryRequest 商品種別情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CategoryApi
      */
-    public v1CategoriesPost(requestCreateCategoryRequest: RequestCreateCategoryRequest, options?: RawAxiosRequestConfig) {
-        return CategoryApiFp(this.configuration).v1CategoriesPost(requestCreateCategoryRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CategoriesPost(typesCreateCategoryRequest: TypesCreateCategoryRequest, options?: RawAxiosRequestConfig) {
+        return CategoryApiFp(this.configuration).v1CategoriesPost(typesCreateCategoryRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -11179,15 +11179,15 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
          * お問い合わせの情報を更新します。
          * @summary お問い合わせ更新
          * @param {string} contactId お問い合わせID
-         * @param {RequestUpdateContactRequest} requestUpdateContactRequest お問い合わせ情報
+         * @param {TypesUpdateContactRequest} typesUpdateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdPatch: async (contactId: string, requestUpdateContactRequest: RequestUpdateContactRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ContactsContactIdPatch: async (contactId: string, typesUpdateContactRequest: TypesUpdateContactRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'contactId' is not null or undefined
             assertParamExists('v1ContactsContactIdPatch', 'contactId', contactId)
-            // verify required parameter 'requestUpdateContactRequest' is not null or undefined
-            assertParamExists('v1ContactsContactIdPatch', 'requestUpdateContactRequest', requestUpdateContactRequest)
+            // verify required parameter 'typesUpdateContactRequest' is not null or undefined
+            assertParamExists('v1ContactsContactIdPatch', 'typesUpdateContactRequest', typesUpdateContactRequest)
             const localVarPath = `/v1/contacts/{contactId}`
                 .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -11212,7 +11212,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateContactRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateContactRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -11266,13 +11266,13 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 新しいお問い合わせを登録します。
          * @summary お問い合わせ登録
-         * @param {RequestCreateContactRequest} requestCreateContactRequest お問い合わせ情報
+         * @param {TypesCreateContactRequest} typesCreateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsPost: async (requestCreateContactRequest: RequestCreateContactRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateContactRequest' is not null or undefined
-            assertParamExists('v1ContactsPost', 'requestCreateContactRequest', requestCreateContactRequest)
+        v1ContactsPost: async (typesCreateContactRequest: TypesCreateContactRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateContactRequest' is not null or undefined
+            assertParamExists('v1ContactsPost', 'typesCreateContactRequest', typesCreateContactRequest)
             const localVarPath = `/v1/contacts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -11296,7 +11296,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateContactRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateContactRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -11333,7 +11333,7 @@ export const ContactApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdGet(contactId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactResponse>> {
+        async v1ContactsContactIdGet(contactId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdGet(contactId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactApi.v1ContactsContactIdGet']?.[localVarOperationServerIndex]?.url;
@@ -11343,12 +11343,12 @@ export const ContactApiFp = function(configuration?: Configuration) {
          * お問い合わせの情報を更新します。
          * @summary お問い合わせ更新
          * @param {string} contactId お問い合わせID
-         * @param {RequestUpdateContactRequest} requestUpdateContactRequest お問い合わせ情報
+         * @param {TypesUpdateContactRequest} typesUpdateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdPatch(contactId: string, requestUpdateContactRequest: RequestUpdateContactRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdPatch(contactId, requestUpdateContactRequest, options);
+        async v1ContactsContactIdPatch(contactId: string, typesUpdateContactRequest: TypesUpdateContactRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdPatch(contactId, typesUpdateContactRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactApi.v1ContactsContactIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11361,7 +11361,7 @@ export const ContactApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactsResponse>> {
+        async v1ContactsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsGet(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactApi.v1ContactsGet']?.[localVarOperationServerIndex]?.url;
@@ -11370,12 +11370,12 @@ export const ContactApiFp = function(configuration?: Configuration) {
         /**
          * 新しいお問い合わせを登録します。
          * @summary お問い合わせ登録
-         * @param {RequestCreateContactRequest} requestCreateContactRequest お問い合わせ情報
+         * @param {TypesCreateContactRequest} typesCreateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsPost(requestCreateContactRequest: RequestCreateContactRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsPost(requestCreateContactRequest, options);
+        async v1ContactsPost(typesCreateContactRequest: TypesCreateContactRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsPost(typesCreateContactRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactApi.v1ContactsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11407,19 +11407,19 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdGet(contactId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactResponse> {
+        v1ContactsContactIdGet(contactId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactResponse> {
             return localVarFp.v1ContactsContactIdGet(contactId, options).then((request) => request(axios, basePath));
         },
         /**
          * お問い合わせの情報を更新します。
          * @summary お問い合わせ更新
          * @param {string} contactId お問い合わせID
-         * @param {RequestUpdateContactRequest} requestUpdateContactRequest お問い合わせ情報
+         * @param {TypesUpdateContactRequest} typesUpdateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdPatch(contactId: string, requestUpdateContactRequest: RequestUpdateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ContactsContactIdPatch(contactId, requestUpdateContactRequest, options).then((request) => request(axios, basePath));
+        v1ContactsContactIdPatch(contactId: string, typesUpdateContactRequest: TypesUpdateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ContactsContactIdPatch(contactId, typesUpdateContactRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * お問い合わせの一覧を取得します。
@@ -11429,18 +11429,18 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactsResponse> {
+        v1ContactsGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactsResponse> {
             return localVarFp.v1ContactsGet(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいお問い合わせを登録します。
          * @summary お問い合わせ登録
-         * @param {RequestCreateContactRequest} requestCreateContactRequest お問い合わせ情報
+         * @param {TypesCreateContactRequest} typesCreateContactRequest お問い合わせ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsPost(requestCreateContactRequest: RequestCreateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactResponse> {
-            return localVarFp.v1ContactsPost(requestCreateContactRequest, options).then((request) => request(axios, basePath));
+        v1ContactsPost(typesCreateContactRequest: TypesCreateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactResponse> {
+            return localVarFp.v1ContactsPost(typesCreateContactRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11480,13 +11480,13 @@ export class ContactApi extends BaseAPI {
      * お問い合わせの情報を更新します。
      * @summary お問い合わせ更新
      * @param {string} contactId お問い合わせID
-     * @param {RequestUpdateContactRequest} requestUpdateContactRequest お問い合わせ情報
+     * @param {TypesUpdateContactRequest} typesUpdateContactRequest お問い合わせ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContactApi
      */
-    public v1ContactsContactIdPatch(contactId: string, requestUpdateContactRequest: RequestUpdateContactRequest, options?: RawAxiosRequestConfig) {
-        return ContactApiFp(this.configuration).v1ContactsContactIdPatch(contactId, requestUpdateContactRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ContactsContactIdPatch(contactId: string, typesUpdateContactRequest: TypesUpdateContactRequest, options?: RawAxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ContactsContactIdPatch(contactId, typesUpdateContactRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11505,13 +11505,13 @@ export class ContactApi extends BaseAPI {
     /**
      * 新しいお問い合わせを登録します。
      * @summary お問い合わせ登録
-     * @param {RequestCreateContactRequest} requestCreateContactRequest お問い合わせ情報
+     * @param {TypesCreateContactRequest} typesCreateContactRequest お問い合わせ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContactApi
      */
-    public v1ContactsPost(requestCreateContactRequest: RequestCreateContactRequest, options?: RawAxiosRequestConfig) {
-        return ContactApiFp(this.configuration).v1ContactsPost(requestCreateContactRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ContactsPost(typesCreateContactRequest: TypesCreateContactRequest, options?: RawAxiosRequestConfig) {
+        return ContactApiFp(this.configuration).v1ContactsPost(typesCreateContactRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -11622,7 +11622,7 @@ export const ContactCategoryApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactCategoriesContactCategoryIdGet(contactCategoryId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactCategoryResponse>> {
+        async v1ContactCategoriesContactCategoryIdGet(contactCategoryId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactCategoryResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactCategoriesContactCategoryIdGet(contactCategoryId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactCategoryApi.v1ContactCategoriesContactCategoryIdGet']?.[localVarOperationServerIndex]?.url;
@@ -11636,7 +11636,7 @@ export const ContactCategoryApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactCategoriesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactCategoriesResponse>> {
+        async v1ContactCategoriesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactCategoriesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactCategoriesGet(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactCategoryApi.v1ContactCategoriesGet']?.[localVarOperationServerIndex]?.url;
@@ -11659,7 +11659,7 @@ export const ContactCategoryApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactCategoriesContactCategoryIdGet(contactCategoryId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactCategoryResponse> {
+        v1ContactCategoriesContactCategoryIdGet(contactCategoryId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactCategoryResponse> {
             return localVarFp.v1ContactCategoriesContactCategoryIdGet(contactCategoryId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11670,7 +11670,7 @@ export const ContactCategoryApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactCategoriesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactCategoriesResponse> {
+        v1ContactCategoriesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactCategoriesResponse> {
             return localVarFp.v1ContactCategoriesGet(limit, offset, options).then((request) => request(axios, basePath));
         },
     };
@@ -11720,13 +11720,13 @@ export const ContactReadApiAxiosParamCreator = function (configuration?: Configu
         /**
          * お問い合わせの既読状態を登録します。
          * @summary お問い合わせ既読登録
-         * @param {RequestCreateContactReadRequest} requestCreateContactReadRequest 既読情報
+         * @param {TypesCreateContactReadRequest} typesCreateContactReadRequest 既読情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactReadsPost: async (requestCreateContactReadRequest: RequestCreateContactReadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateContactReadRequest' is not null or undefined
-            assertParamExists('v1ContactReadsPost', 'requestCreateContactReadRequest', requestCreateContactReadRequest)
+        v1ContactReadsPost: async (typesCreateContactReadRequest: TypesCreateContactReadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateContactReadRequest' is not null or undefined
+            assertParamExists('v1ContactReadsPost', 'typesCreateContactReadRequest', typesCreateContactReadRequest)
             const localVarPath = `/v1/contact-reads`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -11750,7 +11750,7 @@ export const ContactReadApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateContactReadRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateContactReadRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -11770,12 +11770,12 @@ export const ContactReadApiFp = function(configuration?: Configuration) {
         /**
          * お問い合わせの既読状態を登録します。
          * @summary お問い合わせ既読登録
-         * @param {RequestCreateContactReadRequest} requestCreateContactReadRequest 既読情報
+         * @param {TypesCreateContactReadRequest} typesCreateContactReadRequest 既読情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactReadsPost(requestCreateContactReadRequest: RequestCreateContactReadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseContactReadResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactReadsPost(requestCreateContactReadRequest, options);
+        async v1ContactReadsPost(typesCreateContactReadRequest: TypesCreateContactReadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesContactReadResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactReadsPost(typesCreateContactReadRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContactReadApi.v1ContactReadsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11793,12 +11793,12 @@ export const ContactReadApiFactory = function (configuration?: Configuration, ba
         /**
          * お問い合わせの既読状態を登録します。
          * @summary お問い合わせ既読登録
-         * @param {RequestCreateContactReadRequest} requestCreateContactReadRequest 既読情報
+         * @param {TypesCreateContactReadRequest} typesCreateContactReadRequest 既読情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactReadsPost(requestCreateContactReadRequest: RequestCreateContactReadRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseContactReadResponse> {
-            return localVarFp.v1ContactReadsPost(requestCreateContactReadRequest, options).then((request) => request(axios, basePath));
+        v1ContactReadsPost(typesCreateContactReadRequest: TypesCreateContactReadRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesContactReadResponse> {
+            return localVarFp.v1ContactReadsPost(typesCreateContactReadRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11813,13 +11813,13 @@ export class ContactReadApi extends BaseAPI {
     /**
      * お問い合わせの既読状態を登録します。
      * @summary お問い合わせ既読登録
-     * @param {RequestCreateContactReadRequest} requestCreateContactReadRequest 既読情報
+     * @param {TypesCreateContactReadRequest} typesCreateContactReadRequest 既読情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContactReadApi
      */
-    public v1ContactReadsPost(requestCreateContactReadRequest: RequestCreateContactReadRequest, options?: RawAxiosRequestConfig) {
-        return ContactReadApiFp(this.configuration).v1ContactReadsPost(requestCreateContactReadRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ContactReadsPost(typesCreateContactReadRequest: TypesCreateContactReadRequest, options?: RawAxiosRequestConfig) {
+        return ContactReadApiFp(this.configuration).v1ContactReadsPost(typesCreateContactReadRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -11899,7 +11899,7 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseCoordinatorsResponse>> {
+        async v1CoordinatorsGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsGet(limit, offset, username, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CoordinatorApi.v1CoordinatorsGet']?.[localVarOperationServerIndex]?.url;
@@ -11924,7 +11924,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseCoordinatorsResponse> {
+        v1CoordinatorsGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorsResponse> {
             return localVarFp.v1CoordinatorsGet(limit, offset, username, options).then((request) => request(axios, basePath));
         },
     };
@@ -12040,15 +12040,15 @@ export const ExperienceApiAxiosParamCreator = function (configuration?: Configur
          * 体験の情報を更新します。
          * @summary 体験更新
          * @param {string} experienceId 体験ID
-         * @param {RequestUpdateExperienceRequest} requestUpdateExperienceRequest 体験情報
+         * @param {TypesUpdateExperienceRequest} typesUpdateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesExperienceIdPatch: async (experienceId: string, requestUpdateExperienceRequest: RequestUpdateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ExperiencesExperienceIdPatch: async (experienceId: string, typesUpdateExperienceRequest: TypesUpdateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'experienceId' is not null or undefined
             assertParamExists('v1ExperiencesExperienceIdPatch', 'experienceId', experienceId)
-            // verify required parameter 'requestUpdateExperienceRequest' is not null or undefined
-            assertParamExists('v1ExperiencesExperienceIdPatch', 'requestUpdateExperienceRequest', requestUpdateExperienceRequest)
+            // verify required parameter 'typesUpdateExperienceRequest' is not null or undefined
+            assertParamExists('v1ExperiencesExperienceIdPatch', 'typesUpdateExperienceRequest', typesUpdateExperienceRequest)
             const localVarPath = `/v1/experiences/{experienceId}`
                 .replace(`{${"experienceId"}}`, encodeURIComponent(String(experienceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12073,7 +12073,7 @@ export const ExperienceApiAxiosParamCreator = function (configuration?: Configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateExperienceRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateExperienceRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12137,13 +12137,13 @@ export const ExperienceApiAxiosParamCreator = function (configuration?: Configur
         /**
          * 新しい体験を登録します。コーディネーターは管理店舗の生産者の体験のみ登録可能です。
          * @summary 体験登録
-         * @param {RequestCreateExperienceRequest} requestCreateExperienceRequest 体験情報
+         * @param {TypesCreateExperienceRequest} typesCreateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesPost: async (requestCreateExperienceRequest: RequestCreateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateExperienceRequest' is not null or undefined
-            assertParamExists('v1ExperiencesPost', 'requestCreateExperienceRequest', requestCreateExperienceRequest)
+        v1ExperiencesPost: async (typesCreateExperienceRequest: TypesCreateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateExperienceRequest' is not null or undefined
+            assertParamExists('v1ExperiencesPost', 'typesCreateExperienceRequest', typesCreateExperienceRequest)
             const localVarPath = `/v1/experiences`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12167,7 +12167,7 @@ export const ExperienceApiAxiosParamCreator = function (configuration?: Configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateExperienceRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateExperienceRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12204,7 +12204,7 @@ export const ExperienceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperiencesExperienceIdGet(experienceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseExperienceResponse>> {
+        async v1ExperiencesExperienceIdGet(experienceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesExperienceIdGet(experienceId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ExperiencesExperienceIdGet']?.[localVarOperationServerIndex]?.url;
@@ -12214,12 +12214,12 @@ export const ExperienceApiFp = function(configuration?: Configuration) {
          * 体験の情報を更新します。
          * @summary 体験更新
          * @param {string} experienceId 体験ID
-         * @param {RequestUpdateExperienceRequest} requestUpdateExperienceRequest 体験情報
+         * @param {TypesUpdateExperienceRequest} typesUpdateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperiencesExperienceIdPatch(experienceId: string, requestUpdateExperienceRequest: RequestUpdateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesExperienceIdPatch(experienceId, requestUpdateExperienceRequest, options);
+        async v1ExperiencesExperienceIdPatch(experienceId: string, typesUpdateExperienceRequest: TypesUpdateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesExperienceIdPatch(experienceId, typesUpdateExperienceRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ExperiencesExperienceIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12234,7 +12234,7 @@ export const ExperienceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperiencesGet(limit?: number, offset?: number, name?: string, producerId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseExperiencesResponse>> {
+        async v1ExperiencesGet(limit?: number, offset?: number, name?: string, producerId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperiencesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesGet(limit, offset, name, producerId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ExperiencesGet']?.[localVarOperationServerIndex]?.url;
@@ -12243,12 +12243,12 @@ export const ExperienceApiFp = function(configuration?: Configuration) {
         /**
          * 新しい体験を登録します。コーディネーターは管理店舗の生産者の体験のみ登録可能です。
          * @summary 体験登録
-         * @param {RequestCreateExperienceRequest} requestCreateExperienceRequest 体験情報
+         * @param {TypesCreateExperienceRequest} typesCreateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperiencesPost(requestCreateExperienceRequest: RequestCreateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseExperienceResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesPost(requestCreateExperienceRequest, options);
+        async v1ExperiencesPost(typesCreateExperienceRequest: TypesCreateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperiencesPost(typesCreateExperienceRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ExperiencesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12280,19 +12280,19 @@ export const ExperienceApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesExperienceIdGet(experienceId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseExperienceResponse> {
+        v1ExperiencesExperienceIdGet(experienceId: string, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceResponse> {
             return localVarFp.v1ExperiencesExperienceIdGet(experienceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験の情報を更新します。
          * @summary 体験更新
          * @param {string} experienceId 体験ID
-         * @param {RequestUpdateExperienceRequest} requestUpdateExperienceRequest 体験情報
+         * @param {TypesUpdateExperienceRequest} typesUpdateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesExperienceIdPatch(experienceId: string, requestUpdateExperienceRequest: RequestUpdateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ExperiencesExperienceIdPatch(experienceId, requestUpdateExperienceRequest, options).then((request) => request(axios, basePath));
+        v1ExperiencesExperienceIdPatch(experienceId: string, typesUpdateExperienceRequest: TypesUpdateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ExperiencesExperienceIdPatch(experienceId, typesUpdateExperienceRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験の一覧を取得します。店舗、生産者、名前でのフィルタリングが可能です。
@@ -12304,18 +12304,18 @@ export const ExperienceApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesGet(limit?: number, offset?: number, name?: string, producerId?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseExperiencesResponse> {
+        v1ExperiencesGet(limit?: number, offset?: number, name?: string, producerId?: string, options?: RawAxiosRequestConfig): AxiosPromise<ExperiencesResponse> {
             return localVarFp.v1ExperiencesGet(limit, offset, name, producerId, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい体験を登録します。コーディネーターは管理店舗の生産者の体験のみ登録可能です。
          * @summary 体験登録
-         * @param {RequestCreateExperienceRequest} requestCreateExperienceRequest 体験情報
+         * @param {TypesCreateExperienceRequest} typesCreateExperienceRequest 体験情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperiencesPost(requestCreateExperienceRequest: RequestCreateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseExperienceResponse> {
-            return localVarFp.v1ExperiencesPost(requestCreateExperienceRequest, options).then((request) => request(axios, basePath));
+        v1ExperiencesPost(typesCreateExperienceRequest: TypesCreateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceResponse> {
+            return localVarFp.v1ExperiencesPost(typesCreateExperienceRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -12355,13 +12355,13 @@ export class ExperienceApi extends BaseAPI {
      * 体験の情報を更新します。
      * @summary 体験更新
      * @param {string} experienceId 体験ID
-     * @param {RequestUpdateExperienceRequest} requestUpdateExperienceRequest 体験情報
+     * @param {TypesUpdateExperienceRequest} typesUpdateExperienceRequest 体験情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExperienceApi
      */
-    public v1ExperiencesExperienceIdPatch(experienceId: string, requestUpdateExperienceRequest: RequestUpdateExperienceRequest, options?: RawAxiosRequestConfig) {
-        return ExperienceApiFp(this.configuration).v1ExperiencesExperienceIdPatch(experienceId, requestUpdateExperienceRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ExperiencesExperienceIdPatch(experienceId: string, typesUpdateExperienceRequest: TypesUpdateExperienceRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1ExperiencesExperienceIdPatch(experienceId, typesUpdateExperienceRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12382,13 +12382,13 @@ export class ExperienceApi extends BaseAPI {
     /**
      * 新しい体験を登録します。コーディネーターは管理店舗の生産者の体験のみ登録可能です。
      * @summary 体験登録
-     * @param {RequestCreateExperienceRequest} requestCreateExperienceRequest 体験情報
+     * @param {TypesCreateExperienceRequest} typesCreateExperienceRequest 体験情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExperienceApi
      */
-    public v1ExperiencesPost(requestCreateExperienceRequest: RequestCreateExperienceRequest, options?: RawAxiosRequestConfig) {
-        return ExperienceApiFp(this.configuration).v1ExperiencesPost(requestCreateExperienceRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ExperiencesPost(typesCreateExperienceRequest: TypesCreateExperienceRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1ExperiencesPost(typesCreateExperienceRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -12442,15 +12442,15 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
          * 体験タイプの情報を更新します。
          * @summary 体験タイプ更新
          * @param {string} experienceTypeId 体験タイプID
-         * @param {RequestUpdateExperienceTypeRequest} requestUpdateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesUpdateExperienceTypeRequest} typesUpdateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperienceTypesExperienceTypeIdPatch: async (experienceTypeId: string, requestUpdateExperienceTypeRequest: RequestUpdateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ExperienceTypesExperienceTypeIdPatch: async (experienceTypeId: string, typesUpdateExperienceTypeRequest: TypesUpdateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'experienceTypeId' is not null or undefined
             assertParamExists('v1ExperienceTypesExperienceTypeIdPatch', 'experienceTypeId', experienceTypeId)
-            // verify required parameter 'requestUpdateExperienceTypeRequest' is not null or undefined
-            assertParamExists('v1ExperienceTypesExperienceTypeIdPatch', 'requestUpdateExperienceTypeRequest', requestUpdateExperienceTypeRequest)
+            // verify required parameter 'typesUpdateExperienceTypeRequest' is not null or undefined
+            assertParamExists('v1ExperienceTypesExperienceTypeIdPatch', 'typesUpdateExperienceTypeRequest', typesUpdateExperienceTypeRequest)
             const localVarPath = `/v1/experience-types/{experienceTypeId}`
                 .replace(`{${"experienceTypeId"}}`, encodeURIComponent(String(experienceTypeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12475,7 +12475,7 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateExperienceTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateExperienceTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12534,13 +12534,13 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 新しい体験タイプを登録します。
          * @summary 体験タイプ登録
-         * @param {RequestCreateExperienceTypeRequest} requestCreateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesCreateExperienceTypeRequest} typesCreateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperienceTypesPost: async (requestCreateExperienceTypeRequest: RequestCreateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateExperienceTypeRequest' is not null or undefined
-            assertParamExists('v1ExperienceTypesPost', 'requestCreateExperienceTypeRequest', requestCreateExperienceTypeRequest)
+        v1ExperienceTypesPost: async (typesCreateExperienceTypeRequest: TypesCreateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateExperienceTypeRequest' is not null or undefined
+            assertParamExists('v1ExperienceTypesPost', 'typesCreateExperienceTypeRequest', typesCreateExperienceTypeRequest)
             const localVarPath = `/v1/experience-types`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12564,7 +12564,7 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateExperienceTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateExperienceTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12598,12 +12598,12 @@ export const ExperienceTypeApiFp = function(configuration?: Configuration) {
          * 体験タイプの情報を更新します。
          * @summary 体験タイプ更新
          * @param {string} experienceTypeId 体験タイプID
-         * @param {RequestUpdateExperienceTypeRequest} requestUpdateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesUpdateExperienceTypeRequest} typesUpdateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, requestUpdateExperienceTypeRequest: RequestUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, requestUpdateExperienceTypeRequest, options);
+        async v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, typesUpdateExperienceTypeRequest: TypesUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, typesUpdateExperienceTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1ExperienceTypesExperienceTypeIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12617,7 +12617,7 @@ export const ExperienceTypeApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperienceTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseExperienceTypesResponse>> {
+        async v1ExperienceTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesExperienceTypesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperienceTypesGet(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1ExperienceTypesGet']?.[localVarOperationServerIndex]?.url;
@@ -12626,12 +12626,12 @@ export const ExperienceTypeApiFp = function(configuration?: Configuration) {
         /**
          * 新しい体験タイプを登録します。
          * @summary 体験タイプ登録
-         * @param {RequestCreateExperienceTypeRequest} requestCreateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesCreateExperienceTypeRequest} typesCreateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ExperienceTypesPost(requestCreateExperienceTypeRequest: RequestCreateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseExperienceTypeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperienceTypesPost(requestCreateExperienceTypeRequest, options);
+        async v1ExperienceTypesPost(typesCreateExperienceTypeRequest: TypesCreateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesExperienceTypeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExperienceTypesPost(typesCreateExperienceTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1ExperienceTypesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12660,12 +12660,12 @@ export const ExperienceTypeApiFactory = function (configuration?: Configuration,
          * 体験タイプの情報を更新します。
          * @summary 体験タイプ更新
          * @param {string} experienceTypeId 体験タイプID
-         * @param {RequestUpdateExperienceTypeRequest} requestUpdateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesUpdateExperienceTypeRequest} typesUpdateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, requestUpdateExperienceTypeRequest: RequestUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, requestUpdateExperienceTypeRequest, options).then((request) => request(axios, basePath));
+        v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, typesUpdateExperienceTypeRequest: TypesUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, typesUpdateExperienceTypeRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験タイプの一覧を取得します。名前でのフィルタリングが可能です。
@@ -12676,18 +12676,18 @@ export const ExperienceTypeApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperienceTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseExperienceTypesResponse> {
+        v1ExperienceTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesExperienceTypesResponse> {
             return localVarFp.v1ExperienceTypesGet(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい体験タイプを登録します。
          * @summary 体験タイプ登録
-         * @param {RequestCreateExperienceTypeRequest} requestCreateExperienceTypeRequest 体験タイプ情報
+         * @param {TypesCreateExperienceTypeRequest} typesCreateExperienceTypeRequest 体験タイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExperienceTypesPost(requestCreateExperienceTypeRequest: RequestCreateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseExperienceTypeResponse> {
-            return localVarFp.v1ExperienceTypesPost(requestCreateExperienceTypeRequest, options).then((request) => request(axios, basePath));
+        v1ExperienceTypesPost(typesCreateExperienceTypeRequest: TypesCreateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesExperienceTypeResponse> {
+            return localVarFp.v1ExperienceTypesPost(typesCreateExperienceTypeRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -12715,13 +12715,13 @@ export class ExperienceTypeApi extends BaseAPI {
      * 体験タイプの情報を更新します。
      * @summary 体験タイプ更新
      * @param {string} experienceTypeId 体験タイプID
-     * @param {RequestUpdateExperienceTypeRequest} requestUpdateExperienceTypeRequest 体験タイプ情報
+     * @param {TypesUpdateExperienceTypeRequest} typesUpdateExperienceTypeRequest 体験タイプ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExperienceTypeApi
      */
-    public v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, requestUpdateExperienceTypeRequest: RequestUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
-        return ExperienceTypeApiFp(this.configuration).v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, requestUpdateExperienceTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId: string, typesUpdateExperienceTypeRequest: TypesUpdateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1ExperienceTypesExperienceTypeIdPatch(experienceTypeId, typesUpdateExperienceTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12741,13 +12741,13 @@ export class ExperienceTypeApi extends BaseAPI {
     /**
      * 新しい体験タイプを登録します。
      * @summary 体験タイプ登録
-     * @param {RequestCreateExperienceTypeRequest} requestCreateExperienceTypeRequest 体験タイプ情報
+     * @param {TypesCreateExperienceTypeRequest} typesCreateExperienceTypeRequest 体験タイプ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExperienceTypeApi
      */
-    public v1ExperienceTypesPost(requestCreateExperienceTypeRequest: RequestCreateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
-        return ExperienceTypeApiFp(this.configuration).v1ExperienceTypesPost(requestCreateExperienceTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ExperienceTypesPost(typesCreateExperienceTypeRequest: TypesCreateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1ExperienceTypesPost(typesCreateExperienceTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -12794,13 +12794,13 @@ export const GuestApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost: async (requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCallbackAuthYoutubeBroadcastRequest' is not null or undefined
-            assertParamExists('v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost', 'requestCallbackAuthYoutubeBroadcastRequest', requestCallbackAuthYoutubeBroadcastRequest)
+        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost: async (typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCallbackAuthYoutubeBroadcastRequest' is not null or undefined
+            assertParamExists('v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost', 'typesCallbackAuthYoutubeBroadcastRequest', typesCallbackAuthYoutubeBroadcastRequest)
             const localVarPath = `/v1/guests/schedules/-/broadcasts/youtube/auth/complete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12820,7 +12820,7 @@ export const GuestApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCallbackAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCallbackAuthYoutubeBroadcastRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12830,13 +12830,13 @@ export const GuestApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubePost: async (requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateYoutubeBroadcastRequest' is not null or undefined
-            assertParamExists('v1GuestsSchedulesBroadcastsYoutubePost', 'requestCreateYoutubeBroadcastRequest', requestCreateYoutubeBroadcastRequest)
+        v1GuestsSchedulesBroadcastsYoutubePost: async (typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateYoutubeBroadcastRequest' is not null or undefined
+            assertParamExists('v1GuestsSchedulesBroadcastsYoutubePost', 'typesCreateYoutubeBroadcastRequest', typesCreateYoutubeBroadcastRequest)
             const localVarPath = `/v1/guests/schedules/-/broadcasts/youtube`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12858,7 +12858,7 @@ export const GuestApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateYoutubeBroadcastRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateYoutubeBroadcastRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12881,7 +12881,7 @@ export const GuestApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGuestBroadcastResponse>> {
+        async v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesGuestBroadcastResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GuestApi.v1GuestsSchedulesBroadcastsGet']?.[localVarOperationServerIndex]?.url;
@@ -12890,12 +12890,12 @@ export const GuestApiFp = function(configuration?: Configuration) {
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGuestBroadcastResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options);
+        async v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesGuestBroadcastResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GuestApi.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12903,12 +12903,12 @@ export const GuestApiFp = function(configuration?: Configuration) {
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options);
+        async v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GuestApi.v1GuestsSchedulesBroadcastsYoutubePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12929,28 +12929,28 @@ export const GuestApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseGuestBroadcastResponse> {
+        v1GuestsSchedulesBroadcastsGet(options?: RawAxiosRequestConfig): AxiosPromise<TypesGuestBroadcastResponse> {
             return localVarFp.v1GuestsSchedulesBroadcastsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * Youtube認証完了後のコールバック処理を行います。
          * @summary マルシェライブ配信のYoutube認証後処理
-         * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+         * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseGuestBroadcastResponse> {
-            return localVarFp.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
+        v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesGuestBroadcastResponse> {
+            return localVarFp.v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Youtube側でライブ配信を作成します。
          * @summary マルシェライブ配信のYoutube連携
-         * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+         * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
+        v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -12976,25 +12976,25 @@ export class GuestApi extends BaseAPI {
     /**
      * Youtube認証完了後のコールバック処理を行います。
      * @summary マルシェライブ配信のYoutube認証後処理
-     * @param {RequestCallbackAuthYoutubeBroadcastRequest} requestCallbackAuthYoutubeBroadcastRequest 認証コールバック
+     * @param {TypesCallbackAuthYoutubeBroadcastRequest} typesCallbackAuthYoutubeBroadcastRequest 認証コールバック
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GuestApi
      */
-    public v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest: RequestCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return GuestApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(requestCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest: TypesCallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return GuestApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(typesCallbackAuthYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Youtube側でライブ配信を作成します。
      * @summary マルシェライブ配信のYoutube連携
-     * @param {RequestCreateYoutubeBroadcastRequest} requestCreateYoutubeBroadcastRequest Youtube配信設定
+     * @param {TypesCreateYoutubeBroadcastRequest} typesCreateYoutubeBroadcastRequest Youtube配信設定
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GuestApi
      */
-    public v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest: RequestCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return GuestApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubePost(requestCreateYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest: TypesCreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return GuestApiFp(this.configuration).v1GuestsSchedulesBroadcastsYoutubePost(typesCreateYoutubeBroadcastRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -13133,17 +13133,17 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
          * @summary ライブ配信更新
          * @param {string} scheduleId スケジュールID
          * @param {string} liveId ライブ配信ID
-         * @param {RequestUpdateLiveRequest} requestUpdateLiveRequest ライブ配信情報
+         * @param {TypesUpdateLiveRequest} typesUpdateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesLiveIdPatch: async (scheduleId: string, liveId: string, requestUpdateLiveRequest: RequestUpdateLiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdLivesLiveIdPatch: async (scheduleId: string, liveId: string, typesUpdateLiveRequest: TypesUpdateLiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdLivesLiveIdPatch', 'scheduleId', scheduleId)
             // verify required parameter 'liveId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdLivesLiveIdPatch', 'liveId', liveId)
-            // verify required parameter 'requestUpdateLiveRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdLivesLiveIdPatch', 'requestUpdateLiveRequest', requestUpdateLiveRequest)
+            // verify required parameter 'typesUpdateLiveRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdLivesLiveIdPatch', 'typesUpdateLiveRequest', typesUpdateLiveRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/lives/{liveId}`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
                 .replace(`{${"liveId"}}`, encodeURIComponent(String(liveId)));
@@ -13169,7 +13169,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateLiveRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateLiveRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -13180,15 +13180,15 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
          * 新しいライブ配信を登録します。
          * @summary ライブ配信登録
          * @param {string} scheduleId スケジュールID
-         * @param {RequestCreateLiveRequest} requestCreateLiveRequest ライブ配信情報
+         * @param {TypesCreateLiveRequest} typesCreateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesPost: async (scheduleId: string, requestCreateLiveRequest: RequestCreateLiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdLivesPost: async (scheduleId: string, typesCreateLiveRequest: TypesCreateLiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdLivesPost', 'scheduleId', scheduleId)
-            // verify required parameter 'requestCreateLiveRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdLivesPost', 'requestCreateLiveRequest', requestCreateLiveRequest)
+            // verify required parameter 'typesCreateLiveRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdLivesPost', 'typesCreateLiveRequest', typesCreateLiveRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/lives`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -13213,7 +13213,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateLiveRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateLiveRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -13237,7 +13237,7 @@ export const LiveApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdLivesGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseLivesResponse>> {
+        async v1SchedulesScheduleIdLivesGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesLivesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesGet(scheduleId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveApi.v1SchedulesScheduleIdLivesGet']?.[localVarOperationServerIndex]?.url;
@@ -13265,7 +13265,7 @@ export const LiveApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdLivesLiveIdGet(scheduleId: string, liveId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseLiveResponse>> {
+        async v1SchedulesScheduleIdLivesLiveIdGet(scheduleId: string, liveId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesLiveResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesLiveIdGet(scheduleId, liveId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveApi.v1SchedulesScheduleIdLivesLiveIdGet']?.[localVarOperationServerIndex]?.url;
@@ -13276,12 +13276,12 @@ export const LiveApiFp = function(configuration?: Configuration) {
          * @summary ライブ配信更新
          * @param {string} scheduleId スケジュールID
          * @param {string} liveId ライブ配信ID
-         * @param {RequestUpdateLiveRequest} requestUpdateLiveRequest ライブ配信情報
+         * @param {TypesUpdateLiveRequest} typesUpdateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, requestUpdateLiveRequest: RequestUpdateLiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, requestUpdateLiveRequest, options);
+        async v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, typesUpdateLiveRequest: TypesUpdateLiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, typesUpdateLiveRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveApi.v1SchedulesScheduleIdLivesLiveIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -13290,12 +13290,12 @@ export const LiveApiFp = function(configuration?: Configuration) {
          * 新しいライブ配信を登録します。
          * @summary ライブ配信登録
          * @param {string} scheduleId スケジュールID
-         * @param {RequestCreateLiveRequest} requestCreateLiveRequest ライブ配信情報
+         * @param {TypesCreateLiveRequest} typesCreateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdLivesPost(scheduleId: string, requestCreateLiveRequest: RequestCreateLiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseLiveResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesPost(scheduleId, requestCreateLiveRequest, options);
+        async v1SchedulesScheduleIdLivesPost(scheduleId: string, typesCreateLiveRequest: TypesCreateLiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesLiveResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdLivesPost(scheduleId, typesCreateLiveRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveApi.v1SchedulesScheduleIdLivesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -13317,7 +13317,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseLivesResponse> {
+        v1SchedulesScheduleIdLivesGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesLivesResponse> {
             return localVarFp.v1SchedulesScheduleIdLivesGet(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13339,7 +13339,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesLiveIdGet(scheduleId: string, liveId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseLiveResponse> {
+        v1SchedulesScheduleIdLivesLiveIdGet(scheduleId: string, liveId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesLiveResponse> {
             return localVarFp.v1SchedulesScheduleIdLivesLiveIdGet(scheduleId, liveId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13347,23 +13347,23 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @summary ライブ配信更新
          * @param {string} scheduleId スケジュールID
          * @param {string} liveId ライブ配信ID
-         * @param {RequestUpdateLiveRequest} requestUpdateLiveRequest ライブ配信情報
+         * @param {TypesUpdateLiveRequest} typesUpdateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, requestUpdateLiveRequest: RequestUpdateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, requestUpdateLiveRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, typesUpdateLiveRequest: TypesUpdateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, typesUpdateLiveRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいライブ配信を登録します。
          * @summary ライブ配信登録
          * @param {string} scheduleId スケジュールID
-         * @param {RequestCreateLiveRequest} requestCreateLiveRequest ライブ配信情報
+         * @param {TypesCreateLiveRequest} typesCreateLiveRequest ライブ配信情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdLivesPost(scheduleId: string, requestCreateLiveRequest: RequestCreateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseLiveResponse> {
-            return localVarFp.v1SchedulesScheduleIdLivesPost(scheduleId, requestCreateLiveRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdLivesPost(scheduleId: string, typesCreateLiveRequest: TypesCreateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesLiveResponse> {
+            return localVarFp.v1SchedulesScheduleIdLivesPost(scheduleId, typesCreateLiveRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13418,26 +13418,26 @@ export class LiveApi extends BaseAPI {
      * @summary ライブ配信更新
      * @param {string} scheduleId スケジュールID
      * @param {string} liveId ライブ配信ID
-     * @param {RequestUpdateLiveRequest} requestUpdateLiveRequest ライブ配信情報
+     * @param {TypesUpdateLiveRequest} typesUpdateLiveRequest ライブ配信情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LiveApi
      */
-    public v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, requestUpdateLiveRequest: RequestUpdateLiveRequest, options?: RawAxiosRequestConfig) {
-        return LiveApiFp(this.configuration).v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, requestUpdateLiveRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId: string, liveId: string, typesUpdateLiveRequest: TypesUpdateLiveRequest, options?: RawAxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1SchedulesScheduleIdLivesLiveIdPatch(scheduleId, liveId, typesUpdateLiveRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 新しいライブ配信を登録します。
      * @summary ライブ配信登録
      * @param {string} scheduleId スケジュールID
-     * @param {RequestCreateLiveRequest} requestCreateLiveRequest ライブ配信情報
+     * @param {TypesCreateLiveRequest} typesCreateLiveRequest ライブ配信情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LiveApi
      */
-    public v1SchedulesScheduleIdLivesPost(scheduleId: string, requestCreateLiveRequest: RequestCreateLiveRequest, options?: RawAxiosRequestConfig) {
-        return LiveApiFp(this.configuration).v1SchedulesScheduleIdLivesPost(scheduleId, requestCreateLiveRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdLivesPost(scheduleId: string, typesCreateLiveRequest: TypesCreateLiveRequest, options?: RawAxiosRequestConfig) {
+        return LiveApiFp(this.configuration).v1SchedulesScheduleIdLivesPost(scheduleId, typesCreateLiveRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -13454,17 +13454,17 @@ export const LiveCommentApiAxiosParamCreator = function (configuration?: Configu
          * @summary ライブコメント更新
          * @param {string} scheduleId スケジュールID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateLiveCommentRequest} requestUpdateLiveCommentRequest コメント情報
+         * @param {TypesUpdateLiveCommentRequest} typesUpdateLiveCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdCommentsCommentIdPatch: async (scheduleId: string, commentId: string, requestUpdateLiveCommentRequest: RequestUpdateLiveCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdCommentsCommentIdPatch: async (scheduleId: string, commentId: string, typesUpdateLiveCommentRequest: TypesUpdateLiveCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdCommentsCommentIdPatch', 'scheduleId', scheduleId)
             // verify required parameter 'commentId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdCommentsCommentIdPatch', 'commentId', commentId)
-            // verify required parameter 'requestUpdateLiveCommentRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdCommentsCommentIdPatch', 'requestUpdateLiveCommentRequest', requestUpdateLiveCommentRequest)
+            // verify required parameter 'typesUpdateLiveCommentRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdCommentsCommentIdPatch', 'typesUpdateLiveCommentRequest', typesUpdateLiveCommentRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/comments/{commentId}`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
                 .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
@@ -13490,7 +13490,7 @@ export const LiveCommentApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateLiveCommentRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateLiveCommentRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -13570,12 +13570,12 @@ export const LiveCommentApiFp = function(configuration?: Configuration) {
          * @summary ライブコメント更新
          * @param {string} scheduleId スケジュールID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateLiveCommentRequest} requestUpdateLiveCommentRequest コメント情報
+         * @param {TypesUpdateLiveCommentRequest} typesUpdateLiveCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, requestUpdateLiveCommentRequest: RequestUpdateLiveCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, requestUpdateLiveCommentRequest, options);
+        async v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, typesUpdateLiveCommentRequest: TypesUpdateLiveCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, typesUpdateLiveCommentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveCommentApi.v1SchedulesScheduleIdCommentsCommentIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -13591,7 +13591,7 @@ export const LiveCommentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdCommentsGet(scheduleId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseLiveCommentsResponse>> {
+        async v1SchedulesScheduleIdCommentsGet(scheduleId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdCommentsGet(scheduleId, limit, start, end, next, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['LiveCommentApi.v1SchedulesScheduleIdCommentsGet']?.[localVarOperationServerIndex]?.url;
@@ -13612,12 +13612,12 @@ export const LiveCommentApiFactory = function (configuration?: Configuration, ba
          * @summary ライブコメント更新
          * @param {string} scheduleId スケジュールID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateLiveCommentRequest} requestUpdateLiveCommentRequest コメント情報
+         * @param {TypesUpdateLiveCommentRequest} typesUpdateLiveCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, requestUpdateLiveCommentRequest: RequestUpdateLiveCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, requestUpdateLiveCommentRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, typesUpdateLiveCommentRequest: TypesUpdateLiveCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, typesUpdateLiveCommentRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定されたスケジュールのライブコメント一覧を取得します。ページネーションと期間フィルタリングに対応しています。
@@ -13630,7 +13630,7 @@ export const LiveCommentApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdCommentsGet(scheduleId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseLiveCommentsResponse> {
+        v1SchedulesScheduleIdCommentsGet(scheduleId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
             return localVarFp.v1SchedulesScheduleIdCommentsGet(scheduleId, limit, start, end, next, options).then((request) => request(axios, basePath));
         },
     };
@@ -13648,13 +13648,13 @@ export class LiveCommentApi extends BaseAPI {
      * @summary ライブコメント更新
      * @param {string} scheduleId スケジュールID
      * @param {string} commentId コメントID
-     * @param {RequestUpdateLiveCommentRequest} requestUpdateLiveCommentRequest コメント情報
+     * @param {TypesUpdateLiveCommentRequest} typesUpdateLiveCommentRequest コメント情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LiveCommentApi
      */
-    public v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, requestUpdateLiveCommentRequest: RequestUpdateLiveCommentRequest, options?: RawAxiosRequestConfig) {
-        return LiveCommentApiFp(this.configuration).v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, requestUpdateLiveCommentRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId: string, commentId: string, typesUpdateLiveCommentRequest: TypesUpdateLiveCommentRequest, options?: RawAxiosRequestConfig) {
+        return LiveCommentApiFp(this.configuration).v1SchedulesScheduleIdCommentsCommentIdPatch(scheduleId, commentId, typesUpdateLiveCommentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -13788,7 +13788,7 @@ export const MessageApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1MessagesGet(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseMessagesResponse>> {
+        async v1MessagesGet(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesMessagesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1MessagesGet(limit, offset, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MessageApi.v1MessagesGet']?.[localVarOperationServerIndex]?.url;
@@ -13801,7 +13801,7 @@ export const MessageApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1MessagesMessageIdGet(messageId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseMessageResponse>> {
+        async v1MessagesMessageIdGet(messageId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesMessageResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1MessagesMessageIdGet(messageId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MessageApi.v1MessagesMessageIdGet']?.[localVarOperationServerIndex]?.url;
@@ -13826,7 +13826,7 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1MessagesGet(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseMessagesResponse> {
+        v1MessagesGet(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesMessagesResponse> {
             return localVarFp.v1MessagesGet(limit, offset, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13836,7 +13836,7 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1MessagesMessageIdGet(messageId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseMessageResponse> {
+        v1MessagesMessageIdGet(messageId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesMessageResponse> {
             return localVarFp.v1MessagesMessageIdGet(messageId, options).then((request) => request(axios, basePath));
         },
     };
@@ -14023,15 +14023,15 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
          * 通知の情報を更新します。
          * @summary 通知更新
          * @param {string} notificationId 通知ID
-         * @param {RequestUpdateNotificationRequest} requestUpdateNotificationRequest 通知情報
+         * @param {TypesUpdateNotificationRequest} typesUpdateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsNotificationIdPatch: async (notificationId: string, requestUpdateNotificationRequest: RequestUpdateNotificationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1NotificationsNotificationIdPatch: async (notificationId: string, typesUpdateNotificationRequest: TypesUpdateNotificationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'notificationId' is not null or undefined
             assertParamExists('v1NotificationsNotificationIdPatch', 'notificationId', notificationId)
-            // verify required parameter 'requestUpdateNotificationRequest' is not null or undefined
-            assertParamExists('v1NotificationsNotificationIdPatch', 'requestUpdateNotificationRequest', requestUpdateNotificationRequest)
+            // verify required parameter 'typesUpdateNotificationRequest' is not null or undefined
+            assertParamExists('v1NotificationsNotificationIdPatch', 'typesUpdateNotificationRequest', typesUpdateNotificationRequest)
             const localVarPath = `/v1/notifications/{notificationId}`
                 .replace(`{${"notificationId"}}`, encodeURIComponent(String(notificationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -14056,7 +14056,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateNotificationRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateNotificationRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14066,13 +14066,13 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
         /**
          * 新しい通知を登録します。配信対象、配信日時などを指定できます。
          * @summary 通知登録
-         * @param {RequestCreateNotificationRequest} requestCreateNotificationRequest 通知情報
+         * @param {TypesCreateNotificationRequest} typesCreateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsPost: async (requestCreateNotificationRequest: RequestCreateNotificationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateNotificationRequest' is not null or undefined
-            assertParamExists('v1NotificationsPost', 'requestCreateNotificationRequest', requestCreateNotificationRequest)
+        v1NotificationsPost: async (typesCreateNotificationRequest: TypesCreateNotificationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateNotificationRequest' is not null or undefined
+            assertParamExists('v1NotificationsPost', 'typesCreateNotificationRequest', typesCreateNotificationRequest)
             const localVarPath = `/v1/notifications`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -14096,7 +14096,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateNotificationRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateNotificationRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14124,7 +14124,7 @@ export const NotificationApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1NotificationsGet(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNotificationsResponse>> {
+        async v1NotificationsGet(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesNotificationsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsGet(limit, offset, since, until, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NotificationApi.v1NotificationsGet']?.[localVarOperationServerIndex]?.url;
@@ -14150,7 +14150,7 @@ export const NotificationApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1NotificationsNotificationIdGet(notificationId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNotificationResponse>> {
+        async v1NotificationsNotificationIdGet(notificationId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesNotificationResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsNotificationIdGet(notificationId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NotificationApi.v1NotificationsNotificationIdGet']?.[localVarOperationServerIndex]?.url;
@@ -14160,12 +14160,12 @@ export const NotificationApiFp = function(configuration?: Configuration) {
          * 通知の情報を更新します。
          * @summary 通知更新
          * @param {string} notificationId 通知ID
-         * @param {RequestUpdateNotificationRequest} requestUpdateNotificationRequest 通知情報
+         * @param {TypesUpdateNotificationRequest} typesUpdateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1NotificationsNotificationIdPatch(notificationId: string, requestUpdateNotificationRequest: RequestUpdateNotificationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsNotificationIdPatch(notificationId, requestUpdateNotificationRequest, options);
+        async v1NotificationsNotificationIdPatch(notificationId: string, typesUpdateNotificationRequest: TypesUpdateNotificationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsNotificationIdPatch(notificationId, typesUpdateNotificationRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NotificationApi.v1NotificationsNotificationIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14173,12 +14173,12 @@ export const NotificationApiFp = function(configuration?: Configuration) {
         /**
          * 新しい通知を登録します。配信対象、配信日時などを指定できます。
          * @summary 通知登録
-         * @param {RequestCreateNotificationRequest} requestCreateNotificationRequest 通知情報
+         * @param {TypesCreateNotificationRequest} typesCreateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1NotificationsPost(requestCreateNotificationRequest: RequestCreateNotificationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseNotificationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsPost(requestCreateNotificationRequest, options);
+        async v1NotificationsPost(typesCreateNotificationRequest: TypesCreateNotificationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesNotificationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1NotificationsPost(typesCreateNotificationRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['NotificationApi.v1NotificationsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14204,7 +14204,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsGet(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseNotificationsResponse> {
+        v1NotificationsGet(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesNotificationsResponse> {
             return localVarFp.v1NotificationsGet(limit, offset, since, until, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14224,29 +14224,29 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsNotificationIdGet(notificationId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseNotificationResponse> {
+        v1NotificationsNotificationIdGet(notificationId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesNotificationResponse> {
             return localVarFp.v1NotificationsNotificationIdGet(notificationId, options).then((request) => request(axios, basePath));
         },
         /**
          * 通知の情報を更新します。
          * @summary 通知更新
          * @param {string} notificationId 通知ID
-         * @param {RequestUpdateNotificationRequest} requestUpdateNotificationRequest 通知情報
+         * @param {TypesUpdateNotificationRequest} typesUpdateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsNotificationIdPatch(notificationId: string, requestUpdateNotificationRequest: RequestUpdateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1NotificationsNotificationIdPatch(notificationId, requestUpdateNotificationRequest, options).then((request) => request(axios, basePath));
+        v1NotificationsNotificationIdPatch(notificationId: string, typesUpdateNotificationRequest: TypesUpdateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1NotificationsNotificationIdPatch(notificationId, typesUpdateNotificationRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい通知を登録します。配信対象、配信日時などを指定できます。
          * @summary 通知登録
-         * @param {RequestCreateNotificationRequest} requestCreateNotificationRequest 通知情報
+         * @param {TypesCreateNotificationRequest} typesCreateNotificationRequest 通知情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1NotificationsPost(requestCreateNotificationRequest: RequestCreateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseNotificationResponse> {
-            return localVarFp.v1NotificationsPost(requestCreateNotificationRequest, options).then((request) => request(axios, basePath));
+        v1NotificationsPost(typesCreateNotificationRequest: TypesCreateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesNotificationResponse> {
+            return localVarFp.v1NotificationsPost(typesCreateNotificationRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14302,25 +14302,25 @@ export class NotificationApi extends BaseAPI {
      * 通知の情報を更新します。
      * @summary 通知更新
      * @param {string} notificationId 通知ID
-     * @param {RequestUpdateNotificationRequest} requestUpdateNotificationRequest 通知情報
+     * @param {TypesUpdateNotificationRequest} typesUpdateNotificationRequest 通知情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NotificationApi
      */
-    public v1NotificationsNotificationIdPatch(notificationId: string, requestUpdateNotificationRequest: RequestUpdateNotificationRequest, options?: RawAxiosRequestConfig) {
-        return NotificationApiFp(this.configuration).v1NotificationsNotificationIdPatch(notificationId, requestUpdateNotificationRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1NotificationsNotificationIdPatch(notificationId: string, typesUpdateNotificationRequest: TypesUpdateNotificationRequest, options?: RawAxiosRequestConfig) {
+        return NotificationApiFp(this.configuration).v1NotificationsNotificationIdPatch(notificationId, typesUpdateNotificationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 新しい通知を登録します。配信対象、配信日時などを指定できます。
      * @summary 通知登録
-     * @param {RequestCreateNotificationRequest} requestCreateNotificationRequest 通知情報
+     * @param {TypesCreateNotificationRequest} typesCreateNotificationRequest 通知情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NotificationApi
      */
-    public v1NotificationsPost(requestCreateNotificationRequest: RequestCreateNotificationRequest, options?: RawAxiosRequestConfig) {
-        return NotificationApiFp(this.configuration).v1NotificationsPost(requestCreateNotificationRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1NotificationsPost(typesCreateNotificationRequest: TypesCreateNotificationRequest, options?: RawAxiosRequestConfig) {
+        return NotificationApiFp(this.configuration).v1NotificationsPost(typesCreateNotificationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -14335,13 +14335,13 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 注文履歴をCSV形式で出力します。
          * @summary 注文履歴のCSV出力
-         * @param {RequestExportOrdersRequest} requestExportOrdersRequest 注文履歴のCSV出力
+         * @param {TypesExportOrdersRequest} typesExportOrdersRequest 注文履歴のCSV出力
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersExportPost: async (requestExportOrdersRequest: RequestExportOrdersRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestExportOrdersRequest' is not null or undefined
-            assertParamExists('v1OrdersExportPost', 'requestExportOrdersRequest', requestExportOrdersRequest)
+        v1OrdersExportPost: async (typesExportOrdersRequest: TypesExportOrdersRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesExportOrdersRequest' is not null or undefined
+            assertParamExists('v1OrdersExportPost', 'typesExportOrdersRequest', typesExportOrdersRequest)
             const localVarPath = `/v1/orders/-/export`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -14365,7 +14365,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestExportOrdersRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesExportOrdersRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14506,15 +14506,15 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * 注文対応を完了します。
          * @summary 注文対応完了
          * @param {string} orderId 注文ID
-         * @param {RequestCompleteOrderRequest} requestCompleteOrderRequest 注文対応完了
+         * @param {TypesCompleteOrderRequest} typesCompleteOrderRequest 注文対応完了
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdCompletePost: async (orderId: string, requestCompleteOrderRequest: RequestCompleteOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1OrdersOrderIdCompletePost: async (orderId: string, typesCompleteOrderRequest: TypesCompleteOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orderId' is not null or undefined
             assertParamExists('v1OrdersOrderIdCompletePost', 'orderId', orderId)
-            // verify required parameter 'requestCompleteOrderRequest' is not null or undefined
-            assertParamExists('v1OrdersOrderIdCompletePost', 'requestCompleteOrderRequest', requestCompleteOrderRequest)
+            // verify required parameter 'typesCompleteOrderRequest' is not null or undefined
+            assertParamExists('v1OrdersOrderIdCompletePost', 'typesCompleteOrderRequest', typesCompleteOrderRequest)
             const localVarPath = `/v1/orders/{orderId}/complete`
                 .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -14539,7 +14539,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCompleteOrderRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCompleteOrderRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14550,15 +14550,15 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * 注文の下書きを保存します。
          * @summary 注文下書き保存
          * @param {string} orderId 注文ID
-         * @param {RequestDraftOrderRequest} requestDraftOrderRequest 注文下書き保存
+         * @param {TypesDraftOrderRequest} typesDraftOrderRequest 注文下書き保存
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdDraftPost: async (orderId: string, requestDraftOrderRequest: RequestDraftOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1OrdersOrderIdDraftPost: async (orderId: string, typesDraftOrderRequest: TypesDraftOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orderId' is not null or undefined
             assertParamExists('v1OrdersOrderIdDraftPost', 'orderId', orderId)
-            // verify required parameter 'requestDraftOrderRequest' is not null or undefined
-            assertParamExists('v1OrdersOrderIdDraftPost', 'requestDraftOrderRequest', requestDraftOrderRequest)
+            // verify required parameter 'typesDraftOrderRequest' is not null or undefined
+            assertParamExists('v1OrdersOrderIdDraftPost', 'typesDraftOrderRequest', typesDraftOrderRequest)
             const localVarPath = `/v1/orders/{orderId}/draft`
                 .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -14583,7 +14583,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestDraftOrderRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesDraftOrderRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14632,15 +14632,15 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * 注文の返金を依頼します。
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
-         * @param {RequestRefundOrderRequest} requestRefundOrderRequest 注文の返金依頼
+         * @param {TypesRefundOrderRequest} typesRefundOrderRequest 注文の返金依頼
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdRefundPost: async (orderId: string, requestRefundOrderRequest: RequestRefundOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1OrdersOrderIdRefundPost: async (orderId: string, typesRefundOrderRequest: TypesRefundOrderRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orderId' is not null or undefined
             assertParamExists('v1OrdersOrderIdRefundPost', 'orderId', orderId)
-            // verify required parameter 'requestRefundOrderRequest' is not null or undefined
-            assertParamExists('v1OrdersOrderIdRefundPost', 'requestRefundOrderRequest', requestRefundOrderRequest)
+            // verify required parameter 'typesRefundOrderRequest' is not null or undefined
+            assertParamExists('v1OrdersOrderIdRefundPost', 'typesRefundOrderRequest', typesRefundOrderRequest)
             const localVarPath = `/v1/orders/{orderId}/refund`
                 .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -14665,7 +14665,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestRefundOrderRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesRefundOrderRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -14685,12 +14685,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
         /**
          * 注文履歴をCSV形式で出力します。
          * @summary 注文履歴のCSV出力
-         * @param {RequestExportOrdersRequest} requestExportOrdersRequest 注文履歴のCSV出力
+         * @param {TypesExportOrdersRequest} typesExportOrdersRequest 注文履歴のCSV出力
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersExportPost(requestExportOrdersRequest: RequestExportOrdersRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersExportPost(requestExportOrdersRequest, options);
+        async v1OrdersExportPost(typesExportOrdersRequest: TypesExportOrdersRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersExportPost(typesExportOrdersRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersExportPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14705,7 +14705,7 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersGet(limit?: number, offset?: number, statuses?: Array<number>, types?: Array<number>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseOrdersResponse>> {
+        async v1OrdersGet(limit?: number, offset?: number, statuses?: Array<number>, types?: Array<number>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersGet(limit, offset, statuses, types, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersGet']?.[localVarOperationServerIndex]?.url;
@@ -14741,12 +14741,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * 注文対応を完了します。
          * @summary 注文対応完了
          * @param {string} orderId 注文ID
-         * @param {RequestCompleteOrderRequest} requestCompleteOrderRequest 注文対応完了
+         * @param {TypesCompleteOrderRequest} typesCompleteOrderRequest 注文対応完了
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersOrderIdCompletePost(orderId: string, requestCompleteOrderRequest: RequestCompleteOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdCompletePost(orderId, requestCompleteOrderRequest, options);
+        async v1OrdersOrderIdCompletePost(orderId: string, typesCompleteOrderRequest: TypesCompleteOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdCompletePost(orderId, typesCompleteOrderRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersOrderIdCompletePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14755,12 +14755,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * 注文の下書きを保存します。
          * @summary 注文下書き保存
          * @param {string} orderId 注文ID
-         * @param {RequestDraftOrderRequest} requestDraftOrderRequest 注文下書き保存
+         * @param {TypesDraftOrderRequest} typesDraftOrderRequest 注文下書き保存
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersOrderIdDraftPost(orderId: string, requestDraftOrderRequest: RequestDraftOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdDraftPost(orderId, requestDraftOrderRequest, options);
+        async v1OrdersOrderIdDraftPost(orderId: string, typesDraftOrderRequest: TypesDraftOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdDraftPost(orderId, typesDraftOrderRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersOrderIdDraftPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14772,7 +14772,7 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersOrderIdGet(orderId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseOrderResponse>> {
+        async v1OrdersOrderIdGet(orderId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrderResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdGet(orderId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersOrderIdGet']?.[localVarOperationServerIndex]?.url;
@@ -14782,12 +14782,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * 注文の返金を依頼します。
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
-         * @param {RequestRefundOrderRequest} requestRefundOrderRequest 注文の返金依頼
+         * @param {TypesRefundOrderRequest} typesRefundOrderRequest 注文の返金依頼
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1OrdersOrderIdRefundPost(orderId: string, requestRefundOrderRequest: RequestRefundOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdRefundPost(orderId, requestRefundOrderRequest, options);
+        async v1OrdersOrderIdRefundPost(orderId: string, typesRefundOrderRequest: TypesRefundOrderRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1OrdersOrderIdRefundPost(orderId, typesRefundOrderRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1OrdersOrderIdRefundPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -14805,12 +14805,12 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
         /**
          * 注文履歴をCSV形式で出力します。
          * @summary 注文履歴のCSV出力
-         * @param {RequestExportOrdersRequest} requestExportOrdersRequest 注文履歴のCSV出力
+         * @param {TypesExportOrdersRequest} typesExportOrdersRequest 注文履歴のCSV出力
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersExportPost(requestExportOrdersRequest: RequestExportOrdersRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1OrdersExportPost(requestExportOrdersRequest, options).then((request) => request(axios, basePath));
+        v1OrdersExportPost(typesExportOrdersRequest: TypesExportOrdersRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1OrdersExportPost(typesExportOrdersRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 注文の一覧を取得します。コーディネータは自分の店舗の注文のみ取得できます。
@@ -14822,7 +14822,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersGet(limit?: number, offset?: number, statuses?: Array<number>, types?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<ResponseOrdersResponse> {
+        v1OrdersGet(limit?: number, offset?: number, statuses?: Array<number>, types?: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<OrdersResponse> {
             return localVarFp.v1OrdersGet(limit, offset, statuses, types, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14849,23 +14849,23 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * 注文対応を完了します。
          * @summary 注文対応完了
          * @param {string} orderId 注文ID
-         * @param {RequestCompleteOrderRequest} requestCompleteOrderRequest 注文対応完了
+         * @param {TypesCompleteOrderRequest} typesCompleteOrderRequest 注文対応完了
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdCompletePost(orderId: string, requestCompleteOrderRequest: RequestCompleteOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1OrdersOrderIdCompletePost(orderId, requestCompleteOrderRequest, options).then((request) => request(axios, basePath));
+        v1OrdersOrderIdCompletePost(orderId: string, typesCompleteOrderRequest: TypesCompleteOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1OrdersOrderIdCompletePost(orderId, typesCompleteOrderRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 注文の下書きを保存します。
          * @summary 注文下書き保存
          * @param {string} orderId 注文ID
-         * @param {RequestDraftOrderRequest} requestDraftOrderRequest 注文下書き保存
+         * @param {TypesDraftOrderRequest} typesDraftOrderRequest 注文下書き保存
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdDraftPost(orderId: string, requestDraftOrderRequest: RequestDraftOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1OrdersOrderIdDraftPost(orderId, requestDraftOrderRequest, options).then((request) => request(axios, basePath));
+        v1OrdersOrderIdDraftPost(orderId: string, typesDraftOrderRequest: TypesDraftOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1OrdersOrderIdDraftPost(orderId, typesDraftOrderRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定された注文の詳細情報を取得します。
@@ -14874,19 +14874,19 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdGet(orderId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseOrderResponse> {
+        v1OrdersOrderIdGet(orderId: string, options?: RawAxiosRequestConfig): AxiosPromise<OrderResponse> {
             return localVarFp.v1OrdersOrderIdGet(orderId, options).then((request) => request(axios, basePath));
         },
         /**
          * 注文の返金を依頼します。
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
-         * @param {RequestRefundOrderRequest} requestRefundOrderRequest 注文の返金依頼
+         * @param {TypesRefundOrderRequest} typesRefundOrderRequest 注文の返金依頼
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1OrdersOrderIdRefundPost(orderId: string, requestRefundOrderRequest: RequestRefundOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1OrdersOrderIdRefundPost(orderId, requestRefundOrderRequest, options).then((request) => request(axios, basePath));
+        v1OrdersOrderIdRefundPost(orderId: string, typesRefundOrderRequest: TypesRefundOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1OrdersOrderIdRefundPost(orderId, typesRefundOrderRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14901,13 +14901,13 @@ export class OrderApi extends BaseAPI {
     /**
      * 注文履歴をCSV形式で出力します。
      * @summary 注文履歴のCSV出力
-     * @param {RequestExportOrdersRequest} requestExportOrdersRequest 注文履歴のCSV出力
+     * @param {TypesExportOrdersRequest} typesExportOrdersRequest 注文履歴のCSV出力
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1OrdersExportPost(requestExportOrdersRequest: RequestExportOrdersRequest, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1OrdersExportPost(requestExportOrdersRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1OrdersExportPost(typesExportOrdersRequest: TypesExportOrdersRequest, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1OrdersExportPost(typesExportOrdersRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -14953,26 +14953,26 @@ export class OrderApi extends BaseAPI {
      * 注文対応を完了します。
      * @summary 注文対応完了
      * @param {string} orderId 注文ID
-     * @param {RequestCompleteOrderRequest} requestCompleteOrderRequest 注文対応完了
+     * @param {TypesCompleteOrderRequest} typesCompleteOrderRequest 注文対応完了
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1OrdersOrderIdCompletePost(orderId: string, requestCompleteOrderRequest: RequestCompleteOrderRequest, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1OrdersOrderIdCompletePost(orderId, requestCompleteOrderRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1OrdersOrderIdCompletePost(orderId: string, typesCompleteOrderRequest: TypesCompleteOrderRequest, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1OrdersOrderIdCompletePost(orderId, typesCompleteOrderRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 注文の下書きを保存します。
      * @summary 注文下書き保存
      * @param {string} orderId 注文ID
-     * @param {RequestDraftOrderRequest} requestDraftOrderRequest 注文下書き保存
+     * @param {TypesDraftOrderRequest} typesDraftOrderRequest 注文下書き保存
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1OrdersOrderIdDraftPost(orderId: string, requestDraftOrderRequest: RequestDraftOrderRequest, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1OrdersOrderIdDraftPost(orderId, requestDraftOrderRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1OrdersOrderIdDraftPost(orderId: string, typesDraftOrderRequest: TypesDraftOrderRequest, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1OrdersOrderIdDraftPost(orderId, typesDraftOrderRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -14991,13 +14991,13 @@ export class OrderApi extends BaseAPI {
      * 注文の返金を依頼します。
      * @summary 注文の返金依頼
      * @param {string} orderId 注文ID
-     * @param {RequestRefundOrderRequest} requestRefundOrderRequest 注文の返金依頼
+     * @param {TypesRefundOrderRequest} typesRefundOrderRequest 注文の返金依頼
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1OrdersOrderIdRefundPost(orderId: string, requestRefundOrderRequest: RequestRefundOrderRequest, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1OrdersOrderIdRefundPost(orderId, requestRefundOrderRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1OrdersOrderIdRefundPost(orderId: string, typesRefundOrderRequest: TypesRefundOrderRequest, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1OrdersOrderIdRefundPost(orderId, typesRefundOrderRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -15047,15 +15047,15 @@ export const PaymentSystemApiAxiosParamCreator = function (configuration?: Confi
          * 指定された決済手段のシステム状態を更新します。
          * @summary 決済システム更新
          * @param {number} methodType 決済手段タイプ
-         * @param {RequestUpdatePaymentSystemRequest} requestUpdatePaymentSystemRequest 決済システム情報
+         * @param {TypesUpdatePaymentSystemRequest} typesUpdatePaymentSystemRequest 決済システム情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PaymentSystemsMethodTypePatch: async (methodType: number, requestUpdatePaymentSystemRequest: RequestUpdatePaymentSystemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1PaymentSystemsMethodTypePatch: async (methodType: number, typesUpdatePaymentSystemRequest: TypesUpdatePaymentSystemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'methodType' is not null or undefined
             assertParamExists('v1PaymentSystemsMethodTypePatch', 'methodType', methodType)
-            // verify required parameter 'requestUpdatePaymentSystemRequest' is not null or undefined
-            assertParamExists('v1PaymentSystemsMethodTypePatch', 'requestUpdatePaymentSystemRequest', requestUpdatePaymentSystemRequest)
+            // verify required parameter 'typesUpdatePaymentSystemRequest' is not null or undefined
+            assertParamExists('v1PaymentSystemsMethodTypePatch', 'typesUpdatePaymentSystemRequest', typesUpdatePaymentSystemRequest)
             const localVarPath = `/v1/payment-systems/{methodType}`
                 .replace(`{${"methodType"}}`, encodeURIComponent(String(methodType)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -15080,7 +15080,7 @@ export const PaymentSystemApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdatePaymentSystemRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdatePaymentSystemRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -15103,7 +15103,7 @@ export const PaymentSystemApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PaymentSystemsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponsePaymentSystemsResponse>> {
+        async v1PaymentSystemsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentSystemsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1PaymentSystemsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PaymentSystemApi.v1PaymentSystemsGet']?.[localVarOperationServerIndex]?.url;
@@ -15113,12 +15113,12 @@ export const PaymentSystemApiFp = function(configuration?: Configuration) {
          * 指定された決済手段のシステム状態を更新します。
          * @summary 決済システム更新
          * @param {number} methodType 決済手段タイプ
-         * @param {RequestUpdatePaymentSystemRequest} requestUpdatePaymentSystemRequest 決済システム情報
+         * @param {TypesUpdatePaymentSystemRequest} typesUpdatePaymentSystemRequest 決済システム情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PaymentSystemsMethodTypePatch(methodType: number, requestUpdatePaymentSystemRequest: RequestUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PaymentSystemsMethodTypePatch(methodType, requestUpdatePaymentSystemRequest, options);
+        async v1PaymentSystemsMethodTypePatch(methodType: number, typesUpdatePaymentSystemRequest: TypesUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PaymentSystemsMethodTypePatch(methodType, typesUpdatePaymentSystemRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PaymentSystemApi.v1PaymentSystemsMethodTypePatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15139,19 +15139,19 @@ export const PaymentSystemApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PaymentSystemsGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponsePaymentSystemsResponse> {
+        v1PaymentSystemsGet(options?: RawAxiosRequestConfig): AxiosPromise<PaymentSystemsResponse> {
             return localVarFp.v1PaymentSystemsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 指定された決済手段のシステム状態を更新します。
          * @summary 決済システム更新
          * @param {number} methodType 決済手段タイプ
-         * @param {RequestUpdatePaymentSystemRequest} requestUpdatePaymentSystemRequest 決済システム情報
+         * @param {TypesUpdatePaymentSystemRequest} typesUpdatePaymentSystemRequest 決済システム情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PaymentSystemsMethodTypePatch(methodType: number, requestUpdatePaymentSystemRequest: RequestUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1PaymentSystemsMethodTypePatch(methodType, requestUpdatePaymentSystemRequest, options).then((request) => request(axios, basePath));
+        v1PaymentSystemsMethodTypePatch(methodType: number, typesUpdatePaymentSystemRequest: TypesUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1PaymentSystemsMethodTypePatch(methodType, typesUpdatePaymentSystemRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -15178,13 +15178,13 @@ export class PaymentSystemApi extends BaseAPI {
      * 指定された決済手段のシステム状態を更新します。
      * @summary 決済システム更新
      * @param {number} methodType 決済手段タイプ
-     * @param {RequestUpdatePaymentSystemRequest} requestUpdatePaymentSystemRequest 決済システム情報
+     * @param {TypesUpdatePaymentSystemRequest} typesUpdatePaymentSystemRequest 決済システム情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PaymentSystemApi
      */
-    public v1PaymentSystemsMethodTypePatch(methodType: number, requestUpdatePaymentSystemRequest: RequestUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig) {
-        return PaymentSystemApiFp(this.configuration).v1PaymentSystemsMethodTypePatch(methodType, requestUpdatePaymentSystemRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1PaymentSystemsMethodTypePatch(methodType: number, typesUpdatePaymentSystemRequest: TypesUpdatePaymentSystemRequest, options?: RawAxiosRequestConfig) {
+        return PaymentSystemApiFp(this.configuration).v1PaymentSystemsMethodTypePatch(methodType, typesUpdatePaymentSystemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -15251,7 +15251,7 @@ export const PostalCodeApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PostalCodesPostalCodeGet(postalCode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponsePostalCodeResponse>> {
+        async v1PostalCodesPostalCodeGet(postalCode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostalCodeResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1PostalCodesPostalCodeGet(postalCode, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PostalCodeApi.v1PostalCodesPostalCodeGet']?.[localVarOperationServerIndex]?.url;
@@ -15274,7 +15274,7 @@ export const PostalCodeApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PostalCodesPostalCodeGet(postalCode: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponsePostalCodeResponse> {
+        v1PostalCodesPostalCodeGet(postalCode: string, options?: RawAxiosRequestConfig): AxiosPromise<PostalCodeResponse> {
             return localVarFp.v1PostalCodesPostalCodeGet(postalCode, options).then((request) => request(axios, basePath));
         },
     };
@@ -15360,13 +15360,13 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 新しい生産者を登録します。コーディネーターは自身が管理する店舗の生産者のみ登録可能です。
          * @summary 生産者登録
-         * @param {RequestCreateProducerRequest} requestCreateProducerRequest 生産者情報
+         * @param {TypesCreateProducerRequest} typesCreateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersPost: async (requestCreateProducerRequest: RequestCreateProducerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateProducerRequest' is not null or undefined
-            assertParamExists('v1ProducersPost', 'requestCreateProducerRequest', requestCreateProducerRequest)
+        v1ProducersPost: async (typesCreateProducerRequest: TypesCreateProducerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateProducerRequest' is not null or undefined
+            assertParamExists('v1ProducersPost', 'typesCreateProducerRequest', typesCreateProducerRequest)
             const localVarPath = `/v1/producers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -15390,7 +15390,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateProducerRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateProducerRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -15477,15 +15477,15 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
          * 生産者の情報を更新します。
          * @summary 生産者更新
          * @param {string} producerId 生産者ID
-         * @param {RequestUpdateProducerRequest} requestUpdateProducerRequest 生産者情報
+         * @param {TypesUpdateProducerRequest} typesUpdateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersProducerIdPatch: async (producerId: string, requestUpdateProducerRequest: RequestUpdateProducerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ProducersProducerIdPatch: async (producerId: string, typesUpdateProducerRequest: TypesUpdateProducerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'producerId' is not null or undefined
             assertParamExists('v1ProducersProducerIdPatch', 'producerId', producerId)
-            // verify required parameter 'requestUpdateProducerRequest' is not null or undefined
-            assertParamExists('v1ProducersProducerIdPatch', 'requestUpdateProducerRequest', requestUpdateProducerRequest)
+            // verify required parameter 'typesUpdateProducerRequest' is not null or undefined
+            assertParamExists('v1ProducersProducerIdPatch', 'typesUpdateProducerRequest', typesUpdateProducerRequest)
             const localVarPath = `/v1/producers/{producerId}`
                 .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -15510,7 +15510,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateProducerRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateProducerRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -15536,7 +15536,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProducersGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProducersResponse>> {
+        async v1ProducersGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersGet(limit, offset, username, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProducerApi.v1ProducersGet']?.[localVarOperationServerIndex]?.url;
@@ -15545,12 +15545,12 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         /**
          * 新しい生産者を登録します。コーディネーターは自身が管理する店舗の生産者のみ登録可能です。
          * @summary 生産者登録
-         * @param {RequestCreateProducerRequest} requestCreateProducerRequest 生産者情報
+         * @param {TypesCreateProducerRequest} typesCreateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProducersPost(requestCreateProducerRequest: RequestCreateProducerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProducerResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersPost(requestCreateProducerRequest, options);
+        async v1ProducersPost(typesCreateProducerRequest: TypesCreateProducerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersPost(typesCreateProducerRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProducerApi.v1ProducersPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15575,7 +15575,7 @@ export const ProducerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProducersProducerIdGet(producerId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProducerResponse>> {
+        async v1ProducersProducerIdGet(producerId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducerResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersProducerIdGet(producerId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProducerApi.v1ProducersProducerIdGet']?.[localVarOperationServerIndex]?.url;
@@ -15585,12 +15585,12 @@ export const ProducerApiFp = function(configuration?: Configuration) {
          * 生産者の情報を更新します。
          * @summary 生産者更新
          * @param {string} producerId 生産者ID
-         * @param {RequestUpdateProducerRequest} requestUpdateProducerRequest 生産者情報
+         * @param {TypesUpdateProducerRequest} typesUpdateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProducersProducerIdPatch(producerId: string, requestUpdateProducerRequest: RequestUpdateProducerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersProducerIdPatch(producerId, requestUpdateProducerRequest, options);
+        async v1ProducersProducerIdPatch(producerId: string, typesUpdateProducerRequest: TypesUpdateProducerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProducersProducerIdPatch(producerId, typesUpdateProducerRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProducerApi.v1ProducersProducerIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15614,18 +15614,18 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProducersResponse> {
+        v1ProducersGet(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProducersResponse> {
             return localVarFp.v1ProducersGet(limit, offset, username, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい生産者を登録します。コーディネーターは自身が管理する店舗の生産者のみ登録可能です。
          * @summary 生産者登録
-         * @param {RequestCreateProducerRequest} requestCreateProducerRequest 生産者情報
+         * @param {TypesCreateProducerRequest} typesCreateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersPost(requestCreateProducerRequest: RequestCreateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProducerResponse> {
-            return localVarFp.v1ProducersPost(requestCreateProducerRequest, options).then((request) => request(axios, basePath));
+        v1ProducersPost(typesCreateProducerRequest: TypesCreateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProducerResponse> {
+            return localVarFp.v1ProducersPost(typesCreateProducerRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者を削除します。
@@ -15644,19 +15644,19 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersProducerIdGet(producerId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProducerResponse> {
+        v1ProducersProducerIdGet(producerId: string, options?: RawAxiosRequestConfig): AxiosPromise<ProducerResponse> {
             return localVarFp.v1ProducersProducerIdGet(producerId, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者の情報を更新します。
          * @summary 生産者更新
          * @param {string} producerId 生産者ID
-         * @param {RequestUpdateProducerRequest} requestUpdateProducerRequest 生産者情報
+         * @param {TypesUpdateProducerRequest} typesUpdateProducerRequest 生産者情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProducersProducerIdPatch(producerId: string, requestUpdateProducerRequest: RequestUpdateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ProducersProducerIdPatch(producerId, requestUpdateProducerRequest, options).then((request) => request(axios, basePath));
+        v1ProducersProducerIdPatch(producerId: string, typesUpdateProducerRequest: TypesUpdateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ProducersProducerIdPatch(producerId, typesUpdateProducerRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -15685,13 +15685,13 @@ export class ProducerApi extends BaseAPI {
     /**
      * 新しい生産者を登録します。コーディネーターは自身が管理する店舗の生産者のみ登録可能です。
      * @summary 生産者登録
-     * @param {RequestCreateProducerRequest} requestCreateProducerRequest 生産者情報
+     * @param {TypesCreateProducerRequest} typesCreateProducerRequest 生産者情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
      */
-    public v1ProducersPost(requestCreateProducerRequest: RequestCreateProducerRequest, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1ProducersPost(requestCreateProducerRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ProducersPost(typesCreateProducerRequest: TypesCreateProducerRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1ProducersPost(typesCreateProducerRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -15722,13 +15722,13 @@ export class ProducerApi extends BaseAPI {
      * 生産者の情報を更新します。
      * @summary 生産者更新
      * @param {string} producerId 生産者ID
-     * @param {RequestUpdateProducerRequest} requestUpdateProducerRequest 生産者情報
+     * @param {TypesUpdateProducerRequest} typesUpdateProducerRequest 生産者情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProducerApi
      */
-    public v1ProducersProducerIdPatch(producerId: string, requestUpdateProducerRequest: RequestUpdateProducerRequest, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1ProducersProducerIdPatch(producerId, requestUpdateProducerRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ProducersProducerIdPatch(producerId: string, typesUpdateProducerRequest: TypesUpdateProducerRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1ProducersProducerIdPatch(producerId, typesUpdateProducerRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -15802,13 +15802,13 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 新しい商品を登録します。
          * @summary 商品登録
-         * @param {RequestCreateProductRequest} requestCreateProductRequest 商品情報
+         * @param {TypesCreateProductRequest} typesCreateProductRequest 商品情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductsPost: async (requestCreateProductRequest: RequestCreateProductRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateProductRequest' is not null or undefined
-            assertParamExists('v1ProductsPost', 'requestCreateProductRequest', requestCreateProductRequest)
+        v1ProductsPost: async (typesCreateProductRequest: TypesCreateProductRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateProductRequest' is not null or undefined
+            assertParamExists('v1ProductsPost', 'typesCreateProductRequest', typesCreateProductRequest)
             const localVarPath = `/v1/products`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -15832,7 +15832,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateProductRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateProductRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -15898,7 +15898,7 @@ export const ProductApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductsGet(limit?: number, offset?: number, name?: string, producerId?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductsResponse>> {
+        async v1ProductsGet(limit?: number, offset?: number, name?: string, producerId?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductsGet(limit, offset, name, producerId, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductApi.v1ProductsGet']?.[localVarOperationServerIndex]?.url;
@@ -15907,12 +15907,12 @@ export const ProductApiFp = function(configuration?: Configuration) {
         /**
          * 新しい商品を登録します。
          * @summary 商品登録
-         * @param {RequestCreateProductRequest} requestCreateProductRequest 商品情報
+         * @param {TypesCreateProductRequest} typesCreateProductRequest 商品情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductsPost(requestCreateProductRequest: RequestCreateProductRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductsPost(requestCreateProductRequest, options);
+        async v1ProductsPost(typesCreateProductRequest: TypesCreateProductRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductsPost(typesCreateProductRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductApi.v1ProductsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15924,7 +15924,7 @@ export const ProductApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductsProductIdGet(productId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductResponse>> {
+        async v1ProductsProductIdGet(productId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProductResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductsProductIdGet(productId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductApi.v1ProductsProductIdGet']?.[localVarOperationServerIndex]?.url;
@@ -15951,18 +15951,18 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductsGet(limit?: number, offset?: number, name?: string, producerId?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductsResponse> {
+        v1ProductsGet(limit?: number, offset?: number, name?: string, producerId?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductsResponse> {
             return localVarFp.v1ProductsGet(limit, offset, name, producerId, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい商品を登録します。
          * @summary 商品登録
-         * @param {RequestCreateProductRequest} requestCreateProductRequest 商品情報
+         * @param {TypesCreateProductRequest} typesCreateProductRequest 商品情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductsPost(requestCreateProductRequest: RequestCreateProductRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductResponse> {
-            return localVarFp.v1ProductsPost(requestCreateProductRequest, options).then((request) => request(axios, basePath));
+        v1ProductsPost(typesCreateProductRequest: TypesCreateProductRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProductResponse> {
+            return localVarFp.v1ProductsPost(typesCreateProductRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定された商品の詳細情報を取得します。
@@ -15971,7 +15971,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductsProductIdGet(productId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductResponse> {
+        v1ProductsProductIdGet(productId: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductResponse> {
             return localVarFp.v1ProductsProductIdGet(productId, options).then((request) => request(axios, basePath));
         },
     };
@@ -16003,13 +16003,13 @@ export class ProductApi extends BaseAPI {
     /**
      * 新しい商品を登録します。
      * @summary 商品登録
-     * @param {RequestCreateProductRequest} requestCreateProductRequest 商品情報
+     * @param {TypesCreateProductRequest} typesCreateProductRequest 商品情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductApi
      */
-    public v1ProductsPost(requestCreateProductRequest: RequestCreateProductRequest, options?: RawAxiosRequestConfig) {
-        return ProductApiFp(this.configuration).v1ProductsPost(requestCreateProductRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ProductsPost(typesCreateProductRequest: TypesCreateProductRequest, options?: RawAxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1ProductsPost(typesCreateProductRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -16090,13 +16090,13 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
         /**
          * 新しい商品タグを登録します。
          * @summary 商品タグ登録
-         * @param {RequestCreateProductTagRequest} requestCreateProductTagRequest 商品タグ情報
+         * @param {TypesCreateProductTagRequest} typesCreateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductTagsPost: async (requestCreateProductTagRequest: RequestCreateProductTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateProductTagRequest' is not null or undefined
-            assertParamExists('v1ProductTagsPost', 'requestCreateProductTagRequest', requestCreateProductTagRequest)
+        v1ProductTagsPost: async (typesCreateProductTagRequest: TypesCreateProductTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateProductTagRequest' is not null or undefined
+            assertParamExists('v1ProductTagsPost', 'typesCreateProductTagRequest', typesCreateProductTagRequest)
             const localVarPath = `/v1/product-tags`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -16120,7 +16120,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateProductTagRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateProductTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -16169,15 +16169,15 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
          * 商品タグの情報を更新します。
          * @summary 商品タグ更新
          * @param {string} productTagId 商品タグID
-         * @param {RequestUpdateProductTagRequest} requestUpdateProductTagRequest 商品タグ情報
+         * @param {TypesUpdateProductTagRequest} typesUpdateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductTagsProductTagIdPatch: async (productTagId: string, requestUpdateProductTagRequest: RequestUpdateProductTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ProductTagsProductTagIdPatch: async (productTagId: string, typesUpdateProductTagRequest: TypesUpdateProductTagRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'productTagId' is not null or undefined
             assertParamExists('v1ProductTagsProductTagIdPatch', 'productTagId', productTagId)
-            // verify required parameter 'requestUpdateProductTagRequest' is not null or undefined
-            assertParamExists('v1ProductTagsProductTagIdPatch', 'requestUpdateProductTagRequest', requestUpdateProductTagRequest)
+            // verify required parameter 'typesUpdateProductTagRequest' is not null or undefined
+            assertParamExists('v1ProductTagsProductTagIdPatch', 'typesUpdateProductTagRequest', typesUpdateProductTagRequest)
             const localVarPath = `/v1/product-tags/{productTagId}`
                 .replace(`{${"productTagId"}}`, encodeURIComponent(String(productTagId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -16202,7 +16202,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateProductTagRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateProductTagRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -16229,7 +16229,7 @@ export const ProductTagApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductTagsGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductTagsResponse>> {
+        async v1ProductTagsGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesProductTagsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductTagsGet(limit, offset, name, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTagApi.v1ProductTagsGet']?.[localVarOperationServerIndex]?.url;
@@ -16238,12 +16238,12 @@ export const ProductTagApiFp = function(configuration?: Configuration) {
         /**
          * 新しい商品タグを登録します。
          * @summary 商品タグ登録
-         * @param {RequestCreateProductTagRequest} requestCreateProductTagRequest 商品タグ情報
+         * @param {TypesCreateProductTagRequest} typesCreateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductTagsPost(requestCreateProductTagRequest: RequestCreateProductTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductTagResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductTagsPost(requestCreateProductTagRequest, options);
+        async v1ProductTagsPost(typesCreateProductTagRequest: TypesCreateProductTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesProductTagResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductTagsPost(typesCreateProductTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTagApi.v1ProductTagsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -16265,12 +16265,12 @@ export const ProductTagApiFp = function(configuration?: Configuration) {
          * 商品タグの情報を更新します。
          * @summary 商品タグ更新
          * @param {string} productTagId 商品タグID
-         * @param {RequestUpdateProductTagRequest} requestUpdateProductTagRequest 商品タグ情報
+         * @param {TypesUpdateProductTagRequest} typesUpdateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ProductTagsProductTagIdPatch(productTagId: string, requestUpdateProductTagRequest: RequestUpdateProductTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductTagsProductTagIdPatch(productTagId, requestUpdateProductTagRequest, options);
+        async v1ProductTagsProductTagIdPatch(productTagId: string, typesUpdateProductTagRequest: TypesUpdateProductTagRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ProductTagsProductTagIdPatch(productTagId, typesUpdateProductTagRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTagApi.v1ProductTagsProductTagIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -16295,18 +16295,18 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductTagsGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductTagsResponse> {
+        v1ProductTagsGet(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesProductTagsResponse> {
             return localVarFp.v1ProductTagsGet(limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい商品タグを登録します。
          * @summary 商品タグ登録
-         * @param {RequestCreateProductTagRequest} requestCreateProductTagRequest 商品タグ情報
+         * @param {TypesCreateProductTagRequest} typesCreateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductTagsPost(requestCreateProductTagRequest: RequestCreateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductTagResponse> {
-            return localVarFp.v1ProductTagsPost(requestCreateProductTagRequest, options).then((request) => request(axios, basePath));
+        v1ProductTagsPost(typesCreateProductTagRequest: TypesCreateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesProductTagResponse> {
+            return localVarFp.v1ProductTagsPost(typesCreateProductTagRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 商品タグを削除します。
@@ -16322,12 +16322,12 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * 商品タグの情報を更新します。
          * @summary 商品タグ更新
          * @param {string} productTagId 商品タグID
-         * @param {RequestUpdateProductTagRequest} requestUpdateProductTagRequest 商品タグ情報
+         * @param {TypesUpdateProductTagRequest} typesUpdateProductTagRequest 商品タグ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ProductTagsProductTagIdPatch(productTagId: string, requestUpdateProductTagRequest: RequestUpdateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ProductTagsProductTagIdPatch(productTagId, requestUpdateProductTagRequest, options).then((request) => request(axios, basePath));
+        v1ProductTagsProductTagIdPatch(productTagId: string, typesUpdateProductTagRequest: TypesUpdateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ProductTagsProductTagIdPatch(productTagId, typesUpdateProductTagRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -16357,13 +16357,13 @@ export class ProductTagApi extends BaseAPI {
     /**
      * 新しい商品タグを登録します。
      * @summary 商品タグ登録
-     * @param {RequestCreateProductTagRequest} requestCreateProductTagRequest 商品タグ情報
+     * @param {TypesCreateProductTagRequest} typesCreateProductTagRequest 商品タグ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductTagApi
      */
-    public v1ProductTagsPost(requestCreateProductTagRequest: RequestCreateProductTagRequest, options?: RawAxiosRequestConfig) {
-        return ProductTagApiFp(this.configuration).v1ProductTagsPost(requestCreateProductTagRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ProductTagsPost(typesCreateProductTagRequest: TypesCreateProductTagRequest, options?: RawAxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1ProductTagsPost(typesCreateProductTagRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -16382,13 +16382,13 @@ export class ProductTagApi extends BaseAPI {
      * 商品タグの情報を更新します。
      * @summary 商品タグ更新
      * @param {string} productTagId 商品タグID
-     * @param {RequestUpdateProductTagRequest} requestUpdateProductTagRequest 商品タグ情報
+     * @param {TypesUpdateProductTagRequest} typesUpdateProductTagRequest 商品タグ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductTagApi
      */
-    public v1ProductTagsProductTagIdPatch(productTagId: string, requestUpdateProductTagRequest: RequestUpdateProductTagRequest, options?: RawAxiosRequestConfig) {
-        return ProductTagApiFp(this.configuration).v1ProductTagsProductTagIdPatch(productTagId, requestUpdateProductTagRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ProductTagsProductTagIdPatch(productTagId: string, typesUpdateProductTagRequest: TypesUpdateProductTagRequest, options?: RawAxiosRequestConfig) {
+        return ProductTagApiFp(this.configuration).v1ProductTagsProductTagIdPatch(productTagId, typesUpdateProductTagRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -16462,15 +16462,15 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
          * 新しい品目を登録します。
          * @summary 品目登録
          * @param {string} categoryId 商品種別ID
-         * @param {RequestCreateProductTypeRequest} requestCreateProductTypeRequest 品目情報
+         * @param {TypesCreateProductTypeRequest} typesCreateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdProductTypesPost: async (categoryId: string, requestCreateProductTypeRequest: RequestCreateProductTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CategoriesCategoryIdProductTypesPost: async (categoryId: string, typesCreateProductTypeRequest: TypesCreateProductTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'categoryId' is not null or undefined
             assertParamExists('v1CategoriesCategoryIdProductTypesPost', 'categoryId', categoryId)
-            // verify required parameter 'requestCreateProductTypeRequest' is not null or undefined
-            assertParamExists('v1CategoriesCategoryIdProductTypesPost', 'requestCreateProductTypeRequest', requestCreateProductTypeRequest)
+            // verify required parameter 'typesCreateProductTypeRequest' is not null or undefined
+            assertParamExists('v1CategoriesCategoryIdProductTypesPost', 'typesCreateProductTypeRequest', typesCreateProductTypeRequest)
             const localVarPath = `/v1/categories/{categoryId}/product-types`
                 .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -16495,7 +16495,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateProductTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateProductTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -16549,17 +16549,17 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
          * @summary 品目更新
          * @param {string} categoryId 商品種別ID
          * @param {string} productTypeId 品目ID
-         * @param {RequestUpdateProductTypeRequest} requestUpdateProductTypeRequest 品目情報
+         * @param {TypesUpdateProductTypeRequest} typesUpdateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdProductTypesProductTypeIdPatch: async (categoryId: string, productTypeId: string, requestUpdateProductTypeRequest: RequestUpdateProductTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CategoriesCategoryIdProductTypesProductTypeIdPatch: async (categoryId: string, productTypeId: string, typesUpdateProductTypeRequest: TypesUpdateProductTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'categoryId' is not null or undefined
             assertParamExists('v1CategoriesCategoryIdProductTypesProductTypeIdPatch', 'categoryId', categoryId)
             // verify required parameter 'productTypeId' is not null or undefined
             assertParamExists('v1CategoriesCategoryIdProductTypesProductTypeIdPatch', 'productTypeId', productTypeId)
-            // verify required parameter 'requestUpdateProductTypeRequest' is not null or undefined
-            assertParamExists('v1CategoriesCategoryIdProductTypesProductTypeIdPatch', 'requestUpdateProductTypeRequest', requestUpdateProductTypeRequest)
+            // verify required parameter 'typesUpdateProductTypeRequest' is not null or undefined
+            assertParamExists('v1CategoriesCategoryIdProductTypesProductTypeIdPatch', 'typesUpdateProductTypeRequest', typesUpdateProductTypeRequest)
             const localVarPath = `/v1/categories/{categoryId}/product-types/{productTypeId}`
                 .replace(`{${"categoryId"}}`, encodeURIComponent(String(categoryId)))
                 .replace(`{${"productTypeId"}}`, encodeURIComponent(String(productTypeId)));
@@ -16585,7 +16585,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateProductTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateProductTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -16613,7 +16613,7 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesCategoryIdProductTypesGet(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductTypesResponse>> {
+        async v1CategoriesCategoryIdProductTypesGet(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesProductTypesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdProductTypesGet(categoryId, limit, offset, name, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTypeApi.v1CategoriesCategoryIdProductTypesGet']?.[localVarOperationServerIndex]?.url;
@@ -16623,12 +16623,12 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
          * 新しい品目を登録します。
          * @summary 品目登録
          * @param {string} categoryId 商品種別ID
-         * @param {RequestCreateProductTypeRequest} requestCreateProductTypeRequest 品目情報
+         * @param {TypesCreateProductTypeRequest} typesCreateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesCategoryIdProductTypesPost(categoryId: string, requestCreateProductTypeRequest: RequestCreateProductTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProductTypeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdProductTypesPost(categoryId, requestCreateProductTypeRequest, options);
+        async v1CategoriesCategoryIdProductTypesPost(categoryId: string, typesCreateProductTypeRequest: TypesCreateProductTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesProductTypeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdProductTypesPost(categoryId, typesCreateProductTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTypeApi.v1CategoriesCategoryIdProductTypesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -16652,12 +16652,12 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
          * @summary 品目更新
          * @param {string} categoryId 商品種別ID
          * @param {string} productTypeId 品目ID
-         * @param {RequestUpdateProductTypeRequest} requestUpdateProductTypeRequest 品目情報
+         * @param {TypesUpdateProductTypeRequest} typesUpdateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, requestUpdateProductTypeRequest: RequestUpdateProductTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, requestUpdateProductTypeRequest, options);
+        async v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, typesUpdateProductTypeRequest: TypesUpdateProductTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, typesUpdateProductTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProductTypeApi.v1CategoriesCategoryIdProductTypesProductTypeIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -16683,19 +16683,19 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdProductTypesGet(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductTypesResponse> {
+        v1CategoriesCategoryIdProductTypesGet(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesProductTypesResponse> {
             return localVarFp.v1CategoriesCategoryIdProductTypesGet(categoryId, limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい品目を登録します。
          * @summary 品目登録
          * @param {string} categoryId 商品種別ID
-         * @param {RequestCreateProductTypeRequest} requestCreateProductTypeRequest 品目情報
+         * @param {TypesCreateProductTypeRequest} typesCreateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdProductTypesPost(categoryId: string, requestCreateProductTypeRequest: RequestCreateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProductTypeResponse> {
-            return localVarFp.v1CategoriesCategoryIdProductTypesPost(categoryId, requestCreateProductTypeRequest, options).then((request) => request(axios, basePath));
+        v1CategoriesCategoryIdProductTypesPost(categoryId: string, typesCreateProductTypeRequest: TypesCreateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesProductTypeResponse> {
+            return localVarFp.v1CategoriesCategoryIdProductTypesPost(categoryId, typesCreateProductTypeRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 品目を削除します。
@@ -16713,12 +16713,12 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @summary 品目更新
          * @param {string} categoryId 商品種別ID
          * @param {string} productTypeId 品目ID
-         * @param {RequestUpdateProductTypeRequest} requestUpdateProductTypeRequest 品目情報
+         * @param {TypesUpdateProductTypeRequest} typesUpdateProductTypeRequest 品目情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, requestUpdateProductTypeRequest: RequestUpdateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, requestUpdateProductTypeRequest, options).then((request) => request(axios, basePath));
+        v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, typesUpdateProductTypeRequest: TypesUpdateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, typesUpdateProductTypeRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -16750,13 +16750,13 @@ export class ProductTypeApi extends BaseAPI {
      * 新しい品目を登録します。
      * @summary 品目登録
      * @param {string} categoryId 商品種別ID
-     * @param {RequestCreateProductTypeRequest} requestCreateProductTypeRequest 品目情報
+     * @param {TypesCreateProductTypeRequest} typesCreateProductTypeRequest 品目情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductTypeApi
      */
-    public v1CategoriesCategoryIdProductTypesPost(categoryId: string, requestCreateProductTypeRequest: RequestCreateProductTypeRequest, options?: RawAxiosRequestConfig) {
-        return ProductTypeApiFp(this.configuration).v1CategoriesCategoryIdProductTypesPost(categoryId, requestCreateProductTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CategoriesCategoryIdProductTypesPost(categoryId: string, typesCreateProductTypeRequest: TypesCreateProductTypeRequest, options?: RawAxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1CategoriesCategoryIdProductTypesPost(categoryId, typesCreateProductTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -16777,13 +16777,13 @@ export class ProductTypeApi extends BaseAPI {
      * @summary 品目更新
      * @param {string} categoryId 商品種別ID
      * @param {string} productTypeId 品目ID
-     * @param {RequestUpdateProductTypeRequest} requestUpdateProductTypeRequest 品目情報
+     * @param {TypesUpdateProductTypeRequest} typesUpdateProductTypeRequest 品目情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductTypeApi
      */
-    public v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, requestUpdateProductTypeRequest: RequestUpdateProductTypeRequest, options?: RawAxiosRequestConfig) {
-        return ProductTypeApiFp(this.configuration).v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, requestUpdateProductTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId: string, productTypeId: string, typesUpdateProductTypeRequest: TypesUpdateProductTypeRequest, options?: RawAxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1CategoriesCategoryIdProductTypesProductTypeIdPatch(categoryId, productTypeId, typesUpdateProductTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -16862,13 +16862,13 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 新しいプロモーションを登録します。
          * @summary プロモーション登録
-         * @param {RequestCreatePromotionRequest} requestCreatePromotionRequest プロモーション情報
+         * @param {TypesCreatePromotionRequest} typesCreatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsPost: async (requestCreatePromotionRequest: RequestCreatePromotionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreatePromotionRequest' is not null or undefined
-            assertParamExists('v1PromotionsPost', 'requestCreatePromotionRequest', requestCreatePromotionRequest)
+        v1PromotionsPost: async (typesCreatePromotionRequest: TypesCreatePromotionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreatePromotionRequest' is not null or undefined
+            assertParamExists('v1PromotionsPost', 'typesCreatePromotionRequest', typesCreatePromotionRequest)
             const localVarPath = `/v1/promotions`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -16892,7 +16892,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreatePromotionRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreatePromotionRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -16979,15 +16979,15 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
          * プロモーションの情報を更新します。
          * @summary プロモーション更新
          * @param {string} promotionId プロモーションID
-         * @param {RequestUpdatePromotionRequest} requestUpdatePromotionRequest プロモーション情報
+         * @param {TypesUpdatePromotionRequest} typesUpdatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsPromotionIdPatch: async (promotionId: string, requestUpdatePromotionRequest: RequestUpdatePromotionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1PromotionsPromotionIdPatch: async (promotionId: string, typesUpdatePromotionRequest: TypesUpdatePromotionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'promotionId' is not null or undefined
             assertParamExists('v1PromotionsPromotionIdPatch', 'promotionId', promotionId)
-            // verify required parameter 'requestUpdatePromotionRequest' is not null or undefined
-            assertParamExists('v1PromotionsPromotionIdPatch', 'requestUpdatePromotionRequest', requestUpdatePromotionRequest)
+            // verify required parameter 'typesUpdatePromotionRequest' is not null or undefined
+            assertParamExists('v1PromotionsPromotionIdPatch', 'typesUpdatePromotionRequest', typesUpdatePromotionRequest)
             const localVarPath = `/v1/promotions/{promotionId}`
                 .replace(`{${"promotionId"}}`, encodeURIComponent(String(promotionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -17012,7 +17012,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdatePromotionRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdatePromotionRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -17041,7 +17041,7 @@ export const PromotionApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PromotionsGet(limit?: number, offset?: number, shopId?: string, title?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponsePromotionsResponse>> {
+        async v1PromotionsGet(limit?: number, offset?: number, shopId?: string, title?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesPromotionsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsGet(limit, offset, shopId, title, withAllTarget, orders, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PromotionApi.v1PromotionsGet']?.[localVarOperationServerIndex]?.url;
@@ -17050,12 +17050,12 @@ export const PromotionApiFp = function(configuration?: Configuration) {
         /**
          * 新しいプロモーションを登録します。
          * @summary プロモーション登録
-         * @param {RequestCreatePromotionRequest} requestCreatePromotionRequest プロモーション情報
+         * @param {TypesCreatePromotionRequest} typesCreatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PromotionsPost(requestCreatePromotionRequest: RequestCreatePromotionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponsePromotionResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsPost(requestCreatePromotionRequest, options);
+        async v1PromotionsPost(typesCreatePromotionRequest: TypesCreatePromotionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PromotionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsPost(typesCreatePromotionRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PromotionApi.v1PromotionsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17080,7 +17080,7 @@ export const PromotionApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PromotionsPromotionIdGet(promotionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponsePromotionResponse>> {
+        async v1PromotionsPromotionIdGet(promotionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PromotionResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsPromotionIdGet(promotionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PromotionApi.v1PromotionsPromotionIdGet']?.[localVarOperationServerIndex]?.url;
@@ -17090,12 +17090,12 @@ export const PromotionApiFp = function(configuration?: Configuration) {
          * プロモーションの情報を更新します。
          * @summary プロモーション更新
          * @param {string} promotionId プロモーションID
-         * @param {RequestUpdatePromotionRequest} requestUpdatePromotionRequest プロモーション情報
+         * @param {TypesUpdatePromotionRequest} typesUpdatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1PromotionsPromotionIdPatch(promotionId: string, requestUpdatePromotionRequest: RequestUpdatePromotionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsPromotionIdPatch(promotionId, requestUpdatePromotionRequest, options);
+        async v1PromotionsPromotionIdPatch(promotionId: string, typesUpdatePromotionRequest: TypesUpdatePromotionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PromotionsPromotionIdPatch(promotionId, typesUpdatePromotionRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PromotionApi.v1PromotionsPromotionIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17122,18 +17122,18 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsGet(limit?: number, offset?: number, shopId?: string, title?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponsePromotionsResponse> {
+        v1PromotionsGet(limit?: number, offset?: number, shopId?: string, title?: string, withAllTarget?: boolean, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesPromotionsResponse> {
             return localVarFp.v1PromotionsGet(limit, offset, shopId, title, withAllTarget, orders, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいプロモーションを登録します。
          * @summary プロモーション登録
-         * @param {RequestCreatePromotionRequest} requestCreatePromotionRequest プロモーション情報
+         * @param {TypesCreatePromotionRequest} typesCreatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsPost(requestCreatePromotionRequest: RequestCreatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponsePromotionResponse> {
-            return localVarFp.v1PromotionsPost(requestCreatePromotionRequest, options).then((request) => request(axios, basePath));
+        v1PromotionsPost(typesCreatePromotionRequest: TypesCreatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<PromotionResponse> {
+            return localVarFp.v1PromotionsPost(typesCreatePromotionRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * プロモーションを削除します。
@@ -17152,19 +17152,19 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsPromotionIdGet(promotionId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponsePromotionResponse> {
+        v1PromotionsPromotionIdGet(promotionId: string, options?: RawAxiosRequestConfig): AxiosPromise<PromotionResponse> {
             return localVarFp.v1PromotionsPromotionIdGet(promotionId, options).then((request) => request(axios, basePath));
         },
         /**
          * プロモーションの情報を更新します。
          * @summary プロモーション更新
          * @param {string} promotionId プロモーションID
-         * @param {RequestUpdatePromotionRequest} requestUpdatePromotionRequest プロモーション情報
+         * @param {TypesUpdatePromotionRequest} typesUpdatePromotionRequest プロモーション情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PromotionsPromotionIdPatch(promotionId: string, requestUpdatePromotionRequest: RequestUpdatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1PromotionsPromotionIdPatch(promotionId, requestUpdatePromotionRequest, options).then((request) => request(axios, basePath));
+        v1PromotionsPromotionIdPatch(promotionId: string, typesUpdatePromotionRequest: TypesUpdatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1PromotionsPromotionIdPatch(promotionId, typesUpdatePromotionRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -17196,13 +17196,13 @@ export class PromotionApi extends BaseAPI {
     /**
      * 新しいプロモーションを登録します。
      * @summary プロモーション登録
-     * @param {RequestCreatePromotionRequest} requestCreatePromotionRequest プロモーション情報
+     * @param {TypesCreatePromotionRequest} typesCreatePromotionRequest プロモーション情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PromotionApi
      */
-    public v1PromotionsPost(requestCreatePromotionRequest: RequestCreatePromotionRequest, options?: RawAxiosRequestConfig) {
-        return PromotionApiFp(this.configuration).v1PromotionsPost(requestCreatePromotionRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1PromotionsPost(typesCreatePromotionRequest: TypesCreatePromotionRequest, options?: RawAxiosRequestConfig) {
+        return PromotionApiFp(this.configuration).v1PromotionsPost(typesCreatePromotionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -17233,13 +17233,13 @@ export class PromotionApi extends BaseAPI {
      * プロモーションの情報を更新します。
      * @summary プロモーション更新
      * @param {string} promotionId プロモーションID
-     * @param {RequestUpdatePromotionRequest} requestUpdatePromotionRequest プロモーション情報
+     * @param {TypesUpdatePromotionRequest} typesUpdatePromotionRequest プロモーション情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PromotionApi
      */
-    public v1PromotionsPromotionIdPatch(promotionId: string, requestUpdatePromotionRequest: RequestUpdatePromotionRequest, options?: RawAxiosRequestConfig) {
-        return PromotionApiFp(this.configuration).v1PromotionsPromotionIdPatch(promotionId, requestUpdatePromotionRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1PromotionsPromotionIdPatch(promotionId: string, typesUpdatePromotionRequest: TypesUpdatePromotionRequest, options?: RawAxiosRequestConfig) {
+        return PromotionApiFp(this.configuration).v1PromotionsPromotionIdPatch(promotionId, typesUpdatePromotionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -17318,7 +17318,7 @@ export const RelatedProducerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdProducersGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseProducersResponse>> {
+        async v1CoordinatorsCoordinatorIdProducersGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProducersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdProducersGet(coordinatorId, limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['RelatedProducerApi.v1CoordinatorsCoordinatorIdProducersGet']?.[localVarOperationServerIndex]?.url;
@@ -17343,7 +17343,7 @@ export const RelatedProducerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdProducersGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseProducersResponse> {
+        v1CoordinatorsCoordinatorIdProducersGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ProducersResponse> {
             return localVarFp.v1CoordinatorsCoordinatorIdProducersGet(coordinatorId, limit, offset, options).then((request) => request(axios, basePath));
         },
     };
@@ -17426,13 +17426,13 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 新しいマルシェ開催スケジュールを登録します。
          * @summary マルシェ開催スケジュール登録
-         * @param {RequestCreateScheduleRequest} requestCreateScheduleRequest スケジュール情報
+         * @param {TypesCreateScheduleRequest} typesCreateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesPost: async (requestCreateScheduleRequest: RequestCreateScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateScheduleRequest' is not null or undefined
-            assertParamExists('v1SchedulesPost', 'requestCreateScheduleRequest', requestCreateScheduleRequest)
+        v1SchedulesPost: async (typesCreateScheduleRequest: TypesCreateScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateScheduleRequest' is not null or undefined
+            assertParamExists('v1SchedulesPost', 'typesCreateScheduleRequest', typesCreateScheduleRequest)
             const localVarPath = `/v1/schedules`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -17456,7 +17456,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateScheduleRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateScheduleRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -17520,15 +17520,15 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * マルシェ開催スケジュールの承認状態を更新します。
          * @summary マルシェ開催スケジュール承認
          * @param {string} scheduleId スケジュールID
-         * @param {RequestApproveScheduleRequest} requestApproveScheduleRequest 承認情報
+         * @param {TypesApproveScheduleRequest} typesApproveScheduleRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdApprovalPatch: async (scheduleId: string, requestApproveScheduleRequest: RequestApproveScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdApprovalPatch: async (scheduleId: string, typesApproveScheduleRequest: TypesApproveScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdApprovalPatch', 'scheduleId', scheduleId)
-            // verify required parameter 'requestApproveScheduleRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdApprovalPatch', 'requestApproveScheduleRequest', requestApproveScheduleRequest)
+            // verify required parameter 'typesApproveScheduleRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdApprovalPatch', 'typesApproveScheduleRequest', typesApproveScheduleRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/approval`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -17553,7 +17553,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestApproveScheduleRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesApproveScheduleRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -17640,15 +17640,15 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * マルシェ開催スケジュールの情報を更新します。
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId スケジュールID
-         * @param {RequestUpdateScheduleRequest} requestUpdateScheduleRequest スケジュール情報
+         * @param {TypesUpdateScheduleRequest} typesUpdateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdPatch: async (scheduleId: string, requestUpdateScheduleRequest: RequestUpdateScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdPatch: async (scheduleId: string, typesUpdateScheduleRequest: TypesUpdateScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdPatch', 'scheduleId', scheduleId)
-            // verify required parameter 'requestUpdateScheduleRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdPatch', 'requestUpdateScheduleRequest', requestUpdateScheduleRequest)
+            // verify required parameter 'typesUpdateScheduleRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdPatch', 'typesUpdateScheduleRequest', typesUpdateScheduleRequest)
             const localVarPath = `/v1/schedules/{scheduleId}`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -17673,7 +17673,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateScheduleRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateScheduleRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -17684,15 +17684,15 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * マルシェ開催スケジュールの公開状態を更新します。
          * @summary マルシェ開催スケジュール公開
          * @param {string} scheduleId スケジュールID
-         * @param {RequestPublishScheduleRequest} requestPublishScheduleRequest 公開設定情報
+         * @param {TypesPublishScheduleRequest} typesPublishScheduleRequest 公開設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdPublishPatch: async (scheduleId: string, requestPublishScheduleRequest: RequestPublishScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SchedulesScheduleIdPublishPatch: async (scheduleId: string, typesPublishScheduleRequest: TypesPublishScheduleRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1SchedulesScheduleIdPublishPatch', 'scheduleId', scheduleId)
-            // verify required parameter 'requestPublishScheduleRequest' is not null or undefined
-            assertParamExists('v1SchedulesScheduleIdPublishPatch', 'requestPublishScheduleRequest', requestPublishScheduleRequest)
+            // verify required parameter 'typesPublishScheduleRequest' is not null or undefined
+            assertParamExists('v1SchedulesScheduleIdPublishPatch', 'typesPublishScheduleRequest', typesPublishScheduleRequest)
             const localVarPath = `/v1/schedules/{scheduleId}/publish`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -17717,7 +17717,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestPublishScheduleRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesPublishScheduleRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -17742,7 +17742,7 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSchedulesResponse>> {
+        async v1SchedulesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesSchedulesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesGet(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesGet']?.[localVarOperationServerIndex]?.url;
@@ -17751,12 +17751,12 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         /**
          * 新しいマルシェ開催スケジュールを登録します。
          * @summary マルシェ開催スケジュール登録
-         * @param {RequestCreateScheduleRequest} requestCreateScheduleRequest スケジュール情報
+         * @param {TypesCreateScheduleRequest} typesCreateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesPost(requestCreateScheduleRequest: RequestCreateScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseScheduleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesPost(requestCreateScheduleRequest, options);
+        async v1SchedulesPost(typesCreateScheduleRequest: TypesCreateScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesPost(typesCreateScheduleRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17771,7 +17771,7 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdAnalyticsGet(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAnalyzeScheduleResponse>> {
+        async v1SchedulesScheduleIdAnalyticsGet(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAnalyzeScheduleResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdAnalyticsGet(scheduleId, startAt, endAt, viewerLogInterval, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesScheduleIdAnalyticsGet']?.[localVarOperationServerIndex]?.url;
@@ -17781,12 +17781,12 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * マルシェ開催スケジュールの承認状態を更新します。
          * @summary マルシェ開催スケジュール承認
          * @param {string} scheduleId スケジュールID
-         * @param {RequestApproveScheduleRequest} requestApproveScheduleRequest 承認情報
+         * @param {TypesApproveScheduleRequest} typesApproveScheduleRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdApprovalPatch(scheduleId: string, requestApproveScheduleRequest: RequestApproveScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdApprovalPatch(scheduleId, requestApproveScheduleRequest, options);
+        async v1SchedulesScheduleIdApprovalPatch(scheduleId: string, typesApproveScheduleRequest: TypesApproveScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdApprovalPatch(scheduleId, typesApproveScheduleRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesScheduleIdApprovalPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17811,7 +17811,7 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseScheduleResponse>> {
+        async v1SchedulesScheduleIdGet(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdGet(scheduleId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesScheduleIdGet']?.[localVarOperationServerIndex]?.url;
@@ -17821,12 +17821,12 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * マルシェ開催スケジュールの情報を更新します。
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId スケジュールID
-         * @param {RequestUpdateScheduleRequest} requestUpdateScheduleRequest スケジュール情報
+         * @param {TypesUpdateScheduleRequest} typesUpdateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdPatch(scheduleId: string, requestUpdateScheduleRequest: RequestUpdateScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdPatch(scheduleId, requestUpdateScheduleRequest, options);
+        async v1SchedulesScheduleIdPatch(scheduleId: string, typesUpdateScheduleRequest: TypesUpdateScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdPatch(scheduleId, typesUpdateScheduleRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesScheduleIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17835,12 +17835,12 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * マルシェ開催スケジュールの公開状態を更新します。
          * @summary マルシェ開催スケジュール公開
          * @param {string} scheduleId スケジュールID
-         * @param {RequestPublishScheduleRequest} requestPublishScheduleRequest 公開設定情報
+         * @param {TypesPublishScheduleRequest} typesPublishScheduleRequest 公開設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SchedulesScheduleIdPublishPatch(scheduleId: string, requestPublishScheduleRequest: RequestPublishScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdPublishPatch(scheduleId, requestPublishScheduleRequest, options);
+        async v1SchedulesScheduleIdPublishPatch(scheduleId: string, typesPublishScheduleRequest: TypesPublishScheduleRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SchedulesScheduleIdPublishPatch(scheduleId, typesPublishScheduleRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1SchedulesScheduleIdPublishPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17863,18 +17863,18 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSchedulesResponse> {
+        v1SchedulesGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesSchedulesResponse> {
             return localVarFp.v1SchedulesGet(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいマルシェ開催スケジュールを登録します。
          * @summary マルシェ開催スケジュール登録
-         * @param {RequestCreateScheduleRequest} requestCreateScheduleRequest スケジュール情報
+         * @param {TypesCreateScheduleRequest} typesCreateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesPost(requestCreateScheduleRequest: RequestCreateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseScheduleResponse> {
-            return localVarFp.v1SchedulesPost(requestCreateScheduleRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesPost(typesCreateScheduleRequest: TypesCreateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<ScheduleResponse> {
+            return localVarFp.v1SchedulesPost(typesCreateScheduleRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定されたマルシェ開催スケジュールの視聴者分析データを取得します。集計期間と集計間隔を指定できます。
@@ -17886,19 +17886,19 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdAnalyticsGet(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAnalyzeScheduleResponse> {
+        v1SchedulesScheduleIdAnalyticsGet(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesAnalyzeScheduleResponse> {
             return localVarFp.v1SchedulesScheduleIdAnalyticsGet(scheduleId, startAt, endAt, viewerLogInterval, options).then((request) => request(axios, basePath));
         },
         /**
          * マルシェ開催スケジュールの承認状態を更新します。
          * @summary マルシェ開催スケジュール承認
          * @param {string} scheduleId スケジュールID
-         * @param {RequestApproveScheduleRequest} requestApproveScheduleRequest 承認情報
+         * @param {TypesApproveScheduleRequest} typesApproveScheduleRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdApprovalPatch(scheduleId: string, requestApproveScheduleRequest: RequestApproveScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdApprovalPatch(scheduleId, requestApproveScheduleRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdApprovalPatch(scheduleId: string, typesApproveScheduleRequest: TypesApproveScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdApprovalPatch(scheduleId, typesApproveScheduleRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * マルシェ開催スケジュールを削除します。
@@ -17917,30 +17917,30 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseScheduleResponse> {
+        v1SchedulesScheduleIdGet(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<ScheduleResponse> {
             return localVarFp.v1SchedulesScheduleIdGet(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
          * マルシェ開催スケジュールの情報を更新します。
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId スケジュールID
-         * @param {RequestUpdateScheduleRequest} requestUpdateScheduleRequest スケジュール情報
+         * @param {TypesUpdateScheduleRequest} typesUpdateScheduleRequest スケジュール情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdPatch(scheduleId: string, requestUpdateScheduleRequest: RequestUpdateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdPatch(scheduleId, requestUpdateScheduleRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdPatch(scheduleId: string, typesUpdateScheduleRequest: TypesUpdateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdPatch(scheduleId, typesUpdateScheduleRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * マルシェ開催スケジュールの公開状態を更新します。
          * @summary マルシェ開催スケジュール公開
          * @param {string} scheduleId スケジュールID
-         * @param {RequestPublishScheduleRequest} requestPublishScheduleRequest 公開設定情報
+         * @param {TypesPublishScheduleRequest} typesPublishScheduleRequest 公開設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SchedulesScheduleIdPublishPatch(scheduleId: string, requestPublishScheduleRequest: RequestPublishScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SchedulesScheduleIdPublishPatch(scheduleId, requestPublishScheduleRequest, options).then((request) => request(axios, basePath));
+        v1SchedulesScheduleIdPublishPatch(scheduleId: string, typesPublishScheduleRequest: TypesPublishScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SchedulesScheduleIdPublishPatch(scheduleId, typesPublishScheduleRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -17968,13 +17968,13 @@ export class ScheduleApi extends BaseAPI {
     /**
      * 新しいマルシェ開催スケジュールを登録します。
      * @summary マルシェ開催スケジュール登録
-     * @param {RequestCreateScheduleRequest} requestCreateScheduleRequest スケジュール情報
+     * @param {TypesCreateScheduleRequest} typesCreateScheduleRequest スケジュール情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1SchedulesPost(requestCreateScheduleRequest: RequestCreateScheduleRequest, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1SchedulesPost(requestCreateScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesPost(typesCreateScheduleRequest: TypesCreateScheduleRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1SchedulesPost(typesCreateScheduleRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -17996,13 +17996,13 @@ export class ScheduleApi extends BaseAPI {
      * マルシェ開催スケジュールの承認状態を更新します。
      * @summary マルシェ開催スケジュール承認
      * @param {string} scheduleId スケジュールID
-     * @param {RequestApproveScheduleRequest} requestApproveScheduleRequest 承認情報
+     * @param {TypesApproveScheduleRequest} typesApproveScheduleRequest 承認情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1SchedulesScheduleIdApprovalPatch(scheduleId: string, requestApproveScheduleRequest: RequestApproveScheduleRequest, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdApprovalPatch(scheduleId, requestApproveScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdApprovalPatch(scheduleId: string, typesApproveScheduleRequest: TypesApproveScheduleRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdApprovalPatch(scheduleId, typesApproveScheduleRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -18033,26 +18033,26 @@ export class ScheduleApi extends BaseAPI {
      * マルシェ開催スケジュールの情報を更新します。
      * @summary マルシェ開催スケジュール更新
      * @param {string} scheduleId スケジュールID
-     * @param {RequestUpdateScheduleRequest} requestUpdateScheduleRequest スケジュール情報
+     * @param {TypesUpdateScheduleRequest} typesUpdateScheduleRequest スケジュール情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1SchedulesScheduleIdPatch(scheduleId: string, requestUpdateScheduleRequest: RequestUpdateScheduleRequest, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdPatch(scheduleId, requestUpdateScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdPatch(scheduleId: string, typesUpdateScheduleRequest: TypesUpdateScheduleRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdPatch(scheduleId, typesUpdateScheduleRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * マルシェ開催スケジュールの公開状態を更新します。
      * @summary マルシェ開催スケジュール公開
      * @param {string} scheduleId スケジュールID
-     * @param {RequestPublishScheduleRequest} requestPublishScheduleRequest 公開設定情報
+     * @param {TypesPublishScheduleRequest} typesPublishScheduleRequest 公開設定情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1SchedulesScheduleIdPublishPatch(scheduleId: string, requestPublishScheduleRequest: RequestPublishScheduleRequest, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdPublishPatch(scheduleId, requestPublishScheduleRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SchedulesScheduleIdPublishPatch(scheduleId: string, typesPublishScheduleRequest: TypesPublishScheduleRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1SchedulesScheduleIdPublishPatch(scheduleId, typesPublishScheduleRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -18154,15 +18154,15 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定情報
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsPatch: async (coordinatorId: string, requestUpsertShippingRequest: RequestUpsertShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CoordinatorsCoordinatorIdShippingsPatch: async (coordinatorId: string, typesUpsertShippingRequest: TypesUpsertShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
             assertParamExists('v1CoordinatorsCoordinatorIdShippingsPatch', 'coordinatorId', coordinatorId)
-            // verify required parameter 'requestUpsertShippingRequest' is not null or undefined
-            assertParamExists('v1CoordinatorsCoordinatorIdShippingsPatch', 'requestUpsertShippingRequest', requestUpsertShippingRequest)
+            // verify required parameter 'typesUpsertShippingRequest' is not null or undefined
+            assertParamExists('v1CoordinatorsCoordinatorIdShippingsPatch', 'typesUpsertShippingRequest', typesUpsertShippingRequest)
             const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
                 .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -18187,7 +18187,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpsertShippingRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpsertShippingRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -18198,15 +18198,15 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
          * 新しい配送設定を登録します。
          * @summary 配送設定登録
          * @param {string} coordinatorId コーディネーターID
-         * @param {RequestCreateShippingRequest} requestCreateShippingRequest 配送設定情報
+         * @param {TypesCreateShippingRequest} typesCreateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsPost: async (coordinatorId: string, requestCreateShippingRequest: RequestCreateShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CoordinatorsCoordinatorIdShippingsPost: async (coordinatorId: string, typesCreateShippingRequest: TypesCreateShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
             assertParamExists('v1CoordinatorsCoordinatorIdShippingsPost', 'coordinatorId', coordinatorId)
-            // verify required parameter 'requestCreateShippingRequest' is not null or undefined
-            assertParamExists('v1CoordinatorsCoordinatorIdShippingsPost', 'requestCreateShippingRequest', requestCreateShippingRequest)
+            // verify required parameter 'typesCreateShippingRequest' is not null or undefined
+            assertParamExists('v1CoordinatorsCoordinatorIdShippingsPost', 'typesCreateShippingRequest', typesCreateShippingRequest)
             const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
                 .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -18231,7 +18231,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateShippingRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateShippingRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -18369,17 +18369,17 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネーターID
          * @param {string} shippingId 配送設定ID
-         * @param {RequestUpdateShippingRequest} requestUpdateShippingRequest 配送設定情報
+         * @param {TypesUpdateShippingRequest} typesUpdateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsShippingIdPatch: async (coordinatorId: string, shippingId: string, requestUpdateShippingRequest: RequestUpdateShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1CoordinatorsCoordinatorIdShippingsShippingIdPatch: async (coordinatorId: string, shippingId: string, typesUpdateShippingRequest: TypesUpdateShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'coordinatorId' is not null or undefined
             assertParamExists('v1CoordinatorsCoordinatorIdShippingsShippingIdPatch', 'coordinatorId', coordinatorId)
             // verify required parameter 'shippingId' is not null or undefined
             assertParamExists('v1CoordinatorsCoordinatorIdShippingsShippingIdPatch', 'shippingId', shippingId)
-            // verify required parameter 'requestUpdateShippingRequest' is not null or undefined
-            assertParamExists('v1CoordinatorsCoordinatorIdShippingsShippingIdPatch', 'requestUpdateShippingRequest', requestUpdateShippingRequest)
+            // verify required parameter 'typesUpdateShippingRequest' is not null or undefined
+            assertParamExists('v1CoordinatorsCoordinatorIdShippingsShippingIdPatch', 'typesUpdateShippingRequest', typesUpdateShippingRequest)
             const localVarPath = `/v1/coordinators/{coordinatorId}/shippings/{shippingId}`
                 .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)))
                 .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
@@ -18405,7 +18405,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateShippingRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateShippingRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -18449,13 +18449,13 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * デフォルトの配送設定を更新します。
          * @summary デフォルト配送設定更新
-         * @param {RequestUpdateDefaultShippingRequest} requestUpdateDefaultShippingRequest デフォルト配送設定情報
+         * @param {TypesUpdateDefaultShippingRequest} typesUpdateDefaultShippingRequest デフォルト配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShippingsDefaultPatch: async (requestUpdateDefaultShippingRequest: RequestUpdateDefaultShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestUpdateDefaultShippingRequest' is not null or undefined
-            assertParamExists('v1ShippingsDefaultPatch', 'requestUpdateDefaultShippingRequest', requestUpdateDefaultShippingRequest)
+        v1ShippingsDefaultPatch: async (typesUpdateDefaultShippingRequest: TypesUpdateDefaultShippingRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesUpdateDefaultShippingRequest' is not null or undefined
+            assertParamExists('v1ShippingsDefaultPatch', 'typesUpdateDefaultShippingRequest', typesUpdateDefaultShippingRequest)
             const localVarPath = `/v1/shippings/default`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -18479,7 +18479,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateDefaultShippingRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateDefaultShippingRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -18503,7 +18503,7 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingResponse>> {
+        async v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsActivationGet']?.[localVarOperationServerIndex]?.url;
@@ -18518,7 +18518,7 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingsResponse>> {
+        async v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId, limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsGet']?.[localVarOperationServerIndex]?.url;
@@ -18528,12 +18528,12 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定情報
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, requestUpsertShippingRequest, options);
+        async v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, typesUpsertShippingRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18542,12 +18542,12 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * 新しい配送設定を登録します。
          * @summary 配送設定登録
          * @param {string} coordinatorId コーディネーターID
-         * @param {RequestCreateShippingRequest} requestCreateShippingRequest 配送設定情報
+         * @param {TypesCreateShippingRequest} typesCreateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, requestCreateShippingRequest: RequestCreateShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, requestCreateShippingRequest, options);
+        async v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, typesCreateShippingRequest: TypesCreateShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, typesCreateShippingRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18588,7 +18588,7 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingResponse>> {
+        async v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId, shippingId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsShippingIdGet']?.[localVarOperationServerIndex]?.url;
@@ -18599,12 +18599,12 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネーターID
          * @param {string} shippingId 配送設定ID
-         * @param {RequestUpdateShippingRequest} requestUpdateShippingRequest 配送設定情報
+         * @param {TypesUpdateShippingRequest} typesUpdateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, requestUpdateShippingRequest: RequestUpdateShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, requestUpdateShippingRequest, options);
+        async v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, typesUpdateShippingRequest: TypesUpdateShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, typesUpdateShippingRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1CoordinatorsCoordinatorIdShippingsShippingIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18615,7 +18615,7 @@ export const ShippingApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ShippingsDefaultGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShippingResponse>> {
+        async v1ShippingsDefaultGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShippingResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShippingsDefaultGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1ShippingsDefaultGet']?.[localVarOperationServerIndex]?.url;
@@ -18624,12 +18624,12 @@ export const ShippingApiFp = function(configuration?: Configuration) {
         /**
          * デフォルトの配送設定を更新します。
          * @summary デフォルト配送設定更新
-         * @param {RequestUpdateDefaultShippingRequest} requestUpdateDefaultShippingRequest デフォルト配送設定情報
+         * @param {TypesUpdateDefaultShippingRequest} typesUpdateDefaultShippingRequest デフォルト配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest: RequestUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest, options);
+        async v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest: TypesUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShippingApi.v1ShippingsDefaultPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18651,7 +18651,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingResponse> {
+        v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingResponse> {
             return localVarFp.v1CoordinatorsCoordinatorIdShippingsActivationGet(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18663,30 +18663,30 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingsResponse> {
+        v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingsResponse> {
             return localVarFp.v1CoordinatorsCoordinatorIdShippingsGet(coordinatorId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * Deprecated.コーディネータの配送設定を更新します。
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネータID
-         * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定情報
+         * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, requestUpsertShippingRequest, options).then((request) => request(axios, basePath));
+        v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, typesUpsertShippingRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい配送設定を登録します。
          * @summary 配送設定登録
          * @param {string} coordinatorId コーディネーターID
-         * @param {RequestCreateShippingRequest} requestCreateShippingRequest 配送設定情報
+         * @param {TypesCreateShippingRequest} typesCreateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, requestCreateShippingRequest: RequestCreateShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingResponse> {
-            return localVarFp.v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, requestCreateShippingRequest, options).then((request) => request(axios, basePath));
+        v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, typesCreateShippingRequest: TypesCreateShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingResponse> {
+            return localVarFp.v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, typesCreateShippingRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定した配送設定をアクティブに設定します。
@@ -18718,7 +18718,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingResponse> {
+        v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId: string, shippingId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingResponse> {
             return localVarFp.v1CoordinatorsCoordinatorIdShippingsShippingIdGet(coordinatorId, shippingId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18726,12 +18726,12 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @summary 配送設定更新
          * @param {string} coordinatorId コーディネーターID
          * @param {string} shippingId 配送設定ID
-         * @param {RequestUpdateShippingRequest} requestUpdateShippingRequest 配送設定情報
+         * @param {TypesUpdateShippingRequest} typesUpdateShippingRequest 配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, requestUpdateShippingRequest: RequestUpdateShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, requestUpdateShippingRequest, options).then((request) => request(axios, basePath));
+        v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, typesUpdateShippingRequest: TypesUpdateShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, typesUpdateShippingRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * デフォルトの配送設定を取得します。
@@ -18739,18 +18739,18 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShippingsDefaultGet(options?: RawAxiosRequestConfig): AxiosPromise<ResponseShippingResponse> {
+        v1ShippingsDefaultGet(options?: RawAxiosRequestConfig): AxiosPromise<TypesShippingResponse> {
             return localVarFp.v1ShippingsDefaultGet(options).then((request) => request(axios, basePath));
         },
         /**
          * デフォルトの配送設定を更新します。
          * @summary デフォルト配送設定更新
-         * @param {RequestUpdateDefaultShippingRequest} requestUpdateDefaultShippingRequest デフォルト配送設定情報
+         * @param {TypesUpdateDefaultShippingRequest} typesUpdateDefaultShippingRequest デフォルト配送設定情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest: RequestUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest, options).then((request) => request(axios, basePath));
+        v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest: TypesUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -18792,26 +18792,26 @@ export class ShippingApi extends BaseAPI {
      * Deprecated.コーディネータの配送設定を更新します。
      * @summary 配送設定更新
      * @param {string} coordinatorId コーディネータID
-     * @param {RequestUpsertShippingRequest} requestUpsertShippingRequest 配送設定情報
+     * @param {TypesUpsertShippingRequest} typesUpsertShippingRequest 配送設定情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, requestUpsertShippingRequest: RequestUpsertShippingRequest, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, requestUpsertShippingRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId: string, typesUpsertShippingRequest: TypesUpsertShippingRequest, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsPatch(coordinatorId, typesUpsertShippingRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 新しい配送設定を登録します。
      * @summary 配送設定登録
      * @param {string} coordinatorId コーディネーターID
-     * @param {RequestCreateShippingRequest} requestCreateShippingRequest 配送設定情報
+     * @param {TypesCreateShippingRequest} typesCreateShippingRequest 配送設定情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, requestCreateShippingRequest: RequestCreateShippingRequest, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, requestCreateShippingRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId: string, typesCreateShippingRequest: TypesCreateShippingRequest, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsPost(coordinatorId, typesCreateShippingRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -18858,13 +18858,13 @@ export class ShippingApi extends BaseAPI {
      * @summary 配送設定更新
      * @param {string} coordinatorId コーディネーターID
      * @param {string} shippingId 配送設定ID
-     * @param {RequestUpdateShippingRequest} requestUpdateShippingRequest 配送設定情報
+     * @param {TypesUpdateShippingRequest} typesUpdateShippingRequest 配送設定情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, requestUpdateShippingRequest: RequestUpdateShippingRequest, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, requestUpdateShippingRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId: string, shippingId: string, typesUpdateShippingRequest: TypesUpdateShippingRequest, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(coordinatorId, shippingId, typesUpdateShippingRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -18881,13 +18881,13 @@ export class ShippingApi extends BaseAPI {
     /**
      * デフォルトの配送設定を更新します。
      * @summary デフォルト配送設定更新
-     * @param {RequestUpdateDefaultShippingRequest} requestUpdateDefaultShippingRequest デフォルト配送設定情報
+     * @param {TypesUpdateDefaultShippingRequest} typesUpdateDefaultShippingRequest デフォルト配送設定情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest: RequestUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1ShippingsDefaultPatch(requestUpdateDefaultShippingRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest: TypesUpdateDefaultShippingRequest, options?: RawAxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1ShippingsDefaultPatch(typesUpdateDefaultShippingRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -18941,15 +18941,15 @@ export const ShopApiAxiosParamCreator = function (configuration?: Configuration)
          * ショップの情報を更新します。ショップ名、商品種別、営業日を変更できます。
          * @summary ショップ更新
          * @param {string} shopId ショップID
-         * @param {RequestUpdateShopRequest} requestUpdateShopRequest ショップ情報
+         * @param {TypesUpdateShopRequest} typesUpdateShopRequest ショップ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShopsShopIdPatch: async (shopId: string, requestUpdateShopRequest: RequestUpdateShopRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ShopsShopIdPatch: async (shopId: string, typesUpdateShopRequest: TypesUpdateShopRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'shopId' is not null or undefined
             assertParamExists('v1ShopsShopIdPatch', 'shopId', shopId)
-            // verify required parameter 'requestUpdateShopRequest' is not null or undefined
-            assertParamExists('v1ShopsShopIdPatch', 'requestUpdateShopRequest', requestUpdateShopRequest)
+            // verify required parameter 'typesUpdateShopRequest' is not null or undefined
+            assertParamExists('v1ShopsShopIdPatch', 'typesUpdateShopRequest', typesUpdateShopRequest)
             const localVarPath = `/v1/shops/{shopId}`
                 .replace(`{${"shopId"}}`, encodeURIComponent(String(shopId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -18974,7 +18974,7 @@ export const ShopApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateShopRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateShopRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -18998,7 +18998,7 @@ export const ShopApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ShopsShopIdGet(shopId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseShopResponse>> {
+        async v1ShopsShopIdGet(shopId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesShopResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShopsShopIdGet(shopId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShopApi.v1ShopsShopIdGet']?.[localVarOperationServerIndex]?.url;
@@ -19008,12 +19008,12 @@ export const ShopApiFp = function(configuration?: Configuration) {
          * ショップの情報を更新します。ショップ名、商品種別、営業日を変更できます。
          * @summary ショップ更新
          * @param {string} shopId ショップID
-         * @param {RequestUpdateShopRequest} requestUpdateShopRequest ショップ情報
+         * @param {TypesUpdateShopRequest} typesUpdateShopRequest ショップ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ShopsShopIdPatch(shopId: string, requestUpdateShopRequest: RequestUpdateShopRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShopsShopIdPatch(shopId, requestUpdateShopRequest, options);
+        async v1ShopsShopIdPatch(shopId: string, typesUpdateShopRequest: TypesUpdateShopRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ShopsShopIdPatch(shopId, typesUpdateShopRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ShopApi.v1ShopsShopIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19035,19 +19035,19 @@ export const ShopApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShopsShopIdGet(shopId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseShopResponse> {
+        v1ShopsShopIdGet(shopId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesShopResponse> {
             return localVarFp.v1ShopsShopIdGet(shopId, options).then((request) => request(axios, basePath));
         },
         /**
          * ショップの情報を更新します。ショップ名、商品種別、営業日を変更できます。
          * @summary ショップ更新
          * @param {string} shopId ショップID
-         * @param {RequestUpdateShopRequest} requestUpdateShopRequest ショップ情報
+         * @param {TypesUpdateShopRequest} typesUpdateShopRequest ショップ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ShopsShopIdPatch(shopId: string, requestUpdateShopRequest: RequestUpdateShopRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ShopsShopIdPatch(shopId, requestUpdateShopRequest, options).then((request) => request(axios, basePath));
+        v1ShopsShopIdPatch(shopId: string, typesUpdateShopRequest: TypesUpdateShopRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ShopsShopIdPatch(shopId, typesUpdateShopRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -19075,13 +19075,13 @@ export class ShopApi extends BaseAPI {
      * ショップの情報を更新します。ショップ名、商品種別、営業日を変更できます。
      * @summary ショップ更新
      * @param {string} shopId ショップID
-     * @param {RequestUpdateShopRequest} requestUpdateShopRequest ショップ情報
+     * @param {TypesUpdateShopRequest} typesUpdateShopRequest ショップ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShopApi
      */
-    public v1ShopsShopIdPatch(shopId: string, requestUpdateShopRequest: RequestUpdateShopRequest, options?: RawAxiosRequestConfig) {
-        return ShopApiFp(this.configuration).v1ShopsShopIdPatch(shopId, requestUpdateShopRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ShopsShopIdPatch(shopId: string, typesUpdateShopRequest: TypesUpdateShopRequest, options?: RawAxiosRequestConfig) {
+        return ShopApiFp(this.configuration).v1ShopsShopIdPatch(shopId, typesUpdateShopRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -19145,13 +19145,13 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 新しいスポットを登録します。
          * @summary スポット登録
-         * @param {RequestCreateSpotRequest} requestCreateSpotRequest スポット情報
+         * @param {CreateSpotRequest} createSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsPost: async (requestCreateSpotRequest: RequestCreateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateSpotRequest' is not null or undefined
-            assertParamExists('v1SpotsPost', 'requestCreateSpotRequest', requestCreateSpotRequest)
+        v1SpotsPost: async (createSpotRequest: CreateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createSpotRequest' is not null or undefined
+            assertParamExists('v1SpotsPost', 'createSpotRequest', createSpotRequest)
             const localVarPath = `/v1/spots`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -19175,7 +19175,7 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateSpotRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createSpotRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19186,15 +19186,15 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
          * スポットの承認状態を更新します。
          * @summary スポット承認
          * @param {string} spotId スポットID
-         * @param {RequestApproveSpotRequest} requestApproveSpotRequest 承認情報
+         * @param {TypesApproveSpotRequest} typesApproveSpotRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsSpotIdApprovalPatch: async (spotId: string, requestApproveSpotRequest: RequestApproveSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SpotsSpotIdApprovalPatch: async (spotId: string, typesApproveSpotRequest: TypesApproveSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'spotId' is not null or undefined
             assertParamExists('v1SpotsSpotIdApprovalPatch', 'spotId', spotId)
-            // verify required parameter 'requestApproveSpotRequest' is not null or undefined
-            assertParamExists('v1SpotsSpotIdApprovalPatch', 'requestApproveSpotRequest', requestApproveSpotRequest)
+            // verify required parameter 'typesApproveSpotRequest' is not null or undefined
+            assertParamExists('v1SpotsSpotIdApprovalPatch', 'typesApproveSpotRequest', typesApproveSpotRequest)
             const localVarPath = `/v1/spots/{spotId}/approval`
                 .replace(`{${"spotId"}}`, encodeURIComponent(String(spotId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -19219,7 +19219,7 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestApproveSpotRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesApproveSpotRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19306,15 +19306,15 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
          * スポットの情報を更新します。
          * @summary スポット更新
          * @param {string} spotId スポットID
-         * @param {RequestUpdateSpotRequest} requestUpdateSpotRequest スポット情報
+         * @param {UpdateSpotRequest} updateSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsSpotIdPatch: async (spotId: string, requestUpdateSpotRequest: RequestUpdateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SpotsSpotIdPatch: async (spotId: string, updateSpotRequest: UpdateSpotRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'spotId' is not null or undefined
             assertParamExists('v1SpotsSpotIdPatch', 'spotId', spotId)
-            // verify required parameter 'requestUpdateSpotRequest' is not null or undefined
-            assertParamExists('v1SpotsSpotIdPatch', 'requestUpdateSpotRequest', requestUpdateSpotRequest)
+            // verify required parameter 'updateSpotRequest' is not null or undefined
+            assertParamExists('v1SpotsSpotIdPatch', 'updateSpotRequest', updateSpotRequest)
             const localVarPath = `/v1/spots/{spotId}`
                 .replace(`{${"spotId"}}`, encodeURIComponent(String(spotId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -19339,7 +19339,7 @@ export const SpotApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateSpotRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(updateSpotRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19365,7 +19365,7 @@ export const SpotApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotsGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSpotsResponse>> {
+        async v1SpotsGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsGet(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1SpotsGet']?.[localVarOperationServerIndex]?.url;
@@ -19374,12 +19374,12 @@ export const SpotApiFp = function(configuration?: Configuration) {
         /**
          * 新しいスポットを登録します。
          * @summary スポット登録
-         * @param {RequestCreateSpotRequest} requestCreateSpotRequest スポット情報
+         * @param {CreateSpotRequest} createSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotsPost(requestCreateSpotRequest: RequestCreateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSpotResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsPost(requestCreateSpotRequest, options);
+        async v1SpotsPost(createSpotRequest: CreateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsPost(createSpotRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1SpotsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19388,12 +19388,12 @@ export const SpotApiFp = function(configuration?: Configuration) {
          * スポットの承認状態を更新します。
          * @summary スポット承認
          * @param {string} spotId スポットID
-         * @param {RequestApproveSpotRequest} requestApproveSpotRequest 承認情報
+         * @param {TypesApproveSpotRequest} typesApproveSpotRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotsSpotIdApprovalPatch(spotId: string, requestApproveSpotRequest: RequestApproveSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsSpotIdApprovalPatch(spotId, requestApproveSpotRequest, options);
+        async v1SpotsSpotIdApprovalPatch(spotId: string, typesApproveSpotRequest: TypesApproveSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsSpotIdApprovalPatch(spotId, typesApproveSpotRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1SpotsSpotIdApprovalPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19418,7 +19418,7 @@ export const SpotApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotsSpotIdGet(spotId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSpotResponse>> {
+        async v1SpotsSpotIdGet(spotId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsSpotIdGet(spotId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1SpotsSpotIdGet']?.[localVarOperationServerIndex]?.url;
@@ -19428,12 +19428,12 @@ export const SpotApiFp = function(configuration?: Configuration) {
          * スポットの情報を更新します。
          * @summary スポット更新
          * @param {string} spotId スポットID
-         * @param {RequestUpdateSpotRequest} requestUpdateSpotRequest スポット情報
+         * @param {UpdateSpotRequest} updateSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotsSpotIdPatch(spotId: string, requestUpdateSpotRequest: RequestUpdateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsSpotIdPatch(spotId, requestUpdateSpotRequest, options);
+        async v1SpotsSpotIdPatch(spotId: string, updateSpotRequest: UpdateSpotRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotsSpotIdPatch(spotId, updateSpotRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotApi.v1SpotsSpotIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19457,29 +19457,29 @@ export const SpotApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSpotsResponse> {
+        v1SpotsGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<SpotsResponse> {
             return localVarFp.v1SpotsGet(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいスポットを登録します。
          * @summary スポット登録
-         * @param {RequestCreateSpotRequest} requestCreateSpotRequest スポット情報
+         * @param {CreateSpotRequest} createSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsPost(requestCreateSpotRequest: RequestCreateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSpotResponse> {
-            return localVarFp.v1SpotsPost(requestCreateSpotRequest, options).then((request) => request(axios, basePath));
+        v1SpotsPost(createSpotRequest: CreateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<SpotResponse> {
+            return localVarFp.v1SpotsPost(createSpotRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スポットの承認状態を更新します。
          * @summary スポット承認
          * @param {string} spotId スポットID
-         * @param {RequestApproveSpotRequest} requestApproveSpotRequest 承認情報
+         * @param {TypesApproveSpotRequest} typesApproveSpotRequest 承認情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsSpotIdApprovalPatch(spotId: string, requestApproveSpotRequest: RequestApproveSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SpotsSpotIdApprovalPatch(spotId, requestApproveSpotRequest, options).then((request) => request(axios, basePath));
+        v1SpotsSpotIdApprovalPatch(spotId: string, typesApproveSpotRequest: TypesApproveSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SpotsSpotIdApprovalPatch(spotId, typesApproveSpotRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スポットを削除します。
@@ -19498,19 +19498,19 @@ export const SpotApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsSpotIdGet(spotId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSpotResponse> {
+        v1SpotsSpotIdGet(spotId: string, options?: RawAxiosRequestConfig): AxiosPromise<SpotResponse> {
             return localVarFp.v1SpotsSpotIdGet(spotId, options).then((request) => request(axios, basePath));
         },
         /**
          * スポットの情報を更新します。
          * @summary スポット更新
          * @param {string} spotId スポットID
-         * @param {RequestUpdateSpotRequest} requestUpdateSpotRequest スポット情報
+         * @param {UpdateSpotRequest} updateSpotRequest スポット情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotsSpotIdPatch(spotId: string, requestUpdateSpotRequest: RequestUpdateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SpotsSpotIdPatch(spotId, requestUpdateSpotRequest, options).then((request) => request(axios, basePath));
+        v1SpotsSpotIdPatch(spotId: string, updateSpotRequest: UpdateSpotRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SpotsSpotIdPatch(spotId, updateSpotRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -19539,26 +19539,26 @@ export class SpotApi extends BaseAPI {
     /**
      * 新しいスポットを登録します。
      * @summary スポット登録
-     * @param {RequestCreateSpotRequest} requestCreateSpotRequest スポット情報
+     * @param {CreateSpotRequest} createSpotRequest スポット情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpotApi
      */
-    public v1SpotsPost(requestCreateSpotRequest: RequestCreateSpotRequest, options?: RawAxiosRequestConfig) {
-        return SpotApiFp(this.configuration).v1SpotsPost(requestCreateSpotRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SpotsPost(createSpotRequest: CreateSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1SpotsPost(createSpotRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * スポットの承認状態を更新します。
      * @summary スポット承認
      * @param {string} spotId スポットID
-     * @param {RequestApproveSpotRequest} requestApproveSpotRequest 承認情報
+     * @param {TypesApproveSpotRequest} typesApproveSpotRequest 承認情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpotApi
      */
-    public v1SpotsSpotIdApprovalPatch(spotId: string, requestApproveSpotRequest: RequestApproveSpotRequest, options?: RawAxiosRequestConfig) {
-        return SpotApiFp(this.configuration).v1SpotsSpotIdApprovalPatch(spotId, requestApproveSpotRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SpotsSpotIdApprovalPatch(spotId: string, typesApproveSpotRequest: TypesApproveSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1SpotsSpotIdApprovalPatch(spotId, typesApproveSpotRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -19589,13 +19589,13 @@ export class SpotApi extends BaseAPI {
      * スポットの情報を更新します。
      * @summary スポット更新
      * @param {string} spotId スポットID
-     * @param {RequestUpdateSpotRequest} requestUpdateSpotRequest スポット情報
+     * @param {UpdateSpotRequest} updateSpotRequest スポット情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpotApi
      */
-    public v1SpotsSpotIdPatch(spotId: string, requestUpdateSpotRequest: RequestUpdateSpotRequest, options?: RawAxiosRequestConfig) {
-        return SpotApiFp(this.configuration).v1SpotsSpotIdPatch(spotId, requestUpdateSpotRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SpotsSpotIdPatch(spotId: string, updateSpotRequest: UpdateSpotRequest, options?: RawAxiosRequestConfig) {
+        return SpotApiFp(this.configuration).v1SpotsSpotIdPatch(spotId, updateSpotRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -19659,13 +19659,13 @@ export const SpotTypeApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 新しいスポットタイプを登録します。
          * @summary スポットタイプ登録
-         * @param {RequestCreateSpotTypeRequest} requestCreateSpotTypeRequest スポットタイプ情報
+         * @param {TypesCreateSpotTypeRequest} typesCreateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotTypesPost: async (requestCreateSpotTypeRequest: RequestCreateSpotTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateSpotTypeRequest' is not null or undefined
-            assertParamExists('v1SpotTypesPost', 'requestCreateSpotTypeRequest', requestCreateSpotTypeRequest)
+        v1SpotTypesPost: async (typesCreateSpotTypeRequest: TypesCreateSpotTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateSpotTypeRequest' is not null or undefined
+            assertParamExists('v1SpotTypesPost', 'typesCreateSpotTypeRequest', typesCreateSpotTypeRequest)
             const localVarPath = `/v1/spot-types`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -19689,7 +19689,7 @@ export const SpotTypeApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateSpotTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateSpotTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19738,15 +19738,15 @@ export const SpotTypeApiAxiosParamCreator = function (configuration?: Configurat
          * スポットタイプの情報を更新します。
          * @summary スポットタイプ更新
          * @param {string} spotTypeId スポットタイプID
-         * @param {RequestUpdateSpotTypeRequest} requestUpdateSpotTypeRequest スポットタイプ情報
+         * @param {TypesUpdateSpotTypeRequest} typesUpdateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotTypesSpotTypeIdPatch: async (spotTypeId: string, requestUpdateSpotTypeRequest: RequestUpdateSpotTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1SpotTypesSpotTypeIdPatch: async (spotTypeId: string, typesUpdateSpotTypeRequest: TypesUpdateSpotTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'spotTypeId' is not null or undefined
             assertParamExists('v1SpotTypesSpotTypeIdPatch', 'spotTypeId', spotTypeId)
-            // verify required parameter 'requestUpdateSpotTypeRequest' is not null or undefined
-            assertParamExists('v1SpotTypesSpotTypeIdPatch', 'requestUpdateSpotTypeRequest', requestUpdateSpotTypeRequest)
+            // verify required parameter 'typesUpdateSpotTypeRequest' is not null or undefined
+            assertParamExists('v1SpotTypesSpotTypeIdPatch', 'typesUpdateSpotTypeRequest', typesUpdateSpotTypeRequest)
             const localVarPath = `/v1/spot-types/{spotTypeId}`
                 .replace(`{${"spotTypeId"}}`, encodeURIComponent(String(spotTypeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -19771,7 +19771,7 @@ export const SpotTypeApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateSpotTypeRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateSpotTypeRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19797,7 +19797,7 @@ export const SpotTypeApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSpotTypesResponse>> {
+        async v1SpotTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpotTypesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotTypesGet(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotTypeApi.v1SpotTypesGet']?.[localVarOperationServerIndex]?.url;
@@ -19806,12 +19806,12 @@ export const SpotTypeApiFp = function(configuration?: Configuration) {
         /**
          * 新しいスポットタイプを登録します。
          * @summary スポットタイプ登録
-         * @param {RequestCreateSpotTypeRequest} requestCreateSpotTypeRequest スポットタイプ情報
+         * @param {TypesCreateSpotTypeRequest} typesCreateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotTypesPost(requestCreateSpotTypeRequest: RequestCreateSpotTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseSpotTypeResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotTypesPost(requestCreateSpotTypeRequest, options);
+        async v1SpotTypesPost(typesCreateSpotTypeRequest: TypesCreateSpotTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesSpotTypeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotTypesPost(typesCreateSpotTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotTypeApi.v1SpotTypesPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19833,12 +19833,12 @@ export const SpotTypeApiFp = function(configuration?: Configuration) {
          * スポットタイプの情報を更新します。
          * @summary スポットタイプ更新
          * @param {string} spotTypeId スポットタイプID
-         * @param {RequestUpdateSpotTypeRequest} requestUpdateSpotTypeRequest スポットタイプ情報
+         * @param {TypesUpdateSpotTypeRequest} typesUpdateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1SpotTypesSpotTypeIdPatch(spotTypeId: string, requestUpdateSpotTypeRequest: RequestUpdateSpotTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotTypesSpotTypeIdPatch(spotTypeId, requestUpdateSpotTypeRequest, options);
+        async v1SpotTypesSpotTypeIdPatch(spotTypeId: string, typesUpdateSpotTypeRequest: TypesUpdateSpotTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SpotTypesSpotTypeIdPatch(spotTypeId, typesUpdateSpotTypeRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SpotTypeApi.v1SpotTypesSpotTypeIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19862,18 +19862,18 @@ export const SpotTypeApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSpotTypesResponse> {
+        v1SpotTypesGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<SpotTypesResponse> {
             return localVarFp.v1SpotTypesGet(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいスポットタイプを登録します。
          * @summary スポットタイプ登録
-         * @param {RequestCreateSpotTypeRequest} requestCreateSpotTypeRequest スポットタイプ情報
+         * @param {TypesCreateSpotTypeRequest} typesCreateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotTypesPost(requestCreateSpotTypeRequest: RequestCreateSpotTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseSpotTypeResponse> {
-            return localVarFp.v1SpotTypesPost(requestCreateSpotTypeRequest, options).then((request) => request(axios, basePath));
+        v1SpotTypesPost(typesCreateSpotTypeRequest: TypesCreateSpotTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesSpotTypeResponse> {
+            return localVarFp.v1SpotTypesPost(typesCreateSpotTypeRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スポットタイプを削除します。
@@ -19889,12 +19889,12 @@ export const SpotTypeApiFactory = function (configuration?: Configuration, baseP
          * スポットタイプの情報を更新します。
          * @summary スポットタイプ更新
          * @param {string} spotTypeId スポットタイプID
-         * @param {RequestUpdateSpotTypeRequest} requestUpdateSpotTypeRequest スポットタイプ情報
+         * @param {TypesUpdateSpotTypeRequest} typesUpdateSpotTypeRequest スポットタイプ情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SpotTypesSpotTypeIdPatch(spotTypeId: string, requestUpdateSpotTypeRequest: RequestUpdateSpotTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1SpotTypesSpotTypeIdPatch(spotTypeId, requestUpdateSpotTypeRequest, options).then((request) => request(axios, basePath));
+        v1SpotTypesSpotTypeIdPatch(spotTypeId: string, typesUpdateSpotTypeRequest: TypesUpdateSpotTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1SpotTypesSpotTypeIdPatch(spotTypeId, typesUpdateSpotTypeRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -19923,13 +19923,13 @@ export class SpotTypeApi extends BaseAPI {
     /**
      * 新しいスポットタイプを登録します。
      * @summary スポットタイプ登録
-     * @param {RequestCreateSpotTypeRequest} requestCreateSpotTypeRequest スポットタイプ情報
+     * @param {TypesCreateSpotTypeRequest} typesCreateSpotTypeRequest スポットタイプ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpotTypeApi
      */
-    public v1SpotTypesPost(requestCreateSpotTypeRequest: RequestCreateSpotTypeRequest, options?: RawAxiosRequestConfig) {
-        return SpotTypeApiFp(this.configuration).v1SpotTypesPost(requestCreateSpotTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SpotTypesPost(typesCreateSpotTypeRequest: TypesCreateSpotTypeRequest, options?: RawAxiosRequestConfig) {
+        return SpotTypeApiFp(this.configuration).v1SpotTypesPost(typesCreateSpotTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -19948,13 +19948,13 @@ export class SpotTypeApi extends BaseAPI {
      * スポットタイプの情報を更新します。
      * @summary スポットタイプ更新
      * @param {string} spotTypeId スポットタイプID
-     * @param {RequestUpdateSpotTypeRequest} requestUpdateSpotTypeRequest スポットタイプ情報
+     * @param {TypesUpdateSpotTypeRequest} typesUpdateSpotTypeRequest スポットタイプ情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpotTypeApi
      */
-    public v1SpotTypesSpotTypeIdPatch(spotTypeId: string, requestUpdateSpotTypeRequest: RequestUpdateSpotTypeRequest, options?: RawAxiosRequestConfig) {
-        return SpotTypeApiFp(this.configuration).v1SpotTypesSpotTypeIdPatch(spotTypeId, requestUpdateSpotTypeRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1SpotTypesSpotTypeIdPatch(spotTypeId: string, typesUpdateSpotTypeRequest: TypesUpdateSpotTypeRequest, options?: RawAxiosRequestConfig) {
+        return SpotTypeApiFp(this.configuration).v1SpotTypesSpotTypeIdPatch(spotTypeId, typesUpdateSpotTypeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -20018,15 +20018,15 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
          * 新しいスレッドを登録します。
          * @summary スレッド登録
          * @param {string} contactId お問い合わせID
-         * @param {RequestCreateThreadRequest} requestCreateThreadRequest スレッド情報
+         * @param {TypesCreateThreadRequest} typesCreateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsPost: async (contactId: string, requestCreateThreadRequest: RequestCreateThreadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ContactsContactIdThreadsPost: async (contactId: string, typesCreateThreadRequest: TypesCreateThreadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'contactId' is not null or undefined
             assertParamExists('v1ContactsContactIdThreadsPost', 'contactId', contactId)
-            // verify required parameter 'requestCreateThreadRequest' is not null or undefined
-            assertParamExists('v1ContactsContactIdThreadsPost', 'requestCreateThreadRequest', requestCreateThreadRequest)
+            // verify required parameter 'typesCreateThreadRequest' is not null or undefined
+            assertParamExists('v1ContactsContactIdThreadsPost', 'typesCreateThreadRequest', typesCreateThreadRequest)
             const localVarPath = `/v1/contacts/{contactId}/threads`
                 .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -20051,7 +20051,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateThreadRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateThreadRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20147,17 +20147,17 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
          * @summary スレッド更新
          * @param {string} contactId お問い合わせID
          * @param {string} threadId スレッドID
-         * @param {RequestUpdateThreadRequest} requestUpdateThreadRequest スレッド情報
+         * @param {TypesUpdateThreadRequest} typesUpdateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsThreadIdPatch: async (contactId: string, threadId: string, requestUpdateThreadRequest: RequestUpdateThreadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ContactsContactIdThreadsThreadIdPatch: async (contactId: string, threadId: string, typesUpdateThreadRequest: TypesUpdateThreadRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'contactId' is not null or undefined
             assertParamExists('v1ContactsContactIdThreadsThreadIdPatch', 'contactId', contactId)
             // verify required parameter 'threadId' is not null or undefined
             assertParamExists('v1ContactsContactIdThreadsThreadIdPatch', 'threadId', threadId)
-            // verify required parameter 'requestUpdateThreadRequest' is not null or undefined
-            assertParamExists('v1ContactsContactIdThreadsThreadIdPatch', 'requestUpdateThreadRequest', requestUpdateThreadRequest)
+            // verify required parameter 'typesUpdateThreadRequest' is not null or undefined
+            assertParamExists('v1ContactsContactIdThreadsThreadIdPatch', 'typesUpdateThreadRequest', typesUpdateThreadRequest)
             const localVarPath = `/v1/contacts/{contactId}/threads/{threadId}`
                 .replace(`{${"contactId"}}`, encodeURIComponent(String(contactId)))
                 .replace(`{${"threadId"}}`, encodeURIComponent(String(threadId)));
@@ -20183,7 +20183,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateThreadRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateThreadRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20209,7 +20209,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdThreadsGet(contactId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseThreadsResponse>> {
+        async v1ContactsContactIdThreadsGet(contactId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesThreadsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsGet(contactId, limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ThreadApi.v1ContactsContactIdThreadsGet']?.[localVarOperationServerIndex]?.url;
@@ -20219,12 +20219,12 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * 新しいスレッドを登録します。
          * @summary スレッド登録
          * @param {string} contactId お問い合わせID
-         * @param {RequestCreateThreadRequest} requestCreateThreadRequest スレッド情報
+         * @param {TypesCreateThreadRequest} typesCreateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdThreadsPost(contactId: string, requestCreateThreadRequest: RequestCreateThreadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseThreadResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsPost(contactId, requestCreateThreadRequest, options);
+        async v1ContactsContactIdThreadsPost(contactId: string, typesCreateThreadRequest: TypesCreateThreadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesThreadResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsPost(contactId, typesCreateThreadRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ThreadApi.v1ContactsContactIdThreadsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -20251,7 +20251,7 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdThreadsThreadIdGet(contactId: string, threadId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseThreadResponse>> {
+        async v1ContactsContactIdThreadsThreadIdGet(contactId: string, threadId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesThreadResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsThreadIdGet(contactId, threadId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ThreadApi.v1ContactsContactIdThreadsThreadIdGet']?.[localVarOperationServerIndex]?.url;
@@ -20262,12 +20262,12 @@ export const ThreadApiFp = function(configuration?: Configuration) {
          * @summary スレッド更新
          * @param {string} contactId お問い合わせID
          * @param {string} threadId スレッドID
-         * @param {RequestUpdateThreadRequest} requestUpdateThreadRequest スレッド情報
+         * @param {TypesUpdateThreadRequest} typesUpdateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, requestUpdateThreadRequest: RequestUpdateThreadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, requestUpdateThreadRequest, options);
+        async v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, typesUpdateThreadRequest: TypesUpdateThreadRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, typesUpdateThreadRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ThreadApi.v1ContactsContactIdThreadsThreadIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -20291,19 +20291,19 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsGet(contactId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseThreadsResponse> {
+        v1ContactsContactIdThreadsGet(contactId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesThreadsResponse> {
             return localVarFp.v1ContactsContactIdThreadsGet(contactId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しいスレッドを登録します。
          * @summary スレッド登録
          * @param {string} contactId お問い合わせID
-         * @param {RequestCreateThreadRequest} requestCreateThreadRequest スレッド情報
+         * @param {TypesCreateThreadRequest} typesCreateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsPost(contactId: string, requestCreateThreadRequest: RequestCreateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseThreadResponse> {
-            return localVarFp.v1ContactsContactIdThreadsPost(contactId, requestCreateThreadRequest, options).then((request) => request(axios, basePath));
+        v1ContactsContactIdThreadsPost(contactId: string, typesCreateThreadRequest: TypesCreateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<TypesThreadResponse> {
+            return localVarFp.v1ContactsContactIdThreadsPost(contactId, typesCreateThreadRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スレッドを削除します。
@@ -20324,7 +20324,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsThreadIdGet(contactId: string, threadId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseThreadResponse> {
+        v1ContactsContactIdThreadsThreadIdGet(contactId: string, threadId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesThreadResponse> {
             return localVarFp.v1ContactsContactIdThreadsThreadIdGet(contactId, threadId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -20332,12 +20332,12 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @summary スレッド更新
          * @param {string} contactId お問い合わせID
          * @param {string} threadId スレッドID
-         * @param {RequestUpdateThreadRequest} requestUpdateThreadRequest スレッド情報
+         * @param {TypesUpdateThreadRequest} typesUpdateThreadRequest スレッド情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, requestUpdateThreadRequest: RequestUpdateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, requestUpdateThreadRequest, options).then((request) => request(axios, basePath));
+        v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, typesUpdateThreadRequest: TypesUpdateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, typesUpdateThreadRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -20367,13 +20367,13 @@ export class ThreadApi extends BaseAPI {
      * 新しいスレッドを登録します。
      * @summary スレッド登録
      * @param {string} contactId お問い合わせID
-     * @param {RequestCreateThreadRequest} requestCreateThreadRequest スレッド情報
+     * @param {TypesCreateThreadRequest} typesCreateThreadRequest スレッド情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadApi
      */
-    public v1ContactsContactIdThreadsPost(contactId: string, requestCreateThreadRequest: RequestCreateThreadRequest, options?: RawAxiosRequestConfig) {
-        return ThreadApiFp(this.configuration).v1ContactsContactIdThreadsPost(contactId, requestCreateThreadRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ContactsContactIdThreadsPost(contactId: string, typesCreateThreadRequest: TypesCreateThreadRequest, options?: RawAxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1ContactsContactIdThreadsPost(contactId, typesCreateThreadRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20407,13 +20407,13 @@ export class ThreadApi extends BaseAPI {
      * @summary スレッド更新
      * @param {string} contactId お問い合わせID
      * @param {string} threadId スレッドID
-     * @param {RequestUpdateThreadRequest} requestUpdateThreadRequest スレッド情報
+     * @param {TypesUpdateThreadRequest} typesUpdateThreadRequest スレッド情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadApi
      */
-    public v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, requestUpdateThreadRequest: RequestUpdateThreadRequest, options?: RawAxiosRequestConfig) {
-        return ThreadApiFp(this.configuration).v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, requestUpdateThreadRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1ContactsContactIdThreadsThreadIdPatch(contactId: string, threadId: string, typesUpdateThreadRequest: TypesUpdateThreadRequest, options?: RawAxiosRequestConfig) {
+        return ThreadApiFp(this.configuration).v1ContactsContactIdThreadsThreadIdPatch(contactId, threadId, typesUpdateThreadRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -20499,7 +20499,7 @@ export const TopApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1TopOrdersGet(startAt?: number, endAt?: number, periodType?: string, shopId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTopOrdersResponse>> {
+        async v1TopOrdersGet(startAt?: number, endAt?: number, periodType?: string, shopId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesTopOrdersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1TopOrdersGet(startAt, endAt, periodType, shopId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TopApi.v1TopOrdersGet']?.[localVarOperationServerIndex]?.url;
@@ -20525,7 +20525,7 @@ export const TopApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1TopOrdersGet(startAt?: number, endAt?: number, periodType?: string, shopId?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseTopOrdersResponse> {
+        v1TopOrdersGet(startAt?: number, endAt?: number, periodType?: string, shopId?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesTopOrdersResponse> {
             return localVarFp.v1TopOrdersGet(startAt, endAt, periodType, shopId, options).then((request) => request(axios, basePath));
         },
     };
@@ -20565,13 +20565,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * コーディネーターの特典動画アップロードURLを生成します。
          * @summary コーディネーター特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsBonusVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadCoordinatorsBonusVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadCoordinatorsBonusVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadCoordinatorsBonusVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/coordinators/bonus-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20595,7 +20595,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20605,13 +20605,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * コーディネーターのヘッダー画像アップロードURLを生成します。
          * @summary コーディネーターヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsHeaderPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadCoordinatorsHeaderPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadCoordinatorsHeaderPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadCoordinatorsHeaderPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/coordinators/header`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20635,7 +20635,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20645,13 +20645,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * コーディネーターのプロモーション動画アップロードURLを生成します。
          * @summary コーディネータープロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsPromotionVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadCoordinatorsPromotionVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadCoordinatorsPromotionVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadCoordinatorsPromotionVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/coordinators/promotion-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20675,7 +20675,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20685,13 +20685,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * コーディネーターのサムネイル画像アップロードURLを生成します。
          * @summary コーディネーターサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsThumbnailPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadCoordinatorsThumbnailPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadCoordinatorsThumbnailPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadCoordinatorsThumbnailPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/coordinators/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20715,7 +20715,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20725,13 +20725,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 体験の画像アップロードURLを生成します。
          * @summary 体験画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesImagePost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadExperiencesImagePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadExperiencesImagePost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadExperiencesImagePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/experiences/image`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20755,7 +20755,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20765,13 +20765,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 体験のプロモーション動画アップロードURLを生成します。
          * @summary 体験プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesPromotionVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadExperiencesPromotionVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadExperiencesPromotionVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadExperiencesPromotionVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/experiences/promotion-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20795,7 +20795,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20805,13 +20805,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 体験の動画アップロードURLを生成します。
          * @summary 体験動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadExperiencesVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadExperiencesVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadExperiencesVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/experiences/video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20835,7 +20835,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20845,13 +20845,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 生産者の特典動画アップロードURLを生成します。
          * @summary 生産者特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersBonusVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProducersBonusVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProducersBonusVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProducersBonusVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/producers/bonus-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20875,7 +20875,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20885,13 +20885,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 生産者のヘッダー画像アップロードURLを生成します。
          * @summary 生産者ヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersHeaderPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProducersHeaderPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProducersHeaderPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProducersHeaderPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/producers/header`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20915,7 +20915,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20925,13 +20925,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 生産者のプロモーション動画アップロードURLを生成します。
          * @summary 生産者プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersPromotionVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProducersPromotionVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProducersPromotionVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProducersPromotionVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/producers/promotion-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20955,7 +20955,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -20965,13 +20965,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 生産者のサムネイル画像アップロードURLを生成します。
          * @summary 生産者サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersThumbnailPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProducersThumbnailPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProducersThumbnailPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProducersThumbnailPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/producers/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20995,7 +20995,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21005,13 +21005,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 商品種別のアイコンアップロードURLを生成します。
          * @summary 商品種別アイコンアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductTypesIconPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProductTypesIconPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProductTypesIconPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProductTypesIconPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/product-types/icon`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21035,7 +21035,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21045,13 +21045,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 商品の画像アップロードURLを生成します。
          * @summary 商品画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductsImagePost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProductsImagePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProductsImagePost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProductsImagePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/products/image`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21075,7 +21075,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21085,13 +21085,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 商品の動画アップロードURLを生成します。
          * @summary 商品動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductsVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadProductsVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadProductsVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadProductsVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/products/video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21115,7 +21115,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21125,13 +21125,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * ライブ配信動画のアップロードURLを生成します。
          * @summary ライブ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesBroadcastsLivePost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSchedulesBroadcastsLivePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadSchedulesBroadcastsLivePost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSchedulesBroadcastsLivePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/schedules/-/broadcasts/live`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21155,7 +21155,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21165,13 +21165,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * スケジュールの画像アップロードURLを生成します。
          * @summary スケジュール画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesImagePost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSchedulesImagePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadSchedulesImagePost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSchedulesImagePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/schedules/image`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21195,7 +21195,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21205,13 +21205,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * スケジュールのオープニング動画アップロードURLを生成します。
          * @summary スケジュールオープニング動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesOpeningVideoPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSchedulesOpeningVideoPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadSchedulesOpeningVideoPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSchedulesOpeningVideoPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/schedules/opening-video`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21235,7 +21235,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21246,15 +21246,15 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
          * 指定されたスケジュールのアーカイブ動画アップロードURLを生成します。
          * @summary アーカイブ動画アップロードURL生成
          * @param {string} scheduleId スケジュールID
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesScheduleIdBroadcastsArchivePost: async (scheduleId: string, requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadSchedulesScheduleIdBroadcastsArchivePost: async (scheduleId: string, getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1UploadSchedulesScheduleIdBroadcastsArchivePost', 'scheduleId', scheduleId)
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSchedulesScheduleIdBroadcastsArchivePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSchedulesScheduleIdBroadcastsArchivePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/schedules/{scheduleId}/broadcasts/archive`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -21279,7 +21279,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21289,13 +21289,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * スケジュールのサムネイルアップロードURLを生成します。
          * @summary スケジュールサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesThumbnailPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSchedulesThumbnailPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadSchedulesThumbnailPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSchedulesThumbnailPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/schedules/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21319,7 +21319,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21329,13 +21329,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * スポットのサムネイルアップロードURLを生成します。
          * @summary スポットサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSpotsThumbnailPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadSpotsThumbnailPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadSpotsThumbnailPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadSpotsThumbnailPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/spots/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21359,7 +21359,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21410,13 +21410,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 動画ファイルのアップロードURLを生成します。
          * @summary 動画ファイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadVideosFilePost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadVideosFilePost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadVideosFilePost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadVideosFilePost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/videos/file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21440,7 +21440,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21450,13 +21450,13 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 動画のサムネイルアップロードURLを生成します。
          * @summary 動画サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadVideosThumbnailPost: async (requestGetUploadURLRequest: RequestGetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestGetUploadURLRequest' is not null or undefined
-            assertParamExists('v1UploadVideosThumbnailPost', 'requestGetUploadURLRequest', requestGetUploadURLRequest)
+        v1UploadVideosThumbnailPost: async (getUploadURLRequest: GetUploadURLRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getUploadURLRequest' is not null or undefined
+            assertParamExists('v1UploadVideosThumbnailPost', 'getUploadURLRequest', getUploadURLRequest)
             const localVarPath = `/v1/upload/videos/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21480,7 +21480,7 @@ export const UploadApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestGetUploadURLRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getUploadURLRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -21500,12 +21500,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * コーディネーターの特典動画アップロードURLを生成します。
          * @summary コーディネーター特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadCoordinatorsBonusVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21513,12 +21513,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * コーディネーターのヘッダー画像アップロードURLを生成します。
          * @summary コーディネーターヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest, options);
+        async v1UploadCoordinatorsHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsHeaderPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadCoordinatorsHeaderPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21526,12 +21526,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * コーディネーターのプロモーション動画アップロードURLを生成します。
          * @summary コーディネータープロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadCoordinatorsPromotionVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21539,12 +21539,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * コーディネーターのサムネイル画像アップロードURLを生成します。
          * @summary コーディネーターサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest, options);
+        async v1UploadCoordinatorsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorsThumbnailPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadCoordinatorsThumbnailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21552,12 +21552,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 体験の画像アップロードURLを生成します。
          * @summary 体験画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadExperiencesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesImagePost(requestGetUploadURLRequest, options);
+        async v1UploadExperiencesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesImagePost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadExperiencesImagePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21565,12 +21565,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 体験のプロモーション動画アップロードURLを生成します。
          * @summary 体験プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadExperiencesPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesPromotionVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadExperiencesPromotionVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21578,12 +21578,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 体験の動画アップロードURLを生成します。
          * @summary 体験動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadExperiencesVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadExperiencesVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadExperiencesVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadExperiencesVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21591,12 +21591,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 生産者の特典動画アップロードURLを生成します。
          * @summary 生産者特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducersBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersBonusVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadProducersBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersBonusVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProducersBonusVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21604,12 +21604,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 生産者のヘッダー画像アップロードURLを生成します。
          * @summary 生産者ヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducersHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersHeaderPost(requestGetUploadURLRequest, options);
+        async v1UploadProducersHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersHeaderPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProducersHeaderPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21617,12 +21617,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 生産者のプロモーション動画アップロードURLを生成します。
          * @summary 生産者プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadProducersPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersPromotionVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProducersPromotionVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21630,12 +21630,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 生産者のサムネイル画像アップロードURLを生成します。
          * @summary 生産者サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProducersThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersThumbnailPost(requestGetUploadURLRequest, options);
+        async v1UploadProducersThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducersThumbnailPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProducersThumbnailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21643,12 +21643,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 商品種別のアイコンアップロードURLを生成します。
          * @summary 商品種別アイコンアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductTypesIconPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductTypesIconPost(requestGetUploadURLRequest, options);
+        async v1UploadProductTypesIconPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductTypesIconPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProductTypesIconPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21656,12 +21656,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 商品の画像アップロードURLを生成します。
          * @summary 商品画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductsImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductsImagePost(requestGetUploadURLRequest, options);
+        async v1UploadProductsImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductsImagePost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProductsImagePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21669,12 +21669,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 商品の動画アップロードURLを生成します。
          * @summary 商品動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadProductsVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductsVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadProductsVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductsVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadProductsVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21682,12 +21682,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * ライブ配信動画のアップロードURLを生成します。
          * @summary ライブ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest, options);
+        async v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSchedulesBroadcastsLivePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21695,12 +21695,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * スケジュールの画像アップロードURLを生成します。
          * @summary スケジュール画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSchedulesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesImagePost(requestGetUploadURLRequest, options);
+        async v1UploadSchedulesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesImagePost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSchedulesImagePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21708,12 +21708,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * スケジュールのオープニング動画アップロードURLを生成します。
          * @summary スケジュールオープニング動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest, options);
+        async v1UploadSchedulesOpeningVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesOpeningVideoPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSchedulesOpeningVideoPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21722,12 +21722,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
          * 指定されたスケジュールのアーカイブ動画アップロードURLを生成します。
          * @summary アーカイブ動画アップロードURL生成
          * @param {string} scheduleId スケジュールID
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, requestGetUploadURLRequest, options);
+        async v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSchedulesScheduleIdBroadcastsArchivePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21735,12 +21735,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * スケジュールのサムネイルアップロードURLを生成します。
          * @summary スケジュールサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest, options);
+        async v1UploadSchedulesThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSchedulesThumbnailPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSchedulesThumbnailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21748,12 +21748,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * スポットのサムネイルアップロードURLを生成します。
          * @summary スポットサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadSpotsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSpotsThumbnailPost(requestGetUploadURLRequest, options);
+        async v1UploadSpotsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadSpotsThumbnailPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadSpotsThumbnailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21765,7 +21765,7 @@ export const UploadApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadStateGet(key: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadStateResponse>> {
+        async v1UploadStateGet(key: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadStateResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadStateGet(key, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadStateGet']?.[localVarOperationServerIndex]?.url;
@@ -21774,12 +21774,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 動画ファイルのアップロードURLを生成します。
          * @summary 動画ファイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadVideosFilePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadVideosFilePost(requestGetUploadURLRequest, options);
+        async v1UploadVideosFilePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadVideosFilePost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadVideosFilePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21787,12 +21787,12 @@ export const UploadApiFp = function(configuration?: Configuration) {
         /**
          * 動画のサムネイルアップロードURLを生成します。
          * @summary 動画サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadVideosThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUploadURLResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadVideosThumbnailPost(requestGetUploadURLRequest, options);
+        async v1UploadVideosThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadURLResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadVideosThumbnailPost(getUploadURLRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UploadApi.v1UploadVideosThumbnailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21810,203 +21810,203 @@ export const UploadApiFactory = function (configuration?: Configuration, basePat
         /**
          * コーディネーターの特典動画アップロードURLを生成します。
          * @summary コーディネーター特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * コーディネーターのヘッダー画像アップロードURLを生成します。
          * @summary コーディネーターヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadCoordinatorsHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadCoordinatorsHeaderPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * コーディネーターのプロモーション動画アップロードURLを生成します。
          * @summary コーディネータープロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * コーディネーターのサムネイル画像アップロードURLを生成します。
          * @summary コーディネーターサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadCoordinatorsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadCoordinatorsThumbnailPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験の画像アップロードURLを生成します。
          * @summary 体験画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadExperiencesImagePost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadExperiencesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadExperiencesImagePost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験のプロモーション動画アップロードURLを生成します。
          * @summary 体験プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadExperiencesPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadExperiencesPromotionVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 体験の動画アップロードURLを生成します。
          * @summary 体験動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadExperiencesVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadExperiencesVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadExperiencesVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadExperiencesVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者の特典動画アップロードURLを生成します。
          * @summary 生産者特典動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProducersBonusVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProducersBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProducersBonusVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者のヘッダー画像アップロードURLを生成します。
          * @summary 生産者ヘッダーアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProducersHeaderPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProducersHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProducersHeaderPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者のプロモーション動画アップロードURLを生成します。
          * @summary 生産者プロモ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProducersPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProducersPromotionVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 生産者のサムネイル画像アップロードURLを生成します。
          * @summary 生産者サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProducersThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProducersThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProducersThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProducersThumbnailPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 商品種別のアイコンアップロードURLを生成します。
          * @summary 商品種別アイコンアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductTypesIconPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProductTypesIconPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProductTypesIconPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProductTypesIconPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 商品の画像アップロードURLを生成します。
          * @summary 商品画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductsImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProductsImagePost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProductsImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProductsImagePost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 商品の動画アップロードURLを生成します。
          * @summary 商品動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadProductsVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadProductsVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadProductsVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadProductsVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ライブ配信動画のアップロードURLを生成します。
          * @summary ライブ動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スケジュールの画像アップロードURLを生成します。
          * @summary スケジュール画像アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSchedulesImagePost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSchedulesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSchedulesImagePost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スケジュールのオープニング動画アップロードURLを生成します。
          * @summary スケジュールオープニング動画アップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSchedulesOpeningVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSchedulesOpeningVideoPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定されたスケジュールのアーカイブ動画アップロードURLを生成します。
          * @summary アーカイブ動画アップロードURL生成
          * @param {string} scheduleId スケジュールID
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スケジュールのサムネイルアップロードURLを生成します。
          * @summary スケジュールサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSchedulesThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSchedulesThumbnailPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * スポットのサムネイルアップロードURLを生成します。
          * @summary スポットサムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadSpotsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadSpotsThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadSpotsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadSpotsThumbnailPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定されたキーのアップロード状態を取得します。
@@ -22015,28 +22015,28 @@ export const UploadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadStateGet(key: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadStateResponse> {
+        v1UploadStateGet(key: string, options?: RawAxiosRequestConfig): AxiosPromise<UploadStateResponse> {
             return localVarFp.v1UploadStateGet(key, options).then((request) => request(axios, basePath));
         },
         /**
          * 動画ファイルのアップロードURLを生成します。
          * @summary 動画ファイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadVideosFilePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadVideosFilePost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadVideosFilePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadVideosFilePost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 動画のサムネイルアップロードURLを生成します。
          * @summary 動画サムネイルアップロードURL生成
-         * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+         * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadVideosThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUploadURLResponse> {
-            return localVarFp.v1UploadVideosThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(axios, basePath));
+        v1UploadVideosThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadURLResponse> {
+            return localVarFp.v1UploadVideosThumbnailPost(getUploadURLRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -22051,242 +22051,242 @@ export class UploadApi extends BaseAPI {
     /**
      * コーディネーターの特典動画アップロードURLを生成します。
      * @summary コーディネーター特典動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadCoordinatorsBonusVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadCoordinatorsBonusVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * コーディネーターのヘッダー画像アップロードURLを生成します。
      * @summary コーディネーターヘッダーアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadCoordinatorsHeaderPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadCoordinatorsHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadCoordinatorsHeaderPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * コーディネーターのプロモーション動画アップロードURLを生成します。
      * @summary コーディネータープロモ動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadCoordinatorsPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadCoordinatorsPromotionVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * コーディネーターのサムネイル画像アップロードURLを生成します。
      * @summary コーディネーターサムネイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadCoordinatorsThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadCoordinatorsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadCoordinatorsThumbnailPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 体験の画像アップロードURLを生成します。
      * @summary 体験画像アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadExperiencesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadExperiencesImagePost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadExperiencesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadExperiencesImagePost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 体験のプロモーション動画アップロードURLを生成します。
      * @summary 体験プロモ動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadExperiencesPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadExperiencesPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadExperiencesPromotionVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 体験の動画アップロードURLを生成します。
      * @summary 体験動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadExperiencesVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadExperiencesVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadExperiencesVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadExperiencesVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 生産者の特典動画アップロードURLを生成します。
      * @summary 生産者特典動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProducersBonusVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProducersBonusVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProducersBonusVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProducersBonusVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 生産者のヘッダー画像アップロードURLを生成します。
      * @summary 生産者ヘッダーアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProducersHeaderPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProducersHeaderPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProducersHeaderPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProducersHeaderPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 生産者のプロモーション動画アップロードURLを生成します。
      * @summary 生産者プロモ動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProducersPromotionVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProducersPromotionVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProducersPromotionVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 生産者のサムネイル画像アップロードURLを生成します。
      * @summary 生産者サムネイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProducersThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProducersThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProducersThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProducersThumbnailPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 商品種別のアイコンアップロードURLを生成します。
      * @summary 商品種別アイコンアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProductTypesIconPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProductTypesIconPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProductTypesIconPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProductTypesIconPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 商品の画像アップロードURLを生成します。
      * @summary 商品画像アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProductsImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProductsImagePost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProductsImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProductsImagePost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 商品の動画アップロードURLを生成します。
      * @summary 商品動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadProductsVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadProductsVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadProductsVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadProductsVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ライブ配信動画のアップロードURLを生成します。
      * @summary ライブ動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSchedulesBroadcastsLivePost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSchedulesBroadcastsLivePost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * スケジュールの画像アップロードURLを生成します。
      * @summary スケジュール画像アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSchedulesImagePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSchedulesImagePost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSchedulesImagePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSchedulesImagePost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * スケジュールのオープニング動画アップロードURLを生成します。
      * @summary スケジュールオープニング動画アップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSchedulesOpeningVideoPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSchedulesOpeningVideoPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSchedulesOpeningVideoPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 指定されたスケジュールのアーカイブ動画アップロードURLを生成します。
      * @summary アーカイブ動画アップロードURL生成
      * @param {string} scheduleId スケジュールID
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId: string, getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSchedulesScheduleIdBroadcastsArchivePost(scheduleId, getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * スケジュールのサムネイルアップロードURLを生成します。
      * @summary スケジュールサムネイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSchedulesThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSchedulesThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSchedulesThumbnailPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * スポットのサムネイルアップロードURLを生成します。
      * @summary スポットサムネイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadSpotsThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadSpotsThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadSpotsThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadSpotsThumbnailPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -22304,25 +22304,25 @@ export class UploadApi extends BaseAPI {
     /**
      * 動画ファイルのアップロードURLを生成します。
      * @summary 動画ファイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadVideosFilePost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadVideosFilePost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadVideosFilePost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadVideosFilePost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 動画のサムネイルアップロードURLを生成します。
      * @summary 動画サムネイルアップロードURL生成
-     * @param {RequestGetUploadURLRequest} requestGetUploadURLRequest アップロードファイル情報
+     * @param {GetUploadURLRequest} getUploadURLRequest アップロードファイル情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadApi
      */
-    public v1UploadVideosThumbnailPost(requestGetUploadURLRequest: RequestGetUploadURLRequest, options?: RawAxiosRequestConfig) {
-        return UploadApiFp(this.configuration).v1UploadVideosThumbnailPost(requestGetUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadVideosThumbnailPost(getUploadURLRequest: GetUploadURLRequest, options?: RawAxiosRequestConfig) {
+        return UploadApiFp(this.configuration).v1UploadVideosThumbnailPost(getUploadURLRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -22520,7 +22520,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UsersGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUsersResponse>> {
+        async v1UsersGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesUsersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UsersGet(limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.v1UsersGet']?.[localVarOperationServerIndex]?.url;
@@ -22546,7 +22546,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UsersUserIdGet(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserResponse>> {
+        async v1UsersUserIdGet(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UsersUserIdGet(userId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.v1UsersUserIdGet']?.[localVarOperationServerIndex]?.url;
@@ -22561,7 +22561,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UsersUserIdOrdersGet(userId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserOrdersResponse>> {
+        async v1UsersUserIdOrdersGet(userId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesUserOrdersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UsersUserIdOrdersGet(userId, limit, offset, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.v1UsersUserIdOrdersGet']?.[localVarOperationServerIndex]?.url;
@@ -22585,7 +22585,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UsersGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUsersResponse> {
+        v1UsersGet(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesUsersResponse> {
             return localVarFp.v1UsersGet(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -22605,7 +22605,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UsersUserIdGet(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUserResponse> {
+        v1UsersUserIdGet(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesUserResponse> {
             return localVarFp.v1UsersUserIdGet(userId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -22617,7 +22617,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UsersUserIdOrdersGet(userId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ResponseUserOrdersResponse> {
+        v1UsersUserIdOrdersGet(userId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<TypesUserOrdersResponse> {
             return localVarFp.v1UsersUserIdOrdersGet(userId, limit, offset, options).then((request) => request(axios, basePath));
         },
     };
@@ -22742,13 +22742,13 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 新しい動画を登録します。
          * @summary 動画登録
-         * @param {RequestCreateVideoRequest} requestCreateVideoRequest 動画情報
+         * @param {TypesCreateVideoRequest} typesCreateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosPost: async (requestCreateVideoRequest: RequestCreateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'requestCreateVideoRequest' is not null or undefined
-            assertParamExists('v1VideosPost', 'requestCreateVideoRequest', requestCreateVideoRequest)
+        v1VideosPost: async (typesCreateVideoRequest: TypesCreateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'typesCreateVideoRequest' is not null or undefined
+            assertParamExists('v1VideosPost', 'typesCreateVideoRequest', typesCreateVideoRequest)
             const localVarPath = `/v1/videos`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -22772,7 +22772,7 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestCreateVideoRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesCreateVideoRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -22912,15 +22912,15 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
          * 動画の情報を更新します。
          * @summary 動画更新
          * @param {string} videoId 動画ID
-         * @param {RequestUpdateVideoRequest} requestUpdateVideoRequest 動画情報
+         * @param {TypesUpdateVideoRequest} typesUpdateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdPatch: async (videoId: string, requestUpdateVideoRequest: RequestUpdateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1VideosVideoIdPatch: async (videoId: string, typesUpdateVideoRequest: TypesUpdateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'videoId' is not null or undefined
             assertParamExists('v1VideosVideoIdPatch', 'videoId', videoId)
-            // verify required parameter 'requestUpdateVideoRequest' is not null or undefined
-            assertParamExists('v1VideosVideoIdPatch', 'requestUpdateVideoRequest', requestUpdateVideoRequest)
+            // verify required parameter 'typesUpdateVideoRequest' is not null or undefined
+            assertParamExists('v1VideosVideoIdPatch', 'typesUpdateVideoRequest', typesUpdateVideoRequest)
             const localVarPath = `/v1/videos/{videoId}`
                 .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -22945,7 +22945,7 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateVideoRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateVideoRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -22971,7 +22971,7 @@ export const VideoApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVideosResponse>> {
+        async v1VideosGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideosResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosGet(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1VideosGet']?.[localVarOperationServerIndex]?.url;
@@ -22980,12 +22980,12 @@ export const VideoApiFp = function(configuration?: Configuration) {
         /**
          * 新しい動画を登録します。
          * @summary 動画登録
-         * @param {RequestCreateVideoRequest} requestCreateVideoRequest 動画情報
+         * @param {TypesCreateVideoRequest} typesCreateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosPost(requestCreateVideoRequest: RequestCreateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosPost(requestCreateVideoRequest, options);
+        async v1VideosPost(typesCreateVideoRequest: TypesCreateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosPost(typesCreateVideoRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1VideosPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23000,7 +23000,7 @@ export const VideoApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosVideoIdAnalyticsGet(videoId: string, start?: number, end?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAnalyzeVideoResponse>> {
+        async v1VideosVideoIdAnalyticsGet(videoId: string, start?: number, end?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TypesAnalyzeVideoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdAnalyticsGet(videoId, start, end, viewerLogInterval, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1VideosVideoIdAnalyticsGet']?.[localVarOperationServerIndex]?.url;
@@ -23026,7 +23026,7 @@ export const VideoApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosVideoIdGet(videoId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVideoResponse>> {
+        async v1VideosVideoIdGet(videoId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdGet(videoId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1VideosVideoIdGet']?.[localVarOperationServerIndex]?.url;
@@ -23036,12 +23036,12 @@ export const VideoApiFp = function(configuration?: Configuration) {
          * 動画の情報を更新します。
          * @summary 動画更新
          * @param {string} videoId 動画ID
-         * @param {RequestUpdateVideoRequest} requestUpdateVideoRequest 動画情報
+         * @param {TypesUpdateVideoRequest} typesUpdateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosVideoIdPatch(videoId: string, requestUpdateVideoRequest: RequestUpdateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdPatch(videoId, requestUpdateVideoRequest, options);
+        async v1VideosVideoIdPatch(videoId: string, typesUpdateVideoRequest: TypesUpdateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdPatch(videoId, typesUpdateVideoRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1VideosVideoIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23065,18 +23065,18 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseVideosResponse> {
+        v1VideosGet(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<VideosResponse> {
             return localVarFp.v1VideosGet(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 新しい動画を登録します。
          * @summary 動画登録
-         * @param {RequestCreateVideoRequest} requestCreateVideoRequest 動画情報
+         * @param {TypesCreateVideoRequest} typesCreateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosPost(requestCreateVideoRequest: RequestCreateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResponseVideoResponse> {
-            return localVarFp.v1VideosPost(requestCreateVideoRequest, options).then((request) => request(axios, basePath));
+        v1VideosPost(typesCreateVideoRequest: TypesCreateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<VideoResponse> {
+            return localVarFp.v1VideosPost(typesCreateVideoRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定された動画の視聴者分析データを取得します。集計期間と集計間隔を指定できます。
@@ -23088,7 +23088,7 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdAnalyticsGet(videoId: string, start?: number, end?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAnalyzeVideoResponse> {
+        v1VideosVideoIdAnalyticsGet(videoId: string, start?: number, end?: number, viewerLogInterval?: string, options?: RawAxiosRequestConfig): AxiosPromise<TypesAnalyzeVideoResponse> {
             return localVarFp.v1VideosVideoIdAnalyticsGet(videoId, start, end, viewerLogInterval, options).then((request) => request(axios, basePath));
         },
         /**
@@ -23108,19 +23108,19 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdGet(videoId: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseVideoResponse> {
+        v1VideosVideoIdGet(videoId: string, options?: RawAxiosRequestConfig): AxiosPromise<VideoResponse> {
             return localVarFp.v1VideosVideoIdGet(videoId, options).then((request) => request(axios, basePath));
         },
         /**
          * 動画の情報を更新します。
          * @summary 動画更新
          * @param {string} videoId 動画ID
-         * @param {RequestUpdateVideoRequest} requestUpdateVideoRequest 動画情報
+         * @param {TypesUpdateVideoRequest} typesUpdateVideoRequest 動画情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdPatch(videoId: string, requestUpdateVideoRequest: RequestUpdateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1VideosVideoIdPatch(videoId, requestUpdateVideoRequest, options).then((request) => request(axios, basePath));
+        v1VideosVideoIdPatch(videoId: string, typesUpdateVideoRequest: TypesUpdateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1VideosVideoIdPatch(videoId, typesUpdateVideoRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -23149,13 +23149,13 @@ export class VideoApi extends BaseAPI {
     /**
      * 新しい動画を登録します。
      * @summary 動画登録
-     * @param {RequestCreateVideoRequest} requestCreateVideoRequest 動画情報
+     * @param {TypesCreateVideoRequest} typesCreateVideoRequest 動画情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof VideoApi
      */
-    public v1VideosPost(requestCreateVideoRequest: RequestCreateVideoRequest, options?: RawAxiosRequestConfig) {
-        return VideoApiFp(this.configuration).v1VideosPost(requestCreateVideoRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1VideosPost(typesCreateVideoRequest: TypesCreateVideoRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1VideosPost(typesCreateVideoRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -23201,13 +23201,13 @@ export class VideoApi extends BaseAPI {
      * 動画の情報を更新します。
      * @summary 動画更新
      * @param {string} videoId 動画ID
-     * @param {RequestUpdateVideoRequest} requestUpdateVideoRequest 動画情報
+     * @param {TypesUpdateVideoRequest} typesUpdateVideoRequest 動画情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof VideoApi
      */
-    public v1VideosVideoIdPatch(videoId: string, requestUpdateVideoRequest: RequestUpdateVideoRequest, options?: RawAxiosRequestConfig) {
-        return VideoApiFp(this.configuration).v1VideosVideoIdPatch(videoId, requestUpdateVideoRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1VideosVideoIdPatch(videoId: string, typesUpdateVideoRequest: TypesUpdateVideoRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1VideosVideoIdPatch(videoId, typesUpdateVideoRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -23224,17 +23224,17 @@ export const VideoCommentApiAxiosParamCreator = function (configuration?: Config
          * @summary 動画コメント更新
          * @param {string} videoId 動画ID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateVideoCommentRequest} requestUpdateVideoCommentRequest コメント情報
+         * @param {TypesUpdateVideoCommentRequest} typesUpdateVideoCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdCommentsCommentIdPatch: async (videoId: string, commentId: string, requestUpdateVideoCommentRequest: RequestUpdateVideoCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1VideosVideoIdCommentsCommentIdPatch: async (videoId: string, commentId: string, typesUpdateVideoCommentRequest: TypesUpdateVideoCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'videoId' is not null or undefined
             assertParamExists('v1VideosVideoIdCommentsCommentIdPatch', 'videoId', videoId)
             // verify required parameter 'commentId' is not null or undefined
             assertParamExists('v1VideosVideoIdCommentsCommentIdPatch', 'commentId', commentId)
-            // verify required parameter 'requestUpdateVideoCommentRequest' is not null or undefined
-            assertParamExists('v1VideosVideoIdCommentsCommentIdPatch', 'requestUpdateVideoCommentRequest', requestUpdateVideoCommentRequest)
+            // verify required parameter 'typesUpdateVideoCommentRequest' is not null or undefined
+            assertParamExists('v1VideosVideoIdCommentsCommentIdPatch', 'typesUpdateVideoCommentRequest', typesUpdateVideoCommentRequest)
             const localVarPath = `/v1/videos/{videoId}/comments/{commentId}`
                 .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)))
                 .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
@@ -23260,7 +23260,7 @@ export const VideoCommentApiAxiosParamCreator = function (configuration?: Config
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(requestUpdateVideoCommentRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(typesUpdateVideoCommentRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -23340,12 +23340,12 @@ export const VideoCommentApiFp = function(configuration?: Configuration) {
          * @summary 動画コメント更新
          * @param {string} videoId 動画ID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateVideoCommentRequest} requestUpdateVideoCommentRequest コメント情報
+         * @param {TypesUpdateVideoCommentRequest} typesUpdateVideoCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, requestUpdateVideoCommentRequest: RequestUpdateVideoCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, requestUpdateVideoCommentRequest, options);
+        async v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, typesUpdateVideoCommentRequest: TypesUpdateVideoCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, typesUpdateVideoCommentRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoCommentApi.v1VideosVideoIdCommentsCommentIdPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -23361,7 +23361,7 @@ export const VideoCommentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1VideosVideoIdCommentsGet(videoId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVideoCommentsResponse>> {
+        async v1VideosVideoIdCommentsGet(videoId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoCommentsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1VideosVideoIdCommentsGet(videoId, limit, start, end, next, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoCommentApi.v1VideosVideoIdCommentsGet']?.[localVarOperationServerIndex]?.url;
@@ -23382,12 +23382,12 @@ export const VideoCommentApiFactory = function (configuration?: Configuration, b
          * @summary 動画コメント更新
          * @param {string} videoId 動画ID
          * @param {string} commentId コメントID
-         * @param {RequestUpdateVideoCommentRequest} requestUpdateVideoCommentRequest コメント情報
+         * @param {TypesUpdateVideoCommentRequest} typesUpdateVideoCommentRequest コメント情報
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, requestUpdateVideoCommentRequest: RequestUpdateVideoCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, requestUpdateVideoCommentRequest, options).then((request) => request(axios, basePath));
+        v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, typesUpdateVideoCommentRequest: TypesUpdateVideoCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, typesUpdateVideoCommentRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 指定された動画のコメント一覧を取得します。ページネーションと期間フィルタリングに対応しています。
@@ -23400,7 +23400,7 @@ export const VideoCommentApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VideosVideoIdCommentsGet(videoId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): AxiosPromise<ResponseVideoCommentsResponse> {
+        v1VideosVideoIdCommentsGet(videoId: string, limit?: number, start?: number, end?: number, next?: string, options?: RawAxiosRequestConfig): AxiosPromise<VideoCommentsResponse> {
             return localVarFp.v1VideosVideoIdCommentsGet(videoId, limit, start, end, next, options).then((request) => request(axios, basePath));
         },
     };
@@ -23418,13 +23418,13 @@ export class VideoCommentApi extends BaseAPI {
      * @summary 動画コメント更新
      * @param {string} videoId 動画ID
      * @param {string} commentId コメントID
-     * @param {RequestUpdateVideoCommentRequest} requestUpdateVideoCommentRequest コメント情報
+     * @param {TypesUpdateVideoCommentRequest} typesUpdateVideoCommentRequest コメント情報
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof VideoCommentApi
      */
-    public v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, requestUpdateVideoCommentRequest: RequestUpdateVideoCommentRequest, options?: RawAxiosRequestConfig) {
-        return VideoCommentApiFp(this.configuration).v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, requestUpdateVideoCommentRequest, options).then((request) => request(this.axios, this.basePath));
+    public v1VideosVideoIdCommentsCommentIdPatch(videoId: string, commentId: string, typesUpdateVideoCommentRequest: TypesUpdateVideoCommentRequest, options?: RawAxiosRequestConfig) {
+        return VideoCommentApiFp(this.configuration).v1VideosVideoIdCommentsCommentIdPatch(videoId, commentId, typesUpdateVideoCommentRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
