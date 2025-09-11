@@ -15,39 +15,39 @@ func TestVideoStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.VideoStatus
-		expect VideoStatus
+		expect types.VideoStatus
 	}{
 		{
 			name:   "private",
 			status: entity.VideoStatusPrivate,
-			expect: VideoStatusPrivate,
+			expect: types.VideoStatusPrivate,
 		},
 		{
 			name:   "waiting",
 			status: entity.VideoStatusWaiting,
-			expect: VideoStatusWaiting,
+			expect: types.VideoStatusWaiting,
 		},
 		{
 			name:   "limited",
 			status: entity.VideoStatusLimited,
-			expect: VideoStatusLimited,
+			expect: types.VideoStatusLimited,
 		},
 		{
 			name:   "published",
 			status: entity.VideoStatusPublished,
-			expect: VideoStatusPublished,
+			expect: types.VideoStatusPublished,
 		},
 		{
 			name:   "unknown",
 			status: entity.VideoStatusUnknown,
-			expect: VideoStatusUnknown,
+			expect: types.VideoStatusUnknown,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			actual := NewVideoStatus(tt.status)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -58,32 +58,32 @@ func TestVideoStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status VideoStatus
-		expect int32
+		expect types.VideoStatus
 	}{
 		{
 			name:   "private",
-			status: VideoStatusPrivate,
-			expect: 1,
+			status: VideoStatus(types.VideoStatusPrivate),
+			expect: types.VideoStatusPrivate,
 		},
 		{
 			name:   "waiting",
-			status: VideoStatusWaiting,
-			expect: 2,
+			status: VideoStatus(types.VideoStatusWaiting),
+			expect: types.VideoStatusWaiting,
 		},
 		{
 			name:   "limited",
-			status: VideoStatusLimited,
-			expect: 3,
+			status: VideoStatus(types.VideoStatusLimited),
+			expect: types.VideoStatusLimited,
 		},
 		{
 			name:   "published",
-			status: VideoStatusPublished,
-			expect: 4,
+			status: VideoStatus(types.VideoStatusPublished),
+			expect: types.VideoStatusPublished,
 		},
 		{
 			name:   "unknown",
-			status: VideoStatusUnknown,
-			expect: 0,
+			status: VideoStatus(types.VideoStatusUnknown),
+			expect: types.VideoStatusUnknown,
 		},
 	}
 
@@ -150,7 +150,7 @@ func TestVideos(t *testing.T) {
 						ExperienceIDs:     []string{"experience-id"},
 						Title:             "じゃがいもの育て方",
 						Description:       "じゃがいもの育て方の動画です。",
-						Status:            int32(VideoStatusPublished),
+						Status:            types.VideoStatusPublished,
 						ThumbnailURL:      "https://example.com/thumbnail.jpg",
 						VideoURL:          "https://example.com/video.mp4",
 						Public:            true,
@@ -195,7 +195,7 @@ func TestVideos_Response(t *testing.T) {
 						ExperienceIDs:     []string{"experience-id"},
 						Title:             "じゃがいもの育て方",
 						Description:       "じゃがいもの育て方の動画です。",
-						Status:            int32(VideoStatusPublished),
+						Status:            types.VideoStatusPublished,
 						ThumbnailURL:      "https://example.com/thumbnail.jpg",
 						VideoURL:          "https://example.com/video.mp4",
 						Public:            true,
@@ -216,7 +216,7 @@ func TestVideos_Response(t *testing.T) {
 					ExperienceIDs:     []string{"experience-id"},
 					Title:             "じゃがいもの育て方",
 					Description:       "じゃがいもの育て方の動画です。",
-					Status:            int32(VideoStatusPublished),
+					Status:            types.VideoStatusPublished,
 					ThumbnailURL:      "https://example.com/thumbnail.jpg",
 					VideoURL:          "https://example.com/video.mp4",
 					Public:            true,

@@ -15,22 +15,22 @@ func TestRefundType(t *testing.T) {
 	tests := []struct {
 		name   string
 		typ    entity.RefundType
-		expect types.RefundType
+		expect RefundType
 	}{
 		{
 			name:   "canceled",
 			typ:    entity.RefundTypeCanceled,
-			expect: types.RefundTypeCanceled,
+			expect: RefundType(types.RefundTypeCanceled),
 		},
 		{
 			name:   "refunded",
 			typ:    entity.RefundTypeRefunded,
-			expect: types.RefundTypeRefunded,
+			expect: RefundType(types.RefundTypeRefunded),
 		},
 		{
 			name:   "none",
 			typ:    entity.RefundTypeNone,
-			expect: types.RefundTypeNone,
+			expect: RefundType(types.RefundTypeNone),
 		},
 	}
 	for _, tt := range tests {
@@ -46,12 +46,12 @@ func TestRefundType_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		typ    RefundType
-		expect int32
+		expect types.RefundType
 	}{
 		{
 			name:   "none",
 			typ:    RefundType(types.RefundTypeNone),
-			expect: 0,
+			expect: types.RefundTypeNone,
 		},
 	}
 	for _, tt := range tests {

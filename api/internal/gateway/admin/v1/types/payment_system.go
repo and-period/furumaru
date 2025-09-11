@@ -17,7 +17,7 @@ type PaymentSystem struct {
 }
 
 type UpdatePaymentSystemRequest struct {
-	Status int32 `json:"status" validate:"required"` // 決済システム状態
+	Status PaymentSystemStatus `json:"status" validate:"required"` // 決済システム状態
 }
 
 type PaymentSystemsResponse struct {

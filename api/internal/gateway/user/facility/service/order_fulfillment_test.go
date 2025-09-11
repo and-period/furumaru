@@ -13,27 +13,27 @@ func TestShippingSize(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingSize
-		expect types.ShippingSize
+		expect ShippingSize
 	}{
 		{
 			name:   "size 60",
 			status: entity.ShippingSize60,
-			expect: types.ShippingSize60,
+			expect: ShippingSize(types.ShippingSize60),
 		},
 		{
 			name:   "size 80",
 			status: entity.ShippingSize80,
-			expect: types.ShippingSize80,
+			expect: ShippingSize(types.ShippingSize80),
 		},
 		{
 			name:   "size 100",
 			status: entity.ShippingSize100,
-			expect: types.ShippingSize100,
+			expect: ShippingSize(types.ShippingSize100),
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingSizeUnknown,
-			expect: types.ShippingSizeUnknown,
+			expect: ShippingSize(types.ShippingSizeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -49,12 +49,12 @@ func TestShippingSize_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ShippingSize
-		expect int32
+		expect types.ShippingSize
 	}{
 		{
 			name:   "success",
 			status: ShippingSize(types.ShippingSize60),
-			expect: 1,
+			expect: types.ShippingSize60,
 		},
 	}
 	for _, tt := range tests {
@@ -70,22 +70,22 @@ func TestShippingType(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingType
-		expect types.ShippingType
+		expect ShippingType
 	}{
 		{
 			name:   "normal",
 			status: entity.ShippingTypeNormal,
-			expect: types.ShippingTypeNormal,
+			expect: ShippingType(types.ShippingTypeNormal),
 		},
 		{
 			name:   "frozen",
 			status: entity.ShippingTypeFrozen,
-			expect: types.ShippingTypeFrozen,
+			expect: ShippingType(types.ShippingTypeFrozen),
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingTypeUnknown,
-			expect: types.ShippingTypeUnknown,
+			expect: ShippingType(types.ShippingTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -101,12 +101,12 @@ func TestShippingType_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ShippingType
-		expect int32
+		expect types.ShippingType
 	}{
 		{
 			name:   "success",
 			status: ShippingType(types.ShippingTypeNormal),
-			expect: 1,
+			expect: types.ShippingTypeNormal,
 		},
 	}
 	for _, tt := range tests {

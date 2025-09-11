@@ -45,7 +45,7 @@ func TestProducer(t *testing.T) {
 			expect: &Producer{
 				Producer: types.Producer{
 					ID:             "producer-id",
-					Status:         int32(AdminStatusActivated),
+					Status:         types.AdminStatusActivated,
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -84,7 +84,7 @@ func TestProducer_Response(t *testing.T) {
 			producer: &Producer{
 				Producer: types.Producer{
 					ID:             "producer-id",
-					Status:         int32(AdminStatusActivated),
+					Status:         types.AdminStatusActivated,
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -103,7 +103,7 @@ func TestProducer_Response(t *testing.T) {
 			},
 			expect: &types.Producer{
 				ID:             "producer-id",
-				Status:         int32(AdminStatusActivated),
+				Status:         types.AdminStatusActivated,
 				Lastname:       "&.",
 				Firstname:      "管理者",
 				LastnameKana:   "あんどどっと",
@@ -142,7 +142,7 @@ func TestProducer_Name(t *testing.T) {
 			producer: &Producer{
 				Producer: types.Producer{
 					ID:             "producer-id",
-					Status:         int32(AdminStatusActivated),
+					Status:         types.AdminStatusActivated,
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -235,7 +235,7 @@ func TestProducers(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -255,7 +255,7 @@ func TestProducers(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id02",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -296,7 +296,7 @@ func TestProducers_IDs(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -338,7 +338,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -358,7 +358,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id02",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -380,7 +380,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id01": {
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -400,7 +400,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id02": {
 					Producer: types.Producer{
 						ID:             "producer-id02",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -442,7 +442,7 @@ func TestProducers_Contains(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -469,7 +469,7 @@ func TestProducers_Contains(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -512,7 +512,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id01",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -531,7 +531,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: types.Producer{
 						ID:             "producer-id02",
-						Status:         int32(AdminStatusActivated),
+						Status:         types.AdminStatusActivated,
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -551,7 +551,7 @@ func TestProducers_Response(t *testing.T) {
 			expect: []*types.Producer{
 				{
 					ID:             "producer-id01",
-					Status:         int32(AdminStatusActivated),
+					Status:         types.AdminStatusActivated,
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -568,7 +568,7 @@ func TestProducers_Response(t *testing.T) {
 				},
 				{
 					ID:             "producer-id02",
-					Status:         int32(AdminStatusActivated),
+					Status:         types.AdminStatusActivated,
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",

@@ -25,7 +25,7 @@ func TestVideoViewerLogInterval(t *testing.T) {
 			name:    "second",
 			request: "second",
 			want: want{
-				interval:    VideoViewerLogIntervalSecond,
+				interval:    VideoViewerLogInterval(types.VideoViewerLogIntervalSecond),
 				duration:    time.Second,
 				mediaEntity: entity.AggregateVideoViewerLogIntervalSecond,
 			},
@@ -34,7 +34,7 @@ func TestVideoViewerLogInterval(t *testing.T) {
 			name:    "minute",
 			request: "minute",
 			want: want{
-				interval:    VideoViewerLogIntervalMinute,
+				interval:    VideoViewerLogInterval(types.VideoViewerLogIntervalMinute),
 				duration:    time.Minute,
 				mediaEntity: entity.AggregateVideoViewerLogIntervalMinute,
 			},
@@ -43,7 +43,7 @@ func TestVideoViewerLogInterval(t *testing.T) {
 			name:    "hour",
 			request: "hour",
 			want: want{
-				interval:    VideoViewerLogIntervalHour,
+				interval:    VideoViewerLogInterval(types.VideoViewerLogIntervalHour),
 				duration:    time.Hour,
 				mediaEntity: entity.AggregateVideoViewerLogIntervalHour,
 			},
@@ -150,7 +150,7 @@ func TestVideoViewerLogs(t *testing.T) {
 			name:     "success",
 			startAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 			endAt:    time.Date(2021, 1, 1, 0, 2, 0, 0, time.UTC),
-			interval: VideoViewerLogIntervalMinute,
+			interval: VideoViewerLogInterval(types.VideoViewerLogIntervalMinute),
 			aggregates: entity.AggregatedVideoViewerLogs{
 				{
 					VideoID:    "video-id",

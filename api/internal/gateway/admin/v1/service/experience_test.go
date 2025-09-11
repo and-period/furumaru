@@ -20,37 +20,37 @@ func TestExperienceStatus(t *testing.T) {
 		{
 			name:   "private",
 			status: entity.ExperienceStatusPrivate,
-			expect: ExperienceStatusPrivate,
+			expect: ExperienceStatus(types.ExperienceStatusPrivate),
 		},
 		{
 			name:   "waiting",
 			status: entity.ExperienceStatusWaiting,
-			expect: ExperienceStatusWaiting,
+			expect: ExperienceStatus(types.ExperienceStatusWaiting),
 		},
 		{
 			name:   "accepting",
 			status: entity.ExperienceStatusAccepting,
-			expect: ExperienceStatusAccepting,
+			expect: ExperienceStatus(types.ExperienceStatusAccepting),
 		},
 		{
 			name:   "sold out",
 			status: entity.ExperienceStatusSoldOut,
-			expect: ExperienceStatusSoldOut,
+			expect: ExperienceStatus(types.ExperienceStatusSoldOut),
 		},
 		{
 			name:   "finished",
 			status: entity.ExperienceStatusFinished,
-			expect: ExperienceStatusFinished,
+			expect: ExperienceStatus(types.ExperienceStatusFinished),
 		},
 		{
 			name:   "archived",
 			status: entity.ExperienceStatusArchived,
-			expect: ExperienceStatusArchived,
+			expect: ExperienceStatus(types.ExperienceStatusArchived),
 		},
 		{
 			name:   "unknown",
 			status: entity.ExperienceStatusUnknown,
-			expect: ExperienceStatusUnknown,
+			expect: ExperienceStatus(types.ExperienceStatusUnknown),
 		},
 	}
 
@@ -68,41 +68,41 @@ func TestExperienceStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ExperienceStatus
-		expect int32
+		expect types.ExperienceStatus
 	}{
 		{
 			name:   "private",
-			status: ExperienceStatusPrivate,
+			status: ExperienceStatus(types.ExperienceStatusPrivate),
 			expect: 1,
 		},
 		{
 			name:   "waiting",
-			status: ExperienceStatusWaiting,
+			status: ExperienceStatus(types.ExperienceStatusWaiting),
 			expect: 2,
 		},
 		{
 			name:   "accepting",
-			status: ExperienceStatusAccepting,
+			status: ExperienceStatus(types.ExperienceStatusAccepting),
 			expect: 3,
 		},
 		{
 			name:   "sold out",
-			status: ExperienceStatusSoldOut,
+			status: ExperienceStatus(types.ExperienceStatusSoldOut),
 			expect: 4,
 		},
 		{
 			name:   "finished",
-			status: ExperienceStatusFinished,
+			status: ExperienceStatus(types.ExperienceStatusFinished),
 			expect: 5,
 		},
 		{
 			name:   "archived",
-			status: ExperienceStatusArchived,
+			status: ExperienceStatus(types.ExperienceStatusArchived),
 			expect: 6,
 		},
 		{
 			name:   "unknown",
-			status: ExperienceStatusUnknown,
+			status: ExperienceStatus(types.ExperienceStatusUnknown),
 			expect: 0,
 		},
 	}
@@ -187,7 +187,7 @@ func TestExperiences(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -252,7 +252,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -294,7 +294,7 @@ func TestExperiences_MapByRevisionID(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -358,7 +358,7 @@ func TestExperiences_Response(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -399,7 +399,7 @@ func TestExperiences_Response(t *testing.T) {
 					Description:      "じゃがいもを収穫する体験です。",
 					Public:           true,
 					SoldOut:          false,
-					Status:           int32(ExperienceStatusAccepting),
+					Status:           types.ExperienceStatusAccepting,
 					Media: []*types.ExperienceMedia{
 						{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 						{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},

@@ -22,43 +22,43 @@ func TestScheduleStatus(t *testing.T) {
 			name:     "private",
 			status:   sentity.ScheduleStatusPrivate,
 			archived: false,
-			expect:   ScheduleStatusUnknown,
+			expect:   ScheduleStatus(types.ScheduleStatusUnknown),
 		},
 		{
 			name:     "in progress",
 			status:   sentity.ScheduleStatusInProgress,
 			archived: false,
-			expect:   ScheduleStatusUnknown,
+			expect:   ScheduleStatus(types.ScheduleStatusUnknown),
 		},
 		{
 			name:     "waiting",
 			status:   sentity.ScheduleStatusWaiting,
 			archived: false,
-			expect:   ScheduleStatusWaiting,
+			expect:   ScheduleStatus(types.ScheduleStatusWaiting),
 		},
 		{
 			name:     "live",
 			status:   sentity.ScheduleStatusLive,
 			archived: false,
-			expect:   ScheduleStatusLive,
+			expect:   ScheduleStatus(types.ScheduleStatusLive),
 		},
 		{
 			name:     "closed",
 			status:   sentity.ScheduleStatusClosed,
 			archived: false,
-			expect:   ScheduleStatusClosed,
+			expect:   ScheduleStatus(types.ScheduleStatusClosed),
 		},
 		{
 			name:     "archived",
 			status:   sentity.ScheduleStatusClosed,
 			archived: true,
-			expect:   ScheduleStatusArchived,
+			expect:   ScheduleStatus(types.ScheduleStatusArchived),
 		},
 		{
 			name:     "unknown",
 			status:   sentity.ScheduleStatusUnknown,
 			archived: false,
-			expect:   ScheduleStatusUnknown,
+			expect:   ScheduleStatus(types.ScheduleStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -102,7 +102,7 @@ func TestSchedule(t *testing.T) {
 				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusWaiting.Response(),
+					Status:          types.ScheduleStatusWaiting,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -148,7 +148,7 @@ func TestSchedule(t *testing.T) {
 				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusLive.Response(),
+					Status:          types.ScheduleStatusLive,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -200,7 +200,7 @@ func TestSchedule(t *testing.T) {
 				Schedule: types.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusArchived.Response(),
+					Status:          types.ScheduleStatusArchived,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -238,7 +238,7 @@ func TestSchedule_Response(t *testing.T) {
 				Schedule: types.Schedule{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
-					Status:        ScheduleStatusLive.Response(),
+					Status:        types.ScheduleStatusLive,
 					Title:         "スケジュールタイトル",
 					Description:   "スケジュールの詳細です。",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -249,7 +249,7 @@ func TestSchedule_Response(t *testing.T) {
 			expect: &types.Schedule{
 				ID:            "schedule-id",
 				CoordinatorID: "coordinator-id",
-				Status:        ScheduleStatusLive.Response(),
+				Status:        types.ScheduleStatusLive,
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
 				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -301,7 +301,7 @@ func TestSchedules(t *testing.T) {
 					Schedule: types.Schedule{
 						ID:              "schedule-id",
 						CoordinatorID:   "coordinator-id",
-						Status:          ScheduleStatusLive.Response(),
+						Status:          types.ScheduleStatusLive,
 						Title:           "スケジュールタイトル",
 						Description:     "スケジュールの詳細です。",
 						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -338,7 +338,7 @@ func TestSchedules_Response(t *testing.T) {
 					Schedule: types.Schedule{
 						ID:            "schedule-id",
 						CoordinatorID: "coordinator-id",
-						Status:        ScheduleStatusLive.Response(),
+						Status:        types.ScheduleStatusLive,
 						Title:         "スケジュールタイトル",
 						Description:   "スケジュールの詳細です。",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
@@ -351,7 +351,7 @@ func TestSchedules_Response(t *testing.T) {
 				{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
-					Status:        ScheduleStatusLive.Response(),
+					Status:        types.ScheduleStatusLive,
 					Title:         "スケジュールタイトル",
 					Description:   "スケジュールの詳細です。",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",

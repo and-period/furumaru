@@ -14,29 +14,29 @@ func TestPaymentSystemStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.PaymentSystemStatus
-		expect PaymentSystemStatus
+		expect types.PaymentSystemStatus
 	}{
 		{
 			name:   "in use",
 			status: entity.PaymentSystemStatusInUse,
-			expect: PaymentSystemStatusInUse,
+			expect: types.PaymentSystemStatusInUse,
 		},
 		{
 			name:   "outage",
 			status: entity.PaymentSystemStatusOutage,
-			expect: PaymentSystemStatusOutage,
+			expect: types.PaymentSystemStatusOutage,
 		},
 		{
 			name:   "unknown",
 			status: entity.PaymentSystemStatusUnknown,
-			expect: PaymentSystemStatusUnknown,
+			expect: types.PaymentSystemStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewPaymentSystemStatus(tt.status)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -50,17 +50,17 @@ func TestPaymentSystemStatus_StoreEntity(t *testing.T) {
 	}{
 		{
 			name:   "in use",
-			status: PaymentSystemStatusInUse,
+			status: PaymentSystemStatus(types.PaymentSystemStatusInUse),
 			expect: entity.PaymentSystemStatusInUse,
 		},
 		{
 			name:   "outage",
-			status: PaymentSystemStatusOutage,
+			status: PaymentSystemStatus(types.PaymentSystemStatusOutage),
 			expect: entity.PaymentSystemStatusOutage,
 		},
 		{
 			name:   "unknown",
-			status: PaymentSystemStatusUnknown,
+			status: PaymentSystemStatus(types.PaymentSystemStatusUnknown),
 			expect: entity.PaymentSystemStatusUnknown,
 		},
 	}
@@ -77,12 +77,12 @@ func TestPaymentSystemStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status PaymentSystemStatus
-		expect int32
+		expect types.PaymentSystemStatus
 	}{
 		{
 			name:   "success",
-			status: PaymentSystemStatusInUse,
-			expect: 1,
+			status: PaymentSystemStatus(types.PaymentSystemStatusInUse),
+			expect: types.PaymentSystemStatusInUse,
 		},
 	}
 	for _, tt := range tests {
@@ -110,8 +110,8 @@ func TestPaymentSystem(t *testing.T) {
 			},
 			expect: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
-					Status:     PaymentSystemStatusInUse.Response(),
+					MethodType: types.PaymentMethodTypeCreditCard,
+					Status:     types.PaymentSystemStatusInUse,
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
 				},
@@ -138,15 +138,15 @@ func TestPaymentSystem_Response(t *testing.T) {
 			name: "success",
 			system: &PaymentSystem{
 				PaymentSystem: types.PaymentSystem{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
-					Status:     PaymentSystemStatusInUse.Response(),
+					MethodType: types.PaymentMethodTypeCreditCard,
+					Status:     types.PaymentSystemStatusInUse,
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
 				},
 			},
 			expect: &types.PaymentSystem{
-				MethodType: PaymentMethodTypeCreditCard.Response(),
-				Status:     PaymentSystemStatusInUse.Response(),
+				MethodType: types.PaymentMethodTypeCreditCard,
+				Status:     types.PaymentSystemStatusInUse,
 				CreatedAt:  1640962800,
 				UpdatedAt:  1640962800,
 			},
@@ -180,8 +180,8 @@ func TestPaymentSystems(t *testing.T) {
 			expect: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: PaymentMethodTypeCreditCard.Response(),
-						Status:     PaymentSystemStatusInUse.Response(),
+						MethodType: types.PaymentMethodTypeCreditCard,
+						Status:     types.PaymentSystemStatusInUse,
 						CreatedAt:  1640962800,
 						UpdatedAt:  1640962800,
 					},
@@ -210,8 +210,8 @@ func TestPaymentSystems_Response(t *testing.T) {
 			systems: PaymentSystems{
 				{
 					PaymentSystem: types.PaymentSystem{
-						MethodType: PaymentMethodTypeCreditCard.Response(),
-						Status:     PaymentSystemStatusInUse.Response(),
+						MethodType: types.PaymentMethodTypeCreditCard,
+						Status:     types.PaymentSystemStatusInUse,
 						CreatedAt:  1640962800,
 						UpdatedAt:  1640962800,
 					},
@@ -219,8 +219,8 @@ func TestPaymentSystems_Response(t *testing.T) {
 			},
 			expect: []*types.PaymentSystem{
 				{
-					MethodType: PaymentMethodTypeCreditCard.Response(),
-					Status:     PaymentSystemStatusInUse.Response(),
+					MethodType: types.PaymentMethodTypeCreditCard,
+					Status:     types.PaymentSystemStatusInUse,
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
 				},

@@ -17,7 +17,7 @@ func NewLiveSummary(schedule *entity.Schedule, products entity.Products) *LiveSu
 		LiveSummary: types.LiveSummary{
 			ScheduleID:    schedule.ID,
 			CoordinatorID: schedule.CoordinatorID,
-			Status:        int32(NewScheduleStatus(schedule.Status, false)),
+			Status:        NewScheduleStatus(schedule.Status, false).Response(),
 			Title:         schedule.Title,
 			ThumbnailURL:  schedule.ThumbnailURL,
 			StartAt:       schedule.StartAt.Unix(),

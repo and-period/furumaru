@@ -30,3 +30,17 @@ const (
 	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル済み
 	PaymentStatusFailed     PaymentStatus = 5 // 失敗
 )
+
+// OrderPayment - 支払い情報
+type OrderPayment struct {
+	TransactionID string            `json:"transactionId"` // 取引ID
+	MethodType    PaymentMethodType `json:"methodType"`    // 決済手段種別
+	Status        PaymentStatus     `json:"status"`        // 支払い状況
+	Subtotal      int64             `json:"subtotal"`      // 購入金額(税込)
+	Discount      int64             `json:"discount"`      // 割引金額(税込)
+	ShippingFee   int64             `json:"shippingFee"`   // 配送手数料(税込)
+	Total         int64             `json:"total"`         // 合計金額(税込)
+	OrderedAt     int64             `json:"orderedAt"`     // 注文日時
+	PaidAt        int64             `json:"paidAt"`        // 支払日時
+	*Address                        // 請求先情報
+}

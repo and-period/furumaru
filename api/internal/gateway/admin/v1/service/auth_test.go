@@ -14,34 +14,29 @@ func TestAuthProviderType(t *testing.T) {
 	tests := []struct {
 		name         string
 		providerType entity.AdminAuthProviderType
-		expect       AuthProviderType
-		response     int32
+		expect       types.AuthProviderType
 	}{
 		{
 			name:         "google",
 			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeGoogle),
-			expect:       AuthProviderType(types.AuthProviderTypeGoogle),
-			response:     1,
+			expect:       types.AuthProviderType(types.AuthProviderTypeGoogle),
 		},
 		{
 			name:         "line",
 			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeLINE),
-			expect:       AuthProviderType(types.AuthProviderTypeLINE),
-			response:     2,
+			expect:       types.AuthProviderType(types.AuthProviderTypeLINE),
 		},
 		{
 			name:         "unknown",
 			providerType: entity.AdminAuthProviderType(types.AuthProviderTypeUnknown),
-			expect:       AuthProviderType(types.AuthProviderTypeUnknown),
-			response:     0,
+			expect:       types.AuthProviderType(types.AuthProviderTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAuthProviderType(tt.providerType)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }

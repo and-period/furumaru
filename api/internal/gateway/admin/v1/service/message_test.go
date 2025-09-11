@@ -19,12 +19,12 @@ func TestMessageType(t *testing.T) {
 		{
 			name:        "notification",
 			messageType: entity.MessageTypeNotification,
-			expect:      MessageTypeNotification,
+			expect:      MessageType(types.MessageTypeNotification),
 		},
 		{
 			name:        "unknown",
 			messageType: entity.MessageTypeUnknown,
-			expect:      MessageTypeUnknown,
+			expect:      MessageType(types.MessageTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -40,12 +40,12 @@ func TestMessageType_Response(t *testing.T) {
 	tests := []struct {
 		name        string
 		messageType MessageType
-		expect      int32
+		expect      types.MessageType
 	}{
 		{
 			name:        "success",
-			messageType: MessageTypeNotification,
-			expect:      1,
+			messageType: MessageType(types.MessageTypeNotification),
+			expect:      types.MessageTypeNotification,
 		},
 	}
 	for _, tt := range tests {
@@ -81,7 +81,7 @@ func TestMessage(t *testing.T) {
 			expect: &Message{
 				Message: types.Message{
 					ID:         "message-id",
-					Type:       int32(MessageTypeNotification),
+					Type:       types.MessageTypeNotification,
 					Title:      "メッセージタイトル",
 					Body:       "メッセージの内容です。",
 					Link:       "https://and-period.jp",
@@ -113,7 +113,7 @@ func TestMessage_Response(t *testing.T) {
 			message: &Message{
 				Message: types.Message{
 					ID:         "message-id",
-					Type:       int32(MessageTypeNotification),
+					Type:       types.MessageTypeNotification,
 					Title:      "メッセージタイトル",
 					Body:       "メッセージの内容です。",
 					Link:       "https://and-period.jp",
@@ -125,7 +125,7 @@ func TestMessage_Response(t *testing.T) {
 			},
 			expect: &types.Message{
 				ID:         "message-id",
-				Type:       int32(MessageTypeNotification),
+				Type:       types.MessageTypeNotification,
 				Title:      "メッセージタイトル",
 				Body:       "メッセージの内容です。",
 				Link:       "https://and-period.jp",
@@ -172,7 +172,7 @@ func TestMessages(t *testing.T) {
 				{
 					Message: types.Message{
 						ID:         "message-id",
-						Type:       int32(MessageTypeNotification),
+						Type:       types.MessageTypeNotification,
 						Title:      "メッセージタイトル",
 						Body:       "メッセージの内容です。",
 						Link:       "https://and-period.jp",
@@ -206,7 +206,7 @@ func TestMessages_Response(t *testing.T) {
 				{
 					Message: types.Message{
 						ID:         "message-id",
-						Type:       int32(MessageTypeNotification),
+						Type:       types.MessageTypeNotification,
 						Title:      "メッセージタイトル",
 						Body:       "メッセージの内容です。",
 						Link:       "https://and-period.jp",
@@ -220,7 +220,7 @@ func TestMessages_Response(t *testing.T) {
 			expect: []*types.Message{
 				{
 					ID:         "message-id",
-					Type:       int32(MessageTypeNotification),
+					Type:       types.MessageTypeNotification,
 					Title:      "メッセージタイトル",
 					Body:       "メッセージの内容です。",
 					Link:       "https://and-period.jp",

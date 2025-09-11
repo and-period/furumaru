@@ -94,8 +94,8 @@ type CreateProductRequest struct {
 	RecommendedPoint1    string                `json:"recommendedPoint1" validate:"omitempty,max=128"`        // おすすめポイント1
 	RecommendedPoint2    string                `json:"recommendedPoint2" validate:"omitempty,max=128"`        // おすすめポイント2
 	RecommendedPoint3    string                `json:"recommendedPoint3" validate:"omitempty,max=128"`        // おすすめポイント3
-	StorageMethodType    int32                 `json:"storageMethodType" validate:"required"`                 // 保存方法
-	DeliveryType         int32                 `json:"deliveryType" validate:"required"`                      // 配送方法
+	StorageMethodType    StorageMethodType     `json:"storageMethodType" validate:"required"`                 // 保存方法
+	DeliveryType         DeliveryType          `json:"deliveryType" validate:"required"`                      // 配送方法
 	Box60Rate            int64                 `json:"box60Rate" validate:"min=0,max=600"`                    // 箱の占有率(サイズ:60)
 	Box80Rate            int64                 `json:"box80Rate" validate:"min=0,max=250"`                    // 箱の占有率(サイズ:80)
 	Box100Rate           int64                 `json:"box100Rate" validate:"min=0,max=100"`                   // 箱の占有率(サイズ:100)
@@ -127,8 +127,8 @@ type UpdateProductRequest struct {
 	RecommendedPoint1    string                `json:"recommendedPoint1" validate:"omitempty,max=128"`        // おすすめポイント1
 	RecommendedPoint2    string                `json:"recommendedPoint2" validate:"omitempty,max=128"`        // おすすめポイント2
 	RecommendedPoint3    string                `json:"recommendedPoint3" validate:"omitempty,max=128"`        // おすすめポイント3
-	StorageMethodType    int32                 `json:"storageMethodType" validate:"required"`                 // 保存方法
-	DeliveryType         int32                 `json:"deliveryType" validate:"required"`                      // 配送方法
+	StorageMethodType    StorageMethodType     `json:"storageMethodType" validate:"required"`                 // 保存方法
+	DeliveryType         DeliveryType          `json:"deliveryType" validate:"required"`                      // 配送方法
 	Box60Rate            int64                 `json:"box60Rate" validate:"min=0,max=600"`                    // 箱の占有率(サイズ:60)
 	Box80Rate            int64                 `json:"box80Rate" validate:"min=0,max=250"`                    // 箱の占有率(サイズ:80)
 	Box100Rate           int64                 `json:"box100Rate" validate:"min=0,max=100"`                   // 箱の占有率(サイズ:100)

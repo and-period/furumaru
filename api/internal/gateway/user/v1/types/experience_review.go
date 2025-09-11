@@ -44,7 +44,7 @@ type UpdateExperienceReviewRequest struct {
 }
 
 type UpsertExperienceReviewReactionRequest struct {
-	ReactionType int32 `json:"reactionType" validate:"required"` // リアクション種別
+	ReactionType ExperienceReviewReactionType `json:"reactionType" validate:"required"` // リアクション種別
 }
 
 type ExperienceReviewResponse struct {

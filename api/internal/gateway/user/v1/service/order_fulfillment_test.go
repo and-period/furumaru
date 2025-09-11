@@ -14,22 +14,22 @@ func TestFulfillmentStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.FulfillmentStatus
-		expect types.FulfillmentStatus
+		expect FulfillmentStatus
 	}{
 		{
 			name:   "unfulfilled",
 			status: entity.FulfillmentStatusUnfulfilled,
-			expect: types.FulfillmentStatusUnfulfilled,
+			expect: FulfillmentStatus(types.FulfillmentStatusUnfulfilled),
 		},
 		{
 			name:   "fulfilled",
 			status: entity.FulfillmentStatusFulfilled,
-			expect: types.FulfillmentStatusFulfilled,
+			expect: FulfillmentStatus(types.FulfillmentStatusFulfilled),
 		},
 		{
 			name:   "unknown",
 			status: entity.FulfillmentStatusUnknown,
-			expect: types.FulfillmentStatusUnknown,
+			expect: FulfillmentStatus(types.FulfillmentStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -97,12 +97,12 @@ func TestShippingCarrier_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ShippingCarrier
-		expect int32
+		expect types.ShippingCarrier
 	}{
 		{
 			name:   "success",
 			status: ShippingCarrier(types.ShippingCarrierYamato),
-			expect: 1,
+			expect: types.ShippingCarrierYamato,
 		},
 	}
 	for _, tt := range tests {
@@ -118,27 +118,27 @@ func TestShippingSize(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingSize
-		expect types.ShippingSize
+		expect ShippingSize
 	}{
 		{
 			name:   "size 60",
 			status: entity.ShippingSize60,
-			expect: types.ShippingSize60,
+			expect: ShippingSize(types.ShippingSize60),
 		},
 		{
 			name:   "size 80",
 			status: entity.ShippingSize80,
-			expect: types.ShippingSize80,
+			expect: ShippingSize(types.ShippingSize80),
 		},
 		{
 			name:   "size 100",
 			status: entity.ShippingSize100,
-			expect: types.ShippingSize100,
+			expect: ShippingSize(types.ShippingSize100),
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingSizeUnknown,
-			expect: types.ShippingSizeUnknown,
+			expect: ShippingSize(types.ShippingSizeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -175,22 +175,22 @@ func TestShippingType(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ShippingType
-		expect types.ShippingType
+		expect ShippingType
 	}{
 		{
 			name:   "normal",
 			status: entity.ShippingTypeNormal,
-			expect: types.ShippingTypeNormal,
+			expect: ShippingType(types.ShippingTypeNormal),
 		},
 		{
 			name:   "frozen",
 			status: entity.ShippingTypeFrozen,
-			expect: types.ShippingTypeFrozen,
+			expect: ShippingType(types.ShippingTypeFrozen),
 		},
 		{
 			name:   "unknown",
 			status: entity.ShippingTypeUnknown,
-			expect: types.ShippingTypeUnknown,
+			expect: ShippingType(types.ShippingTypeUnknown),
 		},
 	}
 	for _, tt := range tests {

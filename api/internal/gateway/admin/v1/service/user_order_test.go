@@ -76,7 +76,7 @@ func TestUserOrder(t *testing.T) {
 			expect: &UserOrder{
 				UserOrder: types.UserOrder{
 					OrderID:   "order-id",
-					Status:    int32(PaymentStatusPaid),
+					Status:    types.PaymentStatusPaid,
 					SubTotal:  1980,
 					Total:     2530,
 					OrderedAt: 1640962800,
@@ -106,7 +106,7 @@ func TestUserOrder_Response(t *testing.T) {
 			order: &UserOrder{
 				UserOrder: types.UserOrder{
 					OrderID:   "order-id",
-					Status:    int32(PaymentStatusPaid),
+					Status:    types.PaymentStatusPaid,
 					SubTotal:  1980,
 					Total:     2530,
 					OrderedAt: 1640962800,
@@ -115,7 +115,7 @@ func TestUserOrder_Response(t *testing.T) {
 			},
 			expect: &types.UserOrder{
 				OrderID:   "order-id",
-				Status:    int32(PaymentStatusPaid),
+				Status:    types.PaymentStatusPaid,
 				SubTotal:  1980,
 				Total:     2530,
 				OrderedAt: 1640962800,
@@ -199,7 +199,7 @@ func TestUserOrders(t *testing.T) {
 				{
 					UserOrder: types.UserOrder{
 						OrderID:   "order-id",
-						Status:    int32(PaymentStatusPaid),
+						Status:    types.PaymentStatusPaid,
 						SubTotal:  1980,
 						Total:     2530,
 						OrderedAt: 1640962800,
@@ -231,7 +231,7 @@ func TestUserOrders_Response(t *testing.T) {
 				{
 					UserOrder: types.UserOrder{
 						OrderID:   "order-id",
-						Status:    int32(PaymentStatusPaid),
+						Status:    types.PaymentStatusPaid,
 						SubTotal:  1980,
 						Total:     2530,
 						OrderedAt: 1640962800,
@@ -242,7 +242,7 @@ func TestUserOrders_Response(t *testing.T) {
 			expect: []*types.UserOrder{
 				{
 					OrderID:   "order-id",
-					Status:    int32(PaymentStatusPaid),
+					Status:    types.PaymentStatusPaid,
 					SubTotal:  1980,
 					Total:     2530,
 					OrderedAt: 1640962800,

@@ -202,8 +202,7 @@ components:
         creditCard:
           $ref: '#/components/schemas/types.CheckoutCreditCard'
         paymentMethod:
-          description: 支払い方法
-          type: integer
+          $ref: '#/components/schemas/types.PaymentMethodType'
         promotionCode:
           description: プロモーションコード
           type: string
@@ -406,7 +405,35 @@ components:
           description: 割引金額(税込)
           type: integer
         methodType:
-          $ref: '#/components/schemas/types.PaymentMethodType'
+          description: 支払い方法
+          type: integer
+          x-enum-comments:
+            PaymentMethodTypeAUPay: QR決済（au PAY）
+            PaymentMethodTypeBankTransfer: 銀行振込決済
+            PaymentMethodTypeCash: 代引支払い
+            PaymentMethodTypeCreditCard: クレジットカード決済
+            PaymentMethodTypeFree: 決済無し
+            PaymentMethodTypeKonbini: コンビニ決済
+            PaymentMethodTypeLinePay: QR決済（LINE Pay）
+            PaymentMethodTypeMerpay: QR決済（メルペイ）
+            PaymentMethodTypePaidy: ペイディ（Paidy）
+            PaymentMethodTypePayEasy: ペイジー（Pay-easy）
+            PaymentMethodTypePayPay: QR決済（PayPay）
+            PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
+          x-enum-varnames:
+          - PaymentMethodTypeUnknown
+          - PaymentMethodTypeCash
+          - PaymentMethodTypeCreditCard
+          - PaymentMethodTypeKonbini
+          - PaymentMethodTypeBankTransfer
+          - PaymentMethodTypePayPay
+          - PaymentMethodTypeLinePay
+          - PaymentMethodTypeMerpay
+          - PaymentMethodTypeRakutenPay
+          - PaymentMethodTypeAUPay
+          - PaymentMethodTypeFree
+          - PaymentMethodTypePaidy
+          - PaymentMethodTypePayEasy
         orderedAt:
           description: 注文日時
           type: integer
@@ -532,7 +559,7 @@ components:
           type: integer
       type: object
     types.PaymentMethodType:
-      description: 決済手段種別
+      description: 支払い方法
       type: integer
       x-enum-comments:
         PaymentMethodTypeAUPay: QR決済（au PAY）

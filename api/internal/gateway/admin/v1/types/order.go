@@ -61,43 +61,6 @@ type OrderMetadata struct {
 	PickupLocation string `json:"pickupLocation"` // 受け取り場所
 }
 
-// OrderPayment - 支払い情報
-type OrderPayment struct {
-	TransactionID string            `json:"transactionId"` // 取引ID
-	MethodType    PaymentMethodType `json:"methodType"`    // 決済手段種別
-	Status        PaymentStatus     `json:"status"`        // 支払い状況
-	Subtotal      int64             `json:"subtotal"`      // 購入金額(税込)
-	Discount      int64             `json:"discount"`      // 割引金額(税込)
-	ShippingFee   int64             `json:"shippingFee"`   // 配送手数料(税込)
-	Total         int64             `json:"total"`         // 合計金額(税込)
-	OrderedAt     int64             `json:"orderedAt"`     // 注文日時
-	PaidAt        int64             `json:"paidAt"`        // 支払日時
-	*Address                        // 請求先情報
-}
-
-// OrderRefund - 注文キャンセル情報
-type OrderRefund struct {
-	Total      int64      `json:"total"`      // 返金金額
-	Type       RefundType `json:"type"`       // 注文キャンセル種別
-	Reason     string     `json:"reason"`     // 注文キャンセル理由
-	Canceled   bool       `json:"canceled"`   // 注文キャンセルフラグ
-	CanceledAt int64      `json:"canceledAt"` // 注文キャンセル日時
-}
-
-// OrderFulfillment - 配送情報
-type OrderFulfillment struct {
-	FulfillmentID   string            `json:"fulfillmentId"`   // 配送情報ID
-	TrackingNumber  string            `json:"trackingNumber"`  // 伝票番号
-	Status          FulfillmentStatus `json:"status"`          // 配送状況
-	ShippingCarrier ShippingCarrier   `json:"shippingCarrier"` // 配送会社
-	ShippingType    ShippingType      `json:"shippingType"`    // 配送方法
-	BoxNumber       int64             `json:"boxNumber"`       // 箱の通番
-	BoxSize         ShippingSize      `json:"boxSize"`         // 箱の大きさ
-	BoxRate         int64             `json:"boxRate"`         // 箱の占有率
-	ShippedAt       int64             `json:"shippedAt"`       // 配送日時
-	*Address                          // 配送先情報
-}
-
 // OrderItem - 注文商品情報
 type OrderItem struct {
 	FulfillmentID string `json:"fulfillmentId"` // 配送情報ID

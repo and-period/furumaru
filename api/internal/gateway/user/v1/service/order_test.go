@@ -42,7 +42,7 @@ func TestNewOrderType(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderType(tt.typ)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderType(tt.response), actual.Response())
 		})
 	}
 }
@@ -85,7 +85,7 @@ func TestNewOrderTypeFromString(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderTypeFromString(tt.typ)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderType(tt.response), actual.Response())
 		})
 	}
 }
@@ -131,7 +131,7 @@ func TestNewOrderStatus(t *testing.T) {
 	}{
 		{
 			name:     "unpaid",
-			status:   entity.OrderStatus(types.OrderStatusUnpaid),
+			status:   entity.OrderStatusUnpaid,
 			expect:   OrderStatus(types.OrderStatusUnpaid),
 			response: 1,
 		},
@@ -143,7 +143,7 @@ func TestNewOrderStatus(t *testing.T) {
 		},
 		{
 			name:     "preparing",
-			status:   entity.OrderStatus(types.OrderStatusPreparing),
+			status:   entity.OrderStatusPreparing,
 			expect:   OrderStatus(types.OrderStatusPreparing),
 			response: 2,
 		},
@@ -155,31 +155,31 @@ func TestNewOrderStatus(t *testing.T) {
 		},
 		{
 			name:     "completed",
-			status:   entity.OrderStatus(types.OrderStatusCompleted),
+			status:   entity.OrderStatusCompleted,
 			expect:   OrderStatus(types.OrderStatusCompleted),
 			response: 3,
 		},
 		{
 			name:     "canceled",
-			status:   entity.OrderStatus(types.OrderStatusCanceled),
+			status:   entity.OrderStatusCanceled,
 			expect:   OrderStatus(types.OrderStatusCanceled),
 			response: 4,
 		},
 		{
 			name:     "refunded",
-			status:   entity.OrderStatus(types.OrderStatusRefunded),
+			status:   entity.OrderStatusRefunded,
 			expect:   OrderStatus(types.OrderStatusRefunded),
 			response: 5,
 		},
 		{
 			name:     "failed",
-			status:   entity.OrderStatus(types.OrderStatusFailed),
+			status:   entity.OrderStatusFailed,
 			expect:   OrderStatus(types.OrderStatusFailed),
 			response: 6,
 		},
 		{
 			name:     "unknown",
-			status:   entity.OrderStatus(types.OrderStatusUnknown),
+			status:   entity.OrderStatusUnknown,
 			expect:   OrderStatus(types.OrderStatusUnknown),
 			response: 0,
 		},
@@ -189,7 +189,7 @@ func TestNewOrderStatus(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderStatus(tt.status)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderStatus(tt.response), actual.Response())
 		})
 	}
 }

@@ -22,19 +22,19 @@ func TestSpotUserType(t *testing.T) {
 		{
 			name:     "user",
 			userType: sentity.SpotUserTypeUser,
-			expect:   SpotUserTypeUser,
+			expect:   SpotUserType(types.SpotUserTypeUser),
 			response: 1,
 		},
 		{
 			name:     "coordinator",
 			userType: sentity.SpotUserTypeCoordinator,
-			expect:   SpotUserTypeCoordinator,
+			expect:   SpotUserType(types.SpotUserTypeCoordinator),
 			response: 2,
 		},
 		{
 			name:     "producer",
 			userType: sentity.SpotUserTypeProducer,
-			expect:   SpotUserTypeProducer,
+			expect:   SpotUserType(types.SpotUserTypeProducer),
 			response: 3,
 		},
 	}
@@ -44,7 +44,7 @@ func TestSpotUserType(t *testing.T) {
 			t.Parallel()
 			actual := NewSpotUserType(tt.userType)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.SpotUserType(tt.response), actual.Response())
 		})
 	}
 }
@@ -100,7 +100,7 @@ func TestSpotsByUser(t *testing.T) {
 						ThumbnailURL:     "thumbnail",
 						Longitude:        1.0,
 						Latitude:         2.0,
-						UserType:         int32(sentity.SpotUserTypeUser),
+						UserType:         types.SpotUserTypeUser,
 						UserID:           "user-id",
 						Username:         "username",
 						UserThumbnailURL: "thumbnail",
@@ -117,7 +117,7 @@ func TestSpotsByUser(t *testing.T) {
 					ThumbnailURL:     "thumbnail",
 					Longitude:        1.0,
 					Latitude:         2.0,
-					UserType:         int32(sentity.SpotUserTypeUser),
+					UserType:         types.SpotUserTypeUser,
 					UserID:           "user-id",
 					Username:         "username",
 					UserThumbnailURL: "thumbnail",
@@ -222,7 +222,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 						ThumbnailURL:     "thumbnail",
 						Longitude:        1.0,
 						Latitude:         2.0,
-						UserType:         int32(sentity.SpotUserTypeCoordinator),
+						UserType:         types.SpotUserTypeCoordinator,
 						UserID:           "user-id",
 						Username:         "username",
 						UserThumbnailURL: "thumbnail",
@@ -239,7 +239,7 @@ func TestSpotsByCoordinator(t *testing.T) {
 					ThumbnailURL:     "thumbnail",
 					Longitude:        1.0,
 					Latitude:         2.0,
-					UserType:         int32(sentity.SpotUserTypeCoordinator),
+					UserType:         types.SpotUserTypeCoordinator,
 					UserID:           "user-id",
 					Username:         "username",
 					UserThumbnailURL: "thumbnail",
@@ -344,7 +344,7 @@ func TestSpotsByProducer(t *testing.T) {
 						ThumbnailURL:     "thumbnail",
 						Longitude:        1.0,
 						Latitude:         2.0,
-						UserType:         int32(sentity.SpotUserTypeProducer),
+						UserType:         types.SpotUserTypeProducer,
 						UserID:           "user-id",
 						Username:         "username",
 						UserThumbnailURL: "thumbnail",
@@ -361,7 +361,7 @@ func TestSpotsByProducer(t *testing.T) {
 					ThumbnailURL:     "thumbnail",
 					Longitude:        1.0,
 					Latitude:         2.0,
-					UserType:         int32(sentity.SpotUserTypeProducer),
+					UserType:         types.SpotUserTypeProducer,
 					UserID:           "user-id",
 					Username:         "username",
 					UserThumbnailURL: "thumbnail",

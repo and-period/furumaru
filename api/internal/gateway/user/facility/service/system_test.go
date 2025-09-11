@@ -77,12 +77,12 @@ func TestPaymentSystemStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status PaymentSystemStatus
-		expect int32
+		expect types.PaymentStatus
 	}{
 		{
 			name:   "success",
 			status: PaymentSystemStatusInUse,
-			expect: 1,
+			expect: types.PaymentStatusUnpaid,
 		},
 	}
 	for _, tt := range tests {

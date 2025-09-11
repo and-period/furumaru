@@ -14,52 +14,46 @@ func TestAdminType(t *testing.T) {
 	tests := []struct {
 		name                string
 		Type                entity.AdminType
-		expect              AdminType
+		expect              types.AdminType
 		expectString        string
 		expectIsCoordinator bool
-		expectResponse      int32
 	}{
 		{
 			name:                "administrator",
 			Type:                entity.AdminTypeAdministrator,
-			expect:              AdminType(types.AdminTypeAdministrator),
+			expect:              types.AdminTypeAdministrator,
 			expectString:        "administrator",
 			expectIsCoordinator: false,
-			expectResponse:      1,
 		},
 		{
 			name:                "coordinator",
 			Type:                entity.AdminTypeCoordinator,
-			expect:              AdminType(types.AdminTypeCoordinator),
+			expect:              types.AdminTypeCoordinator,
 			expectString:        "coordinator",
 			expectIsCoordinator: true,
-			expectResponse:      2,
 		},
 		{
 			name:                "producer",
 			Type:                entity.AdminTypeProducer,
-			expect:              AdminType(types.AdminTypeProducer),
+			expect:              types.AdminTypeProducer,
 			expectString:        "producer",
 			expectIsCoordinator: false,
-			expectResponse:      3,
 		},
 		{
 			name:                "unknown",
 			Type:                entity.AdminTypeUnknown,
-			expect:              AdminType(types.AdminTypeUnknown),
+			expect:              types.AdminTypeUnknown,
 			expectString:        "unknown",
 			expectIsCoordinator: false,
-			expectResponse:      0,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAdminType(tt.Type)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual.Response())
 			assert.Equal(t, tt.expectString, actual.String())
 			assert.Equal(t, tt.expectIsCoordinator, actual.IsCoordinator())
-			assert.Equal(t, tt.expectResponse, actual.Response())
 		})
 	}
 }
@@ -67,42 +61,36 @@ func TestAdminType(t *testing.T) {
 func TestAdminStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name           string
-		Type           entity.AdminStatus
-		expect         AdminStatus
-		expectResponse int32
+		name   string
+		Type   entity.AdminStatus
+		expect types.AdminStatus
 	}{
 		{
-			name:           "invited",
-			Type:           entity.AdminStatusInvited,
-			expect:         AdminStatus(types.AdminStatusInvited),
-			expectResponse: 1,
+			name:   "invited",
+			Type:   entity.AdminStatusInvited,
+			expect: types.AdminStatusInvited,
 		},
 		{
-			name:           "activated",
-			Type:           entity.AdminStatusActivated,
-			expect:         AdminStatus(types.AdminStatusActivated),
-			expectResponse: 2,
+			name:   "activated",
+			Type:   entity.AdminStatusActivated,
+			expect: types.AdminStatusActivated,
 		},
 		{
-			name:           "deactivated",
-			Type:           entity.AdminStatusDeactivated,
-			expect:         AdminStatus(types.AdminStatusDeactivated),
-			expectResponse: 3,
+			name:   "deactivated",
+			Type:   entity.AdminStatusDeactivated,
+			expect: types.AdminStatusDeactivated,
 		},
 		{
-			name:           "unknown",
-			Type:           entity.AdminStatusUnknown,
-			expect:         AdminStatus(types.AdminStatusUnknown),
-			expectResponse: 0,
+			name:   "unknown",
+			Type:   entity.AdminStatusUnknown,
+			expect: types.AdminStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewAdminStatus(tt.Type)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.expectResponse, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
