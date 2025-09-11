@@ -15,12 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseSpotTypesResponse,
+  TypesSpotTypesResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseSpotTypesResponseFromJSON,
-    ResponseSpotTypesResponseToJSON,
+    TypesSpotTypesResponseFromJSON,
+    TypesSpotTypesResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -39,7 +39,7 @@ export class SpotTypeApi extends runtime.BaseAPI {
      * スポットタイプの一覧を取得します。
      * スポットタイプ一覧取得
      */
-    async spotTypesGetRaw(requestParameters: SpotTypesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSpotTypesResponse>> {
+    async spotTypesGetRaw(requestParameters: SpotTypesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesSpotTypesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -59,14 +59,14 @@ export class SpotTypeApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSpotTypesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesSpotTypesResponseFromJSON(jsonValue));
     }
 
     /**
      * スポットタイプの一覧を取得します。
      * スポットタイプ一覧取得
      */
-    async spotTypesGet(requestParameters: SpotTypesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSpotTypesResponse> {
+    async spotTypesGet(requestParameters: SpotTypesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesSpotTypesResponse> {
         const response = await this.spotTypesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

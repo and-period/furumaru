@@ -24,77 +24,67 @@ export interface RequestCreateAuthUserWithGoogleRequest {
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    accountId: string;
+    accountId?: string;
     /**
      * 認証コード
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    code: string;
+    code?: string;
     /**
      * 名
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    firstname: string;
+    firstname?: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    firstnameKana: string;
+    firstnameKana?: string;
     /**
      * 姓
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    lastname: string;
+    lastname?: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    lastnameKana: string;
+    lastnameKana?: string;
     /**
      * セキュア文字列（リプレイアタック対策）
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    nonce: string;
+    nonce?: string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    phoneNumber: string;
+    phoneNumber?: string;
     /**
      * リダイレクトURI
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    redirectUri: string;
+    redirectUri?: string;
     /**
      * ユーザー名(表示名)
      * @type {string}
      * @memberof RequestCreateAuthUserWithGoogleRequest
      */
-    username: string;
+    username?: string;
 }
 
 /**
  * Check if a given object implements the RequestCreateAuthUserWithGoogleRequest interface.
  */
 export function instanceOfRequestCreateAuthUserWithGoogleRequest(value: object): value is RequestCreateAuthUserWithGoogleRequest {
-    if (!('accountId' in value) || value['accountId'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
-    if (!('firstname' in value) || value['firstname'] === undefined) return false;
-    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
-    if (!('lastname' in value) || value['lastname'] === undefined) return false;
-    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
-    if (!('nonce' in value) || value['nonce'] === undefined) return false;
-    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
-    if (!('redirectUri' in value) || value['redirectUri'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -108,16 +98,16 @@ export function RequestCreateAuthUserWithGoogleRequestFromJSONTyped(json: any, i
     }
     return {
         
-        'accountId': json['accountId'],
-        'code': json['code'],
-        'firstname': json['firstname'],
-        'firstnameKana': json['firstnameKana'],
-        'lastname': json['lastname'],
-        'lastnameKana': json['lastnameKana'],
-        'nonce': json['nonce'],
-        'phoneNumber': json['phoneNumber'],
-        'redirectUri': json['redirectUri'],
-        'username': json['username'],
+        'accountId': json['accountId'] == null ? undefined : json['accountId'],
+        'code': json['code'] == null ? undefined : json['code'],
+        'firstname': json['firstname'] == null ? undefined : json['firstname'],
+        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
+        'lastname': json['lastname'] == null ? undefined : json['lastname'],
+        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
+        'nonce': json['nonce'] == null ? undefined : json['nonce'],
+        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
+        'redirectUri': json['redirectUri'] == null ? undefined : json['redirectUri'],
+        'username': json['username'] == null ? undefined : json['username'],
     };
 }
 

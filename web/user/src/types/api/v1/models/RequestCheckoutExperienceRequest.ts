@@ -37,13 +37,13 @@ export interface RequestCheckoutExperienceRequest {
      * @type {string}
      * @memberof RequestCheckoutExperienceRequest
      */
-    billingAddressId: string;
+    billingAddressId?: string;
     /**
      * 決済完了後のリダイレクト先URL
      * @type {string}
      * @memberof RequestCheckoutExperienceRequest
      */
-    callbackUrl: string;
+    callbackUrl?: string;
     /**
      * 
      * @type {RequestCheckoutCreditCard}
@@ -67,7 +67,7 @@ export interface RequestCheckoutExperienceRequest {
      * @type {number}
      * @memberof RequestCheckoutExperienceRequest
      */
-    paymentMethod: number;
+    paymentMethod?: number;
     /**
      * 幼児人数
      * @type {number}
@@ -85,7 +85,7 @@ export interface RequestCheckoutExperienceRequest {
      * @type {string}
      * @memberof RequestCheckoutExperienceRequest
      */
-    requestId: string;
+    requestId?: string;
     /**
      * 体験希望日
      * @type {string}
@@ -122,10 +122,6 @@ export interface RequestCheckoutExperienceRequest {
  * Check if a given object implements the RequestCheckoutExperienceRequest interface.
  */
 export function instanceOfRequestCheckoutExperienceRequest(value: object): value is RequestCheckoutExperienceRequest {
-    if (!('billingAddressId' in value) || value['billingAddressId'] === undefined) return false;
-    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
-    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
-    if (!('requestId' in value) || value['requestId'] === undefined) return false;
     return true;
 }
 
@@ -140,15 +136,15 @@ export function RequestCheckoutExperienceRequestFromJSONTyped(json: any, ignoreD
     return {
         
         'adultCount': json['adultCount'] == null ? undefined : json['adultCount'],
-        'billingAddressId': json['billingAddressId'],
-        'callbackUrl': json['callbackUrl'],
+        'billingAddressId': json['billingAddressId'] == null ? undefined : json['billingAddressId'],
+        'callbackUrl': json['callbackUrl'] == null ? undefined : json['callbackUrl'],
         'creditCard': json['creditCard'] == null ? undefined : RequestCheckoutCreditCardFromJSON(json['creditCard']),
         'elementarySchoolCount': json['elementarySchoolCount'] == null ? undefined : json['elementarySchoolCount'],
         'juniorHighSchoolCount': json['juniorHighSchoolCount'] == null ? undefined : json['juniorHighSchoolCount'],
-        'paymentMethod': json['paymentMethod'],
+        'paymentMethod': json['paymentMethod'] == null ? undefined : json['paymentMethod'],
         'preschoolCount': json['preschoolCount'] == null ? undefined : json['preschoolCount'],
         'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
-        'requestId': json['requestId'],
+        'requestId': json['requestId'] == null ? undefined : json['requestId'],
         'requestedDate': json['requestedDate'] == null ? undefined : json['requestedDate'],
         'requestedTime': json['requestedTime'] == null ? undefined : json['requestedTime'],
         'seniorCount': json['seniorCount'] == null ? undefined : json['seniorCount'],

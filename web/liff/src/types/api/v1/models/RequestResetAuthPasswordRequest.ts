@@ -24,7 +24,7 @@ export interface RequestResetAuthPasswordRequest {
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    email: string;
+    email?: string;
     /**
      * パスワード
      * @type {string}
@@ -36,22 +36,19 @@ export interface RequestResetAuthPasswordRequest {
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    passwordConfirmation: string;
+    passwordConfirmation?: string;
     /**
      * 検証コード
      * @type {string}
      * @memberof RequestResetAuthPasswordRequest
      */
-    verifyCode: string;
+    verifyCode?: string;
 }
 
 /**
  * Check if a given object implements the RequestResetAuthPasswordRequest interface.
  */
 export function instanceOfRequestResetAuthPasswordRequest(value: object): value is RequestResetAuthPasswordRequest {
-    if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
-    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
     return true;
 }
 
@@ -65,10 +62,10 @@ export function RequestResetAuthPasswordRequestFromJSONTyped(json: any, ignoreDi
     }
     return {
         
-        'email': json['email'],
+        'email': json['email'] == null ? undefined : json['email'],
         'password': json['password'] == null ? undefined : json['password'],
-        'passwordConfirmation': json['passwordConfirmation'],
-        'verifyCode': json['verifyCode'],
+        'passwordConfirmation': json['passwordConfirmation'] == null ? undefined : json['passwordConfirmation'],
+        'verifyCode': json['verifyCode'] == null ? undefined : json['verifyCode'],
     };
 }
 

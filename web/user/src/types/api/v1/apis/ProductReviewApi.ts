@@ -15,24 +15,24 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateProductReviewRequest,
-  RequestUpdateProductReviewRequest,
-  RequestUpsertProductReviewReactionRequest,
-  ResponseProductReviewResponse,
-  ResponseProductReviewsResponse,
+  TypesCreateProductReviewRequest,
+  TypesProductReviewResponse,
+  TypesProductReviewsResponse,
+  TypesUpdateProductReviewRequest,
+  TypesUpsertProductReviewReactionRequest,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateProductReviewRequestFromJSON,
-    RequestCreateProductReviewRequestToJSON,
-    RequestUpdateProductReviewRequestFromJSON,
-    RequestUpdateProductReviewRequestToJSON,
-    RequestUpsertProductReviewReactionRequestFromJSON,
-    RequestUpsertProductReviewReactionRequestToJSON,
-    ResponseProductReviewResponseFromJSON,
-    ResponseProductReviewResponseToJSON,
-    ResponseProductReviewsResponseFromJSON,
-    ResponseProductReviewsResponseToJSON,
+    TypesCreateProductReviewRequestFromJSON,
+    TypesCreateProductReviewRequestToJSON,
+    TypesProductReviewResponseFromJSON,
+    TypesProductReviewResponseToJSON,
+    TypesProductReviewsResponseFromJSON,
+    TypesProductReviewsResponseToJSON,
+    TypesUpdateProductReviewRequestFromJSON,
+    TypesUpdateProductReviewRequestToJSON,
+    TypesUpsertProductReviewReactionRequestFromJSON,
+    TypesUpsertProductReviewReactionRequestToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -45,7 +45,7 @@ export interface ProductsProductIdReviewsGetRequest {
 
 export interface ProductsProductIdReviewsPostRequest {
     productId: string;
-    requestCreateProductReviewRequest: RequestCreateProductReviewRequest;
+    typesCreateProductReviewRequest: TypesCreateProductReviewRequest;
 }
 
 export interface ProductsProductIdReviewsReviewIdGetRequest {
@@ -56,7 +56,7 @@ export interface ProductsProductIdReviewsReviewIdGetRequest {
 export interface ProductsProductIdReviewsReviewIdPatchRequest {
     productId: string;
     reviewId: string;
-    requestUpdateProductReviewRequest: RequestUpdateProductReviewRequest;
+    typesUpdateProductReviewRequest: TypesUpdateProductReviewRequest;
 }
 
 export interface ProductsProductIdReviewsReviewIdReactionsDeleteRequest {
@@ -67,7 +67,7 @@ export interface ProductsProductIdReviewsReviewIdReactionsDeleteRequest {
 export interface ProductsProductIdReviewsReviewIdReactionsPostRequest {
     productId: string;
     reviewId: string;
-    requestUpsertProductReviewReactionRequest: RequestUpsertProductReviewReactionRequest;
+    typesUpsertProductReviewReactionRequest: TypesUpsertProductReviewReactionRequest;
 }
 
 export interface UsersMeProductsProductIdReviewsGetRequest {
@@ -83,7 +83,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
      * 指定した商品のレビュー一覧を取得します。
      * 商品レビュー一覧取得
      */
-    async productsProductIdReviewsGetRaw(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProductReviewsResponse>> {
+    async productsProductIdReviewsGetRaw(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProductReviewsResponse>> {
         if (requestParameters['productId'] == null) {
             throw new runtime.RequiredError(
                 'productId',
@@ -110,14 +110,14 @@ export class ProductReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProductReviewsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProductReviewsResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定した商品のレビュー一覧を取得します。
      * 商品レビュー一覧取得
      */
-    async productsProductIdReviewsGet(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProductReviewsResponse> {
+    async productsProductIdReviewsGet(requestParameters: ProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProductReviewsResponse> {
         const response = await this.productsProductIdReviewsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -134,10 +134,10 @@ export class ProductReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCreateProductReviewRequest'] == null) {
+        if (requestParameters['typesCreateProductReviewRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateProductReviewRequest',
-                'Required parameter "requestCreateProductReviewRequest" was null or undefined when calling productsProductIdReviewsPost().'
+                'typesCreateProductReviewRequest',
+                'Required parameter "typesCreateProductReviewRequest" was null or undefined when calling productsProductIdReviewsPost().'
             );
         }
 
@@ -160,7 +160,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateProductReviewRequestToJSON(requestParameters['requestCreateProductReviewRequest']),
+            body: TypesCreateProductReviewRequestToJSON(requestParameters['typesCreateProductReviewRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -178,7 +178,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
      * 商品レビューの詳細情報を取得します。
      * 商品レビュー詳細取得
      */
-    async productsProductIdReviewsReviewIdGetRaw(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProductReviewResponse>> {
+    async productsProductIdReviewsReviewIdGetRaw(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProductReviewResponse>> {
         if (requestParameters['productId'] == null) {
             throw new runtime.RequiredError(
                 'productId',
@@ -204,14 +204,14 @@ export class ProductReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProductReviewResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProductReviewResponseFromJSON(jsonValue));
     }
 
     /**
      * 商品レビューの詳細情報を取得します。
      * 商品レビュー詳細取得
      */
-    async productsProductIdReviewsReviewIdGet(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProductReviewResponse> {
+    async productsProductIdReviewsReviewIdGet(requestParameters: ProductsProductIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProductReviewResponse> {
         const response = await this.productsProductIdReviewsReviewIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -235,10 +235,10 @@ export class ProductReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpdateProductReviewRequest'] == null) {
+        if (requestParameters['typesUpdateProductReviewRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpdateProductReviewRequest',
-                'Required parameter "requestUpdateProductReviewRequest" was null or undefined when calling productsProductIdReviewsReviewIdPatch().'
+                'typesUpdateProductReviewRequest',
+                'Required parameter "typesUpdateProductReviewRequest" was null or undefined when calling productsProductIdReviewsReviewIdPatch().'
             );
         }
 
@@ -261,7 +261,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpdateProductReviewRequestToJSON(requestParameters['requestUpdateProductReviewRequest']),
+            body: TypesUpdateProductReviewRequestToJSON(requestParameters['typesUpdateProductReviewRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -343,10 +343,10 @@ export class ProductReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpsertProductReviewReactionRequest'] == null) {
+        if (requestParameters['typesUpsertProductReviewReactionRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpsertProductReviewReactionRequest',
-                'Required parameter "requestUpsertProductReviewReactionRequest" was null or undefined when calling productsProductIdReviewsReviewIdReactionsPost().'
+                'typesUpsertProductReviewReactionRequest',
+                'Required parameter "typesUpsertProductReviewReactionRequest" was null or undefined when calling productsProductIdReviewsReviewIdReactionsPost().'
             );
         }
 
@@ -369,7 +369,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpsertProductReviewReactionRequestToJSON(requestParameters['requestUpsertProductReviewReactionRequest']),
+            body: TypesUpsertProductReviewReactionRequestToJSON(requestParameters['typesUpsertProductReviewReactionRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -387,7 +387,7 @@ export class ProductReviewApi extends runtime.BaseAPI {
      * ログイン中のユーザーが投稿した商品レビューの一覧を取得します。
      * ユーザー商品レビュー一覧取得
      */
-    async usersMeProductsProductIdReviewsGetRaw(requestParameters: UsersMeProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProductReviewsResponse>> {
+    async usersMeProductsProductIdReviewsGetRaw(requestParameters: UsersMeProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProductReviewsResponse>> {
         if (requestParameters['productId'] == null) {
             throw new runtime.RequiredError(
                 'productId',
@@ -414,14 +414,14 @@ export class ProductReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProductReviewsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProductReviewsResponseFromJSON(jsonValue));
     }
 
     /**
      * ログイン中のユーザーが投稿した商品レビューの一覧を取得します。
      * ユーザー商品レビュー一覧取得
      */
-    async usersMeProductsProductIdReviewsGet(requestParameters: UsersMeProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProductReviewsResponse> {
+    async usersMeProductsProductIdReviewsGet(requestParameters: UsersMeProductsProductIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProductReviewsResponse> {
         const response = await this.usersMeProductsProductIdReviewsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

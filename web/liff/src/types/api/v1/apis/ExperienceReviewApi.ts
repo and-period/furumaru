@@ -15,24 +15,24 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateExperienceReviewRequest,
-  RequestUpdateExperienceReviewRequest,
-  RequestUpsertExperienceReviewReactionRequest,
-  ResponseExperienceReviewResponse,
-  ResponseExperienceReviewsResponse,
+  TypesCreateExperienceReviewRequest,
+  TypesExperienceReviewResponse,
+  TypesExperienceReviewsResponse,
+  TypesUpdateExperienceReviewRequest,
+  TypesUpsertExperienceReviewReactionRequest,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateExperienceReviewRequestFromJSON,
-    RequestCreateExperienceReviewRequestToJSON,
-    RequestUpdateExperienceReviewRequestFromJSON,
-    RequestUpdateExperienceReviewRequestToJSON,
-    RequestUpsertExperienceReviewReactionRequestFromJSON,
-    RequestUpsertExperienceReviewReactionRequestToJSON,
-    ResponseExperienceReviewResponseFromJSON,
-    ResponseExperienceReviewResponseToJSON,
-    ResponseExperienceReviewsResponseFromJSON,
-    ResponseExperienceReviewsResponseToJSON,
+    TypesCreateExperienceReviewRequestFromJSON,
+    TypesCreateExperienceReviewRequestToJSON,
+    TypesExperienceReviewResponseFromJSON,
+    TypesExperienceReviewResponseToJSON,
+    TypesExperienceReviewsResponseFromJSON,
+    TypesExperienceReviewsResponseToJSON,
+    TypesUpdateExperienceReviewRequestFromJSON,
+    TypesUpdateExperienceReviewRequestToJSON,
+    TypesUpsertExperienceReviewReactionRequestFromJSON,
+    TypesUpsertExperienceReviewReactionRequestToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -45,7 +45,7 @@ export interface ExperiencesExperienceIdReviewsGetRequest {
 
 export interface ExperiencesExperienceIdReviewsPostRequest {
     experienceId: string;
-    requestCreateExperienceReviewRequest: RequestCreateExperienceReviewRequest;
+    typesCreateExperienceReviewRequest: TypesCreateExperienceReviewRequest;
 }
 
 export interface ExperiencesExperienceIdReviewsReviewIdGetRequest {
@@ -56,7 +56,7 @@ export interface ExperiencesExperienceIdReviewsReviewIdGetRequest {
 export interface ExperiencesExperienceIdReviewsReviewIdPatchRequest {
     experienceId: string;
     reviewId: string;
-    requestUpdateExperienceReviewRequest: RequestUpdateExperienceReviewRequest;
+    typesUpdateExperienceReviewRequest: TypesUpdateExperienceReviewRequest;
 }
 
 export interface ExperiencesExperienceIdReviewsReviewIdReactionsDeleteRequest {
@@ -67,7 +67,7 @@ export interface ExperiencesExperienceIdReviewsReviewIdReactionsDeleteRequest {
 export interface ExperiencesExperienceIdReviewsReviewIdReactionsPostRequest {
     experienceId: string;
     reviewId: string;
-    requestUpsertExperienceReviewReactionRequest: RequestUpsertExperienceReviewReactionRequest;
+    typesUpsertExperienceReviewReactionRequest: TypesUpsertExperienceReviewReactionRequest;
 }
 
 export interface UsersMeExperiencesExperienceIdReviewsGetRequest {
@@ -83,7 +83,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
      * 指定した体験のレビュー一覧を取得します。
      * 体験レビュー一覧取得
      */
-    async experiencesExperienceIdReviewsGetRaw(requestParameters: ExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseExperienceReviewsResponse>> {
+    async experiencesExperienceIdReviewsGetRaw(requestParameters: ExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperienceReviewsResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -110,14 +110,14 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseExperienceReviewsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperienceReviewsResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定した体験のレビュー一覧を取得します。
      * 体験レビュー一覧取得
      */
-    async experiencesExperienceIdReviewsGet(requestParameters: ExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseExperienceReviewsResponse> {
+    async experiencesExperienceIdReviewsGet(requestParameters: ExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperienceReviewsResponse> {
         const response = await this.experiencesExperienceIdReviewsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -134,10 +134,10 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCreateExperienceReviewRequest'] == null) {
+        if (requestParameters['typesCreateExperienceReviewRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateExperienceReviewRequest',
-                'Required parameter "requestCreateExperienceReviewRequest" was null or undefined when calling experiencesExperienceIdReviewsPost().'
+                'typesCreateExperienceReviewRequest',
+                'Required parameter "typesCreateExperienceReviewRequest" was null or undefined when calling experiencesExperienceIdReviewsPost().'
             );
         }
 
@@ -160,7 +160,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateExperienceReviewRequestToJSON(requestParameters['requestCreateExperienceReviewRequest']),
+            body: TypesCreateExperienceReviewRequestToJSON(requestParameters['typesCreateExperienceReviewRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -178,7 +178,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
      * 体験レビューの詳細情報を取得します。
      * 体験レビュー詳細取得
      */
-    async experiencesExperienceIdReviewsReviewIdGetRaw(requestParameters: ExperiencesExperienceIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseExperienceReviewResponse>> {
+    async experiencesExperienceIdReviewsReviewIdGetRaw(requestParameters: ExperiencesExperienceIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperienceReviewResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -204,14 +204,14 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseExperienceReviewResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperienceReviewResponseFromJSON(jsonValue));
     }
 
     /**
      * 体験レビューの詳細情報を取得します。
      * 体験レビュー詳細取得
      */
-    async experiencesExperienceIdReviewsReviewIdGet(requestParameters: ExperiencesExperienceIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseExperienceReviewResponse> {
+    async experiencesExperienceIdReviewsReviewIdGet(requestParameters: ExperiencesExperienceIdReviewsReviewIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperienceReviewResponse> {
         const response = await this.experiencesExperienceIdReviewsReviewIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -235,10 +235,10 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpdateExperienceReviewRequest'] == null) {
+        if (requestParameters['typesUpdateExperienceReviewRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpdateExperienceReviewRequest',
-                'Required parameter "requestUpdateExperienceReviewRequest" was null or undefined when calling experiencesExperienceIdReviewsReviewIdPatch().'
+                'typesUpdateExperienceReviewRequest',
+                'Required parameter "typesUpdateExperienceReviewRequest" was null or undefined when calling experiencesExperienceIdReviewsReviewIdPatch().'
             );
         }
 
@@ -261,7 +261,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpdateExperienceReviewRequestToJSON(requestParameters['requestUpdateExperienceReviewRequest']),
+            body: TypesUpdateExperienceReviewRequestToJSON(requestParameters['typesUpdateExperienceReviewRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -343,10 +343,10 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpsertExperienceReviewReactionRequest'] == null) {
+        if (requestParameters['typesUpsertExperienceReviewReactionRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpsertExperienceReviewReactionRequest',
-                'Required parameter "requestUpsertExperienceReviewReactionRequest" was null or undefined when calling experiencesExperienceIdReviewsReviewIdReactionsPost().'
+                'typesUpsertExperienceReviewReactionRequest',
+                'Required parameter "typesUpsertExperienceReviewReactionRequest" was null or undefined when calling experiencesExperienceIdReviewsReviewIdReactionsPost().'
             );
         }
 
@@ -369,7 +369,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpsertExperienceReviewReactionRequestToJSON(requestParameters['requestUpsertExperienceReviewReactionRequest']),
+            body: TypesUpsertExperienceReviewReactionRequestToJSON(requestParameters['typesUpsertExperienceReviewReactionRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -387,7 +387,7 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
      * ログイン中のユーザーが投稿した体験レビューの一覧を取得します。
      * ユーザー体験レビュー一覧取得
      */
-    async usersMeExperiencesExperienceIdReviewsGetRaw(requestParameters: UsersMeExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseExperienceReviewsResponse>> {
+    async usersMeExperiencesExperienceIdReviewsGetRaw(requestParameters: UsersMeExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperienceReviewsResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -414,14 +414,14 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseExperienceReviewsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperienceReviewsResponseFromJSON(jsonValue));
     }
 
     /**
      * ログイン中のユーザーが投稿した体験レビューの一覧を取得します。
      * ユーザー体験レビュー一覧取得
      */
-    async usersMeExperiencesExperienceIdReviewsGet(requestParameters: UsersMeExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseExperienceReviewsResponse> {
+    async usersMeExperiencesExperienceIdReviewsGet(requestParameters: UsersMeExperiencesExperienceIdReviewsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperienceReviewsResponse> {
         const response = await this.usersMeExperiencesExperienceIdReviewsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

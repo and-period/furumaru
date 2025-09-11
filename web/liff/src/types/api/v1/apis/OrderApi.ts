@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseOrderResponse,
-  ResponseOrdersResponse,
+  TypesOrderResponse,
+  TypesOrdersResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseOrderResponseFromJSON,
-    ResponseOrderResponseToJSON,
-    ResponseOrdersResponseFromJSON,
-    ResponseOrdersResponseToJSON,
+    TypesOrderResponseFromJSON,
+    TypesOrderResponseToJSON,
+    TypesOrdersResponseFromJSON,
+    TypesOrdersResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -47,7 +47,7 @@ export class OrderApi extends runtime.BaseAPI {
      * 注文の一覧を取得します。
      * 注文一覧取得
      */
-    async ordersGetRaw(requestParameters: OrdersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseOrdersResponse>> {
+    async ordersGetRaw(requestParameters: OrdersGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesOrdersResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -79,14 +79,14 @@ export class OrderApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseOrdersResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesOrdersResponseFromJSON(jsonValue));
     }
 
     /**
      * 注文の一覧を取得します。
      * 注文一覧取得
      */
-    async ordersGet(requestParameters: OrdersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseOrdersResponse> {
+    async ordersGet(requestParameters: OrdersGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesOrdersResponse> {
         const response = await this.ordersGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -95,7 +95,7 @@ export class OrderApi extends runtime.BaseAPI {
      * 注文の詳細情報を取得します。
      * 注文詳細取得
      */
-    async ordersOrderIdGetRaw(requestParameters: OrdersOrderIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseOrderResponse>> {
+    async ordersOrderIdGetRaw(requestParameters: OrdersOrderIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesOrderResponse>> {
         if (requestParameters['orderId'] == null) {
             throw new runtime.RequiredError(
                 'orderId',
@@ -122,14 +122,14 @@ export class OrderApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseOrderResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesOrderResponseFromJSON(jsonValue));
     }
 
     /**
      * 注文の詳細情報を取得します。
      * 注文詳細取得
      */
-    async ordersOrderIdGet(requestParameters: OrdersOrderIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseOrderResponse> {
+    async ordersOrderIdGet(requestParameters: OrdersOrderIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesOrderResponse> {
         const response = await this.ordersOrderIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -24,14 +24,13 @@ export interface RequestCreateLiveCommentRequest {
      * @type {string}
      * @memberof RequestCreateLiveCommentRequest
      */
-    comment: string;
+    comment?: string;
 }
 
 /**
  * Check if a given object implements the RequestCreateLiveCommentRequest interface.
  */
 export function instanceOfRequestCreateLiveCommentRequest(value: object): value is RequestCreateLiveCommentRequest {
-    if (!('comment' in value) || value['comment'] === undefined) return false;
     return true;
 }
 
@@ -45,7 +44,7 @@ export function RequestCreateLiveCommentRequestFromJSONTyped(json: any, ignoreDi
     }
     return {
         
-        'comment': json['comment'],
+        'comment': json['comment'] == null ? undefined : json['comment'],
     };
 }
 

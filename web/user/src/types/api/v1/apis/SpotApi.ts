@@ -15,21 +15,21 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateSpotRequest,
-  RequestUpdateSpotRequest,
-  ResponseSpotResponse,
-  ResponseSpotsResponse,
+  TypesCreateSpotRequest,
+  TypesSpotResponse,
+  TypesSpotsResponse,
+  TypesUpdateSpotRequest,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateSpotRequestFromJSON,
-    RequestCreateSpotRequestToJSON,
-    RequestUpdateSpotRequestFromJSON,
-    RequestUpdateSpotRequestToJSON,
-    ResponseSpotResponseFromJSON,
-    ResponseSpotResponseToJSON,
-    ResponseSpotsResponseFromJSON,
-    ResponseSpotsResponseToJSON,
+    TypesCreateSpotRequestFromJSON,
+    TypesCreateSpotRequestToJSON,
+    TypesSpotResponseFromJSON,
+    TypesSpotResponseToJSON,
+    TypesSpotsResponseFromJSON,
+    TypesSpotsResponseToJSON,
+    TypesUpdateSpotRequestFromJSON,
+    TypesUpdateSpotRequestToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -41,7 +41,7 @@ export interface SpotsGetRequest {
 }
 
 export interface SpotsPostRequest {
-    requestCreateSpotRequest: RequestCreateSpotRequest;
+    typesCreateSpotRequest: TypesCreateSpotRequest;
 }
 
 export interface SpotsSpotIdDeleteRequest {
@@ -54,7 +54,7 @@ export interface SpotsSpotIdGetRequest {
 
 export interface SpotsSpotIdPatchRequest {
     spotId: string;
-    requestUpdateSpotRequest: RequestUpdateSpotRequest;
+    typesUpdateSpotRequest: TypesUpdateSpotRequest;
 }
 
 /**
@@ -66,7 +66,7 @@ export class SpotApi extends runtime.BaseAPI {
      * 指定された位置情報周辺のスポット一覧を取得します。
      * スポット一覧取得
      */
-    async spotsGetRaw(requestParameters: SpotsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSpotsResponse>> {
+    async spotsGetRaw(requestParameters: SpotsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesSpotsResponse>> {
         if (requestParameters['latitude'] == null) {
             throw new runtime.RequiredError(
                 'latitude',
@@ -104,14 +104,14 @@ export class SpotApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSpotsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesSpotsResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定された位置情報周辺のスポット一覧を取得します。
      * スポット一覧取得
      */
-    async spotsGet(requestParameters: SpotsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSpotsResponse> {
+    async spotsGet(requestParameters: SpotsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesSpotsResponse> {
         const response = await this.spotsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -120,11 +120,11 @@ export class SpotApi extends runtime.BaseAPI {
      * 新しいスポットを登録します。
      * スポット登録
      */
-    async spotsPostRaw(requestParameters: SpotsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSpotResponse>> {
-        if (requestParameters['requestCreateSpotRequest'] == null) {
+    async spotsPostRaw(requestParameters: SpotsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesSpotResponse>> {
+        if (requestParameters['typesCreateSpotRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateSpotRequest',
-                'Required parameter "requestCreateSpotRequest" was null or undefined when calling spotsPost().'
+                'typesCreateSpotRequest',
+                'Required parameter "typesCreateSpotRequest" was null or undefined when calling spotsPost().'
             );
         }
 
@@ -147,17 +147,17 @@ export class SpotApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateSpotRequestToJSON(requestParameters['requestCreateSpotRequest']),
+            body: TypesCreateSpotRequestToJSON(requestParameters['typesCreateSpotRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSpotResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesSpotResponseFromJSON(jsonValue));
     }
 
     /**
      * 新しいスポットを登録します。
      * スポット登録
      */
-    async spotsPost(requestParameters: SpotsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSpotResponse> {
+    async spotsPost(requestParameters: SpotsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesSpotResponse> {
         const response = await this.spotsPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -208,7 +208,7 @@ export class SpotApi extends runtime.BaseAPI {
      * 指定されたIDのスポット詳細を取得します。
      * スポット詳細取得
      */
-    async spotsSpotIdGetRaw(requestParameters: SpotsSpotIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSpotResponse>> {
+    async spotsSpotIdGetRaw(requestParameters: SpotsSpotIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesSpotResponse>> {
         if (requestParameters['spotId'] == null) {
             throw new runtime.RequiredError(
                 'spotId',
@@ -227,14 +227,14 @@ export class SpotApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSpotResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesSpotResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定されたIDのスポット詳細を取得します。
      * スポット詳細取得
      */
-    async spotsSpotIdGet(requestParameters: SpotsSpotIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSpotResponse> {
+    async spotsSpotIdGet(requestParameters: SpotsSpotIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesSpotResponse> {
         const response = await this.spotsSpotIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -251,10 +251,10 @@ export class SpotApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpdateSpotRequest'] == null) {
+        if (requestParameters['typesUpdateSpotRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpdateSpotRequest',
-                'Required parameter "requestUpdateSpotRequest" was null or undefined when calling spotsSpotIdPatch().'
+                'typesUpdateSpotRequest',
+                'Required parameter "typesUpdateSpotRequest" was null or undefined when calling spotsSpotIdPatch().'
             );
         }
 
@@ -277,7 +277,7 @@ export class SpotApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpdateSpotRequestToJSON(requestParameters['requestUpdateSpotRequest']),
+            body: TypesUpdateSpotRequestToJSON(requestParameters['typesUpdateSpotRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

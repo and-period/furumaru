@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateVideoCommentRequest,
-  ResponseVideoCommentsResponse,
+  TypesCreateVideoCommentRequest,
+  TypesVideoCommentsResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateVideoCommentRequestFromJSON,
-    RequestCreateVideoCommentRequestToJSON,
-    ResponseVideoCommentsResponseFromJSON,
-    ResponseVideoCommentsResponseToJSON,
+    TypesCreateVideoCommentRequestFromJSON,
+    TypesCreateVideoCommentRequestToJSON,
+    TypesVideoCommentsResponseFromJSON,
+    TypesVideoCommentsResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -35,7 +35,7 @@ export interface VideosVideoIdCommentsGetRequest {
 
 export interface VideosVideoIdCommentsPostRequest {
     videoId: string;
-    requestCreateVideoCommentRequest: RequestCreateVideoCommentRequest;
+    typesCreateVideoCommentRequest: TypesCreateVideoCommentRequest;
 }
 
 /**
@@ -47,7 +47,7 @@ export class VideoCommentApi extends runtime.BaseAPI {
      * 動画のコメント一覧を取得します。
      * 動画コメント一覧取得
      */
-    async videosVideoIdCommentsGetRaw(requestParameters: VideosVideoIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseVideoCommentsResponse>> {
+    async videosVideoIdCommentsGetRaw(requestParameters: VideosVideoIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesVideoCommentsResponse>> {
         if (requestParameters['videoId'] == null) {
             throw new runtime.RequiredError(
                 'videoId',
@@ -70,14 +70,14 @@ export class VideoCommentApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseVideoCommentsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesVideoCommentsResponseFromJSON(jsonValue));
     }
 
     /**
      * 動画のコメント一覧を取得します。
      * 動画コメント一覧取得
      */
-    async videosVideoIdCommentsGet(requestParameters: VideosVideoIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseVideoCommentsResponse> {
+    async videosVideoIdCommentsGet(requestParameters: VideosVideoIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesVideoCommentsResponse> {
         const response = await this.videosVideoIdCommentsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -94,10 +94,10 @@ export class VideoCommentApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCreateVideoCommentRequest'] == null) {
+        if (requestParameters['typesCreateVideoCommentRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateVideoCommentRequest',
-                'Required parameter "requestCreateVideoCommentRequest" was null or undefined when calling videosVideoIdCommentsPost().'
+                'typesCreateVideoCommentRequest',
+                'Required parameter "typesCreateVideoCommentRequest" was null or undefined when calling videosVideoIdCommentsPost().'
             );
         }
 
@@ -120,7 +120,7 @@ export class VideoCommentApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateVideoCommentRequestToJSON(requestParameters['requestCreateVideoCommentRequest']),
+            body: TypesCreateVideoCommentRequestToJSON(requestParameters['typesCreateVideoCommentRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

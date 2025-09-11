@@ -15,18 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateAuthUserRequest,
-  RequestUpdateAuthUserRequest,
-  ResponseAuthUserResponse,
+  TypesAuthUserResponse,
+  TypesCreateAuthUserRequest,
+  TypesUpdateAuthUserRequest,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateAuthUserRequestFromJSON,
-    RequestCreateAuthUserRequestToJSON,
-    RequestUpdateAuthUserRequestFromJSON,
-    RequestUpdateAuthUserRequestToJSON,
-    ResponseAuthUserResponseFromJSON,
-    ResponseAuthUserResponseToJSON,
+    TypesAuthUserResponseFromJSON,
+    TypesAuthUserResponseToJSON,
+    TypesCreateAuthUserRequestFromJSON,
+    TypesCreateAuthUserRequestToJSON,
+    TypesUpdateAuthUserRequestFromJSON,
+    TypesUpdateAuthUserRequestToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -37,12 +37,12 @@ export interface FacilitiesFacilityIdUsersMeGetRequest {
 
 export interface FacilitiesFacilityIdUsersMePutRequest {
     facilityId: string;
-    requestUpdateAuthUserRequest: RequestUpdateAuthUserRequest;
+    typesUpdateAuthUserRequest: TypesUpdateAuthUserRequest;
 }
 
 export interface FacilitiesFacilityIdUsersPostRequest {
     facilityId: string;
-    requestCreateAuthUserRequest: RequestCreateAuthUserRequest;
+    typesCreateAuthUserRequest: TypesCreateAuthUserRequest;
 }
 
 /**
@@ -54,7 +54,7 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザーの詳細情報を取得します。
      * ユーザー情報取得
      */
-    async facilitiesFacilityIdUsersMeGetRaw(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthUserResponse>> {
+    async facilitiesFacilityIdUsersMeGetRaw(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthUserResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -81,14 +81,14 @@ export class AuthUserApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーの詳細情報を取得します。
      * ユーザー情報取得
      */
-    async facilitiesFacilityIdUsersMeGet(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthUserResponse> {
+    async facilitiesFacilityIdUsersMeGet(requestParameters: FacilitiesFacilityIdUsersMeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthUserResponse> {
         const response = await this.facilitiesFacilityIdUsersMeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -105,10 +105,10 @@ export class AuthUserApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestUpdateAuthUserRequest'] == null) {
+        if (requestParameters['typesUpdateAuthUserRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestUpdateAuthUserRequest',
-                'Required parameter "requestUpdateAuthUserRequest" was null or undefined when calling facilitiesFacilityIdUsersMePut().'
+                'typesUpdateAuthUserRequest',
+                'Required parameter "typesUpdateAuthUserRequest" was null or undefined when calling facilitiesFacilityIdUsersMePut().'
             );
         }
 
@@ -131,7 +131,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestUpdateAuthUserRequestToJSON(requestParameters['requestUpdateAuthUserRequest']),
+            body: TypesUpdateAuthUserRequestToJSON(requestParameters['typesUpdateAuthUserRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -149,7 +149,7 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザーの詳細情報を登録します。
      * ユーザー情報登録
      */
-    async facilitiesFacilityIdUsersPostRaw(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseAuthUserResponse>> {
+    async facilitiesFacilityIdUsersPostRaw(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthUserResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -157,10 +157,10 @@ export class AuthUserApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCreateAuthUserRequest'] == null) {
+        if (requestParameters['typesCreateAuthUserRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateAuthUserRequest',
-                'Required parameter "requestCreateAuthUserRequest" was null or undefined when calling facilitiesFacilityIdUsersPost().'
+                'typesCreateAuthUserRequest',
+                'Required parameter "typesCreateAuthUserRequest" was null or undefined when calling facilitiesFacilityIdUsersPost().'
             );
         }
 
@@ -175,17 +175,17 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateAuthUserRequestToJSON(requestParameters['requestCreateAuthUserRequest']),
+            body: TypesCreateAuthUserRequestToJSON(requestParameters['typesCreateAuthUserRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseAuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthUserResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーの詳細情報を登録します。
      * ユーザー情報登録
      */
-    async facilitiesFacilityIdUsersPost(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseAuthUserResponse> {
+    async facilitiesFacilityIdUsersPost(requestParameters: FacilitiesFacilityIdUsersPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthUserResponse> {
         const response = await this.facilitiesFacilityIdUsersPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

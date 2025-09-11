@@ -7,7 +7,7 @@ import type {
 } from '~/types/api/models';
 import { CartApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
 import { useAuthStore } from '~/stores/auth';
-import type { RequestAddCartItemRequest } from '@/types/api/facility';
+import type { TypesAddCartItemRequest } from '@/types/api/facility';
 
 export interface CartItem extends ApiCartItem {
   product?: Product & {
@@ -163,14 +163,14 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
         const api = new CartApi(config);
 
-        const payload: RequestAddCartItemRequest = {
+        const payload: TypesAddCartItemRequest = {
           productId,
           quantity,
         };
 
         await api.facilitiesFacilityIdCartsItemsPost({
           facilityId,
-          requestAddCartItemRequest: payload,
+          typesAddCartItemRequest: payload,
         });
 
         // 追加後にカート情報を更新

@@ -15,24 +15,24 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCheckoutExperienceRequest,
-  RequestCheckoutProductRequest,
-  ResponseCheckoutResponse,
-  ResponseCheckoutStateResponse,
-  ResponsePreCheckoutExperienceResponse,
+  TypesCheckoutExperienceRequest,
+  TypesCheckoutProductRequest,
+  TypesCheckoutResponse,
+  TypesCheckoutStateResponse,
+  TypesPreCheckoutExperienceResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCheckoutExperienceRequestFromJSON,
-    RequestCheckoutExperienceRequestToJSON,
-    RequestCheckoutProductRequestFromJSON,
-    RequestCheckoutProductRequestToJSON,
-    ResponseCheckoutResponseFromJSON,
-    ResponseCheckoutResponseToJSON,
-    ResponseCheckoutStateResponseFromJSON,
-    ResponseCheckoutStateResponseToJSON,
-    ResponsePreCheckoutExperienceResponseFromJSON,
-    ResponsePreCheckoutExperienceResponseToJSON,
+    TypesCheckoutExperienceRequestFromJSON,
+    TypesCheckoutExperienceRequestToJSON,
+    TypesCheckoutProductRequestFromJSON,
+    TypesCheckoutProductRequestToJSON,
+    TypesCheckoutResponseFromJSON,
+    TypesCheckoutResponseToJSON,
+    TypesCheckoutStateResponseFromJSON,
+    TypesCheckoutStateResponseToJSON,
+    TypesPreCheckoutExperienceResponseFromJSON,
+    TypesPreCheckoutExperienceResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -43,11 +43,11 @@ export interface CheckoutsExperiencesExperienceIdGetRequest {
 
 export interface CheckoutsExperiencesExperienceIdPostRequest {
     experienceId: string;
-    requestCheckoutExperienceRequest: RequestCheckoutExperienceRequest;
+    typesCheckoutExperienceRequest: TypesCheckoutExperienceRequest;
 }
 
 export interface CheckoutsProductsPostRequest {
-    requestCheckoutProductRequest: RequestCheckoutProductRequest;
+    typesCheckoutProductRequest: TypesCheckoutProductRequest;
 }
 
 export interface CheckoutsTransactionIdGetRequest {
@@ -63,7 +63,7 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 体験を決済する前に必要な情報を取得します。
      * 体験事前決済情報取得
      */
-    async checkoutsExperiencesExperienceIdGetRaw(requestParameters: CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponsePreCheckoutExperienceResponse>> {
+    async checkoutsExperiencesExperienceIdGetRaw(requestParameters: CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPreCheckoutExperienceResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -90,14 +90,14 @@ export class CheckoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponsePreCheckoutExperienceResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPreCheckoutExperienceResponseFromJSON(jsonValue));
     }
 
     /**
      * 体験を決済する前に必要な情報を取得します。
      * 体験事前決済情報取得
      */
-    async checkoutsExperiencesExperienceIdGet(requestParameters: CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponsePreCheckoutExperienceResponse> {
+    async checkoutsExperiencesExperienceIdGet(requestParameters: CheckoutsExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPreCheckoutExperienceResponse> {
         const response = await this.checkoutsExperiencesExperienceIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -106,7 +106,7 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 体験の決済を実行し、予約を作成します。
      * 体験決済
      */
-    async checkoutsExperiencesExperienceIdPostRaw(requestParameters: CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCheckoutResponse>> {
+    async checkoutsExperiencesExperienceIdPostRaw(requestParameters: CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -114,10 +114,10 @@ export class CheckoutApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCheckoutExperienceRequest'] == null) {
+        if (requestParameters['typesCheckoutExperienceRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCheckoutExperienceRequest',
-                'Required parameter "requestCheckoutExperienceRequest" was null or undefined when calling checkoutsExperiencesExperienceIdPost().'
+                'typesCheckoutExperienceRequest',
+                'Required parameter "typesCheckoutExperienceRequest" was null or undefined when calling checkoutsExperiencesExperienceIdPost().'
             );
         }
 
@@ -140,17 +140,17 @@ export class CheckoutApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCheckoutExperienceRequestToJSON(requestParameters['requestCheckoutExperienceRequest']),
+            body: TypesCheckoutExperienceRequestToJSON(requestParameters['typesCheckoutExperienceRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCheckoutResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutResponseFromJSON(jsonValue));
     }
 
     /**
      * 体験の決済を実行し、予約を作成します。
      * 体験決済
      */
-    async checkoutsExperiencesExperienceIdPost(requestParameters: CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCheckoutResponse> {
+    async checkoutsExperiencesExperienceIdPost(requestParameters: CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutResponse> {
         const response = await this.checkoutsExperiencesExperienceIdPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -159,11 +159,11 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 商品の決済を実行し、注文を作成します。
      * 商品決済
      */
-    async checkoutsProductsPostRaw(requestParameters: CheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCheckoutResponse>> {
-        if (requestParameters['requestCheckoutProductRequest'] == null) {
+    async checkoutsProductsPostRaw(requestParameters: CheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutResponse>> {
+        if (requestParameters['typesCheckoutProductRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCheckoutProductRequest',
-                'Required parameter "requestCheckoutProductRequest" was null or undefined when calling checkoutsProductsPost().'
+                'typesCheckoutProductRequest',
+                'Required parameter "typesCheckoutProductRequest" was null or undefined when calling checkoutsProductsPost().'
             );
         }
 
@@ -186,17 +186,17 @@ export class CheckoutApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCheckoutProductRequestToJSON(requestParameters['requestCheckoutProductRequest']),
+            body: TypesCheckoutProductRequestToJSON(requestParameters['typesCheckoutProductRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCheckoutResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutResponseFromJSON(jsonValue));
     }
 
     /**
      * 商品の決済を実行し、注文を作成します。
      * 商品決済
      */
-    async checkoutsProductsPost(requestParameters: CheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCheckoutResponse> {
+    async checkoutsProductsPost(requestParameters: CheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutResponse> {
         const response = await this.checkoutsProductsPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -205,7 +205,7 @@ export class CheckoutApi extends runtime.BaseAPI {
      * 決済トランザクションの状態を取得します。
      * 決済状態取得
      */
-    async checkoutsTransactionIdGetRaw(requestParameters: CheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseCheckoutStateResponse>> {
+    async checkoutsTransactionIdGetRaw(requestParameters: CheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutStateResponse>> {
         if (requestParameters['transactionId'] == null) {
             throw new runtime.RequiredError(
                 'transactionId',
@@ -232,14 +232,14 @@ export class CheckoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseCheckoutStateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutStateResponseFromJSON(jsonValue));
     }
 
     /**
      * 決済トランザクションの状態を取得します。
      * 決済状態取得
      */
-    async checkoutsTransactionIdGet(requestParameters: CheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseCheckoutStateResponse> {
+    async checkoutsTransactionIdGet(requestParameters: CheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutStateResponse> {
         const response = await this.checkoutsTransactionIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

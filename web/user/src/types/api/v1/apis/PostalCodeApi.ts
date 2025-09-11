@@ -15,12 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponsePostalCodeResponse,
+  TypesPostalCodeResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponsePostalCodeResponseFromJSON,
-    ResponsePostalCodeResponseToJSON,
+    TypesPostalCodeResponseFromJSON,
+    TypesPostalCodeResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -38,7 +38,7 @@ export class PostalCodeApi extends runtime.BaseAPI {
      * 郵便番号から住所情報を検索します。
      * 郵便番号検索
      */
-    async postalCodesPostalCodeGetRaw(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponsePostalCodeResponse>> {
+    async postalCodesPostalCodeGetRaw(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPostalCodeResponse>> {
         if (requestParameters['postalCode'] == null) {
             throw new runtime.RequiredError(
                 'postalCode',
@@ -57,14 +57,14 @@ export class PostalCodeApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponsePostalCodeResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPostalCodeResponseFromJSON(jsonValue));
     }
 
     /**
      * 郵便番号から住所情報を検索します。
      * 郵便番号検索
      */
-    async postalCodesPostalCodeGet(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponsePostalCodeResponse> {
+    async postalCodesPostalCodeGet(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPostalCodeResponse> {
         const response = await this.postalCodesPostalCodeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

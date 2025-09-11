@@ -15,18 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseArchiveSchedulesResponse,
-  ResponseLiveSchedulesResponse,
-  ResponseScheduleResponse,
+  TypesArchiveSchedulesResponse,
+  TypesLiveSchedulesResponse,
+  TypesScheduleResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseArchiveSchedulesResponseFromJSON,
-    ResponseArchiveSchedulesResponseToJSON,
-    ResponseLiveSchedulesResponseFromJSON,
-    ResponseLiveSchedulesResponseToJSON,
-    ResponseScheduleResponseFromJSON,
-    ResponseScheduleResponseToJSON,
+    TypesArchiveSchedulesResponseFromJSON,
+    TypesArchiveSchedulesResponseToJSON,
+    TypesLiveSchedulesResponseFromJSON,
+    TypesLiveSchedulesResponseToJSON,
+    TypesScheduleResponseFromJSON,
+    TypesScheduleResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -58,7 +58,7 @@ export class ScheduleApi extends runtime.BaseAPI {
      * 過去の配信アーカイブスケジュール一覧を取得します。
      * アーカイブスケジュール一覧取得
      */
-    async schedulesArchivesGetRaw(requestParameters: SchedulesArchivesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseArchiveSchedulesResponse>> {
+    async schedulesArchivesGetRaw(requestParameters: SchedulesArchivesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesArchiveSchedulesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -86,14 +86,14 @@ export class ScheduleApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseArchiveSchedulesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesArchiveSchedulesResponseFromJSON(jsonValue));
     }
 
     /**
      * 過去の配信アーカイブスケジュール一覧を取得します。
      * アーカイブスケジュール一覧取得
      */
-    async schedulesArchivesGet(requestParameters: SchedulesArchivesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseArchiveSchedulesResponse> {
+    async schedulesArchivesGet(requestParameters: SchedulesArchivesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesArchiveSchedulesResponse> {
         const response = await this.schedulesArchivesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -102,7 +102,7 @@ export class ScheduleApi extends runtime.BaseAPI {
      * 現在配信中または配信予定のライブスケジュール一覧を取得します。
      * ライブ配信スケジュール一覧取得
      */
-    async schedulesLivesGetRaw(requestParameters: SchedulesLivesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseLiveSchedulesResponse>> {
+    async schedulesLivesGetRaw(requestParameters: SchedulesLivesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesLiveSchedulesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -130,14 +130,14 @@ export class ScheduleApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseLiveSchedulesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesLiveSchedulesResponseFromJSON(jsonValue));
     }
 
     /**
      * 現在配信中または配信予定のライブスケジュール一覧を取得します。
      * ライブ配信スケジュール一覧取得
      */
-    async schedulesLivesGet(requestParameters: SchedulesLivesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseLiveSchedulesResponse> {
+    async schedulesLivesGet(requestParameters: SchedulesLivesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesLiveSchedulesResponse> {
         const response = await this.schedulesLivesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -146,7 +146,7 @@ export class ScheduleApi extends runtime.BaseAPI {
      * 指定されたIDのスケジュール詳細を取得します。
      * スケジュール詳細取得
      */
-    async schedulesScheduleIdGetRaw(requestParameters: SchedulesScheduleIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseScheduleResponse>> {
+    async schedulesScheduleIdGetRaw(requestParameters: SchedulesScheduleIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesScheduleResponse>> {
         if (requestParameters['scheduleId'] == null) {
             throw new runtime.RequiredError(
                 'scheduleId',
@@ -165,14 +165,14 @@ export class ScheduleApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseScheduleResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesScheduleResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定されたIDのスケジュール詳細を取得します。
      * スケジュール詳細取得
      */
-    async schedulesScheduleIdGet(requestParameters: SchedulesScheduleIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseScheduleResponse> {
+    async schedulesScheduleIdGet(requestParameters: SchedulesScheduleIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesScheduleResponse> {
         const response = await this.schedulesScheduleIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

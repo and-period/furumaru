@@ -24,14 +24,13 @@ export interface RequestUpsertProductReviewReactionRequest {
      * @type {number}
      * @memberof RequestUpsertProductReviewReactionRequest
      */
-    reactionType: number;
+    reactionType?: number;
 }
 
 /**
  * Check if a given object implements the RequestUpsertProductReviewReactionRequest interface.
  */
 export function instanceOfRequestUpsertProductReviewReactionRequest(value: object): value is RequestUpsertProductReviewReactionRequest {
-    if (!('reactionType' in value) || value['reactionType'] === undefined) return false;
     return true;
 }
 
@@ -45,7 +44,7 @@ export function RequestUpsertProductReviewReactionRequestFromJSONTyped(json: any
     }
     return {
         
-        'reactionType': json['reactionType'],
+        'reactionType': json['reactionType'] == null ? undefined : json['reactionType'],
     };
 }
 

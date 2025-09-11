@@ -15,24 +15,24 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestGetUploadURLRequest,
-  ResponseUploadStateResponse,
-  ResponseUploadURLResponse,
+  TypesGetUploadURLRequest,
+  TypesUploadStateResponse,
+  TypesUploadURLResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestGetUploadURLRequestFromJSON,
-    RequestGetUploadURLRequestToJSON,
-    ResponseUploadStateResponseFromJSON,
-    ResponseUploadStateResponseToJSON,
-    ResponseUploadURLResponseFromJSON,
-    ResponseUploadURLResponseToJSON,
+    TypesGetUploadURLRequestFromJSON,
+    TypesGetUploadURLRequestToJSON,
+    TypesUploadStateResponseFromJSON,
+    TypesUploadStateResponseToJSON,
+    TypesUploadURLResponseFromJSON,
+    TypesUploadURLResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
 
 export interface UploadSpotsThumbnailPostRequest {
-    requestGetUploadURLRequest: RequestGetUploadURLRequest;
+    typesGetUploadURLRequest: TypesGetUploadURLRequest;
 }
 
 export interface UploadStateGetRequest {
@@ -40,7 +40,7 @@ export interface UploadStateGetRequest {
 }
 
 export interface UploadUsersThumbnailPostRequest {
-    requestGetUploadURLRequest: RequestGetUploadURLRequest;
+    typesGetUploadURLRequest: TypesGetUploadURLRequest;
 }
 
 /**
@@ -52,11 +52,11 @@ export class UploadApi extends runtime.BaseAPI {
      * スポットサムネイルをアップロードするためのURLを取得します。
      * スポットサムネイルアップロードURL取得
      */
-    async uploadSpotsThumbnailPostRaw(requestParameters: UploadSpotsThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseUploadURLResponse>> {
-        if (requestParameters['requestGetUploadURLRequest'] == null) {
+    async uploadSpotsThumbnailPostRaw(requestParameters: UploadSpotsThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesUploadURLResponse>> {
+        if (requestParameters['typesGetUploadURLRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestGetUploadURLRequest',
-                'Required parameter "requestGetUploadURLRequest" was null or undefined when calling uploadSpotsThumbnailPost().'
+                'typesGetUploadURLRequest',
+                'Required parameter "typesGetUploadURLRequest" was null or undefined when calling uploadSpotsThumbnailPost().'
             );
         }
 
@@ -79,17 +79,17 @@ export class UploadApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestGetUploadURLRequestToJSON(requestParameters['requestGetUploadURLRequest']),
+            body: TypesGetUploadURLRequestToJSON(requestParameters['typesGetUploadURLRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseUploadURLResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesUploadURLResponseFromJSON(jsonValue));
     }
 
     /**
      * スポットサムネイルをアップロードするためのURLを取得します。
      * スポットサムネイルアップロードURL取得
      */
-    async uploadSpotsThumbnailPost(requestParameters: UploadSpotsThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseUploadURLResponse> {
+    async uploadSpotsThumbnailPost(requestParameters: UploadSpotsThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesUploadURLResponse> {
         const response = await this.uploadSpotsThumbnailPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -98,7 +98,7 @@ export class UploadApi extends runtime.BaseAPI {
      * アップロードファイルの処理状態を取得します。
      * アップロード状態取得
      */
-    async uploadStateGetRaw(requestParameters: UploadStateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseUploadStateResponse>> {
+    async uploadStateGetRaw(requestParameters: UploadStateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesUploadStateResponse>> {
         if (requestParameters['key'] == null) {
             throw new runtime.RequiredError(
                 'key',
@@ -121,14 +121,14 @@ export class UploadApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseUploadStateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesUploadStateResponseFromJSON(jsonValue));
     }
 
     /**
      * アップロードファイルの処理状態を取得します。
      * アップロード状態取得
      */
-    async uploadStateGet(requestParameters: UploadStateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseUploadStateResponse> {
+    async uploadStateGet(requestParameters: UploadStateGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesUploadStateResponse> {
         const response = await this.uploadStateGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -137,11 +137,11 @@ export class UploadApi extends runtime.BaseAPI {
      * ユーザーサムネイルをアップロードするためのURLを取得します。
      * ユーザーサムネイルアップロードURL取得
      */
-    async uploadUsersThumbnailPostRaw(requestParameters: UploadUsersThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseUploadURLResponse>> {
-        if (requestParameters['requestGetUploadURLRequest'] == null) {
+    async uploadUsersThumbnailPostRaw(requestParameters: UploadUsersThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesUploadURLResponse>> {
+        if (requestParameters['typesGetUploadURLRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestGetUploadURLRequest',
-                'Required parameter "requestGetUploadURLRequest" was null or undefined when calling uploadUsersThumbnailPost().'
+                'typesGetUploadURLRequest',
+                'Required parameter "typesGetUploadURLRequest" was null or undefined when calling uploadUsersThumbnailPost().'
             );
         }
 
@@ -164,17 +164,17 @@ export class UploadApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestGetUploadURLRequestToJSON(requestParameters['requestGetUploadURLRequest']),
+            body: TypesGetUploadURLRequestToJSON(requestParameters['typesGetUploadURLRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseUploadURLResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesUploadURLResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーサムネイルをアップロードするためのURLを取得します。
      * ユーザーサムネイルアップロードURL取得
      */
-    async uploadUsersThumbnailPost(requestParameters: UploadUsersThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseUploadURLResponse> {
+    async uploadUsersThumbnailPost(requestParameters: UploadUsersThumbnailPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesUploadURLResponse> {
         const response = await this.uploadUsersThumbnailPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -15,12 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponsePromotionResponse,
+  TypesPromotionResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponsePromotionResponseFromJSON,
-    ResponsePromotionResponseToJSON,
+    TypesPromotionResponseFromJSON,
+    TypesPromotionResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -39,7 +39,7 @@ export class PromotionApi extends runtime.BaseAPI {
      * プロモーションコードから割引情報を取得します。
      * プロモーション詳細取得
      */
-    async promotionsCodeGetRaw(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponsePromotionResponse>> {
+    async promotionsCodeGetRaw(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPromotionResponse>> {
         if (requestParameters['code'] == null) {
             throw new runtime.RequiredError(
                 'code',
@@ -62,14 +62,14 @@ export class PromotionApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponsePromotionResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPromotionResponseFromJSON(jsonValue));
     }
 
     /**
      * プロモーションコードから割引情報を取得します。
      * プロモーション詳細取得
      */
-    async promotionsCodeGet(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponsePromotionResponse> {
+    async promotionsCodeGet(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPromotionResponse> {
         const response = await this.promotionsCodeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

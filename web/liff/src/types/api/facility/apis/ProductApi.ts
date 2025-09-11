@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ResponseProductResponse,
-  ResponseProductsResponse,
+  TypesProductResponse,
+  TypesProductsResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    ResponseProductResponseFromJSON,
-    ResponseProductResponseToJSON,
-    ResponseProductsResponseFromJSON,
-    ResponseProductsResponseToJSON,
+    TypesProductResponseFromJSON,
+    TypesProductResponseToJSON,
+    TypesProductsResponseFromJSON,
+    TypesProductsResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -48,7 +48,7 @@ export class ProductApi extends runtime.BaseAPI {
      * 商品の一覧を取得します。
      * 商品一覧取得
      */
-    async facilitiesFacilityIdProductsGetRaw(requestParameters: FacilitiesFacilityIdProductsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProductsResponse>> {
+    async facilitiesFacilityIdProductsGetRaw(requestParameters: FacilitiesFacilityIdProductsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProductsResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -75,14 +75,14 @@ export class ProductApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProductsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProductsResponseFromJSON(jsonValue));
     }
 
     /**
      * 商品の一覧を取得します。
      * 商品一覧取得
      */
-    async facilitiesFacilityIdProductsGet(requestParameters: FacilitiesFacilityIdProductsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProductsResponse> {
+    async facilitiesFacilityIdProductsGet(requestParameters: FacilitiesFacilityIdProductsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProductsResponse> {
         const response = await this.facilitiesFacilityIdProductsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -91,7 +91,7 @@ export class ProductApi extends runtime.BaseAPI {
      * 商品の詳細を取得します。
      * 商品詳細取得
      */
-    async facilitiesFacilityIdProductsProductIdGetRaw(requestParameters: FacilitiesFacilityIdProductsProductIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseProductResponse>> {
+    async facilitiesFacilityIdProductsProductIdGetRaw(requestParameters: FacilitiesFacilityIdProductsProductIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesProductResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -117,14 +117,14 @@ export class ProductApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseProductResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesProductResponseFromJSON(jsonValue));
     }
 
     /**
      * 商品の詳細を取得します。
      * 商品詳細取得
      */
-    async facilitiesFacilityIdProductsProductIdGet(requestParameters: FacilitiesFacilityIdProductsProductIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseProductResponse> {
+    async facilitiesFacilityIdProductsProductIdGet(requestParameters: FacilitiesFacilityIdProductsProductIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesProductResponse> {
         const response = await this.facilitiesFacilityIdProductsProductIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

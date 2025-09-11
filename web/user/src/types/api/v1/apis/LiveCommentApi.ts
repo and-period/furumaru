@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  RequestCreateLiveCommentRequest,
-  ResponseLiveCommentsResponse,
+  TypesCreateLiveCommentRequest,
+  TypesLiveCommentsResponse,
   UtilErrorResponse,
 } from '../models/index';
 import {
-    RequestCreateLiveCommentRequestFromJSON,
-    RequestCreateLiveCommentRequestToJSON,
-    ResponseLiveCommentsResponseFromJSON,
-    ResponseLiveCommentsResponseToJSON,
+    TypesCreateLiveCommentRequestFromJSON,
+    TypesCreateLiveCommentRequestToJSON,
+    TypesLiveCommentsResponseFromJSON,
+    TypesLiveCommentsResponseToJSON,
     UtilErrorResponseFromJSON,
     UtilErrorResponseToJSON,
 } from '../models/index';
@@ -35,7 +35,7 @@ export interface SchedulesScheduleIdCommentsGetRequest {
 
 export interface SchedulesScheduleIdCommentsPostRequest {
     scheduleId: string;
-    requestCreateLiveCommentRequest: RequestCreateLiveCommentRequest;
+    typesCreateLiveCommentRequest: TypesCreateLiveCommentRequest;
 }
 
 /**
@@ -47,7 +47,7 @@ export class LiveCommentApi extends runtime.BaseAPI {
      * ライブ配信のコメント一覧を取得します。
      * ライブコメント一覧取得
      */
-    async schedulesScheduleIdCommentsGetRaw(requestParameters: SchedulesScheduleIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseLiveCommentsResponse>> {
+    async schedulesScheduleIdCommentsGetRaw(requestParameters: SchedulesScheduleIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesLiveCommentsResponse>> {
         if (requestParameters['scheduleId'] == null) {
             throw new runtime.RequiredError(
                 'scheduleId',
@@ -70,14 +70,14 @@ export class LiveCommentApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseLiveCommentsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TypesLiveCommentsResponseFromJSON(jsonValue));
     }
 
     /**
      * ライブ配信のコメント一覧を取得します。
      * ライブコメント一覧取得
      */
-    async schedulesScheduleIdCommentsGet(requestParameters: SchedulesScheduleIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseLiveCommentsResponse> {
+    async schedulesScheduleIdCommentsGet(requestParameters: SchedulesScheduleIdCommentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesLiveCommentsResponse> {
         const response = await this.schedulesScheduleIdCommentsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -94,10 +94,10 @@ export class LiveCommentApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['requestCreateLiveCommentRequest'] == null) {
+        if (requestParameters['typesCreateLiveCommentRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestCreateLiveCommentRequest',
-                'Required parameter "requestCreateLiveCommentRequest" was null or undefined when calling schedulesScheduleIdCommentsPost().'
+                'typesCreateLiveCommentRequest',
+                'Required parameter "typesCreateLiveCommentRequest" was null or undefined when calling schedulesScheduleIdCommentsPost().'
             );
         }
 
@@ -120,7 +120,7 @@ export class LiveCommentApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RequestCreateLiveCommentRequestToJSON(requestParameters['requestCreateLiveCommentRequest']),
+            body: TypesCreateLiveCommentRequestToJSON(requestParameters['typesCreateLiveCommentRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
