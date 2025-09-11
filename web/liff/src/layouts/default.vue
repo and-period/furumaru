@@ -29,6 +29,9 @@ const toggleExpand = () => {
   isExpand.value = !isExpand.value;
 };
 
+// カゴに商品があるかどうか
+const hasCartItems = computed(() => !cartIsEmpty.value);
+
 const goToCheckout = async () => {
   const id = facilityId.value;
   const path = id ? `/${id}/checkout` : '/checkout';
@@ -92,15 +95,26 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
     <div
       v-if="!shouldHideCart"
       class="fixed p-4 w-full bottom-0 bg-white border-t border-gray-200 shadow-sm rounded-2xl flex flex-col transition-all gap-4 z-20"
-      :class="{ 'h-svh': isExpand, 'h-[56px]': !isExpand }"
+      :class="{ 'h-9/10': isExpand, 'h-[56px]': !isExpand }"
     >
       <div class="text-center">
         <button
-          class="flex items-center justify-center w-full"
+          class="relative flex items-center justify-center w-full border rounded-xl py-1 border-orange text-orange font-semibold"
           @click="toggleExpand"
         >
-          <span v-if="cartIsEmpty">カゴの中身を見る</span>
-          <span v-else>カゴの中身を見る ({{ totalQuantity }}点)</span>
+          <!-- カートに商品がある場合、右上に点滅する丸を表示 -->
+          <span
+            v-if="hasCartItems && !isExpand"
+            class="absolute top-[-11px] right-[-2px] pointer-events-none"
+            aria-hidden="true"
+          >
+            <span class="inline-block size-3 rounded-full bg-orange  animate-ping" />
+          </span>
+          <span v-if="isExpand">カゴを閉じる</span>
+          <span v-else>
+            カゴの中身を見る
+            <span v-if="!cartIsEmpty"> ({{ totalQuantity }}点)</span>
+          </span>
         </button>
       </div>
       <div
@@ -206,7 +220,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
               class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.7] transition-colors"
               @click="goToCheckout"
             >
-              レジに進む
+              購入処理に進む
             </button>
             <button
               class="w-full text-center py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
@@ -220,3 +234,13 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blink-dot {
+  animation: blink 1s infinite;
+}
+</style>
