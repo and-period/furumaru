@@ -15,11 +15,11 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesTopCommonResponse,
+  TopCommonResponse,
 } from '../models/index';
 import {
-    TypesTopCommonResponseFromJSON,
-    TypesTopCommonResponseToJSON,
+    TopCommonResponseFromJSON,
+    TopCommonResponseToJSON,
 } from '../models/index';
 
 /**
@@ -31,7 +31,7 @@ export class TopApi extends runtime.BaseAPI {
      * トップページに表示する共通データ（ライブ配信、アーカイブ、動画など）を取得します。
      * トップページ共通データ取得
      */
-    async topCommonGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesTopCommonResponse>> {
+    async topCommonGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TopCommonResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -43,14 +43,14 @@ export class TopApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesTopCommonResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TopCommonResponseFromJSON(jsonValue));
     }
 
     /**
      * トップページに表示する共通データ（ライブ配信、アーカイブ、動画など）を取得します。
      * トップページ共通データ取得
      */
-    async topCommonGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesTopCommonResponse> {
+    async topCommonGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TopCommonResponse> {
         const response = await this.topCommonGetRaw(initOverrides);
         return await response.value();
     }

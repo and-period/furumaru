@@ -15,20 +15,20 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesAddCartItemRequest,
-  TypesCalcCartResponse,
-  TypesCartResponse,
-  UtilErrorResponse,
+  AddCartItemRequest,
+  CalcCartResponse,
+  CartResponse,
+  ErrorResponse,
 } from '../models/index';
 import {
-    TypesAddCartItemRequestFromJSON,
-    TypesAddCartItemRequestToJSON,
-    TypesCalcCartResponseFromJSON,
-    TypesCalcCartResponseToJSON,
-    TypesCartResponseFromJSON,
-    TypesCartResponseToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    AddCartItemRequestFromJSON,
+    AddCartItemRequestToJSON,
+    CalcCartResponseFromJSON,
+    CalcCartResponseToJSON,
+    CartResponseFromJSON,
+    CartResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
 } from '../models/index';
 
 export interface FacilitiesFacilityIdCartsCoordinatorIdGetRequest {
@@ -44,7 +44,7 @@ export interface FacilitiesFacilityIdCartsGetRequest {
 
 export interface FacilitiesFacilityIdCartsItemsPostRequest {
     facilityId: string;
-    typesAddCartItemRequest: TypesAddCartItemRequest;
+    addCartItemRequest: AddCartItemRequest;
 }
 
 export interface FacilitiesFacilityIdCartsItemsProductIdDeleteRequest {
@@ -61,7 +61,7 @@ export class CartApi extends runtime.BaseAPI {
      * カートの内容を計算します。
      * カート計算
      */
-    async facilitiesFacilityIdCartsCoordinatorIdGetRaw(requestParameters: FacilitiesFacilityIdCartsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCalcCartResponse>> {
+    async facilitiesFacilityIdCartsCoordinatorIdGetRaw(requestParameters: FacilitiesFacilityIdCartsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CalcCartResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -103,14 +103,14 @@ export class CartApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCalcCartResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CalcCartResponseFromJSON(jsonValue));
     }
 
     /**
      * カートの内容を計算します。
      * カート計算
      */
-    async facilitiesFacilityIdCartsCoordinatorIdGet(requestParameters: FacilitiesFacilityIdCartsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCalcCartResponse> {
+    async facilitiesFacilityIdCartsCoordinatorIdGet(requestParameters: FacilitiesFacilityIdCartsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CalcCartResponse> {
         const response = await this.facilitiesFacilityIdCartsCoordinatorIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -119,7 +119,7 @@ export class CartApi extends runtime.BaseAPI {
      * カートの内容を取得します。
      * カート取得
      */
-    async facilitiesFacilityIdCartsGetRaw(requestParameters: FacilitiesFacilityIdCartsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCartResponse>> {
+    async facilitiesFacilityIdCartsGetRaw(requestParameters: FacilitiesFacilityIdCartsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CartResponse>> {
         if (requestParameters['facilityId'] == null) {
             throw new runtime.RequiredError(
                 'facilityId',
@@ -146,14 +146,14 @@ export class CartApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCartResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CartResponseFromJSON(jsonValue));
     }
 
     /**
      * カートの内容を取得します。
      * カート取得
      */
-    async facilitiesFacilityIdCartsGet(requestParameters: FacilitiesFacilityIdCartsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCartResponse> {
+    async facilitiesFacilityIdCartsGet(requestParameters: FacilitiesFacilityIdCartsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CartResponse> {
         const response = await this.facilitiesFacilityIdCartsGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -170,10 +170,10 @@ export class CartApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['typesAddCartItemRequest'] == null) {
+        if (requestParameters['addCartItemRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesAddCartItemRequest',
-                'Required parameter "typesAddCartItemRequest" was null or undefined when calling facilitiesFacilityIdCartsItemsPost().'
+                'addCartItemRequest',
+                'Required parameter "addCartItemRequest" was null or undefined when calling facilitiesFacilityIdCartsItemsPost().'
             );
         }
 
@@ -196,7 +196,7 @@ export class CartApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesAddCartItemRequestToJSON(requestParameters['typesAddCartItemRequest']),
+            body: AddCartItemRequestToJSON(requestParameters['addCartItemRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

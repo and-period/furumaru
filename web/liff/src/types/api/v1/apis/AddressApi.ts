@@ -15,23 +15,23 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesAddressResponse,
-  TypesAddressesResponse,
-  TypesCreateAddressRequest,
-  TypesUpdateAddressRequest,
-  UtilErrorResponse,
+  AddressResponse,
+  AddressesResponse,
+  CreateAddressRequest,
+  ErrorResponse,
+  UpdateAddressRequest,
 } from '../models/index';
 import {
-    TypesAddressResponseFromJSON,
-    TypesAddressResponseToJSON,
-    TypesAddressesResponseFromJSON,
-    TypesAddressesResponseToJSON,
-    TypesCreateAddressRequestFromJSON,
-    TypesCreateAddressRequestToJSON,
-    TypesUpdateAddressRequestFromJSON,
-    TypesUpdateAddressRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    AddressResponseFromJSON,
+    AddressResponseToJSON,
+    AddressesResponseFromJSON,
+    AddressesResponseToJSON,
+    CreateAddressRequestFromJSON,
+    CreateAddressRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    UpdateAddressRequestFromJSON,
+    UpdateAddressRequestToJSON,
 } from '../models/index';
 
 export interface AddressesAddressIdDeleteRequest {
@@ -44,7 +44,7 @@ export interface AddressesAddressIdGetRequest {
 
 export interface AddressesAddressIdPatchRequest {
     addressId: string;
-    typesUpdateAddressRequest: TypesUpdateAddressRequest;
+    updateAddressRequest: UpdateAddressRequest;
 }
 
 export interface AddressesGetRequest {
@@ -53,7 +53,7 @@ export interface AddressesGetRequest {
 }
 
 export interface AddressesPostRequest {
-    typesCreateAddressRequest: TypesCreateAddressRequest;
+    createAddressRequest: CreateAddressRequest;
 }
 
 /**
@@ -107,7 +107,7 @@ export class AddressApi extends runtime.BaseAPI {
      * 指定されたIDの住所詳細を取得します。
      * 住所詳細取得
      */
-    async addressesAddressIdGetRaw(requestParameters: AddressesAddressIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAddressResponse>> {
+    async addressesAddressIdGetRaw(requestParameters: AddressesAddressIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressResponse>> {
         if (requestParameters['addressId'] == null) {
             throw new runtime.RequiredError(
                 'addressId',
@@ -134,14 +134,14 @@ export class AddressApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAddressResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AddressResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定されたIDの住所詳細を取得します。
      * 住所詳細取得
      */
-    async addressesAddressIdGet(requestParameters: AddressesAddressIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAddressResponse> {
+    async addressesAddressIdGet(requestParameters: AddressesAddressIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AddressResponse> {
         const response = await this.addressesAddressIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -158,10 +158,10 @@ export class AddressApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['typesUpdateAddressRequest'] == null) {
+        if (requestParameters['updateAddressRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAddressRequest',
-                'Required parameter "typesUpdateAddressRequest" was null or undefined when calling addressesAddressIdPatch().'
+                'updateAddressRequest',
+                'Required parameter "updateAddressRequest" was null or undefined when calling addressesAddressIdPatch().'
             );
         }
 
@@ -184,7 +184,7 @@ export class AddressApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAddressRequestToJSON(requestParameters['typesUpdateAddressRequest']),
+            body: UpdateAddressRequestToJSON(requestParameters['updateAddressRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -202,7 +202,7 @@ export class AddressApi extends runtime.BaseAPI {
      * ユーザーの登録済み住所一覧を取得します。
      * 住所一覧取得
      */
-    async addressesGetRaw(requestParameters: AddressesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAddressesResponse>> {
+    async addressesGetRaw(requestParameters: AddressesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -230,14 +230,14 @@ export class AddressApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAddressesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AddressesResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザーの登録済み住所一覧を取得します。
      * 住所一覧取得
      */
-    async addressesGet(requestParameters: AddressesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAddressesResponse> {
+    async addressesGet(requestParameters: AddressesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AddressesResponse> {
         const response = await this.addressesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -246,11 +246,11 @@ export class AddressApi extends runtime.BaseAPI {
      * 新しい住所を登録します。
      * 住所登録
      */
-    async addressesPostRaw(requestParameters: AddressesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAddressResponse>> {
-        if (requestParameters['typesCreateAddressRequest'] == null) {
+    async addressesPostRaw(requestParameters: AddressesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressResponse>> {
+        if (requestParameters['createAddressRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateAddressRequest',
-                'Required parameter "typesCreateAddressRequest" was null or undefined when calling addressesPost().'
+                'createAddressRequest',
+                'Required parameter "createAddressRequest" was null or undefined when calling addressesPost().'
             );
         }
 
@@ -273,17 +273,17 @@ export class AddressApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateAddressRequestToJSON(requestParameters['typesCreateAddressRequest']),
+            body: CreateAddressRequestToJSON(requestParameters['createAddressRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAddressResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AddressResponseFromJSON(jsonValue));
     }
 
     /**
      * 新しい住所を登録します。
      * 住所登録
      */
-    async addressesPost(requestParameters: AddressesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAddressResponse> {
+    async addressesPost(requestParameters: AddressesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AddressResponse> {
         const response = await this.addressesPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

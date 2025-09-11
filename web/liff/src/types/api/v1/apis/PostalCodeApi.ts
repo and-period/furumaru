@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesPostalCodeResponse,
-  UtilErrorResponse,
+  ErrorResponse,
+  PostalCodeResponse,
 } from '../models/index';
 import {
-    TypesPostalCodeResponseFromJSON,
-    TypesPostalCodeResponseToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    PostalCodeResponseFromJSON,
+    PostalCodeResponseToJSON,
 } from '../models/index';
 
 export interface PostalCodesPostalCodeGetRequest {
@@ -38,7 +38,7 @@ export class PostalCodeApi extends runtime.BaseAPI {
      * 郵便番号から住所情報を検索します。
      * 郵便番号検索
      */
-    async postalCodesPostalCodeGetRaw(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPostalCodeResponse>> {
+    async postalCodesPostalCodeGetRaw(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostalCodeResponse>> {
         if (requestParameters['postalCode'] == null) {
             throw new runtime.RequiredError(
                 'postalCode',
@@ -57,14 +57,14 @@ export class PostalCodeApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPostalCodeResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PostalCodeResponseFromJSON(jsonValue));
     }
 
     /**
      * 郵便番号から住所情報を検索します。
      * 郵便番号検索
      */
-    async postalCodesPostalCodeGet(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPostalCodeResponse> {
+    async postalCodesPostalCodeGet(requestParameters: PostalCodesPostalCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostalCodeResponse> {
         const response = await this.postalCodesPostalCodeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

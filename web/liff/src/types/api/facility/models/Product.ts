@@ -27,7 +27,7 @@ import {
 } from './ProductRate';
 
 /**
- * 
+ * 商品情報
  * @export
  * @interface Product
  */
