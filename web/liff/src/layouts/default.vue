@@ -13,6 +13,13 @@ const facilityId = computed<string>(() => String(route.params.facilityId || ''))
 
 const isExpand = ref<boolean>(false);
 
+// 該当ページではカートUIを非表示にする
+const shouldHideCart = computed(() => {
+  // /:facilityId/checkin/new のみ非表示
+  const path = route.path || '';
+  return /^\/[^/]+\/checkin\/new$/.test(path);
+});
+
 // ストア
 const shoppingCartStore = useShoppingCartStore();
 const authStore = useAuthStore();
@@ -83,6 +90,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
       <slot />
     </div>
     <div
+      v-if="!shouldHideCart"
       class="fixed p-4 w-full bottom-0 bg-white border-t border-gray-200 shadow-sm rounded-2xl flex flex-col transition-all gap-4 z-20"
       :class="{ 'h-svh': isExpand, 'h-[56px]': !isExpand }"
     >
