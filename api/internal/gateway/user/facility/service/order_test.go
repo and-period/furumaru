@@ -42,7 +42,7 @@ func TestNewOrderType(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderType(tt.typ)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderType(tt.response), actual.Response())
 		})
 	}
 }
@@ -85,7 +85,7 @@ func TestNewOrderTypeFromString(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderTypeFromString(tt.typ)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderType(tt.response), actual.Response())
 		})
 	}
 }
@@ -189,7 +189,7 @@ func TestNewOrderStatus(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderStatus(tt.status)
 			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, types.OrderStatus(tt.response), actual.Response())
 		})
 	}
 }

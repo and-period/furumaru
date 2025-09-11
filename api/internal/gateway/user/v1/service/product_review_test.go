@@ -48,7 +48,7 @@ func TestProductReviewReactionType(t *testing.T) {
 			req, _ := NewProductReviewReactionTypeFromRequest(tt.request)
 			assert.Equal(t, actual, req)
 
-			assert.Equal(t, tt.request, actual.Response())
+			assert.Equal(t, types.ProductReviewReactionType(tt.request), actual.Response())
 			assert.Equal(t, tt.reactionType, actual.StoreEntity())
 		})
 	}

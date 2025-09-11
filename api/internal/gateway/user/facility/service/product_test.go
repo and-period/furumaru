@@ -45,7 +45,8 @@ func TestProductStatus(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewProductStatus(tt.status))
+			actual := NewProductStatus(tt.status)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -86,7 +87,8 @@ func TestStorageMethodType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewStorageMethodType(tt.storageMethodType))
+			actual := NewStorageMethodType(tt.storageMethodType)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -122,28 +124,8 @@ func TestDeliveryType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewDeliveryType(tt.deliveryType))
-		})
-	}
-}
-
-func TestDeliveryType_Response(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name         string
-		deliveryType DeliveryType
-		expect       int32
-	}{
-		{
-			name:         "success",
-			deliveryType: DeliveryType(types.DeliveryTypeNormal),
-			expect:       1,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.deliveryType.Response())
+			actual := NewDeliveryType(tt.deliveryType)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -693,7 +675,7 @@ func TestProducts(t *testing.T) {
 		name     string
 		products entity.Products
 		params   *ProductDetailsParams
-		expect   []*types.Product
+		expect   Products
 	}{
 		{
 			name: "success",
@@ -780,8 +762,9 @@ func TestProducts(t *testing.T) {
 					},
 				},
 			},
-			expect: []*types.Product{
+			expect: Products{
 				{
+					Product: types.Product{
 						ID:              "product-id",
 						ProductTypeID:   "product-type-id",
 						CategoryID:      "category-id",
@@ -825,6 +808,24 @@ func TestProducts(t *testing.T) {
 						},
 						StartAt: 1640962800,
 						EndAt:   1640962800,
+					},
+					revisionID: 1,
+					cost:       300,
+					status:     ProductStatus(types.ProductStatusForSale),
+					media: MultiProductMedia{
+						{
+							ProductMedia: types.ProductMedia{
+								URL:         "https://example.com/thumbnail01.png",
+								IsThumbnail: true,
+							},
+						},
+						{
+							ProductMedia: types.ProductMedia{
+								URL:         "https://example.com/thumbnail02.png",
+								IsThumbnail: false,
+							},
+						},
+					},
 				},
 			},
 		},

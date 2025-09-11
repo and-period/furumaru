@@ -15,45 +15,39 @@ func TestTopOrderPeriodType(t *testing.T) {
 	tests := []struct {
 		name       string
 		periodType entity.AggregateOrderPeriodType
-		expect     TopOrderPeriodType
-		response   string
+		expect     types.TopOrderPeriodType
 	}{
 		{
 			name:       "day",
 			periodType: entity.AggregateOrderPeriodTypeDay,
-			expect:     TopOrderPeriodTypeDay,
-			response:   "day",
+			expect:     types.TopOrderPeriodTypeDay,
 		},
 		{
 			name:       "week",
 			periodType: entity.AggregateOrderPeriodTypeWeek,
-			expect:     TopOrderPeriodTypeWeek,
-			response:   "week",
+			expect:     types.TopOrderPeriodTypeWeek,
 		},
 		{
 			name:       "month",
 			periodType: entity.AggregateOrderPeriodTypeMonth,
-			expect:     TopOrderPeriodTypeMonth,
-			response:   "month",
+			expect:     types.TopOrderPeriodTypeMonth,
 		},
 		{
 			name:       "default",
 			periodType: entity.AggregateOrderPeriodType(""),
 			expect:     "",
-			response:   "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewTopOrderPeriodType(tt.periodType)
-			assert.Equal(t, tt.expect, actual)
 
 			entity := actual.StoreEntity()
 			assert.Equal(t, tt.periodType, entity)
 
 			res := actual.Response()
-			assert.Equal(t, tt.response, res)
+			assert.Equal(t, tt.expect, res)
 		})
 	}
 }
@@ -63,22 +57,22 @@ func TestTopOrderPeriodTypeFromRequest(t *testing.T) {
 	tests := []struct {
 		name       string
 		periodType string
-		expect     TopOrderPeriodType
+		expect     types.TopOrderPeriodType
 	}{
 		{
 			name:       "day",
 			periodType: "day",
-			expect:     TopOrderPeriodTypeDay,
+			expect:     types.TopOrderPeriodTypeDay,
 		},
 		{
 			name:       "week",
 			periodType: "week",
-			expect:     TopOrderPeriodTypeWeek,
+			expect:     types.TopOrderPeriodTypeWeek,
 		},
 		{
 			name:       "month",
 			periodType: "month",
-			expect:     TopOrderPeriodTypeMonth,
+			expect:     types.TopOrderPeriodTypeMonth,
 		},
 		{
 			name:       "default",
@@ -90,7 +84,7 @@ func TestTopOrderPeriodTypeFromRequest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewTopOrderPeriodTypeFromRequest(tt.periodType)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -105,17 +99,17 @@ func TestTopOrderPeriodType_String(t *testing.T) {
 	}{
 		{
 			name:   "day",
-			period: TopOrderPeriodTypeDay,
+			period: TopOrderPeriodType(types.TopOrderPeriodTypeDay),
 			expect: "2025-01-18",
 		},
 		{
 			name:   "week",
-			period: TopOrderPeriodTypeWeek,
+			period: TopOrderPeriodType(types.TopOrderPeriodTypeWeek),
 			expect: "2025-01-12",
 		},
 		{
 			name:   "month",
-			period: TopOrderPeriodTypeMonth,
+			period: TopOrderPeriodType(types.TopOrderPeriodTypeMonth),
 			expect: "2025-01-01",
 		},
 		{
@@ -248,7 +242,7 @@ func TestTopOrderSalesTrends(t *testing.T) {
 	}{
 		{
 			name:       "success day",
-			periodType: TopOrderPeriodTypeDay,
+			periodType: TopOrderPeriodType(types.TopOrderPeriodTypeDay),
 			startAt:    jst.Date(2025, 1, 17, 18, 30, 0, 0),
 			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
 			aggregated: entity.AggregatedPeriodOrders{
@@ -277,7 +271,7 @@ func TestTopOrderSalesTrends(t *testing.T) {
 		},
 		{
 			name:       "success week",
-			periodType: TopOrderPeriodTypeWeek,
+			periodType: TopOrderPeriodType(types.TopOrderPeriodTypeWeek),
 			startAt:    jst.Date(2025, 1, 1, 18, 30, 0, 0),
 			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
 			aggregated: entity.AggregatedPeriodOrders{
@@ -312,7 +306,7 @@ func TestTopOrderSalesTrends(t *testing.T) {
 		},
 		{
 			name:       "success month",
-			periodType: TopOrderPeriodTypeMonth,
+			periodType: TopOrderPeriodType(types.TopOrderPeriodTypeMonth),
 			startAt:    jst.Date(2025, 1, 1, 18, 30, 0, 0),
 			endAt:      jst.Date(2025, 1, 18, 18, 30, 0, 0),
 			aggregated: entity.AggregatedPeriodOrders{
@@ -397,7 +391,7 @@ func TestTopOrderPayments(t *testing.T) {
 			expect: TopOrderPayments{
 				{
 					TopOrderPayment: types.TopOrderPayment{
-						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+						PaymentMethodType: types.PaymentMethodTypeCreditCard,
 						OrderCount:        2,
 						UserCount:         1,
 						SalesTotal:        6000,
@@ -428,7 +422,7 @@ func TestTopOrderPayments_Response(t *testing.T) {
 			payments: TopOrderPayments{
 				{
 					TopOrderPayment: types.TopOrderPayment{
-						PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+						PaymentMethodType: types.PaymentMethodTypeCreditCard,
 						OrderCount:        2,
 						UserCount:         1,
 						SalesTotal:        6000,
@@ -438,7 +432,7 @@ func TestTopOrderPayments_Response(t *testing.T) {
 			},
 			expect: []*types.TopOrderPayment{
 				{
-					PaymentMethodType: int32(PaymentMethodTypeCreditCard),
+					PaymentMethodType: types.PaymentMethodTypeCreditCard,
 					OrderCount:        2,
 					UserCount:         1,
 					SalesTotal:        6000,

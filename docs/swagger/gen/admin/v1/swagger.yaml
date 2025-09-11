@@ -2071,6 +2071,13 @@ components:
                 - Thursday
                 - Friday
                 - Saturday
+                - Sunday
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+                - Saturday
         types.ActivateBroadcastMP4Request:
             properties:
                 inputUrl:
@@ -2877,6 +2884,17 @@ components:
                     description: 掲載対象一覧
                     items:
                         type: integer
+                        x-enum-comments:
+                            NotificationTargetAdministrators: 管理者
+                            NotificationTargetCoordinators: コーディネータ
+                            NotificationTargetProducers: 生産者
+                            NotificationTargetUsers: ユーザー
+                        x-enum-varnames:
+                            - NotificationTargetUnknown
+                            - NotificationTargetUsers
+                            - NotificationTargetProducers
+                            - NotificationTargetCoordinators
+                            - NotificationTargetAdministrators
                     maxItems: 4
                     minItems: 1
                     type: array
@@ -2888,6 +2906,17 @@ components:
                 type:
                     description: お知らせ種別
                     type: integer
+                    x-enum-comments:
+                        NotificationTypeLive: ライブ関連
+                        NotificationTypeOther: その他
+                        NotificationTypePromotion: セール関連
+                        NotificationTypeSystem: システム関連
+                    x-enum-varnames:
+                        - NotificationTypeUnknown
+                        - NotificationTypeOther
+                        - NotificationTypeSystem
+                        - NotificationTypeLive
+                        - NotificationTypePromotion
             required:
                 - body
                 - publishedAt
@@ -3017,6 +3046,15 @@ components:
                 deliveryType:
                     description: 配送方法
                     type: integer
+                    x-enum-comments:
+                        DeliveryTypeFrozen: 冷凍便
+                        DeliveryTypeNormal: 常温便
+                        DeliveryTypeRefrigerated: 冷蔵便
+                    x-enum-varnames:
+                        - DeliveryTypeUnknown
+                        - DeliveryTypeNormal
+                        - DeliveryTypeRefrigerated
+                        - DeliveryTypeFrozen
                 description:
                     description: 商品説明
                     maxLength: 2000
@@ -3098,6 +3136,17 @@ components:
                 storageMethodType:
                     description: 保存方法
                     type: integer
+                    x-enum-comments:
+                        StorageMethodTypeCoolDark: 冷暗所保存
+                        StorageMethodTypeFrozen: 冷凍保存
+                        StorageMethodTypeNormal: 常温保存
+                        StorageMethodTypeRefrigerated: 冷蔵保存
+                    x-enum-varnames:
+                        - StorageMethodTypeUnknown
+                        - StorageMethodTypeNormal
+                        - StorageMethodTypeCoolDark
+                        - StorageMethodTypeRefrigerated
+                        - StorageMethodTypeFrozen
                 weight:
                     description: 重量(kg,少数第一位まで)
                     minimum: 0
@@ -3150,7 +3199,17 @@ components:
                     minimum: 0
                     type: integer
                 discountType:
+                    description: 割引計算方法
                     type: integer
+                    x-enum-comments:
+                        DiscountTypeAmount: 固定額(円)
+                        DiscountTypeFreeShipping: 送料無料
+                        DiscountTypeRate: 料率計算(%)
+                    x-enum-varnames:
+                        - DiscountTypeUnknown
+                        - DiscountTypeAmount
+                        - DiscountTypeRate
+                        - DiscountTypeFreeShipping
                 endAt:
                     type: integer
                 public:
@@ -3300,10 +3359,20 @@ components:
                     description: 送信者ID
                     type: string
                 userType:
-                    description: 送信者種別(不明:0, admin:1, uer:2, guest:3)
+                    description: 送信者タイプ
                     maximum: 3
                     minimum: 0
                     type: integer
+                    x-enum-comments:
+                        ThreadUserTypeAdmin: 管理者
+                        ThreadUserTypeGuest: ゲスト(ユーザIDなし)
+                        ThreadUserTypeUnknown: 不明
+                        ThreadUserTypeUser: ユーザー
+                    x-enum-varnames:
+                        - ThreadUserTypeUnknown
+                        - ThreadUserTypeAdmin
+                        - ThreadUserTypeUser
+                        - ThreadUserTypeGuest
             required:
                 - contactId
                 - content
@@ -4494,6 +4563,17 @@ components:
                     description: 掲載対象一覧
                     items:
                         type: integer
+                        x-enum-comments:
+                            NotificationTargetAdministrators: 管理者
+                            NotificationTargetCoordinators: コーディネータ
+                            NotificationTargetProducers: 生産者
+                            NotificationTargetUsers: ユーザー
+                        x-enum-varnames:
+                            - NotificationTargetUnknown
+                            - NotificationTargetUsers
+                            - NotificationTargetProducers
+                            - NotificationTargetCoordinators
+                            - NotificationTargetAdministrators
                     maxItems: 4
                     minItems: 1
                     type: array
@@ -4513,6 +4593,13 @@ components:
                 status:
                     description: 決済システム状態
                     type: integer
+                    x-enum-comments:
+                        PaymentSystemStatusInUse: 利用可能
+                        PaymentSystemStatusOutage: 停止中
+                    x-enum-varnames:
+                        - PaymentSystemStatusUnknown
+                        - PaymentSystemStatusInUse
+                        - PaymentSystemStatusOutage
             required:
                 - status
             type: object
@@ -4629,7 +4716,17 @@ components:
                     minimum: 0
                     type: integer
                 discountType:
+                    description: 割引計算方法
                     type: integer
+                    x-enum-comments:
+                        DiscountTypeAmount: 固定額(円)
+                        DiscountTypeFreeShipping: 送料無料
+                        DiscountTypeRate: 料率計算(%)
+                    x-enum-varnames:
+                        - DiscountTypeUnknown
+                        - DiscountTypeAmount
+                        - DiscountTypeRate
+                        - DiscountTypeFreeShipping
                 endAt:
                     type: integer
                 public:
@@ -4764,6 +4861,13 @@ components:
                             - Thursday
                             - Friday
                             - Saturday
+                            - Sunday
+                            - Monday
+                            - Tuesday
+                            - Wednesday
+                            - Thursday
+                            - Friday
+                            - Saturday
                     maxItems: 7
                     type: array
                     uniqueItems: true
@@ -4803,10 +4907,20 @@ components:
                     description: 送信者ID
                     type: string
                 userType:
-                    description: 送信者種別(不明:0, admin:1, uer:2, guest:3)
+                    description: 送信者タイプ
                     maximum: 3
                     minimum: 0
                     type: integer
+                    x-enum-comments:
+                        ThreadUserTypeAdmin: 管理者
+                        ThreadUserTypeGuest: ゲスト(ユーザIDなし)
+                        ThreadUserTypeUnknown: 不明
+                        ThreadUserTypeUser: ユーザー
+                    x-enum-varnames:
+                        - ThreadUserTypeUnknown
+                        - ThreadUserTypeAdmin
+                        - ThreadUserTypeUser
+                        - ThreadUserTypeGuest
             required:
                 - content
                 - threadId

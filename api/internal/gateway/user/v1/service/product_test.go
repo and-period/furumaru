@@ -16,32 +16,32 @@ func TestProductStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ProductStatus
-		expect types.ProductStatus
+		expect ProductStatus
 	}{
 		{
 			name:   "private",
 			status: entity.ProductStatusPrivate,
-			expect: types.ProductStatusUnknown,
+			expect: ProductStatus(types.ProductStatusUnknown),
 		},
 		{
 			name:   "presale",
 			status: entity.ProductStatusPresale,
-			expect: types.ProductStatusPresale,
+			expect: ProductStatus(types.ProductStatusPresale),
 		},
 		{
 			name:   "for sale",
 			status: entity.ProductStatusForSale,
-			expect: types.ProductStatusForSale,
+			expect: ProductStatus(types.ProductStatusForSale),
 		},
 		{
 			name:   "out of sale",
 			status: entity.ProductStatusOutOfSale,
-			expect: types.ProductStatusOutOfSale,
+			expect: ProductStatus(types.ProductStatusOutOfSale),
 		},
 		{
 			name:   "unknown",
 			status: entity.ProductStatusUnknown,
-			expect: types.ProductStatusUnknown,
+			expect: ProductStatus(types.ProductStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -288,7 +288,7 @@ func TestProduct(t *testing.T) {
 					ProductTagIDs:   []string{"product-tag-id"},
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
+					Status:          types.ProductStatusForSale,
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -308,8 +308,8 @@ func TestProduct(t *testing.T) {
 					RecommendedPoint1: "ポイント1",
 					RecommendedPoint2: "ポイント2",
 					RecommendedPoint3: "ポイント3",
-					StorageMethodType: int32(StorageMethodType(types.StorageMethodTypeNormal)),
-					DeliveryType:      int32(DeliveryType(types.DeliveryTypeNormal)),
+					StorageMethodType: types.StorageMethodTypeNormal,
+					DeliveryType:      types.DeliveryTypeNormal,
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
@@ -331,7 +331,7 @@ func TestProduct(t *testing.T) {
 				},
 				revisionID: 1,
 				cost:       300,
-				status:     ProductStatusForSale,
+				status:     ProductStatus(types.ProductStatusForSale),
 				media: MultiProductMedia{
 					{
 						ProductMedia: types.ProductMedia{
@@ -411,7 +411,7 @@ func TestProduct(t *testing.T) {
 					ProductTagIDs:   []string{"product-tag-id"},
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
+					Status:          types.ProductStatusForSale,
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -431,8 +431,8 @@ func TestProduct(t *testing.T) {
 					RecommendedPoint1: "ポイント1",
 					RecommendedPoint2: "ポイント2",
 					RecommendedPoint3: "ポイント3",
-					StorageMethodType: int32(StorageMethodType(types.StorageMethodTypeNormal)),
-					DeliveryType:      int32(DeliveryType(types.DeliveryTypeNormal)),
+					StorageMethodType: types.StorageMethodTypeNormal,
+					DeliveryType:      types.DeliveryTypeNormal,
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
@@ -454,7 +454,7 @@ func TestProduct(t *testing.T) {
 				},
 				revisionID: 1,
 				cost:       300,
-				status:     ProductStatusForSale,
+				status:     ProductStatus(types.ProductStatusForSale),
 				media: MultiProductMedia{
 					{
 						ProductMedia: types.ProductMedia{
@@ -539,7 +539,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: types.ProductStatusPresale,
+				status: ProductStatus(types.ProductStatusPresale),
 			},
 			expect: "preorder",
 		},
@@ -549,7 +549,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 0,
 				},
-				status: types.ProductStatusPresale,
+				status: ProductStatus(types.ProductStatusPresale),
 			},
 			expect: "out_of_stock",
 		},
@@ -559,7 +559,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: types.ProductStatusForSale,
+				status: ProductStatus(types.ProductStatusForSale),
 			},
 			expect: "in_stock",
 		},
@@ -569,7 +569,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 0,
 				},
-				status: types.ProductStatusForSale,
+				status: ProductStatus(types.ProductStatusForSale),
 			},
 			expect: "out_of_stock",
 		},
@@ -579,7 +579,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: types.ProductStatusOutOfSale,
+				status: ProductStatus(types.ProductStatusOutOfSale),
 			},
 			expect: "out_of_stock",
 		},
@@ -589,7 +589,7 @@ func TestProduct_MerchantCenterItemCondition(t *testing.T) {
 				Product: types.Product{
 					Inventory: 100,
 				},
-				status: types.ProductStatusUnknown,
+				status: ProductStatus(types.ProductStatusUnknown),
 			},
 			expect: "new",
 		},
@@ -620,7 +620,7 @@ func TestProduct_Response(t *testing.T) {
 					ProducerID:      "producer-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
+					Status:          types.ProductStatusForSale,
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -636,7 +636,7 @@ func TestProduct_Response(t *testing.T) {
 						},
 					},
 					Price:            400,
-					DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
+					DeliveryType:     types.DeliveryTypeNormal,
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
@@ -654,7 +654,7 @@ func TestProduct_Response(t *testing.T) {
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
-				Status:          int32(ProductStatusForSale),
+				Status:          types.ProductStatusForSale,
 				Inventory:       100,
 				Weight:          1.3,
 				ItemUnit:        "袋",
@@ -670,7 +670,7 @@ func TestProduct_Response(t *testing.T) {
 					},
 				},
 				Price:            400,
-				DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
+				DeliveryType:     types.DeliveryTypeNormal,
 				Box60Rate:        50,
 				Box80Rate:        40,
 				Box100Rate:       30,
@@ -792,7 +792,7 @@ func TestProducts(t *testing.T) {
 						ProducerID:      "producer-id",
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
-						Status:          int32(ProductStatusForSale),
+						Status:          types.ProductStatusForSale,
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -809,7 +809,7 @@ func TestProducts(t *testing.T) {
 							},
 						},
 						Price:            400,
-						DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
+						DeliveryType:     types.DeliveryTypeNormal,
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
@@ -831,7 +831,7 @@ func TestProducts(t *testing.T) {
 					},
 					revisionID: 1,
 					cost:       300,
-					status:     ProductStatusForSale,
+					status:     ProductStatus(types.ProductStatusForSale),
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -887,7 +887,7 @@ func TestProducts_IDs(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
+						DeliveryType: types.DeliveryTypeNormal,
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -935,7 +935,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
+						DeliveryType: types.DeliveryTypeNormal,
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -963,7 +963,7 @@ func TestProducts_MapByRevision(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:        400,
-						DeliveryType: int32(DeliveryType(types.DeliveryTypeNormal)),
+						DeliveryType: types.DeliveryTypeNormal,
 						Box60Rate:    50,
 						Box80Rate:    40,
 						Box100Rate:   30,
@@ -1001,7 +1001,7 @@ func TestProducts_Response(t *testing.T) {
 						ProducerID:      "producer-id",
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
-						Status:          int32(ProductStatusForSale),
+						Status:          types.ProductStatusForSale,
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -1012,7 +1012,7 @@ func TestProducts_Response(t *testing.T) {
 							{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 						},
 						Price:            400,
-						DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
+						DeliveryType:     types.DeliveryTypeNormal,
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
@@ -1033,7 +1033,7 @@ func TestProducts_Response(t *testing.T) {
 					ProducerID:      "producer-id",
 					Name:            "新鮮なじゃがいも",
 					Description:     "新鮮なじゃがいもをお届けします。",
-					Status:          int32(ProductStatusForSale),
+					Status:          types.ProductStatusForSale,
 					Inventory:       100,
 					Weight:          1.3,
 					ItemUnit:        "袋",
@@ -1044,7 +1044,7 @@ func TestProducts_Response(t *testing.T) {
 						{URL: "https://example.com/thumbnail02.png", IsThumbnail: false},
 					},
 					Price:            400,
-					DeliveryType:     int32(DeliveryType(types.DeliveryTypeNormal)),
+					DeliveryType:     types.DeliveryTypeNormal,
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
@@ -1431,7 +1431,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
 					},
 					cost:   300,
-					status: types.ProductStatusForSale,
+					status: ProductStatus(types.ProductStatusForSale),
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1509,7 +1509,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						EndAt:             jst.Date(2025, 2, 1, 0, 0, 0, 0).Unix(),
 					},
 					cost:   300,
-					status: types.ProductStatusForSale,
+					status: ProductStatus(types.ProductStatusForSale),
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1584,7 +1584,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   300,
-					status: types.ProductStatusForSale,
+					status: ProductStatus(types.ProductStatusForSale),
 					media:  MultiProductMedia{},
 				},
 				Coordinator: &Coordinator{
@@ -1645,7 +1645,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   0,
-					status: types.ProductStatusUnknown,
+					status: ProductStatus(types.ProductStatusUnknown),
 					media:  MultiProductMedia{},
 				},
 				Coordinator: nil,
@@ -1696,7 +1696,7 @@ func TestNewMerchantCenterItem(t *testing.T) {
 						CoordinatorID: "coordinator-id",
 					},
 					cost:   300,
-					status: types.ProductStatusForSale,
+					status: ProductStatus(types.ProductStatusForSale),
 					media: MultiProductMedia{
 						{
 							ProductMedia: types.ProductMedia{
@@ -1788,7 +1788,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 							CoordinatorID: "coordinator-id",
 						},
 						cost:   300,
-						status: types.ProductStatusForSale,
+						status: ProductStatus(types.ProductStatusForSale),
 						media: MultiProductMedia{
 							{
 								ProductMedia: types.ProductMedia{
@@ -1812,7 +1812,7 @@ func TestNewMerchantCenterItems(t *testing.T) {
 							CoordinatorID: "coordinator-id-2",
 						},
 						cost:   150,
-						status: types.ProductStatusForSale,
+						status: ProductStatus(types.ProductStatusForSale),
 						media: MultiProductMedia{
 							{
 								ProductMedia: types.ProductMedia{

@@ -14,43 +14,44 @@ func TestScheduleStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.ScheduleStatus
-		expect ScheduleStatus
+		expect types.ScheduleStatus
 	}{
 		{
 			name:   "private",
 			status: entity.ScheduleStatusPrivate,
-			expect: ScheduleStatusPrivate,
+			expect: types.ScheduleStatusPrivate,
 		},
 		{
 			name:   "in progress",
 			status: entity.ScheduleStatusInProgress,
-			expect: ScheduleStatusInProgress,
+			expect: types.ScheduleStatusInProgress,
 		},
 		{
 			name:   "waiting",
 			status: entity.ScheduleStatusWaiting,
-			expect: ScheduleStatusWaiting,
+			expect: types.ScheduleStatusWaiting,
 		},
 		{
 			name:   "live",
 			status: entity.ScheduleStatusLive,
-			expect: ScheduleStatusLive,
+			expect: types.ScheduleStatusLive,
 		},
 		{
 			name:   "closed",
 			status: entity.ScheduleStatusClosed,
-			expect: ScheduleStatusClosed,
+			expect: types.ScheduleStatusClosed,
 		},
 		{
 			name:   "unknown",
 			status: entity.ScheduleStatusUnknown,
-			expect: ScheduleStatusUnknown,
+			expect: types.ScheduleStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewScheduleStatus(tt.status))
+			actual := NewScheduleStatus(tt.status)
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -88,7 +89,7 @@ func TestSchedule(t *testing.T) {
 					ID:              "schedule-id",
 					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusLive.Response(),
+					Status:          types.ScheduleStatusLive,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -126,7 +127,7 @@ func TestSchedule_Response(t *testing.T) {
 					ID:              "schedule-id",
 					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusLive.Response(),
+					Status:          types.ScheduleStatusLive,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -144,7 +145,7 @@ func TestSchedule_Response(t *testing.T) {
 				ID:              "schedule-id",
 				ShopID:          "shop-id",
 				CoordinatorID:   "coordinator-id",
-				Status:          ScheduleStatusLive.Response(),
+				Status:          types.ScheduleStatusLive,
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -203,7 +204,7 @@ func TestSchedules(t *testing.T) {
 						ID:              "schedule-id",
 						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
-						Status:          ScheduleStatusLive.Response(),
+						Status:          types.ScheduleStatusLive,
 						Title:           "スケジュールタイトル",
 						Description:     "スケジュールの詳細です。",
 						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -243,7 +244,7 @@ func TestSchedules_Response(t *testing.T) {
 						ID:              "schedule-id",
 						ShopID:          "shop-id",
 						CoordinatorID:   "coordinator-id",
-						Status:          ScheduleStatusLive.Response(),
+						Status:          types.ScheduleStatusLive,
 						Title:           "スケジュールタイトル",
 						Description:     "スケジュールの詳細です。",
 						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -263,7 +264,7 @@ func TestSchedules_Response(t *testing.T) {
 					ID:              "schedule-id",
 					ShopID:          "shop-id",
 					CoordinatorID:   "coordinator-id",
-					Status:          ScheduleStatusLive.Response(),
+					Status:          types.ScheduleStatusLive,
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",

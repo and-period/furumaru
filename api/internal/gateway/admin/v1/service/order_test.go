@@ -13,36 +13,31 @@ import (
 func TestNewOrderType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		typ      entity.OrderType
-		expect   OrderType
-		response int32
+		name   string
+		typ    entity.OrderType
+		expect types.OrderType
 	}{
 		{
-			name:     "product",
-			typ:      entity.OrderTypeProduct,
-			expect:   OrderTypeProduct,
-			response: 1,
+			name:   "product",
+			typ:    entity.OrderTypeProduct,
+			expect: types.OrderTypeProduct,
 		},
 		{
-			name:     "experience",
-			typ:      entity.OrderTypeExperience,
-			expect:   OrderTypeExperience,
-			response: 2,
+			name:   "experience",
+			typ:    entity.OrderTypeExperience,
+			expect: types.OrderTypeExperience,
 		},
 		{
-			name:     "unknown",
-			typ:      entity.OrderTypeUnknown,
-			expect:   OrderTypeUnknown,
-			response: 0,
+			name:   "unknown",
+			typ:    entity.OrderTypeUnknown,
+			expect: types.OrderTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderType(tt.typ)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -50,42 +45,36 @@ func TestNewOrderType(t *testing.T) {
 func TestNewOrderTypeFromString(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		typ      string
-		expect   OrderType
-		response int32
+		name   string
+		typ    string
+		expect types.OrderType
 	}{
 		{
-			name:     "product",
-			typ:      "product",
-			expect:   OrderTypeProduct,
-			response: 1,
+			name:   "product",
+			typ:    "product",
+			expect: types.OrderTypeProduct,
 		},
 		{
-			name:     "experience",
-			typ:      "experience",
-			expect:   OrderTypeExperience,
-			response: 2,
+			name:   "experience",
+			typ:    "experience",
+			expect: types.OrderTypeExperience,
 		},
 		{
-			name:     "unknown",
-			typ:      "unknown",
-			expect:   OrderTypeUnknown,
-			response: 0,
+			name:   "unknown",
+			typ:    "unknown",
+			expect: types.OrderTypeUnknown,
 		},
 		{
-			name:     "empty",
-			typ:      "",
-			expect:   OrderTypeUnknown,
-			response: 0,
+			name:   "empty",
+			typ:    "",
+			expect: types.OrderTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderTypeFromString(tt.typ)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -99,17 +88,17 @@ func TestOrderType_StoreEntity(t *testing.T) {
 	}{
 		{
 			name:   "product",
-			typ:    OrderTypeProduct,
+			typ:    OrderType(types.OrderTypeProduct),
 			expect: entity.OrderTypeProduct,
 		},
 		{
 			name:   "experience",
-			typ:    OrderTypeExperience,
+			typ:    OrderType(types.OrderTypeExperience),
 			expect: entity.OrderTypeExperience,
 		},
 		{
 			name:   "unknown",
-			typ:    OrderTypeUnknown,
+			typ:    OrderType(types.OrderTypeUnknown),
 			expect: entity.OrderTypeUnknown,
 		},
 	}
@@ -124,72 +113,61 @@ func TestOrderType_StoreEntity(t *testing.T) {
 func TestNewOrderStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		status   entity.OrderStatus
-		expect   OrderStatus
-		response int32
+		name   string
+		status entity.OrderStatus
+		expect types.OrderStatus
 	}{
 		{
-			name:     "unpaid",
-			status:   entity.OrderStatusUnpaid,
-			expect:   OrderStatusUnpaid,
-			response: 1,
+			name:   "unpaid",
+			status: entity.OrderStatusUnpaid,
+			expect: types.OrderStatusUnpaid,
 		},
 		{
-			name:     "waiting",
-			status:   entity.OrderStatusWaiting,
-			expect:   OrderStatusWaiting,
-			response: 2,
+			name:   "waiting",
+			status: entity.OrderStatusWaiting,
+			expect: types.OrderStatusWaiting,
 		},
 		{
-			name:     "preparing",
-			status:   entity.OrderStatusPreparing,
-			expect:   OrderStatusPreparing,
-			response: 3,
+			name:   "preparing",
+			status: entity.OrderStatusPreparing,
+			expect: types.OrderStatusPreparing,
 		},
 		{
-			name:     "shipped",
-			status:   entity.OrderStatusShipped,
-			expect:   OrderStatusShipped,
-			response: 4,
+			name:   "shipped",
+			status: entity.OrderStatusShipped,
+			expect: types.OrderStatusShipped,
 		},
 		{
-			name:     "completed",
-			status:   entity.OrderStatusCompleted,
-			expect:   OrderStatusCompleted,
-			response: 5,
+			name:   "completed",
+			status: entity.OrderStatusCompleted,
+			expect: types.OrderStatusCompleted,
 		},
 		{
-			name:     "canceled",
-			status:   entity.OrderStatusCanceled,
-			expect:   OrderStatusCanceled,
-			response: 6,
+			name:   "canceled",
+			status: entity.OrderStatusCanceled,
+			expect: types.OrderStatusCanceled,
 		},
 		{
-			name:     "refunded",
-			status:   entity.OrderStatusRefunded,
-			expect:   OrderStatusRefunded,
-			response: 7,
+			name:   "refunded",
+			status: entity.OrderStatusRefunded,
+			expect: types.OrderStatusRefunded,
 		},
 		{
-			name:     "failed",
-			status:   entity.OrderStatusFailed,
-			expect:   OrderStatusFailed,
-			response: 8,
+			name:   "failed",
+			status: entity.OrderStatusFailed,
+			expect: types.OrderStatusFailed,
 		},
 		{
-			name:     "unknown",
-			status:   entity.OrderStatusUnknown,
-			expect:   OrderStatusUnknown,
-			response: 0,
+			name:   "unknown",
+			status: entity.OrderStatusUnknown,
+			expect: types.OrderStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderStatus(tt.status)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -197,42 +175,36 @@ func TestNewOrderStatus(t *testing.T) {
 func TestNewOrderShippingType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		typ      entity.OrderShippingType
-		expect   OrderShippingType
-		response int32
+		name   string
+		typ    entity.OrderShippingType
+		expect types.OrderShippingType
 	}{
 		{
-			name:     "none",
-			typ:      entity.OrderShippingTypeNone,
-			expect:   OrderShippingTypeNone,
-			response: 1,
+			name:   "none",
+			typ:    entity.OrderShippingTypeNone,
+			expect: types.OrderShippingTypeNone,
 		},
 		{
-			name:     "standard",
-			typ:      entity.OrderShippingTypeStandard,
-			expect:   OrderShippingTypeStandard,
-			response: 2,
+			name:   "standard",
+			typ:    entity.OrderShippingTypeStandard,
+			expect: types.OrderShippingTypeStandard,
 		},
 		{
-			name:     "pickup",
-			typ:      entity.OrderShippingTypePickup,
-			expect:   OrderShippingTypePickup,
-			response: 3,
+			name:   "pickup",
+			typ:    entity.OrderShippingTypePickup,
+			expect: types.OrderShippingTypePickup,
 		},
 		{
-			name:     "unknown",
-			typ:      entity.OrderShippingTypeUnknown,
-			expect:   OrderShippingTypeUnknown,
-			response: 0,
+			name:   "unknown",
+			typ:    entity.OrderShippingTypeUnknown,
+			expect: types.OrderShippingTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewOrderShippingType(tt.typ)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -349,7 +321,7 @@ func TestOrder(t *testing.T) {
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
 						Public:          true,
-						Status:          int32(ProductStatusForSale),
+						Status:          types.ProductStatusForSale,
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -369,8 +341,8 @@ func TestOrder(t *testing.T) {
 						RecommendedPoint1:    "ポイント1",
 						RecommendedPoint2:    "ポイント2",
 						RecommendedPoint3:    "ポイント3",
-						StorageMethodType:    int32(StorageMethodTypeNormal),
-						DeliveryType:         int32(DeliveryTypeNormal),
+						StorageMethodType:    types.StorageMethodTypeNormal,
+						DeliveryType:         types.DeliveryTypeNormal,
 						Box60Rate:            50,
 						Box80Rate:            40,
 						Box100Rate:           30,
@@ -395,7 +367,7 @@ func TestOrder(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -434,8 +406,8 @@ func TestOrder(t *testing.T) {
 					PromotionID:     "promotion-id",
 					ManagementID:    1,
 					ShippingMessage: "",
-					Type:            int32(OrderTypeProduct),
-					Status:          int32(OrderStatusShipped),
+					Type:            types.OrderTypeProduct,
+					Status:          types.OrderStatusShipped,
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					CompletedAt:     0,
@@ -445,8 +417,8 @@ func TestOrder(t *testing.T) {
 					},
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    types.PaymentMethodTypeCreditCard,
+						Status:        types.PaymentStatusPaid,
 						Subtotal:      1980,
 						Discount:      0,
 						ShippingFee:   550,
@@ -468,11 +440,11 @@ func TestOrder(t *testing.T) {
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
+							Status:          types.FulfillmentStatusFulfilled,
+							ShippingCarrier: types.ShippingCarrierUnknown,
+							ShippingType:    types.ShippingTypeNormal,
 							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
+							BoxSize:         types.ShippingSize60,
 							ShippedAt:       1640962800,
 							Address: &types.Address{
 								Lastname:       "&.",
@@ -488,7 +460,7 @@ func TestOrder(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       types.RefundTypeNone,
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -546,13 +518,13 @@ func TestOrder_ProductIDs(t *testing.T) {
 					CoordinatorID:   "coordinator-id",
 					PromotionID:     "",
 					ShippingMessage: "",
-					Status:          int32(OrderStatusShipped),
+					Status:          types.OrderStatusShipped,
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    types.PaymentMethodTypeCreditCard,
+						Status:        types.PaymentStatusPaid,
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -574,11 +546,11 @@ func TestOrder_ProductIDs(t *testing.T) {
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
+							Status:          types.FulfillmentStatusFulfilled,
+							ShippingCarrier: types.ShippingCarrierUnknown,
+							ShippingType:    types.ShippingTypeNormal,
 							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
+							BoxSize:         types.ShippingSize60,
 							ShippedAt:       1640962800,
 							Address: &types.Address{
 								Lastname:       "&.",
@@ -594,7 +566,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       types.RefundTypeNone,
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -635,13 +607,13 @@ func TestOrder_Response(t *testing.T) {
 					CoordinatorID:   "coordinator-id",
 					PromotionID:     "",
 					ShippingMessage: "",
-					Status:          int32(OrderStatusShipped),
+					Status:          types.OrderStatusShipped,
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    types.PaymentMethodTypeCreditCard,
+						Status:        types.PaymentStatusPaid,
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -663,11 +635,11 @@ func TestOrder_Response(t *testing.T) {
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
+							Status:          types.FulfillmentStatusFulfilled,
+							ShippingCarrier: types.ShippingCarrierUnknown,
+							ShippingType:    types.ShippingTypeNormal,
 							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
+							BoxSize:         types.ShippingSize60,
 							ShippedAt:       1640962800,
 							Address: &types.Address{
 								Lastname:       "&.",
@@ -683,7 +655,7 @@ func TestOrder_Response(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       types.RefundTypeNone,
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,
@@ -704,13 +676,13 @@ func TestOrder_Response(t *testing.T) {
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
 				ShippingMessage: "",
-				Status:          int32(OrderStatusShipped),
+				Status:          types.OrderStatusShipped,
 				CreatedAt:       1640962800,
 				UpdatedAt:       1640962800,
 				Payment: &types.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
+					MethodType:    types.PaymentMethodTypeCreditCard,
+					Status:        types.PaymentStatusPaid,
 					Subtotal:      1100,
 					Discount:      0,
 					ShippingFee:   500,
@@ -732,11 +704,11 @@ func TestOrder_Response(t *testing.T) {
 					{
 						FulfillmentID:   "fulfillment-id",
 						TrackingNumber:  "",
-						Status:          FulfillmentStatusFulfilled.Response(),
-						ShippingCarrier: ShippingCarrierUnknown.Response(),
-						ShippingType:    ShippingTypeNormal.Response(),
+						Status:          types.FulfillmentStatusFulfilled,
+						ShippingCarrier: types.ShippingCarrierUnknown,
+						ShippingType:    types.ShippingTypeNormal,
 						BoxNumber:       1,
-						BoxSize:         ShippingSize60.Response(),
+						BoxSize:         types.ShippingSize60,
 						ShippedAt:       1640962800,
 						Address: &types.Address{
 							Lastname:       "&.",
@@ -752,7 +724,7 @@ func TestOrder_Response(t *testing.T) {
 				},
 				Refund: &types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       types.RefundTypeNone,
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
@@ -918,7 +890,7 @@ func TestOrders(t *testing.T) {
 						Name:            "新鮮なじゃがいも",
 						Description:     "新鮮なじゃがいもをお届けします。",
 						Public:          true,
-						Status:          int32(ProductStatusForSale),
+						Status:          types.ProductStatusForSale,
 						Inventory:       100,
 						Weight:          1.3,
 						ItemUnit:        "袋",
@@ -938,8 +910,8 @@ func TestOrders(t *testing.T) {
 						RecommendedPoint1:    "ポイント1",
 						RecommendedPoint2:    "ポイント2",
 						RecommendedPoint3:    "ポイント3",
-						StorageMethodType:    int32(StorageMethodTypeNormal),
-						DeliveryType:         int32(DeliveryTypeNormal),
+						StorageMethodType:    types.StorageMethodTypeNormal,
+						DeliveryType:         types.DeliveryTypeNormal,
 						Box60Rate:            50,
 						Box80Rate:            40,
 						Box100Rate:           30,
@@ -964,7 +936,7 @@ func TestOrders(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -1003,8 +975,8 @@ func TestOrders(t *testing.T) {
 						CoordinatorID:   "coordinator-id",
 						PromotionID:     "promotion-id",
 						ShippingMessage: "",
-						Type:            int32(OrderTypeProduct),
-						Status:          int32(OrderStatusShipped),
+						Type:            types.OrderTypeProduct,
+						Status:          types.OrderStatusShipped,
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,
@@ -1014,8 +986,8 @@ func TestOrders(t *testing.T) {
 						},
 						Payment: &types.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodType:    PaymentMethodTypeCreditCard.Response(),
-							Status:        PaymentStatusPaid.Response(),
+							MethodType:    types.PaymentMethodTypeCreditCard,
+							Status:        types.PaymentStatusPaid,
 							Subtotal:      1980,
 							Discount:      0,
 							ShippingFee:   550,
@@ -1037,11 +1009,11 @@ func TestOrders(t *testing.T) {
 							{
 								FulfillmentID:   "fulfillment-id",
 								TrackingNumber:  "",
-								Status:          FulfillmentStatusFulfilled.Response(),
-								ShippingCarrier: ShippingCarrierUnknown.Response(),
-								ShippingType:    ShippingTypeNormal.Response(),
+								Status:          types.FulfillmentStatusFulfilled,
+								ShippingCarrier: types.ShippingCarrierUnknown,
+								ShippingType:    types.ShippingTypeNormal,
 								BoxNumber:       1,
-								BoxSize:         ShippingSize60.Response(),
+								BoxSize:         types.ShippingSize60,
 								ShippedAt:       1640962800,
 								Address: &types.Address{
 									Lastname:       "&.",
@@ -1057,7 +1029,7 @@ func TestOrders(t *testing.T) {
 						},
 						Refund: &types.OrderRefund{
 							Total:      0,
-							Type:       RefundTypeNone.Response(),
+							Type:       types.RefundTypeNone,
 							Reason:     "",
 							Canceled:   false,
 							CanceledAt: 0,
@@ -1082,8 +1054,8 @@ func TestOrders(t *testing.T) {
 						CoordinatorID:   "coordinator-id",
 						PromotionID:     "promotion-id",
 						ShippingMessage: "",
-						Type:            int32(OrderTypeExperience),
-						Status:          int32(OrderStatusShipped),
+						Type:            types.OrderTypeExperience,
+						Status:          types.OrderStatusShipped,
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						CompletedAt:     0,
@@ -1093,8 +1065,8 @@ func TestOrders(t *testing.T) {
 						},
 						Payment: &types.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodType:    PaymentMethodTypeCreditCard.Response(),
-							Status:        PaymentStatusPaid.Response(),
+							MethodType:    types.PaymentMethodTypeCreditCard,
+							Status:        types.PaymentStatusPaid,
 							Subtotal:      1980,
 							Discount:      0,
 							ShippingFee:   550,
@@ -1162,13 +1134,13 @@ func TestOrders_Response(t *testing.T) {
 						CoordinatorID:   "coordinator-id",
 						PromotionID:     "",
 						ShippingMessage: "",
-						Status:          int32(OrderStatusShipped),
+						Status:          types.OrderStatusShipped,
 						CreatedAt:       1640962800,
 						UpdatedAt:       1640962800,
 						Payment: &types.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodType:    PaymentMethodTypeCreditCard.Response(),
-							Status:        PaymentStatusPaid.Response(),
+							MethodType:    types.PaymentMethodTypeCreditCard,
+							Status:        types.PaymentStatusPaid,
 							Subtotal:      1100,
 							Discount:      0,
 							ShippingFee:   500,
@@ -1190,11 +1162,11 @@ func TestOrders_Response(t *testing.T) {
 							{
 								FulfillmentID:   "fulfillment-id",
 								TrackingNumber:  "",
-								Status:          FulfillmentStatusFulfilled.Response(),
-								ShippingCarrier: ShippingCarrierUnknown.Response(),
-								ShippingType:    ShippingTypeNormal.Response(),
+								Status:          types.FulfillmentStatusFulfilled,
+								ShippingCarrier: types.ShippingCarrierUnknown,
+								ShippingType:    types.ShippingTypeNormal,
 								BoxNumber:       1,
-								BoxSize:         ShippingSize60.Response(),
+								BoxSize:         types.ShippingSize60,
 								ShippedAt:       1640962800,
 								Address: &types.Address{
 									Lastname:       "&.",
@@ -1210,7 +1182,7 @@ func TestOrders_Response(t *testing.T) {
 						},
 						Refund: &types.OrderRefund{
 							Total:      0,
-							Type:       RefundTypeNone.Response(),
+							Type:       types.RefundTypeNone,
 							Reason:     "",
 							Canceled:   false,
 							CanceledAt: 0,
@@ -1233,13 +1205,13 @@ func TestOrders_Response(t *testing.T) {
 					CoordinatorID:   "coordinator-id",
 					PromotionID:     "",
 					ShippingMessage: "",
-					Status:          int32(OrderStatusShipped),
+					Status:          types.OrderStatusShipped,
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 					Payment: &types.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusPaid.Response(),
+						MethodType:    types.PaymentMethodTypeCreditCard,
+						Status:        types.PaymentStatusPaid,
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -1261,11 +1233,11 @@ func TestOrders_Response(t *testing.T) {
 						{
 							FulfillmentID:   "fulfillment-id",
 							TrackingNumber:  "",
-							Status:          FulfillmentStatusFulfilled.Response(),
-							ShippingCarrier: ShippingCarrierUnknown.Response(),
-							ShippingType:    ShippingTypeNormal.Response(),
+							Status:          types.FulfillmentStatusFulfilled,
+							ShippingCarrier: types.ShippingCarrierUnknown,
+							ShippingType:    types.ShippingTypeNormal,
 							BoxNumber:       1,
-							BoxSize:         ShippingSize60.Response(),
+							BoxSize:         types.ShippingSize60,
 							ShippedAt:       1640962800,
 							Address: &types.Address{
 								Lastname:       "&.",
@@ -1281,7 +1253,7 @@ func TestOrders_Response(t *testing.T) {
 					},
 					Refund: &types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       types.RefundTypeNone,
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,

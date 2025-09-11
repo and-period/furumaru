@@ -7,7 +7,7 @@ type CheckoutProductRequest struct {
 	BillingAddressID  string              `json:"billingAddressId" validate:"required"`     // 請求先住所ID
 	ShippingAddressID string              `json:"shippingAddressId" validate:"required"`    // 配送先住所ID
 	PromotionCode     string              `json:"promotionCode" validate:"omitempty,len=8"` // プロモーションコード
-	PaymentMethod     int32               `json:"paymentMethod" validate:"required"`        // 支払い方法
+	PaymentMethod     PaymentMethodType   `json:"paymentMethod" validate:"required"`        // 支払い方法
 	CreditCard        *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`     // クレジットカード決済情報
 	CallbackURL       string              `json:"callbackUrl" validate:"required,http_url"` // 決済完了後のリダイレクト先URL
 	Total             int64               `json:"total" validate:"min=0"`                   // 支払い合計金額（誤り検出用）
@@ -25,7 +25,7 @@ type CheckoutExperienceRequest struct {
 	Transportation        string              `json:"transportation" validate:"omitempty,max=256"`   // 交通手段
 	RequestedDate         string              `json:"requestedDate" validate:"omitempty,date"`       // 体験希望日
 	RequestedTime         string              `json:"requestedTime" validate:"omitempty,time"`       // 体験希望時間
-	PaymentMethod         int32               `json:"paymentMethod" validate:"required"`             // 支払い方法
+	PaymentMethod         PaymentMethodType   `json:"paymentMethod" validate:"required"`             // 支払い方法
 	CreditCard            *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`          // クレジットカード決済情報
 	CallbackURL           string              `json:"callbackUrl" validate:"required,http_url"`      // 決済完了後のリダイレクト先URL
 	Total                 int64               `json:"total" validate:"min=0"`                        // 支払い合計金額（誤り検出用）
@@ -62,7 +62,7 @@ type GuestCheckoutProductRequest struct {
 	CoordinatorID   string                `json:"coordinatorId" validate:"required"`                                        // コーディネータID
 	BoxNumber       int64                 `json:"boxNumber" validate:"min=0"`                                               // 箱の通番（箱単位で購入する場合）
 	PromotionCode   string                `json:"promotionCode" validate:"omitempty,len=8"`                                 // プロモーションコード
-	PaymentMethod   int32                 `json:"paymentMethod" validate:"required"`                                        // 支払い方法
+	PaymentMethod   PaymentMethodType     `json:"paymentMethod" validate:"required"`                                        // 支払い方法
 	CreditCard      *CheckoutCreditCard   `json:"creditCard" validate:"omitempty,dive"`                                     // クレジットカード決済情報
 	CallbackURL     string                `json:"callbackUrl" validate:"required,http_url"`                                 // 決済完了後のリダイレクト先URL
 	Total           int64                 `json:"total" validate:"min=0"`                                                   // 支払い合計金額（誤り検出用）
@@ -83,7 +83,7 @@ type GuestCheckoutExperienceRequest struct {
 	Transportation        string                `json:"transportation" validate:"omitempty,max=256"`   // 交通手段
 	RequestedDate         string                `json:"requestedDate" validate:"omitempty,date"`       // 体験希望日
 	RequestedTime         string                `json:"requestedTime" validate:"omitempty,time"`       // 体験希望時間
-	PaymentMethod         int32                 `json:"paymentMethod" validate:"required"`             // 支払い方法
+	PaymentMethod         PaymentMethodType     `json:"paymentMethod" validate:"required"`             // 支払い方法
 	CreditCard            *CheckoutCreditCard   `json:"creditCard" validate:"omitempty,dive"`          // クレジットカード決済情報
 	CallbackURL           string                `json:"callbackUrl" validate:"required,http_url"`      // 決済完了後のリダイレクト先URL
 	Total                 int64                 `json:"total" validate:"min=0"`                        // 支払い合計金額（誤り検出用）

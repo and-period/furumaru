@@ -232,15 +232,10 @@ func (h *handler) UpsertProductReviewReaction(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	reactionType, ok := service.NewProductReviewReactionTypeFromRequest(req.ReactionType)
-	if !ok {
-		h.badRequest(ctx, errors.New("handler: invalid reaction type"))
-		return
-	}
 	in := &store.UpsertProductReviewReactionInput{
 		ReviewID:     util.GetParam(ctx, "reviewId"),
 		UserID:       h.getUserID(ctx),
-		ReactionType: reactionType.StoreEntity(),
+		ReactionType: service.ProductReviewReactionType(req.ReactionType).StoreEntity(),
 	}
 	if _, err := h.store.UpsertProductReviewReaction(ctx, in); err != nil {
 		h.httpError(ctx, err)

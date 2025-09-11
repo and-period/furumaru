@@ -5,7 +5,7 @@ type CheckoutRequest struct {
 	CoordinatorID string              `json:"coordinatorId" validate:"required"`        // コーディネータID
 	BoxNumber     int64               `json:"boxNumber" validate:"min=0"`               // 箱の通番（箱単位で購入する場合）
 	PromotionCode string              `json:"promotionCode" validate:"omitempty,len=8"` // プロモーションコード
-	PaymentMethod int32               `json:"paymentMethod" validate:"required"`        // 支払い方法
+	PaymentMethod PaymentMethodType   `json:"paymentMethod" validate:"required"`        // 支払い方法
 	CreditCard    *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`     // クレジットカード決済情報
 	CallbackURL   string              `json:"callbackUrl" validate:"required,http_url"` // 決済完了後のリダイレクト先URL
 	Total         int64               `json:"total" validate:"min=0"`                   // 支払い合計金額（誤り検出用）

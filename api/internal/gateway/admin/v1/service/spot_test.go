@@ -15,32 +15,27 @@ func TestSpotUserType(t *testing.T) {
 	tests := []struct {
 		name     string
 		userType entity.SpotUserType
-		expect   SpotUserType
-		response int32
+		expect   types.SpotUserType
 	}{
 		{
 			name:     "user",
 			userType: entity.SpotUserTypeUser,
-			expect:   SpotUserTypeUser,
-			response: 1,
+			expect:   types.SpotUserTypeUser,
 		},
 		{
 			name:     "coordinator",
 			userType: entity.SpotUserTypeCoordinator,
-			expect:   SpotUserTypeCoordinator,
-			response: 2,
+			expect:   types.SpotUserTypeCoordinator,
 		},
 		{
 			name:     "producer",
 			userType: entity.SpotUserTypeProducer,
-			expect:   SpotUserTypeProducer,
-			response: 3,
+			expect:   types.SpotUserTypeProducer,
 		},
 		{
 			name:     "unknown",
 			userType: entity.SpotUserTypeUnknown,
-			expect:   SpotUserTypeUnknown,
-			response: 0,
+			expect:   types.SpotUserTypeUnknown,
 		},
 	}
 
@@ -48,8 +43,7 @@ func TestSpotUserType(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual1 := NewSpotUserType(tt.userType)
-			assert.Equal(t, tt.expect, actual1)
-			assert.Equal(t, tt.response, actual1.Response())
+			assert.Equal(t, tt.expect, actual1.Response())
 		})
 	}
 }
@@ -96,7 +90,7 @@ func TestSpots(t *testing.T) {
 						CreatedAt:    1609459200,
 						UpdatedAt:    1609459200,
 					},
-					UserType: SpotUserTypeUser,
+					UserType: SpotUserType(types.SpotUserTypeUser),
 				},
 			},
 			response: []*types.Spot{

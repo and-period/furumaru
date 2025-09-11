@@ -52,7 +52,7 @@ func TestOrderExperiences(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
@@ -121,7 +121,7 @@ func TestOrderExperiences(t *testing.T) {
 						Description:      "じゃがいもを収穫する体験です。",
 						Public:           true,
 						SoldOut:          false,
-						Status:           int32(ExperienceStatusAccepting),
+						Status:           types.ExperienceStatusAccepting,
 						Media: []*types.ExperienceMedia{
 							{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
 							{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},

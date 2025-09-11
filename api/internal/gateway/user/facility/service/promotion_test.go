@@ -14,32 +14,32 @@ func TestPromotionStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.PromotionStatus
-		expect types.PromotionStatus
+		expect PromotionStatus
 	}{
 		{
 			name:   "private",
 			status: entity.PromotionStatusPrivate,
-			expect: types.PromotionStatusPrivate,
+			expect: PromotionStatus(types.PromotionStatusPrivate),
 		},
 		{
 			name:   "waiting",
 			status: entity.PromotionStatusWaiting,
-			expect: types.PromotionStatusWaiting,
+			expect: PromotionStatus(types.PromotionStatusWaiting),
 		},
 		{
 			name:   "enabled",
 			status: entity.PromotionStatusEnabled,
-			expect: types.PromotionStatusEnabled,
+			expect: PromotionStatus(types.PromotionStatusEnabled),
 		},
 		{
 			name:   "finisihed",
 			status: entity.PromotionStatusFinished,
-			expect: types.PromotionStatusFinished,
+			expect: PromotionStatus(types.PromotionStatusFinished),
 		},
 		{
 			name:   "unknown",
 			status: entity.PromotionStatusUnknown,
-			expect: types.PromotionStatusUnknown,
+			expect: PromotionStatus(types.PromotionStatusUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -56,12 +56,12 @@ func TestPromotionStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status PromotionStatus
-		expect int32
+		expect types.PromotionStatus
 	}{
 		{
 			name:   "success",
 			status: PromotionStatus(types.PromotionStatusEnabled),
-			expect: 3,
+			expect: types.PromotionStatusEnabled,
 		},
 	}
 	for _, tt := range tests {
@@ -77,27 +77,27 @@ func TestDiscountType(t *testing.T) {
 	tests := []struct {
 		name         string
 		discountType entity.DiscountType
-		expect       types.DiscountType
+		expect       DiscountType
 	}{
 		{
 			name:         "success to amount",
 			discountType: entity.DiscountTypeAmount,
-			expect:       types.DiscountTypeAmount,
+			expect:       DiscountType(types.DiscountTypeAmount),
 		},
 		{
 			name:         "success to rate",
 			discountType: entity.DiscountTypeRate,
-			expect:       types.DiscountTypeRate,
+			expect:       DiscountType(types.DiscountTypeRate),
 		},
 		{
 			name:         "success to free shipping",
 			discountType: entity.DiscountTypeFreeShipping,
-			expect:       types.DiscountTypeFreeShipping,
+			expect:       DiscountType(types.DiscountTypeFreeShipping),
 		},
 		{
 			name:         "success to unknown",
 			discountType: entity.DiscountTypeUnknown,
-			expect:       types.DiscountTypeUnknown,
+			expect:       DiscountType(types.DiscountTypeUnknown),
 		},
 	}
 	for _, tt := range tests {
@@ -149,12 +149,12 @@ func TestDiscountType_Response(t *testing.T) {
 	tests := []struct {
 		name         string
 		discountType DiscountType
-		expect       int32
+		expect       types.DiscountType
 	}{
 		{
 			name:         "success",
 			discountType: DiscountType(types.DiscountTypeAmount),
-			expect:       1,
+			expect:       types.DiscountTypeAmount,
 		},
 	}
 	for _, tt := range tests {
@@ -267,7 +267,7 @@ func TestPromotions(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions entity.Promotions
-		expect     []*types.Promotion
+		expect     Promotions
 	}{
 		{
 			name: "success",
@@ -288,8 +288,9 @@ func TestPromotions(t *testing.T) {
 					UpdatedAt:    now,
 				},
 			},
-			expect: []*types.Promotion{
+			expect: Promotions{
 				{
+					Promotion: types.Promotion{
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
@@ -299,6 +300,7 @@ func TestPromotions(t *testing.T) {
 						Code:         "code0001",
 						StartAt:      1640962800,
 						EndAt:        1643641200,
+					},
 				},
 			},
 		},

@@ -198,37 +198,37 @@ func TestPaymentStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		status entity.PaymentStatus
-		expect types.PaymentStatus
+		expect PaymentStatus
 	}{
 		{
 			name:   "pending",
 			status: entity.PaymentStatusPending,
-			expect: types.PaymentStatusUnpaid,
+			expect: PaymentStatus(types.PaymentStatusUnpaid),
 		},
 		{
 			name:   "paid",
 			status: entity.PaymentStatusCaptured,
-			expect: types.PaymentStatusPaid,
+			expect: PaymentStatus(types.PaymentStatusPaid),
 		},
 		{
 			name:   "canceled",
 			status: entity.PaymentStatusCanceled,
-			expect: types.PaymentStatusCanceled,
+			expect: PaymentStatus(types.PaymentStatusCanceled),
 		},
 		{
 			name:   "refunded",
 			status: entity.PaymentStatusRefunded,
-			expect: types.PaymentStatusCanceled,
+			expect: PaymentStatus(types.PaymentStatusCanceled),
 		},
 		{
 			name:   "expired",
 			status: entity.PaymentStatusFailed,
-			expect: types.PaymentStatusFailed,
+			expect: PaymentStatus(types.PaymentStatusFailed),
 		},
 		{
 			name:   "unknown",
 			status: entity.PaymentStatusUnknown,
-			expect: types.PaymentStatusUnknown,
+			expect: PaymentStatus(types.PaymentStatusUnknown),
 		},
 	}
 	for _, tt := range tests {

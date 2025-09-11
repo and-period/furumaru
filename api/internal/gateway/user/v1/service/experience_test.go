@@ -64,32 +64,32 @@ func TestExperienceStatus_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		status ExperienceStatus
-		expect int32
+		expect types.ExperienceStatus
 	}{
 		{
 			name:   "unknown",
 			status: ExperienceStatus(types.ExperienceStatusUnknown),
-			expect: 0,
+			expect: types.ExperienceStatusUnknown,
 		},
 		{
 			name:   "waiting",
 			status: ExperienceStatus(types.ExperienceStatusWaiting),
-			expect: 1,
+			expect: types.ExperienceStatusWaiting,
 		},
 		{
 			name:   "accepting",
 			status: ExperienceStatus(types.ExperienceStatusAccepting),
-			expect: 2,
+			expect: types.ExperienceStatusAccepting,
 		},
 		{
 			name:   "sold out",
 			status: ExperienceStatus(types.ExperienceStatusSoldOut),
-			expect: 3,
+			expect: types.ExperienceStatusSoldOut,
 		},
 		{
 			name:   "finished",
 			status: ExperienceStatus(types.ExperienceStatusFinished),
-			expect: 4,
+			expect: types.ExperienceStatusFinished,
 		},
 	}
 

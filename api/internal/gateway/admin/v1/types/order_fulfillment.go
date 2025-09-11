@@ -37,3 +37,17 @@ const (
 	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
 	ShippingTypePickup  ShippingType = 3 // 店舗受取
 )
+
+// OrderFulfillment - 配送情報
+type OrderFulfillment struct {
+	FulfillmentID   string            `json:"fulfillmentId"`   // 配送情報ID
+	TrackingNumber  string            `json:"trackingNumber"`  // 伝票番号
+	Status          FulfillmentStatus `json:"status"`          // 配送状況
+	ShippingCarrier ShippingCarrier   `json:"shippingCarrier"` // 配送会社
+	ShippingType    ShippingType      `json:"shippingType"`    // 配送方法
+	BoxNumber       int64             `json:"boxNumber"`       // 箱の通番
+	BoxSize         ShippingSize      `json:"boxSize"`         // 箱の大きさ
+	BoxRate         int64             `json:"boxRate"`         // 箱の占有率
+	ShippedAt       int64             `json:"shippedAt"`       // 配送日時
+	*Address                          // 配送先情報
+}

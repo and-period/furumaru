@@ -53,7 +53,7 @@ func TestLiveComments(t *testing.T) {
 				"user-id": {
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusVerified),
+						Status:        types.UserStatusVerified,
 						Registered:    true,
 						AccountID:     "account-id",
 						Username:      "username",

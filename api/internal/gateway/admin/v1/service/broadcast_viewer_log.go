@@ -8,7 +8,7 @@ import (
 )
 
 // BroadcastViewerLogInterval - ライブ配信視聴ログ取得間隔
-type BroadcastViewerLogInterval string
+type BroadcastViewerLogInterval types.BroadcastViewerLogInterval
 
 type BroadcastViewerLog struct {
 	types.BroadcastViewerLog

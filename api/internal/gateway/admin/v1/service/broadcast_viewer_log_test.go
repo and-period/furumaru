@@ -27,7 +27,7 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 			want: want{
 				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalSecond),
 				duration:    time.Second,
-				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalSecond),
+				mediaEntity: entity.AggregateBroadcastViewerLogIntervalSecond,
 			},
 		},
 		{
@@ -36,7 +36,7 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 			want: want{
 				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalMinute),
 				duration:    time.Minute,
-				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalMinute),
+				mediaEntity: entity.AggregateBroadcastViewerLogIntervalMinute,
 			},
 		},
 		{
@@ -45,7 +45,7 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 			want: want{
 				interval:    BroadcastViewerLogInterval(types.BroadcastViewerLogIntervalHour),
 				duration:    time.Hour,
-				mediaEntity: entity.AggregateBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalHour),
+				mediaEntity: entity.AggregateBroadcastViewerLogIntervalHour,
 			},
 		},
 		{
@@ -60,7 +60,7 @@ func TestBroadcastViewerLogInterval(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewBroadcastViewerLogInterval(types.BroadcastViewerLogIntervalFromRequest)(tt.request)
+			actual := NewBroadcastViewerLogIntervalFromRequest(tt.request)
 			assert.Equal(t, tt.want.interval, actual)
 			assert.Equal(t, tt.want.duration, actual.Duration())
 			assert.Equal(t, tt.want.mediaEntity, actual.MediaEntity())

@@ -20,17 +20,17 @@ func TestRefundType(t *testing.T) {
 		{
 			name:   "canceled",
 			typ:    entity.RefundTypeCanceled,
-			expect: RefundTypeCanceled,
+			expect: RefundType(types.RefundTypeCanceled),
 		},
 		{
 			name:   "refunded",
 			typ:    entity.RefundTypeRefunded,
-			expect: RefundTypeRefunded,
+			expect: RefundType(types.RefundTypeRefunded),
 		},
 		{
 			name:   "none",
 			typ:    entity.RefundTypeNone,
-			expect: RefundTypeNone,
+			expect: RefundType(types.RefundTypeNone),
 		},
 	}
 	for _, tt := range tests {
@@ -46,12 +46,12 @@ func TestRefundType_Response(t *testing.T) {
 	tests := []struct {
 		name   string
 		typ    RefundType
-		expect int32
+		expect types.RefundType
 	}{
 		{
 			name:   "none",
-			typ:    RefundTypeNone,
-			expect: 0,
+			typ:    RefundType(types.RefundTypeNone),
+			expect: types.RefundTypeNone,
 		},
 	}
 	for _, tt := range tests {
@@ -94,7 +94,7 @@ func TestOrderRefund(t *testing.T) {
 			expect: &OrderRefund{
 				OrderRefund: types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       types.RefundTypeNone,
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
@@ -123,7 +123,7 @@ func TestOrderRefund_Response(t *testing.T) {
 			refund: &OrderRefund{
 				OrderRefund: types.OrderRefund{
 					Total:      0,
-					Type:       RefundTypeNone.Response(),
+					Type:       types.RefundTypeNone,
 					Reason:     "",
 					Canceled:   false,
 					CanceledAt: 0,
@@ -131,7 +131,7 @@ func TestOrderRefund_Response(t *testing.T) {
 			},
 			expect: &types.OrderRefund{
 				Total:      0,
-				Type:       RefundTypeNone.Response(),
+				Type:       types.RefundTypeNone,
 				Reason:     "",
 				Canceled:   false,
 				CanceledAt: 0,
@@ -186,7 +186,7 @@ func TestOrderRefunds(t *testing.T) {
 				{
 					OrderRefund: types.OrderRefund{
 						Total:      0,
-						Type:       RefundTypeNone.Response(),
+						Type:       types.RefundTypeNone,
 						Reason:     "",
 						Canceled:   false,
 						CanceledAt: 0,

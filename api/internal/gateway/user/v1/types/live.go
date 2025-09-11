@@ -14,7 +14,7 @@ type Live struct {
 type LiveSummary struct {
 	ScheduleID    string         `json:"scheduleId"`    // 開催スケジュールID
 	CoordinatorID string         `json:"coordinatorId"` // コーディネータID
-	Status        int32          `json:"status"`        // 開催状況
+	Status        ScheduleStatus `json:"status"`        // 開催状況
 	Title         string         `json:"title"`         // タイトル
 	ThumbnailURL  string         `json:"thumbnailUrl"`  // サムネイルURL
 	StartAt       int64          `json:"startAt"`       // 開催開始日時

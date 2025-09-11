@@ -21,8 +21,8 @@ func NewCart(basket *entity.CartBasket) *Cart {
 	return &Cart{
 		Cart: types.Cart{
 			Number:        basket.BoxNumber,
-			Type:          int32(NewShippingType(basket.BoxType)),
-			Size:          int32(NewShippingSize(basket.BoxSize)),
+			Type:          NewShippingType(basket.BoxType).Response(),
+			Size:          NewShippingSize(basket.BoxSize).Response(),
 			Rate:          basket.BoxRate,
 			Items:         NewCartItems(basket.Items).Response(),
 			CoordinatorID: basket.CoordinatorID,

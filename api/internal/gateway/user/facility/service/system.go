@@ -42,8 +42,8 @@ func (s PaymentSystemStatus) StoreEntity() entity.PaymentSystemStatus {
 	}
 }
 
-func (s PaymentSystemStatus) Response() int32 {
-	return int32(s)
+func (s PaymentSystemStatus) Response() types.PaymentStatus {
+	return types.PaymentStatus(s)
 }
 
 func NewPaymentSystem(system *entity.PaymentSystem) *PaymentSystem {

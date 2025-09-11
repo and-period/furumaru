@@ -13,48 +13,41 @@ import (
 func TestUserStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name     string
-		status   uentity.UserStatus
-		expect   UserStatus
-		response int32
+		name   string
+		status uentity.UserStatus
+		expect types.UserStatus
 	}{
 		{
-			name:     "guest",
-			status:   uentity.UserStatusGuest,
-			expect:   UserStatusGuest,
-			response: 1,
+			name:   "guest",
+			status: uentity.UserStatusGuest,
+			expect: types.UserStatusGuest,
 		},
 		{
-			name:     "provisional",
-			status:   uentity.UserStatusProvisional,
-			expect:   UserStatusProvisional,
-			response: 2,
+			name:   "provisional",
+			status: uentity.UserStatusProvisional,
+			expect: types.UserStatusProvisional,
 		},
 		{
-			name:     "verified",
-			status:   uentity.UserStatusVerified,
-			expect:   UserStatusVerified,
-			response: 3,
+			name:   "verified",
+			status: uentity.UserStatusVerified,
+			expect: types.UserStatusVerified,
 		},
 		{
-			name:     "deactivated",
-			status:   uentity.UserStatusDeactivated,
-			expect:   UserStatusDeactivated,
-			response: 4,
+			name:   "deactivated",
+			status: uentity.UserStatusDeactivated,
+			expect: types.UserStatusDeactivated,
 		},
 		{
-			name:     "unknown",
-			status:   uentity.UserStatusUnknown,
-			expect:   UserStatusUnknown,
-			response: 0,
+			name:   "unknown",
+			status: uentity.UserStatusUnknown,
+			expect: types.UserStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewUserStatus(tt.status)
-			assert.Equal(t, tt.expect, actual)
-			assert.Equal(t, tt.response, actual.Response())
+			assert.Equal(t, tt.expect, actual.Response())
 		})
 	}
 }
@@ -116,7 +109,7 @@ func TestUser(t *testing.T) {
 			expect: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "username",
 					AccountID:     "account-id",
@@ -190,7 +183,7 @@ func TestUser(t *testing.T) {
 			expect: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusGuest),
+					Status:        types.UserStatusGuest,
 					Registered:    false,
 					Username:      "ゲスト",
 					AccountID:     "",
@@ -246,7 +239,7 @@ func TestUser(t *testing.T) {
 			expect: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "外部宿泊施設利用者",
 					AccountID:     "",
@@ -296,7 +289,7 @@ func TestUser_Address(t *testing.T) {
 			user: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "username",
 					AccountID:     "account-id",
@@ -369,7 +362,7 @@ func TestUser_Response(t *testing.T) {
 			user: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "username",
 					AccountID:     "account-id",
@@ -400,7 +393,7 @@ func TestUser_Response(t *testing.T) {
 			},
 			expect: &types.User{
 				ID:            "user-id",
-				Status:        int32(UserStatusVerified),
+				Status:        types.UserStatusVerified,
 				Registered:    true,
 				Username:      "username",
 				AccountID:     "account-id",
@@ -485,7 +478,7 @@ func TestUsers(t *testing.T) {
 				{
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusVerified),
+						Status:        types.UserStatusVerified,
 						Registered:    true,
 						Username:      "username",
 						AccountID:     "account-id",
@@ -540,7 +533,7 @@ func TestUsers_IDs(t *testing.T) {
 				{
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusGuest),
+						Status:        types.UserStatusGuest,
 						Registered:    false,
 						Username:      "",
 						AccountID:     "",
@@ -594,7 +587,7 @@ func TestUsers_Map(t *testing.T) {
 				{
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusGuest),
+						Status:        types.UserStatusGuest,
 						Registered:    false,
 						Username:      "",
 						AccountID:     "",
@@ -628,7 +621,7 @@ func TestUsers_Map(t *testing.T) {
 				"user-id": {
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusGuest),
+						Status:        types.UserStatusGuest,
 						Registered:    false,
 						Username:      "",
 						AccountID:     "",
@@ -681,7 +674,7 @@ func TestUsers_Response(t *testing.T) {
 				{
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusGuest),
+						Status:        types.UserStatusGuest,
 						Registered:    false,
 						Username:      "",
 						AccountID:     "",
@@ -714,7 +707,7 @@ func TestUsers_Response(t *testing.T) {
 			expect: []*types.User{
 				{
 					ID:            "user-id",
-					Status:        int32(UserStatusGuest),
+					Status:        types.UserStatusGuest,
 					Registered:    false,
 					Username:      "",
 					AccountID:     "",
@@ -751,7 +744,7 @@ func TestUserToList(t *testing.T) {
 			user: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "username",
 					AccountID:     "account-id",
@@ -792,7 +785,7 @@ func TestUserToList(t *testing.T) {
 					Lastname:          "&.",
 					Firstname:         "購入者",
 					Email:             "test-user@and-period.jp",
-					Status:            int32(UserStatusVerified),
+					Status:            types.UserStatusVerified,
 					Registered:        true,
 					PrefectureCode:    13,
 					City:              "千代田区",
@@ -805,7 +798,7 @@ func TestUserToList(t *testing.T) {
 			user: &User{
 				User: types.User{
 					ID:            "user-id",
-					Status:        int32(UserStatusVerified),
+					Status:        types.UserStatusVerified,
 					Registered:    true,
 					Username:      "username",
 					AccountID:     "account-id",
@@ -841,7 +834,7 @@ func TestUserToList(t *testing.T) {
 					Lastname:          "&.",
 					Firstname:         "購入者",
 					Email:             "test-user@and-period.jp",
-					Status:            int32(UserStatusVerified),
+					Status:            types.UserStatusVerified,
 					Registered:        true,
 					PrefectureCode:    13,
 					City:              "千代田区",
@@ -873,7 +866,7 @@ func TestUserToList_Response(t *testing.T) {
 					Lastname:          "&.",
 					Firstname:         "購入者",
 					Email:             "test-user@and-period.jp",
-					Status:            int32(UserStatusGuest),
+					Status:            types.UserStatusGuest,
 					Registered:        true,
 					PrefectureCode:    13,
 					City:              "千代田区",
@@ -885,7 +878,7 @@ func TestUserToList_Response(t *testing.T) {
 				Lastname:          "&.",
 				Firstname:         "購入者",
 				Email:             "test-user@and-period.jp",
-				Status:            int32(UserStatusGuest),
+				Status:            types.UserStatusGuest,
 				Registered:        true,
 				PrefectureCode:    13,
 				City:              "千代田区",
@@ -915,7 +908,7 @@ func TestUsersToList(t *testing.T) {
 				{
 					User: types.User{
 						ID:            "user-id",
-						Status:        int32(UserStatusGuest),
+						Status:        types.UserStatusGuest,
 						Registered:    false,
 						Username:      "",
 						AccountID:     "",
@@ -960,7 +953,7 @@ func TestUsersToList(t *testing.T) {
 						Lastname:          "&.",
 						Firstname:         "購入者",
 						Email:             "test-user@and-period.jp",
-						Status:            int32(UserStatusGuest),
+						Status:            types.UserStatusGuest,
 						Registered:        false,
 						PrefectureCode:    13,
 						City:              "千代田区",
@@ -994,7 +987,7 @@ func TestUsersToList_Response(t *testing.T) {
 						Lastname:          "&.",
 						Firstname:         "購入者",
 						Email:             "test-user@and-period.jp",
-						Status:            int32(UserStatusGuest),
+						Status:            types.UserStatusGuest,
 						Registered:        true,
 						PrefectureCode:    13,
 						City:              "千代田区",
@@ -1008,7 +1001,7 @@ func TestUsersToList_Response(t *testing.T) {
 					Lastname:          "&.",
 					Firstname:         "購入者",
 					Email:             "test-user@and-period.jp",
-					Status:            int32(UserStatusGuest),
+					Status:            types.UserStatusGuest,
 					Registered:        true,
 					PrefectureCode:    13,
 					City:              "千代田区",
