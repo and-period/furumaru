@@ -1,5 +1,5 @@
 import { ResponseError, FetchError } from '@/types/api/facility/runtime';
-import type { UtilErrorResponse } from '@/types/api/facility';
+import type { ErrorResponse } from '@/types/api/facility';
 
 /**
  * APIエラーをUI表示向けの日本語メッセージに整形
@@ -13,7 +13,7 @@ export async function buildApiErrorMessage(err: unknown): Promise<string> {
     const status = err.response.status;
     let apiMsg: string | undefined;
     try {
-      const data = (await err.response.clone().json()) as Partial<UtilErrorResponse> | undefined;
+      const data = (await err.response.clone().json()) as Partial<ErrorResponse> | undefined;
       apiMsg = data?.message || data?.detail || undefined;
     }
     catch {

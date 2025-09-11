@@ -67,10 +67,17 @@ func setup(_ context.Context) (*app, error) {
 		return nil, fmt.Errorf("source-file is required")
 	}
 
+	logLevel := slog.LevelInfo
+	if debug {
+		logLevel = slog.LevelDebug
+	}
+
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: logLevel,
+	})))
+
 	// 正規表現パターンを定義
-	// github_com_and-period_furumaru_api_internal_gateway_[^.]+\.(response|request|types)\.(\w+) または
-	// github_com_and-period_furumaru_api_internal_gateway_[^.]+\.(\w+) にマッチ
-	pattern := regexp.MustCompile(`github_com_and-period_furumaru_api_internal_gateway_[^.]+\.((?:response|request|types)\.)?(\w+)`)
+	pattern := regexp.MustCompile(`(util|types|github_com_and-period_furumaru_api_internal_.+)\.(\w+)`)
 
 	app := &app{
 		source:        sourceFile,
@@ -102,22 +109,13 @@ func (a *app) run(ctx context.Context) error {
 
 		// マッチした部分を解析
 		submatches := a.pattern.FindSubmatch(match)
-		if len(submatches) >= 3 {
-			prefix := submatches[1]   // response. or request. or empty
-			typeName := submatches[2] // 型名
+		if len(submatches) >= 2 {
+			typeName := submatches[len(submatches)-1] // 型名
 
 			// デバッグモードの場合、変換内容を出力
-			if a.debug {
-				slog.Debug("Replacing component name",
-					slog.String("from", string(match)),
-					slog.String("to", string(append(prefix, typeName...))),
-				)
-			}
+			slog.Debug("Replacing component name", slog.String("from", string(match)), slog.String("to", string(typeName)))
 
-			// prefixが空でない場合はそのまま使用、空の場合は型名のみ
-			if len(prefix) > 0 {
-				return append(prefix, typeName...)
-			}
+			// types プレフィックスは削除して型名のみを使用
 			return typeName
 		}
 		return match

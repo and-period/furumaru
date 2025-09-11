@@ -4,10 +4,10 @@ import type {
   CartItem as ApiCartItem,
   Product,
   Coordinator,
-} from '~/types/api/models';
+} from '~/types/api/facility/models';
 import { CartApi, Configuration as FacilityConfiguration } from '@/types/api/facility';
 import { useAuthStore } from '~/stores/auth';
-import type { TypesAddCartItemRequest } from '@/types/api/facility';
+import type { AddCartItemRequest } from '@/types/api/facility';
 
 export interface CartItem extends ApiCartItem {
   product?: Product & {
@@ -163,14 +163,14 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
         const api = new CartApi(config);
 
-        const payload: TypesAddCartItemRequest = {
+        const payload: AddCartItemRequest = {
           productId,
           quantity,
         };
 
         await api.facilitiesFacilityIdCartsItemsPost({
           facilityId,
-          typesAddCartItemRequest: payload,
+          addCartItemRequest: payload,
         });
 
         // 追加後にカート情報を更新
