@@ -181,5 +181,44 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         throw error;
       }
     },
+
+    // カートからアイテムを削除
+    async removeCartItem(productId: string) {
+      try {
+        const runtimeConfig = useRuntimeConfig();
+        const route = useRoute();
+        const authStore = useAuthStore();
+
+        const facilityId = String(route.params.facilityId ?? '');
+
+        if (!facilityId) {
+          console.warn('facilityId is not specified in params. Skipping removeCartItem.');
+          return;
+        }
+
+        const accessToken = authStore.token?.accessToken;
+        const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
+
+        const config = new FacilityConfiguration({
+          headers,
+          basePath: runtimeConfig.public.API_BASE_URL,
+          credentials: 'include',
+        });
+
+        const api = new CartApi(config);
+
+        await api.facilitiesFacilityIdCartsItemsProductIdDelete({
+          facilityId,
+          productId,
+        });
+
+        // 削除後にカート情報を更新
+        await this.getCart();
+      }
+      catch (error) {
+        console.error('Failed to remove item from cart:', error);
+        throw error;
+      }
+    },
   },
 });

@@ -125,7 +125,7 @@ if (!product.value) {
 
       <button
         :disabled="product.inventory === 0 || isAdding"
-        class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+        class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
         @click="addToCart"
       >
         {{ product.inventory > 0 ? (isAdding ? '追加中...' : 'カートに追加') : '在庫なし' }}

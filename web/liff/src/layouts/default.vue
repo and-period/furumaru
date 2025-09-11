@@ -13,6 +13,13 @@ const facilityId = computed<string>(() => String(route.params.facilityId || ''))
 
 const isExpand = ref<boolean>(false);
 
+// 該当ページではカートUIを非表示にする
+const shouldHideCart = computed(() => {
+  // /:facilityId/checkin/new のみ非表示
+  const path = route.path || '';
+  return /^\/[^/]+\/checkin\/new$/.test(path);
+});
+
 // ストア
 const shoppingCartStore = useShoppingCartStore();
 const authStore = useAuthStore();
@@ -20,6 +27,29 @@ const { shoppingCart, cartIsEmpty, totalPrice, totalQuantity } = storeToRefs(sho
 
 const toggleExpand = () => {
   isExpand.value = !isExpand.value;
+};
+
+// カゴに商品があるかどうか
+const hasCartItems = computed(() => !cartIsEmpty.value);
+
+// 削除中のプロダクトID
+const removingProductId = ref<string | null>(null);
+
+const handleRemoveItem = async (productId: string) => {
+  if (removingProductId.value) {
+    return;
+  }
+
+  removingProductId.value = productId;
+  try {
+    await shoppingCartStore.removeCartItem(productId);
+  }
+  catch (e) {
+    console.error('Failed to remove item:', e);
+  }
+  finally {
+    removingProductId.value = null;
+  }
 };
 
 const goToCheckout = async () => {
@@ -83,16 +113,28 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
       <slot />
     </div>
     <div
+      v-if="!shouldHideCart"
       class="fixed p-4 w-full bottom-0 bg-white border-t border-gray-200 shadow-sm rounded-2xl flex flex-col transition-all gap-4 z-20"
-      :class="{ 'h-svh': isExpand, 'h-[56px]': !isExpand }"
+      :class="{ 'h-9/10': isExpand, 'h-[56px]': !isExpand }"
     >
       <div class="text-center">
         <button
-          class="flex items-center justify-center w-full"
+          class="relative flex items-center justify-center w-full border rounded-xl py-1 border-orange text-orange font-semibold"
           @click="toggleExpand"
         >
-          <span v-if="cartIsEmpty">カゴの中身を見る</span>
-          <span v-else>カゴの中身を見る ({{ totalQuantity }}点)</span>
+          <!-- カートに商品がある場合、右上に点滅する丸を表示 -->
+          <span
+            v-if="hasCartItems && !isExpand"
+            class="absolute top-[-11px] right-[-2px] pointer-events-none"
+            aria-hidden="true"
+          >
+            <span class="inline-block size-3 rounded-full bg-orange  animate-ping" />
+          </span>
+          <span v-if="isExpand">カゴを閉じる</span>
+          <span v-else>
+            カゴの中身を見る
+            <span v-if="!cartIsEmpty"> ({{ totalQuantity }}点)</span>
+          </span>
         </button>
       </div>
       <div
@@ -174,6 +216,16 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                         ¥{{ formatPrice((item.product?.price || 0) * item.quantity) }}
                       </p>
                     </div>
+
+                    <div class="mt-2 text-right">
+                      <button
+                        class="text-xs text-red-600 border border-red-300 px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50"
+                        :disabled="removingProductId === item.productId"
+                        @click="handleRemoveItem(item.productId)"
+                      >
+                        {{ removingProductId === item.productId ? '削除中…' : '削除' }}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -198,7 +250,7 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
               class="w-full bg-orange text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange/[0.7] transition-colors"
               @click="goToCheckout"
             >
-              レジに進む
+              購入処理に進む
             </button>
             <button
               class="w-full text-center py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
@@ -212,3 +264,13 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blink-dot {
+  animation: blink 1s infinite;
+}
+</style>

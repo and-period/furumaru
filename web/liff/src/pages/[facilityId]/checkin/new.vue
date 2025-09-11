@@ -108,7 +108,7 @@ async function onSubmit() {
       createAuthUserRequest: payload,
     });
 
-    await router.push({ path: `/${facilityId}/checkin` });
+    await router.push({ path: `/${facilityId}` });
   }
   catch (e) {
     console.error('check-in submit failed:', e);
@@ -157,7 +157,7 @@ async function onSubmit() {
           <FmTextInput
             id="last_name_kana"
             v-model="lastNameKana"
-            label="フリガナ(姓)"
+            label="ふりがな(姓)"
             name="last_name_kana"
             placeholder="やまだ"
             required
@@ -172,7 +172,7 @@ async function onSubmit() {
           <FmTextInput
             id="first_name_kana"
             v-model="firstNameKana"
-            label="フリガナ(名)"
+            label="ふりがな(名)"
             name="first_name_kana"
             placeholder="たろう"
             required
