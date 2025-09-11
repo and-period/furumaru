@@ -32,6 +32,26 @@ const toggleExpand = () => {
 // カゴに商品があるかどうか
 const hasCartItems = computed(() => !cartIsEmpty.value);
 
+// 削除中のプロダクトID
+const removingProductId = ref<string | null>(null);
+
+const handleRemoveItem = async (productId: string) => {
+  if (removingProductId.value) {
+    return;
+  }
+
+  removingProductId.value = productId;
+  try {
+    await shoppingCartStore.removeCartItem(productId);
+  }
+  catch (e) {
+    console.error('Failed to remove item:', e);
+  }
+  finally {
+    removingProductId.value = null;
+  }
+};
+
 const goToCheckout = async () => {
   const id = facilityId.value;
   const path = id ? `/${id}/checkout` : '/checkout';
@@ -195,6 +215,16 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
                       <p class="text-sm font-bold text-main">
                         ¥{{ formatPrice((item.product?.price || 0) * item.quantity) }}
                       </p>
+                    </div>
+
+                    <div class="mt-2 text-right">
+                      <button
+                        class="text-xs text-red-600 border border-red-300 px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50"
+                        :disabled="removingProductId === item.productId"
+                        @click="handleRemoveItem(item.productId)"
+                      >
+                        {{ removingProductId === item.productId ? '削除中…' : '削除' }}
+                      </button>
                     </div>
                   </div>
                 </div>

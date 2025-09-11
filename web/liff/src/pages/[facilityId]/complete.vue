@@ -72,9 +72,6 @@ const goToTop = () => {
         <template v-else-if="orderId">
           お客様の注文番号は「{{ orderId }}」です
         </template>
-        <template v-else>
-          注文番号の取得ができませんでした。
-        </template>
       </div>
     </div>
     <div class="px-4 text-center">

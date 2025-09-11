@@ -16,8 +16,7 @@ export const useLiffInit = () => {
     }
 
     if (!liff.isLoggedIn()) {
-      const redirectUri = window.location.href;
-      liff.login({ redirectUri });
+      liff.login();
       return;
     }
   };
