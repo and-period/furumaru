@@ -15,32 +15,32 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesCheckoutResponse,
-  TypesCheckoutStateResponse,
-  TypesGuestCheckoutExperienceRequest,
-  TypesGuestCheckoutProductRequest,
-  UtilErrorResponse,
+  CheckoutResponse,
+  CheckoutStateResponse,
+  ErrorResponse,
+  GuestCheckoutExperienceRequest,
+  GuestCheckoutProductRequest,
 } from '../models/index';
 import {
-    TypesCheckoutResponseFromJSON,
-    TypesCheckoutResponseToJSON,
-    TypesCheckoutStateResponseFromJSON,
-    TypesCheckoutStateResponseToJSON,
-    TypesGuestCheckoutExperienceRequestFromJSON,
-    TypesGuestCheckoutExperienceRequestToJSON,
-    TypesGuestCheckoutProductRequestFromJSON,
-    TypesGuestCheckoutProductRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    CheckoutResponseFromJSON,
+    CheckoutResponseToJSON,
+    CheckoutStateResponseFromJSON,
+    CheckoutStateResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    GuestCheckoutExperienceRequestFromJSON,
+    GuestCheckoutExperienceRequestToJSON,
+    GuestCheckoutProductRequestFromJSON,
+    GuestCheckoutProductRequestToJSON,
 } from '../models/index';
 
 export interface GuestsCheckoutsExperiencesExperienceIdPostRequest {
     experienceId: string;
-    typesGuestCheckoutExperienceRequest: TypesGuestCheckoutExperienceRequest;
+    guestCheckoutExperienceRequest: GuestCheckoutExperienceRequest;
 }
 
 export interface GuestsCheckoutsProductsPostRequest {
-    typesGuestCheckoutProductRequest: TypesGuestCheckoutProductRequest;
+    guestCheckoutProductRequest: GuestCheckoutProductRequest;
 }
 
 export interface GuestsCheckoutsTransactionIdGetRequest {
@@ -56,7 +56,7 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
      * ゲストユーザーとして体験の決済を実行し、予約を作成します。
      * ゲスト体験決済
      */
-    async guestsCheckoutsExperiencesExperienceIdPostRaw(requestParameters: GuestsCheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutResponse>> {
+    async guestsCheckoutsExperiencesExperienceIdPostRaw(requestParameters: GuestsCheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -64,10 +64,10 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['typesGuestCheckoutExperienceRequest'] == null) {
+        if (requestParameters['guestCheckoutExperienceRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesGuestCheckoutExperienceRequest',
-                'Required parameter "typesGuestCheckoutExperienceRequest" was null or undefined when calling guestsCheckoutsExperiencesExperienceIdPost().'
+                'guestCheckoutExperienceRequest',
+                'Required parameter "guestCheckoutExperienceRequest" was null or undefined when calling guestsCheckoutsExperiencesExperienceIdPost().'
             );
         }
 
@@ -82,17 +82,17 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesGuestCheckoutExperienceRequestToJSON(requestParameters['typesGuestCheckoutExperienceRequest']),
+            body: GuestCheckoutExperienceRequestToJSON(requestParameters['guestCheckoutExperienceRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
     }
 
     /**
      * ゲストユーザーとして体験の決済を実行し、予約を作成します。
      * ゲスト体験決済
      */
-    async guestsCheckoutsExperiencesExperienceIdPost(requestParameters: GuestsCheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutResponse> {
+    async guestsCheckoutsExperiencesExperienceIdPost(requestParameters: GuestsCheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.guestsCheckoutsExperiencesExperienceIdPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -101,11 +101,11 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
      * ゲストユーザーとして商品の決済を実行し、注文を作成します。
      * ゲスト商品決済
      */
-    async guestsCheckoutsProductsPostRaw(requestParameters: GuestsCheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutResponse>> {
-        if (requestParameters['typesGuestCheckoutProductRequest'] == null) {
+    async guestsCheckoutsProductsPostRaw(requestParameters: GuestsCheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
+        if (requestParameters['guestCheckoutProductRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesGuestCheckoutProductRequest',
-                'Required parameter "typesGuestCheckoutProductRequest" was null or undefined when calling guestsCheckoutsProductsPost().'
+                'guestCheckoutProductRequest',
+                'Required parameter "guestCheckoutProductRequest" was null or undefined when calling guestsCheckoutsProductsPost().'
             );
         }
 
@@ -120,17 +120,17 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesGuestCheckoutProductRequestToJSON(requestParameters['typesGuestCheckoutProductRequest']),
+            body: GuestCheckoutProductRequestToJSON(requestParameters['guestCheckoutProductRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
     }
 
     /**
      * ゲストユーザーとして商品の決済を実行し、注文を作成します。
      * ゲスト商品決済
      */
-    async guestsCheckoutsProductsPost(requestParameters: GuestsCheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutResponse> {
+    async guestsCheckoutsProductsPost(requestParameters: GuestsCheckoutsProductsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.guestsCheckoutsProductsPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -139,7 +139,7 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
      * ゲストユーザーの決済トランザクション状態を取得します。
      * ゲスト決済状態取得
      */
-    async guestsCheckoutsTransactionIdGetRaw(requestParameters: GuestsCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesCheckoutStateResponse>> {
+    async guestsCheckoutsTransactionIdGetRaw(requestParameters: GuestsCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutStateResponse>> {
         if (requestParameters['transactionId'] == null) {
             throw new runtime.RequiredError(
                 'transactionId',
@@ -158,14 +158,14 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesCheckoutStateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutStateResponseFromJSON(jsonValue));
     }
 
     /**
      * ゲストユーザーの決済トランザクション状態を取得します。
      * ゲスト決済状態取得
      */
-    async guestsCheckoutsTransactionIdGet(requestParameters: GuestsCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesCheckoutStateResponse> {
+    async guestsCheckoutsTransactionIdGet(requestParameters: GuestsCheckoutsTransactionIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutStateResponse> {
         const response = await this.guestsCheckoutsTransactionIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

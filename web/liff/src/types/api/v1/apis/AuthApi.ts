@@ -15,43 +15,43 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesAuthGoogleAccountResponse,
-  TypesAuthLINEAccountResponse,
-  TypesAuthResponse,
-  TypesForgotAuthPasswordRequest,
-  TypesRefreshAuthTokenRequest,
-  TypesResetAuthPasswordRequest,
-  TypesSignInRequest,
-  TypesUpdateAuthPasswordRequest,
-  UtilErrorResponse,
+  AuthGoogleAccountResponse,
+  AuthLINEAccountResponse,
+  AuthResponse,
+  ErrorResponse,
+  ForgotAuthPasswordRequest,
+  RefreshAuthTokenRequest,
+  ResetAuthPasswordRequest,
+  SignInRequest,
+  UpdateAuthPasswordRequest,
 } from '../models/index';
 import {
-    TypesAuthGoogleAccountResponseFromJSON,
-    TypesAuthGoogleAccountResponseToJSON,
-    TypesAuthLINEAccountResponseFromJSON,
-    TypesAuthLINEAccountResponseToJSON,
-    TypesAuthResponseFromJSON,
-    TypesAuthResponseToJSON,
-    TypesForgotAuthPasswordRequestFromJSON,
-    TypesForgotAuthPasswordRequestToJSON,
-    TypesRefreshAuthTokenRequestFromJSON,
-    TypesRefreshAuthTokenRequestToJSON,
-    TypesResetAuthPasswordRequestFromJSON,
-    TypesResetAuthPasswordRequestToJSON,
-    TypesSignInRequestFromJSON,
-    TypesSignInRequestToJSON,
-    TypesUpdateAuthPasswordRequestFromJSON,
-    TypesUpdateAuthPasswordRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    AuthGoogleAccountResponseFromJSON,
+    AuthGoogleAccountResponseToJSON,
+    AuthLINEAccountResponseFromJSON,
+    AuthLINEAccountResponseToJSON,
+    AuthResponseFromJSON,
+    AuthResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    ForgotAuthPasswordRequestFromJSON,
+    ForgotAuthPasswordRequestToJSON,
+    RefreshAuthTokenRequestFromJSON,
+    RefreshAuthTokenRequestToJSON,
+    ResetAuthPasswordRequestFromJSON,
+    ResetAuthPasswordRequestToJSON,
+    SignInRequestFromJSON,
+    SignInRequestToJSON,
+    UpdateAuthPasswordRequestFromJSON,
+    UpdateAuthPasswordRequestToJSON,
 } from '../models/index';
 
 export interface AuthForgotPasswordPostRequest {
-    typesForgotAuthPasswordRequest: TypesForgotAuthPasswordRequest;
+    forgotAuthPasswordRequest: ForgotAuthPasswordRequest;
 }
 
 export interface AuthForgotPasswordVerifiedPostRequest {
-    typesResetAuthPasswordRequest: TypesResetAuthPasswordRequest;
+    resetAuthPasswordRequest: ResetAuthPasswordRequest;
 }
 
 export interface AuthGoogleGetRequest {
@@ -65,15 +65,15 @@ export interface AuthLineGetRequest {
 }
 
 export interface AuthPasswordPatchRequest {
-    typesUpdateAuthPasswordRequest: TypesUpdateAuthPasswordRequest;
+    updateAuthPasswordRequest: UpdateAuthPasswordRequest;
 }
 
 export interface AuthPostRequest {
-    typesSignInRequest: TypesSignInRequest;
+    signInRequest: SignInRequest;
 }
 
 export interface AuthRefreshTokenPostRequest {
-    typesRefreshAuthTokenRequest: TypesRefreshAuthTokenRequest;
+    refreshAuthTokenRequest: RefreshAuthTokenRequest;
 }
 
 /**
@@ -121,10 +121,10 @@ export class AuthApi extends runtime.BaseAPI {
      * パスワード再設定リクエスト
      */
     async authForgotPasswordPostRaw(requestParameters: AuthForgotPasswordPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesForgotAuthPasswordRequest'] == null) {
+        if (requestParameters['forgotAuthPasswordRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesForgotAuthPasswordRequest',
-                'Required parameter "typesForgotAuthPasswordRequest" was null or undefined when calling authForgotPasswordPost().'
+                'forgotAuthPasswordRequest',
+                'Required parameter "forgotAuthPasswordRequest" was null or undefined when calling authForgotPasswordPost().'
             );
         }
 
@@ -139,7 +139,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesForgotAuthPasswordRequestToJSON(requestParameters['typesForgotAuthPasswordRequest']),
+            body: ForgotAuthPasswordRequestToJSON(requestParameters['forgotAuthPasswordRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -158,10 +158,10 @@ export class AuthApi extends runtime.BaseAPI {
      * パスワード再設定実行
      */
     async authForgotPasswordVerifiedPostRaw(requestParameters: AuthForgotPasswordVerifiedPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesResetAuthPasswordRequest'] == null) {
+        if (requestParameters['resetAuthPasswordRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesResetAuthPasswordRequest',
-                'Required parameter "typesResetAuthPasswordRequest" was null or undefined when calling authForgotPasswordVerifiedPost().'
+                'resetAuthPasswordRequest',
+                'Required parameter "resetAuthPasswordRequest" was null or undefined when calling authForgotPasswordVerifiedPost().'
             );
         }
 
@@ -176,7 +176,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesResetAuthPasswordRequestToJSON(requestParameters['typesResetAuthPasswordRequest']),
+            body: ResetAuthPasswordRequestToJSON(requestParameters['resetAuthPasswordRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -194,7 +194,7 @@ export class AuthApi extends runtime.BaseAPI {
      * 認証トークンを検証し、認証情報を取得します。
      * トークン検証
      */
-    async authGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthResponse>> {
+    async authGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -214,14 +214,14 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthResponseFromJSON(jsonValue));
     }
 
     /**
      * 認証トークンを検証し、認証情報を取得します。
      * トークン検証
      */
-    async authGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthResponse> {
+    async authGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthResponse> {
         const response = await this.authGetRaw(initOverrides);
         return await response.value();
     }
@@ -230,7 +230,7 @@ export class AuthApi extends runtime.BaseAPI {
      * Google OAuth認証のための認証URLを取得します。
      * Google認証URL取得
      */
-    async authGoogleGetRaw(requestParameters: AuthGoogleGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthGoogleAccountResponse>> {
+    async authGoogleGetRaw(requestParameters: AuthGoogleGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthGoogleAccountResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['state'] != null) {
@@ -250,14 +250,14 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthGoogleAccountResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthGoogleAccountResponseFromJSON(jsonValue));
     }
 
     /**
      * Google OAuth認証のための認証URLを取得します。
      * Google認証URL取得
      */
-    async authGoogleGet(requestParameters: AuthGoogleGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthGoogleAccountResponse> {
+    async authGoogleGet(requestParameters: AuthGoogleGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthGoogleAccountResponse> {
         const response = await this.authGoogleGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -266,7 +266,7 @@ export class AuthApi extends runtime.BaseAPI {
      * LINE OAuth認証のための認証URLを取得します。
      * LINE認証URL取得
      */
-    async authLineGetRaw(requestParameters: AuthLineGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthLINEAccountResponse>> {
+    async authLineGetRaw(requestParameters: AuthLineGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthLINEAccountResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['state'] != null) {
@@ -286,14 +286,14 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthLINEAccountResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthLINEAccountResponseFromJSON(jsonValue));
     }
 
     /**
      * LINE OAuth認証のための認証URLを取得します。
      * LINE認証URL取得
      */
-    async authLineGet(requestParameters: AuthLineGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthLINEAccountResponse> {
+    async authLineGet(requestParameters: AuthLineGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthLINEAccountResponse> {
         const response = await this.authLineGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -303,10 +303,10 @@ export class AuthApi extends runtime.BaseAPI {
      * パスワード変更
      */
     async authPasswordPatchRaw(requestParameters: AuthPasswordPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['typesUpdateAuthPasswordRequest'] == null) {
+        if (requestParameters['updateAuthPasswordRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesUpdateAuthPasswordRequest',
-                'Required parameter "typesUpdateAuthPasswordRequest" was null or undefined when calling authPasswordPatch().'
+                'updateAuthPasswordRequest',
+                'Required parameter "updateAuthPasswordRequest" was null or undefined when calling authPasswordPatch().'
             );
         }
 
@@ -329,7 +329,7 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesUpdateAuthPasswordRequestToJSON(requestParameters['typesUpdateAuthPasswordRequest']),
+            body: UpdateAuthPasswordRequestToJSON(requestParameters['updateAuthPasswordRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -347,11 +347,11 @@ export class AuthApi extends runtime.BaseAPI {
      * ユーザー名/メールアドレスとパスワードでサインインします。
      * サインイン
      */
-    async authPostRaw(requestParameters: AuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthResponse>> {
-        if (requestParameters['typesSignInRequest'] == null) {
+    async authPostRaw(requestParameters: AuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthResponse>> {
+        if (requestParameters['signInRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesSignInRequest',
-                'Required parameter "typesSignInRequest" was null or undefined when calling authPost().'
+                'signInRequest',
+                'Required parameter "signInRequest" was null or undefined when calling authPost().'
             );
         }
 
@@ -366,17 +366,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesSignInRequestToJSON(requestParameters['typesSignInRequest']),
+            body: SignInRequestToJSON(requestParameters['signInRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthResponseFromJSON(jsonValue));
     }
 
     /**
      * ユーザー名/メールアドレスとパスワードでサインインします。
      * サインイン
      */
-    async authPost(requestParameters: AuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthResponse> {
+    async authPost(requestParameters: AuthPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthResponse> {
         const response = await this.authPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -385,11 +385,11 @@ export class AuthApi extends runtime.BaseAPI {
      * リフレッシュトークンを使用してアクセストークンを更新します。
      * トークンリフレッシュ
      */
-    async authRefreshTokenPostRaw(requestParameters: AuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesAuthResponse>> {
-        if (requestParameters['typesRefreshAuthTokenRequest'] == null) {
+    async authRefreshTokenPostRaw(requestParameters: AuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthResponse>> {
+        if (requestParameters['refreshAuthTokenRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesRefreshAuthTokenRequest',
-                'Required parameter "typesRefreshAuthTokenRequest" was null or undefined when calling authRefreshTokenPost().'
+                'refreshAuthTokenRequest',
+                'Required parameter "refreshAuthTokenRequest" was null or undefined when calling authRefreshTokenPost().'
             );
         }
 
@@ -404,17 +404,17 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesRefreshAuthTokenRequestToJSON(requestParameters['typesRefreshAuthTokenRequest']),
+            body: RefreshAuthTokenRequestToJSON(requestParameters['refreshAuthTokenRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesAuthResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthResponseFromJSON(jsonValue));
     }
 
     /**
      * リフレッシュトークンを使用してアクセストークンを更新します。
      * トークンリフレッシュ
      */
-    async authRefreshTokenPost(requestParameters: AuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesAuthResponse> {
+    async authRefreshTokenPost(requestParameters: AuthRefreshTokenPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthResponse> {
         const response = await this.authRefreshTokenPostRaw(requestParameters, initOverrides);
         return await response.value();
     }

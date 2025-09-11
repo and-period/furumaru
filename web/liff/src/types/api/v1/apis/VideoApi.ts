@@ -15,17 +15,17 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesVideoResponse,
-  TypesVideosResponse,
-  UtilErrorResponse,
+  ErrorResponse,
+  VideoResponse,
+  VideosResponse,
 } from '../models/index';
 import {
-    TypesVideoResponseFromJSON,
-    TypesVideoResponseToJSON,
-    TypesVideosResponseFromJSON,
-    TypesVideosResponseToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    VideoResponseFromJSON,
+    VideoResponseToJSON,
+    VideosResponseFromJSON,
+    VideosResponseToJSON,
 } from '../models/index';
 
 export interface VideosGetRequest {
@@ -49,7 +49,7 @@ export class VideoApi extends runtime.BaseAPI {
      * 動画の一覧を取得します。
      * 動画一覧取得
      */
-    async videosGetRaw(requestParameters: VideosGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesVideosResponse>> {
+    async videosGetRaw(requestParameters: VideosGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VideosResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -81,14 +81,14 @@ export class VideoApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesVideosResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => VideosResponseFromJSON(jsonValue));
     }
 
     /**
      * 動画の一覧を取得します。
      * 動画一覧取得
      */
-    async videosGet(requestParameters: VideosGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesVideosResponse> {
+    async videosGet(requestParameters: VideosGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VideosResponse> {
         const response = await this.videosGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -97,7 +97,7 @@ export class VideoApi extends runtime.BaseAPI {
      * 指定されたIDの動画詳細を取得します。
      * 動画詳細取得
      */
-    async videosVideoIdGetRaw(requestParameters: VideosVideoIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesVideoResponse>> {
+    async videosVideoIdGetRaw(requestParameters: VideosVideoIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VideoResponse>> {
         if (requestParameters['videoId'] == null) {
             throw new runtime.RequiredError(
                 'videoId',
@@ -116,14 +116,14 @@ export class VideoApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesVideoResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => VideoResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定されたIDの動画詳細を取得します。
      * 動画詳細取得
      */
-    async videosVideoIdGet(requestParameters: VideosVideoIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesVideoResponse> {
+    async videosVideoIdGet(requestParameters: VideosVideoIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VideoResponse> {
         const response = await this.videosVideoIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

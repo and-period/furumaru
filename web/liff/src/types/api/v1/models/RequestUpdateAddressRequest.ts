@@ -24,7 +24,7 @@ export interface RequestUpdateAddressRequest {
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    addressLine1?: string;
+    addressLine1: string;
     /**
      * ビル名・号室など
      * @type {string}
@@ -36,19 +36,19 @@ export interface RequestUpdateAddressRequest {
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    city?: string;
+    city: string;
     /**
      * 名
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    firstname?: string;
+    firstname: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    firstnameKana?: string;
+    firstnameKana: string;
     /**
      * デフォルト設定フラグ
      * @type {boolean}
@@ -60,37 +60,46 @@ export interface RequestUpdateAddressRequest {
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    lastname?: string;
+    lastname: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    lastnameKana?: string;
+    lastnameKana: string;
     /**
      * 電話番号
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    phoneNumber?: string;
+    phoneNumber: string;
     /**
      * 郵便番号
      * @type {string}
      * @memberof RequestUpdateAddressRequest
      */
-    postalCode?: string;
+    postalCode: string;
     /**
      * 都道府県
      * @type {number}
      * @memberof RequestUpdateAddressRequest
      */
-    prefectureCode?: number;
+    prefectureCode: number;
 }
 
 /**
  * Check if a given object implements the RequestUpdateAddressRequest interface.
  */
 export function instanceOfRequestUpdateAddressRequest(value: object): value is RequestUpdateAddressRequest {
+    if (!('addressLine1' in value) || value['addressLine1'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if (!('postalCode' in value) || value['postalCode'] === undefined) return false;
+    if (!('prefectureCode' in value) || value['prefectureCode'] === undefined) return false;
     return true;
 }
 
@@ -104,17 +113,17 @@ export function RequestUpdateAddressRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'addressLine1': json['addressLine1'] == null ? undefined : json['addressLine1'],
+        'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'] == null ? undefined : json['addressLine2'],
-        'city': json['city'] == null ? undefined : json['city'],
-        'firstname': json['firstname'] == null ? undefined : json['firstname'],
-        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
+        'city': json['city'],
+        'firstname': json['firstname'],
+        'firstnameKana': json['firstnameKana'],
         'isDefault': json['isDefault'] == null ? undefined : json['isDefault'],
-        'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
-        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
-        'postalCode': json['postalCode'] == null ? undefined : json['postalCode'],
-        'prefectureCode': json['prefectureCode'] == null ? undefined : json['prefectureCode'],
+        'lastname': json['lastname'],
+        'lastnameKana': json['lastnameKana'],
+        'phoneNumber': json['phoneNumber'],
+        'postalCode': json['postalCode'],
+        'prefectureCode': json['prefectureCode'],
     };
 }
 

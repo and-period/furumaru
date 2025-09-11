@@ -24,13 +24,14 @@ export interface RequestUpdateAuthUserAccountIDRequest {
      * @type {string}
      * @memberof RequestUpdateAuthUserAccountIDRequest
      */
-    accountId?: string;
+    accountId: string;
 }
 
 /**
  * Check if a given object implements the RequestUpdateAuthUserAccountIDRequest interface.
  */
 export function instanceOfRequestUpdateAuthUserAccountIDRequest(value: object): value is RequestUpdateAuthUserAccountIDRequest {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RequestUpdateAuthUserAccountIDRequestFromJSONTyped(json: any, ig
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
+        'accountId': json['accountId'],
     };
 }
 

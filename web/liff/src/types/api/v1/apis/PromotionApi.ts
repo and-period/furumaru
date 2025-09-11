@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesPromotionResponse,
-  UtilErrorResponse,
+  ErrorResponse,
+  PromotionResponse,
 } from '../models/index';
 import {
-    TypesPromotionResponseFromJSON,
-    TypesPromotionResponseToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    PromotionResponseFromJSON,
+    PromotionResponseToJSON,
 } from '../models/index';
 
 export interface PromotionsCodeGetRequest {
@@ -39,7 +39,7 @@ export class PromotionApi extends runtime.BaseAPI {
      * プロモーションコードから割引情報を取得します。
      * プロモーション詳細取得
      */
-    async promotionsCodeGetRaw(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesPromotionResponse>> {
+    async promotionsCodeGetRaw(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromotionResponse>> {
         if (requestParameters['code'] == null) {
             throw new runtime.RequiredError(
                 'code',
@@ -62,14 +62,14 @@ export class PromotionApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesPromotionResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PromotionResponseFromJSON(jsonValue));
     }
 
     /**
      * プロモーションコードから割引情報を取得します。
      * プロモーション詳細取得
      */
-    async promotionsCodeGet(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesPromotionResponse> {
+    async promotionsCodeGet(requestParameters: PromotionsCodeGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromotionResponse> {
         const response = await this.promotionsCodeGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

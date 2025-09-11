@@ -31,7 +31,7 @@ export interface RequestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestCheckoutProductRequest
      */
-    billingAddressId?: string;
+    billingAddressId: string;
     /**
      * 箱の通番（箱単位で購入する場合）
      * @type {number}
@@ -43,13 +43,13 @@ export interface RequestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestCheckoutProductRequest
      */
-    callbackUrl?: string;
+    callbackUrl: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof RequestCheckoutProductRequest
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 
      * @type {RequestCheckoutCreditCard}
@@ -61,7 +61,7 @@ export interface RequestCheckoutProductRequest {
      * @type {number}
      * @memberof RequestCheckoutProductRequest
      */
-    paymentMethod?: number;
+    paymentMethod: number;
     /**
      * プロモーションコード
      * @type {string}
@@ -73,13 +73,13 @@ export interface RequestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestCheckoutProductRequest
      */
-    requestId?: string;
+    requestId: string;
     /**
      * 配送先住所ID
      * @type {string}
      * @memberof RequestCheckoutProductRequest
      */
-    shippingAddressId?: string;
+    shippingAddressId: string;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
@@ -92,6 +92,12 @@ export interface RequestCheckoutProductRequest {
  * Check if a given object implements the RequestCheckoutProductRequest interface.
  */
 export function instanceOfRequestCheckoutProductRequest(value: object): value is RequestCheckoutProductRequest {
+    if (!('billingAddressId' in value) || value['billingAddressId'] === undefined) return false;
+    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('shippingAddressId' in value) || value['shippingAddressId'] === undefined) return false;
     return true;
 }
 
@@ -105,15 +111,15 @@ export function RequestCheckoutProductRequestFromJSONTyped(json: any, ignoreDisc
     }
     return {
         
-        'billingAddressId': json['billingAddressId'] == null ? undefined : json['billingAddressId'],
+        'billingAddressId': json['billingAddressId'],
         'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
-        'callbackUrl': json['callbackUrl'] == null ? undefined : json['callbackUrl'],
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
+        'callbackUrl': json['callbackUrl'],
+        'coordinatorId': json['coordinatorId'],
         'creditCard': json['creditCard'] == null ? undefined : RequestCheckoutCreditCardFromJSON(json['creditCard']),
-        'paymentMethod': json['paymentMethod'] == null ? undefined : json['paymentMethod'],
+        'paymentMethod': json['paymentMethod'],
         'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
-        'requestId': json['requestId'] == null ? undefined : json['requestId'],
-        'shippingAddressId': json['shippingAddressId'] == null ? undefined : json['shippingAddressId'],
+        'requestId': json['requestId'],
+        'shippingAddressId': json['shippingAddressId'],
         'total': json['total'] == null ? undefined : json['total'],
     };
 }

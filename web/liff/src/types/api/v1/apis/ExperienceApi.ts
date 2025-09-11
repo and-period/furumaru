@@ -15,17 +15,17 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesExperienceResponse,
-  TypesExperiencesResponse,
-  UtilErrorResponse,
+  ErrorResponse,
+  ExperienceResponse,
+  ExperiencesResponse,
 } from '../models/index';
 import {
-    TypesExperienceResponseFromJSON,
-    TypesExperienceResponseToJSON,
-    TypesExperiencesResponseFromJSON,
-    TypesExperiencesResponseToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    ExperienceResponseFromJSON,
+    ExperienceResponseToJSON,
+    ExperiencesResponseFromJSON,
+    ExperiencesResponseToJSON,
 } from '../models/index';
 
 export interface ExperiencesExperienceIdGetRequest {
@@ -58,7 +58,7 @@ export class ExperienceApi extends runtime.BaseAPI {
      * 指定されたIDの体験詳細を取得します。
      * 体験詳細取得
      */
-    async experiencesExperienceIdGetRaw(requestParameters: ExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperienceResponse>> {
+    async experiencesExperienceIdGetRaw(requestParameters: ExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExperienceResponse>> {
         if (requestParameters['experienceId'] == null) {
             throw new runtime.RequiredError(
                 'experienceId',
@@ -77,14 +77,14 @@ export class ExperienceApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperienceResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ExperienceResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定されたIDの体験詳細を取得します。
      * 体験詳細取得
      */
-    async experiencesExperienceIdGet(requestParameters: ExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperienceResponse> {
+    async experiencesExperienceIdGet(requestParameters: ExperiencesExperienceIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExperienceResponse> {
         const response = await this.experiencesExperienceIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -93,7 +93,7 @@ export class ExperienceApi extends runtime.BaseAPI {
      * 指定された位置情報周辺の体験一覧を取得します。
      * 位置情報による体験一覧取得
      */
-    async experiencesGeolocationGetRaw(requestParameters: ExperiencesGeolocationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperiencesResponse>> {
+    async experiencesGeolocationGetRaw(requestParameters: ExperiencesGeolocationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExperiencesResponse>> {
         if (requestParameters['latitude'] == null) {
             throw new runtime.RequiredError(
                 'latitude',
@@ -139,14 +139,14 @@ export class ExperienceApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperiencesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ExperiencesResponseFromJSON(jsonValue));
     }
 
     /**
      * 指定された位置情報周辺の体験一覧を取得します。
      * 位置情報による体験一覧取得
      */
-    async experiencesGeolocationGet(requestParameters: ExperiencesGeolocationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperiencesResponse> {
+    async experiencesGeolocationGet(requestParameters: ExperiencesGeolocationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExperiencesResponse> {
         const response = await this.experiencesGeolocationGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -155,7 +155,7 @@ export class ExperienceApi extends runtime.BaseAPI {
      * 体験の一覧を取得します。
      * 体験一覧取得
      */
-    async experiencesGetRaw(requestParameters: ExperiencesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TypesExperiencesResponse>> {
+    async experiencesGetRaw(requestParameters: ExperiencesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExperiencesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -191,14 +191,14 @@ export class ExperienceApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TypesExperiencesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ExperiencesResponseFromJSON(jsonValue));
     }
 
     /**
      * 体験の一覧を取得します。
      * 体験一覧取得
      */
-    async experiencesGet(requestParameters: ExperiencesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TypesExperiencesResponse> {
+    async experiencesGet(requestParameters: ExperiencesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExperiencesResponse> {
         const response = await this.experiencesGetRaw(requestParameters, initOverrides);
         return await response.value();
     }

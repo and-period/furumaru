@@ -15,19 +15,19 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesCreateGuestLiveCommentRequest,
-  UtilErrorResponse,
+  CreateGuestLiveCommentRequest,
+  ErrorResponse,
 } from '../models/index';
 import {
-    TypesCreateGuestLiveCommentRequestFromJSON,
-    TypesCreateGuestLiveCommentRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    CreateGuestLiveCommentRequestFromJSON,
+    CreateGuestLiveCommentRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
 } from '../models/index';
 
 export interface GuestsSchedulesScheduleIdCommentsPostRequest {
     scheduleId: string;
-    typesCreateGuestLiveCommentRequest: TypesCreateGuestLiveCommentRequest;
+    createGuestLiveCommentRequest: CreateGuestLiveCommentRequest;
 }
 
 /**
@@ -47,10 +47,10 @@ export class GuestLiveCommentApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['typesCreateGuestLiveCommentRequest'] == null) {
+        if (requestParameters['createGuestLiveCommentRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateGuestLiveCommentRequest',
-                'Required parameter "typesCreateGuestLiveCommentRequest" was null or undefined when calling guestsSchedulesScheduleIdCommentsPost().'
+                'createGuestLiveCommentRequest',
+                'Required parameter "createGuestLiveCommentRequest" was null or undefined when calling guestsSchedulesScheduleIdCommentsPost().'
             );
         }
 
@@ -65,7 +65,7 @@ export class GuestLiveCommentApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateGuestLiveCommentRequestToJSON(requestParameters['typesCreateGuestLiveCommentRequest']),
+            body: CreateGuestLiveCommentRequestToJSON(requestParameters['createGuestLiveCommentRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

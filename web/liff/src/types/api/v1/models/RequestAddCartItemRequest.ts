@@ -24,7 +24,7 @@ export interface RequestAddCartItemRequest {
      * @type {string}
      * @memberof RequestAddCartItemRequest
      */
-    productId?: string;
+    productId: string;
     /**
      * 数量
      * @type {number}
@@ -37,6 +37,7 @@ export interface RequestAddCartItemRequest {
  * Check if a given object implements the RequestAddCartItemRequest interface.
  */
 export function instanceOfRequestAddCartItemRequest(value: object): value is RequestAddCartItemRequest {
+    if (!('productId' in value) || value['productId'] === undefined) return false;
     return true;
 }
 
@@ -50,7 +51,7 @@ export function RequestAddCartItemRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'productId': json['productId'] == null ? undefined : json['productId'],
+        'productId': json['productId'],
         'quantity': json['quantity'] == null ? undefined : json['quantity'],
     };
 }

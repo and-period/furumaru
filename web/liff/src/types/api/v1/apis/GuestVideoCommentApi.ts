@@ -15,19 +15,19 @@
 
 import * as runtime from '../runtime';
 import type {
-  TypesCreateGuestVideoCommentRequest,
-  UtilErrorResponse,
+  CreateGuestVideoCommentRequest,
+  ErrorResponse,
 } from '../models/index';
 import {
-    TypesCreateGuestVideoCommentRequestFromJSON,
-    TypesCreateGuestVideoCommentRequestToJSON,
-    UtilErrorResponseFromJSON,
-    UtilErrorResponseToJSON,
+    CreateGuestVideoCommentRequestFromJSON,
+    CreateGuestVideoCommentRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
 } from '../models/index';
 
 export interface GuestsVideosVideoIdCommentsPostRequest {
     videoId: string;
-    typesCreateGuestVideoCommentRequest: TypesCreateGuestVideoCommentRequest;
+    createGuestVideoCommentRequest: CreateGuestVideoCommentRequest;
 }
 
 /**
@@ -47,10 +47,10 @@ export class GuestVideoCommentApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['typesCreateGuestVideoCommentRequest'] == null) {
+        if (requestParameters['createGuestVideoCommentRequest'] == null) {
             throw new runtime.RequiredError(
-                'typesCreateGuestVideoCommentRequest',
-                'Required parameter "typesCreateGuestVideoCommentRequest" was null or undefined when calling guestsVideosVideoIdCommentsPost().'
+                'createGuestVideoCommentRequest',
+                'Required parameter "createGuestVideoCommentRequest" was null or undefined when calling guestsVideosVideoIdCommentsPost().'
             );
         }
 
@@ -65,7 +65,7 @@ export class GuestVideoCommentApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TypesCreateGuestVideoCommentRequestToJSON(requestParameters['typesCreateGuestVideoCommentRequest']),
+            body: CreateGuestVideoCommentRequestToJSON(requestParameters['createGuestVideoCommentRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

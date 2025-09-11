@@ -26,7 +26,7 @@ export interface OrderPayment {
      */
     discount?: number;
     /**
-     * 決済手段種別
+     * 支払い方法
      * @type {number}
      * @memberof OrderPayment
      */
@@ -50,7 +50,7 @@ export interface OrderPayment {
      */
     shippingFee?: number;
     /**
-     * 支払い状況
+     * 注文ステータス
      * @type {number}
      * @memberof OrderPayment
      */
