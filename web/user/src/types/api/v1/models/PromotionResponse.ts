@@ -18,6 +18,7 @@ import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
+    PromotionToJSONTyped,
 } from './Promotion';
 
 /**
@@ -31,13 +32,14 @@ export interface PromotionResponse {
      * @type {Promotion}
      * @memberof PromotionResponse
      */
-    promotion?: Promotion;
+    promotion: Promotion;
 }
 
 /**
  * Check if a given object implements the PromotionResponse interface.
  */
 export function instanceOfPromotionResponse(value: object): value is PromotionResponse {
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
     return true;
 }
 
@@ -51,14 +53,19 @@ export function PromotionResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'promotion': json['promotion'] == null ? undefined : PromotionFromJSON(json['promotion']),
+        'promotion': PromotionFromJSON(json['promotion']),
     };
 }
 
-export function PromotionResponseToJSON(value?: PromotionResponse | null): any {
+export function PromotionResponseToJSON(json: any): PromotionResponse {
+    return PromotionResponseToJSONTyped(json, false);
+}
+
+export function PromotionResponseToJSONTyped(value?: PromotionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'promotion': PromotionToJSON(value['promotion']),

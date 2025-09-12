@@ -57,10 +57,15 @@ export function SignInRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
     };
 }
 
-export function SignInRequestToJSON(value?: SignInRequest | null): any {
+export function SignInRequestToJSON(json: any): SignInRequest {
+    return SignInRequestToJSONTyped(json, false);
+}
+
+export function SignInRequestToJSONTyped(value?: SignInRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'password': value['password'],

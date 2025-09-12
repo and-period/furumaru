@@ -24,25 +24,28 @@ export interface ErrorResponse {
      * @type {string}
      * @memberof ErrorResponse
      */
-    detail?: string;
+    detail: string;
     /**
      * エラー概要
      * @type {string}
      * @memberof ErrorResponse
      */
-    message?: string;
+    message: string;
     /**
      * ステータスコード
      * @type {number}
      * @memberof ErrorResponse
      */
-    status?: number;
+    status: number;
 }
 
 /**
  * Check if a given object implements the ErrorResponse interface.
  */
 export function instanceOfErrorResponse(value: object): value is ErrorResponse {
+    if (!('detail' in value) || value['detail'] === undefined) return false;
+    if (!('message' in value) || value['message'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -56,16 +59,21 @@ export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'detail': json['detail'] == null ? undefined : json['detail'],
-        'message': json['message'] == null ? undefined : json['message'],
-        'status': json['status'] == null ? undefined : json['status'],
+        'detail': json['detail'],
+        'message': json['message'],
+        'status': json['status'],
     };
 }
 
-export function ErrorResponseToJSON(value?: ErrorResponse | null): any {
+export function ErrorResponseToJSON(json: any): ErrorResponse {
+    return ErrorResponseToJSONTyped(json, false);
+}
+
+export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'detail': value['detail'],

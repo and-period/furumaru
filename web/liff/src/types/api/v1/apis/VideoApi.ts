@@ -74,8 +74,11 @@ export class VideoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/videos`;
+
         const response = await this.request({
-            path: `/videos`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -109,8 +112,12 @@ export class VideoApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/videos/{videoId}`;
+        urlPath = urlPath.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId'])));
+
         const response = await this.request({
-            path: `/videos/{videoId}`.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

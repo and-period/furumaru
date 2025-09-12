@@ -24,21 +24,19 @@ export interface RequestVerifyAuthUserRequest {
      * @type {string}
      * @memberof RequestVerifyAuthUserRequest
      */
-    id: string;
+    id?: string;
     /**
      * 検証コード
      * @type {string}
      * @memberof RequestVerifyAuthUserRequest
      */
-    verifyCode: string;
+    verifyCode?: string;
 }
 
 /**
  * Check if a given object implements the RequestVerifyAuthUserRequest interface.
  */
 export function instanceOfRequestVerifyAuthUserRequest(value: object): value is RequestVerifyAuthUserRequest {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
     return true;
 }
 
@@ -52,8 +50,8 @@ export function RequestVerifyAuthUserRequestFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'id': json['id'],
-        'verifyCode': json['verifyCode'],
+        'id': json['id'] == null ? undefined : json['id'],
+        'verifyCode': json['verifyCode'] == null ? undefined : json['verifyCode'],
     };
 }
 

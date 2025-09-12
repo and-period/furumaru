@@ -18,12 +18,14 @@ import {
     VideoSummaryFromJSON,
     VideoSummaryFromJSONTyped,
     VideoSummaryToJSON,
+    VideoSummaryToJSONTyped,
 } from './VideoSummary';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -37,25 +39,28 @@ export interface VideosResponse {
      * @type {Array<Coordinator>}
      * @memberof VideosResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * オンデマンド動画合計数
      * @type {number}
      * @memberof VideosResponse
      */
-    total?: number;
+    total: number;
     /**
      * オンデマンド動画一覧
      * @type {Array<VideoSummary>}
      * @memberof VideosResponse
      */
-    videos?: Array<VideoSummary>;
+    videos: Array<VideoSummary>;
 }
 
 /**
  * Check if a given object implements the VideosResponse interface.
  */
 export function instanceOfVideosResponse(value: object): value is VideosResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('videos' in value) || value['videos'] === undefined) return false;
     return true;
 }
 
@@ -69,21 +74,26 @@ export function VideosResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
-        'videos': json['videos'] == null ? undefined : ((json['videos'] as Array<any>).map(VideoSummaryFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'total': json['total'],
+        'videos': ((json['videos'] as Array<any>).map(VideoSummaryFromJSON)),
     };
 }
 
-export function VideosResponseToJSON(value?: VideosResponse | null): any {
+export function VideosResponseToJSON(json: any): VideosResponse {
+    return VideosResponseToJSONTyped(json, false);
+}
+
+export function VideosResponseToJSONTyped(value?: VideosResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
         'total': value['total'],
-        'videos': value['videos'] == null ? undefined : ((value['videos'] as Array<any>).map(VideoSummaryToJSON)),
+        'videos': ((value['videos'] as Array<any>).map(VideoSummaryToJSON)),
     };
 }
 

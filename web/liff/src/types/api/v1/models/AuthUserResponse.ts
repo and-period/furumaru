@@ -24,67 +24,77 @@ export interface AuthUserResponse {
      * @type {string}
      * @memberof AuthUserResponse
      */
-    accountId?: string;
+    accountId: string;
     /**
      * メールアドレス
      * @type {string}
      * @memberof AuthUserResponse
      */
-    email?: string;
+    email: string;
     /**
      * 名
      * @type {string}
      * @memberof AuthUserResponse
      */
-    firstname?: string;
+    firstname: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof AuthUserResponse
      */
-    firstnameKana?: string;
+    firstnameKana: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof AuthUserResponse
      */
-    id?: string;
+    id: string;
     /**
      * 姓
      * @type {string}
      * @memberof AuthUserResponse
      */
-    lastname?: string;
+    lastname: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof AuthUserResponse
      */
-    lastnameKana?: string;
+    lastnameKana: string;
     /**
      * 通知の有効化設定
      * @type {boolean}
      * @memberof AuthUserResponse
      */
-    notificationEnabled?: boolean;
+    notificationEnabled: boolean;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof AuthUserResponse
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * ユーザー名 (表示名)
      * @type {string}
      * @memberof AuthUserResponse
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the AuthUserResponse interface.
  */
 export function instanceOfAuthUserResponse(value: object): value is AuthUserResponse {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('notificationEnabled' in value) || value['notificationEnabled'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -98,23 +108,28 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
-        'email': json['email'] == null ? undefined : json['email'],
-        'firstname': json['firstname'] == null ? undefined : json['firstname'],
-        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
-        'notificationEnabled': json['notificationEnabled'] == null ? undefined : json['notificationEnabled'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'accountId': json['accountId'],
+        'email': json['email'],
+        'firstname': json['firstname'],
+        'firstnameKana': json['firstnameKana'],
+        'id': json['id'],
+        'lastname': json['lastname'],
+        'lastnameKana': json['lastnameKana'],
+        'notificationEnabled': json['notificationEnabled'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'username': json['username'],
     };
 }
 
-export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
+export function AuthUserResponseToJSON(json: any): AuthUserResponse {
+    return AuthUserResponseToJSONTyped(json, false);
+}
+
+export function AuthUserResponseToJSONTyped(value?: AuthUserResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

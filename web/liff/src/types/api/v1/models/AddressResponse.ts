@@ -18,6 +18,7 @@ import {
     AddressFromJSON,
     AddressFromJSONTyped,
     AddressToJSON,
+    AddressToJSONTyped,
 } from './Address';
 
 /**
@@ -31,13 +32,14 @@ export interface AddressResponse {
      * @type {Address}
      * @memberof AddressResponse
      */
-    address?: Address;
+    address: Address;
 }
 
 /**
  * Check if a given object implements the AddressResponse interface.
  */
 export function instanceOfAddressResponse(value: object): value is AddressResponse {
+    if (!('address' in value) || value['address'] === undefined) return false;
     return true;
 }
 
@@ -51,14 +53,19 @@ export function AddressResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'address': json['address'] == null ? undefined : AddressFromJSON(json['address']),
+        'address': AddressFromJSON(json['address']),
     };
 }
 
-export function AddressResponseToJSON(value?: AddressResponse | null): any {
+export function AddressResponseToJSON(json: any): AddressResponse {
+    return AddressResponseToJSONTyped(json, false);
+}
+
+export function AddressResponseToJSONTyped(value?: AddressResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'address': AddressToJSON(value['address']),

@@ -18,30 +18,35 @@ import {
     OrderFromJSON,
     OrderFromJSONTyped,
     OrderToJSON,
+    OrderToJSONTyped,
 } from './Order';
 import type { Experience } from './Experience';
 import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
+    PromotionToJSONTyped,
 } from './Promotion';
 
 /**
@@ -55,37 +60,42 @@ export interface OrderResponse {
      * @type {Coordinator}
      * @memberof OrderResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * 
      * @type {Experience}
      * @memberof OrderResponse
      */
-    experience?: Experience;
+    experience: Experience;
     /**
      * 
      * @type {Order}
      * @memberof OrderResponse
      */
-    order?: Order;
+    order: Order;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof OrderResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 
      * @type {Promotion}
      * @memberof OrderResponse
      */
-    promotion?: Promotion;
+    promotion: Promotion;
 }
 
 /**
  * Check if a given object implements the OrderResponse interface.
  */
 export function instanceOfOrderResponse(value: object): value is OrderResponse {
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('experience' in value) || value['experience'] === undefined) return false;
+    if (!('order' in value) || value['order'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
     return true;
 }
 
@@ -99,24 +109,29 @@ export function OrderResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'experience': json['experience'] == null ? undefined : ExperienceFromJSON(json['experience']),
-        'order': json['order'] == null ? undefined : OrderFromJSON(json['order']),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'promotion': json['promotion'] == null ? undefined : PromotionFromJSON(json['promotion']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'experience': ExperienceFromJSON(json['experience']),
+        'order': OrderFromJSON(json['order']),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'promotion': PromotionFromJSON(json['promotion']),
     };
 }
 
-export function OrderResponseToJSON(value?: OrderResponse | null): any {
+export function OrderResponseToJSON(json: any): OrderResponse {
+    return OrderResponseToJSONTyped(json, false);
+}
+
+export function OrderResponseToJSONTyped(value?: OrderResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinator': CoordinatorToJSON(value['coordinator']),
         'experience': ExperienceToJSON(value['experience']),
         'order': OrderToJSON(value['order']),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'promotion': PromotionToJSON(value['promotion']),
     };
 }

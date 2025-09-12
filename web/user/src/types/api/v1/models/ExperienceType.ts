@@ -24,19 +24,21 @@ export interface ExperienceType {
      * @type {string}
      * @memberof ExperienceType
      */
-    id?: string;
+    id: string;
     /**
      * 体験種別名
      * @type {string}
      * @memberof ExperienceType
      */
-    name?: string;
+    name: string;
 }
 
 /**
  * Check if a given object implements the ExperienceType interface.
  */
 export function instanceOfExperienceType(value: object): value is ExperienceType {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function ExperienceTypeFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function ExperienceTypeToJSON(value?: ExperienceType | null): any {
+export function ExperienceTypeToJSON(json: any): ExperienceType {
+    return ExperienceTypeToJSONTyped(json, false);
+}
+
+export function ExperienceTypeToJSONTyped(value?: ExperienceType | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

@@ -74,8 +74,12 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/users/me`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/users/me`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -126,8 +130,12 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/users/me`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/users/me`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -170,8 +178,12 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/facilities/{facilityId}/users`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/users`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

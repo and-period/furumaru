@@ -37,7 +37,7 @@ export interface RequestGuestCheckoutProductRequest {
      * @type {RequestGuestCheckoutAddress}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    billingAddress: RequestGuestCheckoutAddress;
+    billingAddress?: RequestGuestCheckoutAddress;
     /**
      * 箱の通番（箱単位で購入する場合）
      * @type {number}
@@ -49,13 +49,13 @@ export interface RequestGuestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    callbackUrl: string;
+    callbackUrl?: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    coordinatorId: string;
+    coordinatorId?: string;
     /**
      * 
      * @type {RequestCheckoutCreditCard}
@@ -67,7 +67,7 @@ export interface RequestGuestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    email: string;
+    email?: string;
     /**
      * 配送先住所を請求先住所と同一にする
      * @type {boolean}
@@ -79,7 +79,7 @@ export interface RequestGuestCheckoutProductRequest {
      * @type {number}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    paymentMethod: number;
+    paymentMethod?: number;
     /**
      * プロモーションコード
      * @type {string}
@@ -91,7 +91,7 @@ export interface RequestGuestCheckoutProductRequest {
      * @type {string}
      * @memberof RequestGuestCheckoutProductRequest
      */
-    requestId: string;
+    requestId?: string;
     /**
      * 
      * @type {RequestGuestCheckoutAddress}
@@ -110,12 +110,6 @@ export interface RequestGuestCheckoutProductRequest {
  * Check if a given object implements the RequestGuestCheckoutProductRequest interface.
  */
 export function instanceOfRequestGuestCheckoutProductRequest(value: object): value is RequestGuestCheckoutProductRequest {
-    if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
-    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
-    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
-    if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
-    if (!('requestId' in value) || value['requestId'] === undefined) return false;
     return true;
 }
 
@@ -129,16 +123,16 @@ export function RequestGuestCheckoutProductRequestFromJSONTyped(json: any, ignor
     }
     return {
         
-        'billingAddress': RequestGuestCheckoutAddressFromJSON(json['billingAddress']),
+        'billingAddress': json['billingAddress'] == null ? undefined : RequestGuestCheckoutAddressFromJSON(json['billingAddress']),
         'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
-        'callbackUrl': json['callbackUrl'],
-        'coordinatorId': json['coordinatorId'],
+        'callbackUrl': json['callbackUrl'] == null ? undefined : json['callbackUrl'],
+        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
         'creditCard': json['creditCard'] == null ? undefined : RequestCheckoutCreditCardFromJSON(json['creditCard']),
-        'email': json['email'],
+        'email': json['email'] == null ? undefined : json['email'],
         'isSameAddress': json['isSameAddress'] == null ? undefined : json['isSameAddress'],
-        'paymentMethod': json['paymentMethod'],
+        'paymentMethod': json['paymentMethod'] == null ? undefined : json['paymentMethod'],
         'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
-        'requestId': json['requestId'],
+        'requestId': json['requestId'] == null ? undefined : json['requestId'],
         'shippingAddress': json['shippingAddress'] == null ? undefined : RequestGuestCheckoutAddressFromJSON(json['shippingAddress']),
         'total': json['total'] == null ? undefined : json['total'],
     };

@@ -30,7 +30,7 @@ export interface CreateExperienceReviewRequest {
      * @type {number}
      * @memberof CreateExperienceReviewRequest
      */
-    rate?: number;
+    rate: number;
     /**
      * タイトル
      * @type {string}
@@ -44,6 +44,7 @@ export interface CreateExperienceReviewRequest {
  */
 export function instanceOfCreateExperienceReviewRequest(value: object): value is CreateExperienceReviewRequest {
     if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
@@ -59,15 +60,20 @@ export function CreateExperienceReviewRequestFromJSONTyped(json: any, ignoreDisc
     return {
         
         'comment': json['comment'],
-        'rate': json['rate'] == null ? undefined : json['rate'],
+        'rate': json['rate'],
         'title': json['title'],
     };
 }
 
-export function CreateExperienceReviewRequestToJSON(value?: CreateExperienceReviewRequest | null): any {
+export function CreateExperienceReviewRequestToJSON(json: any): CreateExperienceReviewRequest {
+    return CreateExperienceReviewRequestToJSONTyped(json, false);
+}
+
+export function CreateExperienceReviewRequestToJSONTyped(value?: CreateExperienceReviewRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],

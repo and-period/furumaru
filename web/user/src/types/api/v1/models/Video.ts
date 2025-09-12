@@ -24,61 +24,70 @@ export interface Video {
      * @type {string}
      * @memberof Video
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 説明
      * @type {string}
      * @memberof Video
      */
-    description?: string;
+    description: string;
     /**
      * 体験ID一覧
      * @type {Array<string>}
      * @memberof Video
      */
-    experienceIds?: Array<string>;
+    experienceIds: Array<string>;
     /**
      * オンデマンド動画ID
      * @type {string}
      * @memberof Video
      */
-    id?: string;
+    id: string;
     /**
      * 商品ID一覧
      * @type {Array<string>}
      * @memberof Video
      */
-    productIds?: Array<string>;
+    productIds: Array<string>;
     /**
      * 公開日時
      * @type {number}
      * @memberof Video
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Video
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof Video
      */
-    title?: string;
+    title: string;
     /**
      * 動画URL
      * @type {string}
      * @memberof Video
      */
-    videoUrl?: string;
+    videoUrl: string;
 }
 
 /**
  * Check if a given object implements the Video interface.
  */
 export function instanceOfVideo(value: object): value is Video {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('experienceIds' in value) || value['experienceIds'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('productIds' in value) || value['productIds'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('videoUrl' in value) || value['videoUrl'] === undefined) return false;
     return true;
 }
 
@@ -92,22 +101,27 @@ export function VideoFromJSONTyped(json: any, ignoreDiscriminator: boolean): Vid
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'experienceIds': json['experienceIds'] == null ? undefined : json['experienceIds'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'productIds': json['productIds'] == null ? undefined : json['productIds'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'videoUrl': json['videoUrl'] == null ? undefined : json['videoUrl'],
+        'coordinatorId': json['coordinatorId'],
+        'description': json['description'],
+        'experienceIds': json['experienceIds'],
+        'id': json['id'],
+        'productIds': json['productIds'],
+        'publishedAt': json['publishedAt'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
+        'videoUrl': json['videoUrl'],
     };
 }
 
-export function VideoToJSON(value?: Video | null): any {
+export function VideoToJSON(json: any): Video {
+    return VideoToJSONTyped(json, false);
+}
+
+export function VideoToJSONTyped(value?: Video | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],

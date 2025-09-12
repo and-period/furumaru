@@ -58,8 +58,12 @@ export class CoordinatorApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/coordinators/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
         const response = await this.request({
-            path: `/coordinators/{coordinatorId}`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -94,8 +98,11 @@ export class CoordinatorApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/coordinators`;
+
         const response = await this.request({
-            path: `/coordinators`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

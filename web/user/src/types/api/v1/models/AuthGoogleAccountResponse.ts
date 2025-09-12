@@ -24,13 +24,14 @@ export interface AuthGoogleAccountResponse {
      * @type {string}
      * @memberof AuthGoogleAccountResponse
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the AuthGoogleAccountResponse interface.
  */
 export function instanceOfAuthGoogleAccountResponse(value: object): value is AuthGoogleAccountResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function AuthGoogleAccountResponseFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'url': json['url'] == null ? undefined : json['url'],
+        'url': json['url'],
     };
 }
 
-export function AuthGoogleAccountResponseToJSON(value?: AuthGoogleAccountResponse | null): any {
+export function AuthGoogleAccountResponseToJSON(json: any): AuthGoogleAccountResponse {
+    return AuthGoogleAccountResponseToJSONTyped(json, false);
+}
+
+export function AuthGoogleAccountResponseToJSONTyped(value?: AuthGoogleAccountResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'url': value['url'],

@@ -18,24 +18,28 @@ import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { ExperienceType } from './ExperienceType';
 import {
     ExperienceTypeFromJSON,
     ExperienceTypeFromJSONTyped,
     ExperienceTypeToJSON,
+    ExperienceTypeToJSONTyped,
 } from './ExperienceType';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -49,31 +53,35 @@ export interface ExperienceResponse {
      * @type {Coordinator}
      * @memberof ExperienceResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * 
      * @type {Experience}
      * @memberof ExperienceResponse
      */
-    experience?: Experience;
+    experience: Experience;
     /**
      * 
      * @type {ExperienceType}
      * @memberof ExperienceResponse
      */
-    experienceType?: ExperienceType;
+    experienceType: ExperienceType;
     /**
      * 
      * @type {Producer}
      * @memberof ExperienceResponse
      */
-    producer?: Producer;
+    producer: Producer;
 }
 
 /**
  * Check if a given object implements the ExperienceResponse interface.
  */
 export function instanceOfExperienceResponse(value: object): value is ExperienceResponse {
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('experience' in value) || value['experience'] === undefined) return false;
+    if (!('experienceType' in value) || value['experienceType'] === undefined) return false;
+    if (!('producer' in value) || value['producer'] === undefined) return false;
     return true;
 }
 
@@ -87,17 +95,22 @@ export function ExperienceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'experience': json['experience'] == null ? undefined : ExperienceFromJSON(json['experience']),
-        'experienceType': json['experienceType'] == null ? undefined : ExperienceTypeFromJSON(json['experienceType']),
-        'producer': json['producer'] == null ? undefined : ProducerFromJSON(json['producer']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'experience': ExperienceFromJSON(json['experience']),
+        'experienceType': ExperienceTypeFromJSON(json['experienceType']),
+        'producer': ProducerFromJSON(json['producer']),
     };
 }
 
-export function ExperienceResponseToJSON(value?: ExperienceResponse | null): any {
+export function ExperienceResponseToJSON(json: any): ExperienceResponse {
+    return ExperienceResponseToJSONTyped(json, false);
+}
+
+export function ExperienceResponseToJSONTyped(value?: ExperienceResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinator': CoordinatorToJSON(value['coordinator']),

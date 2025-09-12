@@ -24,19 +24,21 @@ export interface Category {
      * @type {string}
      * @memberof Category
      */
-    id?: string;
+    id: string;
     /**
      * 商品種別名
      * @type {string}
      * @memberof Category
      */
-    name?: string;
+    name: string;
 }
 
 /**
  * Check if a given object implements the Category interface.
  */
 export function instanceOfCategory(value: object): value is Category {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function CategoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function CategoryToJSON(value?: Category | null): any {
+export function CategoryToJSON(json: any): Category {
+    return CategoryToJSONTyped(json, false);
+}
+
+export function CategoryToJSONTyped(value?: Category | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

@@ -24,13 +24,14 @@ export interface AuthLINEAccountResponse {
      * @type {string}
      * @memberof AuthLINEAccountResponse
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the AuthLINEAccountResponse interface.
  */
 export function instanceOfAuthLINEAccountResponse(value: object): value is AuthLINEAccountResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function AuthLINEAccountResponseFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'url': json['url'] == null ? undefined : json['url'],
+        'url': json['url'],
     };
 }
 
-export function AuthLINEAccountResponseToJSON(value?: AuthLINEAccountResponse | null): any {
+export function AuthLINEAccountResponseToJSON(json: any): AuthLINEAccountResponse {
+    return AuthLINEAccountResponseToJSONTyped(json, false);
+}
+
+export function AuthLINEAccountResponseToJSONTyped(value?: AuthLINEAccountResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'url': value['url'],

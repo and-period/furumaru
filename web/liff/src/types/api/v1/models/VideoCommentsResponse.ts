@@ -18,6 +18,7 @@ import {
     VideoCommentFromJSON,
     VideoCommentFromJSONTyped,
     VideoCommentToJSON,
+    VideoCommentToJSONTyped,
 } from './VideoComment';
 
 /**
@@ -31,19 +32,21 @@ export interface VideoCommentsResponse {
      * @type {Array<VideoComment>}
      * @memberof VideoCommentsResponse
      */
-    comments?: Array<VideoComment>;
+    comments: Array<VideoComment>;
     /**
      * 次の取得開始位置
      * @type {string}
      * @memberof VideoCommentsResponse
      */
-    nextToken?: string;
+    nextToken: string;
 }
 
 /**
  * Check if a given object implements the VideoCommentsResponse interface.
  */
 export function instanceOfVideoCommentsResponse(value: object): value is VideoCommentsResponse {
+    if (!('comments' in value) || value['comments'] === undefined) return false;
+    if (!('nextToken' in value) || value['nextToken'] === undefined) return false;
     return true;
 }
 
@@ -57,18 +60,23 @@ export function VideoCommentsResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'comments': json['comments'] == null ? undefined : ((json['comments'] as Array<any>).map(VideoCommentFromJSON)),
-        'nextToken': json['nextToken'] == null ? undefined : json['nextToken'],
+        'comments': ((json['comments'] as Array<any>).map(VideoCommentFromJSON)),
+        'nextToken': json['nextToken'],
     };
 }
 
-export function VideoCommentsResponseToJSON(value?: VideoCommentsResponse | null): any {
+export function VideoCommentsResponseToJSON(json: any): VideoCommentsResponse {
+    return VideoCommentsResponseToJSONTyped(json, false);
+}
+
+export function VideoCommentsResponseToJSONTyped(value?: VideoCommentsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'comments': value['comments'] == null ? undefined : ((value['comments'] as Array<any>).map(VideoCommentToJSON)),
+        'comments': ((value['comments'] as Array<any>).map(VideoCommentToJSON)),
         'nextToken': value['nextToken'],
     };
 }

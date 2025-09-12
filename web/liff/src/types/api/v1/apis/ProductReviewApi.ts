@@ -103,8 +103,12 @@ export class ProductReviewApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/products/{productId}/reviews`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -155,8 +159,12 @@ export class ProductReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/products/{productId}/reviews`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -197,8 +205,13 @@ export class ProductReviewApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/products/{productId}/reviews/{reviewId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews/{reviewId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -256,8 +269,13 @@ export class ProductReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/products/{productId}/reviews/{reviewId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews/{reviewId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -306,8 +324,13 @@ export class ProductReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/products/{productId}/reviews/{reviewId}/reactions`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews/{reviewId}/reactions`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -364,8 +387,13 @@ export class ProductReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/products/{productId}/reviews/{reviewId}/reactions`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/products/{productId}/reviews/{reviewId}/reactions`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -407,8 +435,12 @@ export class ProductReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/products/{productId}/reviews`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/users/me/products/{productId}/reviews`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

@@ -13,6 +13,21 @@
  */
 
 import { mapValues } from '../runtime';
+import type { FulfillmentStatus } from './FulfillmentStatus';
+import {
+    FulfillmentStatusFromJSON,
+    FulfillmentStatusFromJSONTyped,
+    FulfillmentStatusToJSON,
+    FulfillmentStatusToJSONTyped,
+} from './FulfillmentStatus';
+import type { ShippingCarrier } from './ShippingCarrier';
+import {
+    ShippingCarrierFromJSON,
+    ShippingCarrierFromJSONTyped,
+    ShippingCarrierToJSON,
+    ShippingCarrierToJSONTyped,
+} from './ShippingCarrier';
+
 /**
  * 
  * @export
@@ -24,61 +39,72 @@ export interface OrderFulfillment {
      * @type {number}
      * @memberof OrderFulfillment
      */
-    boxNumber?: number;
+    boxNumber: number;
     /**
      * 箱の占有率
      * @type {number}
      * @memberof OrderFulfillment
      */
-    boxRate?: number;
+    boxRate: number;
     /**
      * 箱のサイズ
      * @type {number}
      * @memberof OrderFulfillment
      */
-    boxSize?: number;
+    boxSize: number;
     /**
      * 配送情報ID
      * @type {string}
      * @memberof OrderFulfillment
      */
-    fulfillmentId?: string;
+    fulfillmentId: string;
     /**
      * 配送日時
      * @type {number}
      * @memberof OrderFulfillment
      */
-    shippedAt?: number;
+    shippedAt: number;
     /**
-     * 配送会社
-     * @type {number}
+     * 
+     * @type {ShippingCarrier}
      * @memberof OrderFulfillment
      */
-    shippingCarrier?: number;
+    shippingCarrier: ShippingCarrier;
     /**
      * 箱の種別
      * @type {number}
      * @memberof OrderFulfillment
      */
-    shippingType?: number;
+    shippingType: number;
     /**
-     * 配送状況
-     * @type {number}
+     * 
+     * @type {FulfillmentStatus}
      * @memberof OrderFulfillment
      */
-    status?: number;
+    status: FulfillmentStatus;
     /**
      * 伝票番号
      * @type {string}
      * @memberof OrderFulfillment
      */
-    trackingNumber?: string;
+    trackingNumber: string;
 }
+
+
 
 /**
  * Check if a given object implements the OrderFulfillment interface.
  */
 export function instanceOfOrderFulfillment(value: object): value is OrderFulfillment {
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
+    if (!('boxRate' in value) || value['boxRate'] === undefined) return false;
+    if (!('boxSize' in value) || value['boxSize'] === undefined) return false;
+    if (!('fulfillmentId' in value) || value['fulfillmentId'] === undefined) return false;
+    if (!('shippedAt' in value) || value['shippedAt'] === undefined) return false;
+    if (!('shippingCarrier' in value) || value['shippingCarrier'] === undefined) return false;
+    if (!('shippingType' in value) || value['shippingType'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('trackingNumber' in value) || value['trackingNumber'] === undefined) return false;
     return true;
 }
 
@@ -92,22 +118,27 @@ export function OrderFulfillmentFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
-        'boxRate': json['boxRate'] == null ? undefined : json['boxRate'],
-        'boxSize': json['boxSize'] == null ? undefined : json['boxSize'],
-        'fulfillmentId': json['fulfillmentId'] == null ? undefined : json['fulfillmentId'],
-        'shippedAt': json['shippedAt'] == null ? undefined : json['shippedAt'],
-        'shippingCarrier': json['shippingCarrier'] == null ? undefined : json['shippingCarrier'],
-        'shippingType': json['shippingType'] == null ? undefined : json['shippingType'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'trackingNumber': json['trackingNumber'] == null ? undefined : json['trackingNumber'],
+        'boxNumber': json['boxNumber'],
+        'boxRate': json['boxRate'],
+        'boxSize': json['boxSize'],
+        'fulfillmentId': json['fulfillmentId'],
+        'shippedAt': json['shippedAt'],
+        'shippingCarrier': ShippingCarrierFromJSON(json['shippingCarrier']),
+        'shippingType': json['shippingType'],
+        'status': FulfillmentStatusFromJSON(json['status']),
+        'trackingNumber': json['trackingNumber'],
     };
 }
 
-export function OrderFulfillmentToJSON(value?: OrderFulfillment | null): any {
+export function OrderFulfillmentToJSON(json: any): OrderFulfillment {
+    return OrderFulfillmentToJSONTyped(json, false);
+}
+
+export function OrderFulfillmentToJSONTyped(value?: OrderFulfillment | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'boxNumber': value['boxNumber'],
@@ -115,9 +146,9 @@ export function OrderFulfillmentToJSON(value?: OrderFulfillment | null): any {
         'boxSize': value['boxSize'],
         'fulfillmentId': value['fulfillmentId'],
         'shippedAt': value['shippedAt'],
-        'shippingCarrier': value['shippingCarrier'],
+        'shippingCarrier': ShippingCarrierToJSON(value['shippingCarrier']),
         'shippingType': value['shippingType'],
-        'status': value['status'],
+        'status': FulfillmentStatusToJSON(value['status']),
         'trackingNumber': value['trackingNumber'],
     };
 }

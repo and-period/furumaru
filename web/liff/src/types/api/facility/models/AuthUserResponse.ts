@@ -24,55 +24,63 @@ export interface AuthUserResponse {
      * @type {string}
      * @memberof AuthUserResponse
      */
-    email?: string;
+    email: string;
     /**
      * 名
      * @type {string}
      * @memberof AuthUserResponse
      */
-    firstname?: string;
+    firstname: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof AuthUserResponse
      */
-    firstnameKana?: string;
+    firstnameKana: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof AuthUserResponse
      */
-    id?: string;
+    id: string;
     /**
      * 最新のチェックイン日時
      * @type {number}
      * @memberof AuthUserResponse
      */
-    lastCheckInAt?: number;
+    lastCheckInAt: number;
     /**
      * 姓
      * @type {string}
      * @memberof AuthUserResponse
      */
-    lastname?: string;
+    lastname: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof AuthUserResponse
      */
-    lastnameKana?: string;
+    lastnameKana: string;
     /**
      * 電話番号
      * @type {string}
      * @memberof AuthUserResponse
      */
-    phoneNumber?: string;
+    phoneNumber: string;
 }
 
 /**
  * Check if a given object implements the AuthUserResponse interface.
  */
 export function instanceOfAuthUserResponse(value: object): value is AuthUserResponse {
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('lastCheckInAt' in value) || value['lastCheckInAt'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
     return true;
 }
 
@@ -86,21 +94,26 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'email': json['email'] == null ? undefined : json['email'],
-        'firstname': json['firstname'] == null ? undefined : json['firstname'],
-        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'lastCheckInAt': json['lastCheckInAt'] == null ? undefined : json['lastCheckInAt'],
-        'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
-        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
+        'email': json['email'],
+        'firstname': json['firstname'],
+        'firstnameKana': json['firstnameKana'],
+        'id': json['id'],
+        'lastCheckInAt': json['lastCheckInAt'],
+        'lastname': json['lastname'],
+        'lastnameKana': json['lastnameKana'],
+        'phoneNumber': json['phoneNumber'],
     };
 }
 
-export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
+export function AuthUserResponseToJSON(json: any): AuthUserResponse {
+    return AuthUserResponseToJSONTyped(json, false);
+}
+
+export function AuthUserResponseToJSONTyped(value?: AuthUserResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'email': value['email'],

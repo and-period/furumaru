@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PaymentSystemStatus } from './PaymentSystemStatus';
+import {
+    PaymentSystemStatusFromJSON,
+    PaymentSystemStatusFromJSONTyped,
+    PaymentSystemStatusToJSON,
+    PaymentSystemStatusToJSONTyped,
+} from './PaymentSystemStatus';
+
 /**
  * 
  * @export
@@ -24,19 +32,23 @@ export interface PaymentSystem {
      * @type {number}
      * @memberof PaymentSystem
      */
-    methodType?: number;
+    methodType: number;
     /**
-     * 決済システム状態
-     * @type {number}
+     * 
+     * @type {PaymentSystemStatus}
      * @memberof PaymentSystem
      */
-    status?: number;
+    status: PaymentSystemStatus;
 }
+
+
 
 /**
  * Check if a given object implements the PaymentSystem interface.
  */
 export function instanceOfPaymentSystem(value: object): value is PaymentSystem {
+    if (!('methodType' in value) || value['methodType'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -50,19 +62,24 @@ export function PaymentSystemFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'methodType': json['methodType'] == null ? undefined : json['methodType'],
-        'status': json['status'] == null ? undefined : json['status'],
+        'methodType': json['methodType'],
+        'status': PaymentSystemStatusFromJSON(json['status']),
     };
 }
 
-export function PaymentSystemToJSON(value?: PaymentSystem | null): any {
+export function PaymentSystemToJSON(json: any): PaymentSystem {
+    return PaymentSystemToJSONTyped(json, false);
+}
+
+export function PaymentSystemToJSONTyped(value?: PaymentSystem | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'methodType': value['methodType'],
-        'status': value['status'],
+        'status': PaymentSystemStatusToJSON(value['status']),
     };
 }
 

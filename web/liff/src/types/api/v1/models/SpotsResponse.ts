@@ -18,12 +18,14 @@ import {
     SpotFromJSON,
     SpotFromJSONTyped,
     SpotToJSON,
+    SpotToJSONTyped,
 } from './Spot';
 import type { SpotType } from './SpotType';
 import {
     SpotTypeFromJSON,
     SpotTypeFromJSONTyped,
     SpotTypeToJSON,
+    SpotTypeToJSONTyped,
 } from './SpotType';
 
 /**
@@ -37,19 +39,21 @@ export interface SpotsResponse {
      * @type {Array<SpotType>}
      * @memberof SpotsResponse
      */
-    spotTypes?: Array<SpotType>;
+    spotTypes: Array<SpotType>;
     /**
      * スポット一覧
      * @type {Array<Spot>}
      * @memberof SpotsResponse
      */
-    spots?: Array<Spot>;
+    spots: Array<Spot>;
 }
 
 /**
  * Check if a given object implements the SpotsResponse interface.
  */
 export function instanceOfSpotsResponse(value: object): value is SpotsResponse {
+    if (!('spotTypes' in value) || value['spotTypes'] === undefined) return false;
+    if (!('spots' in value) || value['spots'] === undefined) return false;
     return true;
 }
 
@@ -63,19 +67,24 @@ export function SpotsResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'spotTypes': json['spotTypes'] == null ? undefined : ((json['spotTypes'] as Array<any>).map(SpotTypeFromJSON)),
-        'spots': json['spots'] == null ? undefined : ((json['spots'] as Array<any>).map(SpotFromJSON)),
+        'spotTypes': ((json['spotTypes'] as Array<any>).map(SpotTypeFromJSON)),
+        'spots': ((json['spots'] as Array<any>).map(SpotFromJSON)),
     };
 }
 
-export function SpotsResponseToJSON(value?: SpotsResponse | null): any {
+export function SpotsResponseToJSON(json: any): SpotsResponse {
+    return SpotsResponseToJSONTyped(json, false);
+}
+
+export function SpotsResponseToJSONTyped(value?: SpotsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'spotTypes': value['spotTypes'] == null ? undefined : ((value['spotTypes'] as Array<any>).map(SpotTypeToJSON)),
-        'spots': value['spots'] == null ? undefined : ((value['spots'] as Array<any>).map(SpotToJSON)),
+        'spotTypes': ((value['spotTypes'] as Array<any>).map(SpotTypeToJSON)),
+        'spots': ((value['spots'] as Array<any>).map(SpotToJSON)),
     };
 }
 

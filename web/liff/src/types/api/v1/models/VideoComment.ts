@@ -24,43 +24,49 @@ export interface VideoComment {
      * @type {string}
      * @memberof VideoComment
      */
-    accountId?: string;
+    accountId: string;
     /**
      * コメント
      * @type {string}
      * @memberof VideoComment
      */
-    comment?: string;
+    comment: string;
     /**
      * 投稿日時
      * @type {number}
      * @memberof VideoComment
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof VideoComment
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof VideoComment
      */
-    userId?: string;
+    userId: string;
     /**
      * ユーザー名
      * @type {string}
      * @memberof VideoComment
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the VideoComment interface.
  */
 export function instanceOfVideoComment(value: object): value is VideoComment {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -74,19 +80,24 @@ export function VideoCommentFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'accountId': json['accountId'],
+        'comment': json['comment'],
+        'publishedAt': json['publishedAt'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'userId': json['userId'],
+        'username': json['username'],
     };
 }
 
-export function VideoCommentToJSON(value?: VideoComment | null): any {
+export function VideoCommentToJSON(json: any): VideoComment {
+    return VideoCommentToJSONTyped(json, false);
+}
+
+export function VideoCommentToJSONTyped(value?: VideoComment | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

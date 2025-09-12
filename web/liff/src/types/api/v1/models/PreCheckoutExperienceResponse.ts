@@ -18,12 +18,14 @@ import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
+    PromotionToJSONTyped,
 } from './Promotion';
 
 /**
@@ -37,43 +39,49 @@ export interface PreCheckoutExperienceResponse {
      * @type {number}
      * @memberof PreCheckoutExperienceResponse
      */
-    discount?: number;
+    discount: number;
     /**
      * 
      * @type {Experience}
      * @memberof PreCheckoutExperienceResponse
      */
-    experience?: Experience;
+    experience: Experience;
     /**
      * 
      * @type {Promotion}
      * @memberof PreCheckoutExperienceResponse
      */
-    promotion?: Promotion;
+    promotion: Promotion;
     /**
      * 支払い時にAPIへ送信するキー(重複判定用)
      * @type {string}
      * @memberof PreCheckoutExperienceResponse
      */
-    requestId?: string;
+    requestId: string;
     /**
      * 購入金額(税込)
      * @type {number}
      * @memberof PreCheckoutExperienceResponse
      */
-    subtotal?: number;
+    subtotal: number;
     /**
      * 合計金額(税込)
      * @type {number}
      * @memberof PreCheckoutExperienceResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the PreCheckoutExperienceResponse interface.
  */
 export function instanceOfPreCheckoutExperienceResponse(value: object): value is PreCheckoutExperienceResponse {
+    if (!('discount' in value) || value['discount'] === undefined) return false;
+    if (!('experience' in value) || value['experience'] === undefined) return false;
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
+    if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('subtotal' in value) || value['subtotal'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -87,19 +95,24 @@ export function PreCheckoutExperienceResponseFromJSONTyped(json: any, ignoreDisc
     }
     return {
         
-        'discount': json['discount'] == null ? undefined : json['discount'],
-        'experience': json['experience'] == null ? undefined : ExperienceFromJSON(json['experience']),
-        'promotion': json['promotion'] == null ? undefined : PromotionFromJSON(json['promotion']),
-        'requestId': json['requestId'] == null ? undefined : json['requestId'],
-        'subtotal': json['subtotal'] == null ? undefined : json['subtotal'],
-        'total': json['total'] == null ? undefined : json['total'],
+        'discount': json['discount'],
+        'experience': ExperienceFromJSON(json['experience']),
+        'promotion': PromotionFromJSON(json['promotion']),
+        'requestId': json['requestId'],
+        'subtotal': json['subtotal'],
+        'total': json['total'],
     };
 }
 
-export function PreCheckoutExperienceResponseToJSON(value?: PreCheckoutExperienceResponse | null): any {
+export function PreCheckoutExperienceResponseToJSON(json: any): PreCheckoutExperienceResponse {
+    return PreCheckoutExperienceResponseToJSONTyped(json, false);
+}
+
+export function PreCheckoutExperienceResponseToJSONTyped(value?: PreCheckoutExperienceResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'discount': value['discount'],

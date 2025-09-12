@@ -18,30 +18,35 @@ import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { Schedule } from './Schedule';
 import {
     ScheduleFromJSON,
     ScheduleFromJSONTyped,
     ScheduleToJSON,
+    ScheduleToJSONTyped,
 } from './Schedule';
 import type { Live } from './Live';
 import {
     LiveFromJSON,
     LiveFromJSONTyped,
     LiveToJSON,
+    LiveToJSONTyped,
 } from './Live';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -55,37 +60,42 @@ export interface ScheduleResponse {
      * @type {Coordinator}
      * @memberof ScheduleResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * ライブ配信一覧
      * @type {Array<Live>}
      * @memberof ScheduleResponse
      */
-    lives?: Array<Live>;
+    lives: Array<Live>;
     /**
      * 生産者一覧
      * @type {Array<Producer>}
      * @memberof ScheduleResponse
      */
-    producers?: Array<Producer>;
+    producers: Array<Producer>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof ScheduleResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 
      * @type {Schedule}
      * @memberof ScheduleResponse
      */
-    schedule?: Schedule;
+    schedule: Schedule;
 }
 
 /**
  * Check if a given object implements the ScheduleResponse interface.
  */
 export function instanceOfScheduleResponse(value: object): value is ScheduleResponse {
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('schedule' in value) || value['schedule'] === undefined) return false;
     return true;
 }
 
@@ -99,24 +109,29 @@ export function ScheduleResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'lives': json['lives'] == null ? undefined : ((json['lives'] as Array<any>).map(LiveFromJSON)),
-        'producers': json['producers'] == null ? undefined : ((json['producers'] as Array<any>).map(ProducerFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'schedule': json['schedule'] == null ? undefined : ScheduleFromJSON(json['schedule']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'lives': ((json['lives'] as Array<any>).map(LiveFromJSON)),
+        'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'schedule': ScheduleFromJSON(json['schedule']),
     };
 }
 
-export function ScheduleResponseToJSON(value?: ScheduleResponse | null): any {
+export function ScheduleResponseToJSON(json: any): ScheduleResponse {
+    return ScheduleResponseToJSONTyped(json, false);
+}
+
+export function ScheduleResponseToJSONTyped(value?: ScheduleResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinator': CoordinatorToJSON(value['coordinator']),
-        'lives': value['lives'] == null ? undefined : ((value['lives'] as Array<any>).map(LiveToJSON)),
-        'producers': value['producers'] == null ? undefined : ((value['producers'] as Array<any>).map(ProducerToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'schedule': ScheduleToJSON(value['schedule']),
     };
 }

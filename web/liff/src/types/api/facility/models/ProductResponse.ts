@@ -18,36 +18,42 @@ import {
     CategoryFromJSON,
     CategoryFromJSONTyped,
     CategoryToJSON,
+    CategoryToJSONTyped,
 } from './Category';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { ProductTag } from './ProductTag';
 import {
     ProductTagFromJSON,
     ProductTagFromJSONTyped,
     ProductTagToJSON,
+    ProductTagToJSONTyped,
 } from './ProductTag';
 import type { ProductType } from './ProductType';
 import {
     ProductTypeFromJSON,
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
+    ProductTypeToJSONTyped,
 } from './ProductType';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -61,43 +67,49 @@ export interface ProductResponse {
      * @type {Category}
      * @memberof ProductResponse
      */
-    category?: Category;
+    category: Category;
     /**
      * 
      * @type {Coordinator}
      * @memberof ProductResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * 
      * @type {Producer}
      * @memberof ProductResponse
      */
-    producer?: Producer;
+    producer: Producer;
     /**
      * 
      * @type {Product}
      * @memberof ProductResponse
      */
-    product?: Product;
+    product: Product;
     /**
      * 商品タグ一覧
      * @type {Array<ProductTag>}
      * @memberof ProductResponse
      */
-    productTags?: Array<ProductTag>;
+    productTags: Array<ProductTag>;
     /**
      * 
      * @type {ProductType}
      * @memberof ProductResponse
      */
-    productType?: ProductType;
+    productType: ProductType;
 }
 
 /**
  * Check if a given object implements the ProductResponse interface.
  */
 export function instanceOfProductResponse(value: object): value is ProductResponse {
+    if (!('category' in value) || value['category'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('producer' in value) || value['producer'] === undefined) return false;
+    if (!('product' in value) || value['product'] === undefined) return false;
+    if (!('productTags' in value) || value['productTags'] === undefined) return false;
+    if (!('productType' in value) || value['productType'] === undefined) return false;
     return true;
 }
 
@@ -111,26 +123,31 @@ export function ProductResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'category': json['category'] == null ? undefined : CategoryFromJSON(json['category']),
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'producer': json['producer'] == null ? undefined : ProducerFromJSON(json['producer']),
-        'product': json['product'] == null ? undefined : ProductFromJSON(json['product']),
-        'productTags': json['productTags'] == null ? undefined : ((json['productTags'] as Array<any>).map(ProductTagFromJSON)),
-        'productType': json['productType'] == null ? undefined : ProductTypeFromJSON(json['productType']),
+        'category': CategoryFromJSON(json['category']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'producer': ProducerFromJSON(json['producer']),
+        'product': ProductFromJSON(json['product']),
+        'productTags': ((json['productTags'] as Array<any>).map(ProductTagFromJSON)),
+        'productType': ProductTypeFromJSON(json['productType']),
     };
 }
 
-export function ProductResponseToJSON(value?: ProductResponse | null): any {
+export function ProductResponseToJSON(json: any): ProductResponse {
+    return ProductResponseToJSONTyped(json, false);
+}
+
+export function ProductResponseToJSONTyped(value?: ProductResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'category': CategoryToJSON(value['category']),
         'coordinator': CoordinatorToJSON(value['coordinator']),
         'producer': ProducerToJSON(value['producer']),
         'product': ProductToJSON(value['product']),
-        'productTags': value['productTags'] == null ? undefined : ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
+        'productTags': ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
         'productType': ProductTypeToJSON(value['productType']),
     };
 }

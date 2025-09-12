@@ -70,8 +70,12 @@ export class ExperienceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/experiences/{experienceId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -132,8 +136,11 @@ export class ExperienceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/experiences/geolocation`;
+
         const response = await this.request({
-            path: `/experiences/geolocation`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -184,8 +191,11 @@ export class ExperienceApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/experiences`;
+
         const response = await this.request({
-            path: `/experiences`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

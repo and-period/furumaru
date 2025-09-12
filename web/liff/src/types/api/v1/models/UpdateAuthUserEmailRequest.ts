@@ -49,10 +49,15 @@ export function UpdateAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscrim
     };
 }
 
-export function UpdateAuthUserEmailRequestToJSON(value?: UpdateAuthUserEmailRequest | null): any {
+export function UpdateAuthUserEmailRequestToJSON(json: any): UpdateAuthUserEmailRequest {
+    return UpdateAuthUserEmailRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserEmailRequestToJSONTyped(value?: UpdateAuthUserEmailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'email': value['email'],

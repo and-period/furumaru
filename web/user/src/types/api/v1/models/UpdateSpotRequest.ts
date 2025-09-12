@@ -24,7 +24,7 @@ export interface UpdateSpotRequest {
      * @type {string}
      * @memberof UpdateSpotRequest
      */
-    description?: string;
+    description: string;
     /**
      * 緯度
      * @type {number}
@@ -54,17 +54,19 @@ export interface UpdateSpotRequest {
      * @type {string}
      * @memberof UpdateSpotRequest
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
 }
 
 /**
  * Check if a given object implements the UpdateSpotRequest interface.
  */
 export function instanceOfUpdateSpotRequest(value: object): value is UpdateSpotRequest {
+    if (!('description' in value) || value['description'] === undefined) return false;
     if (!('latitude' in value) || value['latitude'] === undefined) return false;
     if (!('longitude' in value) || value['longitude'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('spotTypeId' in value) || value['spotTypeId'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
     return true;
 }
 
@@ -78,19 +80,24 @@ export function UpdateSpotRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'description': json['description'] == null ? undefined : json['description'],
+        'description': json['description'],
         'latitude': json['latitude'],
         'longitude': json['longitude'],
         'name': json['name'],
         'spotTypeId': json['spotTypeId'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
+        'thumbnailUrl': json['thumbnailUrl'],
     };
 }
 
-export function UpdateSpotRequestToJSON(value?: UpdateSpotRequest | null): any {
+export function UpdateSpotRequestToJSON(json: any): UpdateSpotRequest {
+    return UpdateSpotRequestToJSONTyped(json, false);
+}
+
+export function UpdateSpotRequestToJSONTyped(value?: UpdateSpotRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'description': value['description'],

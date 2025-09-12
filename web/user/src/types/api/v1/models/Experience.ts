@@ -18,12 +18,21 @@ import {
     ExperienceMediaFromJSON,
     ExperienceMediaFromJSONTyped,
     ExperienceMediaToJSON,
+    ExperienceMediaToJSONTyped,
 } from './ExperienceMedia';
+import type { ExperienceStatus } from './ExperienceStatus';
+import {
+    ExperienceStatusFromJSON,
+    ExperienceStatusFromJSONTyped,
+    ExperienceStatusToJSON,
+    ExperienceStatusToJSONTyped,
+} from './ExperienceStatus';
 import type { ExperienceRate } from './ExperienceRate';
 import {
     ExperienceRateFromJSON,
     ExperienceRateFromJSONTyped,
     ExperienceRateToJSON,
+    ExperienceRateToJSONTyped,
 } from './ExperienceRate';
 
 /**
@@ -37,199 +46,233 @@ export interface Experience {
      * @type {string}
      * @memberof Experience
      */
-    businessCloseTime?: string;
+    businessCloseTime: string;
     /**
      * 営業開始時間
      * @type {string}
      * @memberof Experience
      */
-    businessOpenTime?: string;
+    businessOpenTime: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof Experience
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 説明
      * @type {string}
      * @memberof Experience
      */
-    description?: string;
+    description: string;
     /**
      * アクセス方法
      * @type {string}
      * @memberof Experience
      */
-    direction?: string;
+    direction: string;
     /**
      * 体験時間(分)
      * @type {number}
      * @memberof Experience
      */
-    duration?: number;
+    duration: number;
     /**
      * 募集終了日時
      * @type {number}
      * @memberof Experience
      */
-    endAt?: number;
+    endAt: number;
     /**
      * 体験種別ID
      * @type {string}
      * @memberof Experience
      */
-    experienceTypeId?: string;
+    experienceTypeId: string;
     /**
      * 開催場所(住所1)
      * @type {string}
      * @memberof Experience
      */
-    hostAddressLine1?: string;
+    hostAddressLine1: string;
     /**
      * 開催場所(住所2)
      * @type {string}
      * @memberof Experience
      */
-    hostAddressLine2?: string;
+    hostAddressLine2: string;
     /**
      * 開催場所(市区町村)
      * @type {string}
      * @memberof Experience
      */
-    hostCity?: string;
+    hostCity: string;
     /**
      * 開催場所(座標情報:緯度)
      * @type {number}
      * @memberof Experience
      */
-    hostLatitude?: number;
+    hostLatitude: number;
     /**
      * 開催場所(座標情報:経度)
      * @type {number}
      * @memberof Experience
      */
-    hostLongitude?: number;
+    hostLongitude: number;
     /**
      * 開催場所(郵便番号)
      * @type {string}
      * @memberof Experience
      */
-    hostPostalCode?: string;
+    hostPostalCode: string;
     /**
      * 開催場所(都道府県)
      * @type {string}
      * @memberof Experience
      */
-    hostPrefecture?: string;
+    hostPrefecture: string;
     /**
      * 体験ID
      * @type {string}
      * @memberof Experience
      */
-    id?: string;
+    id: string;
     /**
      * メディア一覧
      * @type {Array<ExperienceMedia>}
      * @memberof Experience
      */
-    media?: Array<ExperienceMedia>;
+    media: Array<ExperienceMedia>;
     /**
      * 大人料金
      * @type {number}
      * @memberof Experience
      */
-    priceAdult?: number;
+    priceAdult: number;
     /**
      * 小学生料金
      * @type {number}
      * @memberof Experience
      */
-    priceElementarySchool?: number;
+    priceElementarySchool: number;
     /**
      * 中学生料金
      * @type {number}
      * @memberof Experience
      */
-    priceJuniorHighSchool?: number;
+    priceJuniorHighSchool: number;
     /**
      * 幼児料金
      * @type {number}
      * @memberof Experience
      */
-    pricePreschool?: number;
+    pricePreschool: number;
     /**
      * シニア料金
      * @type {number}
      * @memberof Experience
      */
-    priceSenior?: number;
+    priceSenior: number;
     /**
      * プロデューサーID
      * @type {string}
      * @memberof Experience
      */
-    producerId?: string;
+    producerId: string;
     /**
      * 紹介動画URL
      * @type {string}
      * @memberof Experience
      */
-    promotionVideoUrl?: string;
+    promotionVideoUrl: string;
     /**
      * 
      * @type {ExperienceRate}
      * @memberof Experience
      */
-    rate?: ExperienceRate;
+    rate: ExperienceRate;
     /**
      * おすすめポイント1
      * @type {string}
      * @memberof Experience
      */
-    recommendedPoint1?: string;
+    recommendedPoint1: string;
     /**
      * おすすめポイント2
      * @type {string}
      * @memberof Experience
      */
-    recommendedPoint2?: string;
+    recommendedPoint2: string;
     /**
      * おすすめポイント3
      * @type {string}
      * @memberof Experience
      */
-    recommendedPoint3?: string;
+    recommendedPoint3: string;
     /**
      * 募集開始日時
      * @type {number}
      * @memberof Experience
      */
-    startAt?: number;
+    startAt: number;
     /**
-     * 販売状況
-     * @type {number}
+     * 
+     * @type {ExperienceStatus}
      * @memberof Experience
      */
-    status?: number;
+    status: ExperienceStatus;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Experience
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof Experience
      */
-    title?: string;
+    title: string;
 }
+
+
 
 /**
  * Check if a given object implements the Experience interface.
  */
 export function instanceOfExperience(value: object): value is Experience {
+    if (!('businessCloseTime' in value) || value['businessCloseTime'] === undefined) return false;
+    if (!('businessOpenTime' in value) || value['businessOpenTime'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('direction' in value) || value['direction'] === undefined) return false;
+    if (!('duration' in value) || value['duration'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('experienceTypeId' in value) || value['experienceTypeId'] === undefined) return false;
+    if (!('hostAddressLine1' in value) || value['hostAddressLine1'] === undefined) return false;
+    if (!('hostAddressLine2' in value) || value['hostAddressLine2'] === undefined) return false;
+    if (!('hostCity' in value) || value['hostCity'] === undefined) return false;
+    if (!('hostLatitude' in value) || value['hostLatitude'] === undefined) return false;
+    if (!('hostLongitude' in value) || value['hostLongitude'] === undefined) return false;
+    if (!('hostPostalCode' in value) || value['hostPostalCode'] === undefined) return false;
+    if (!('hostPrefecture' in value) || value['hostPrefecture'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('media' in value) || value['media'] === undefined) return false;
+    if (!('priceAdult' in value) || value['priceAdult'] === undefined) return false;
+    if (!('priceElementarySchool' in value) || value['priceElementarySchool'] === undefined) return false;
+    if (!('priceJuniorHighSchool' in value) || value['priceJuniorHighSchool'] === undefined) return false;
+    if (!('pricePreschool' in value) || value['pricePreschool'] === undefined) return false;
+    if (!('priceSenior' in value) || value['priceSenior'] === undefined) return false;
+    if (!('producerId' in value) || value['producerId'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('recommendedPoint1' in value) || value['recommendedPoint1'] === undefined) return false;
+    if (!('recommendedPoint2' in value) || value['recommendedPoint2'] === undefined) return false;
+    if (!('recommendedPoint3' in value) || value['recommendedPoint3'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -243,45 +286,50 @@ export function ExperienceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'businessCloseTime': json['businessCloseTime'] == null ? undefined : json['businessCloseTime'],
-        'businessOpenTime': json['businessOpenTime'] == null ? undefined : json['businessOpenTime'],
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'direction': json['direction'] == null ? undefined : json['direction'],
-        'duration': json['duration'] == null ? undefined : json['duration'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'experienceTypeId': json['experienceTypeId'] == null ? undefined : json['experienceTypeId'],
-        'hostAddressLine1': json['hostAddressLine1'] == null ? undefined : json['hostAddressLine1'],
-        'hostAddressLine2': json['hostAddressLine2'] == null ? undefined : json['hostAddressLine2'],
-        'hostCity': json['hostCity'] == null ? undefined : json['hostCity'],
-        'hostLatitude': json['hostLatitude'] == null ? undefined : json['hostLatitude'],
-        'hostLongitude': json['hostLongitude'] == null ? undefined : json['hostLongitude'],
-        'hostPostalCode': json['hostPostalCode'] == null ? undefined : json['hostPostalCode'],
-        'hostPrefecture': json['hostPrefecture'] == null ? undefined : json['hostPrefecture'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'media': json['media'] == null ? undefined : ((json['media'] as Array<any>).map(ExperienceMediaFromJSON)),
-        'priceAdult': json['priceAdult'] == null ? undefined : json['priceAdult'],
-        'priceElementarySchool': json['priceElementarySchool'] == null ? undefined : json['priceElementarySchool'],
-        'priceJuniorHighSchool': json['priceJuniorHighSchool'] == null ? undefined : json['priceJuniorHighSchool'],
-        'pricePreschool': json['pricePreschool'] == null ? undefined : json['pricePreschool'],
-        'priceSenior': json['priceSenior'] == null ? undefined : json['priceSenior'],
-        'producerId': json['producerId'] == null ? undefined : json['producerId'],
-        'promotionVideoUrl': json['promotionVideoUrl'] == null ? undefined : json['promotionVideoUrl'],
-        'rate': json['rate'] == null ? undefined : ExperienceRateFromJSON(json['rate']),
-        'recommendedPoint1': json['recommendedPoint1'] == null ? undefined : json['recommendedPoint1'],
-        'recommendedPoint2': json['recommendedPoint2'] == null ? undefined : json['recommendedPoint2'],
-        'recommendedPoint3': json['recommendedPoint3'] == null ? undefined : json['recommendedPoint3'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'businessCloseTime': json['businessCloseTime'],
+        'businessOpenTime': json['businessOpenTime'],
+        'coordinatorId': json['coordinatorId'],
+        'description': json['description'],
+        'direction': json['direction'],
+        'duration': json['duration'],
+        'endAt': json['endAt'],
+        'experienceTypeId': json['experienceTypeId'],
+        'hostAddressLine1': json['hostAddressLine1'],
+        'hostAddressLine2': json['hostAddressLine2'],
+        'hostCity': json['hostCity'],
+        'hostLatitude': json['hostLatitude'],
+        'hostLongitude': json['hostLongitude'],
+        'hostPostalCode': json['hostPostalCode'],
+        'hostPrefecture': json['hostPrefecture'],
+        'id': json['id'],
+        'media': ((json['media'] as Array<any>).map(ExperienceMediaFromJSON)),
+        'priceAdult': json['priceAdult'],
+        'priceElementarySchool': json['priceElementarySchool'],
+        'priceJuniorHighSchool': json['priceJuniorHighSchool'],
+        'pricePreschool': json['pricePreschool'],
+        'priceSenior': json['priceSenior'],
+        'producerId': json['producerId'],
+        'promotionVideoUrl': json['promotionVideoUrl'],
+        'rate': ExperienceRateFromJSON(json['rate']),
+        'recommendedPoint1': json['recommendedPoint1'],
+        'recommendedPoint2': json['recommendedPoint2'],
+        'recommendedPoint3': json['recommendedPoint3'],
+        'startAt': json['startAt'],
+        'status': ExperienceStatusFromJSON(json['status']),
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
     };
 }
 
-export function ExperienceToJSON(value?: Experience | null): any {
+export function ExperienceToJSON(json: any): Experience {
+    return ExperienceToJSONTyped(json, false);
+}
+
+export function ExperienceToJSONTyped(value?: Experience | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'businessCloseTime': value['businessCloseTime'],
@@ -300,7 +348,7 @@ export function ExperienceToJSON(value?: Experience | null): any {
         'hostPostalCode': value['hostPostalCode'],
         'hostPrefecture': value['hostPrefecture'],
         'id': value['id'],
-        'media': value['media'] == null ? undefined : ((value['media'] as Array<any>).map(ExperienceMediaToJSON)),
+        'media': ((value['media'] as Array<any>).map(ExperienceMediaToJSON)),
         'priceAdult': value['priceAdult'],
         'priceElementarySchool': value['priceElementarySchool'],
         'priceJuniorHighSchool': value['priceJuniorHighSchool'],
@@ -313,7 +361,7 @@ export function ExperienceToJSON(value?: Experience | null): any {
         'recommendedPoint2': value['recommendedPoint2'],
         'recommendedPoint3': value['recommendedPoint3'],
         'startAt': value['startAt'],
-        'status': value['status'],
+        'status': ExperienceStatusToJSON(value['status']),
         'thumbnailUrl': value['thumbnailUrl'],
         'title': value['title'],
     };

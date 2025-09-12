@@ -60,7 +60,7 @@ export interface CreateAuthUserRequest {
      * @type {string}
      * @memberof CreateAuthUserRequest
      */
-    password?: string;
+    password: string;
     /**
      * パスワード (確認用)
      * @type {string}
@@ -91,6 +91,7 @@ export function instanceOfCreateAuthUserRequest(value: object): value is CreateA
     if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
     if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('password' in value) || value['password'] === undefined) return false;
     if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
     if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
     if (!('username' in value) || value['username'] === undefined) return false;
@@ -113,17 +114,22 @@ export function CreateAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
         'firstnameKana': json['firstnameKana'],
         'lastname': json['lastname'],
         'lastnameKana': json['lastnameKana'],
-        'password': json['password'] == null ? undefined : json['password'],
+        'password': json['password'],
         'passwordConfirmation': json['passwordConfirmation'],
         'phoneNumber': json['phoneNumber'],
         'username': json['username'],
     };
 }
 
-export function CreateAuthUserRequestToJSON(value?: CreateAuthUserRequest | null): any {
+export function CreateAuthUserRequestToJSON(json: any): CreateAuthUserRequest {
+    return CreateAuthUserRequestToJSONTyped(json, false);
+}
+
+export function CreateAuthUserRequestToJSONTyped(value?: CreateAuthUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

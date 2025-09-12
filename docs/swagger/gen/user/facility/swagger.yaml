@@ -10,7 +10,8 @@ components:
           minimum: 1
           type: integer
       required:
-      - productId
+        - productId
+        - quantity
       type: object
     AuthResponse:
       properties:
@@ -30,6 +31,12 @@ components:
           description: ユーザーID
           type: string
       type: object
+      required:
+        - accessToken
+        - expiresIn
+        - refreshToken
+        - tokenType
+        - userId
     AuthUserResponse:
       properties:
         email:
@@ -57,6 +64,15 @@ components:
           description: 電話番号
           type: string
       type: object
+      required:
+        - email
+        - firstname
+        - firstnameKana
+        - id
+        - lastCheckInAt
+        - lastname
+        - lastnameKana
+        - phoneNumber
     CalcCartResponse:
       properties:
         carts:
@@ -97,6 +113,17 @@ components:
           description: 合計金額(税込)
           type: integer
       type: object
+      required:
+        - carts
+        - coordinator
+        - discount
+        - items
+        - products
+        - promotion
+        - requestId
+        - shippingFee
+        - subtotal
+        - total
     Cart:
       properties:
         coordinatorId:
@@ -119,6 +146,13 @@ components:
         type:
           $ref: '#/components/schemas/ShippingType'
       type: object
+      required:
+        - coordinatorId
+        - items
+        - number
+        - rate
+        - size
+        - type
     CartItem:
       properties:
         productId:
@@ -128,6 +162,9 @@ components:
           description: 数量
           type: integer
       type: object
+      required:
+        - productId
+        - quantity
     CartResponse:
       properties:
         carts:
@@ -149,6 +186,10 @@ components:
           type: array
           uniqueItems: false
       type: object
+      required:
+        - carts
+        - coordinators
+        - products
     Category:
       description: 商品種別情報
       properties:
@@ -159,6 +200,9 @@ components:
           description: 商品種別名
           type: string
       type: object
+      required:
+        - id
+        - name
     CheckoutCreditCard:
       description: クレジットカード決済情報
       properties:
@@ -184,8 +228,11 @@ components:
           minimum: 2000
           type: integer
       required:
-      - name
-      - number
+        - name
+        - number
+        - month
+        - verificationValue
+        - year
       type: object
     CheckoutRequest:
       properties:
@@ -214,10 +261,14 @@ components:
           minimum: 0
           type: integer
       required:
-      - callbackUrl
-      - coordinatorId
-      - paymentMethod
-      - requestId
+        - callbackUrl
+        - coordinatorId
+        - paymentMethod
+        - requestId
+        - boxNumber
+        - creditCard
+        - promotionCode
+        - total
       type: object
     CheckoutResponse:
       properties:
@@ -225,6 +276,8 @@ components:
           description: 遷移先URL
           type: string
       type: object
+      required:
+        - url
     CheckoutStateResponse:
       properties:
         orderId:
@@ -233,6 +286,9 @@ components:
         status:
           $ref: '#/components/schemas/PaymentStatus'
       type: object
+      required:
+        - orderId
+        - status
     Coordinator:
       description: コーディネータ情報
       properties:
@@ -282,6 +338,20 @@ components:
           description: 表示名
           type: string
       type: object
+      required:
+        - businessDays
+        - city
+        - facebookId
+        - headerUrl
+        - id
+        - instagramId
+        - marcheName
+        - prefecture
+        - productTypeIds
+        - profile
+        - promotionVideoUrl
+        - thumbnailUrl
+        - username
     CreateAuthUserRequest:
       properties:
         authToken:
@@ -311,12 +381,13 @@ components:
           description: 電話番号
           type: string
       required:
-      - authToken
-      - firstname
-      - firstnameKana
-      - lastname
-      - lastnameKana
-      - phoneNumber
+        - authToken
+        - firstname
+        - firstnameKana
+        - lastname
+        - lastnameKana
+        - phoneNumber
+        - lastCheckInAt
       type: object
     DeliveryType:
       description: 配送方法
@@ -326,10 +397,22 @@ components:
         DeliveryTypeNormal: 常温便
         DeliveryTypeRefrigerated: 冷蔵便
       x-enum-varnames:
-      - DeliveryTypeUnknown
-      - DeliveryTypeNormal
-      - DeliveryTypeRefrigerated
-      - DeliveryTypeFrozen
+        - DeliveryTypeUnknown
+        - DeliveryTypeNormal
+        - DeliveryTypeRefrigerated
+        - DeliveryTypeFrozen
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 常温便
+        - 冷蔵便
+        - 冷凍便
     DiscountType:
       description: 割引計算方法
       type: integer
@@ -338,17 +421,29 @@ components:
         DiscountTypeFreeShipping: 送料無料
         DiscountTypeRate: 料率計算(%)
       x-enum-varnames:
-      - DiscountTypeUnknown
-      - DiscountTypeAmount
-      - DiscountTypeRate
-      - DiscountTypeFreeShipping
+        - DiscountTypeUnknown
+        - DiscountTypeAmount
+        - DiscountTypeRate
+        - DiscountTypeFreeShipping
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 固定額(円)
+        - 料率計算(%)
+        - 送料無料
     GetAccessTokenRequest:
       properties:
         refreshToken:
           description: 更新トークン
           type: string
       required:
-      - refreshToken
+        - refreshToken
       type: object
     Order:
       description: 注文履歴情報
@@ -383,6 +478,17 @@ components:
         type:
           $ref: '#/components/schemas/OrderType'
       type: object
+      required:
+        - coordinatorId
+        - id
+        - items
+        - payment
+        - pickupAt
+        - pickupLocation
+        - promotionId
+        - refund
+        - status
+        - type
     OrderItem:
       properties:
         fulfillmentId:
@@ -398,6 +504,11 @@ components:
           description: 購入数量
           type: integer
       type: object
+      required:
+        - fulfillmentId
+        - price
+        - productId
+        - quantity
     OrderPayment:
       description: 支払い情報
       properties:
@@ -421,19 +532,19 @@ components:
             PaymentMethodTypePayPay: QR決済（PayPay）
             PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
           x-enum-varnames:
-          - PaymentMethodTypeUnknown
-          - PaymentMethodTypeCash
-          - PaymentMethodTypeCreditCard
-          - PaymentMethodTypeKonbini
-          - PaymentMethodTypeBankTransfer
-          - PaymentMethodTypePayPay
-          - PaymentMethodTypeLinePay
-          - PaymentMethodTypeMerpay
-          - PaymentMethodTypeRakutenPay
-          - PaymentMethodTypeAUPay
-          - PaymentMethodTypeFree
-          - PaymentMethodTypePaidy
-          - PaymentMethodTypePayEasy
+            - PaymentMethodTypeUnknown
+            - PaymentMethodTypeCash
+            - PaymentMethodTypeCreditCard
+            - PaymentMethodTypeKonbini
+            - PaymentMethodTypeBankTransfer
+            - PaymentMethodTypePayPay
+            - PaymentMethodTypeLinePay
+            - PaymentMethodTypeMerpay
+            - PaymentMethodTypeRakutenPay
+            - PaymentMethodTypeAUPay
+            - PaymentMethodTypeFree
+            - PaymentMethodTypePaidy
+            - PaymentMethodTypePayEasy
         orderedAt:
           description: 注文日時
           type: integer
@@ -452,11 +563,11 @@ components:
             PaymentStatusPaid: 支払い済み
             PaymentStatusUnpaid: 未支払い
           x-enum-varnames:
-          - PaymentStatusUnknown
-          - PaymentStatusUnpaid
-          - PaymentStatusPaid
-          - PaymentStatusCanceled
-          - PaymentStatusFailed
+            - PaymentStatusUnknown
+            - PaymentStatusUnpaid
+            - PaymentStatusPaid
+            - PaymentStatusCanceled
+            - PaymentStatusFailed
         subtotal:
           description: 購入金額(税込)
           type: integer
@@ -467,6 +578,16 @@ components:
           description: 取引ID
           type: string
       type: object
+      required:
+        - discount
+        - methodType
+        - orderedAt
+        - paidAt
+        - shippingFee
+        - status
+        - subtotal
+        - total
+        - transactionId
     OrderRefund:
       description: 注文キャンセル情報
       properties:
@@ -485,6 +606,12 @@ components:
         type:
           $ref: '#/components/schemas/RefundType'
       type: object
+      required:
+        - canceled
+        - canceledAt
+        - reason
+        - total
+        - type
     OrderResponse:
       properties:
         coordinator:
@@ -500,6 +627,11 @@ components:
         promotion:
           $ref: '#/components/schemas/Promotion'
       type: object
+      required:
+        - coordinator
+        - order
+        - products
+        - promotion
     OrderStatus:
       description: 注文ステータス
       type: integer
@@ -511,13 +643,31 @@ components:
         OrderStatusRefunded: 返金
         OrderStatusUnpaid: 支払い待ち
       x-enum-varnames:
-      - OrderStatusUnknown
-      - OrderStatusUnpaid
-      - OrderStatusPreparing
-      - OrderStatusCompleted
-      - OrderStatusCanceled
-      - OrderStatusRefunded
-      - OrderStatusFailed
+        - OrderStatusUnknown
+        - OrderStatusUnpaid
+        - OrderStatusPreparing
+        - OrderStatusCompleted
+        - OrderStatusCanceled
+        - OrderStatusRefunded
+        - OrderStatusFailed
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 支払い待ち
+        - 発送対応中
+        - 完了
+        - キャンセル
+        - 返金
+        - 失敗
     OrderType:
       description: 注文種別
       type: integer
@@ -525,9 +675,19 @@ components:
         OrderTypeExperience: 体験
         OrderTypeProduct: 商品
       x-enum-varnames:
-      - OrderTypeUnknown
-      - OrderTypeProduct
-      - OrderTypeExperience
+        - OrderTypeUnknown
+        - OrderTypeProduct
+        - OrderTypeExperience
+      enum:
+        - 0
+        - 1
+        - 2
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 商品
+        - 体験
     OrdersResponse:
       properties:
         coordinators:
@@ -558,6 +718,12 @@ components:
           description: 合計数
           type: integer
       type: object
+      required:
+        - coordinators
+        - orders
+        - products
+        - promotions
+        - total
     PaymentMethodType:
       description: 支払い方法
       type: integer
@@ -575,19 +741,49 @@ components:
         PaymentMethodTypePayPay: QR決済（PayPay）
         PaymentMethodTypeRakutenPay: QR決済（楽天ペイ）
       x-enum-varnames:
-      - PaymentMethodTypeUnknown
-      - PaymentMethodTypeCash
-      - PaymentMethodTypeCreditCard
-      - PaymentMethodTypeKonbini
-      - PaymentMethodTypeBankTransfer
-      - PaymentMethodTypePayPay
-      - PaymentMethodTypeLinePay
-      - PaymentMethodTypeMerpay
-      - PaymentMethodTypeRakutenPay
-      - PaymentMethodTypeAUPay
-      - PaymentMethodTypeFree
-      - PaymentMethodTypePaidy
-      - PaymentMethodTypePayEasy
+        - PaymentMethodTypeUnknown
+        - PaymentMethodTypeCash
+        - PaymentMethodTypeCreditCard
+        - PaymentMethodTypeKonbini
+        - PaymentMethodTypeBankTransfer
+        - PaymentMethodTypePayPay
+        - PaymentMethodTypeLinePay
+        - PaymentMethodTypeMerpay
+        - PaymentMethodTypeRakutenPay
+        - PaymentMethodTypeAUPay
+        - PaymentMethodTypeFree
+        - PaymentMethodTypePaidy
+        - PaymentMethodTypePayEasy
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 代引支払い
+        - クレジットカード決済
+        - コンビニ決済
+        - 銀行振込決済
+        - QR決済（PayPay）
+        - QR決済（LINE Pay）
+        - QR決済（メルペイ）
+        - QR決済（楽天ペイ）
+        - QR決済（au PAY）
+        - 決済無し
+        - ペイディ（Paidy）
+        - ペイジー（Pay-easy）
     PaymentStatus:
       description: 注文ステータス
       type: integer
@@ -597,11 +793,25 @@ components:
         PaymentStatusPaid: 支払い済み
         PaymentStatusUnpaid: 未支払い
       x-enum-varnames:
-      - PaymentStatusUnknown
-      - PaymentStatusUnpaid
-      - PaymentStatusPaid
-      - PaymentStatusCanceled
-      - PaymentStatusFailed
+        - PaymentStatusUnknown
+        - PaymentStatusUnpaid
+        - PaymentStatusPaid
+        - PaymentStatusCanceled
+        - PaymentStatusFailed
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 未支払い
+        - 支払い済み
+        - キャンセル済み
+        - 失敗
     Producer:
       description: 生産者情報
       properties:
@@ -639,6 +849,18 @@ components:
           description: 生産者名
           type: string
       type: object
+      required:
+        - city
+        - coordinatorId
+        - facebookId
+        - headerUrl
+        - id
+        - instagramId
+        - prefecture
+        - profile
+        - promotionVideoUrl
+        - thumbnailUrl
+        - username
     Product:
       description: 商品情報
       properties:
@@ -735,6 +957,37 @@ components:
           description: 重量(kg,少数第一位まで)
           type: number
       type: object
+      required:
+        - box60Rate
+        - box80Rate
+        - box100Rate
+        - categoryId
+        - coordinatorId
+        - deliveryType
+        - description
+        - endAt
+        - expirationDate
+        - id
+        - inventory
+        - itemDescription
+        - itemUnit
+        - media
+        - name
+        - originCity
+        - originPrefecture
+        - price
+        - producerId
+        - productTagIds
+        - productTypeId
+        - rate
+        - recommendedPoint1
+        - recommendedPoint2
+        - recommendedPoint3
+        - startAt
+        - status
+        - storageMethodType
+        - thumbnailUrl
+        - weight
     ProductMedia:
       properties:
         isThumbnail:
@@ -744,6 +997,9 @@ components:
           description: メディアURL
           type: string
       type: object
+      required:
+        - isThumbnail
+        - url
     ProductRate:
       description: 商品評価
       properties:
@@ -759,6 +1015,10 @@ components:
           description: 評価詳細
           type: object
       type: object
+      required:
+        - average
+        - count
+        - detail
     ProductResponse:
       properties:
         category:
@@ -778,6 +1038,13 @@ components:
         productType:
           $ref: '#/components/schemas/ProductType'
       type: object
+      required:
+        - category
+        - coordinator
+        - producer
+        - product
+        - productTags
+        - productType
     ProductStatus:
       description: 販売状況
       type: integer
@@ -786,10 +1053,22 @@ components:
         ProductStatusOutOfSale: 販売期間外
         ProductStatusPresale: 予約受付中
       x-enum-varnames:
-      - ProductStatusUnknown
-      - ProductStatusPresale
-      - ProductStatusForSale
-      - ProductStatusOutOfSale
+        - ProductStatusUnknown
+        - ProductStatusPresale
+        - ProductStatusForSale
+        - ProductStatusOutOfSale
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 予約受付中
+        - 販売中
+        - 販売期間外
     ProductTag:
       properties:
         id:
@@ -799,6 +1078,9 @@ components:
           description: 商品タグ名
           type: string
       type: object
+      required:
+        - id
+        - name
     ProductType:
       description: 品目情報
       properties:
@@ -815,6 +1097,11 @@ components:
           description: 品目名
           type: string
       type: object
+      required:
+        - categoryId
+        - iconUrl
+        - id
+        - name
     ProductsResponse:
       properties:
         categories:
@@ -857,6 +1144,14 @@ components:
           description: 商品合計数
           type: integer
       type: object
+      required:
+        - categories
+        - coordinators
+        - producers
+        - productTags
+        - productTypes
+        - products
+        - total
     Promotion:
       description: プロモーション情報
       properties:
@@ -886,6 +1181,16 @@ components:
           description: タイトル
           type: string
       type: object
+      required:
+        - code
+        - description
+        - discountRate
+        - discountType
+        - endAt
+        - id
+        - startAt
+        - status
+        - title
     PromotionStatus:
       description: ステータス
       type: integer
@@ -895,11 +1200,25 @@ components:
         PromotionStatusPrivate: 非公開
         PromotionStatusWaiting: 利用開始前
       x-enum-varnames:
-      - PromotionStatusUnknown
-      - PromotionStatusPrivate
-      - PromotionStatusWaiting
-      - PromotionStatusEnabled
-      - PromotionStatusFinished
+        - PromotionStatusUnknown
+        - PromotionStatusPrivate
+        - PromotionStatusWaiting
+        - PromotionStatusEnabled
+        - PromotionStatusFinished
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 非公開
+        - 利用開始前
+        - 利用可能
+        - 利用終了
     RefundType:
       description: 注文キャンセル種別
       type: integer
@@ -908,9 +1227,19 @@ components:
         RefundTypeNone: キャンセルなし
         RefundTypeRefunded: 返金
       x-enum-varnames:
-      - RefundTypeNone
-      - RefundTypeCanceled
-      - RefundTypeRefunded
+        - RefundTypeNone
+        - RefundTypeCanceled
+        - RefundTypeRefunded
+      enum:
+        - 0
+        - 1
+        - 2
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - キャンセルなし
+        - キャンセル
+        - 返金
     ShippingSize:
       description: 箱のサイズ
       type: integer
@@ -919,10 +1248,22 @@ components:
         ShippingSize80: 箱のサイズ:80
         ShippingSize100: 箱のサイズ:100
       x-enum-varnames:
-      - ShippingSizeUnknown
-      - ShippingSize60
-      - ShippingSize80
-      - ShippingSize100
+        - ShippingSizeUnknown
+        - ShippingSize60
+        - ShippingSize80
+        - ShippingSize100
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 箱のサイズ:60
+        - 箱のサイズ:80
+        - 箱のサイズ:100
     ShippingType:
       description: 箱の種別
       type: integer
@@ -931,17 +1272,29 @@ components:
         ShippingTypeNormal: 常温・冷蔵便
         ShippingTypePickup: 店舗受取
       x-enum-varnames:
-      - ShippingTypeUnknown
-      - ShippingTypeNormal
-      - ShippingTypeFrozen
-      - ShippingTypePickup
+        - ShippingTypeUnknown
+        - ShippingTypeNormal
+        - ShippingTypeFrozen
+        - ShippingTypePickup
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 常温・冷蔵便
+        - 冷凍便
+        - 店舗受取
     SignInRequest:
       properties:
         authToken:
           description: LINEの認証トークン
           type: string
       required:
-      - authToken
+        - authToken
       type: object
     StorageMethodType:
       description: 保存方法
@@ -952,11 +1305,25 @@ components:
         StorageMethodTypeNormal: 常温保存
         StorageMethodTypeRefrigerated: 冷蔵保存
       x-enum-varnames:
-      - StorageMethodTypeUnknown
-      - StorageMethodTypeNormal
-      - StorageMethodTypeCoolDark
-      - StorageMethodTypeRefrigerated
-      - StorageMethodTypeFrozen
+        - StorageMethodTypeUnknown
+        - StorageMethodTypeNormal
+        - StorageMethodTypeCoolDark
+        - StorageMethodTypeRefrigerated
+        - StorageMethodTypeFrozen
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 常温保存
+        - 冷暗所保存
+        - 冷蔵保存
+        - 冷凍保存
     UpdateAuthUserRequest:
       properties:
         firstname:
@@ -983,11 +1350,12 @@ components:
           description: 電話番号
           type: string
       required:
-      - firstname
-      - firstnameKana
-      - lastname
-      - lastnameKana
-      - phoneNumber
+        - firstname
+        - firstnameKana
+        - lastname
+        - lastnameKana
+        - phoneNumber
+        - lastCheckInAt
       type: object
     ErrorResponse:
       properties:
@@ -1001,6 +1369,10 @@ components:
           description: ステータスコード
           type: integer
       type: object
+      required:
+        - detail
+        - message
+        - status
   securitySchemes:
     bearerauth:
       bearerFormat: JWT
@@ -1019,12 +1391,12 @@ paths:
     delete:
       description: ふるマルからサインアウトします。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: No Content
@@ -1035,19 +1407,19 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: サインアウト
       tags:
-      - Auth
+        - Auth
     post:
       description: LINEの認証トークンを渡すことで、ふるマルへサインインします。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1088,17 +1460,17 @@ paths:
           description: ユーザーが存在しない
       summary: サインイン
       tags:
-      - Auth
+        - Auth
   /facilities/{facilityId}/auth/refresh-token:
     post:
       description: 更新トークンを渡すことで、アクセストークンを再発行します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1132,20 +1504,20 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: リフレッシュトークンが無効
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: アクセストークンの再発行
       tags:
-      - Auth
+        - Auth
   /facilities/{facilityId}/carts:
     get:
       description: カートの内容を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1160,20 +1532,20 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: カート取得
       tags:
-      - Cart
+        - Cart
   /facilities/{facilityId}/carts/-/items:
     post:
       description: カートに商品を追加します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1197,26 +1569,26 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: カートに追加
       tags:
-      - Cart
+        - Cart
   /facilities/{facilityId}/carts/-/items/{productId}:
     delete:
       description: カートから商品を削除します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 商品ID
-        in: path
-        name: productId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 商品ID
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: No Content
@@ -1227,36 +1599,36 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: カートから削除
       tags:
-      - Cart
+        - Cart
   /facilities/{facilityId}/carts/{coordinatorId}:
     get:
       description: カートの内容を計算します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: コーディネーターID
-        in: path
-        name: coordinatorId
-        required: true
-        schema:
-          type: string
-      - description: 箱数
-        in: query
-        name: number
-        schema:
-          type: integer
-      - description: プロモーションコード
-        in: query
-        name: promotion
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: コーディネーターID
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+        - description: 箱数
+          in: query
+          name: number
+          schema:
+            type: integer
+        - description: プロモーションコード
+          in: query
+          name: promotion
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1277,20 +1649,20 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: カート計算
       tags:
-      - Cart
+        - Cart
   /facilities/{facilityId}/checkouts:
     post:
       description: 商品を購入します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1318,26 +1690,26 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: 購入する
       tags:
-      - Checkout
+        - Checkout
   /facilities/{facilityId}/checkouts/{transactionId}:
     get:
       description: 支払い状態を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 取引ID
-        in: path
-        name: transactionId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 取引ID
+          in: path
+          name: transactionId
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1364,40 +1736,40 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 取引が見つからない
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: 支払い状態取得
       tags:
-      - Checkout
+        - Checkout
   /facilities/{facilityId}/orders:
     get:
       description: 注文の一覧を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 取得件数
-        in: query
-        name: limit
-        schema:
-          default: 20
-          type: integer
-      - description: 取得開始位置
-        in: query
-        name: offset
-        schema:
-          default: 0
-          type: integer
-      - description: 注文ステータス
-        in: query
-        name: types
-        schema:
-          items:
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 取得件数
+          in: query
+          name: limit
+          schema:
+            default: 20
             type: integer
-          type: array
-        style: form
+        - description: 取得開始位置
+          in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+        - description: 注文ステータス
+          in: query
+          name: types
+          schema:
+            items:
+              type: integer
+            type: array
+          style: form
       responses:
         "200":
           content:
@@ -1418,26 +1790,26 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: 注文一覧取得
       tags:
-      - Order
+        - Order
   /facilities/{facilityId}/orders/{orderId}:
     get:
       description: 注文の詳細を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 注文ID
-        in: path
-        name: orderId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 注文ID
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1458,32 +1830,32 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 注文が見つからない
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: 注文詳細取得
       tags:
-      - Order
+        - Order
   /facilities/{facilityId}/products:
     get:
       description: 商品の一覧を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 取得件数
-        in: query
-        name: limit
-        schema:
-          default: 20
-          type: integer
-      - description: 取得開始位置
-        in: query
-        name: offset
-        schema:
-          default: 0
-          type: integer
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 取得件数
+          in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - description: 取得開始位置
+          in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
       responses:
         "200":
           content:
@@ -1499,23 +1871,23 @@ paths:
           description: バリデーションエラー
       summary: 商品一覧取得
       tags:
-      - Product
+        - Product
   /facilities/{facilityId}/products/{productId}:
     get:
       description: 商品の詳細を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
-      - description: 商品ID
-        in: path
-        name: productId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
+        - description: 商品ID
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1531,17 +1903,17 @@ paths:
           description: 商品が見つからない
       summary: 商品詳細取得
       tags:
-      - Product
+        - Product
   /facilities/{facilityId}/users:
     post:
       description: ユーザーの詳細情報を登録します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1576,17 +1948,17 @@ paths:
           description: ユーザーが既に存在する
       summary: ユーザー情報登録
       tags:
-      - AuthUser
+        - AuthUser
   /facilities/{facilityId}/users/me:
     get:
       description: ユーザーの詳細情報を取得します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -1607,19 +1979,19 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: ユーザー情報取得
       tags:
-      - AuthUser
+        - AuthUser
     put:
       description: ユーザーの詳細情報を更新します。
       parameters:
-      - description: 施設ID
-        in: path
-        name: facilityId
-        required: true
-        schema:
-          type: string
+        - description: 施設ID
+          in: path
+          name: facilityId
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1643,12 +2015,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: 認証エラー
       security:
-      - bearerauth: []
+        - bearerauth: []
       summary: ユーザー情報更新
       tags:
-      - AuthUser
+        - AuthUser
 servers:
-- description: 検証環境
-  url: https://api.furumaru-stg.and-period.work
-- description: 本番環境
-  url: https://api.furumaru.and-period.co.jp
+  - description: 検証環境
+    url: https://api.furumaru-stg.and-period.work
+  - description: 本番環境
+    url: https://api.furumaru.and-period.co.jp

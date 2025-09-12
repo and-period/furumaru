@@ -80,8 +80,12 @@ export class CartApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/carts/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
         const response = await this.request({
-            path: `/carts/{coordinatorId}`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -108,8 +112,11 @@ export class CartApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/carts`;
+
         const response = await this.request({
-            path: `/carts`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -145,8 +152,11 @@ export class CartApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/carts/-/items`;
+
         const response = await this.request({
-            path: `/carts/-/items`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -184,8 +194,12 @@ export class CartApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/carts/-/items/{productId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/carts/-/items/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,

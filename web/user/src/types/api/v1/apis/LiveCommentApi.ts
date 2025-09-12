@@ -63,8 +63,12 @@ export class LiveCommentApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/schedules/{scheduleId}/comments`;
+        urlPath = urlPath.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId'])));
+
         const response = await this.request({
-            path: `/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -115,8 +119,12 @@ export class LiveCommentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/schedules/{scheduleId}/comments`;
+        urlPath = urlPath.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId'])));
+
         const response = await this.request({
-            path: `/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

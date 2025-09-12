@@ -49,10 +49,15 @@ export function ForgotAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimi
     };
 }
 
-export function ForgotAuthPasswordRequestToJSON(value?: ForgotAuthPasswordRequest | null): any {
+export function ForgotAuthPasswordRequestToJSON(json: any): ForgotAuthPasswordRequest {
+    return ForgotAuthPasswordRequestToJSONTyped(json, false);
+}
+
+export function ForgotAuthPasswordRequestToJSONTyped(value?: ForgotAuthPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'email': value['email'],

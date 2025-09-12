@@ -32,7 +32,7 @@ export interface TypesOrderFulfillment {
      */
     boxRate?: number;
     /**
-     * 箱の大きさ
+     * 箱のサイズ
      * @type {number}
      * @memberof TypesOrderFulfillment
      */
@@ -56,7 +56,7 @@ export interface TypesOrderFulfillment {
      */
     shippingCarrier?: number;
     /**
-     * 配送方法
+     * 箱の種別
      * @type {number}
      * @memberof TypesOrderFulfillment
      */

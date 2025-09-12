@@ -24,43 +24,49 @@ export interface ArchiveSummary {
      * @type {string}
      * @memberof ArchiveSummary
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 開催終了日時
      * @type {number}
      * @memberof ArchiveSummary
      */
-    endAt?: number;
+    endAt: number;
     /**
      * 開催スケジュールID
      * @type {string}
      * @memberof ArchiveSummary
      */
-    scheduleId?: string;
+    scheduleId: string;
     /**
      * 開催開始日時
      * @type {number}
      * @memberof ArchiveSummary
      */
-    startAt?: number;
+    startAt: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof ArchiveSummary
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof ArchiveSummary
      */
-    title?: string;
+    title: string;
 }
 
 /**
  * Check if a given object implements the ArchiveSummary interface.
  */
 export function instanceOfArchiveSummary(value: object): value is ArchiveSummary {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -74,19 +80,24 @@ export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'scheduleId': json['scheduleId'] == null ? undefined : json['scheduleId'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'coordinatorId': json['coordinatorId'],
+        'endAt': json['endAt'],
+        'scheduleId': json['scheduleId'],
+        'startAt': json['startAt'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
     };
 }
 
-export function ArchiveSummaryToJSON(value?: ArchiveSummary | null): any {
+export function ArchiveSummaryToJSON(json: any): ArchiveSummary {
+    return ArchiveSummaryToJSONTyped(json, false);
+}
+
+export function ArchiveSummaryToJSONTyped(value?: ArchiveSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],

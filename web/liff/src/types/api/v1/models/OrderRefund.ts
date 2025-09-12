@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { RefundType } from './RefundType';
+import {
+    RefundTypeFromJSON,
+    RefundTypeFromJSONTyped,
+    RefundTypeToJSON,
+    RefundTypeToJSONTyped,
+} from './RefundType';
+
 /**
  * 注文キャンセル情報
  * @export
@@ -24,37 +32,44 @@ export interface OrderRefund {
      * @type {boolean}
      * @memberof OrderRefund
      */
-    canceled?: boolean;
+    canceled: boolean;
     /**
      * 注文キャンセル日時
      * @type {number}
      * @memberof OrderRefund
      */
-    canceledAt?: number;
+    canceledAt: number;
     /**
      * 注文キャンセル理由
      * @type {string}
      * @memberof OrderRefund
      */
-    reason?: string;
+    reason: string;
     /**
      * 返金金額
      * @type {number}
      * @memberof OrderRefund
      */
-    total?: number;
+    total: number;
     /**
-     * 注文キャンセル種別
-     * @type {number}
+     * 
+     * @type {RefundType}
      * @memberof OrderRefund
      */
-    type?: number;
+    type: RefundType;
 }
+
+
 
 /**
  * Check if a given object implements the OrderRefund interface.
  */
 export function instanceOfOrderRefund(value: object): value is OrderRefund {
+    if (!('canceled' in value) || value['canceled'] === undefined) return false;
+    if (!('canceledAt' in value) || value['canceledAt'] === undefined) return false;
+    if (!('reason' in value) || value['reason'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -68,25 +83,30 @@ export function OrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'canceled': json['canceled'] == null ? undefined : json['canceled'],
-        'canceledAt': json['canceledAt'] == null ? undefined : json['canceledAt'],
-        'reason': json['reason'] == null ? undefined : json['reason'],
-        'total': json['total'] == null ? undefined : json['total'],
-        'type': json['type'] == null ? undefined : json['type'],
+        'canceled': json['canceled'],
+        'canceledAt': json['canceledAt'],
+        'reason': json['reason'],
+        'total': json['total'],
+        'type': RefundTypeFromJSON(json['type']),
     };
 }
 
-export function OrderRefundToJSON(value?: OrderRefund | null): any {
+export function OrderRefundToJSON(json: any): OrderRefund {
+    return OrderRefundToJSONTyped(json, false);
+}
+
+export function OrderRefundToJSONTyped(value?: OrderRefund | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'canceled': value['canceled'],
         'canceledAt': value['canceledAt'],
         'reason': value['reason'],
         'total': value['total'],
-        'type': value['type'],
+        'type': RefundTypeToJSON(value['type']),
     };
 }
 

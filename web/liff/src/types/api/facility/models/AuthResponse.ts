@@ -24,37 +24,42 @@ export interface AuthResponse {
      * @type {string}
      * @memberof AuthResponse
      */
-    accessToken?: string;
+    accessToken: string;
     /**
      * 有効期限
      * @type {number}
      * @memberof AuthResponse
      */
-    expiresIn?: number;
+    expiresIn: number;
     /**
      * 更新トークン
      * @type {string}
      * @memberof AuthResponse
      */
-    refreshToken?: string;
+    refreshToken: string;
     /**
      * トークン種別
      * @type {string}
      * @memberof AuthResponse
      */
-    tokenType?: string;
+    tokenType: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof AuthResponse
      */
-    userId?: string;
+    userId: string;
 }
 
 /**
  * Check if a given object implements the AuthResponse interface.
  */
 export function instanceOfAuthResponse(value: object): value is AuthResponse {
+    if (!('accessToken' in value) || value['accessToken'] === undefined) return false;
+    if (!('expiresIn' in value) || value['expiresIn'] === undefined) return false;
+    if (!('refreshToken' in value) || value['refreshToken'] === undefined) return false;
+    if (!('tokenType' in value) || value['tokenType'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
 
@@ -68,18 +73,23 @@ export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'accessToken': json['accessToken'] == null ? undefined : json['accessToken'],
-        'expiresIn': json['expiresIn'] == null ? undefined : json['expiresIn'],
-        'refreshToken': json['refreshToken'] == null ? undefined : json['refreshToken'],
-        'tokenType': json['tokenType'] == null ? undefined : json['tokenType'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
+        'accessToken': json['accessToken'],
+        'expiresIn': json['expiresIn'],
+        'refreshToken': json['refreshToken'],
+        'tokenType': json['tokenType'],
+        'userId': json['userId'],
     };
 }
 
-export function AuthResponseToJSON(value?: AuthResponse | null): any {
+export function AuthResponseToJSON(json: any): AuthResponse {
+    return AuthResponseToJSONTyped(json, false);
+}
+
+export function AuthResponseToJSONTyped(value?: AuthResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accessToken': value['accessToken'],

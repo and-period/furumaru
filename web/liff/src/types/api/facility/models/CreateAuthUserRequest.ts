@@ -42,7 +42,7 @@ export interface CreateAuthUserRequest {
      * @type {number}
      * @memberof CreateAuthUserRequest
      */
-    lastCheckInAt?: number;
+    lastCheckInAt: number;
     /**
      * 姓
      * @type {string}
@@ -70,6 +70,7 @@ export function instanceOfCreateAuthUserRequest(value: object): value is CreateA
     if (!('authToken' in value) || value['authToken'] === undefined) return false;
     if (!('firstname' in value) || value['firstname'] === undefined) return false;
     if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('lastCheckInAt' in value) || value['lastCheckInAt'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
     if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
     if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
@@ -89,17 +90,22 @@ export function CreateAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
         'authToken': json['authToken'],
         'firstname': json['firstname'],
         'firstnameKana': json['firstnameKana'],
-        'lastCheckInAt': json['lastCheckInAt'] == null ? undefined : json['lastCheckInAt'],
+        'lastCheckInAt': json['lastCheckInAt'],
         'lastname': json['lastname'],
         'lastnameKana': json['lastnameKana'],
         'phoneNumber': json['phoneNumber'],
     };
 }
 
-export function CreateAuthUserRequestToJSON(value?: CreateAuthUserRequest | null): any {
+export function CreateAuthUserRequestToJSON(json: any): CreateAuthUserRequest {
+    return CreateAuthUserRequestToJSONTyped(json, false);
+}
+
+export function CreateAuthUserRequestToJSONTyped(value?: CreateAuthUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'authToken': value['authToken'],

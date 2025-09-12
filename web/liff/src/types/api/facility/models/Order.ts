@@ -13,23 +13,40 @@
  */
 
 import { mapValues } from '../runtime';
+import type { OrderStatus } from './OrderStatus';
+import {
+    OrderStatusFromJSON,
+    OrderStatusFromJSONTyped,
+    OrderStatusToJSON,
+    OrderStatusToJSONTyped,
+} from './OrderStatus';
+import type { OrderType } from './OrderType';
+import {
+    OrderTypeFromJSON,
+    OrderTypeFromJSONTyped,
+    OrderTypeToJSON,
+    OrderTypeToJSONTyped,
+} from './OrderType';
 import type { OrderItem } from './OrderItem';
 import {
     OrderItemFromJSON,
     OrderItemFromJSONTyped,
     OrderItemToJSON,
+    OrderItemToJSONTyped,
 } from './OrderItem';
 import type { OrderRefund } from './OrderRefund';
 import {
     OrderRefundFromJSON,
     OrderRefundFromJSONTyped,
     OrderRefundToJSON,
+    OrderRefundToJSONTyped,
 } from './OrderRefund';
 import type { OrderPayment } from './OrderPayment';
 import {
     OrderPaymentFromJSON,
     OrderPaymentFromJSONTyped,
     OrderPaymentToJSON,
+    OrderPaymentToJSONTyped,
 } from './OrderPayment';
 
 /**
@@ -43,67 +60,79 @@ export interface Order {
      * @type {string}
      * @memberof Order
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 注文履歴ID
      * @type {string}
      * @memberof Order
      */
-    id?: string;
+    id: string;
     /**
      * 注文商品一覧
      * @type {Array<OrderItem>}
      * @memberof Order
      */
-    items?: Array<OrderItem>;
+    items: Array<OrderItem>;
     /**
      * 
      * @type {OrderPayment}
      * @memberof Order
      */
-    payment?: OrderPayment;
+    payment: OrderPayment;
     /**
      * 受け取り日時
      * @type {number}
      * @memberof Order
      */
-    pickupAt?: number;
+    pickupAt: number;
     /**
      * 受け取り場所
      * @type {string}
      * @memberof Order
      */
-    pickupLocation?: string;
+    pickupLocation: string;
     /**
      * プロモーションID
      * @type {string}
      * @memberof Order
      */
-    promotionId?: string;
+    promotionId: string;
     /**
      * 
      * @type {OrderRefund}
      * @memberof Order
      */
-    refund?: OrderRefund;
+    refund: OrderRefund;
     /**
-     * 注文ステータス
-     * @type {number}
+     * 
+     * @type {OrderStatus}
      * @memberof Order
      */
-    status?: number;
+    status: OrderStatus;
     /**
-     * 注文種別
-     * @type {number}
+     * 
+     * @type {OrderType}
      * @memberof Order
      */
-    type?: number;
+    type: OrderType;
 }
+
+
 
 /**
  * Check if a given object implements the Order interface.
  */
 export function instanceOfOrder(value: object): value is Order {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('payment' in value) || value['payment'] === undefined) return false;
+    if (!('pickupAt' in value) || value['pickupAt'] === undefined) return false;
+    if (!('pickupLocation' in value) || value['pickupLocation'] === undefined) return false;
+    if (!('promotionId' in value) || value['promotionId'] === undefined) return false;
+    if (!('refund' in value) || value['refund'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -117,35 +146,40 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(OrderItemFromJSON)),
-        'payment': json['payment'] == null ? undefined : OrderPaymentFromJSON(json['payment']),
-        'pickupAt': json['pickupAt'] == null ? undefined : json['pickupAt'],
-        'pickupLocation': json['pickupLocation'] == null ? undefined : json['pickupLocation'],
-        'promotionId': json['promotionId'] == null ? undefined : json['promotionId'],
-        'refund': json['refund'] == null ? undefined : OrderRefundFromJSON(json['refund']),
-        'status': json['status'] == null ? undefined : json['status'],
-        'type': json['type'] == null ? undefined : json['type'],
+        'coordinatorId': json['coordinatorId'],
+        'id': json['id'],
+        'items': ((json['items'] as Array<any>).map(OrderItemFromJSON)),
+        'payment': OrderPaymentFromJSON(json['payment']),
+        'pickupAt': json['pickupAt'],
+        'pickupLocation': json['pickupLocation'],
+        'promotionId': json['promotionId'],
+        'refund': OrderRefundFromJSON(json['refund']),
+        'status': OrderStatusFromJSON(json['status']),
+        'type': OrderTypeFromJSON(json['type']),
     };
 }
 
-export function OrderToJSON(value?: Order | null): any {
+export function OrderToJSON(json: any): Order {
+    return OrderToJSONTyped(json, false);
+}
+
+export function OrderToJSONTyped(value?: Order | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],
         'id': value['id'],
-        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(OrderItemToJSON)),
+        'items': ((value['items'] as Array<any>).map(OrderItemToJSON)),
         'payment': OrderPaymentToJSON(value['payment']),
         'pickupAt': value['pickupAt'],
         'pickupLocation': value['pickupLocation'],
         'promotionId': value['promotionId'],
         'refund': OrderRefundToJSON(value['refund']),
-        'status': value['status'],
-        'type': value['type'],
+        'status': OrderStatusToJSON(value['status']),
+        'type': OrderTypeToJSON(value['type']),
     };
 }
 

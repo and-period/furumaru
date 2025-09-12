@@ -24,13 +24,14 @@ export interface UpdateAuthUserThumbnailRequest {
      * @type {string}
      * @memberof UpdateAuthUserThumbnailRequest
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
 }
 
 /**
  * Check if a given object implements the UpdateAuthUserThumbnailRequest interface.
  */
 export function instanceOfUpdateAuthUserThumbnailRequest(value: object): value is UpdateAuthUserThumbnailRequest {
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function UpdateAuthUserThumbnailRequestFromJSONTyped(json: any, ignoreDis
     }
     return {
         
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
+        'thumbnailUrl': json['thumbnailUrl'],
     };
 }
 
-export function UpdateAuthUserThumbnailRequestToJSON(value?: UpdateAuthUserThumbnailRequest | null): any {
+export function UpdateAuthUserThumbnailRequestToJSON(json: any): UpdateAuthUserThumbnailRequest {
+    return UpdateAuthUserThumbnailRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserThumbnailRequestToJSONTyped(value?: UpdateAuthUserThumbnailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'thumbnailUrl': value['thumbnailUrl'],

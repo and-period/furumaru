@@ -24,19 +24,21 @@ export interface CartItem {
      * @type {string}
      * @memberof CartItem
      */
-    productId?: string;
+    productId: string;
     /**
      * 数量
      * @type {number}
      * @memberof CartItem
      */
-    quantity?: number;
+    quantity: number;
 }
 
 /**
  * Check if a given object implements the CartItem interface.
  */
 export function instanceOfCartItem(value: object): value is CartItem {
+    if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function CartItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'productId': json['productId'] == null ? undefined : json['productId'],
-        'quantity': json['quantity'] == null ? undefined : json['quantity'],
+        'productId': json['productId'],
+        'quantity': json['quantity'],
     };
 }
 
-export function CartItemToJSON(value?: CartItem | null): any {
+export function CartItemToJSON(json: any): CartItem {
+    return CartItemToJSONTyped(json, false);
+}
+
+export function CartItemToJSONTyped(value?: CartItem | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'productId': value['productId'],

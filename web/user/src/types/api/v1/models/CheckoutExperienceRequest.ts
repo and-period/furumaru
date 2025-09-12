@@ -18,6 +18,7 @@ import {
     CheckoutCreditCardFromJSON,
     CheckoutCreditCardFromJSONTyped,
     CheckoutCreditCardToJSON,
+    CheckoutCreditCardToJSONTyped,
 } from './CheckoutCreditCard';
 
 /**
@@ -31,7 +32,7 @@ export interface CheckoutExperienceRequest {
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    adultCount?: number;
+    adultCount: number;
     /**
      * 請求先住所ID
      * @type {string}
@@ -49,19 +50,19 @@ export interface CheckoutExperienceRequest {
      * @type {CheckoutCreditCard}
      * @memberof CheckoutExperienceRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
     /**
      * 小学生人数
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    elementarySchoolCount?: number;
+    elementarySchoolCount: number;
     /**
      * 中学生人数
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    juniorHighSchoolCount?: number;
+    juniorHighSchoolCount: number;
     /**
      * 支払い方法
      * @type {number}
@@ -73,13 +74,13 @@ export interface CheckoutExperienceRequest {
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    preschoolCount?: number;
+    preschoolCount: number;
     /**
      * プロモーションコード
      * @type {string}
      * @memberof CheckoutExperienceRequest
      */
-    promotionCode?: string;
+    promotionCode: string;
     /**
      * 支払いキー(重複判定用)
      * @type {string}
@@ -91,41 +92,52 @@ export interface CheckoutExperienceRequest {
      * @type {string}
      * @memberof CheckoutExperienceRequest
      */
-    requestedDate?: string;
+    requestedDate: string;
     /**
      * 体験希望時間
      * @type {string}
      * @memberof CheckoutExperienceRequest
      */
-    requestedTime?: string;
+    requestedTime: string;
     /**
      * シニア人数
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    seniorCount?: number;
+    seniorCount: number;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
      * @memberof CheckoutExperienceRequest
      */
-    total?: number;
+    total: number;
     /**
      * 交通手段
      * @type {string}
      * @memberof CheckoutExperienceRequest
      */
-    transportation?: string;
+    transportation: string;
 }
 
 /**
  * Check if a given object implements the CheckoutExperienceRequest interface.
  */
 export function instanceOfCheckoutExperienceRequest(value: object): value is CheckoutExperienceRequest {
+    if (!('adultCount' in value) || value['adultCount'] === undefined) return false;
     if (!('billingAddressId' in value) || value['billingAddressId'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
+    if (!('elementarySchoolCount' in value) || value['elementarySchoolCount'] === undefined) return false;
+    if (!('juniorHighSchoolCount' in value) || value['juniorHighSchoolCount'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('preschoolCount' in value) || value['preschoolCount'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('requestedDate' in value) || value['requestedDate'] === undefined) return false;
+    if (!('requestedTime' in value) || value['requestedTime'] === undefined) return false;
+    if (!('seniorCount' in value) || value['seniorCount'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('transportation' in value) || value['transportation'] === undefined) return false;
     return true;
 }
 
@@ -139,28 +151,33 @@ export function CheckoutExperienceRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'adultCount': json['adultCount'] == null ? undefined : json['adultCount'],
+        'adultCount': json['adultCount'],
         'billingAddressId': json['billingAddressId'],
         'callbackUrl': json['callbackUrl'],
-        'creditCard': json['creditCard'] == null ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
-        'elementarySchoolCount': json['elementarySchoolCount'] == null ? undefined : json['elementarySchoolCount'],
-        'juniorHighSchoolCount': json['juniorHighSchoolCount'] == null ? undefined : json['juniorHighSchoolCount'],
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'elementarySchoolCount': json['elementarySchoolCount'],
+        'juniorHighSchoolCount': json['juniorHighSchoolCount'],
         'paymentMethod': json['paymentMethod'],
-        'preschoolCount': json['preschoolCount'] == null ? undefined : json['preschoolCount'],
-        'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
+        'preschoolCount': json['preschoolCount'],
+        'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
-        'requestedDate': json['requestedDate'] == null ? undefined : json['requestedDate'],
-        'requestedTime': json['requestedTime'] == null ? undefined : json['requestedTime'],
-        'seniorCount': json['seniorCount'] == null ? undefined : json['seniorCount'],
-        'total': json['total'] == null ? undefined : json['total'],
-        'transportation': json['transportation'] == null ? undefined : json['transportation'],
+        'requestedDate': json['requestedDate'],
+        'requestedTime': json['requestedTime'],
+        'seniorCount': json['seniorCount'],
+        'total': json['total'],
+        'transportation': json['transportation'],
     };
 }
 
-export function CheckoutExperienceRequestToJSON(value?: CheckoutExperienceRequest | null): any {
+export function CheckoutExperienceRequestToJSON(json: any): CheckoutExperienceRequest {
+    return CheckoutExperienceRequestToJSONTyped(json, false);
+}
+
+export function CheckoutExperienceRequestToJSONTyped(value?: CheckoutExperienceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'adultCount': value['adultCount'],

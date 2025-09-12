@@ -18,12 +18,14 @@ import {
     GuestCheckoutAddressFromJSON,
     GuestCheckoutAddressFromJSONTyped,
     GuestCheckoutAddressToJSON,
+    GuestCheckoutAddressToJSONTyped,
 } from './GuestCheckoutAddress';
 import type { CheckoutCreditCard } from './CheckoutCreditCard';
 import {
     CheckoutCreditCardFromJSON,
     CheckoutCreditCardFromJSONTyped,
     CheckoutCreditCardToJSON,
+    CheckoutCreditCardToJSONTyped,
 } from './CheckoutCreditCard';
 
 /**
@@ -37,7 +39,7 @@ export interface GuestCheckoutExperienceRequest {
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    adultCount?: number;
+    adultCount: number;
     /**
      * 
      * @type {GuestCheckoutAddress}
@@ -55,13 +57,13 @@ export interface GuestCheckoutExperienceRequest {
      * @type {CheckoutCreditCard}
      * @memberof GuestCheckoutExperienceRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
     /**
      * 小学生人数
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    elementarySchoolCount?: number;
+    elementarySchoolCount: number;
     /**
      * メールアドレス
      * @type {string}
@@ -73,7 +75,7 @@ export interface GuestCheckoutExperienceRequest {
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    juniorHighSchoolCount?: number;
+    juniorHighSchoolCount: number;
     /**
      * 支払い方法
      * @type {number}
@@ -85,13 +87,13 @@ export interface GuestCheckoutExperienceRequest {
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    preschoolCount?: number;
+    preschoolCount: number;
     /**
      * プロモーションコード
      * @type {string}
      * @memberof GuestCheckoutExperienceRequest
      */
-    promotionCode?: string;
+    promotionCode: string;
     /**
      * 支払いキー(重複判定用)
      * @type {string}
@@ -103,42 +105,53 @@ export interface GuestCheckoutExperienceRequest {
      * @type {string}
      * @memberof GuestCheckoutExperienceRequest
      */
-    requestedDate?: string;
+    requestedDate: string;
     /**
      * 体験希望時間
      * @type {string}
      * @memberof GuestCheckoutExperienceRequest
      */
-    requestedTime?: string;
+    requestedTime: string;
     /**
      * シニア人数
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    seniorCount?: number;
+    seniorCount: number;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
      * @memberof GuestCheckoutExperienceRequest
      */
-    total?: number;
+    total: number;
     /**
      * 交通手段
      * @type {string}
      * @memberof GuestCheckoutExperienceRequest
      */
-    transportation?: string;
+    transportation: string;
 }
 
 /**
  * Check if a given object implements the GuestCheckoutExperienceRequest interface.
  */
 export function instanceOfGuestCheckoutExperienceRequest(value: object): value is GuestCheckoutExperienceRequest {
+    if (!('adultCount' in value) || value['adultCount'] === undefined) return false;
     if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
+    if (!('elementarySchoolCount' in value) || value['elementarySchoolCount'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('juniorHighSchoolCount' in value) || value['juniorHighSchoolCount'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('preschoolCount' in value) || value['preschoolCount'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('requestedDate' in value) || value['requestedDate'] === undefined) return false;
+    if (!('requestedTime' in value) || value['requestedTime'] === undefined) return false;
+    if (!('seniorCount' in value) || value['seniorCount'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('transportation' in value) || value['transportation'] === undefined) return false;
     return true;
 }
 
@@ -152,29 +165,34 @@ export function GuestCheckoutExperienceRequestFromJSONTyped(json: any, ignoreDis
     }
     return {
         
-        'adultCount': json['adultCount'] == null ? undefined : json['adultCount'],
+        'adultCount': json['adultCount'],
         'billingAddress': GuestCheckoutAddressFromJSON(json['billingAddress']),
         'callbackUrl': json['callbackUrl'],
-        'creditCard': json['creditCard'] == null ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
-        'elementarySchoolCount': json['elementarySchoolCount'] == null ? undefined : json['elementarySchoolCount'],
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'elementarySchoolCount': json['elementarySchoolCount'],
         'email': json['email'],
-        'juniorHighSchoolCount': json['juniorHighSchoolCount'] == null ? undefined : json['juniorHighSchoolCount'],
+        'juniorHighSchoolCount': json['juniorHighSchoolCount'],
         'paymentMethod': json['paymentMethod'],
-        'preschoolCount': json['preschoolCount'] == null ? undefined : json['preschoolCount'],
-        'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
+        'preschoolCount': json['preschoolCount'],
+        'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
-        'requestedDate': json['requestedDate'] == null ? undefined : json['requestedDate'],
-        'requestedTime': json['requestedTime'] == null ? undefined : json['requestedTime'],
-        'seniorCount': json['seniorCount'] == null ? undefined : json['seniorCount'],
-        'total': json['total'] == null ? undefined : json['total'],
-        'transportation': json['transportation'] == null ? undefined : json['transportation'],
+        'requestedDate': json['requestedDate'],
+        'requestedTime': json['requestedTime'],
+        'seniorCount': json['seniorCount'],
+        'total': json['total'],
+        'transportation': json['transportation'],
     };
 }
 
-export function GuestCheckoutExperienceRequestToJSON(value?: GuestCheckoutExperienceRequest | null): any {
+export function GuestCheckoutExperienceRequestToJSON(json: any): GuestCheckoutExperienceRequest {
+    return GuestCheckoutExperienceRequestToJSONTyped(json, false);
+}
+
+export function GuestCheckoutExperienceRequestToJSONTyped(value?: GuestCheckoutExperienceRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'adultCount': value['adultCount'],

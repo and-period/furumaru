@@ -52,8 +52,11 @@ export class SpotTypeApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/spot-types`;
+
         const response = await this.request({
-            path: `/spot-types`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

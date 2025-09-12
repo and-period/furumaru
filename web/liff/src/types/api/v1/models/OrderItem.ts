@@ -24,31 +24,35 @@ export interface OrderItem {
      * @type {string}
      * @memberof OrderItem
      */
-    fulfillmentId?: string;
+    fulfillmentId: string;
     /**
      * 購入価格(税込)
      * @type {number}
      * @memberof OrderItem
      */
-    price?: number;
+    price: number;
     /**
      * 商品ID
      * @type {string}
      * @memberof OrderItem
      */
-    productId?: string;
+    productId: string;
     /**
      * 購入数量
      * @type {number}
      * @memberof OrderItem
      */
-    quantity?: number;
+    quantity: number;
 }
 
 /**
  * Check if a given object implements the OrderItem interface.
  */
 export function instanceOfOrderItem(value: object): value is OrderItem {
+    if (!('fulfillmentId' in value) || value['fulfillmentId'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
+    if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
     return true;
 }
 
@@ -62,17 +66,22 @@ export function OrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'fulfillmentId': json['fulfillmentId'] == null ? undefined : json['fulfillmentId'],
-        'price': json['price'] == null ? undefined : json['price'],
-        'productId': json['productId'] == null ? undefined : json['productId'],
-        'quantity': json['quantity'] == null ? undefined : json['quantity'],
+        'fulfillmentId': json['fulfillmentId'],
+        'price': json['price'],
+        'productId': json['productId'],
+        'quantity': json['quantity'],
     };
 }
 
-export function OrderItemToJSON(value?: OrderItem | null): any {
+export function OrderItemToJSON(json: any): OrderItem {
+    return OrderItemToJSONTyped(json, false);
+}
+
+export function OrderItemToJSONTyped(value?: OrderItem | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'fulfillmentId': value['fulfillmentId'],

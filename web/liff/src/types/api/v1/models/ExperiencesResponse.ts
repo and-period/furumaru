@@ -18,24 +18,28 @@ import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { ExperienceType } from './ExperienceType';
 import {
     ExperienceTypeFromJSON,
     ExperienceTypeFromJSONTyped,
     ExperienceTypeToJSON,
+    ExperienceTypeToJSONTyped,
 } from './ExperienceType';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -49,37 +53,42 @@ export interface ExperiencesResponse {
      * @type {Array<Coordinator>}
      * @memberof ExperiencesResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 体験種別一覧
      * @type {Array<ExperienceType>}
      * @memberof ExperiencesResponse
      */
-    experienceTypes?: Array<ExperienceType>;
+    experienceTypes: Array<ExperienceType>;
     /**
      * 体験一覧
      * @type {Array<Experience>}
      * @memberof ExperiencesResponse
      */
-    experiences?: Array<Experience>;
+    experiences: Array<Experience>;
     /**
      * 生産者一覧
      * @type {Array<Producer>}
      * @memberof ExperiencesResponse
      */
-    producers?: Array<Producer>;
+    producers: Array<Producer>;
     /**
      * 体験合計数
      * @type {number}
      * @memberof ExperiencesResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the ExperiencesResponse interface.
  */
 export function instanceOfExperiencesResponse(value: object): value is ExperiencesResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('experienceTypes' in value) || value['experienceTypes'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -93,24 +102,29 @@ export function ExperiencesResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'experienceTypes': json['experienceTypes'] == null ? undefined : ((json['experienceTypes'] as Array<any>).map(ExperienceTypeFromJSON)),
-        'experiences': json['experiences'] == null ? undefined : ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
-        'producers': json['producers'] == null ? undefined : ((json['producers'] as Array<any>).map(ProducerFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'experienceTypes': ((json['experienceTypes'] as Array<any>).map(ExperienceTypeFromJSON)),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
+        'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function ExperiencesResponseToJSON(value?: ExperiencesResponse | null): any {
+export function ExperiencesResponseToJSON(json: any): ExperiencesResponse {
+    return ExperiencesResponseToJSONTyped(json, false);
+}
+
+export function ExperiencesResponseToJSONTyped(value?: ExperiencesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'experienceTypes': value['experienceTypes'] == null ? undefined : ((value['experienceTypes'] as Array<any>).map(ExperienceTypeToJSON)),
-        'experiences': value['experiences'] == null ? undefined : ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
-        'producers': value['producers'] == null ? undefined : ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'experienceTypes': ((value['experienceTypes'] as Array<any>).map(ExperienceTypeToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
         'total': value['total'],
     };
 }

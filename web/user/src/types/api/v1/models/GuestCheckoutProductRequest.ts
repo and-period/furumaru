@@ -18,12 +18,14 @@ import {
     GuestCheckoutAddressFromJSON,
     GuestCheckoutAddressFromJSONTyped,
     GuestCheckoutAddressToJSON,
+    GuestCheckoutAddressToJSONTyped,
 } from './GuestCheckoutAddress';
 import type { CheckoutCreditCard } from './CheckoutCreditCard';
 import {
     CheckoutCreditCardFromJSON,
     CheckoutCreditCardFromJSONTyped,
     CheckoutCreditCardToJSON,
+    CheckoutCreditCardToJSONTyped,
 } from './CheckoutCreditCard';
 
 /**
@@ -43,7 +45,7 @@ export interface GuestCheckoutProductRequest {
      * @type {number}
      * @memberof GuestCheckoutProductRequest
      */
-    boxNumber?: number;
+    boxNumber: number;
     /**
      * 決済完了後のリダイレクト先URL
      * @type {string}
@@ -61,7 +63,7 @@ export interface GuestCheckoutProductRequest {
      * @type {CheckoutCreditCard}
      * @memberof GuestCheckoutProductRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
     /**
      * メールアドレス
      * @type {string}
@@ -73,7 +75,7 @@ export interface GuestCheckoutProductRequest {
      * @type {boolean}
      * @memberof GuestCheckoutProductRequest
      */
-    isSameAddress?: boolean;
+    isSameAddress: boolean;
     /**
      * 支払い方法
      * @type {number}
@@ -85,7 +87,7 @@ export interface GuestCheckoutProductRequest {
      * @type {string}
      * @memberof GuestCheckoutProductRequest
      */
-    promotionCode?: string;
+    promotionCode: string;
     /**
      * 支払いキー(重複判定用)
      * @type {string}
@@ -97,13 +99,13 @@ export interface GuestCheckoutProductRequest {
      * @type {GuestCheckoutAddress}
      * @memberof GuestCheckoutProductRequest
      */
-    shippingAddress?: GuestCheckoutAddress;
+    shippingAddress: GuestCheckoutAddress;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
      * @memberof GuestCheckoutProductRequest
      */
-    total?: number;
+    total: number;
 }
 
 /**
@@ -111,11 +113,17 @@ export interface GuestCheckoutProductRequest {
  */
 export function instanceOfGuestCheckoutProductRequest(value: object): value is GuestCheckoutProductRequest {
     if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('isSameAddress' in value) || value['isSameAddress'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('shippingAddress' in value) || value['shippingAddress'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -130,24 +138,29 @@ export function GuestCheckoutProductRequestFromJSONTyped(json: any, ignoreDiscri
     return {
         
         'billingAddress': GuestCheckoutAddressFromJSON(json['billingAddress']),
-        'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
+        'boxNumber': json['boxNumber'],
         'callbackUrl': json['callbackUrl'],
         'coordinatorId': json['coordinatorId'],
-        'creditCard': json['creditCard'] == null ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
         'email': json['email'],
-        'isSameAddress': json['isSameAddress'] == null ? undefined : json['isSameAddress'],
+        'isSameAddress': json['isSameAddress'],
         'paymentMethod': json['paymentMethod'],
-        'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
+        'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
-        'shippingAddress': json['shippingAddress'] == null ? undefined : GuestCheckoutAddressFromJSON(json['shippingAddress']),
-        'total': json['total'] == null ? undefined : json['total'],
+        'shippingAddress': GuestCheckoutAddressFromJSON(json['shippingAddress']),
+        'total': json['total'],
     };
 }
 
-export function GuestCheckoutProductRequestToJSON(value?: GuestCheckoutProductRequest | null): any {
+export function GuestCheckoutProductRequestToJSON(json: any): GuestCheckoutProductRequest {
+    return GuestCheckoutProductRequestToJSONTyped(json, false);
+}
+
+export function GuestCheckoutProductRequestToJSONTyped(value?: GuestCheckoutProductRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'billingAddress': GuestCheckoutAddressToJSON(value['billingAddress']),

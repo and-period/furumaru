@@ -79,8 +79,12 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/checkouts`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/checkouts`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -130,8 +134,13 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/checkouts/{transactionId}`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+        urlPath = urlPath.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/checkouts/{transactionId}`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))).replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

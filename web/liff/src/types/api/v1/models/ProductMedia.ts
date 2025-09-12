@@ -24,19 +24,21 @@ export interface ProductMedia {
      * @type {boolean}
      * @memberof ProductMedia
      */
-    isThumbnail?: boolean;
+    isThumbnail: boolean;
     /**
      * メディアURL
      * @type {string}
      * @memberof ProductMedia
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the ProductMedia interface.
  */
 export function instanceOfProductMedia(value: object): value is ProductMedia {
+    if (!('isThumbnail' in value) || value['isThumbnail'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function ProductMediaFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'isThumbnail': json['isThumbnail'] == null ? undefined : json['isThumbnail'],
-        'url': json['url'] == null ? undefined : json['url'],
+        'isThumbnail': json['isThumbnail'],
+        'url': json['url'],
     };
 }
 
-export function ProductMediaToJSON(value?: ProductMedia | null): any {
+export function ProductMediaToJSON(json: any): ProductMedia {
+    return ProductMediaToJSONTyped(json, false);
+}
+
+export function ProductMediaToJSONTyped(value?: ProductMedia | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'isThumbnail': value['isThumbnail'],

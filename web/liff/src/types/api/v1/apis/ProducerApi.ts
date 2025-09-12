@@ -59,8 +59,11 @@ export class ProducerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/producers`;
+
         const response = await this.request({
-            path: `/producers`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -94,8 +97,12 @@ export class ProducerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/producers/{producerId}`;
+        urlPath = urlPath.replace(`{${"producerId"}}`, encodeURIComponent(String(requestParameters['producerId'])));
+
         const response = await this.request({
-            path: `/producers/{producerId}`.replace(`{${"producerId"}}`, encodeURIComponent(String(requestParameters['producerId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

@@ -24,43 +24,49 @@ export interface LiveComment {
      * @type {string}
      * @memberof LiveComment
      */
-    accountId?: string;
+    accountId: string;
     /**
      * コメント
      * @type {string}
      * @memberof LiveComment
      */
-    comment?: string;
+    comment: string;
     /**
      * 投稿日時
      * @type {number}
      * @memberof LiveComment
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof LiveComment
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof LiveComment
      */
-    userId?: string;
+    userId: string;
     /**
      * ユーザー名
      * @type {string}
      * @memberof LiveComment
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the LiveComment interface.
  */
 export function instanceOfLiveComment(value: object): value is LiveComment {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -74,19 +80,24 @@ export function LiveCommentFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'accountId': json['accountId'],
+        'comment': json['comment'],
+        'publishedAt': json['publishedAt'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'userId': json['userId'],
+        'username': json['username'],
     };
 }
 
-export function LiveCommentToJSON(value?: LiveComment | null): any {
+export function LiveCommentToJSON(json: any): LiveComment {
+    return LiveCommentToJSONTyped(json, false);
+}
+
+export function LiveCommentToJSONTyped(value?: LiveComment | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

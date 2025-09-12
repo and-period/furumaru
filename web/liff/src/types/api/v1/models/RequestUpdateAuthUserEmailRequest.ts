@@ -24,14 +24,13 @@ export interface RequestUpdateAuthUserEmailRequest {
      * @type {string}
      * @memberof RequestUpdateAuthUserEmailRequest
      */
-    email: string;
+    email?: string;
 }
 
 /**
  * Check if a given object implements the RequestUpdateAuthUserEmailRequest interface.
  */
 export function instanceOfRequestUpdateAuthUserEmailRequest(value: object): value is RequestUpdateAuthUserEmailRequest {
-    if (!('email' in value) || value['email'] === undefined) return false;
     return true;
 }
 
@@ -45,7 +44,7 @@ export function RequestUpdateAuthUserEmailRequestFromJSONTyped(json: any, ignore
     }
     return {
         
-        'email': json['email'],
+        'email': json['email'] == null ? undefined : json['email'],
     };
 }
 

@@ -13,11 +13,26 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ShippingType } from './ShippingType';
+import {
+    ShippingTypeFromJSON,
+    ShippingTypeFromJSONTyped,
+    ShippingTypeToJSON,
+    ShippingTypeToJSONTyped,
+} from './ShippingType';
+import type { ShippingSize } from './ShippingSize';
+import {
+    ShippingSizeFromJSON,
+    ShippingSizeFromJSONTyped,
+    ShippingSizeToJSON,
+    ShippingSizeToJSONTyped,
+} from './ShippingSize';
 import type { CartItem } from './CartItem';
 import {
     CartItemFromJSON,
     CartItemFromJSONTyped,
     CartItemToJSON,
+    CartItemToJSONTyped,
 } from './CartItem';
 
 /**
@@ -31,43 +46,51 @@ export interface Cart {
      * @type {string}
      * @memberof Cart
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 箱の商品一覧
      * @type {Array<CartItem>}
      * @memberof Cart
      */
-    items?: Array<CartItem>;
+    items: Array<CartItem>;
     /**
      * 箱の通番
      * @type {number}
      * @memberof Cart
      */
-    number?: number;
+    number: number;
     /**
      * 箱の占有率
      * @type {number}
      * @memberof Cart
      */
-    rate?: number;
+    rate: number;
     /**
-     * 箱のサイズ
-     * @type {number}
+     * 
+     * @type {ShippingSize}
      * @memberof Cart
      */
-    size?: number;
+    size: ShippingSize;
     /**
-     * 箱の種別
-     * @type {number}
+     * 
+     * @type {ShippingType}
      * @memberof Cart
      */
-    type?: number;
+    type: ShippingType;
 }
+
+
 
 /**
  * Check if a given object implements the Cart interface.
  */
 export function instanceOfCart(value: object): value is Cart {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('number' in value) || value['number'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('size' in value) || value['size'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
 
@@ -81,27 +104,32 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(CartItemFromJSON)),
-        'number': json['number'] == null ? undefined : json['number'],
-        'rate': json['rate'] == null ? undefined : json['rate'],
-        'size': json['size'] == null ? undefined : json['size'],
-        'type': json['type'] == null ? undefined : json['type'],
+        'coordinatorId': json['coordinatorId'],
+        'items': ((json['items'] as Array<any>).map(CartItemFromJSON)),
+        'number': json['number'],
+        'rate': json['rate'],
+        'size': ShippingSizeFromJSON(json['size']),
+        'type': ShippingTypeFromJSON(json['type']),
     };
 }
 
-export function CartToJSON(value?: Cart | null): any {
+export function CartToJSON(json: any): Cart {
+    return CartToJSONTyped(json, false);
+}
+
+export function CartToJSONTyped(value?: Cart | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],
-        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(CartItemToJSON)),
+        'items': ((value['items'] as Array<any>).map(CartItemToJSON)),
         'number': value['number'],
         'rate': value['rate'],
-        'size': value['size'],
-        'type': value['type'],
+        'size': ShippingSizeToJSON(value['size']),
+        'type': ShippingTypeToJSON(value['type']),
     };
 }
 

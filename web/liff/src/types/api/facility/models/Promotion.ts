@@ -13,6 +13,21 @@
  */
 
 import { mapValues } from '../runtime';
+import type { DiscountType } from './DiscountType';
+import {
+    DiscountTypeFromJSON,
+    DiscountTypeFromJSONTyped,
+    DiscountTypeToJSON,
+    DiscountTypeToJSONTyped,
+} from './DiscountType';
+import type { PromotionStatus } from './PromotionStatus';
+import {
+    PromotionStatusFromJSON,
+    PromotionStatusFromJSONTyped,
+    PromotionStatusToJSON,
+    PromotionStatusToJSONTyped,
+} from './PromotionStatus';
+
 /**
  * プロモーション情報
  * @export
@@ -24,61 +39,72 @@ export interface Promotion {
      * @type {string}
      * @memberof Promotion
      */
-    code?: string;
+    code: string;
     /**
      * 詳細説明
      * @type {string}
      * @memberof Promotion
      */
-    description?: string;
+    description: string;
     /**
      * 割引額(%/円)
      * @type {number}
      * @memberof Promotion
      */
-    discountRate?: number;
+    discountRate: number;
     /**
-     * 割引計算方法
-     * @type {number}
+     * 
+     * @type {DiscountType}
      * @memberof Promotion
      */
-    discountType?: number;
+    discountType: DiscountType;
     /**
      * クーポン使用可能日時(終了)
      * @type {number}
      * @memberof Promotion
      */
-    endAt?: number;
+    endAt: number;
     /**
      * プロモーションID
      * @type {string}
      * @memberof Promotion
      */
-    id?: string;
+    id: string;
     /**
      * クーポン使用可能日時(開始)
      * @type {number}
      * @memberof Promotion
      */
-    startAt?: number;
+    startAt: number;
     /**
-     * ステータス
-     * @type {number}
+     * 
+     * @type {PromotionStatus}
      * @memberof Promotion
      */
-    status?: number;
+    status: PromotionStatus;
     /**
      * タイトル
      * @type {string}
      * @memberof Promotion
      */
-    title?: string;
+    title: string;
 }
+
+
 
 /**
  * Check if a given object implements the Promotion interface.
  */
 export function instanceOfPromotion(value: object): value is Promotion {
+    if (!('code' in value) || value['code'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('discountRate' in value) || value['discountRate'] === undefined) return false;
+    if (!('discountType' in value) || value['discountType'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -92,32 +118,37 @@ export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'code': json['code'] == null ? undefined : json['code'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'discountRate': json['discountRate'] == null ? undefined : json['discountRate'],
-        'discountType': json['discountType'] == null ? undefined : json['discountType'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'code': json['code'],
+        'description': json['description'],
+        'discountRate': json['discountRate'],
+        'discountType': DiscountTypeFromJSON(json['discountType']),
+        'endAt': json['endAt'],
+        'id': json['id'],
+        'startAt': json['startAt'],
+        'status': PromotionStatusFromJSON(json['status']),
+        'title': json['title'],
     };
 }
 
-export function PromotionToJSON(value?: Promotion | null): any {
+export function PromotionToJSON(json: any): Promotion {
+    return PromotionToJSONTyped(json, false);
+}
+
+export function PromotionToJSONTyped(value?: Promotion | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'code': value['code'],
         'description': value['description'],
         'discountRate': value['discountRate'],
-        'discountType': value['discountType'],
+        'discountType': DiscountTypeToJSON(value['discountType']),
         'endAt': value['endAt'],
         'id': value['id'],
         'startAt': value['startAt'],
-        'status': value['status'],
+        'status': PromotionStatusToJSON(value['status']),
         'title': value['title'],
     };
 }

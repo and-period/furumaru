@@ -24,25 +24,28 @@ export interface ExperienceRate {
      * @type {number}
      * @memberof ExperienceRate
      */
-    average?: number;
+    average: number;
     /**
      * 合計評価数
      * @type {number}
      * @memberof ExperienceRate
      */
-    count?: number;
+    count: number;
     /**
      * 評価詳細
      * @type {{ [key: string]: number; }}
      * @memberof ExperienceRate
      */
-    detail?: { [key: string]: number; };
+    detail: { [key: string]: number; };
 }
 
 /**
  * Check if a given object implements the ExperienceRate interface.
  */
 export function instanceOfExperienceRate(value: object): value is ExperienceRate {
+    if (!('average' in value) || value['average'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('detail' in value) || value['detail'] === undefined) return false;
     return true;
 }
 
@@ -56,16 +59,21 @@ export function ExperienceRateFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'average': json['average'] == null ? undefined : json['average'],
-        'count': json['count'] == null ? undefined : json['count'],
-        'detail': json['detail'] == null ? undefined : json['detail'],
+        'average': json['average'],
+        'count': json['count'],
+        'detail': json['detail'],
     };
 }
 
-export function ExperienceRateToJSON(value?: ExperienceRate | null): any {
+export function ExperienceRateToJSON(json: any): ExperienceRate {
+    return ExperienceRateToJSONTyped(json, false);
+}
+
+export function ExperienceRateToJSONTyped(value?: ExperienceRate | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'average': value['average'],

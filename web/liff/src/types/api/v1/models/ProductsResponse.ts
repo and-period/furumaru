@@ -18,36 +18,42 @@ import {
     CategoryFromJSON,
     CategoryFromJSONTyped,
     CategoryToJSON,
+    CategoryToJSONTyped,
 } from './Category';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { ProductTag } from './ProductTag';
 import {
     ProductTagFromJSON,
     ProductTagFromJSONTyped,
     ProductTagToJSON,
+    ProductTagToJSONTyped,
 } from './ProductTag';
 import type { ProductType } from './ProductType';
 import {
     ProductTypeFromJSON,
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
+    ProductTypeToJSONTyped,
 } from './ProductType';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -61,49 +67,56 @@ export interface ProductsResponse {
      * @type {Array<Category>}
      * @memberof ProductsResponse
      */
-    categories?: Array<Category>;
+    categories: Array<Category>;
     /**
      * コーディネータ一覧
      * @type {Array<Coordinator>}
      * @memberof ProductsResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 生産者一覧
      * @type {Array<Producer>}
      * @memberof ProductsResponse
      */
-    producers?: Array<Producer>;
+    producers: Array<Producer>;
     /**
      * 商品タグ一覧
      * @type {Array<ProductTag>}
      * @memberof ProductsResponse
      */
-    productTags?: Array<ProductTag>;
+    productTags: Array<ProductTag>;
     /**
      * 品目一覧
      * @type {Array<ProductType>}
      * @memberof ProductsResponse
      */
-    productTypes?: Array<ProductType>;
+    productTypes: Array<ProductType>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof ProductsResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 商品合計数
      * @type {number}
      * @memberof ProductsResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the ProductsResponse interface.
  */
 export function instanceOfProductsResponse(value: object): value is ProductsResponse {
+    if (!('categories' in value) || value['categories'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('productTags' in value) || value['productTags'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -117,28 +130,33 @@ export function ProductsResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'categories': json['categories'] == null ? undefined : ((json['categories'] as Array<any>).map(CategoryFromJSON)),
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'producers': json['producers'] == null ? undefined : ((json['producers'] as Array<any>).map(ProducerFromJSON)),
-        'productTags': json['productTags'] == null ? undefined : ((json['productTags'] as Array<any>).map(ProductTagFromJSON)),
-        'productTypes': json['productTypes'] == null ? undefined : ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'categories': ((json['categories'] as Array<any>).map(CategoryFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
+        'productTags': ((json['productTags'] as Array<any>).map(ProductTagFromJSON)),
+        'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function ProductsResponseToJSON(value?: ProductsResponse | null): any {
+export function ProductsResponseToJSON(json: any): ProductsResponse {
+    return ProductsResponseToJSONTyped(json, false);
+}
+
+export function ProductsResponseToJSONTyped(value?: ProductsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'categories': value['categories'] == null ? undefined : ((value['categories'] as Array<any>).map(CategoryToJSON)),
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'producers': value['producers'] == null ? undefined : ((value['producers'] as Array<any>).map(ProducerToJSON)),
-        'productTags': value['productTags'] == null ? undefined : ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
-        'productTypes': value['productTypes'] == null ? undefined : ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'categories': ((value['categories'] as Array<any>).map(CategoryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'productTags': ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'total': value['total'],
     };
 }

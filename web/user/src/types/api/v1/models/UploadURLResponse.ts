@@ -24,19 +24,21 @@ export interface UploadURLResponse {
      * @type {string}
      * @memberof UploadURLResponse
      */
-    key?: string;
+    key: string;
     /**
      * アップロード用の署名付きURL
      * @type {string}
      * @memberof UploadURLResponse
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the UploadURLResponse interface.
  */
 export function instanceOfUploadURLResponse(value: object): value is UploadURLResponse {
+    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function UploadURLResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'key': json['key'] == null ? undefined : json['key'],
-        'url': json['url'] == null ? undefined : json['url'],
+        'key': json['key'],
+        'url': json['url'],
     };
 }
 
-export function UploadURLResponseToJSON(value?: UploadURLResponse | null): any {
+export function UploadURLResponseToJSON(json: any): UploadURLResponse {
+    return UploadURLResponseToJSONTyped(json, false);
+}
+
+export function UploadURLResponseToJSONTyped(value?: UploadURLResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'key': value['key'],

@@ -18,30 +18,35 @@ import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
+    ArchiveSummaryToJSONTyped,
 } from './ArchiveSummary';
 import type { Experience } from './Experience';
 import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { LiveSummary } from './LiveSummary';
 import {
     LiveSummaryFromJSON,
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
+    LiveSummaryToJSONTyped,
 } from './LiveSummary';
 
 /**
@@ -55,37 +60,42 @@ export interface ProducerResponse {
      * @type {Array<ArchiveSummary>}
      * @memberof ProducerResponse
      */
-    archives?: Array<ArchiveSummary>;
+    archives: Array<ArchiveSummary>;
     /**
      * 体験一覧
      * @type {Array<Experience>}
      * @memberof ProducerResponse
      */
-    experiences?: Array<Experience>;
+    experiences: Array<Experience>;
     /**
      * 配信中・配信予定のマルシェ一覧
      * @type {Array<LiveSummary>}
      * @memberof ProducerResponse
      */
-    lives?: Array<LiveSummary>;
+    lives: Array<LiveSummary>;
     /**
      * 
      * @type {Producer}
      * @memberof ProducerResponse
      */
-    producer?: Producer;
+    producer: Producer;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof ProducerResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
 }
 
 /**
  * Check if a given object implements the ProducerResponse interface.
  */
 export function instanceOfProducerResponse(value: object): value is ProducerResponse {
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('producer' in value) || value['producer'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
     return true;
 }
 
@@ -99,25 +109,30 @@ export function ProducerResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'archives': json['archives'] == null ? undefined : ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
-        'experiences': json['experiences'] == null ? undefined : ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
-        'lives': json['lives'] == null ? undefined : ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
-        'producer': json['producer'] == null ? undefined : ProducerFromJSON(json['producer']),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
+        'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
+        'producer': ProducerFromJSON(json['producer']),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
     };
 }
 
-export function ProducerResponseToJSON(value?: ProducerResponse | null): any {
+export function ProducerResponseToJSON(json: any): ProducerResponse {
+    return ProducerResponseToJSONTyped(json, false);
+}
+
+export function ProducerResponseToJSONTyped(value?: ProducerResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'archives': value['archives'] == null ? undefined : ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
-        'experiences': value['experiences'] == null ? undefined : ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
-        'lives': value['lives'] == null ? undefined : ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
         'producer': ProducerToJSON(value['producer']),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

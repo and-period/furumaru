@@ -24,13 +24,14 @@ export interface CreateAuthUserResponse {
      * @type {string}
      * @memberof CreateAuthUserResponse
      */
-    id?: string;
+    id: string;
 }
 
 /**
  * Check if a given object implements the CreateAuthUserResponse interface.
  */
 export function instanceOfCreateAuthUserResponse(value: object): value is CreateAuthUserResponse {
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function CreateAuthUserResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
     };
 }
 
-export function CreateAuthUserResponseToJSON(value?: CreateAuthUserResponse | null): any {
+export function CreateAuthUserResponseToJSON(json: any): CreateAuthUserResponse {
+    return CreateAuthUserResponseToJSONTyped(json, false);
+}
+
+export function CreateAuthUserResponseToJSONTyped(value?: CreateAuthUserResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

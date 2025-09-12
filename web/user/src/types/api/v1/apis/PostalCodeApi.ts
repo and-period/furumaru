@@ -50,8 +50,12 @@ export class PostalCodeApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/postal-codes/{postalCode}`;
+        urlPath = urlPath.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters['postalCode'])));
+
         const response = await this.request({
-            path: `/postal-codes/{postalCode}`.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters['postalCode']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

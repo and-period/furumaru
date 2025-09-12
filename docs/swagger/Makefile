@@ -1,6 +1,6 @@
 .PHONY: help setup clean build generate
 
-OPENAPITOOLS_VERSION := 2.13.4
+OPENAPITOOLS_VERSION := 2.23.1
 
 ADMIN_V1_INPUT         := gen/admin/v1/swagger.yaml
 ADMIN_V1_OUTPUT_TS_DIR := ./../../tmp/data/swagger/admin/v1/types
@@ -32,8 +32,8 @@ clean: ## 生成されたファイルを削除
 build: clean build-admin-v1 build-user-v1 build-user-facility ## API仕様書の生成
 
 build-admin-v1: ## API仕様書の生成(管理者関連)
-	$(MAKE) generate TYPE=typescript-axios INPUT=${ADMIN_V1_INPUT} OUTPUT_DIR=${ADMIN_V1_OUTPUT_TS_DIR}
-	mkdir -p ${ADMIN_WEB_V1_TYPES_DIR}; cp -r ${ADMIN_V1_OUTPUT_TS_DIR}/*.ts ${ADMIN_WEB_V1_TYPES_DIR}
+	$(MAKE) generate TYPE=typescript-fetch INPUT=${ADMIN_V1_INPUT} OUTPUT_DIR=${ADMIN_V1_OUTPUT_TS_DIR}
+	mkdir -p ${ADMIN_WEB_V1_TYPES_DIR}; cp -r ${ADMIN_V1_OUTPUT_TS_DIR}/*.ts ${ADMIN_V1_OUTPUT_TS_DIR}/apis ${ADMIN_V1_OUTPUT_TS_DIR}/models ${ADMIN_WEB_V1_TYPES_DIR}
 
 build-user-v1: ## API仕様書の生成(購入者関連)
 	$(MAKE) generate TYPE=typescript-fetch INPUT=${USER_V1_INPUT} OUTPUT_DIR=${USER_V1_OUTPUT_TS_DIR}

@@ -24,13 +24,14 @@ export interface ScheduleDistributionMetadata {
      * @type {{ [key: string]: string; }}
      * @memberof ScheduleDistributionMetadata
      */
-    subtitles?: { [key: string]: string; };
+    subtitles: { [key: string]: string; };
 }
 
 /**
  * Check if a given object implements the ScheduleDistributionMetadata interface.
  */
 export function instanceOfScheduleDistributionMetadata(value: object): value is ScheduleDistributionMetadata {
+    if (!('subtitles' in value) || value['subtitles'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function ScheduleDistributionMetadataFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'subtitles': json['subtitles'] == null ? undefined : json['subtitles'],
+        'subtitles': json['subtitles'],
     };
 }
 
-export function ScheduleDistributionMetadataToJSON(value?: ScheduleDistributionMetadata | null): any {
+export function ScheduleDistributionMetadataToJSON(json: any): ScheduleDistributionMetadata {
+    return ScheduleDistributionMetadataToJSONTyped(json, false);
+}
+
+export function ScheduleDistributionMetadataToJSONTyped(value?: ScheduleDistributionMetadata | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'subtitles': value['subtitles'],

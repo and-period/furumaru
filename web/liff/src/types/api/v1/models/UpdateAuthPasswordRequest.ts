@@ -24,7 +24,7 @@ export interface UpdateAuthPasswordRequest {
      * @type {string}
      * @memberof UpdateAuthPasswordRequest
      */
-    newPassword?: string;
+    newPassword: string;
     /**
      * 現在のパスワード
      * @type {string}
@@ -43,6 +43,7 @@ export interface UpdateAuthPasswordRequest {
  * Check if a given object implements the UpdateAuthPasswordRequest interface.
  */
 export function instanceOfUpdateAuthPasswordRequest(value: object): value is UpdateAuthPasswordRequest {
+    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
     if (!('oldPassword' in value) || value['oldPassword'] === undefined) return false;
     if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
     return true;
@@ -58,16 +59,21 @@ export function UpdateAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
+        'newPassword': json['newPassword'],
         'oldPassword': json['oldPassword'],
         'passwordConfirmation': json['passwordConfirmation'],
     };
 }
 
-export function UpdateAuthPasswordRequestToJSON(value?: UpdateAuthPasswordRequest | null): any {
+export function UpdateAuthPasswordRequestToJSON(json: any): UpdateAuthPasswordRequest {
+    return UpdateAuthPasswordRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthPasswordRequestToJSONTyped(value?: UpdateAuthPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'newPassword': value['newPassword'],

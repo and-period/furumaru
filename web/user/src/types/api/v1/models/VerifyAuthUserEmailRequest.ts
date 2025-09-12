@@ -49,10 +49,15 @@ export function VerifyAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscrim
     };
 }
 
-export function VerifyAuthUserEmailRequestToJSON(value?: VerifyAuthUserEmailRequest | null): any {
+export function VerifyAuthUserEmailRequestToJSON(json: any): VerifyAuthUserEmailRequest {
+    return VerifyAuthUserEmailRequestToJSONTyped(json, false);
+}
+
+export function VerifyAuthUserEmailRequestToJSONTyped(value?: VerifyAuthUserEmailRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'verifyCode': value['verifyCode'],

@@ -30,13 +30,13 @@ export interface RequestCheckoutCreditCard {
      * @type {string}
      * @memberof RequestCheckoutCreditCard
      */
-    name: string;
+    name?: string;
     /**
      * カード番号
      * @type {string}
      * @memberof RequestCheckoutCreditCard
      */
-    number: string;
+    number?: string;
     /**
      * セキュリティコード
      * @type {string}
@@ -55,8 +55,6 @@ export interface RequestCheckoutCreditCard {
  * Check if a given object implements the RequestCheckoutCreditCard interface.
  */
 export function instanceOfRequestCheckoutCreditCard(value: object): value is RequestCheckoutCreditCard {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('number' in value) || value['number'] === undefined) return false;
     return true;
 }
 
@@ -71,8 +69,8 @@ export function RequestCheckoutCreditCardFromJSONTyped(json: any, ignoreDiscrimi
     return {
         
         'month': json['month'] == null ? undefined : json['month'],
-        'name': json['name'],
-        'number': json['number'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'number': json['number'] == null ? undefined : json['number'],
         'verificationValue': json['verificationValue'] == null ? undefined : json['verificationValue'],
         'year': json['year'] == null ? undefined : json['year'],
     };

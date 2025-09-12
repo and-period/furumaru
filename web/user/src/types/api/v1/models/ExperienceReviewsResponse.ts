@@ -18,6 +18,7 @@ import {
     ExperienceReviewFromJSON,
     ExperienceReviewFromJSONTyped,
     ExperienceReviewToJSON,
+    ExperienceReviewToJSONTyped,
 } from './ExperienceReview';
 
 /**
@@ -31,19 +32,21 @@ export interface ExperienceReviewsResponse {
      * @type {string}
      * @memberof ExperienceReviewsResponse
      */
-    nextToken?: string;
+    nextToken: string;
     /**
      * 体験レビュー一覧
      * @type {Array<ExperienceReview>}
      * @memberof ExperienceReviewsResponse
      */
-    reviews?: Array<ExperienceReview>;
+    reviews: Array<ExperienceReview>;
 }
 
 /**
  * Check if a given object implements the ExperienceReviewsResponse interface.
  */
 export function instanceOfExperienceReviewsResponse(value: object): value is ExperienceReviewsResponse {
+    if (!('nextToken' in value) || value['nextToken'] === undefined) return false;
+    if (!('reviews' in value) || value['reviews'] === undefined) return false;
     return true;
 }
 
@@ -57,19 +60,24 @@ export function ExperienceReviewsResponseFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'nextToken': json['nextToken'] == null ? undefined : json['nextToken'],
-        'reviews': json['reviews'] == null ? undefined : ((json['reviews'] as Array<any>).map(ExperienceReviewFromJSON)),
+        'nextToken': json['nextToken'],
+        'reviews': ((json['reviews'] as Array<any>).map(ExperienceReviewFromJSON)),
     };
 }
 
-export function ExperienceReviewsResponseToJSON(value?: ExperienceReviewsResponse | null): any {
+export function ExperienceReviewsResponseToJSON(json: any): ExperienceReviewsResponse {
+    return ExperienceReviewsResponseToJSONTyped(json, false);
+}
+
+export function ExperienceReviewsResponseToJSONTyped(value?: ExperienceReviewsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'nextToken': value['nextToken'],
-        'reviews': value['reviews'] == null ? undefined : ((value['reviews'] as Array<any>).map(ExperienceReviewToJSON)),
+        'reviews': ((value['reviews'] as Array<any>).map(ExperienceReviewToJSON)),
     };
 }
 

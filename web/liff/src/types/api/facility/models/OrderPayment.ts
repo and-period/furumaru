@@ -24,61 +24,70 @@ export interface OrderPayment {
      * @type {number}
      * @memberof OrderPayment
      */
-    discount?: number;
+    discount: number;
     /**
      * 支払い方法
      * @type {number}
      * @memberof OrderPayment
      */
-    methodType?: number;
+    methodType: number;
     /**
      * 注文日時
      * @type {number}
      * @memberof OrderPayment
      */
-    orderedAt?: number;
+    orderedAt: number;
     /**
      * 支払日時
      * @type {number}
      * @memberof OrderPayment
      */
-    paidAt?: number;
+    paidAt: number;
     /**
      * 配送手数料(税込)
      * @type {number}
      * @memberof OrderPayment
      */
-    shippingFee?: number;
+    shippingFee: number;
     /**
      * 注文ステータス
      * @type {number}
      * @memberof OrderPayment
      */
-    status?: number;
+    status: number;
     /**
      * 購入金額(税込)
      * @type {number}
      * @memberof OrderPayment
      */
-    subtotal?: number;
+    subtotal: number;
     /**
      * 合計金額(税込)
      * @type {number}
      * @memberof OrderPayment
      */
-    total?: number;
+    total: number;
     /**
      * 取引ID
      * @type {string}
      * @memberof OrderPayment
      */
-    transactionId?: string;
+    transactionId: string;
 }
 
 /**
  * Check if a given object implements the OrderPayment interface.
  */
 export function instanceOfOrderPayment(value: object): value is OrderPayment {
+    if (!('discount' in value) || value['discount'] === undefined) return false;
+    if (!('methodType' in value) || value['methodType'] === undefined) return false;
+    if (!('orderedAt' in value) || value['orderedAt'] === undefined) return false;
+    if (!('paidAt' in value) || value['paidAt'] === undefined) return false;
+    if (!('shippingFee' in value) || value['shippingFee'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('subtotal' in value) || value['subtotal'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('transactionId' in value) || value['transactionId'] === undefined) return false;
     return true;
 }
 
@@ -92,22 +101,27 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'discount': json['discount'] == null ? undefined : json['discount'],
-        'methodType': json['methodType'] == null ? undefined : json['methodType'],
-        'orderedAt': json['orderedAt'] == null ? undefined : json['orderedAt'],
-        'paidAt': json['paidAt'] == null ? undefined : json['paidAt'],
-        'shippingFee': json['shippingFee'] == null ? undefined : json['shippingFee'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'subtotal': json['subtotal'] == null ? undefined : json['subtotal'],
-        'total': json['total'] == null ? undefined : json['total'],
-        'transactionId': json['transactionId'] == null ? undefined : json['transactionId'],
+        'discount': json['discount'],
+        'methodType': json['methodType'],
+        'orderedAt': json['orderedAt'],
+        'paidAt': json['paidAt'],
+        'shippingFee': json['shippingFee'],
+        'status': json['status'],
+        'subtotal': json['subtotal'],
+        'total': json['total'],
+        'transactionId': json['transactionId'],
     };
 }
 
-export function OrderPaymentToJSON(value?: OrderPayment | null): any {
+export function OrderPaymentToJSON(json: any): OrderPayment {
+    return OrderPaymentToJSONTyped(json, false);
+}
+
+export function OrderPaymentToJSONTyped(value?: OrderPayment | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'discount': value['discount'],

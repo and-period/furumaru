@@ -96,8 +96,13 @@ export class CartApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/carts/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/carts/{coordinatorId}`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))).replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -139,8 +144,12 @@ export class CartApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/carts`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/carts`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -191,8 +200,12 @@ export class CartApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/carts/-/items`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/carts/-/items`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -241,8 +254,13 @@ export class CartApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/carts/-/items/{productId}`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/carts/-/items/{productId}`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))).replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,

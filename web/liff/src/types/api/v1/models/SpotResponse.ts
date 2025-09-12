@@ -18,12 +18,14 @@ import {
     SpotFromJSON,
     SpotFromJSONTyped,
     SpotToJSON,
+    SpotToJSONTyped,
 } from './Spot';
 import type { SpotType } from './SpotType';
 import {
     SpotTypeFromJSON,
     SpotTypeFromJSONTyped,
     SpotTypeToJSON,
+    SpotTypeToJSONTyped,
 } from './SpotType';
 
 /**
@@ -37,19 +39,21 @@ export interface SpotResponse {
      * @type {Spot}
      * @memberof SpotResponse
      */
-    spot?: Spot;
+    spot: Spot;
     /**
      * 
      * @type {SpotType}
      * @memberof SpotResponse
      */
-    spotType?: SpotType;
+    spotType: SpotType;
 }
 
 /**
  * Check if a given object implements the SpotResponse interface.
  */
 export function instanceOfSpotResponse(value: object): value is SpotResponse {
+    if (!('spot' in value) || value['spot'] === undefined) return false;
+    if (!('spotType' in value) || value['spotType'] === undefined) return false;
     return true;
 }
 
@@ -63,15 +67,20 @@ export function SpotResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'spot': json['spot'] == null ? undefined : SpotFromJSON(json['spot']),
-        'spotType': json['spotType'] == null ? undefined : SpotTypeFromJSON(json['spotType']),
+        'spot': SpotFromJSON(json['spot']),
+        'spotType': SpotTypeFromJSON(json['spotType']),
     };
 }
 
-export function SpotResponseToJSON(value?: SpotResponse | null): any {
+export function SpotResponseToJSON(json: any): SpotResponse {
+    return SpotResponseToJSONTyped(json, false);
+}
+
+export function SpotResponseToJSONTyped(value?: SpotResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'spot': SpotToJSON(value['spot']),

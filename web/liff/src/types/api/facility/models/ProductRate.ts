@@ -24,25 +24,28 @@ export interface ProductRate {
      * @type {number}
      * @memberof ProductRate
      */
-    average?: number;
+    average: number;
     /**
      * 合計評価数
      * @type {number}
      * @memberof ProductRate
      */
-    count?: number;
+    count: number;
     /**
      * 評価詳細
      * @type {{ [key: string]: number; }}
      * @memberof ProductRate
      */
-    detail?: { [key: string]: number; };
+    detail: { [key: string]: number; };
 }
 
 /**
  * Check if a given object implements the ProductRate interface.
  */
 export function instanceOfProductRate(value: object): value is ProductRate {
+    if (!('average' in value) || value['average'] === undefined) return false;
+    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!('detail' in value) || value['detail'] === undefined) return false;
     return true;
 }
 
@@ -56,16 +59,21 @@ export function ProductRateFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'average': json['average'] == null ? undefined : json['average'],
-        'count': json['count'] == null ? undefined : json['count'],
-        'detail': json['detail'] == null ? undefined : json['detail'],
+        'average': json['average'],
+        'count': json['count'],
+        'detail': json['detail'],
     };
 }
 
-export function ProductRateToJSON(value?: ProductRate | null): any {
+export function ProductRateToJSON(json: any): ProductRate {
+    return ProductRateToJSONTyped(json, false);
+}
+
+export function ProductRateToJSONTyped(value?: ProductRate | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'average': value['average'],

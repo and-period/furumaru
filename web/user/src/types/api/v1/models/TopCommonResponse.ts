@@ -18,24 +18,28 @@ import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
+    ArchiveSummaryToJSONTyped,
 } from './ArchiveSummary';
 import type { VideoSummary } from './VideoSummary';
 import {
     VideoSummaryFromJSON,
     VideoSummaryFromJSONTyped,
     VideoSummaryToJSON,
+    VideoSummaryToJSONTyped,
 } from './VideoSummary';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { LiveSummary } from './LiveSummary';
 import {
     LiveSummaryFromJSON,
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
+    LiveSummaryToJSONTyped,
 } from './LiveSummary';
 
 /**
@@ -49,37 +53,42 @@ export interface TopCommonResponse {
      * @type {Array<ArchiveSummary>}
      * @memberof TopCommonResponse
      */
-    archives?: Array<ArchiveSummary>;
+    archives: Array<ArchiveSummary>;
     /**
      * コーディネータ一覧
      * @type {Array<Coordinator>}
      * @memberof TopCommonResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 体験動画一覧
      * @type {Array<VideoSummary>}
      * @memberof TopCommonResponse
      */
-    experienceVideos?: Array<VideoSummary>;
+    experienceVideos: Array<VideoSummary>;
     /**
      * 配信中・配信予定のマルシェ一覧
      * @type {Array<LiveSummary>}
      * @memberof TopCommonResponse
      */
-    lives?: Array<LiveSummary>;
+    lives: Array<LiveSummary>;
     /**
      * 商品動画一覧
      * @type {Array<VideoSummary>}
      * @memberof TopCommonResponse
      */
-    productVideos?: Array<VideoSummary>;
+    productVideos: Array<VideoSummary>;
 }
 
 /**
  * Check if a given object implements the TopCommonResponse interface.
  */
 export function instanceOfTopCommonResponse(value: object): value is TopCommonResponse {
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('experienceVideos' in value) || value['experienceVideos'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('productVideos' in value) || value['productVideos'] === undefined) return false;
     return true;
 }
 
@@ -93,25 +102,30 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'archives': json['archives'] == null ? undefined : ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'experienceVideos': json['experienceVideos'] == null ? undefined : ((json['experienceVideos'] as Array<any>).map(VideoSummaryFromJSON)),
-        'lives': json['lives'] == null ? undefined : ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
-        'productVideos': json['productVideos'] == null ? undefined : ((json['productVideos'] as Array<any>).map(VideoSummaryFromJSON)),
+        'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'experienceVideos': ((json['experienceVideos'] as Array<any>).map(VideoSummaryFromJSON)),
+        'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
+        'productVideos': ((json['productVideos'] as Array<any>).map(VideoSummaryFromJSON)),
     };
 }
 
-export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
+export function TopCommonResponseToJSON(json: any): TopCommonResponse {
+    return TopCommonResponseToJSONTyped(json, false);
+}
+
+export function TopCommonResponseToJSONTyped(value?: TopCommonResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'archives': value['archives'] == null ? undefined : ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'experienceVideos': value['experienceVideos'] == null ? undefined : ((value['experienceVideos'] as Array<any>).map(VideoSummaryToJSON)),
-        'lives': value['lives'] == null ? undefined : ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
-        'productVideos': value['productVideos'] == null ? undefined : ((value['productVideos'] as Array<any>).map(VideoSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'experienceVideos': ((value['experienceVideos'] as Array<any>).map(VideoSummaryToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'productVideos': ((value['productVideos'] as Array<any>).map(VideoSummaryToJSON)),
     };
 }
 

@@ -18,12 +18,14 @@ import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
+    ArchiveSummaryToJSONTyped,
 } from './ArchiveSummary';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -37,25 +39,28 @@ export interface ArchiveSchedulesResponse {
      * @type {Array<ArchiveSummary>}
      * @memberof ArchiveSchedulesResponse
      */
-    archives?: Array<ArchiveSummary>;
+    archives: Array<ArchiveSummary>;
     /**
      * コーディネータ一覧
      * @type {Array<Coordinator>}
      * @memberof ArchiveSchedulesResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 過去のマルシェ合計数
      * @type {number}
      * @memberof ArchiveSchedulesResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the ArchiveSchedulesResponse interface.
  */
 export function instanceOfArchiveSchedulesResponse(value: object): value is ArchiveSchedulesResponse {
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -69,20 +74,25 @@ export function ArchiveSchedulesResponseFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'archives': json['archives'] == null ? undefined : ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function ArchiveSchedulesResponseToJSON(value?: ArchiveSchedulesResponse | null): any {
+export function ArchiveSchedulesResponseToJSON(json: any): ArchiveSchedulesResponse {
+    return ArchiveSchedulesResponseToJSONTyped(json, false);
+}
+
+export function ArchiveSchedulesResponseToJSONTyped(value?: ArchiveSchedulesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'archives': value['archives'] == null ? undefined : ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
         'total': value['total'],
     };
 }

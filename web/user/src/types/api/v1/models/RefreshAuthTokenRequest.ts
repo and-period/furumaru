@@ -49,10 +49,15 @@ export function RefreshAuthTokenRequestFromJSONTyped(json: any, ignoreDiscrimina
     };
 }
 
-export function RefreshAuthTokenRequestToJSON(value?: RefreshAuthTokenRequest | null): any {
+export function RefreshAuthTokenRequestToJSON(json: any): RefreshAuthTokenRequest {
+    return RefreshAuthTokenRequestToJSONTyped(json, false);
+}
+
+export function RefreshAuthTokenRequestToJSONTyped(value?: RefreshAuthTokenRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'refreshToken': value['refreshToken'],

@@ -24,85 +24,98 @@ export interface Address {
      * @type {string}
      * @memberof Address
      */
-    addressLine1?: string;
+    addressLine1: string;
     /**
      * ビル名・号室など
      * @type {string}
      * @memberof Address
      */
-    addressLine2?: string;
+    addressLine2: string;
     /**
      * 市区町村
      * @type {string}
      * @memberof Address
      */
-    city?: string;
+    city: string;
     /**
      * 名
      * @type {string}
      * @memberof Address
      */
-    firstname?: string;
+    firstname: string;
     /**
      * 名（かな）
      * @type {string}
      * @memberof Address
      */
-    firstnameKana?: string;
+    firstnameKana: string;
     /**
      * アドレス帳ID
      * @type {string}
      * @memberof Address
      */
-    id?: string;
+    id: string;
     /**
      * デフォルト設定フラグ
      * @type {boolean}
      * @memberof Address
      */
-    isDefault?: boolean;
+    isDefault: boolean;
     /**
      * 姓
      * @type {string}
      * @memberof Address
      */
-    lastname?: string;
+    lastname: string;
     /**
      * 姓（かな）
      * @type {string}
      * @memberof Address
      */
-    lastnameKana?: string;
+    lastnameKana: string;
     /**
      * 電話番号
      * @type {string}
      * @memberof Address
      */
-    phoneNumber?: string;
+    phoneNumber: string;
     /**
      * 郵便番号
      * @type {string}
      * @memberof Address
      */
-    postalCode?: string;
+    postalCode: string;
     /**
      * 都道府県
      * @type {string}
      * @memberof Address
      */
-    prefecture?: string;
+    prefecture: string;
     /**
      * 都道府県コード
      * @type {number}
      * @memberof Address
      */
-    prefectureCode?: number;
+    prefectureCode: number;
 }
 
 /**
  * Check if a given object implements the Address interface.
  */
 export function instanceOfAddress(value: object): value is Address {
+    if (!('addressLine1' in value) || value['addressLine1'] === undefined) return false;
+    if (!('addressLine2' in value) || value['addressLine2'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if (!('postalCode' in value) || value['postalCode'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('prefectureCode' in value) || value['prefectureCode'] === undefined) return false;
     return true;
 }
 
@@ -116,26 +129,31 @@ export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): A
     }
     return {
         
-        'addressLine1': json['addressLine1'] == null ? undefined : json['addressLine1'],
-        'addressLine2': json['addressLine2'] == null ? undefined : json['addressLine2'],
-        'city': json['city'] == null ? undefined : json['city'],
-        'firstname': json['firstname'] == null ? undefined : json['firstname'],
-        'firstnameKana': json['firstnameKana'] == null ? undefined : json['firstnameKana'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'isDefault': json['isDefault'] == null ? undefined : json['isDefault'],
-        'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'lastnameKana': json['lastnameKana'] == null ? undefined : json['lastnameKana'],
-        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
-        'postalCode': json['postalCode'] == null ? undefined : json['postalCode'],
-        'prefecture': json['prefecture'] == null ? undefined : json['prefecture'],
-        'prefectureCode': json['prefectureCode'] == null ? undefined : json['prefectureCode'],
+        'addressLine1': json['addressLine1'],
+        'addressLine2': json['addressLine2'],
+        'city': json['city'],
+        'firstname': json['firstname'],
+        'firstnameKana': json['firstnameKana'],
+        'id': json['id'],
+        'isDefault': json['isDefault'],
+        'lastname': json['lastname'],
+        'lastnameKana': json['lastnameKana'],
+        'phoneNumber': json['phoneNumber'],
+        'postalCode': json['postalCode'],
+        'prefecture': json['prefecture'],
+        'prefectureCode': json['prefectureCode'],
     };
 }
 
-export function AddressToJSON(value?: Address | null): any {
+export function AddressToJSON(json: any): Address {
+    return AddressToJSONTyped(json, false);
+}
+
+export function AddressToJSONTyped(value?: Address | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'addressLine1': value['addressLine1'],

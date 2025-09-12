@@ -97,8 +97,11 @@ export class SpotApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/spots`;
+
         const response = await this.request({
-            path: `/spots`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -142,8 +145,11 @@ export class SpotApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/spots`;
+
         const response = await this.request({
-            path: `/spots`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -186,8 +192,12 @@ export class SpotApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/spots/{spotId}`;
+        urlPath = urlPath.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId'])));
+
         const response = await this.request({
-            path: `/spots/{spotId}`.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -220,8 +230,12 @@ export class SpotApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/spots/{spotId}`;
+        urlPath = urlPath.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId'])));
+
         const response = await this.request({
-            path: `/spots/{spotId}`.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -272,8 +286,12 @@ export class SpotApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/spots/{spotId}`;
+        urlPath = urlPath.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId'])));
+
         const response = await this.request({
-            path: `/spots/{spotId}`.replace(`{${"spotId"}}`, encodeURIComponent(String(requestParameters['spotId']))),
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,

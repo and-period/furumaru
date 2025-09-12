@@ -24,79 +24,91 @@ export interface ProductReview {
      * @type {string}
      * @memberof ProductReview
      */
-    accountId?: string;
+    accountId: string;
     /**
      * コメント
      * @type {string}
      * @memberof ProductReview
      */
-    comment?: string;
+    comment: string;
     /**
      * いまいち数
      * @type {number}
      * @memberof ProductReview
      */
-    dislikeTotal?: number;
+    dislikeTotal: number;
     /**
      * 商品レビューID
      * @type {string}
      * @memberof ProductReview
      */
-    id?: string;
+    id: string;
     /**
      * いいね数
      * @type {number}
      * @memberof ProductReview
      */
-    likeTotal?: number;
+    likeTotal: number;
     /**
      * 商品ID
      * @type {string}
      * @memberof ProductReview
      */
-    productId?: string;
+    productId: string;
     /**
      * 投稿日時
      * @type {number}
      * @memberof ProductReview
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * 評価
      * @type {number}
      * @memberof ProductReview
      */
-    rate?: number;
+    rate: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof ProductReview
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof ProductReview
      */
-    title?: string;
+    title: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof ProductReview
      */
-    userId?: string;
+    userId: string;
     /**
      * ユーザー名
      * @type {string}
      * @memberof ProductReview
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the ProductReview interface.
  */
 export function instanceOfProductReview(value: object): value is ProductReview {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('dislikeTotal' in value) || value['dislikeTotal'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('likeTotal' in value) || value['likeTotal'] === undefined) return false;
+    if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -110,25 +122,30 @@ export function ProductReviewFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'dislikeTotal': json['dislikeTotal'] == null ? undefined : json['dislikeTotal'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'likeTotal': json['likeTotal'] == null ? undefined : json['likeTotal'],
-        'productId': json['productId'] == null ? undefined : json['productId'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'rate': json['rate'] == null ? undefined : json['rate'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'accountId': json['accountId'],
+        'comment': json['comment'],
+        'dislikeTotal': json['dislikeTotal'],
+        'id': json['id'],
+        'likeTotal': json['likeTotal'],
+        'productId': json['productId'],
+        'publishedAt': json['publishedAt'],
+        'rate': json['rate'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
+        'userId': json['userId'],
+        'username': json['username'],
     };
 }
 
-export function ProductReviewToJSON(value?: ProductReview | null): any {
+export function ProductReviewToJSON(json: any): ProductReview {
+    return ProductReviewToJSONTyped(json, false);
+}
+
+export function ProductReviewToJSONTyped(value?: ProductReview | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

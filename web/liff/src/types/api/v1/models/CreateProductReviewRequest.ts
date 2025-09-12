@@ -30,7 +30,7 @@ export interface CreateProductReviewRequest {
      * @type {number}
      * @memberof CreateProductReviewRequest
      */
-    rate?: number;
+    rate: number;
     /**
      * タイトル
      * @type {string}
@@ -44,6 +44,7 @@ export interface CreateProductReviewRequest {
  */
 export function instanceOfCreateProductReviewRequest(value: object): value is CreateProductReviewRequest {
     if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
@@ -59,15 +60,20 @@ export function CreateProductReviewRequestFromJSONTyped(json: any, ignoreDiscrim
     return {
         
         'comment': json['comment'],
-        'rate': json['rate'] == null ? undefined : json['rate'],
+        'rate': json['rate'],
         'title': json['title'],
     };
 }
 
-export function CreateProductReviewRequestToJSON(value?: CreateProductReviewRequest | null): any {
+export function CreateProductReviewRequestToJSON(json: any): CreateProductReviewRequest {
+    return CreateProductReviewRequestToJSONTyped(json, false);
+}
+
+export function CreateProductReviewRequestToJSONTyped(value?: CreateProductReviewRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],
