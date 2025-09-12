@@ -18,6 +18,7 @@ import {
     LiveCommentFromJSON,
     LiveCommentFromJSONTyped,
     LiveCommentToJSON,
+    LiveCommentToJSONTyped,
 } from './LiveComment';
 
 /**
@@ -31,19 +32,21 @@ export interface LiveCommentsResponse {
      * @type {Array<LiveComment>}
      * @memberof LiveCommentsResponse
      */
-    comments?: Array<LiveComment>;
+    comments: Array<LiveComment>;
     /**
      * 次の取得開始位置
      * @type {string}
      * @memberof LiveCommentsResponse
      */
-    nextToken?: string;
+    nextToken: string;
 }
 
 /**
  * Check if a given object implements the LiveCommentsResponse interface.
  */
 export function instanceOfLiveCommentsResponse(value: object): value is LiveCommentsResponse {
+    if (!('comments' in value) || value['comments'] === undefined) return false;
+    if (!('nextToken' in value) || value['nextToken'] === undefined) return false;
     return true;
 }
 
@@ -57,18 +60,23 @@ export function LiveCommentsResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'comments': json['comments'] == null ? undefined : ((json['comments'] as Array<any>).map(LiveCommentFromJSON)),
-        'nextToken': json['nextToken'] == null ? undefined : json['nextToken'],
+        'comments': ((json['comments'] as Array<any>).map(LiveCommentFromJSON)),
+        'nextToken': json['nextToken'],
     };
 }
 
-export function LiveCommentsResponseToJSON(value?: LiveCommentsResponse | null): any {
+export function LiveCommentsResponseToJSON(json: any): LiveCommentsResponse {
+    return LiveCommentsResponseToJSONTyped(json, false);
+}
+
+export function LiveCommentsResponseToJSONTyped(value?: LiveCommentsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'comments': value['comments'] == null ? undefined : ((value['comments'] as Array<any>).map(LiveCommentToJSON)),
+        'comments': ((value['comments'] as Array<any>).map(LiveCommentToJSON)),
         'nextToken': value['nextToken'],
     };
 }

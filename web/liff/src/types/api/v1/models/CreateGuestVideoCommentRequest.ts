@@ -49,10 +49,15 @@ export function CreateGuestVideoCommentRequestFromJSONTyped(json: any, ignoreDis
     };
 }
 
-export function CreateGuestVideoCommentRequestToJSON(value?: CreateGuestVideoCommentRequest | null): any {
+export function CreateGuestVideoCommentRequestToJSON(json: any): CreateGuestVideoCommentRequest {
+    return CreateGuestVideoCommentRequestToJSONTyped(json, false);
+}
+
+export function CreateGuestVideoCommentRequestToJSONTyped(value?: CreateGuestVideoCommentRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],

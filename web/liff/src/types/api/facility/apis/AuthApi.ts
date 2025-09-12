@@ -74,8 +74,12 @@ export class AuthApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/auth`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/auth`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -117,8 +121,12 @@ export class AuthApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/facilities/{facilityId}/auth`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/auth`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -170,8 +178,12 @@ export class AuthApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/facilities/{facilityId}/auth/refresh-token`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/auth/refresh-token`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

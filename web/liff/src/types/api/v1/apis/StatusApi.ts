@@ -36,8 +36,11 @@ export class StatusApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/statuses/payments`;
+
         const response = await this.request({
-            path: `/statuses/payments`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

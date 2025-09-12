@@ -13,11 +13,19 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ScheduleStatus } from './ScheduleStatus';
+import {
+    ScheduleStatusFromJSON,
+    ScheduleStatusFromJSONTyped,
+    ScheduleStatusToJSON,
+    ScheduleStatusToJSONTyped,
+} from './ScheduleStatus';
 import type { LiveProduct } from './LiveProduct';
 import {
     LiveProductFromJSON,
     LiveProductFromJSONTyped,
     LiveProductToJSON,
+    LiveProductToJSONTyped,
 } from './LiveProduct';
 
 /**
@@ -31,55 +39,65 @@ export interface LiveSummary {
      * @type {string}
      * @memberof LiveSummary
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 開催終了日時
      * @type {number}
      * @memberof LiveSummary
      */
-    endAt?: number;
+    endAt: number;
     /**
      * 販売商品一覧
      * @type {Array<LiveProduct>}
      * @memberof LiveSummary
      */
-    products?: Array<LiveProduct>;
+    products: Array<LiveProduct>;
     /**
      * 開催スケジュールID
      * @type {string}
      * @memberof LiveSummary
      */
-    scheduleId?: string;
+    scheduleId: string;
     /**
      * 開催開始日時
      * @type {number}
      * @memberof LiveSummary
      */
-    startAt?: number;
+    startAt: number;
     /**
-     * 開催状況
-     * @type {number}
+     * 
+     * @type {ScheduleStatus}
      * @memberof LiveSummary
      */
-    status?: number;
+    status: ScheduleStatus;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof LiveSummary
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof LiveSummary
      */
-    title?: string;
+    title: string;
 }
+
+
 
 /**
  * Check if a given object implements the LiveSummary interface.
  */
 export function instanceOfLiveSummary(value: object): value is LiveSummary {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -93,29 +111,34 @@ export function LiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(LiveProductFromJSON)),
-        'scheduleId': json['scheduleId'] == null ? undefined : json['scheduleId'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'coordinatorId': json['coordinatorId'],
+        'endAt': json['endAt'],
+        'products': ((json['products'] as Array<any>).map(LiveProductFromJSON)),
+        'scheduleId': json['scheduleId'],
+        'startAt': json['startAt'],
+        'status': ScheduleStatusFromJSON(json['status']),
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
     };
 }
 
-export function LiveSummaryToJSON(value?: LiveSummary | null): any {
+export function LiveSummaryToJSON(json: any): LiveSummary {
+    return LiveSummaryToJSONTyped(json, false);
+}
+
+export function LiveSummaryToJSONTyped(value?: LiveSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],
         'endAt': value['endAt'],
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(LiveProductToJSON)),
+        'products': ((value['products'] as Array<any>).map(LiveProductToJSON)),
         'scheduleId': value['scheduleId'],
         'startAt': value['startAt'],
-        'status': value['status'],
+        'status': ScheduleStatusToJSON(value['status']),
         'thumbnailUrl': value['thumbnailUrl'],
         'title': value['title'],
     };

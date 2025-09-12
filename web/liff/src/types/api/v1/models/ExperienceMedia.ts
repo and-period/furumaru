@@ -24,19 +24,21 @@ export interface ExperienceMedia {
      * @type {boolean}
      * @memberof ExperienceMedia
      */
-    isThumbnail?: boolean;
+    isThumbnail: boolean;
     /**
      * メディアURL
      * @type {string}
      * @memberof ExperienceMedia
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the ExperienceMedia interface.
  */
 export function instanceOfExperienceMedia(value: object): value is ExperienceMedia {
+    if (!('isThumbnail' in value) || value['isThumbnail'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function ExperienceMediaFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'isThumbnail': json['isThumbnail'] == null ? undefined : json['isThumbnail'],
-        'url': json['url'] == null ? undefined : json['url'],
+        'isThumbnail': json['isThumbnail'],
+        'url': json['url'],
     };
 }
 
-export function ExperienceMediaToJSON(value?: ExperienceMedia | null): any {
+export function ExperienceMediaToJSON(json: any): ExperienceMedia {
+    return ExperienceMediaToJSONTyped(json, false);
+}
+
+export function ExperienceMediaToJSONTyped(value?: ExperienceMedia | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'isThumbnail': value['isThumbnail'],

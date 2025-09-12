@@ -24,31 +24,35 @@ export interface ProductType {
      * @type {string}
      * @memberof ProductType
      */
-    categoryId?: string;
+    categoryId: string;
     /**
      * アイコンURL
      * @type {string}
      * @memberof ProductType
      */
-    iconUrl?: string;
+    iconUrl: string;
     /**
      * 品目ID
      * @type {string}
      * @memberof ProductType
      */
-    id?: string;
+    id: string;
     /**
      * 品目名
      * @type {string}
      * @memberof ProductType
      */
-    name?: string;
+    name: string;
 }
 
 /**
  * Check if a given object implements the ProductType interface.
  */
 export function instanceOfProductType(value: object): value is ProductType {
+    if (!('categoryId' in value) || value['categoryId'] === undefined) return false;
+    if (!('iconUrl' in value) || value['iconUrl'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -62,17 +66,22 @@ export function ProductTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'categoryId': json['categoryId'] == null ? undefined : json['categoryId'],
-        'iconUrl': json['iconUrl'] == null ? undefined : json['iconUrl'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'categoryId': json['categoryId'],
+        'iconUrl': json['iconUrl'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function ProductTypeToJSON(value?: ProductType | null): any {
+export function ProductTypeToJSON(json: any): ProductType {
+    return ProductTypeToJSONTyped(json, false);
+}
+
+export function ProductTypeToJSONTyped(value?: ProductType | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'categoryId': value['categoryId'],

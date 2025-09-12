@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SpotUserType } from './SpotUserType';
+import {
+    SpotUserTypeFromJSON,
+    SpotUserTypeFromJSONTyped,
+    SpotUserTypeToJSON,
+    SpotUserTypeToJSONTyped,
+} from './SpotUserType';
+
 /**
  * スポット情報
  * @export
@@ -24,85 +32,100 @@ export interface Spot {
      * @type {number}
      * @memberof Spot
      */
-    createdAt?: number;
+    createdAt: number;
     /**
      * 説明
      * @type {string}
      * @memberof Spot
      */
-    description?: string;
+    description: string;
     /**
      * スポットID
      * @type {string}
      * @memberof Spot
      */
-    id?: string;
+    id: string;
     /**
      * 座標情報:緯度
      * @type {number}
      * @memberof Spot
      */
-    latitude?: number;
+    latitude: number;
     /**
      * 座標情報:経度
      * @type {number}
      * @memberof Spot
      */
-    longitude?: number;
+    longitude: number;
     /**
      * スポット名
      * @type {string}
      * @memberof Spot
      */
-    name?: string;
+    name: string;
     /**
      * スポット種別ID
      * @type {string}
      * @memberof Spot
      */
-    spotTypeId?: string;
+    spotTypeId: string;
     /**
      * サムネイル画像URL
      * @type {string}
      * @memberof Spot
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * 更新日時
      * @type {number}
      * @memberof Spot
      */
-    updatedAt?: number;
+    updatedAt: number;
     /**
      * 投稿者のユーザーID
      * @type {string}
      * @memberof Spot
      */
-    userId?: string;
+    userId: string;
     /**
      * 投稿者名
      * @type {string}
      * @memberof Spot
      */
-    userName?: string;
+    userName: string;
     /**
      * 投稿者のサムネイルURL
      * @type {string}
      * @memberof Spot
      */
-    userThumbnailUrl?: string;
+    userThumbnailUrl: string;
     /**
-     * 投稿者の種別
-     * @type {number}
+     * 
+     * @type {SpotUserType}
      * @memberof Spot
      */
-    userType?: number;
+    userType: SpotUserType;
 }
+
+
 
 /**
  * Check if a given object implements the Spot interface.
  */
 export function instanceOfSpot(value: object): value is Spot {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('latitude' in value) || value['latitude'] === undefined) return false;
+    if (!('longitude' in value) || value['longitude'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('spotTypeId' in value) || value['spotTypeId'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('userName' in value) || value['userName'] === undefined) return false;
+    if (!('userThumbnailUrl' in value) || value['userThumbnailUrl'] === undefined) return false;
+    if (!('userType' in value) || value['userType'] === undefined) return false;
     return true;
 }
 
@@ -116,26 +139,31 @@ export function SpotFromJSONTyped(json: any, ignoreDiscriminator: boolean): Spot
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'latitude': json['latitude'] == null ? undefined : json['latitude'],
-        'longitude': json['longitude'] == null ? undefined : json['longitude'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'spotTypeId': json['spotTypeId'] == null ? undefined : json['spotTypeId'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
-        'userName': json['userName'] == null ? undefined : json['userName'],
-        'userThumbnailUrl': json['userThumbnailUrl'] == null ? undefined : json['userThumbnailUrl'],
-        'userType': json['userType'] == null ? undefined : json['userType'],
+        'createdAt': json['createdAt'],
+        'description': json['description'],
+        'id': json['id'],
+        'latitude': json['latitude'],
+        'longitude': json['longitude'],
+        'name': json['name'],
+        'spotTypeId': json['spotTypeId'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'updatedAt': json['updatedAt'],
+        'userId': json['userId'],
+        'userName': json['userName'],
+        'userThumbnailUrl': json['userThumbnailUrl'],
+        'userType': SpotUserTypeFromJSON(json['userType']),
     };
 }
 
-export function SpotToJSON(value?: Spot | null): any {
+export function SpotToJSON(json: any): Spot {
+    return SpotToJSONTyped(json, false);
+}
+
+export function SpotToJSONTyped(value?: Spot | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'createdAt': value['createdAt'],
@@ -150,7 +178,7 @@ export function SpotToJSON(value?: Spot | null): any {
         'userId': value['userId'],
         'userName': value['userName'],
         'userThumbnailUrl': value['userThumbnailUrl'],
-        'userType': value['userType'],
+        'userType': SpotUserTypeToJSON(value['userType']),
     };
 }
 

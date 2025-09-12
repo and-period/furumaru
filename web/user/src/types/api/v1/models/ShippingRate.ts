@@ -24,37 +24,42 @@ export interface ShippingRate {
      * @type {string}
      * @memberof ShippingRate
      */
-    name?: string;
+    name: string;
     /**
      * No.
      * @type {number}
      * @memberof ShippingRate
      */
-    number?: number;
+    number: number;
     /**
      * 対象都道府県一覧
      * @type {Array<number>}
      * @memberof ShippingRate
      */
-    prefectureCodes?: Array<number>;
+    prefectureCodes: Array<number>;
     /**
      * 対象都道府県名
      * @type {Array<string>}
      * @memberof ShippingRate
      */
-    prefectures?: Array<string>;
+    prefectures: Array<string>;
     /**
      * 配送料金(税込)
      * @type {number}
      * @memberof ShippingRate
      */
-    price?: number;
+    price: number;
 }
 
 /**
  * Check if a given object implements the ShippingRate interface.
  */
 export function instanceOfShippingRate(value: object): value is ShippingRate {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('number' in value) || value['number'] === undefined) return false;
+    if (!('prefectureCodes' in value) || value['prefectureCodes'] === undefined) return false;
+    if (!('prefectures' in value) || value['prefectures'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
     return true;
 }
 
@@ -68,18 +73,23 @@ export function ShippingRateFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'number': json['number'] == null ? undefined : json['number'],
-        'prefectureCodes': json['prefectureCodes'] == null ? undefined : json['prefectureCodes'],
-        'prefectures': json['prefectures'] == null ? undefined : json['prefectures'],
-        'price': json['price'] == null ? undefined : json['price'],
+        'name': json['name'],
+        'number': json['number'],
+        'prefectureCodes': json['prefectureCodes'],
+        'prefectures': json['prefectures'],
+        'price': json['price'],
     };
 }
 
-export function ShippingRateToJSON(value?: ShippingRate | null): any {
+export function ShippingRateToJSON(json: any): ShippingRate {
+    return ShippingRateToJSONTyped(json, false);
+}
+
+export function ShippingRateToJSONTyped(value?: ShippingRate | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'name': value['name'],

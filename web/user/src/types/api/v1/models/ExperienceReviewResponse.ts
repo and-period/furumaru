@@ -18,6 +18,7 @@ import {
     ExperienceReviewFromJSON,
     ExperienceReviewFromJSONTyped,
     ExperienceReviewToJSON,
+    ExperienceReviewToJSONTyped,
 } from './ExperienceReview';
 
 /**
@@ -31,13 +32,14 @@ export interface ExperienceReviewResponse {
      * @type {ExperienceReview}
      * @memberof ExperienceReviewResponse
      */
-    review?: ExperienceReview;
+    review: ExperienceReview;
 }
 
 /**
  * Check if a given object implements the ExperienceReviewResponse interface.
  */
 export function instanceOfExperienceReviewResponse(value: object): value is ExperienceReviewResponse {
+    if (!('review' in value) || value['review'] === undefined) return false;
     return true;
 }
 
@@ -51,14 +53,19 @@ export function ExperienceReviewResponseFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'review': json['review'] == null ? undefined : ExperienceReviewFromJSON(json['review']),
+        'review': ExperienceReviewFromJSON(json['review']),
     };
 }
 
-export function ExperienceReviewResponseToJSON(value?: ExperienceReviewResponse | null): any {
+export function ExperienceReviewResponseToJSON(json: any): ExperienceReviewResponse {
+    return ExperienceReviewResponseToJSONTyped(json, false);
+}
+
+export function ExperienceReviewResponseToJSONTyped(value?: ExperienceReviewResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'review': ExperienceReviewToJSON(value['review']),

@@ -85,8 +85,12 @@ export class AddressApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/addresses/{addressId}`;
+        urlPath = urlPath.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId'])));
+
         const response = await this.request({
-            path: `/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -127,8 +131,12 @@ export class AddressApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/addresses/{addressId}`;
+        urlPath = urlPath.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId'])));
+
         const response = await this.request({
-            path: `/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -179,8 +187,12 @@ export class AddressApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/addresses/{addressId}`;
+        urlPath = urlPath.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId'])));
+
         const response = await this.request({
-            path: `/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -223,8 +235,11 @@ export class AddressApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/addresses`;
+
         const response = await this.request({
-            path: `/addresses`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -268,8 +283,11 @@ export class AddressApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/addresses`;
+
         const response = await this.request({
-            path: `/addresses`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

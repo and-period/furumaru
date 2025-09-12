@@ -98,8 +98,11 @@ export class AuthApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/auth`;
+
         const response = await this.request({
-            path: `/auth`,
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -134,8 +137,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/auth/forgot-password`;
+
         const response = await this.request({
-            path: `/auth/forgot-password`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -171,8 +177,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/auth/forgot-password/verified`;
+
         const response = await this.request({
-            path: `/auth/forgot-password/verified`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -207,8 +216,11 @@ export class AuthApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/auth`;
+
         const response = await this.request({
-            path: `/auth`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -243,8 +255,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/auth/google`;
+
         const response = await this.request({
-            path: `/auth/google`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -279,8 +294,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/auth/line`;
+
         const response = await this.request({
-            path: `/auth/line`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -324,8 +342,11 @@ export class AuthApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/auth/password`;
+
         const response = await this.request({
-            path: `/auth/password`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -361,8 +382,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/auth`;
+
         const response = await this.request({
-            path: `/auth`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -399,8 +423,11 @@ export class AuthApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/auth/refresh-token`;
+
         const response = await this.request({
-            path: `/auth/refresh-token`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

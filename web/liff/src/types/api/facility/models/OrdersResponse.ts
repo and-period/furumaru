@@ -18,24 +18,28 @@ import {
     OrderFromJSON,
     OrderFromJSONTyped,
     OrderToJSON,
+    OrderToJSONTyped,
 } from './Order';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
+    PromotionToJSONTyped,
 } from './Promotion';
 
 /**
@@ -49,37 +53,42 @@ export interface OrdersResponse {
      * @type {Array<Coordinator>}
      * @memberof OrdersResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 注文履歴一覧
      * @type {Array<Order>}
      * @memberof OrdersResponse
      */
-    orders?: Array<Order>;
+    orders: Array<Order>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof OrdersResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * プロモーション一覧
      * @type {Array<Promotion>}
      * @memberof OrdersResponse
      */
-    promotions?: Array<Promotion>;
+    promotions: Array<Promotion>;
     /**
      * 合計数
      * @type {number}
      * @memberof OrdersResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the OrdersResponse interface.
  */
 export function instanceOfOrdersResponse(value: object): value is OrdersResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('orders' in value) || value['orders'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('promotions' in value) || value['promotions'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -93,24 +102,29 @@ export function OrdersResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'orders': json['orders'] == null ? undefined : ((json['orders'] as Array<any>).map(OrderFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'promotions': json['promotions'] == null ? undefined : ((json['promotions'] as Array<any>).map(PromotionFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'orders': ((json['orders'] as Array<any>).map(OrderFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'promotions': ((json['promotions'] as Array<any>).map(PromotionFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function OrdersResponseToJSON(value?: OrdersResponse | null): any {
+export function OrdersResponseToJSON(json: any): OrdersResponse {
+    return OrdersResponseToJSONTyped(json, false);
+}
+
+export function OrdersResponseToJSONTyped(value?: OrdersResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'orders': value['orders'] == null ? undefined : ((value['orders'] as Array<any>).map(OrderToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
-        'promotions': value['promotions'] == null ? undefined : ((value['promotions'] as Array<any>).map(PromotionToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'orders': ((value['orders'] as Array<any>).map(OrderToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'promotions': ((value['promotions'] as Array<any>).map(PromotionToJSON)),
         'total': value['total'],
     };
 }

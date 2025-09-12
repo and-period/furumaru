@@ -74,8 +74,11 @@ export class UploadApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/upload/spots/thumbnail`;
+
         const response = await this.request({
-            path: `/upload/spots/thumbnail`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -114,8 +117,11 @@ export class UploadApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/upload/state`;
+
         const response = await this.request({
-            path: `/upload/state`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -159,8 +165,11 @@ export class UploadApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/upload/users/thumbnail`;
+
         const response = await this.request({
-            path: `/upload/users/thumbnail`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

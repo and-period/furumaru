@@ -24,21 +24,19 @@ export interface RequestSignInRequest {
      * @type {string}
      * @memberof RequestSignInRequest
      */
-    password: string;
+    password?: string;
     /**
      * ユーザー名 (メールアドレス,電話番号)
      * @type {string}
      * @memberof RequestSignInRequest
      */
-    username: string;
+    username?: string;
 }
 
 /**
  * Check if a given object implements the RequestSignInRequest interface.
  */
 export function instanceOfRequestSignInRequest(value: object): value is RequestSignInRequest {
-    if (!('password' in value) || value['password'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -52,8 +50,8 @@ export function RequestSignInRequestFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'password': json['password'],
-        'username': json['username'],
+        'password': json['password'] == null ? undefined : json['password'],
+        'username': json['username'] == null ? undefined : json['username'],
     };
 }
 

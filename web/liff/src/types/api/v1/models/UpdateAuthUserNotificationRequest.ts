@@ -24,13 +24,14 @@ export interface UpdateAuthUserNotificationRequest {
      * @type {boolean}
      * @memberof UpdateAuthUserNotificationRequest
      */
-    enabled?: boolean;
+    enabled: boolean;
 }
 
 /**
  * Check if a given object implements the UpdateAuthUserNotificationRequest interface.
  */
 export function instanceOfUpdateAuthUserNotificationRequest(value: object): value is UpdateAuthUserNotificationRequest {
+    if (!('enabled' in value) || value['enabled'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function UpdateAuthUserNotificationRequestFromJSONTyped(json: any, ignore
     }
     return {
         
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'enabled': json['enabled'],
     };
 }
 
-export function UpdateAuthUserNotificationRequestToJSON(value?: UpdateAuthUserNotificationRequest | null): any {
+export function UpdateAuthUserNotificationRequestToJSON(json: any): UpdateAuthUserNotificationRequest {
+    return UpdateAuthUserNotificationRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserNotificationRequestToJSONTyped(value?: UpdateAuthUserNotificationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'enabled': value['enabled'],

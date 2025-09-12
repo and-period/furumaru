@@ -30,7 +30,7 @@ export interface GuestCheckoutAddress {
      * @type {string}
      * @memberof GuestCheckoutAddress
      */
-    addressLine2?: string;
+    addressLine2: string;
     /**
      * 市区町村
      * @type {string}
@@ -86,6 +86,7 @@ export interface GuestCheckoutAddress {
  */
 export function instanceOfGuestCheckoutAddress(value: object): value is GuestCheckoutAddress {
     if (!('addressLine1' in value) || value['addressLine1'] === undefined) return false;
+    if (!('addressLine2' in value) || value['addressLine2'] === undefined) return false;
     if (!('city' in value) || value['city'] === undefined) return false;
     if (!('firstname' in value) || value['firstname'] === undefined) return false;
     if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
@@ -108,7 +109,7 @@ export function GuestCheckoutAddressFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'addressLine1': json['addressLine1'],
-        'addressLine2': json['addressLine2'] == null ? undefined : json['addressLine2'],
+        'addressLine2': json['addressLine2'],
         'city': json['city'],
         'firstname': json['firstname'],
         'firstnameKana': json['firstnameKana'],
@@ -120,10 +121,15 @@ export function GuestCheckoutAddressFromJSONTyped(json: any, ignoreDiscriminator
     };
 }
 
-export function GuestCheckoutAddressToJSON(value?: GuestCheckoutAddress | null): any {
+export function GuestCheckoutAddressToJSON(json: any): GuestCheckoutAddress {
+    return GuestCheckoutAddressToJSONTyped(json, false);
+}
+
+export function GuestCheckoutAddressToJSONTyped(value?: GuestCheckoutAddress | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'addressLine1': value['addressLine1'],

@@ -18,24 +18,28 @@ import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { Video } from './Video';
 import {
     VideoFromJSON,
     VideoFromJSONTyped,
     VideoToJSON,
+    VideoToJSONTyped,
 } from './Video';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -49,31 +53,35 @@ export interface VideoResponse {
      * @type {Coordinator}
      * @memberof VideoResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * 体験一覧
      * @type {Array<Experience>}
      * @memberof VideoResponse
      */
-    experiences?: Array<Experience>;
+    experiences: Array<Experience>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof VideoResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 
      * @type {Video}
      * @memberof VideoResponse
      */
-    video?: Video;
+    video: Video;
 }
 
 /**
  * Check if a given object implements the VideoResponse interface.
  */
 export function instanceOfVideoResponse(value: object): value is VideoResponse {
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('video' in value) || value['video'] === undefined) return false;
     return true;
 }
 
@@ -87,22 +95,27 @@ export function VideoResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'experiences': json['experiences'] == null ? undefined : ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'video': json['video'] == null ? undefined : VideoFromJSON(json['video']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'video': VideoFromJSON(json['video']),
     };
 }
 
-export function VideoResponseToJSON(value?: VideoResponse | null): any {
+export function VideoResponseToJSON(json: any): VideoResponse {
+    return VideoResponseToJSONTyped(json, false);
+}
+
+export function VideoResponseToJSONTyped(value?: VideoResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinator': CoordinatorToJSON(value['coordinator']),
-        'experiences': value['experiences'] == null ? undefined : ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'video': VideoToJSON(value['video']),
     };
 }

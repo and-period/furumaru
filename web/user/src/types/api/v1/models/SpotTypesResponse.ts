@@ -18,6 +18,7 @@ import {
     SpotTypeFromJSON,
     SpotTypeFromJSONTyped,
     SpotTypeToJSON,
+    SpotTypeToJSONTyped,
 } from './SpotType';
 
 /**
@@ -31,19 +32,21 @@ export interface SpotTypesResponse {
      * @type {Array<SpotType>}
      * @memberof SpotTypesResponse
      */
-    spotTypes?: Array<SpotType>;
+    spotTypes: Array<SpotType>;
     /**
      * 体験種別合計数
      * @type {number}
      * @memberof SpotTypesResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the SpotTypesResponse interface.
  */
 export function instanceOfSpotTypesResponse(value: object): value is SpotTypesResponse {
+    if (!('spotTypes' in value) || value['spotTypes'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -57,18 +60,23 @@ export function SpotTypesResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'spotTypes': json['spotTypes'] == null ? undefined : ((json['spotTypes'] as Array<any>).map(SpotTypeFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'spotTypes': ((json['spotTypes'] as Array<any>).map(SpotTypeFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function SpotTypesResponseToJSON(value?: SpotTypesResponse | null): any {
+export function SpotTypesResponseToJSON(json: any): SpotTypesResponse {
+    return SpotTypesResponseToJSONTyped(json, false);
+}
+
+export function SpotTypesResponseToJSONTyped(value?: SpotTypesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'spotTypes': value['spotTypes'] == null ? undefined : ((value['spotTypes'] as Array<any>).map(SpotTypeToJSON)),
+        'spotTypes': ((value['spotTypes'] as Array<any>).map(SpotTypeToJSON)),
         'total': value['total'],
     };
 }

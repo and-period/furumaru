@@ -18,48 +18,56 @@ import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
+    ArchiveSummaryToJSONTyped,
 } from './ArchiveSummary';
 import type { Experience } from './Experience';
 import {
     ExperienceFromJSON,
     ExperienceFromJSONTyped,
     ExperienceToJSON,
+    ExperienceToJSONTyped,
 } from './Experience';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 import type { ProductType } from './ProductType';
 import {
     ProductTypeFromJSON,
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
+    ProductTypeToJSONTyped,
 } from './ProductType';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Shipping } from './Shipping';
 import {
     ShippingFromJSON,
     ShippingFromJSONTyped,
     ShippingToJSON,
+    ShippingToJSONTyped,
 } from './Shipping';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { LiveSummary } from './LiveSummary';
 import {
     LiveSummaryFromJSON,
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
+    LiveSummaryToJSONTyped,
 } from './LiveSummary';
 
 /**
@@ -73,55 +81,63 @@ export interface CoordinatorResponse {
      * @type {Array<ArchiveSummary>}
      * @memberof CoordinatorResponse
      */
-    archives?: Array<ArchiveSummary>;
+    archives: Array<ArchiveSummary>;
     /**
      * 
      * @type {Coordinator}
      * @memberof CoordinatorResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * コーディネータに関連する体験一覧
      * @type {Array<Experience>}
      * @memberof CoordinatorResponse
      */
-    experiences?: Array<Experience>;
+    experiences: Array<Experience>;
     /**
      * 配信中・配信予定のマルシェ一覧
      * @type {Array<LiveSummary>}
      * @memberof CoordinatorResponse
      */
-    lives?: Array<LiveSummary>;
+    lives: Array<LiveSummary>;
     /**
      * 生産者一覧
      * @type {Array<Producer>}
      * @memberof CoordinatorResponse
      */
-    producers?: Array<Producer>;
+    producers: Array<Producer>;
     /**
      * 品目一覧
      * @type {Array<ProductType>}
      * @memberof CoordinatorResponse
      */
-    productTypes?: Array<ProductType>;
+    productTypes: Array<ProductType>;
     /**
      * コーディネータに関連する商品一覧
      * @type {Array<Product>}
      * @memberof CoordinatorResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 
      * @type {Shipping}
      * @memberof CoordinatorResponse
      */
-    shipping?: Shipping;
+    shipping: Shipping;
 }
 
 /**
  * Check if a given object implements the CoordinatorResponse interface.
  */
 export function instanceOfCoordinatorResponse(value: object): value is CoordinatorResponse {
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('experiences' in value) || value['experiences'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('shipping' in value) || value['shipping'] === undefined) return false;
     return true;
 }
 
@@ -135,30 +151,35 @@ export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'archives': json['archives'] == null ? undefined : ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'experiences': json['experiences'] == null ? undefined : ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
-        'lives': json['lives'] == null ? undefined : ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
-        'producers': json['producers'] == null ? undefined : ((json['producers'] as Array<any>).map(ProducerFromJSON)),
-        'productTypes': json['productTypes'] == null ? undefined : ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'shipping': json['shipping'] == null ? undefined : ShippingFromJSON(json['shipping']),
+        'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'experiences': ((json['experiences'] as Array<any>).map(ExperienceFromJSON)),
+        'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
+        'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
+        'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'shipping': ShippingFromJSON(json['shipping']),
     };
 }
 
-export function CoordinatorResponseToJSON(value?: CoordinatorResponse | null): any {
+export function CoordinatorResponseToJSON(json: any): CoordinatorResponse {
+    return CoordinatorResponseToJSONTyped(json, false);
+}
+
+export function CoordinatorResponseToJSONTyped(value?: CoordinatorResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'archives': value['archives'] == null ? undefined : ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
         'coordinator': CoordinatorToJSON(value['coordinator']),
-        'experiences': value['experiences'] == null ? undefined : ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
-        'lives': value['lives'] == null ? undefined : ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
-        'producers': value['producers'] == null ? undefined : ((value['producers'] as Array<any>).map(ProducerToJSON)),
-        'productTypes': value['productTypes'] == null ? undefined : ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'experiences': ((value['experiences'] as Array<any>).map(ExperienceToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'shipping': ShippingToJSON(value['shipping']),
     };
 }

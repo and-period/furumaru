@@ -49,10 +49,15 @@ export function UpdateAuthUserAccountIDRequestFromJSONTyped(json: any, ignoreDis
     };
 }
 
-export function UpdateAuthUserAccountIDRequestToJSON(value?: UpdateAuthUserAccountIDRequest | null): any {
+export function UpdateAuthUserAccountIDRequestToJSON(json: any): UpdateAuthUserAccountIDRequest {
+    return UpdateAuthUserAccountIDRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserAccountIDRequestToJSONTyped(value?: UpdateAuthUserAccountIDRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

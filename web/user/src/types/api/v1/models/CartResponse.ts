@@ -18,18 +18,21 @@ import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { Cart } from './Cart';
 import {
     CartFromJSON,
     CartFromJSONTyped,
     CartToJSON,
+    CartToJSONTyped,
 } from './Cart';
 
 /**
@@ -43,25 +46,28 @@ export interface CartResponse {
      * @type {Array<Cart>}
      * @memberof CartResponse
      */
-    carts?: Array<Cart>;
+    carts: Array<Cart>;
     /**
      * コーディネータ一覧
      * @type {Array<Coordinator>}
      * @memberof CartResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof CartResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
 }
 
 /**
  * Check if a given object implements the CartResponse interface.
  */
 export function instanceOfCartResponse(value: object): value is CartResponse {
+    if (!('carts' in value) || value['carts'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
     return true;
 }
 
@@ -75,21 +81,26 @@ export function CartResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'carts': json['carts'] == null ? undefined : ((json['carts'] as Array<any>).map(CartFromJSON)),
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'carts': ((json['carts'] as Array<any>).map(CartFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
     };
 }
 
-export function CartResponseToJSON(value?: CartResponse | null): any {
+export function CartResponseToJSON(json: any): CartResponse {
+    return CartResponseToJSONTyped(json, false);
+}
+
+export function CartResponseToJSONTyped(value?: CartResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'carts': value['carts'] == null ? undefined : ((value['carts'] as Array<any>).map(CartToJSON)),
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'carts': ((value['carts'] as Array<any>).map(CartToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

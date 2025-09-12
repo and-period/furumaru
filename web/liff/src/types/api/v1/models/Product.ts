@@ -13,17 +13,40 @@
  */
 
 import { mapValues } from '../runtime';
+import type { StorageMethodType } from './StorageMethodType';
+import {
+    StorageMethodTypeFromJSON,
+    StorageMethodTypeFromJSONTyped,
+    StorageMethodTypeToJSON,
+    StorageMethodTypeToJSONTyped,
+} from './StorageMethodType';
+import type { ProductStatus } from './ProductStatus';
+import {
+    ProductStatusFromJSON,
+    ProductStatusFromJSONTyped,
+    ProductStatusToJSON,
+    ProductStatusToJSONTyped,
+} from './ProductStatus';
 import type { ProductMedia } from './ProductMedia';
 import {
     ProductMediaFromJSON,
     ProductMediaFromJSONTyped,
     ProductMediaToJSON,
+    ProductMediaToJSONTyped,
 } from './ProductMedia';
+import type { DeliveryType } from './DeliveryType';
+import {
+    DeliveryTypeFromJSON,
+    DeliveryTypeFromJSONTyped,
+    DeliveryTypeToJSON,
+    DeliveryTypeToJSONTyped,
+} from './DeliveryType';
 import type { ProductRate } from './ProductRate';
 import {
     ProductRateFromJSON,
     ProductRateFromJSONTyped,
     ProductRateToJSON,
+    ProductRateToJSONTyped,
 } from './ProductRate';
 
 /**
@@ -37,187 +60,219 @@ export interface Product {
      * @type {number}
      * @memberof Product
      */
-    box60Rate?: number;
+    box60Rate: number;
     /**
      * 箱の占有率(サイズ:80)
      * @type {number}
      * @memberof Product
      */
-    box80Rate?: number;
+    box80Rate: number;
     /**
      * 箱の占有率(サイズ:100)
      * @type {number}
      * @memberof Product
      */
-    box100Rate?: number;
+    box100Rate: number;
     /**
      * 商品種別ID
      * @type {string}
      * @memberof Product
      */
-    categoryId?: string;
+    categoryId: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof Product
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
-     * 配送方法
-     * @type {number}
+     * 
+     * @type {DeliveryType}
      * @memberof Product
      */
-    deliveryType?: number;
+    deliveryType: DeliveryType;
     /**
      * 商品説明
      * @type {string}
      * @memberof Product
      */
-    description?: string;
+    description: string;
     /**
      * 販売終了日時
      * @type {number}
      * @memberof Product
      */
-    endAt?: number;
+    endAt: number;
     /**
      * 賞味期限(単位:日)
      * @type {number}
      * @memberof Product
      */
-    expirationDate?: number;
+    expirationDate: number;
     /**
      * 商品ID
      * @type {string}
      * @memberof Product
      */
-    id?: string;
+    id: string;
     /**
      * 在庫数
      * @type {number}
      * @memberof Product
      */
-    inventory?: number;
+    inventory: number;
     /**
      * 数量単位説明
      * @type {string}
      * @memberof Product
      */
-    itemDescription?: string;
+    itemDescription: string;
     /**
      * 数量単位
      * @type {string}
      * @memberof Product
      */
-    itemUnit?: string;
+    itemUnit: string;
     /**
      * メディア一覧
      * @type {Array<ProductMedia>}
      * @memberof Product
      */
-    media?: Array<ProductMedia>;
+    media: Array<ProductMedia>;
     /**
      * 商品名
      * @type {string}
      * @memberof Product
      */
-    name?: string;
+    name: string;
     /**
      * 原産地(市区町村)
      * @type {string}
      * @memberof Product
      */
-    originCity?: string;
+    originCity: string;
     /**
      * 原産地(都道府県)
      * @type {string}
      * @memberof Product
      */
-    originPrefecture?: string;
+    originPrefecture: string;
     /**
      * 販売価格(税込)
      * @type {number}
      * @memberof Product
      */
-    price?: number;
+    price: number;
     /**
      * 生産者ID
      * @type {string}
      * @memberof Product
      */
-    producerId?: string;
+    producerId: string;
     /**
      * 商品タグID一覧
      * @type {Array<string>}
      * @memberof Product
      */
-    productTagIds?: Array<string>;
+    productTagIds: Array<string>;
     /**
      * 品目ID
      * @type {string}
      * @memberof Product
      */
-    productTypeId?: string;
+    productTypeId: string;
     /**
      * 
      * @type {ProductRate}
      * @memberof Product
      */
-    rate?: ProductRate;
+    rate: ProductRate;
     /**
      * おすすめポイント1
      * @type {string}
      * @memberof Product
      */
-    recommendedPoint1?: string;
+    recommendedPoint1: string;
     /**
      * おすすめポイント2
      * @type {string}
      * @memberof Product
      */
-    recommendedPoint2?: string;
+    recommendedPoint2: string;
     /**
      * おすすめポイント3
      * @type {string}
      * @memberof Product
      */
-    recommendedPoint3?: string;
+    recommendedPoint3: string;
     /**
      * 販売開始日時
      * @type {number}
      * @memberof Product
      */
-    startAt?: number;
+    startAt: number;
     /**
-     * 販売状況
-     * @type {number}
+     * 
+     * @type {ProductStatus}
      * @memberof Product
      */
-    status?: number;
+    status: ProductStatus;
     /**
-     * 保存方法
-     * @type {number}
+     * 
+     * @type {StorageMethodType}
      * @memberof Product
      */
-    storageMethodType?: number;
+    storageMethodType: StorageMethodType;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Product
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * 重量(kg,少数第一位まで)
      * @type {number}
      * @memberof Product
      */
-    weight?: number;
+    weight: number;
 }
+
+
 
 /**
  * Check if a given object implements the Product interface.
  */
 export function instanceOfProduct(value: object): value is Product {
+    if (!('box60Rate' in value) || value['box60Rate'] === undefined) return false;
+    if (!('box80Rate' in value) || value['box80Rate'] === undefined) return false;
+    if (!('box100Rate' in value) || value['box100Rate'] === undefined) return false;
+    if (!('categoryId' in value) || value['categoryId'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('deliveryType' in value) || value['deliveryType'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('expirationDate' in value) || value['expirationDate'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('inventory' in value) || value['inventory'] === undefined) return false;
+    if (!('itemDescription' in value) || value['itemDescription'] === undefined) return false;
+    if (!('itemUnit' in value) || value['itemUnit'] === undefined) return false;
+    if (!('media' in value) || value['media'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('originCity' in value) || value['originCity'] === undefined) return false;
+    if (!('originPrefecture' in value) || value['originPrefecture'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
+    if (!('producerId' in value) || value['producerId'] === undefined) return false;
+    if (!('productTagIds' in value) || value['productTagIds'] === undefined) return false;
+    if (!('productTypeId' in value) || value['productTypeId'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('recommendedPoint1' in value) || value['recommendedPoint1'] === undefined) return false;
+    if (!('recommendedPoint2' in value) || value['recommendedPoint2'] === undefined) return false;
+    if (!('recommendedPoint3' in value) || value['recommendedPoint3'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('storageMethodType' in value) || value['storageMethodType'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('weight' in value) || value['weight'] === undefined) return false;
     return true;
 }
 
@@ -231,43 +286,48 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
     }
     return {
         
-        'box60Rate': json['box60Rate'] == null ? undefined : json['box60Rate'],
-        'box80Rate': json['box80Rate'] == null ? undefined : json['box80Rate'],
-        'box100Rate': json['box100Rate'] == null ? undefined : json['box100Rate'],
-        'categoryId': json['categoryId'] == null ? undefined : json['categoryId'],
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'deliveryType': json['deliveryType'] == null ? undefined : json['deliveryType'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'expirationDate': json['expirationDate'] == null ? undefined : json['expirationDate'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'inventory': json['inventory'] == null ? undefined : json['inventory'],
-        'itemDescription': json['itemDescription'] == null ? undefined : json['itemDescription'],
-        'itemUnit': json['itemUnit'] == null ? undefined : json['itemUnit'],
-        'media': json['media'] == null ? undefined : ((json['media'] as Array<any>).map(ProductMediaFromJSON)),
-        'name': json['name'] == null ? undefined : json['name'],
-        'originCity': json['originCity'] == null ? undefined : json['originCity'],
-        'originPrefecture': json['originPrefecture'] == null ? undefined : json['originPrefecture'],
-        'price': json['price'] == null ? undefined : json['price'],
-        'producerId': json['producerId'] == null ? undefined : json['producerId'],
-        'productTagIds': json['productTagIds'] == null ? undefined : json['productTagIds'],
-        'productTypeId': json['productTypeId'] == null ? undefined : json['productTypeId'],
-        'rate': json['rate'] == null ? undefined : ProductRateFromJSON(json['rate']),
-        'recommendedPoint1': json['recommendedPoint1'] == null ? undefined : json['recommendedPoint1'],
-        'recommendedPoint2': json['recommendedPoint2'] == null ? undefined : json['recommendedPoint2'],
-        'recommendedPoint3': json['recommendedPoint3'] == null ? undefined : json['recommendedPoint3'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'storageMethodType': json['storageMethodType'] == null ? undefined : json['storageMethodType'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'weight': json['weight'] == null ? undefined : json['weight'],
+        'box60Rate': json['box60Rate'],
+        'box80Rate': json['box80Rate'],
+        'box100Rate': json['box100Rate'],
+        'categoryId': json['categoryId'],
+        'coordinatorId': json['coordinatorId'],
+        'deliveryType': DeliveryTypeFromJSON(json['deliveryType']),
+        'description': json['description'],
+        'endAt': json['endAt'],
+        'expirationDate': json['expirationDate'],
+        'id': json['id'],
+        'inventory': json['inventory'],
+        'itemDescription': json['itemDescription'],
+        'itemUnit': json['itemUnit'],
+        'media': ((json['media'] as Array<any>).map(ProductMediaFromJSON)),
+        'name': json['name'],
+        'originCity': json['originCity'],
+        'originPrefecture': json['originPrefecture'],
+        'price': json['price'],
+        'producerId': json['producerId'],
+        'productTagIds': json['productTagIds'],
+        'productTypeId': json['productTypeId'],
+        'rate': ProductRateFromJSON(json['rate']),
+        'recommendedPoint1': json['recommendedPoint1'],
+        'recommendedPoint2': json['recommendedPoint2'],
+        'recommendedPoint3': json['recommendedPoint3'],
+        'startAt': json['startAt'],
+        'status': ProductStatusFromJSON(json['status']),
+        'storageMethodType': StorageMethodTypeFromJSON(json['storageMethodType']),
+        'thumbnailUrl': json['thumbnailUrl'],
+        'weight': json['weight'],
     };
 }
 
-export function ProductToJSON(value?: Product | null): any {
+export function ProductToJSON(json: any): Product {
+    return ProductToJSONTyped(json, false);
+}
+
+export function ProductToJSONTyped(value?: Product | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'box60Rate': value['box60Rate'],
@@ -275,7 +335,7 @@ export function ProductToJSON(value?: Product | null): any {
         'box100Rate': value['box100Rate'],
         'categoryId': value['categoryId'],
         'coordinatorId': value['coordinatorId'],
-        'deliveryType': value['deliveryType'],
+        'deliveryType': DeliveryTypeToJSON(value['deliveryType']),
         'description': value['description'],
         'endAt': value['endAt'],
         'expirationDate': value['expirationDate'],
@@ -283,7 +343,7 @@ export function ProductToJSON(value?: Product | null): any {
         'inventory': value['inventory'],
         'itemDescription': value['itemDescription'],
         'itemUnit': value['itemUnit'],
-        'media': value['media'] == null ? undefined : ((value['media'] as Array<any>).map(ProductMediaToJSON)),
+        'media': ((value['media'] as Array<any>).map(ProductMediaToJSON)),
         'name': value['name'],
         'originCity': value['originCity'],
         'originPrefecture': value['originPrefecture'],
@@ -296,8 +356,8 @@ export function ProductToJSON(value?: Product | null): any {
         'recommendedPoint2': value['recommendedPoint2'],
         'recommendedPoint3': value['recommendedPoint3'],
         'startAt': value['startAt'],
-        'status': value['status'],
-        'storageMethodType': value['storageMethodType'],
+        'status': ProductStatusToJSON(value['status']),
+        'storageMethodType': StorageMethodTypeToJSON(value['storageMethodType']),
         'thumbnailUrl': value['thumbnailUrl'],
         'weight': value['weight'],
     };

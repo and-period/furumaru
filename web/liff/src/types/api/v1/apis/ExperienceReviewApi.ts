@@ -103,8 +103,12 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/experiences/{experienceId}/reviews`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -155,8 +159,12 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/experiences/{experienceId}/reviews`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -197,8 +205,13 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/experiences/{experienceId}/reviews/{reviewId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews/{reviewId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -256,8 +269,13 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/experiences/{experienceId}/reviews/{reviewId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews/{reviewId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -306,8 +324,13 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/experiences/{experienceId}/reviews/{reviewId}/reactions`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews/{reviewId}/reactions`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -364,8 +387,13 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/experiences/{experienceId}/reviews/{reviewId}/reactions`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+        urlPath = urlPath.replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId'])));
+
         const response = await this.request({
-            path: `/experiences/{experienceId}/reviews/{reviewId}/reactions`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))).replace(`{${"reviewId"}}`, encodeURIComponent(String(requestParameters['reviewId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -407,8 +435,12 @@ export class ExperienceReviewApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/experiences/{experienceId}/reviews`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/users/me/experiences/{experienceId}/reviews`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

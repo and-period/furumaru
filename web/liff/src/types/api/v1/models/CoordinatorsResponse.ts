@@ -18,12 +18,14 @@ import {
     ProductTypeFromJSON,
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
+    ProductTypeToJSONTyped,
 } from './ProductType';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 
 /**
@@ -37,25 +39,28 @@ export interface CoordinatorsResponse {
      * @type {Array<Coordinator>}
      * @memberof CoordinatorsResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 品目一覧
      * @type {Array<ProductType>}
      * @memberof CoordinatorsResponse
      */
-    productTypes?: Array<ProductType>;
+    productTypes: Array<ProductType>;
     /**
      * コーディネータ合計数
      * @type {number}
      * @memberof CoordinatorsResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the CoordinatorsResponse interface.
  */
 export function instanceOfCoordinatorsResponse(value: object): value is CoordinatorsResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -69,20 +74,25 @@ export function CoordinatorsResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'productTypes': json['productTypes'] == null ? undefined : ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'productTypes': ((json['productTypes'] as Array<any>).map(ProductTypeFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function CoordinatorsResponseToJSON(value?: CoordinatorsResponse | null): any {
+export function CoordinatorsResponseToJSON(json: any): CoordinatorsResponse {
+    return CoordinatorsResponseToJSONTyped(json, false);
+}
+
+export function CoordinatorsResponseToJSONTyped(value?: CoordinatorsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'productTypes': value['productTypes'] == null ? undefined : ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
         'total': value['total'],
     };
 }

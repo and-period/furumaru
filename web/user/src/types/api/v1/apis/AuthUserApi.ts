@@ -129,8 +129,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/account-id`;
+
         const response = await this.request({
-            path: `/users/me/account-id`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -165,8 +168,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me`;
+
         const response = await this.request({
-            path: `/users/me`,
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -209,8 +215,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/email`;
+
         const response = await this.request({
-            path: `/users/me/email`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -254,8 +263,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/email/verified`;
+
         const response = await this.request({
-            path: `/users/me/email/verified`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -290,8 +302,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me`;
+
         const response = await this.request({
-            path: `/users/me`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -327,8 +342,11 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/users/me/google`;
+
         const response = await this.request({
-            path: `/users/me/google`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -365,8 +383,11 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/users/me/line`;
+
         const response = await this.request({
-            path: `/users/me/line`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -411,8 +432,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/notification`;
+
         const response = await this.request({
-            path: `/users/me/notification`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -448,8 +472,11 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/users/me`;
+
         const response = await this.request({
-            path: `/users/me`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -494,8 +521,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/thumbnail`;
+
         const response = await this.request({
-            path: `/users/me/thumbnail`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -539,8 +569,11 @@ export class AuthUserApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/users/me/username`;
+
         const response = await this.request({
-            path: `/users/me/username`,
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
@@ -576,8 +609,11 @@ export class AuthUserApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/users/me/verified`;
+
         const response = await this.request({
-            path: `/users/me/verified`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

@@ -68,8 +68,12 @@ export class ProductApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/facilities/{facilityId}/products`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/products`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -110,8 +114,13 @@ export class ProductApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/facilities/{facilityId}/products/{productId}`;
+        urlPath = urlPath.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId'])));
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
         const response = await this.request({
-            path: `/facilities/{facilityId}/products/{productId}`.replace(`{${"facilityId"}}`, encodeURIComponent(String(requestParameters['facilityId']))).replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

@@ -60,8 +60,12 @@ export class GuestLiveCommentApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/guests/schedules/{scheduleId}/comments`;
+        urlPath = urlPath.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId'])));
+
         const response = await this.request({
-            path: `/guests/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

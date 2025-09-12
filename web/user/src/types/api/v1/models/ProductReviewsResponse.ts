@@ -18,6 +18,7 @@ import {
     ProductReviewFromJSON,
     ProductReviewFromJSONTyped,
     ProductReviewToJSON,
+    ProductReviewToJSONTyped,
 } from './ProductReview';
 
 /**
@@ -31,19 +32,21 @@ export interface ProductReviewsResponse {
      * @type {string}
      * @memberof ProductReviewsResponse
      */
-    nextToken?: string;
+    nextToken: string;
     /**
      * 商品レビュー一覧
      * @type {Array<ProductReview>}
      * @memberof ProductReviewsResponse
      */
-    reviews?: Array<ProductReview>;
+    reviews: Array<ProductReview>;
 }
 
 /**
  * Check if a given object implements the ProductReviewsResponse interface.
  */
 export function instanceOfProductReviewsResponse(value: object): value is ProductReviewsResponse {
+    if (!('nextToken' in value) || value['nextToken'] === undefined) return false;
+    if (!('reviews' in value) || value['reviews'] === undefined) return false;
     return true;
 }
 
@@ -57,19 +60,24 @@ export function ProductReviewsResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'nextToken': json['nextToken'] == null ? undefined : json['nextToken'],
-        'reviews': json['reviews'] == null ? undefined : ((json['reviews'] as Array<any>).map(ProductReviewFromJSON)),
+        'nextToken': json['nextToken'],
+        'reviews': ((json['reviews'] as Array<any>).map(ProductReviewFromJSON)),
     };
 }
 
-export function ProductReviewsResponseToJSON(value?: ProductReviewsResponse | null): any {
+export function ProductReviewsResponseToJSON(json: any): ProductReviewsResponse {
+    return ProductReviewsResponseToJSONTyped(json, false);
+}
+
+export function ProductReviewsResponseToJSONTyped(value?: ProductReviewsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'nextToken': value['nextToken'],
-        'reviews': value['reviews'] == null ? undefined : ((value['reviews'] as Array<any>).map(ProductReviewToJSON)),
+        'reviews': ((value['reviews'] as Array<any>).map(ProductReviewToJSON)),
     };
 }
 

@@ -121,10 +121,15 @@ export function CreateAuthUserWithLINERequestFromJSONTyped(json: any, ignoreDisc
     };
 }
 
-export function CreateAuthUserWithLINERequestToJSON(value?: CreateAuthUserWithLINERequest | null): any {
+export function CreateAuthUserWithLINERequestToJSON(json: any): CreateAuthUserWithLINERequest {
+    return CreateAuthUserWithLINERequestToJSONTyped(json, false);
+}
+
+export function CreateAuthUserWithLINERequestToJSONTyped(value?: CreateAuthUserWithLINERequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

@@ -24,85 +24,98 @@ export interface Coordinator {
      * @type {Array<number>}
      * @memberof Coordinator
      */
-    businessDays?: Array<number>;
+    businessDays: Array<number>;
     /**
      * 市区町村
      * @type {string}
      * @memberof Coordinator
      */
-    city?: string;
+    city: string;
     /**
      * Facebookアカウント
      * @type {string}
      * @memberof Coordinator
      */
-    facebookId?: string;
+    facebookId: string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof Coordinator
      */
-    headerUrl?: string;
+    headerUrl: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof Coordinator
      */
-    id?: string;
+    id: string;
     /**
      * Instagramアカウント
      * @type {string}
      * @memberof Coordinator
      */
-    instagramId?: string;
+    instagramId: string;
     /**
      * マルシェ名
      * @type {string}
      * @memberof Coordinator
      */
-    marcheName?: string;
+    marcheName: string;
     /**
      * 都道府県
      * @type {string}
      * @memberof Coordinator
      */
-    prefecture?: string;
+    prefecture: string;
     /**
      * 取り扱い品目一覧
      * @type {Array<string>}
      * @memberof Coordinator
      */
-    productTypeIds?: Array<string>;
+    productTypeIds: Array<string>;
     /**
      * 紹介文
      * @type {string}
      * @memberof Coordinator
      */
-    profile?: string;
+    profile: string;
     /**
      * 紹介映像URL
      * @type {string}
      * @memberof Coordinator
      */
-    promotionVideoUrl?: string;
+    promotionVideoUrl: string;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Coordinator
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * 表示名
      * @type {string}
      * @memberof Coordinator
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the Coordinator interface.
  */
 export function instanceOfCoordinator(value: object): value is Coordinator {
+    if (!('businessDays' in value) || value['businessDays'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('facebookId' in value) || value['facebookId'] === undefined) return false;
+    if (!('headerUrl' in value) || value['headerUrl'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('instagramId' in value) || value['instagramId'] === undefined) return false;
+    if (!('marcheName' in value) || value['marcheName'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('productTypeIds' in value) || value['productTypeIds'] === undefined) return false;
+    if (!('profile' in value) || value['profile'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -116,26 +129,31 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'businessDays': json['businessDays'] == null ? undefined : json['businessDays'],
-        'city': json['city'] == null ? undefined : json['city'],
-        'facebookId': json['facebookId'] == null ? undefined : json['facebookId'],
-        'headerUrl': json['headerUrl'] == null ? undefined : json['headerUrl'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'instagramId': json['instagramId'] == null ? undefined : json['instagramId'],
-        'marcheName': json['marcheName'] == null ? undefined : json['marcheName'],
-        'prefecture': json['prefecture'] == null ? undefined : json['prefecture'],
-        'productTypeIds': json['productTypeIds'] == null ? undefined : json['productTypeIds'],
-        'profile': json['profile'] == null ? undefined : json['profile'],
-        'promotionVideoUrl': json['promotionVideoUrl'] == null ? undefined : json['promotionVideoUrl'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'businessDays': json['businessDays'],
+        'city': json['city'],
+        'facebookId': json['facebookId'],
+        'headerUrl': json['headerUrl'],
+        'id': json['id'],
+        'instagramId': json['instagramId'],
+        'marcheName': json['marcheName'],
+        'prefecture': json['prefecture'],
+        'productTypeIds': json['productTypeIds'],
+        'profile': json['profile'],
+        'promotionVideoUrl': json['promotionVideoUrl'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'username': json['username'],
     };
 }
 
-export function CoordinatorToJSON(value?: Coordinator | null): any {
+export function CoordinatorToJSON(json: any): Coordinator {
+    return CoordinatorToJSONTyped(json, false);
+}
+
+export function CoordinatorToJSONTyped(value?: Coordinator | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'businessDays': value['businessDays'],

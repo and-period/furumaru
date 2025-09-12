@@ -24,37 +24,42 @@ export interface LiveProduct {
      * @type {string}
      * @memberof LiveProduct
      */
-    id?: string;
+    id: string;
     /**
      * 在庫数
      * @type {number}
      * @memberof LiveProduct
      */
-    inventory?: number;
+    inventory: number;
     /**
      * 商品名
      * @type {string}
      * @memberof LiveProduct
      */
-    name?: string;
+    name: string;
     /**
      * 販売価格(税込)
      * @type {number}
      * @memberof LiveProduct
      */
-    price?: number;
+    price: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof LiveProduct
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
 }
 
 /**
  * Check if a given object implements the LiveProduct interface.
  */
 export function instanceOfLiveProduct(value: object): value is LiveProduct {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('inventory' in value) || value['inventory'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
     return true;
 }
 
@@ -68,18 +73,23 @@ export function LiveProductFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'inventory': json['inventory'] == null ? undefined : json['inventory'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'price': json['price'] == null ? undefined : json['price'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
+        'id': json['id'],
+        'inventory': json['inventory'],
+        'name': json['name'],
+        'price': json['price'],
+        'thumbnailUrl': json['thumbnailUrl'],
     };
 }
 
-export function LiveProductToJSON(value?: LiveProduct | null): any {
+export function LiveProductToJSON(json: any): LiveProduct {
+    return LiveProductToJSONTyped(json, false);
+}
+
+export function LiveProductToJSONTyped(value?: LiveProduct | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

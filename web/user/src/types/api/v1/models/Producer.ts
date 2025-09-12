@@ -24,73 +24,84 @@ export interface Producer {
      * @type {string}
      * @memberof Producer
      */
-    city?: string;
+    city: string;
     /**
      * 担当コーディネータID
      * @type {string}
      * @memberof Producer
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * Facebookアカウント
      * @type {string}
      * @memberof Producer
      */
-    facebookId?: string;
+    facebookId: string;
     /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof Producer
      */
-    headerUrl?: string;
+    headerUrl: string;
     /**
      * 生産者ID
      * @type {string}
      * @memberof Producer
      */
-    id?: string;
+    id: string;
     /**
      * Instagramアカウント
      * @type {string}
      * @memberof Producer
      */
-    instagramId?: string;
+    instagramId: string;
     /**
      * 都道府県
      * @type {string}
      * @memberof Producer
      */
-    prefecture?: string;
+    prefecture: string;
     /**
      * 紹介文
      * @type {string}
      * @memberof Producer
      */
-    profile?: string;
+    profile: string;
     /**
      * 紹介映像URL
      * @type {string}
      * @memberof Producer
      */
-    promotionVideoUrl?: string;
+    promotionVideoUrl: string;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Producer
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * 生産者名
      * @type {string}
      * @memberof Producer
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the Producer interface.
  */
 export function instanceOfProducer(value: object): value is Producer {
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('facebookId' in value) || value['facebookId'] === undefined) return false;
+    if (!('headerUrl' in value) || value['headerUrl'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('instagramId' in value) || value['instagramId'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('profile' in value) || value['profile'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -104,24 +115,29 @@ export function ProducerFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'city': json['city'] == null ? undefined : json['city'],
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'facebookId': json['facebookId'] == null ? undefined : json['facebookId'],
-        'headerUrl': json['headerUrl'] == null ? undefined : json['headerUrl'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'instagramId': json['instagramId'] == null ? undefined : json['instagramId'],
-        'prefecture': json['prefecture'] == null ? undefined : json['prefecture'],
-        'profile': json['profile'] == null ? undefined : json['profile'],
-        'promotionVideoUrl': json['promotionVideoUrl'] == null ? undefined : json['promotionVideoUrl'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'city': json['city'],
+        'coordinatorId': json['coordinatorId'],
+        'facebookId': json['facebookId'],
+        'headerUrl': json['headerUrl'],
+        'id': json['id'],
+        'instagramId': json['instagramId'],
+        'prefecture': json['prefecture'],
+        'profile': json['profile'],
+        'promotionVideoUrl': json['promotionVideoUrl'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'username': json['username'],
     };
 }
 
-export function ProducerToJSON(value?: Producer | null): any {
+export function ProducerToJSON(json: any): Producer {
+    return ProducerToJSONTyped(json, false);
+}
+
+export function ProducerToJSONTyped(value?: Producer | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'city': value['city'],

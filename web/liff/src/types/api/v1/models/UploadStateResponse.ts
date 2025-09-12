@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { UploadStatus } from './UploadStatus';
+import {
+    UploadStatusFromJSON,
+    UploadStatusFromJSONTyped,
+    UploadStatusToJSON,
+    UploadStatusToJSONTyped,
+} from './UploadStatus';
+
 /**
  * 
  * @export
@@ -20,23 +28,27 @@ import { mapValues } from '../runtime';
  */
 export interface UploadStateResponse {
     /**
-     * アップロード結果
-     * @type {number}
+     * 
+     * @type {UploadStatus}
      * @memberof UploadStateResponse
      */
-    status?: number;
+    status: UploadStatus;
     /**
      * 参照先URL
      * @type {string}
      * @memberof UploadStateResponse
      */
-    url?: string;
+    url: string;
 }
+
+
 
 /**
  * Check if a given object implements the UploadStateResponse interface.
  */
 export function instanceOfUploadStateResponse(value: object): value is UploadStateResponse {
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -50,18 +62,23 @@ export function UploadStateResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'status': json['status'] == null ? undefined : json['status'],
-        'url': json['url'] == null ? undefined : json['url'],
+        'status': UploadStatusFromJSON(json['status']),
+        'url': json['url'],
     };
 }
 
-export function UploadStateResponseToJSON(value?: UploadStateResponse | null): any {
+export function UploadStateResponseToJSON(json: any): UploadStateResponse {
+    return UploadStateResponseToJSONTyped(json, false);
+}
+
+export function UploadStateResponseToJSONTyped(value?: UploadStateResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'status': value['status'],
+        'status': UploadStatusToJSON(value['status']),
         'url': value['url'],
     };
 }

@@ -49,10 +49,15 @@ export function GetAccessTokenRequestFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function GetAccessTokenRequestToJSON(value?: GetAccessTokenRequest | null): any {
+export function GetAccessTokenRequestToJSON(json: any): GetAccessTokenRequest {
+    return GetAccessTokenRequestToJSONTyped(json, false);
+}
+
+export function GetAccessTokenRequestToJSONTyped(value?: GetAccessTokenRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'refreshToken': value['refreshToken'],

@@ -83,8 +83,12 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/checkouts/experiences/{experienceId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -135,8 +139,12 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/checkouts/experiences/{experienceId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -181,8 +189,11 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/checkouts/products`;
+
         const response = await this.request({
-            path: `/checkouts/products`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -225,8 +236,12 @@ export class CheckoutApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+
+        let urlPath = `/checkouts/{transactionId}`;
+        urlPath = urlPath.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId'])));
+
         const response = await this.request({
-            path: `/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

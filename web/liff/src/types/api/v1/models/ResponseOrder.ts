@@ -117,6 +117,12 @@ export interface ResponseOrder {
      */
     shippingAddress?: ResponseAddress;
     /**
+     * 配送方法
+     * @type {number}
+     * @memberof ResponseOrder
+     */
+    shippingType?: number;
+    /**
      * 注文ステータス
      * @type {number}
      * @memberof ResponseOrder
@@ -157,6 +163,7 @@ export function ResponseOrderFromJSONTyped(json: any, ignoreDiscriminator: boole
         'promotionId': json['promotionId'] == null ? undefined : json['promotionId'],
         'refund': json['refund'] == null ? undefined : ResponseOrderRefundFromJSON(json['refund']),
         'shippingAddress': json['shippingAddress'] == null ? undefined : ResponseAddressFromJSON(json['shippingAddress']),
+        'shippingType': json['shippingType'] == null ? undefined : json['shippingType'],
         'status': json['status'] == null ? undefined : json['status'],
         'type': json['type'] == null ? undefined : json['type'],
     };
@@ -178,6 +185,7 @@ export function ResponseOrderToJSON(value?: ResponseOrder | null): any {
         'promotionId': value['promotionId'],
         'refund': ResponseOrderRefundToJSON(value['refund']),
         'shippingAddress': ResponseAddressToJSON(value['shippingAddress']),
+        'shippingType': value['shippingType'],
         'status': value['status'],
         'type': value['type'],
     };

@@ -24,14 +24,13 @@ export interface RequestVerifyAuthUserEmailRequest {
      * @type {string}
      * @memberof RequestVerifyAuthUserEmailRequest
      */
-    verifyCode: string;
+    verifyCode?: string;
 }
 
 /**
  * Check if a given object implements the RequestVerifyAuthUserEmailRequest interface.
  */
 export function instanceOfRequestVerifyAuthUserEmailRequest(value: object): value is RequestVerifyAuthUserEmailRequest {
-    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
     return true;
 }
 
@@ -45,7 +44,7 @@ export function RequestVerifyAuthUserEmailRequestFromJSONTyped(json: any, ignore
     }
     return {
         
-        'verifyCode': json['verifyCode'],
+        'verifyCode': json['verifyCode'] == null ? undefined : json['verifyCode'],
     };
 }
 

@@ -55,8 +55,12 @@ export class PromotionApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/promotions/{code}`;
+        urlPath = urlPath.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters['code'])));
+
         const response = await this.request({
-            path: `/promotions/{code}`.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters['code']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

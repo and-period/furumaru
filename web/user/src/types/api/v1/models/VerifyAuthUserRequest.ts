@@ -57,10 +57,15 @@ export function VerifyAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function VerifyAuthUserRequestToJSON(value?: VerifyAuthUserRequest | null): any {
+export function VerifyAuthUserRequestToJSON(json: any): VerifyAuthUserRequest {
+    return VerifyAuthUserRequestToJSONTyped(json, false);
+}
+
+export function VerifyAuthUserRequestToJSONTyped(value?: VerifyAuthUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

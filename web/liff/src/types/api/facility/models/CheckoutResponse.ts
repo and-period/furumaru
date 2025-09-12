@@ -24,13 +24,14 @@ export interface CheckoutResponse {
      * @type {string}
      * @memberof CheckoutResponse
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the CheckoutResponse interface.
  */
 export function instanceOfCheckoutResponse(value: object): value is CheckoutResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -44,14 +45,19 @@ export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'url': json['url'] == null ? undefined : json['url'],
+        'url': json['url'],
     };
 }
 
-export function CheckoutResponseToJSON(value?: CheckoutResponse | null): any {
+export function CheckoutResponseToJSON(json: any): CheckoutResponse {
+    return CheckoutResponseToJSONTyped(json, false);
+}
+
+export function CheckoutResponseToJSONTyped(value?: CheckoutResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'url': value['url'],

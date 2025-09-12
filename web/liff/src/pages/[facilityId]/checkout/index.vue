@@ -3,6 +3,7 @@ import { FmOrderSummary, FmCreditCardForm } from '@furumaru/shared';
 import type { CreditCardData } from '@furumaru/shared';
 import { useShoppingCartStore } from '~/stores/shopping';
 import { useCheckoutStore } from '~/stores/checkout';
+import { PaymentMethodType } from '~/types/api/v1';
 
 const router = useRouter();
 const route = useRoute();
@@ -36,7 +37,7 @@ const creditCard = ref<CreditCardData>({
 
 const isSubmitting = ref(false);
 const submitError = ref<string | null>(null);
-const PAYMENT_METHOD_CARD = 2; // クレジットカード決済（仮のコード）
+const PAYMENT_METHOD_CARD = PaymentMethodType.PaymentMethodTypeCreditCard; // クレジットカード決済（仮のコード）
 
 const handlePay = async () => {
   submitError.value = null;

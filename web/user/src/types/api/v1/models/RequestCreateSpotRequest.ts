@@ -30,25 +30,25 @@ export interface RequestCreateSpotRequest {
      * @type {number}
      * @memberof RequestCreateSpotRequest
      */
-    latitude: number;
+    latitude?: number;
     /**
      * 経度
      * @type {number}
      * @memberof RequestCreateSpotRequest
      */
-    longitude: number;
+    longitude?: number;
     /**
      * スポット名
      * @type {string}
      * @memberof RequestCreateSpotRequest
      */
-    name: string;
+    name?: string;
     /**
      * スポット種別ID
      * @type {string}
      * @memberof RequestCreateSpotRequest
      */
-    spotTypeId: string;
+    spotTypeId?: string;
     /**
      * サムネイルURL
      * @type {string}
@@ -61,10 +61,6 @@ export interface RequestCreateSpotRequest {
  * Check if a given object implements the RequestCreateSpotRequest interface.
  */
 export function instanceOfRequestCreateSpotRequest(value: object): value is RequestCreateSpotRequest {
-    if (!('latitude' in value) || value['latitude'] === undefined) return false;
-    if (!('longitude' in value) || value['longitude'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('spotTypeId' in value) || value['spotTypeId'] === undefined) return false;
     return true;
 }
 
@@ -79,10 +75,10 @@ export function RequestCreateSpotRequestFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'description': json['description'] == null ? undefined : json['description'],
-        'latitude': json['latitude'],
-        'longitude': json['longitude'],
-        'name': json['name'],
-        'spotTypeId': json['spotTypeId'],
+        'latitude': json['latitude'] == null ? undefined : json['latitude'],
+        'longitude': json['longitude'] == null ? undefined : json['longitude'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'spotTypeId': json['spotTypeId'] == null ? undefined : json['spotTypeId'],
         'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
     };
 }

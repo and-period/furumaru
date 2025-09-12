@@ -24,79 +24,91 @@ export interface ExperienceReview {
      * @type {string}
      * @memberof ExperienceReview
      */
-    accountId?: string;
+    accountId: string;
     /**
      * コメント
      * @type {string}
      * @memberof ExperienceReview
      */
-    comment?: string;
+    comment: string;
     /**
      * いまいち数
      * @type {number}
      * @memberof ExperienceReview
      */
-    dislikeTotal?: number;
+    dislikeTotal: number;
     /**
      * 体験ID
      * @type {string}
      * @memberof ExperienceReview
      */
-    experienceId?: string;
+    experienceId: string;
     /**
      * 体験レビューID
      * @type {string}
      * @memberof ExperienceReview
      */
-    id?: string;
+    id: string;
     /**
      * いいね数
      * @type {number}
      * @memberof ExperienceReview
      */
-    likeTotal?: number;
+    likeTotal: number;
     /**
      * 投稿日時
      * @type {number}
      * @memberof ExperienceReview
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * 評価
      * @type {number}
      * @memberof ExperienceReview
      */
-    rate?: number;
+    rate: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof ExperienceReview
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof ExperienceReview
      */
-    title?: string;
+    title: string;
     /**
      * ユーザーID
      * @type {string}
      * @memberof ExperienceReview
      */
-    userId?: string;
+    userId: string;
     /**
      * ユーザー名
      * @type {string}
      * @memberof ExperienceReview
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the ExperienceReview interface.
  */
 export function instanceOfExperienceReview(value: object): value is ExperienceReview {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('dislikeTotal' in value) || value['dislikeTotal'] === undefined) return false;
+    if (!('experienceId' in value) || value['experienceId'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('likeTotal' in value) || value['likeTotal'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -110,25 +122,30 @@ export function ExperienceReviewFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'accountId': json['accountId'] == null ? undefined : json['accountId'],
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'dislikeTotal': json['dislikeTotal'] == null ? undefined : json['dislikeTotal'],
-        'experienceId': json['experienceId'] == null ? undefined : json['experienceId'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'likeTotal': json['likeTotal'] == null ? undefined : json['likeTotal'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'rate': json['rate'] == null ? undefined : json['rate'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
-        'username': json['username'] == null ? undefined : json['username'],
+        'accountId': json['accountId'],
+        'comment': json['comment'],
+        'dislikeTotal': json['dislikeTotal'],
+        'experienceId': json['experienceId'],
+        'id': json['id'],
+        'likeTotal': json['likeTotal'],
+        'publishedAt': json['publishedAt'],
+        'rate': json['rate'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
+        'userId': json['userId'],
+        'username': json['username'],
     };
 }
 
-export function ExperienceReviewToJSON(value?: ExperienceReview | null): any {
+export function ExperienceReviewToJSON(json: any): ExperienceReview {
+    return ExperienceReviewToJSONTyped(json, false);
+}
+
+export function ExperienceReviewToJSONTyped(value?: ExperienceReview | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

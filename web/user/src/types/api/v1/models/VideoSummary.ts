@@ -24,37 +24,42 @@ export interface VideoSummary {
      * @type {string}
      * @memberof VideoSummary
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * オンデマンド動画ID
      * @type {string}
      * @memberof VideoSummary
      */
-    id?: string;
+    id: string;
     /**
      * 公開日時
      * @type {number}
      * @memberof VideoSummary
      */
-    publishedAt?: number;
+    publishedAt: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof VideoSummary
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof VideoSummary
      */
-    title?: string;
+    title: string;
 }
 
 /**
  * Check if a given object implements the VideoSummary interface.
  */
 export function instanceOfVideoSummary(value: object): value is VideoSummary {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -68,18 +73,23 @@ export function VideoSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'publishedAt': json['publishedAt'] == null ? undefined : json['publishedAt'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'coordinatorId': json['coordinatorId'],
+        'id': json['id'],
+        'publishedAt': json['publishedAt'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
     };
 }
 
-export function VideoSummaryToJSON(value?: VideoSummary | null): any {
+export function VideoSummaryToJSON(json: any): VideoSummary {
+    return VideoSummaryToJSONTyped(json, false);
+}
+
+export function VideoSummaryToJSONTyped(value?: VideoSummary | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],

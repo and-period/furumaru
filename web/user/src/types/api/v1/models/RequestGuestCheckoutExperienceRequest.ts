@@ -43,13 +43,13 @@ export interface RequestGuestCheckoutExperienceRequest {
      * @type {RequestGuestCheckoutAddress}
      * @memberof RequestGuestCheckoutExperienceRequest
      */
-    billingAddress: RequestGuestCheckoutAddress;
+    billingAddress?: RequestGuestCheckoutAddress;
     /**
      * 決済完了後のリダイレクト先URL
      * @type {string}
      * @memberof RequestGuestCheckoutExperienceRequest
      */
-    callbackUrl: string;
+    callbackUrl?: string;
     /**
      * 
      * @type {RequestCheckoutCreditCard}
@@ -67,7 +67,7 @@ export interface RequestGuestCheckoutExperienceRequest {
      * @type {string}
      * @memberof RequestGuestCheckoutExperienceRequest
      */
-    email: string;
+    email?: string;
     /**
      * 中学生人数
      * @type {number}
@@ -79,7 +79,7 @@ export interface RequestGuestCheckoutExperienceRequest {
      * @type {number}
      * @memberof RequestGuestCheckoutExperienceRequest
      */
-    paymentMethod: number;
+    paymentMethod?: number;
     /**
      * 幼児人数
      * @type {number}
@@ -97,7 +97,7 @@ export interface RequestGuestCheckoutExperienceRequest {
      * @type {string}
      * @memberof RequestGuestCheckoutExperienceRequest
      */
-    requestId: string;
+    requestId?: string;
     /**
      * 体験希望日
      * @type {string}
@@ -134,11 +134,6 @@ export interface RequestGuestCheckoutExperienceRequest {
  * Check if a given object implements the RequestGuestCheckoutExperienceRequest interface.
  */
 export function instanceOfRequestGuestCheckoutExperienceRequest(value: object): value is RequestGuestCheckoutExperienceRequest {
-    if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
-    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
-    if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
-    if (!('requestId' in value) || value['requestId'] === undefined) return false;
     return true;
 }
 
@@ -153,16 +148,16 @@ export function RequestGuestCheckoutExperienceRequestFromJSONTyped(json: any, ig
     return {
         
         'adultCount': json['adultCount'] == null ? undefined : json['adultCount'],
-        'billingAddress': RequestGuestCheckoutAddressFromJSON(json['billingAddress']),
-        'callbackUrl': json['callbackUrl'],
+        'billingAddress': json['billingAddress'] == null ? undefined : RequestGuestCheckoutAddressFromJSON(json['billingAddress']),
+        'callbackUrl': json['callbackUrl'] == null ? undefined : json['callbackUrl'],
         'creditCard': json['creditCard'] == null ? undefined : RequestCheckoutCreditCardFromJSON(json['creditCard']),
         'elementarySchoolCount': json['elementarySchoolCount'] == null ? undefined : json['elementarySchoolCount'],
-        'email': json['email'],
+        'email': json['email'] == null ? undefined : json['email'],
         'juniorHighSchoolCount': json['juniorHighSchoolCount'] == null ? undefined : json['juniorHighSchoolCount'],
-        'paymentMethod': json['paymentMethod'],
+        'paymentMethod': json['paymentMethod'] == null ? undefined : json['paymentMethod'],
         'preschoolCount': json['preschoolCount'] == null ? undefined : json['preschoolCount'],
         'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
-        'requestId': json['requestId'],
+        'requestId': json['requestId'] == null ? undefined : json['requestId'],
         'requestedDate': json['requestedDate'] == null ? undefined : json['requestedDate'],
         'requestedTime': json['requestedTime'] == null ? undefined : json['requestedTime'],
         'seniorCount': json['seniorCount'] == null ? undefined : json['seniorCount'],

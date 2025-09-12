@@ -36,7 +36,7 @@ export interface UpdateAuthUserRequest {
      * @type {number}
      * @memberof UpdateAuthUserRequest
      */
-    lastCheckInAt?: number;
+    lastCheckInAt: number;
     /**
      * 姓
      * @type {string}
@@ -63,6 +63,7 @@ export interface UpdateAuthUserRequest {
 export function instanceOfUpdateAuthUserRequest(value: object): value is UpdateAuthUserRequest {
     if (!('firstname' in value) || value['firstname'] === undefined) return false;
     if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('lastCheckInAt' in value) || value['lastCheckInAt'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
     if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
     if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
@@ -81,17 +82,22 @@ export function UpdateAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
         
         'firstname': json['firstname'],
         'firstnameKana': json['firstnameKana'],
-        'lastCheckInAt': json['lastCheckInAt'] == null ? undefined : json['lastCheckInAt'],
+        'lastCheckInAt': json['lastCheckInAt'],
         'lastname': json['lastname'],
         'lastnameKana': json['lastnameKana'],
         'phoneNumber': json['phoneNumber'],
     };
 }
 
-export function UpdateAuthUserRequestToJSON(value?: UpdateAuthUserRequest | null): any {
+export function UpdateAuthUserRequestToJSON(json: any): UpdateAuthUserRequest {
+    return UpdateAuthUserRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserRequestToJSONTyped(value?: UpdateAuthUserRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'firstname': value['firstname'],

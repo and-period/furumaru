@@ -36,8 +36,11 @@ export class TopApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/top/common`;
+
         const response = await this.request({
-            path: `/top/common`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

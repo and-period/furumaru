@@ -24,43 +24,49 @@ export interface Live {
      * @type {string}
      * @memberof Live
      */
-    comment?: string;
+    comment: string;
     /**
      * ライブ配信終了日時
      * @type {number}
      * @memberof Live
      */
-    endAt?: number;
+    endAt: number;
     /**
      * 生産者ID
      * @type {string}
      * @memberof Live
      */
-    producerId?: string;
+    producerId: string;
     /**
      * 商品ID一覧
      * @type {Array<string>}
      * @memberof Live
      */
-    productIds?: Array<string>;
+    productIds: Array<string>;
     /**
      * マルシェ開催スケジュールID
      * @type {string}
      * @memberof Live
      */
-    scheduleId?: string;
+    scheduleId: string;
     /**
      * ライブ配信開始日時
      * @type {number}
      * @memberof Live
      */
-    startAt?: number;
+    startAt: number;
 }
 
 /**
  * Check if a given object implements the Live interface.
  */
 export function instanceOfLive(value: object): value is Live {
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('producerId' in value) || value['producerId'] === undefined) return false;
+    if (!('productIds' in value) || value['productIds'] === undefined) return false;
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
     return true;
 }
 
@@ -74,19 +80,24 @@ export function LiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): Live
     }
     return {
         
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'producerId': json['producerId'] == null ? undefined : json['producerId'],
-        'productIds': json['productIds'] == null ? undefined : json['productIds'],
-        'scheduleId': json['scheduleId'] == null ? undefined : json['scheduleId'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
+        'comment': json['comment'],
+        'endAt': json['endAt'],
+        'producerId': json['producerId'],
+        'productIds': json['productIds'],
+        'scheduleId': json['scheduleId'],
+        'startAt': json['startAt'],
     };
 }
 
-export function LiveToJSON(value?: Live | null): any {
+export function LiveToJSON(json: any): Live {
+    return LiveToJSONTyped(json, false);
+}
+
+export function LiveToJSONTyped(value?: Live | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],

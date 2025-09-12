@@ -24,19 +24,21 @@ export interface SpotType {
      * @type {string}
      * @memberof SpotType
      */
-    id?: string;
+    id: string;
     /**
      * 体験種別名
      * @type {string}
      * @memberof SpotType
      */
-    name?: string;
+    name: string;
 }
 
 /**
  * Check if a given object implements the SpotType interface.
  */
 export function instanceOfSpotType(value: object): value is SpotType {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function SpotTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function SpotTypeToJSON(value?: SpotType | null): any {
+export function SpotTypeToJSON(json: any): SpotType {
+    return SpotTypeToJSONTyped(json, false);
+}
+
+export function SpotTypeToJSONTyped(value?: SpotType | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

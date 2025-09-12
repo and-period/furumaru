@@ -49,10 +49,15 @@ export function GetUploadURLRequestFromJSONTyped(json: any, ignoreDiscriminator:
     };
 }
 
-export function GetUploadURLRequestToJSON(value?: GetUploadURLRequest | null): any {
+export function GetUploadURLRequestToJSON(json: any): GetUploadURLRequest {
+    return GetUploadURLRequestToJSONTyped(json, false);
+}
+
+export function GetUploadURLRequestToJSONTyped(value?: GetUploadURLRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'fileType': value['fileType'],

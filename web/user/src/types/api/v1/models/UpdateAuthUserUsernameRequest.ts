@@ -49,10 +49,15 @@ export function UpdateAuthUserUsernameRequestFromJSONTyped(json: any, ignoreDisc
     };
 }
 
-export function UpdateAuthUserUsernameRequestToJSON(value?: UpdateAuthUserUsernameRequest | null): any {
+export function UpdateAuthUserUsernameRequestToJSON(json: any): UpdateAuthUserUsernameRequest {
+    return UpdateAuthUserUsernameRequestToJSONTyped(json, false);
+}
+
+export function UpdateAuthUserUsernameRequestToJSONTyped(value?: UpdateAuthUserUsernameRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'username': value['username'],

@@ -18,6 +18,7 @@ import {
     AddressFromJSON,
     AddressFromJSONTyped,
     AddressToJSON,
+    AddressToJSONTyped,
 } from './Address';
 
 /**
@@ -31,19 +32,21 @@ export interface AddressesResponse {
      * @type {Array<Address>}
      * @memberof AddressesResponse
      */
-    addresses?: Array<Address>;
+    addresses: Array<Address>;
     /**
      * 合計数
      * @type {number}
      * @memberof AddressesResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the AddressesResponse interface.
  */
 export function instanceOfAddressesResponse(value: object): value is AddressesResponse {
+    if (!('addresses' in value) || value['addresses'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -57,18 +60,23 @@ export function AddressesResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'addresses': json['addresses'] == null ? undefined : ((json['addresses'] as Array<any>).map(AddressFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'addresses': ((json['addresses'] as Array<any>).map(AddressFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function AddressesResponseToJSON(value?: AddressesResponse | null): any {
+export function AddressesResponseToJSON(json: any): AddressesResponse {
+    return AddressesResponseToJSONTyped(json, false);
+}
+
+export function AddressesResponseToJSONTyped(value?: AddressesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'addresses': value['addresses'] == null ? undefined : ((value['addresses'] as Array<any>).map(AddressToJSON)),
+        'addresses': ((value['addresses'] as Array<any>).map(AddressToJSON)),
         'total': value['total'],
     };
 }

@@ -5,6 +5,7 @@ import type {
   CheckoutCreditCard,
   CheckoutResponse,
   CheckoutStateResponse,
+  PaymentMethodType,
 } from '@/types/api/facility';
 import { useAuthStore } from '~/stores/auth';
 import { useShoppingCartStore } from '~/stores/shopping';
@@ -19,11 +20,11 @@ interface CheckoutState {
 
 export interface StartCheckoutPayload {
   callbackUrl: string;
-  paymentMethod: number;
+  paymentMethod: PaymentMethodType;
   requestId?: string;
   coordinatorId?: string; // 未指定時はカートから推定
   boxNumber?: number;
-  creditCard?: CheckoutCreditCard;
+  creditCard: CheckoutCreditCard;
   promotionCode?: string;
   total?: number;
 }
@@ -85,14 +86,14 @@ export const useCheckoutStore = defineStore('checkout', {
         const requestId = payload.requestId || this.generateRequestId();
 
         const body: CheckoutRequest = {
-          boxNumber: payload.boxNumber,
+          boxNumber: payload.boxNumber || 0,
           callbackUrl: payload.callbackUrl,
           coordinatorId,
           creditCard: payload.creditCard,
           paymentMethod: payload.paymentMethod,
-          promotionCode: payload.promotionCode,
+          promotionCode: payload.promotionCode || '',
           requestId,
-          total: payload.total,
+          total: payload.total || 0,
         };
 
         const api = this.checkoutApiClient();

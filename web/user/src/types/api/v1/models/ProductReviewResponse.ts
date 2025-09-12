@@ -18,6 +18,7 @@ import {
     ProductReviewFromJSON,
     ProductReviewFromJSONTyped,
     ProductReviewToJSON,
+    ProductReviewToJSONTyped,
 } from './ProductReview';
 
 /**
@@ -31,13 +32,14 @@ export interface ProductReviewResponse {
      * @type {ProductReview}
      * @memberof ProductReviewResponse
      */
-    review?: ProductReview;
+    review: ProductReview;
 }
 
 /**
  * Check if a given object implements the ProductReviewResponse interface.
  */
 export function instanceOfProductReviewResponse(value: object): value is ProductReviewResponse {
+    if (!('review' in value) || value['review'] === undefined) return false;
     return true;
 }
 
@@ -51,14 +53,19 @@ export function ProductReviewResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'review': json['review'] == null ? undefined : ProductReviewFromJSON(json['review']),
+        'review': ProductReviewFromJSON(json['review']),
     };
 }
 
-export function ProductReviewResponseToJSON(value?: ProductReviewResponse | null): any {
+export function ProductReviewResponseToJSON(json: any): ProductReviewResponse {
+    return ProductReviewResponseToJSONTyped(json, false);
+}
+
+export function ProductReviewResponseToJSONTyped(value?: ProductReviewResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'review': ProductReviewToJSON(value['review']),

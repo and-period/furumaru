@@ -79,8 +79,11 @@ export class ScheduleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/schedules/archives`;
+
         const response = await this.request({
-            path: `/schedules/archives`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -123,8 +126,11 @@ export class ScheduleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/schedules/lives`;
+
         const response = await this.request({
-            path: `/schedules/lives`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -158,8 +164,12 @@ export class ScheduleApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/schedules/{scheduleId}`;
+        urlPath = urlPath.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId'])));
+
         const response = await this.request({
-            path: `/schedules/{scheduleId}`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

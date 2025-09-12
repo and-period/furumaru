@@ -18,6 +18,7 @@ import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
+    ProducerToJSONTyped,
 } from './Producer';
 
 /**
@@ -31,19 +32,21 @@ export interface ProducersResponse {
      * @type {Array<Producer>}
      * @memberof ProducersResponse
      */
-    producers?: Array<Producer>;
+    producers: Array<Producer>;
     /**
      * 生産者合計数
      * @type {number}
      * @memberof ProducersResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the ProducersResponse interface.
  */
 export function instanceOfProducersResponse(value: object): value is ProducersResponse {
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -57,18 +60,23 @@ export function ProducersResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'producers': json['producers'] == null ? undefined : ((json['producers'] as Array<any>).map(ProducerFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function ProducersResponseToJSON(value?: ProducersResponse | null): any {
+export function ProducersResponseToJSON(json: any): ProducersResponse {
+    return ProducersResponseToJSONTyped(json, false);
+}
+
+export function ProducersResponseToJSONTyped(value?: ProducersResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'producers': value['producers'] == null ? undefined : ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
         'total': value['total'],
     };
 }

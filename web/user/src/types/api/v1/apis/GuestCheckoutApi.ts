@@ -77,8 +77,12 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/guests/checkouts/experiences/{experienceId}`;
+        urlPath = urlPath.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId'])));
+
         const response = await this.request({
-            path: `/guests/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -115,8 +119,11 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/guests/checkouts/products`;
+
         const response = await this.request({
-            path: `/guests/checkouts/products`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -151,8 +158,12 @@ export class GuestCheckoutApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/guests/checkouts/{transactionId}`;
+        urlPath = urlPath.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId'])));
+
         const response = await this.request({
-            path: `/guests/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

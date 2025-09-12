@@ -30,7 +30,7 @@ export interface CreateAddressRequest {
      * @type {string}
      * @memberof CreateAddressRequest
      */
-    addressLine2?: string;
+    addressLine2: string;
     /**
      * 市区町村
      * @type {string}
@@ -54,7 +54,7 @@ export interface CreateAddressRequest {
      * @type {boolean}
      * @memberof CreateAddressRequest
      */
-    isDefault?: boolean;
+    isDefault: boolean;
     /**
      * 姓
      * @type {string}
@@ -92,9 +92,11 @@ export interface CreateAddressRequest {
  */
 export function instanceOfCreateAddressRequest(value: object): value is CreateAddressRequest {
     if (!('addressLine1' in value) || value['addressLine1'] === undefined) return false;
+    if (!('addressLine2' in value) || value['addressLine2'] === undefined) return false;
     if (!('city' in value) || value['city'] === undefined) return false;
     if (!('firstname' in value) || value['firstname'] === undefined) return false;
     if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
     if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
     if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
@@ -114,11 +116,11 @@ export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'addressLine1': json['addressLine1'],
-        'addressLine2': json['addressLine2'] == null ? undefined : json['addressLine2'],
+        'addressLine2': json['addressLine2'],
         'city': json['city'],
         'firstname': json['firstname'],
         'firstnameKana': json['firstnameKana'],
-        'isDefault': json['isDefault'] == null ? undefined : json['isDefault'],
+        'isDefault': json['isDefault'],
         'lastname': json['lastname'],
         'lastnameKana': json['lastnameKana'],
         'phoneNumber': json['phoneNumber'],
@@ -127,10 +129,15 @@ export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator
     };
 }
 
-export function CreateAddressRequestToJSON(value?: CreateAddressRequest | null): any {
+export function CreateAddressRequestToJSON(json: any): CreateAddressRequest {
+    return CreateAddressRequestToJSONTyped(json, false);
+}
+
+export function CreateAddressRequestToJSONTyped(value?: CreateAddressRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'addressLine1': value['addressLine1'],

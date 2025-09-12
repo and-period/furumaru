@@ -30,7 +30,7 @@ export interface ResetAuthPasswordRequest {
      * @type {string}
      * @memberof ResetAuthPasswordRequest
      */
-    password?: string;
+    password: string;
     /**
      * パスワード (確認用)
      * @type {string}
@@ -50,6 +50,7 @@ export interface ResetAuthPasswordRequest {
  */
 export function instanceOfResetAuthPasswordRequest(value: object): value is ResetAuthPasswordRequest {
     if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('password' in value) || value['password'] === undefined) return false;
     if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
     if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
     return true;
@@ -66,16 +67,21 @@ export function ResetAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'email': json['email'],
-        'password': json['password'] == null ? undefined : json['password'],
+        'password': json['password'],
         'passwordConfirmation': json['passwordConfirmation'],
         'verifyCode': json['verifyCode'],
     };
 }
 
-export function ResetAuthPasswordRequestToJSON(value?: ResetAuthPasswordRequest | null): any {
+export function ResetAuthPasswordRequestToJSON(json: any): ResetAuthPasswordRequest {
+    return ResetAuthPasswordRequestToJSONTyped(json, false);
+}
+
+export function ResetAuthPasswordRequestToJSONTyped(value?: ResetAuthPasswordRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'email': value['email'],

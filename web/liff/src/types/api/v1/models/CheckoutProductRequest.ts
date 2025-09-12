@@ -13,11 +13,19 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PaymentMethodType } from './PaymentMethodType';
+import {
+    PaymentMethodTypeFromJSON,
+    PaymentMethodTypeFromJSONTyped,
+    PaymentMethodTypeToJSON,
+    PaymentMethodTypeToJSONTyped,
+} from './PaymentMethodType';
 import type { CheckoutCreditCard } from './CheckoutCreditCard';
 import {
     CheckoutCreditCardFromJSON,
     CheckoutCreditCardFromJSONTyped,
     CheckoutCreditCardToJSON,
+    CheckoutCreditCardToJSONTyped,
 } from './CheckoutCreditCard';
 
 /**
@@ -37,7 +45,7 @@ export interface CheckoutProductRequest {
      * @type {number}
      * @memberof CheckoutProductRequest
      */
-    boxNumber?: number;
+    boxNumber: number;
     /**
      * 決済完了後のリダイレクト先URL
      * @type {string}
@@ -55,19 +63,19 @@ export interface CheckoutProductRequest {
      * @type {CheckoutCreditCard}
      * @memberof CheckoutProductRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
     /**
-     * 支払い方法
-     * @type {number}
+     * 
+     * @type {PaymentMethodType}
      * @memberof CheckoutProductRequest
      */
-    paymentMethod: number;
+    paymentMethod: PaymentMethodType;
     /**
      * プロモーションコード
      * @type {string}
      * @memberof CheckoutProductRequest
      */
-    promotionCode?: string;
+    promotionCode: string;
     /**
      * 支払いキー(重複判定用)
      * @type {string}
@@ -85,19 +93,25 @@ export interface CheckoutProductRequest {
      * @type {number}
      * @memberof CheckoutProductRequest
      */
-    total?: number;
+    total: number;
 }
+
+
 
 /**
  * Check if a given object implements the CheckoutProductRequest interface.
  */
 export function instanceOfCheckoutProductRequest(value: object): value is CheckoutProductRequest {
     if (!('billingAddressId' in value) || value['billingAddressId'] === undefined) return false;
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
     if (!('shippingAddressId' in value) || value['shippingAddressId'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -112,22 +126,27 @@ export function CheckoutProductRequestFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'billingAddressId': json['billingAddressId'],
-        'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
+        'boxNumber': json['boxNumber'],
         'callbackUrl': json['callbackUrl'],
         'coordinatorId': json['coordinatorId'],
-        'creditCard': json['creditCard'] == null ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
-        'paymentMethod': json['paymentMethod'],
-        'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
+        'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
         'shippingAddressId': json['shippingAddressId'],
-        'total': json['total'] == null ? undefined : json['total'],
+        'total': json['total'],
     };
 }
 
-export function CheckoutProductRequestToJSON(value?: CheckoutProductRequest | null): any {
+export function CheckoutProductRequestToJSON(json: any): CheckoutProductRequest {
+    return CheckoutProductRequestToJSONTyped(json, false);
+}
+
+export function CheckoutProductRequestToJSONTyped(value?: CheckoutProductRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'billingAddressId': value['billingAddressId'],
@@ -135,7 +154,7 @@ export function CheckoutProductRequestToJSON(value?: CheckoutProductRequest | nu
         'callbackUrl': value['callbackUrl'],
         'coordinatorId': value['coordinatorId'],
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
-        'paymentMethod': value['paymentMethod'],
+        'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
         'promotionCode': value['promotionCode'],
         'requestId': value['requestId'],
         'shippingAddressId': value['shippingAddressId'],

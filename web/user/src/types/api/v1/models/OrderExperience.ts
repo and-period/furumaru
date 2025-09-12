@@ -24,91 +24,105 @@ export interface OrderExperience {
      * @type {number}
      * @memberof OrderExperience
      */
-    adultCount?: number;
+    adultCount: number;
     /**
      * 大人価格
      * @type {number}
      * @memberof OrderExperience
      */
-    adultPrice?: number;
+    adultPrice: number;
     /**
      * 小学生人数
      * @type {number}
      * @memberof OrderExperience
      */
-    elementarySchoolCount?: number;
+    elementarySchoolCount: number;
     /**
      * 小学生価格
      * @type {number}
      * @memberof OrderExperience
      */
-    elementarySchoolPrice?: number;
+    elementarySchoolPrice: number;
     /**
      * 体験ID
      * @type {string}
      * @memberof OrderExperience
      */
-    experienceId?: string;
+    experienceId: string;
     /**
      * 中学生人数
      * @type {number}
      * @memberof OrderExperience
      */
-    juniorHighSchoolCount?: number;
+    juniorHighSchoolCount: number;
     /**
      * 中学生価格
      * @type {number}
      * @memberof OrderExperience
      */
-    juniorHighSchoolPrice?: number;
+    juniorHighSchoolPrice: number;
     /**
      * 幼児人数
      * @type {number}
      * @memberof OrderExperience
      */
-    preschoolCount?: number;
+    preschoolCount: number;
     /**
      * 幼児価格
      * @type {number}
      * @memberof OrderExperience
      */
-    preschoolPrice?: number;
+    preschoolPrice: number;
     /**
      * 体験希望日
      * @type {string}
      * @memberof OrderExperience
      */
-    requestedDate?: string;
+    requestedDate: string;
     /**
      * 体験希望時間
      * @type {string}
      * @memberof OrderExperience
      */
-    requestedTime?: string;
+    requestedTime: string;
     /**
      * シニア人数
      * @type {number}
      * @memberof OrderExperience
      */
-    seniorCount?: number;
+    seniorCount: number;
     /**
      * シニア価格
      * @type {number}
      * @memberof OrderExperience
      */
-    seniorPrice?: number;
+    seniorPrice: number;
     /**
      * 交通手段
      * @type {string}
      * @memberof OrderExperience
      */
-    transportation?: string;
+    transportation: string;
 }
 
 /**
  * Check if a given object implements the OrderExperience interface.
  */
 export function instanceOfOrderExperience(value: object): value is OrderExperience {
+    if (!('adultCount' in value) || value['adultCount'] === undefined) return false;
+    if (!('adultPrice' in value) || value['adultPrice'] === undefined) return false;
+    if (!('elementarySchoolCount' in value) || value['elementarySchoolCount'] === undefined) return false;
+    if (!('elementarySchoolPrice' in value) || value['elementarySchoolPrice'] === undefined) return false;
+    if (!('experienceId' in value) || value['experienceId'] === undefined) return false;
+    if (!('juniorHighSchoolCount' in value) || value['juniorHighSchoolCount'] === undefined) return false;
+    if (!('juniorHighSchoolPrice' in value) || value['juniorHighSchoolPrice'] === undefined) return false;
+    if (!('preschoolCount' in value) || value['preschoolCount'] === undefined) return false;
+    if (!('preschoolPrice' in value) || value['preschoolPrice'] === undefined) return false;
+    if (!('requestedDate' in value) || value['requestedDate'] === undefined) return false;
+    if (!('requestedTime' in value) || value['requestedTime'] === undefined) return false;
+    if (!('seniorCount' in value) || value['seniorCount'] === undefined) return false;
+    if (!('seniorPrice' in value) || value['seniorPrice'] === undefined) return false;
+    if (!('transportation' in value) || value['transportation'] === undefined) return false;
     return true;
 }
 
@@ -122,27 +136,32 @@ export function OrderExperienceFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'adultCount': json['adultCount'] == null ? undefined : json['adultCount'],
-        'adultPrice': json['adultPrice'] == null ? undefined : json['adultPrice'],
-        'elementarySchoolCount': json['elementarySchoolCount'] == null ? undefined : json['elementarySchoolCount'],
-        'elementarySchoolPrice': json['elementarySchoolPrice'] == null ? undefined : json['elementarySchoolPrice'],
-        'experienceId': json['experienceId'] == null ? undefined : json['experienceId'],
-        'juniorHighSchoolCount': json['juniorHighSchoolCount'] == null ? undefined : json['juniorHighSchoolCount'],
-        'juniorHighSchoolPrice': json['juniorHighSchoolPrice'] == null ? undefined : json['juniorHighSchoolPrice'],
-        'preschoolCount': json['preschoolCount'] == null ? undefined : json['preschoolCount'],
-        'preschoolPrice': json['preschoolPrice'] == null ? undefined : json['preschoolPrice'],
-        'requestedDate': json['requestedDate'] == null ? undefined : json['requestedDate'],
-        'requestedTime': json['requestedTime'] == null ? undefined : json['requestedTime'],
-        'seniorCount': json['seniorCount'] == null ? undefined : json['seniorCount'],
-        'seniorPrice': json['seniorPrice'] == null ? undefined : json['seniorPrice'],
-        'transportation': json['transportation'] == null ? undefined : json['transportation'],
+        'adultCount': json['adultCount'],
+        'adultPrice': json['adultPrice'],
+        'elementarySchoolCount': json['elementarySchoolCount'],
+        'elementarySchoolPrice': json['elementarySchoolPrice'],
+        'experienceId': json['experienceId'],
+        'juniorHighSchoolCount': json['juniorHighSchoolCount'],
+        'juniorHighSchoolPrice': json['juniorHighSchoolPrice'],
+        'preschoolCount': json['preschoolCount'],
+        'preschoolPrice': json['preschoolPrice'],
+        'requestedDate': json['requestedDate'],
+        'requestedTime': json['requestedTime'],
+        'seniorCount': json['seniorCount'],
+        'seniorPrice': json['seniorPrice'],
+        'transportation': json['transportation'],
     };
 }
 
-export function OrderExperienceToJSON(value?: OrderExperience | null): any {
+export function OrderExperienceToJSON(json: any): OrderExperience {
+    return OrderExperienceToJSONTyped(json, false);
+}
+
+export function OrderExperienceToJSONTyped(value?: OrderExperience | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'adultCount': value['adultCount'],

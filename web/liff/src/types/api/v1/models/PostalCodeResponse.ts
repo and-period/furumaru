@@ -24,37 +24,42 @@ export interface PostalCodeResponse {
      * @type {string}
      * @memberof PostalCodeResponse
      */
-    city?: string;
+    city: string;
     /**
      * 郵便番号
      * @type {string}
      * @memberof PostalCodeResponse
      */
-    postalCode?: string;
+    postalCode: string;
     /**
      * 都道府県名
      * @type {string}
      * @memberof PostalCodeResponse
      */
-    prefecture?: string;
+    prefecture: string;
     /**
      * 都道府県コード
      * @type {number}
      * @memberof PostalCodeResponse
      */
-    prefectureCode?: number;
+    prefectureCode: number;
     /**
      * 町域名
      * @type {string}
      * @memberof PostalCodeResponse
      */
-    town?: string;
+    town: string;
 }
 
 /**
  * Check if a given object implements the PostalCodeResponse interface.
  */
 export function instanceOfPostalCodeResponse(value: object): value is PostalCodeResponse {
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('postalCode' in value) || value['postalCode'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('prefectureCode' in value) || value['prefectureCode'] === undefined) return false;
+    if (!('town' in value) || value['town'] === undefined) return false;
     return true;
 }
 
@@ -68,18 +73,23 @@ export function PostalCodeResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'city': json['city'] == null ? undefined : json['city'],
-        'postalCode': json['postalCode'] == null ? undefined : json['postalCode'],
-        'prefecture': json['prefecture'] == null ? undefined : json['prefecture'],
-        'prefectureCode': json['prefectureCode'] == null ? undefined : json['prefectureCode'],
-        'town': json['town'] == null ? undefined : json['town'],
+        'city': json['city'],
+        'postalCode': json['postalCode'],
+        'prefecture': json['prefecture'],
+        'prefectureCode': json['prefectureCode'],
+        'town': json['town'],
     };
 }
 
-export function PostalCodeResponseToJSON(value?: PostalCodeResponse | null): any {
+export function PostalCodeResponseToJSON(json: any): PostalCodeResponse {
+    return PostalCodeResponseToJSONTyped(json, false);
+}
+
+export function PostalCodeResponseToJSONTyped(value?: PostalCodeResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'city': value['city'],

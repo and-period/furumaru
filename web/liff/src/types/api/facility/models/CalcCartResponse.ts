@@ -18,30 +18,35 @@ import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
+    ProductToJSONTyped,
 } from './Product';
 import type { CartItem } from './CartItem';
 import {
     CartItemFromJSON,
     CartItemFromJSONTyped,
     CartItemToJSON,
+    CartItemToJSONTyped,
 } from './CartItem';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
+    PromotionToJSONTyped,
 } from './Promotion';
 import type { Cart } from './Cart';
 import {
     CartFromJSON,
     CartFromJSONTyped,
     CartToJSON,
+    CartToJSONTyped,
 } from './Cart';
 
 /**
@@ -55,67 +60,77 @@ export interface CalcCartResponse {
      * @type {Array<Cart>}
      * @memberof CalcCartResponse
      */
-    carts?: Array<Cart>;
+    carts: Array<Cart>;
     /**
      * 
      * @type {Coordinator}
      * @memberof CalcCartResponse
      */
-    coordinator?: Coordinator;
+    coordinator: Coordinator;
     /**
      * 割引金額(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
-    discount?: number;
+    discount: number;
     /**
      * カート内の商品一覧(集計結果)
      * @type {Array<CartItem>}
      * @memberof CalcCartResponse
      */
-    items?: Array<CartItem>;
+    items: Array<CartItem>;
     /**
      * 商品一覧
      * @type {Array<Product>}
      * @memberof CalcCartResponse
      */
-    products?: Array<Product>;
+    products: Array<Product>;
     /**
      * 
      * @type {Promotion}
      * @memberof CalcCartResponse
      */
-    promotion?: Promotion;
+    promotion: Promotion;
     /**
      * 支払い時にAPIへ送信するキー(重複判定用)
      * @type {string}
      * @memberof CalcCartResponse
      */
-    requestId?: string;
+    requestId: string;
     /**
      * 配送手数料(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
-    shippingFee?: number;
+    shippingFee: number;
     /**
      * 購入金額(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
-    subtotal?: number;
+    subtotal: number;
     /**
      * 合計金額(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the CalcCartResponse interface.
  */
 export function instanceOfCalcCartResponse(value: object): value is CalcCartResponse {
+    if (!('carts' in value) || value['carts'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('discount' in value) || value['discount'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
+    if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('shippingFee' in value) || value['shippingFee'] === undefined) return false;
+    if (!('subtotal' in value) || value['subtotal'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -129,30 +144,35 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'carts': json['carts'] == null ? undefined : ((json['carts'] as Array<any>).map(CartFromJSON)),
-        'coordinator': json['coordinator'] == null ? undefined : CoordinatorFromJSON(json['coordinator']),
-        'discount': json['discount'] == null ? undefined : json['discount'],
-        'items': json['items'] == null ? undefined : ((json['items'] as Array<any>).map(CartItemFromJSON)),
-        'products': json['products'] == null ? undefined : ((json['products'] as Array<any>).map(ProductFromJSON)),
-        'promotion': json['promotion'] == null ? undefined : PromotionFromJSON(json['promotion']),
-        'requestId': json['requestId'] == null ? undefined : json['requestId'],
-        'shippingFee': json['shippingFee'] == null ? undefined : json['shippingFee'],
-        'subtotal': json['subtotal'] == null ? undefined : json['subtotal'],
-        'total': json['total'] == null ? undefined : json['total'],
+        'carts': ((json['carts'] as Array<any>).map(CartFromJSON)),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
+        'discount': json['discount'],
+        'items': ((json['items'] as Array<any>).map(CartItemFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
+        'promotion': PromotionFromJSON(json['promotion']),
+        'requestId': json['requestId'],
+        'shippingFee': json['shippingFee'],
+        'subtotal': json['subtotal'],
+        'total': json['total'],
     };
 }
 
-export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
+export function CalcCartResponseToJSON(json: any): CalcCartResponse {
+    return CalcCartResponseToJSONTyped(json, false);
+}
+
+export function CalcCartResponseToJSONTyped(value?: CalcCartResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'carts': value['carts'] == null ? undefined : ((value['carts'] as Array<any>).map(CartToJSON)),
+        'carts': ((value['carts'] as Array<any>).map(CartToJSON)),
         'coordinator': CoordinatorToJSON(value['coordinator']),
         'discount': value['discount'],
-        'items': value['items'] == null ? undefined : ((value['items'] as Array<any>).map(CartItemToJSON)),
-        'products': value['products'] == null ? undefined : ((value['products'] as Array<any>).map(ProductToJSON)),
+        'items': ((value['items'] as Array<any>).map(CartItemToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
         'promotion': PromotionToJSON(value['promotion']),
         'requestId': value['requestId'],
         'shippingFee': value['shippingFee'],

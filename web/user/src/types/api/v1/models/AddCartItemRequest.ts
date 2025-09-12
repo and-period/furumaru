@@ -30,7 +30,7 @@ export interface AddCartItemRequest {
      * @type {number}
      * @memberof AddCartItemRequest
      */
-    quantity?: number;
+    quantity: number;
 }
 
 /**
@@ -38,6 +38,7 @@ export interface AddCartItemRequest {
  */
 export function instanceOfAddCartItemRequest(value: object): value is AddCartItemRequest {
     if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
     return true;
 }
 
@@ -52,14 +53,19 @@ export function AddCartItemRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'productId': json['productId'],
-        'quantity': json['quantity'] == null ? undefined : json['quantity'],
+        'quantity': json['quantity'],
     };
 }
 
-export function AddCartItemRequestToJSON(value?: AddCartItemRequest | null): any {
+export function AddCartItemRequestToJSON(json: any): AddCartItemRequest {
+    return AddCartItemRequestToJSONTyped(json, false);
+}
+
+export function AddCartItemRequestToJSONTyped(value?: AddCartItemRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'productId': value['productId'],

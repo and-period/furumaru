@@ -20,7 +20,7 @@ import { mapValues } from '../runtime';
  */
 export interface TypesPaymentSystem {
     /**
-     * 決済手段種別
+     * 支払い方法
      * @type {number}
      * @memberof TypesPaymentSystem
      */

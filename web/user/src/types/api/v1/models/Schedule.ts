@@ -18,6 +18,7 @@ import {
     ScheduleDistributionMetadataFromJSON,
     ScheduleDistributionMetadataFromJSONTyped,
     ScheduleDistributionMetadataToJSON,
+    ScheduleDistributionMetadataToJSONTyped,
 } from './ScheduleDistributionMetadata';
 
 /**
@@ -31,67 +32,77 @@ export interface Schedule {
      * @type {string}
      * @memberof Schedule
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 説明
      * @type {string}
      * @memberof Schedule
      */
-    description?: string;
+    description: string;
     /**
      * 
      * @type {ScheduleDistributionMetadata}
      * @memberof Schedule
      */
-    distributionMedatada?: ScheduleDistributionMetadata;
+    distributionMedatada: ScheduleDistributionMetadata;
     /**
      * 映像配信URL
      * @type {string}
      * @memberof Schedule
      */
-    distributionUrl?: string;
+    distributionUrl: string;
     /**
      * 配信終了日時
      * @type {number}
      * @memberof Schedule
      */
-    endAt?: number;
+    endAt: number;
     /**
      * スケジュールID
      * @type {string}
      * @memberof Schedule
      */
-    id?: string;
+    id: string;
     /**
      * 配信開始日時
      * @type {number}
      * @memberof Schedule
      */
-    startAt?: number;
+    startAt: number;
     /**
      * 開催状況
      * @type {number}
      * @memberof Schedule
      */
-    status?: number;
+    status: number;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof Schedule
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * タイトル
      * @type {string}
      * @memberof Schedule
      */
-    title?: string;
+    title: string;
 }
 
 /**
  * Check if a given object implements the Schedule interface.
  */
 export function instanceOfSchedule(value: object): value is Schedule {
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('distributionMedatada' in value) || value['distributionMedatada'] === undefined) return false;
+    if (!('distributionUrl' in value) || value['distributionUrl'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -105,23 +116,28 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'distributionMedatada': json['distributionMedatada'] == null ? undefined : ScheduleDistributionMetadataFromJSON(json['distributionMedatada']),
-        'distributionUrl': json['distributionUrl'] == null ? undefined : json['distributionUrl'],
-        'endAt': json['endAt'] == null ? undefined : json['endAt'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'startAt': json['startAt'] == null ? undefined : json['startAt'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'thumbnailUrl': json['thumbnailUrl'] == null ? undefined : json['thumbnailUrl'],
-        'title': json['title'] == null ? undefined : json['title'],
+        'coordinatorId': json['coordinatorId'],
+        'description': json['description'],
+        'distributionMedatada': ScheduleDistributionMetadataFromJSON(json['distributionMedatada']),
+        'distributionUrl': json['distributionUrl'],
+        'endAt': json['endAt'],
+        'id': json['id'],
+        'startAt': json['startAt'],
+        'status': json['status'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'title': json['title'],
     };
 }
 
-export function ScheduleToJSON(value?: Schedule | null): any {
+export function ScheduleToJSON(json: any): Schedule {
+    return ScheduleToJSONTyped(json, false);
+}
+
+export function ScheduleToJSONTyped(value?: Schedule | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'coordinatorId': value['coordinatorId'],

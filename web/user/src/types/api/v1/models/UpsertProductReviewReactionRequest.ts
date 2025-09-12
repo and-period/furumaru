@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ProductReviewReactionType } from './ProductReviewReactionType';
+import {
+    ProductReviewReactionTypeFromJSON,
+    ProductReviewReactionTypeFromJSONTyped,
+    ProductReviewReactionTypeToJSON,
+    ProductReviewReactionTypeToJSONTyped,
+} from './ProductReviewReactionType';
+
 /**
  * 
  * @export
@@ -20,12 +28,14 @@ import { mapValues } from '../runtime';
  */
 export interface UpsertProductReviewReactionRequest {
     /**
-     * リアクション種別
-     * @type {number}
+     * 
+     * @type {ProductReviewReactionType}
      * @memberof UpsertProductReviewReactionRequest
      */
-    reactionType: number;
+    reactionType: ProductReviewReactionType;
 }
+
+
 
 /**
  * Check if a given object implements the UpsertProductReviewReactionRequest interface.
@@ -45,17 +55,22 @@ export function UpsertProductReviewReactionRequestFromJSONTyped(json: any, ignor
     }
     return {
         
-        'reactionType': json['reactionType'],
+        'reactionType': ProductReviewReactionTypeFromJSON(json['reactionType']),
     };
 }
 
-export function UpsertProductReviewReactionRequestToJSON(value?: UpsertProductReviewReactionRequest | null): any {
+export function UpsertProductReviewReactionRequestToJSON(json: any): UpsertProductReviewReactionRequest {
+    return UpsertProductReviewReactionRequestToJSONTyped(json, false);
+}
+
+export function UpsertProductReviewReactionRequestToJSONTyped(value?: UpsertProductReviewReactionRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'reactionType': value['reactionType'],
+        'reactionType': ProductReviewReactionTypeToJSON(value['reactionType']),
     };
 }
 

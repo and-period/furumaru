@@ -18,6 +18,7 @@ import {
     PaymentSystemFromJSON,
     PaymentSystemFromJSONTyped,
     PaymentSystemToJSON,
+    PaymentSystemToJSONTyped,
 } from './PaymentSystem';
 
 /**
@@ -31,13 +32,14 @@ export interface PaymentSystemsResponse {
      * @type {Array<PaymentSystem>}
      * @memberof PaymentSystemsResponse
      */
-    systems?: Array<PaymentSystem>;
+    systems: Array<PaymentSystem>;
 }
 
 /**
  * Check if a given object implements the PaymentSystemsResponse interface.
  */
 export function instanceOfPaymentSystemsResponse(value: object): value is PaymentSystemsResponse {
+    if (!('systems' in value) || value['systems'] === undefined) return false;
     return true;
 }
 
@@ -51,17 +53,22 @@ export function PaymentSystemsResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'systems': json['systems'] == null ? undefined : ((json['systems'] as Array<any>).map(PaymentSystemFromJSON)),
+        'systems': ((json['systems'] as Array<any>).map(PaymentSystemFromJSON)),
     };
 }
 
-export function PaymentSystemsResponseToJSON(value?: PaymentSystemsResponse | null): any {
+export function PaymentSystemsResponseToJSON(json: any): PaymentSystemsResponse {
+    return PaymentSystemsResponseToJSONTyped(json, false);
+}
+
+export function PaymentSystemsResponseToJSONTyped(value?: PaymentSystemsResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'systems': value['systems'] == null ? undefined : ((value['systems'] as Array<any>).map(PaymentSystemToJSON)),
+        'systems': ((value['systems'] as Array<any>).map(PaymentSystemToJSON)),
     };
 }
 

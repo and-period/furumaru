@@ -49,10 +49,15 @@ export function CreateLiveCommentRequestFromJSONTyped(json: any, ignoreDiscrimin
     };
 }
 
-export function CreateLiveCommentRequestToJSON(value?: CreateLiveCommentRequest | null): any {
+export function CreateLiveCommentRequestToJSON(json: any): CreateLiveCommentRequest {
+    return CreateLiveCommentRequestToJSONTyped(json, false);
+}
+
+export function CreateLiveCommentRequestToJSONTyped(value?: CreateLiveCommentRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],

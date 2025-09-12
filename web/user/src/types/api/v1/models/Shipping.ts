@@ -18,6 +18,7 @@ import {
     ShippingRateFromJSON,
     ShippingRateFromJSONTyped,
     ShippingRateToJSON,
+    ShippingRateToJSONTyped,
 } from './ShippingRate';
 
 /**
@@ -31,61 +32,70 @@ export interface Shipping {
      * @type {number}
      * @memberof Shipping
      */
-    box60Frozen?: number;
+    box60Frozen: number;
     /**
      * 箱サイズ60の通常（常温・冷蔵便）配送料一覧
      * @type {Array<ShippingRate>}
      * @memberof Shipping
      */
-    box60Rates?: Array<ShippingRate>;
+    box60Rates: Array<ShippingRate>;
     /**
      * 箱サイズ80の追加（冷凍便）追加配送料(税込)
      * @type {number}
      * @memberof Shipping
      */
-    box80Frozen?: number;
+    box80Frozen: number;
     /**
      * 箱サイズ80の通常（常温・冷蔵便）配送料一覧
      * @type {Array<ShippingRate>}
      * @memberof Shipping
      */
-    box80Rates?: Array<ShippingRate>;
+    box80Rates: Array<ShippingRate>;
     /**
      * 箱サイズ100の追加（冷凍便）追加配送料(税込)
      * @type {number}
      * @memberof Shipping
      */
-    box100Frozen?: number;
+    box100Frozen: number;
     /**
      * 箱サイズ100の通常（常温・冷蔵便）配送料一覧
      * @type {Array<ShippingRate>}
      * @memberof Shipping
      */
-    box100Rates?: Array<ShippingRate>;
+    box100Rates: Array<ShippingRate>;
     /**
      * 送料無料になる金額(税込)
      * @type {number}
      * @memberof Shipping
      */
-    freeShippingRates?: number;
+    freeShippingRates: number;
     /**
      * 送料無料オプションの有無
      * @type {boolean}
      * @memberof Shipping
      */
-    hasFreeShipping?: boolean;
+    hasFreeShipping: boolean;
     /**
      * 配送設定ID
      * @type {string}
      * @memberof Shipping
      */
-    id?: string;
+    id: string;
 }
 
 /**
  * Check if a given object implements the Shipping interface.
  */
 export function instanceOfShipping(value: object): value is Shipping {
+    if (!('box60Frozen' in value) || value['box60Frozen'] === undefined) return false;
+    if (!('box60Rates' in value) || value['box60Rates'] === undefined) return false;
+    if (!('box80Frozen' in value) || value['box80Frozen'] === undefined) return false;
+    if (!('box80Rates' in value) || value['box80Rates'] === undefined) return false;
+    if (!('box100Frozen' in value) || value['box100Frozen'] === undefined) return false;
+    if (!('box100Rates' in value) || value['box100Rates'] === undefined) return false;
+    if (!('freeShippingRates' in value) || value['freeShippingRates'] === undefined) return false;
+    if (!('hasFreeShipping' in value) || value['hasFreeShipping'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -99,30 +109,35 @@ export function ShippingFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'box60Frozen': json['box60Frozen'] == null ? undefined : json['box60Frozen'],
-        'box60Rates': json['box60Rates'] == null ? undefined : ((json['box60Rates'] as Array<any>).map(ShippingRateFromJSON)),
-        'box80Frozen': json['box80Frozen'] == null ? undefined : json['box80Frozen'],
-        'box80Rates': json['box80Rates'] == null ? undefined : ((json['box80Rates'] as Array<any>).map(ShippingRateFromJSON)),
-        'box100Frozen': json['box100Frozen'] == null ? undefined : json['box100Frozen'],
-        'box100Rates': json['box100Rates'] == null ? undefined : ((json['box100Rates'] as Array<any>).map(ShippingRateFromJSON)),
-        'freeShippingRates': json['freeShippingRates'] == null ? undefined : json['freeShippingRates'],
-        'hasFreeShipping': json['hasFreeShipping'] == null ? undefined : json['hasFreeShipping'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'box60Frozen': json['box60Frozen'],
+        'box60Rates': ((json['box60Rates'] as Array<any>).map(ShippingRateFromJSON)),
+        'box80Frozen': json['box80Frozen'],
+        'box80Rates': ((json['box80Rates'] as Array<any>).map(ShippingRateFromJSON)),
+        'box100Frozen': json['box100Frozen'],
+        'box100Rates': ((json['box100Rates'] as Array<any>).map(ShippingRateFromJSON)),
+        'freeShippingRates': json['freeShippingRates'],
+        'hasFreeShipping': json['hasFreeShipping'],
+        'id': json['id'],
     };
 }
 
-export function ShippingToJSON(value?: Shipping | null): any {
+export function ShippingToJSON(json: any): Shipping {
+    return ShippingToJSONTyped(json, false);
+}
+
+export function ShippingToJSONTyped(value?: Shipping | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'box60Frozen': value['box60Frozen'],
-        'box60Rates': value['box60Rates'] == null ? undefined : ((value['box60Rates'] as Array<any>).map(ShippingRateToJSON)),
+        'box60Rates': ((value['box60Rates'] as Array<any>).map(ShippingRateToJSON)),
         'box80Frozen': value['box80Frozen'],
-        'box80Rates': value['box80Rates'] == null ? undefined : ((value['box80Rates'] as Array<any>).map(ShippingRateToJSON)),
+        'box80Rates': ((value['box80Rates'] as Array<any>).map(ShippingRateToJSON)),
         'box100Frozen': value['box100Frozen'],
-        'box100Rates': value['box100Rates'] == null ? undefined : ((value['box100Rates'] as Array<any>).map(ShippingRateToJSON)),
+        'box100Rates': ((value['box100Rates'] as Array<any>).map(ShippingRateToJSON)),
         'freeShippingRates': value['freeShippingRates'],
         'hasFreeShipping': value['hasFreeShipping'],
         'id': value['id'],

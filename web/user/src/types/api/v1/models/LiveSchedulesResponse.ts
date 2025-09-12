@@ -18,12 +18,14 @@ import {
     CoordinatorFromJSON,
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
+    CoordinatorToJSONTyped,
 } from './Coordinator';
 import type { LiveSummary } from './LiveSummary';
 import {
     LiveSummaryFromJSON,
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
+    LiveSummaryToJSONTyped,
 } from './LiveSummary';
 
 /**
@@ -37,25 +39,28 @@ export interface LiveSchedulesResponse {
      * @type {Array<Coordinator>}
      * @memberof LiveSchedulesResponse
      */
-    coordinators?: Array<Coordinator>;
+    coordinators: Array<Coordinator>;
     /**
      * 配信中・配信予定のマルシェ一覧
      * @type {Array<LiveSummary>}
      * @memberof LiveSchedulesResponse
      */
-    lives?: Array<LiveSummary>;
+    lives: Array<LiveSummary>;
     /**
      * 配信中・配信予定のマルシェ合計数
      * @type {number}
      * @memberof LiveSchedulesResponse
      */
-    total?: number;
+    total: number;
 }
 
 /**
  * Check if a given object implements the LiveSchedulesResponse interface.
  */
 export function instanceOfLiveSchedulesResponse(value: object): value is LiveSchedulesResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -69,20 +74,25 @@ export function LiveSchedulesResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'coordinators': json['coordinators'] == null ? undefined : ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
-        'lives': json['lives'] == null ? undefined : ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
+        'total': json['total'],
     };
 }
 
-export function LiveSchedulesResponseToJSON(value?: LiveSchedulesResponse | null): any {
+export function LiveSchedulesResponseToJSON(json: any): LiveSchedulesResponse {
+    return LiveSchedulesResponseToJSONTyped(json, false);
+}
+
+export function LiveSchedulesResponseToJSONTyped(value?: LiveSchedulesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
-        'coordinators': value['coordinators'] == null ? undefined : ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
-        'lives': value['lives'] == null ? undefined : ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
         'total': value['total'],
     };
 }

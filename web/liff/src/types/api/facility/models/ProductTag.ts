@@ -24,19 +24,21 @@ export interface ProductTag {
      * @type {string}
      * @memberof ProductTag
      */
-    id?: string;
+    id: string;
     /**
      * 商品タグ名
      * @type {string}
      * @memberof ProductTag
      */
-    name?: string;
+    name: string;
 }
 
 /**
  * Check if a given object implements the ProductTag interface.
  */
 export function instanceOfProductTag(value: object): value is ProductTag {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     return true;
 }
 
@@ -50,15 +52,20 @@ export function ProductTagFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'id': json['id'],
+        'name': json['name'],
     };
 }
 
-export function ProductTagToJSON(value?: ProductTag | null): any {
+export function ProductTagToJSON(json: any): ProductTag {
+    return ProductTagToJSONTyped(json, false);
+}
+
+export function ProductTagToJSONTyped(value?: ProductTag | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'id': value['id'],

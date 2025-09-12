@@ -13,11 +13,19 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PaymentMethodType } from './PaymentMethodType';
+import {
+    PaymentMethodTypeFromJSON,
+    PaymentMethodTypeFromJSONTyped,
+    PaymentMethodTypeToJSON,
+    PaymentMethodTypeToJSONTyped,
+} from './PaymentMethodType';
 import type { CheckoutCreditCard } from './CheckoutCreditCard';
 import {
     CheckoutCreditCardFromJSON,
     CheckoutCreditCardFromJSONTyped,
     CheckoutCreditCardToJSON,
+    CheckoutCreditCardToJSONTyped,
 } from './CheckoutCreditCard';
 
 /**
@@ -31,7 +39,7 @@ export interface CheckoutRequest {
      * @type {number}
      * @memberof CheckoutRequest
      */
-    boxNumber?: number;
+    boxNumber: number;
     /**
      * 決済完了後のリダイレクト先URL
      * @type {string}
@@ -49,19 +57,19 @@ export interface CheckoutRequest {
      * @type {CheckoutCreditCard}
      * @memberof CheckoutRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
     /**
-     * 支払い方法
-     * @type {number}
+     * 
+     * @type {PaymentMethodType}
      * @memberof CheckoutRequest
      */
-    paymentMethod: number;
+    paymentMethod: PaymentMethodType;
     /**
      * プロモーションコード
      * @type {string}
      * @memberof CheckoutRequest
      */
-    promotionCode?: string;
+    promotionCode: string;
     /**
      * 支払いキー(重複判定用)
      * @type {string}
@@ -73,17 +81,23 @@ export interface CheckoutRequest {
      * @type {number}
      * @memberof CheckoutRequest
      */
-    total?: number;
+    total: number;
 }
+
+
 
 /**
  * Check if a given object implements the CheckoutRequest interface.
  */
 export function instanceOfCheckoutRequest(value: object): value is CheckoutRequest {
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -97,28 +111,33 @@ export function CheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
+        'boxNumber': json['boxNumber'],
         'callbackUrl': json['callbackUrl'],
         'coordinatorId': json['coordinatorId'],
-        'creditCard': json['creditCard'] == null ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
-        'paymentMethod': json['paymentMethod'],
-        'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
+        'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
-        'total': json['total'] == null ? undefined : json['total'],
+        'total': json['total'],
     };
 }
 
-export function CheckoutRequestToJSON(value?: CheckoutRequest | null): any {
+export function CheckoutRequestToJSON(json: any): CheckoutRequest {
+    return CheckoutRequestToJSONTyped(json, false);
+}
+
+export function CheckoutRequestToJSONTyped(value?: CheckoutRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'boxNumber': value['boxNumber'],
         'callbackUrl': value['callbackUrl'],
         'coordinatorId': value['coordinatorId'],
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
-        'paymentMethod': value['paymentMethod'],
+        'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
         'promotionCode': value['promotionCode'],
         'requestId': value['requestId'],
         'total': value['total'],

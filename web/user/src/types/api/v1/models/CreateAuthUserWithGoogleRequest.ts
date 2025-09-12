@@ -121,10 +121,15 @@ export function CreateAuthUserWithGoogleRequestFromJSONTyped(json: any, ignoreDi
     };
 }
 
-export function CreateAuthUserWithGoogleRequestToJSON(value?: CreateAuthUserWithGoogleRequest | null): any {
+export function CreateAuthUserWithGoogleRequestToJSON(json: any): CreateAuthUserWithGoogleRequest {
+    return CreateAuthUserWithGoogleRequestToJSONTyped(json, false);
+}
+
+export function CreateAuthUserWithGoogleRequestToJSONTyped(value?: CreateAuthUserWithGoogleRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'accountId': value['accountId'],

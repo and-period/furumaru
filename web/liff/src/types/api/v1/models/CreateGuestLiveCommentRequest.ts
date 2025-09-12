@@ -49,10 +49,15 @@ export function CreateGuestLiveCommentRequestFromJSONTyped(json: any, ignoreDisc
     };
 }
 
-export function CreateGuestLiveCommentRequestToJSON(value?: CreateGuestLiveCommentRequest | null): any {
+export function CreateGuestLiveCommentRequestToJSON(json: any): CreateGuestLiveCommentRequest {
+    return CreateGuestLiveCommentRequestToJSONTyped(json, false);
+}
+
+export function CreateGuestLiveCommentRequestToJSONTyped(value?: CreateGuestLiveCommentRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'comment': value['comment'],

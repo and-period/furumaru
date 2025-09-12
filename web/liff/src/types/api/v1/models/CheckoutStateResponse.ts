@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PaymentStatus } from './PaymentStatus';
+import {
+    PaymentStatusFromJSON,
+    PaymentStatusFromJSONTyped,
+    PaymentStatusToJSON,
+    PaymentStatusToJSONTyped,
+} from './PaymentStatus';
+
 /**
  * 
  * @export
@@ -24,19 +32,23 @@ export interface CheckoutStateResponse {
      * @type {string}
      * @memberof CheckoutStateResponse
      */
-    orderId?: string;
+    orderId: string;
     /**
-     * 注文ステータス
-     * @type {number}
+     * 
+     * @type {PaymentStatus}
      * @memberof CheckoutStateResponse
      */
-    status?: number;
+    status: PaymentStatus;
 }
+
+
 
 /**
  * Check if a given object implements the CheckoutStateResponse interface.
  */
 export function instanceOfCheckoutStateResponse(value: object): value is CheckoutStateResponse {
+    if (!('orderId' in value) || value['orderId'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -50,19 +62,24 @@ export function CheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'orderId': json['orderId'] == null ? undefined : json['orderId'],
-        'status': json['status'] == null ? undefined : json['status'],
+        'orderId': json['orderId'],
+        'status': PaymentStatusFromJSON(json['status']),
     };
 }
 
-export function CheckoutStateResponseToJSON(value?: CheckoutStateResponse | null): any {
+export function CheckoutStateResponseToJSON(json: any): CheckoutStateResponse {
+    return CheckoutStateResponseToJSONTyped(json, false);
+}
+
+export function CheckoutStateResponseToJSONTyped(value?: CheckoutStateResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'orderId': value['orderId'],
-        'status': value['status'],
+        'status': PaymentStatusToJSON(value['status']),
     };
 }
 
