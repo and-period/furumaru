@@ -26,7 +26,7 @@ func (s *service) CreateFacilityUser(ctx context.Context, in *user.CreateFacilit
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	if s.now().Before(in.LastCheckInAt) {
+	if s.now().After(in.LastCheckInAt) {
 		return nil, fmt.Errorf("user: invalid last checkin at: %w", exception.ErrInvalidArgument)
 	}
 	params := &entity.NewUserParams{
