@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useCustomerStore, useOrderStore } from '~/store'
-import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment, User } from '~/types/api'
+import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const route = useRoute()

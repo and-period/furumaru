@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { apiClient } from '~/plugins/api-client'
-import type { Prefecture } from '~/types/api'
+import type { Prefecture } from '~/types'
 
 export interface SearchAddress {
   prefecture: Prefecture

@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import Cookies from 'universal-cookie'
 
 import { useAuthStore } from '~/store'
-import type { AuthResponse } from '~/types/api'
+import type { AuthResponse } from '~/types/api/v1'
 
 const publicPages = [
   '/health',

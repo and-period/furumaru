@@ -2,8 +2,8 @@
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { ContactStatus } from '~/types/api'
-import type { ContactsResponse } from '~/types/api'
+import { ContactStatus } from '~/types/api/v1'
+import type { ContactsResponse } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -64,13 +64,13 @@ const headers: VDataTable['headers'] = [
 
 const getStatusColor = (status: ContactStatus): string => {
   switch (status) {
-    case ContactStatus.TODO:
+    case ContactStatus.ContactStatusWaiting:
       return 'error'
-    case ContactStatus.INPROGRESS:
+    case ContactStatus.ContactStatusInprogress:
       return 'secondary'
-    case ContactStatus.DONE:
+    case ContactStatus.ContactStatusDone:
       return 'primary'
-    case ContactStatus.DISCARD:
+    case ContactStatus.ContactStatusDiscard:
       return 'info'
     default:
       return 'unknown'
@@ -79,13 +79,13 @@ const getStatusColor = (status: ContactStatus): string => {
 
 const getStatus = (status: ContactStatus): string => {
   switch (status) {
-    case ContactStatus.TODO:
+    case ContactStatus.ContactStatusWaiting:
       return '未着手'
-    case ContactStatus.INPROGRESS:
+    case ContactStatus.ContactStatusInprogress:
       return '進行中'
-    case ContactStatus.DONE:
+    case ContactStatus.ContactStatusDone:
       return '対応完了'
-    case ContactStatus.DISCARD:
+    case ContactStatus.ContactStatusDiscard:
       return '対応不要'
     default:
       return '不明'

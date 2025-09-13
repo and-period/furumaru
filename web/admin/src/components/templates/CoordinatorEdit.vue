@@ -2,8 +2,9 @@
 import type { VTabs } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminStatus, Prefecture, Weekday } from '~/types/api'
-import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest } from '~/types/api'
+import { Prefecture } from '~/types'
+import { AdminStatus } from '~/types/api/v1'
+import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest, TimeWeekday } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -51,7 +52,7 @@ const props = defineProps({
     default: (): UpdateShopRequest => ({
       name: '',
       productTypeIds: [],
-      businessDays: [],
+      businessDays: new Set<TimeWeekday>(),
     }),
   },
   shippingFormData: {
@@ -89,7 +90,8 @@ const props = defineProps({
     type: Object as PropType<Coordinator>,
     default: (): Coordinator => ({
       id: '',
-      status: AdminStatus.UNKNOWN,
+      shopId: '',
+      status: AdminStatus.AdminStatusUnknown,
       lastname: '',
       lastnameKana: '',
       firstname: '',
@@ -109,6 +111,7 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
+      producerTotal: 0,
       createdAt: 0,
       updatedAt: 0,
     }),
@@ -130,6 +133,7 @@ const props = defineProps({
     type: Object as PropType<Shipping>,
     default: (): Shipping => ({
       id: '',
+      name: '',
       isDefault: false,
       box60Rates: [],
       box60Frozen: 0,

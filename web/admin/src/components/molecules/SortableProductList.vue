@@ -2,7 +2,7 @@
 import { useSortable } from '@vueuse/integrations/useSortable'
 import { mdiDrag } from '@mdi/js'
 import { getResizedImages } from '~/lib/helpers'
-import type { Product, ProductMediaInner } from '~/types/api'
+import type { Product, ProductMedia } from '~/types/api/v1'
 
 const model = defineModel<any>()
 
@@ -16,14 +16,14 @@ const sortableRef = ref<HTMLElement | null>(null)
 useSortable(sortableRef, model)
 
 const getProductThumbnailUrl = (product: Product): string => {
-  const thumbnail = product.media?.find((media: ProductMediaInner) => {
+  const thumbnail = product.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? thumbnail.url : ''
 }
 
 const getProductThumbnails = (product: Product): string => {
-  const thumbnail = product.media?.find((media: ProductMediaInner) => {
+  const thumbnail = product.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? getResizedImages(thumbnail.url) : ''

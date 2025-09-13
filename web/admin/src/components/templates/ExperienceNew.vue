@@ -9,7 +9,7 @@ import type {
   ExperienceType,
   Producer,
   UpdateExperienceRequest,
-} from '~/types/api'
+} from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import {
   CreateExperienceValidationRules,
@@ -445,7 +445,7 @@ const onSubmit = async (): Promise<void> => {
         <v-card-title>販売設定</v-card-title>
         <v-card-text>
           <v-select
-            v-model="formDataValue.public"
+            v-model="formDataValue._public"
             label="販売状況"
             :items="publicStatus"
             item-title="title"

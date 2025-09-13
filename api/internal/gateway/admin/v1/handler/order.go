@@ -403,6 +403,19 @@ func (h *handler) RefundOrder(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     注文の配送情報更新
+// @Description 注文の配送情報を更新します。
+// @Tags        Order
+// @Router      /v1/orders/{orderId}/fulfillments/{fulfillmentId} [patch]
+// @Param       orderId path string true "注文ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Param       fulfillmentId path string true "配送ID" example("kSByoE6FetnPs5Byk3a9Zx-1")
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body types.UpdateOrderFulfillmentRequest true "注文の配送情報更新"
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "操作の権限がない"
+// @Failure     404 {object} util.ErrorResponse "注文が存在しない"
 func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 	req := &types.UpdateOrderFulfillmentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -429,8 +442,8 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 // @Security    bearerauth
 // @Accept      json
 // @Param       request body types.ExportOrdersRequest true "注文履歴のCSV出力"
-// @Produce     json
-// @Success     204
+// @Produce     text/csv
+// @Success     200 {string} file "CSVファイル"
 // @Failure     403 {object} util.ErrorResponse "操作の権限がない"
 func (h *handler) ExportOrders(ctx *gin.Context) {
 	req := &types.ExportOrdersRequest{}

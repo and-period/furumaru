@@ -1,13 +1,15 @@
-import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductTypeRequest,
-  GetUploadUrlRequest,
   ProductType,
   UpdateProductTypeRequest,
-} from '~/types/api'
+  V1CategoriesCategoryIdProductTypesGetRequest,
+  V1CategoriesCategoryIdProductTypesPostRequest,
+  V1CategoriesCategoryIdProductTypesProductTypeIdDeleteRequest,
+  V1CategoriesCategoryIdProductTypesProductTypeIdPatchRequest,
+  V1UploadProductTypesIconPostRequest,
+} from '~/types/api/v1'
 
 export const useProductTypeStore = defineStore('productType', {
   state: () => ({
@@ -28,14 +30,18 @@ export const useProductTypeStore = defineStore('productType', {
       orders = [],
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .productTypeApi()
-          .v1ListAllProductTypes(limit, offset, orders.join(','))
+        const params: V1CategoriesCategoryIdProductTypesGetRequest = {
+          categoryId: '-', // 全カテゴリ対象
+          limit,
+          offset,
+          orders: orders.join(','),
+        }
+        const res = await this.productTypeApi().v1CategoriesCategoryIdProductTypesGet(params)
 
         const categoryStore = useCategoryStore()
-        this.productTypes = res.data.productTypes
-        this.totalItems = res.data.total
-        categoryStore.categories = res.data.categories || []
+        this.productTypes = res.productTypes
+        this.totalItems = res.total
+        categoryStore.categories = res.categories || []
       }
       catch (err) {
         return this.errorHandler(err)
@@ -61,12 +67,15 @@ export const useProductTypeStore = defineStore('productType', {
       }
 
       try {
-        const res = await apiClient
-          .productTypeApi()
-          .v1ListProductTypes(categoryId)
+        const params: V1CategoriesCategoryIdProductTypesGetRequest = {
+          categoryId,
+          limit,
+          offset,
+        }
+        const res = await this.productTypeApi().v1CategoriesCategoryIdProductTypesGet(params)
 
-        this.productTypes = res.data.productTypes
-        this.totalItems = res.data.total
+        this.productTypes = res.productTypes
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -85,9 +94,11 @@ export const useProductTypeStore = defineStore('productType', {
       productTypeIds: string[] = [],
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .productTypeApi()
-          .v1ListProductTypes(categoryId, undefined, undefined, name)
+        const params: V1CategoriesCategoryIdProductTypesGetRequest = {
+          categoryId: categoryId || '-',
+          name,
+        }
+        const res = await this.productTypeApi().v1CategoriesCategoryIdProductTypesGet(params)
         const productTypes: ProductType[] = []
         this.productTypes.forEach((productType: ProductType): void => {
           if (!productTypeIds.includes(productType.id)) {
@@ -95,14 +106,14 @@ export const useProductTypeStore = defineStore('productType', {
           }
           productTypes.push(productType)
         })
-        res.data.productTypes.forEach((productType: ProductType): void => {
+        res.productTypes.forEach((productType: ProductType): void => {
           if (productTypes.find((v): boolean => v.id === productType.id)) {
             return
           }
           productTypes.push(productType)
         })
         this.productTypes = productTypes
-        this.totalItems = res.data.total
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -120,10 +131,12 @@ export const useProductTypeStore = defineStore('productType', {
       payload: CreateProductTypeRequest,
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .productTypeApi()
-          .v1CreateProductType(categoryId, payload)
-        this.productTypes.unshift(res.data.productType)
+        const params: V1CategoriesCategoryIdProductTypesPostRequest = {
+          categoryId,
+          createProductTypeRequest: payload,
+        }
+        const res = await this.productTypeApi().v1CategoriesCategoryIdProductTypesPost(params)
+        this.productTypes.unshift(res.productType)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -146,9 +159,12 @@ export const useProductTypeStore = defineStore('productType', {
       payload: UpdateProductTypeRequest,
     ) {
       try {
-        await apiClient
-          .productTypeApi()
-          .v1UpdateProductType(categoryId, productTypeId, payload)
+        const params: V1CategoriesCategoryIdProductTypesProductTypeIdPatchRequest = {
+          categoryId,
+          productTypeId,
+          updateProductTypeRequest: payload,
+        }
+        await this.productTypeApi().v1CategoriesCategoryIdProductTypesProductTypeIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -170,9 +186,11 @@ export const useProductTypeStore = defineStore('productType', {
       productTypeId: string,
     ): Promise<void> {
       try {
-        await apiClient
-          .productTypeApi()
-          .v1DeleteProductType(categoryId, productTypeId)
+        const params: V1CategoriesCategoryIdProductTypesProductTypeIdDeleteRequest = {
+          categoryId,
+          productTypeId,
+        }
+        await this.productTypeApi().v1CategoriesCategoryIdProductTypesProductTypeIdDelete(params)
         this.fetchProductTypes()
       }
       catch (err) {
@@ -190,14 +208,14 @@ export const useProductTypeStore = defineStore('productType', {
     async uploadProductTypeIcon(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadProductTypesIconPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .productTypeApi()
-          .v1GetProductTypeIconUploadUrl(body)
+        const res = await this.uploadApi().v1UploadProductTypesIconPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {

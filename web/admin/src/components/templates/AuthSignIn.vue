@@ -2,7 +2,7 @@
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 
 import type { AlertType } from '~/lib/hooks'
-import type { SignInRequest } from '~/types/api'
+import type { SignInRequest } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {

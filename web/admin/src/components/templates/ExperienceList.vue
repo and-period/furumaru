@@ -8,8 +8,9 @@ import {
 
   ExperienceStatus,
   AdminType,
-} from '~/types/api'
-import type { Experience, ExperienceType, ExperienceMediaInner, Prefecture, ExperiencesResponse, Producer } from '~/types/api'
+} from '~/types/api/v1'
+import type { Prefecture } from '~/types'
+import type { Experience, ExperienceType, ExperienceMedia, ExperiencesResponse, Producer } from '~/types/api/v1'
 
 const props = defineProps({
   selectedItemId: {
@@ -22,7 +23,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -133,15 +134,15 @@ const deleteDialogValue = computed({
   set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
-const getThumbnail = (media: ExperienceMediaInner[]): string => {
-  const thumbnail = media.find((media: ExperienceMediaInner) => {
+const getThumbnail = (media: ExperienceMedia[]): string => {
+  const thumbnail = media.find((media: ExperienceMedia) => {
     return media.isThumbnail
   })
   return thumbnail?.url || ''
 }
 
-const getResizedThumbnails = (media: ExperienceMediaInner[]): string => {
-  const thumbnail = media.find((media: ExperienceMediaInner) => {
+const getResizedThumbnails = (media: ExperienceMedia[]): string => {
+  const thumbnail = media.find((media: ExperienceMedia) => {
     return media.isThumbnail
   })
   if (!thumbnail) {
@@ -158,11 +159,11 @@ const getExperienceType = (experienceTypeId: string): string => {
 }
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.COORDINATOR
+  return props.adminType === AdminType.AdminTypeCoordinator
 }
 
 const isDeletable = (): boolean => {
-  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
   return targets.includes(props.adminType)
 }
 
@@ -202,15 +203,15 @@ const getProducerName = (producerId: string): string => {
 
 const getStatus = (status: ExperienceStatus): string => {
   switch (status) {
-    case ExperienceStatus.WAITING:
+    case ExperienceStatus.ExperienceStatusWaiting:
       return '販売開始前'
-    case ExperienceStatus.ACCEPTING:
+    case ExperienceStatus.ExperienceStatusAccepting:
       return '体験受付中'
-    case ExperienceStatus.SOLD_OUT:
+    case ExperienceStatus.ExperienceStatusSoldOut:
       return '体験受付終了'
-    case ExperienceStatus.PRIVATE:
+    case ExperienceStatus.ExperienceStatusPrivate:
       return '非公開'
-    case ExperienceStatus.FINISHED:
+    case ExperienceStatus.ExperienceStatusFinished:
       return '販売終了'
     default:
       return ''
@@ -219,15 +220,15 @@ const getStatus = (status: ExperienceStatus): string => {
 
 const getStatusColor = (status: ExperienceStatus): string => {
   switch (status) {
-    case ExperienceStatus.WAITING:
+    case ExperienceStatus.ExperienceStatusWaiting:
       return 'info'
-    case ExperienceStatus.ACCEPTING:
+    case ExperienceStatus.ExperienceStatusAccepting:
       return 'primary'
-    case ExperienceStatus.SOLD_OUT:
+    case ExperienceStatus.ExperienceStatusSoldOut:
       return 'secondary'
-    case ExperienceStatus.PRIVATE:
+    case ExperienceStatus.ExperienceStatusPrivate:
       return 'warning'
-    case ExperienceStatus.FINISHED:
+    case ExperienceStatus.ExperienceStatusFinished:
       return 'error'
     default:
       return ''

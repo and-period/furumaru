@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest } from '~/types/api'
+import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -14,8 +11,13 @@ export const useShippingStore = defineStore('shipping', {
      */
     async fetchShippings(coordinatorId: string, limit: number, offset: number): Promise<ShippingsResponse> {
       try {
-        const res = await apiClient.shippingApi().v1ListShippings(coordinatorId, limit, offset)
-        return res.data
+        const params: V1CoordinatorsCoordinatorIdShippingsGetRequest = {
+          coordinatorId,
+          limit,
+          offset,
+        }
+        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsGet(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
@@ -30,9 +32,11 @@ export const useShippingStore = defineStore('shipping', {
      */
     async createShipping(coordinatorId: string, payload: CreateShippingRequest): Promise<void> {
       try {
-        await apiClient.shippingApi().v1CreateShipping(
-          coordinatorId, payload,
-        )
+        const params: V1CoordinatorsCoordinatorIdShippingsPostRequest = {
+          coordinatorId,
+          createShippingRequest: payload,
+        }
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsPost(params)
       }
       catch (err) {
         return this.errorHandler(err)
@@ -47,8 +51,12 @@ export const useShippingStore = defineStore('shipping', {
      */
     async fetchShipping(coordinatorId: string, shippingId: string): Promise<Shipping> {
       try {
-        const res = await apiClient.shippingApi().v1GetShipping(coordinatorId, shippingId)
-        return res.data.shipping
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest = {
+          coordinatorId,
+          shippingId,
+        }
+        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdGet(params)
+        return res.shipping
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -63,8 +71,8 @@ export const useShippingStore = defineStore('shipping', {
      */
     async fetchDefaultShipping(): Promise<void> {
       try {
-        const res = await apiClient.shippingApi().v1GetDefaultShipping()
-        this.shipping = res.data.shipping
+        const res = await this.shippingApi().v1ShippingsDefaultGet()
+        this.shipping = res.shipping
       }
       catch (err) {
         return this.errorHandler(err)
@@ -78,7 +86,10 @@ export const useShippingStore = defineStore('shipping', {
      */
     async updateDefaultShipping(payload: UpdateDefaultShippingRequest): Promise<void> {
       try {
-        await apiClient.shippingApi().v1UpdateDefaultShipping(payload)
+        const params: V1ShippingsDefaultPatchRequest = {
+          updateDefaultShippingRequest: payload,
+        }
+        await this.shippingApi().v1ShippingsDefaultPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
@@ -92,8 +103,11 @@ export const useShippingStore = defineStore('shipping', {
      */
     async fetchActiveShipping(coordinatorId: string): Promise<void> {
       try {
-        const res = await apiClient.shippingApi().v1GetActiveShipping(coordinatorId)
-        this.shipping = res.data.shipping
+        const params: V1CoordinatorsCoordinatorIdShippingsActivationGetRequest = {
+          coordinatorId,
+        }
+        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsActivationGet(params)
+        this.shipping = res.shipping
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
@@ -109,7 +123,12 @@ export const useShippingStore = defineStore('shipping', {
      */
     async updateShipping(coordinatorId: string, shippingId: string, payload: UpdateShippingRequest): Promise<void> {
       try {
-        await apiClient.shippingApi().v1UpdateShipping(coordinatorId, shippingId, payload)
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest = {
+          coordinatorId,
+          shippingId,
+          updateShippingRequest: payload,
+        }
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -127,7 +146,11 @@ export const useShippingStore = defineStore('shipping', {
      */
     async upsertShipping(coordinatorId: string, payload: UpsertShippingRequest): Promise<void> {
       try {
-        await apiClient.shippingApi().v1UpsertShipping(coordinatorId, payload)
+        const params: V1CoordinatorsCoordinatorIdShippingsPatchRequest = {
+          coordinatorId,
+          upsertShippingRequest: payload,
+        }
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {

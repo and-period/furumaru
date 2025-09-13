@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
+import type { CreateProductTagRequest, ProductTag, UpdateProductTagRequest, V1ProductTagsGetRequest, V1ProductTagsPostRequest, V1ProductTagsProductTagIdDeleteRequest, V1ProductTagsProductTagIdPatchRequest } from '~/types/api/v1'
 
 export const useProductTagStore = defineStore('productTag', {
   state: () => ({
@@ -19,9 +16,14 @@ export const useProductTagStore = defineStore('productTag', {
      */
     async fetchProductTags(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.productTagApi().v1ListProductTags(limit, offset, '', orders.join(','))
-        this.productTags = res.data.productTags
-        this.total = res.data.total
+        const params: V1ProductTagsGetRequest = {
+          limit,
+          offset,
+          orders: orders.join(','),
+        }
+        const res = await this.productTagApi().v1ProductTagsGet(params)
+        this.productTags = res.productTags
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -35,7 +37,10 @@ export const useProductTagStore = defineStore('productTag', {
      */
     async searchProductTags(name = '', productTagIds: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.productTagApi().v1ListProductTags(undefined, undefined, name)
+        const params: V1ProductTagsGetRequest = {
+          name,
+        }
+        const res = await this.productTagApi().v1ProductTagsGet(params)
         const productTags: ProductTag[] = []
         this.productTags.forEach((productTag: ProductTag): void => {
           if (!productTagIds.includes(productTag.id)) {
@@ -43,14 +48,14 @@ export const useProductTagStore = defineStore('productTag', {
           }
           productTags.push(productTag)
         })
-        res.data.productTags.forEach((productTag: ProductTag): void => {
+        res.productTags.forEach((productTag: ProductTag): void => {
           if (productTags.find((v): boolean => v.id === productTag.id)) {
             return
           }
           productTags.push(productTag)
         })
         this.productTags = productTags
-        this.total = res.data.total
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -63,8 +68,11 @@ export const useProductTagStore = defineStore('productTag', {
      */
     async createProductTag(payload: CreateProductTagRequest): Promise<void> {
       try {
-        const res = await apiClient.productTagApi().v1CreateProductTag(payload)
-        this.productTags.unshift(res.data.productTag)
+        const params: V1ProductTagsPostRequest = {
+          createProductTagRequest: payload,
+        }
+        const res = await this.productTagApi().v1ProductTagsPost(params)
+        this.productTags.unshift(res.productTag)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -81,7 +89,11 @@ export const useProductTagStore = defineStore('productTag', {
      */
     async updateProductTag(productTagId: string, payload: UpdateProductTagRequest): Promise<void> {
       try {
-        await apiClient.productTagApi().v1UpdateProductTag(productTagId, payload)
+        const params: V1ProductTagsProductTagIdPatchRequest = {
+          productTagId,
+          updateProductTagRequest: payload,
+        }
+        await this.productTagApi().v1ProductTagsProductTagIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -98,7 +110,10 @@ export const useProductTagStore = defineStore('productTag', {
      */
     async deleteProductTag(productTagId: string): Promise<void> {
       try {
-        await apiClient.productTagApi().v1DeleteProductTag(productTagId)
+        const params: V1ProductTagsProductTagIdDeleteRequest = {
+          productTagId,
+        }
+        await this.productTagApi().v1ProductTagsProductTagIdDelete(params)
       }
       catch (err) {
         this.errorHandler(err, { 404: 'この商品タグは存在しません。' })

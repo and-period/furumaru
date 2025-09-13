@@ -1,10 +1,10 @@
-import type { Experience, Product, ProductMediaInner } from '~/types/api'
+import type { Experience, Product, ProductMedia } from '~/types/api/v1'
 
 /**
  * 商品のサムネイル情報を取得する関数
  */
 export const getProductThumbnailUrl = (product: Product): string => {
-  const thumbnail = product.media?.find((media: ProductMediaInner) => {
+  const thumbnail = product.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? thumbnail.url : ''
@@ -16,7 +16,7 @@ export const getProductThumbnailUrl = (product: Product): string => {
  * @returns
  */
 export const getExperienceThumbnailUrl = (experience: Experience): string => {
-  const thumbnail = experience.media?.find((media: ProductMediaInner) => {
+  const thumbnail = experience.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? thumbnail.url : ''

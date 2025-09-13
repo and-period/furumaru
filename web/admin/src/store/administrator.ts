@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
+import type { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest, V1AdministratorsAdminIdDeleteRequest, V1AdministratorsAdminIdGetRequest, V1AdministratorsAdminIdPatchRequest, V1AdministratorsGetRequest, V1AdministratorsPostRequest } from '~/types/api/v1'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({
@@ -18,12 +15,13 @@ export const useAdministratorStore = defineStore('administrator', {
      */
     async fetchAdministrators(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.administratorApi().v1ListAdministrators(
+        const params: V1AdministratorsGetRequest = {
           limit,
           offset,
-        )
-        this.administrators = res.data.administrators
-        this.total = res.data.total
+        }
+        const res = await this.administratorApi().v1AdministratorsGet(params)
+        this.administrators = res.administrators
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -36,8 +34,11 @@ export const useAdministratorStore = defineStore('administrator', {
      */
     async getAdministrator(administratorId: string): Promise<void> {
       try {
-        const res = await apiClient.administratorApi().v1GetAdministrator(administratorId)
-        this.administrator = res.data.administrator
+        const params: V1AdministratorsAdminIdGetRequest = {
+          adminId: administratorId,
+        }
+        const res = await this.administratorApi().v1AdministratorsAdminIdGet(params)
+        this.administrator = res.administrator
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のシステム管理者が存在しません' })
@@ -50,7 +51,10 @@ export const useAdministratorStore = defineStore('administrator', {
      */
     async createAdministrator(payload: CreateAdministratorRequest): Promise<void> {
       try {
-        await apiClient.administratorApi().v1CreateAdministrator(payload)
+        const params: V1AdministratorsPostRequest = {
+          createAdministratorRequest: payload,
+        }
+        await this.administratorApi().v1AdministratorsPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -67,7 +71,11 @@ export const useAdministratorStore = defineStore('administrator', {
      */
     async updateAdministrator(administratorId: string, payload: UpdateAdministratorRequest): Promise<void> {
       try {
-        await apiClient.administratorApi().v1UpdateAdministrator(administratorId, payload)
+        const params: V1AdministratorsAdminIdPatchRequest = {
+          adminId: administratorId,
+          updateAdministratorRequest: payload,
+        }
+        await this.administratorApi().v1AdministratorsAdminIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -84,7 +92,10 @@ export const useAdministratorStore = defineStore('administrator', {
      */
     async deleteAdministrator(administratorId: string): Promise<void> {
       try {
-        await apiClient.administratorApi().v1DeleteAdministrator(administratorId)
+        const params: V1AdministratorsAdminIdDeleteRequest = {
+          adminId: administratorId,
+        }
+        await this.administratorApi().v1AdministratorsAdminIdDelete(params)
       }
       catch (err: any) {
         return this.errorHandler(err, {

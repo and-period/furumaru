@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
 import type {
   Contact,
   ContactResponse,
   UpdateContactRequest,
-} from '~/types/api'
+  V1ContactsContactIdGetRequest,
+  V1ContactsContactIdPatchRequest,
+  V1ContactsGetRequest,
+} from '~/types/api/v1'
 
 export const useContactStore = defineStore('contact', {
   state: () => ({
@@ -23,9 +23,13 @@ export const useContactStore = defineStore('contact', {
      */
     async fetchContacts(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.contactApi().v1ListContacts(limit, offset)
-        this.contacts = res.data.contacts
-        this.total = res.data.total
+        const params: V1ContactsGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.contactApi().v1ContactsGet(params)
+        this.contacts = res.contacts
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -38,9 +42,12 @@ export const useContactStore = defineStore('contact', {
      */
     async getContact(contactId: string): Promise<ContactResponse> {
       try {
-        const res = await apiClient.contactApi().v1GetContact(contactId)
-        this.contact = res.data.contact
-        return res.data
+        const params: V1ContactsContactIdGetRequest = {
+          contactId,
+        }
+        const res = await this.contactApi().v1ContactsContactIdGet(params)
+        this.contact = res.contact
+        return res
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のお問い合わせが存在しません' })
@@ -49,7 +56,11 @@ export const useContactStore = defineStore('contact', {
 
     async updateContact(contactId: string, payload: UpdateContactRequest): Promise<void> {
       try {
-        await apiClient.contactApi().v1UpdateContact(contactId, payload)
+        const params: V1ContactsContactIdPatchRequest = {
+          contactId,
+          updateContactRequest: payload,
+        }
+        await this.contactApi().v1ContactsContactIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {

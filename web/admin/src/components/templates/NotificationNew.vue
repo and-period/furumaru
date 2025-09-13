@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { DiscountType, NotificationTarget, NotificationType } from '~/types/api'
-import type { CreateNotificationRequest, Promotion } from '~/types/api'
+import { DiscountType, NotificationTarget, NotificationType } from '~/types/api/v1'
+import type { CreateNotificationRequest, Promotion } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules } from '~/types/validations'
 import { CreateNotificationValidationRules } from '~/types/validations/notification'
@@ -30,7 +30,7 @@ const props = defineProps({
   formData: {
     type: Object,
     default: (): CreateNotificationRequest => ({
-      type: NotificationType.UNKNOWN,
+      type: NotificationType.NotificationTypeUnknown,
       targets: [],
       title: '',
       body: '',
@@ -53,16 +53,16 @@ const emit = defineEmits<{
 }>()
 
 const typeList = [
-  { title: 'システム関連', value: NotificationType.SYSTEM },
-  { title: 'ライブ関連', value: NotificationType.LIVE },
-  { title: 'セール関連', value: NotificationType.PROMOTION },
-  { title: 'その他', value: NotificationType.OTHER },
+  { title: 'システム関連', value: NotificationType.NotificationTypeSystem },
+  { title: 'ライブ関連', value: NotificationType.NotificationTypeLive },
+  { title: 'セール関連', value: NotificationType.NotificationTypePromotion },
+  { title: 'その他', value: NotificationType.NotificationTypeOther },
 ]
 const targetList = [
-  { title: 'ユーザー', value: NotificationTarget.USERS },
-  { title: '生産者', value: NotificationTarget.PRODUCERS },
-  { title: 'コーディネーター', value: NotificationTarget.COORDINATORS },
-  { title: '管理者', value: NotificationTarget.ADMINISTRATORS },
+  { title: 'ユーザー', value: NotificationTarget.NotificationTargetUsers },
+  { title: '生産者', value: NotificationTarget.NotificationTargetProducers },
+  { title: 'コーディネーター', value: NotificationTarget.NotificationTargetCoordinators },
+  { title: '管理者', value: NotificationTarget.NotificationTargetAdministrators },
 ]
 
 const selectedPromotion = ref<Promotion>()
@@ -113,11 +113,11 @@ const getPromotionDiscount = (): string => {
   }
 
   switch (selectedPromotion.value.discountType) {
-    case DiscountType.AMOUNT:
+    case DiscountType.DiscountTypeAmount:
       return '￥' + selectedPromotion.value.discountRate
-    case DiscountType.RATE:
+    case DiscountType.DiscountTypeRate:
       return selectedPromotion.value.discountRate + '％'
-    case DiscountType.FREE_SHIPPING:
+    case DiscountType.DiscountTypeFreeShipping:
       return '送料無料'
     default:
       return ''
@@ -172,7 +172,7 @@ const onSubmit = async (): Promise<void> => {
           @update:model-value="onChangeType"
         />
         <!-- セール情報 -->
-        <div v-if="formDataValue.type === NotificationType.PROMOTION">
+        <div v-if="formDataValue.type === NotificationType.NotificationTypePromotion">
           <v-autocomplete
             v-model="formDataValidate.promotionId.$model"
             :error-messages="getErrorMessage(formDataValidate.promotionId.$errors)"

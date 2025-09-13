@@ -1,6 +1,4 @@
-import { defineStore } from 'pinia'
-import { apiClient } from '~/plugins/api-client'
-import type { PaymentMethodType, PaymentSystemStatus, PaymentSystem, UpdatePaymentSystemRequest } from '~/types/api'
+import type { PaymentMethodType, PaymentSystemStatus, PaymentSystem, UpdatePaymentSystemRequest, V1PaymentSystemsMethodTypePatchRequest } from '~/types/api/v1'
 
 export const usePaymentSystemStore = defineStore('paymentSystem', {
   state: () => ({
@@ -14,8 +12,8 @@ export const usePaymentSystemStore = defineStore('paymentSystem', {
      */
     async fetchPaymentSystems(): Promise<void> {
       try {
-        const res = await apiClient.paymentSystemApi().v1ListPaymentSystems()
-        this.systems = res.data.systems
+        const res = await this.paymentSystemApi().v1PaymentSystemsGet()
+        this.systems = res.systems
       }
       catch (err) {
         return this.errorHandler(err)
@@ -24,8 +22,13 @@ export const usePaymentSystemStore = defineStore('paymentSystem', {
 
     async updatePaymentStatus(methodType: PaymentMethodType, status: PaymentSystemStatus) {
       try {
-        const req: UpdatePaymentSystemRequest = { status }
-        await apiClient.paymentSystemApi().v1UpdatePaymentSystem(methodType, req)
+        const params: V1PaymentSystemsMethodTypePatchRequest = {
+          methodType,
+          updatePaymentSystemRequest: {
+            status,
+          },
+        }
+        await this.paymentSystemApi().v1PaymentSystemsMethodTypePatch(params)
       }
       catch (err) {
         return this.errorHandler(err)

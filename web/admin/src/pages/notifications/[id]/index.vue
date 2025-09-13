@@ -3,8 +3,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
-import { NotificationType } from '~/types/api'
-import type { UpdateNotificationRequest } from '~/types/api'
+import { NotificationType } from '~/types/api/v1'
+import type { UpdateNotificationRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,7 +34,7 @@ const formData = ref<UpdateNotificationRequest>({
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await notificationStore.getNotification(notificationId)
-    if (notification.value.type === NotificationType.PROMOTION) {
+    if (notification.value.type === NotificationType.NotificationTypePromotion) {
       await promotionStore.getPromotion(notification.value.promotionId)
     }
     formData.value = { ...notification.value }

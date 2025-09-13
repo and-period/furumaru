@@ -1,4 +1,4 @@
-import { PaymentMethodType } from '~/types/api'
+import { PaymentMethodType } from '~/types/api/v1'
 
 export interface PaymentListItem {
   name: string
@@ -9,15 +9,15 @@ export interface PaymentListItem {
  * 決済システム一覧
  */
 export const paymentsList: PaymentListItem[] = [
-  { name: '代引支払い', value: PaymentMethodType.CASH },
-  { name: 'クレジットカード決済', value: PaymentMethodType.CREDIT_CARD },
-  { name: 'コンビニ決済', value: PaymentMethodType.KONBINI },
-  { name: '銀行振込決済', value: PaymentMethodType.BANK_TRANSFER },
-  { name: 'QR決済（PayPay）', value: PaymentMethodType.PAYPAY },
-  { name: 'QR決済（Line Pay）', value: PaymentMethodType.LINE_PAY },
-  { name: 'QR決済（メルペイ）', value: PaymentMethodType.MERPAY },
-  { name: 'QR決済（楽天ペイ）', value: PaymentMethodType.RAKUTEN_PAY },
-  { name: 'QR決済（au PAY）', value: PaymentMethodType.AU_PAY },
-  { name: 'ペイディ（Paidy）', value: PaymentMethodType.PAIDY },
-  { name: 'ペイジー（Pay-easy）', value: PaymentMethodType.PAY_EASY },
+  { name: '代引支払い', value: PaymentMethodType.PaymentMethodTypeCash },
+  { name: 'クレジットカード決済', value: PaymentMethodType.PaymentMethodTypeCreditCard },
+  { name: 'コンビニ決済', value: PaymentMethodType.PaymentMethodTypeKonbini },
+  { name: '銀行振込決済', value: PaymentMethodType.PaymentMethodTypeBankTransfer },
+  { name: 'QR決済（PayPay）', value: PaymentMethodType.PaymentMethodTypePayPay },
+  { name: 'QR決済（Line Pay）', value: PaymentMethodType.PaymentMethodTypeLinePay },
+  { name: 'QR決済（メルペイ）', value: PaymentMethodType.PaymentMethodTypeMerpay },
+  { name: 'QR決済（楽天ペイ）', value: PaymentMethodType.PaymentMethodTypeRakutenPay },
+  { name: 'QR決済（au PAY）', value: PaymentMethodType.PaymentMethodTypeAUPay },
+  { name: 'ペイディ（Paidy）', value: PaymentMethodType.PaymentMethodTypePaidy },
+  { name: 'ペイジー（Pay-easy）', value: PaymentMethodType.PaymentMethodTypePayEasy },
 ]

@@ -3,7 +3,8 @@ import useVuelidate from '@vuelidate/core'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength } from '~/lib/validations'
-import type { ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
+import { ContactStatus } from '~/types/api/v1'
+import type { ContactResponse, UpdateContactRequest } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -31,7 +32,7 @@ const props = defineProps({
       username: '',
       email: '',
       phoneNumber: '',
-      status: ContactStatus.UNKNOWN,
+      status: ContactStatus.ContactStatusUnknown,
       note: '',
       createdAt: 0,
       updatedAt: 0,
@@ -40,7 +41,7 @@ const props = defineProps({
   formData: {
     type: Object as PropType<UpdateContactRequest>,
     default: () => ({
-      status: ContactStatus.UNKNOWN,
+      status: ContactStatus.ContactStatusUnknown,
       note: '',
     }),
   },
@@ -53,11 +54,11 @@ const emit = defineEmits<{
 }>()
 
 const statuses = [
-  { title: '未着手', value: ContactStatus.TODO },
-  { title: '進行中', value: ContactStatus.INPROGRESS },
-  { title: '完了', value: ContactStatus.DONE },
-  { title: '対応不要', value: ContactStatus.DISCARD },
-  { title: '不明', value: ContactStatus.UNKNOWN },
+  { title: '未着手', value: ContactStatus.ContactStatusWaiting },
+  { title: '進行中', value: ContactStatus.ContactStatusInprogress },
+  { title: '完了', value: ContactStatus.ContactStatusDone },
+  { title: '対応不要', value: ContactStatus.ContactStatusDiscard },
+  { title: '不明', value: ContactStatus.ContactStatusUnknown },
 ]
 
 const rules = computed(() => ({

@@ -1,6 +1,4 @@
-import { ca } from 'vuetify/locale'
-import { apiClient } from '~/plugins/api-client'
-import type { CreateExperienceTypeRequest, ExperienceType } from '~/types/api'
+import type { CreateExperienceTypeRequest, ExperienceType, V1ExperienceTypesExperienceTypeIdDeleteRequest, V1ExperienceTypesExperienceTypeIdPatchRequest, V1ExperienceTypesGetRequest, V1ExperienceTypesPostRequest } from '~/types/api/v1'
 
 export const useExperienceTypeStore = defineStore('experienceType', {
   state: () => ({
@@ -18,12 +16,16 @@ export const useExperienceTypeStore = defineStore('experienceType', {
      */
     async fetchExperienceTypes(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.experienceTypeApi().v1ListExperienceTypes(limit, offset)
+        const params: V1ExperienceTypesGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.experienceTypeApi().v1ExperienceTypesGet(params)
 
         const experienceTypeStore = useExperienceTypeStore()
-        this.experienceTypes = res.data.experienceTypes
-        this.totalItems = res.data.total
-        experienceTypeStore.experienceTypes = res.data.experienceTypes
+        this.experienceTypes = res.experienceTypes
+        this.totalItems = res.total
+        experienceTypeStore.experienceTypes = res.experienceTypes
       }
       catch (err) {
         return this.errorHandler(err)
@@ -35,7 +37,10 @@ export const useExperienceTypeStore = defineStore('experienceType', {
      */
     async searchExperienceTypes(name = '', experienceTypeIds: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.experienceTypeApi().v1ListExperienceTypes(undefined, undefined, name)
+        const params: V1ExperienceTypesGetRequest = {
+          name,
+        }
+        const res = await this.experienceTypeApi().v1ExperienceTypesGet(params)
         const experienceTypes: ExperienceType[] = []
         this.experienceTypes.forEach((experienceType: ExperienceType): void => {
           if (!experienceTypeIds.includes(experienceType.id)) {
@@ -43,14 +48,14 @@ export const useExperienceTypeStore = defineStore('experienceType', {
           }
           experienceTypes.push(experienceType)
         })
-        res.data.experienceTypes.forEach((experienceType: ExperienceType): void => {
+        res.experienceTypes.forEach((experienceType: ExperienceType): void => {
           if (experienceTypes.find((v): boolean => v.id === experienceType.id)) {
             return
           }
           experienceTypes.push(experienceType)
         })
         this.experienceTypes = experienceTypes
-        this.totalItems = res.data.total
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -60,9 +65,12 @@ export const useExperienceTypeStore = defineStore('experienceType', {
     /**
      * 体験カテゴリを新規登録する非同期関数
      */
-    async createExperienceType(params: CreateExperienceTypeRequest): Promise<void> {
+    async createExperienceType(payload: CreateExperienceTypeRequest): Promise<void> {
       try {
-        await apiClient.experienceTypeApi().v1CreateExperienceType(params)
+        const params: V1ExperienceTypesPostRequest = {
+          createExperienceTypeRequest: payload,
+        }
+        await this.experienceTypeApi().v1ExperienceTypesPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -77,7 +85,11 @@ export const useExperienceTypeStore = defineStore('experienceType', {
      */
     async updateExperienceType(experienceTypeId: string, payload: CreateExperienceTypeRequest): Promise<void> {
       try {
-        await apiClient.experienceTypeApi().v1UpdateExperienceType(experienceTypeId, payload)
+        const params: V1ExperienceTypesExperienceTypeIdPatchRequest = {
+          experienceTypeId,
+          updateExperienceTypeRequest: payload,
+        }
+        await this.experienceTypeApi().v1ExperienceTypesExperienceTypeIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -93,7 +105,10 @@ export const useExperienceTypeStore = defineStore('experienceType', {
      */
     async deleteExperienceType(experienceTypeId: string): Promise<void> {
       try {
-        await apiClient.experienceTypeApi().v1DeleteExperienceType(experienceTypeId)
+        const params: V1ExperienceTypesExperienceTypeIdDeleteRequest = {
+          experienceTypeId,
+        }
+        await this.experienceTypeApi().v1ExperienceTypesExperienceTypeIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {

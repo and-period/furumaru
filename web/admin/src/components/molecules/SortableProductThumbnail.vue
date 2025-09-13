@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useSortable } from '@vueuse/integrations/useSortable'
 import { mdiClose } from '@mdi/js'
-import type { ProductMediaInner } from '~/types/api'
+import type { ProductMedia } from '~/types/api/v1'
 
-const model = defineModel<ProductMediaInner[]>({ required: true })
+const model = defineModel<ProductMedia[]>({ required: true })
 
 interface Emits {
   (e: 'click', i: number): void

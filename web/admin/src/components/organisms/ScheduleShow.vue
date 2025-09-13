@@ -6,8 +6,8 @@ import {
 
   ScheduleStatus,
 
-} from '~/types/api'
-import type { Schedule, UpdateScheduleRequest } from '~/types/api'
+} from '~/types/api/v1'
+import type { Schedule, UpdateScheduleRequest } from '~/types/api/v1'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import {
   TimeDataValidationRules,
@@ -39,14 +39,15 @@ const props = defineProps({
     type: Object as PropType<Schedule>,
     default: (): Schedule => ({
       id: '',
+      shopId: '',
       coordinatorId: '',
       title: '',
       description: '',
-      status: ScheduleStatus.UNKNOWN,
+      status: ScheduleStatus.ScheduleStatusUnknown,
       thumbnailUrl: '',
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
+      _public: false,
       approved: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
@@ -88,12 +89,12 @@ const emit = defineEmits<{
 }>()
 
 const statuses = [
-  { title: '非公開', value: ScheduleStatus.PRIVATE },
-  { title: '申請中', value: ScheduleStatus.IN_PROGRESS },
-  { title: '開催前', value: ScheduleStatus.WAITING },
-  { title: '開催中', value: ScheduleStatus.LIVE },
-  { title: '終了', value: ScheduleStatus.CLOSED },
-  { title: '不明', value: ScheduleStatus.UNKNOWN },
+  { title: '非公開', value: ScheduleStatus.ScheduleStatusPrivate },
+  { title: '申請中', value: ScheduleStatus.ScheduleStatusInProgress },
+  { title: '開催前', value: ScheduleStatus.ScheduleStatusWaiting },
+  { title: '開催中', value: ScheduleStatus.ScheduleStatusLive },
+  { title: '終了', value: ScheduleStatus.ScheduleStatusClosed },
+  { title: '不明', value: ScheduleStatus.ScheduleStatusUnknown },
 ]
 
 const scheduleValue = computed({

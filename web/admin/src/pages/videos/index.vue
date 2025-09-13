@@ -4,8 +4,8 @@ import { unix } from 'dayjs'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useVideoStore } from '~/store'
 import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
-import { AdminType } from '~/types/api'
-import type { Video, VideoResponse } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { Video, VideoResponse } from '~/types/api/v1'
 
 const videoStore = useVideoStore()
 const { videoResponse } = storeToRefs(videoStore)
@@ -74,7 +74,7 @@ const { status } = useAsyncData(async () => {
 })
 
 const isDeletable = (): boolean => {
-  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
   return targets.includes(adminType.value)
 }
 
@@ -138,7 +138,7 @@ const onClickDelete = async () => {
     <v-card-title>動画管理</v-card-title>
 
     <v-card-text
-      v-if="adminType === AdminType.COORDINATOR"
+      v-if="adminType === AdminType.AdminTypeCoordinator"
       class="text-right"
     >
       <v-btn

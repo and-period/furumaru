@@ -8,8 +8,8 @@ import {
 
   ScheduleStatus,
 
-} from '~/types/api'
-import type { CreateLiveRequest, Live, Producer, Product, ProductMediaInner, Schedule, UpdateLiveRequest } from '~/types/api'
+} from '~/types/api/v1'
+import type { CreateLiveRequest, Live, Producer, Product, ProductMedia, Schedule, UpdateLiveRequest } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import {
   CreateLiveValidationRules,
@@ -39,15 +39,15 @@ const props = defineProps({
     type: Object as PropType<Schedule>,
     default: (): Schedule => ({
       id: '',
+      shopId: '',
       coordinatorId: '',
       title: '',
       description: '',
-      status: ScheduleStatus.UNKNOWN,
+      status: ScheduleStatus.ScheduleStatusUnknown,
       thumbnailUrl: '',
-      thumbnails: [],
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
+      _public: false,
       approved: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
@@ -216,7 +216,7 @@ const getProducerThumbnails = (live: Live): string => {
 }
 
 const getProductThumbnailUrl = (product: Product): string => {
-  const thumbnail = product.media?.find((media: ProductMediaInner) => {
+  const thumbnail = product.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? thumbnail.url : ''

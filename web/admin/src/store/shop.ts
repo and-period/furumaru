@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { Shop, UpdateShopRequest } from '~/types/api'
+import type { Shop, UpdateShopRequest, V1ShopsShopIdGetRequest, V1ShopsShopIdPatchRequest } from '~/types/api/v1'
 
 export const useShopStore = defineStore('shop', {
   state: () => ({
@@ -16,8 +13,11 @@ export const useShopStore = defineStore('shop', {
      */
     async fetchShop(shopId: string): Promise<void> {
       try {
-        const res = await apiClient.shopApi().v1GetShop(shopId)
-        this.shop = res.data.shop
+        const params: V1ShopsShopIdGetRequest = {
+          shopId,
+        }
+        const res = await this.shopApi().v1ShopsShopIdGet(params)
+        this.shop = res.shop
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -32,7 +32,11 @@ export const useShopStore = defineStore('shop', {
      */
     async updateShop(shopId: string, payload: UpdateShopRequest): Promise<void> {
       try {
-        const res = await apiClient.shopApi().v1UpdateShop(shopId, payload)
+        const params: V1ShopsShopIdPatchRequest = {
+          shopId,
+          updateShopRequest: payload,
+        }
+        const res = await this.shopApi().v1ShopsShopIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {

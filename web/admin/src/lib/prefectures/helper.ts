@@ -1,6 +1,6 @@
 import { prefecturesList } from '~/constants'
 import type { PrefecturesListItem } from '~/constants'
-import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
+import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api/v1'
 
 export interface PrefecturesListSelectItems extends PrefecturesListItem {
   disabled: boolean

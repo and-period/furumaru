@@ -1,16 +1,21 @@
-import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { useShopStore } from './shop'
-import { apiClient } from '~/plugins/api-client'
 import type {
   Coordinator,
   CreateCoordinatorRequest,
-  GetUploadUrlRequest,
   Producer,
-  Shop,
   UpdateCoordinatorRequest,
-} from '~/types/api'
+  V1CoordinatorsCoordinatorIdDeleteRequest,
+  V1CoordinatorsCoordinatorIdGetRequest,
+  V1CoordinatorsCoordinatorIdPatchRequest,
+  V1CoordinatorsGetRequest,
+  V1CoordinatorsPostRequest,
+  V1UploadCoordinatorsBonusVideoPostRequest,
+  V1UploadCoordinatorsHeaderPostRequest,
+  V1UploadCoordinatorsPromotionVideoPostRequest,
+  V1UploadCoordinatorsThumbnailPostRequest,
+} from '~/types/api/v1'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
@@ -29,16 +34,18 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async fetchCoordinators(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient
-          .coordinatorApi()
-          .v1ListCoordinators(limit, offset)
+        const params: V1CoordinatorsGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.coordinatorApi().v1CoordinatorsGet(params)
 
         const productTypeStore = useProductTypeStore()
         const shopStore = useShopStore()
-        this.coordinators = res.data.coordinators
-        this.totalItems = res.data.total
-        productTypeStore.productTypes = res.data.productTypes
-        shopStore.shops = res.data.shops
+        this.coordinators = res.coordinators
+        this.totalItems = res.total
+        productTypeStore.productTypes = res.productTypes
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -55,9 +62,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
       coordinatorIds: string[] = [],
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .coordinatorApi()
-          .v1ListCoordinators(undefined, undefined, name)
+        const params: V1CoordinatorsGetRequest = {
+          username: name,
+        }
+        const res = await this.coordinatorApi().v1CoordinatorsGet(params)
         const coordinators: Coordinator[] = []
         this.coordinators.forEach((coordinator: Coordinator): void => {
           if (!coordinatorIds.includes(coordinator.id)) {
@@ -65,7 +73,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
           }
           coordinators.push(coordinator)
         })
-        res.data.coordinators.forEach((coordinator: Coordinator): void => {
+        res.coordinators.forEach((coordinator: Coordinator): void => {
           if (coordinators.find((v): boolean => v.id === coordinator.id)) {
             return
           }
@@ -73,8 +81,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
         })
         const shopStore = useShopStore()
         this.coordinators = coordinators
-        this.totalItems = res.data.total
-        shopStore.shops = res.data.shops
+        this.totalItems = res.total
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -87,15 +95,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async getCoordinator(coordinatorId: string): Promise<void> {
       try {
-        const res = await apiClient
-          .coordinatorApi()
-          .v1GetCoordinator(coordinatorId)
+        const params: V1CoordinatorsCoordinatorIdGetRequest = {
+          coordinatorId,
+        }
+        const res = await this.coordinatorApi().v1CoordinatorsCoordinatorIdGet(params)
 
         const productTypeStore = useProductTypeStore()
         const shopStore = useShopStore()
-        this.coordinator = res.data.coordinator
-        productTypeStore.productTypes = res.data.productTypes
-        shopStore.shop = res.data.shop
+        this.coordinator = res.coordinator
+        productTypeStore.productTypes = res.productTypes
+        shopStore.shop = res.shop
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -110,10 +119,11 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async createCoordinator(payload: CreateCoordinatorRequest) {
       try {
-        const res = await apiClient
-          .coordinatorApi()
-          .v1CreateCoordinator(payload)
-        return res.data
+        const params: V1CoordinatorsPostRequest = {
+          createCoordinatorRequest: payload,
+        }
+        const res = await this.coordinatorApi().v1CoordinatorsPost(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -133,9 +143,11 @@ export const useCoordinatorStore = defineStore('coordinator', {
       payload: UpdateCoordinatorRequest,
     ): Promise<void> {
       try {
-        await apiClient
-          .coordinatorApi()
-          .v1UpdateCoordinator(coordinatorId, payload)
+        const params: V1CoordinatorsCoordinatorIdPatchRequest = {
+          coordinatorId,
+          updateCoordinatorRequest: payload,
+        }
+        await this.coordinatorApi().v1CoordinatorsCoordinatorIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -152,14 +164,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async uploadCoordinatorThumbnail(payload: File): Promise<string> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const params: V1UploadCoordinatorsThumbnailPostRequest = {
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient
-          .coordinatorApi()
-          .v1GetCoordinatorThumbnailUploadUrl(body)
+        const res = await this.uploadApi().v1UploadCoordinatorsThumbnailPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -175,14 +187,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async uploadCoordinatorHeader(payload: File): Promise<string> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const params: V1UploadCoordinatorsHeaderPostRequest = {
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient
-          .coordinatorApi()
-          .v1GetCoordinatorHeaderUploadUrl(body)
+        const res = await this.uploadApi().v1UploadCoordinatorsHeaderPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -198,14 +210,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async uploadCoordinatorPromotionVideo(payload: File): Promise<string> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const params: V1UploadCoordinatorsPromotionVideoPostRequest = {
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient
-          .coordinatorApi()
-          .v1GetCoordinatorPromotionVideoUploadUrl(body)
+        const res = await this.uploadApi().v1UploadCoordinatorsPromotionVideoPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -221,14 +233,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async uploadCoordinatorBonusVideo(payload: File): Promise<string> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const params: V1UploadCoordinatorsBonusVideoPostRequest = {
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient
-          .coordinatorApi()
-          .v1GetCoordinatorBonusVideoUploadUrl(body)
+        const res = await this.uploadApi().v1UploadCoordinatorsBonusVideoPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -244,7 +256,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
      */
     async deleteCoordinator(id: string) {
       try {
-        await apiClient.coordinatorApi().v1DeleteCoordinator(id)
+        const params: V1CoordinatorsCoordinatorIdDeleteRequest = {
+          coordinatorId: id,
+        }
+        await this.coordinatorApi().v1CoordinatorsCoordinatorIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {

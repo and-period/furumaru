@@ -3644,6 +3644,142 @@ components:
         - responderId
         - userId
       type: object
+    CreateCoordinatorRequest:
+      properties:
+        addressLine1:
+          description: 町名・番地
+          maxLength: 64
+          type: string
+        addressLine2:
+          description: ビル名・号室など
+          maxLength: 64
+          type: string
+        bonusVideoUrl:
+          description: 購入特典映像URL
+          type: string
+        businessDays:
+          description: 営業曜日(発送可能日)
+          items:
+            type: integer
+            x-enum-varnames:
+              - Sunday
+              - Monday
+              - Tuesday
+              - Wednesday
+              - Thursday
+              - Friday
+              - Saturday
+              - Sunday
+              - Monday
+              - Tuesday
+              - Wednesday
+              - Thursday
+              - Friday
+              - Saturday
+              - Sunday
+              - Monday
+              - Tuesday
+              - Wednesday
+              - Thursday
+              - Friday
+              - Saturday
+          maxItems: 7
+          type: array
+          uniqueItems: true
+        city:
+          description: 市区町村
+          maxLength: 32
+          type: string
+        email:
+          description: メールアドレス
+          type: string
+        facebookId:
+          description: Facebookアカウント
+          maxLength: 50
+          type: string
+        firstname:
+          description: 名
+          maxLength: 16
+          type: string
+        firstnameKana:
+          description: 名(かな)
+          maxLength: 32
+          type: string
+        headerUrl:
+          description: ヘッダー画像URL
+          type: string
+        instagramId:
+          description: Instagramアカウント
+          maxLength: 30
+          type: string
+        lastname:
+          description: 姓
+          maxLength: 16
+          type: string
+        lastnameKana:
+          description: 姓(かな)
+          maxLength: 32
+          type: string
+        marcheName:
+          description: マルシェ名
+          maxLength: 64
+          type: string
+        phoneNumber:
+          description: 電話番号
+          type: string
+        postalCode:
+          description: 郵便番号
+          maxLength: 16
+          type: string
+        prefectureCode:
+          description: 都道府県
+          maximum: 47
+          minimum: 1
+          type: integer
+        productTypeIds:
+          description: 取り扱い品目一覧
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        profile:
+          description: 紹介文
+          maxLength: 2000
+          type: string
+        promotionVideoUrl:
+          description: 紹介映像URL
+          type: string
+        thumbnailUrl:
+          description: サムネイルURL
+          type: string
+        username:
+          description: 表示名
+          maxLength: 32
+          type: string
+      required:
+        - addressLine1
+        - city
+        - email
+        - firstname
+        - firstnameKana
+        - lastname
+        - lastnameKana
+        - marcheName
+        - phoneNumber
+        - prefectureCode
+        - productTypeIds
+        - profile
+        - username
+        - addressLine2
+        - bonusVideoUrl
+        - businessDays
+        - facebookId
+        - headerUrl
+        - instagramId
+        - postalCode
+        - promotionVideoUrl
+        - thumbnailUrl
+      type: object
     CreateExperienceMedia:
       properties:
         isThumbnail:
@@ -5465,6 +5601,14 @@ components:
         - status
         - userId
       type: object
+    UpdateCoordinatorEmailRequest:
+      properties:
+        email:
+          description: メールアドレス
+          type: string
+      required:
+        - email
+      type: object
     UpdateCoordinatorRequest:
       properties:
         addressLine1:
@@ -5855,6 +5999,18 @@ components:
         - title
         - note
       type: object
+    UpdateOrderFulfillmentRequest:
+      properties:
+        shippingCarrier:
+          description: 配送会社
+          type: integer
+        trackingNumber:
+          description: 伝票番号
+          type: string
+      required:
+        - shippingCarrier
+        - trackingNumber
+      type: object
     UpdatePaymentSystemRequest:
       properties:
         status:
@@ -5963,6 +6119,171 @@ components:
         - profile
         - promotionVideoUrl
         - thumbnailUrl
+      type: object
+    UpdateProductMedia:
+      properties:
+        isThumbnail:
+          description: サムネイルとして使用
+          type: boolean
+        url:
+          description: メディアURL
+          type: string
+      required:
+        - url
+        - isThumbnail
+      type: object
+    UpdateProductRequest:
+      properties:
+        box60Rate:
+          description: 箱の占有率(サイズ:60)
+          maximum: 600
+          minimum: 0
+          type: integer
+        box80Rate:
+          description: 箱の占有率(サイズ:80)
+          maximum: 250
+          minimum: 0
+          type: integer
+        box100Rate:
+          description: 箱の占有率(サイズ:100)
+          maximum: 100
+          minimum: 0
+          type: integer
+        cost:
+          description: 原価(税込)
+          minimum: 0
+          type: integer
+        deliveryType:
+          description: 配送方法
+          type: integer
+          x-enum-comments:
+            DeliveryTypeFrozen: 冷凍便
+            DeliveryTypeNormal: 常温便
+            DeliveryTypeRefrigerated: 冷蔵便
+          x-enum-varnames:
+            - DeliveryTypeUnknown
+            - DeliveryTypeNormal
+            - DeliveryTypeRefrigerated
+            - DeliveryTypeFrozen
+        description:
+          description: 商品説明
+          maxLength: 2000
+          type: string
+        endAt:
+          description: 販売終了日時
+          type: integer
+        expirationDate:
+          description: 賞味期限(単位:日)
+          minimum: 0
+          type: integer
+        inventory:
+          description: 在庫数
+          minimum: 0
+          type: integer
+        itemDescription:
+          description: 数量単位説明
+          maxLength: 64
+          type: string
+        itemUnit:
+          description: 数量単位
+          maxLength: 16
+          type: string
+        media:
+          description: メディア一覧
+          items:
+            $ref: '#/components/schemas/UpdateProductMedia'
+          maxItems: 8
+          type: array
+          uniqueItems: false
+        name:
+          description: 商品名
+          maxLength: 64
+          type: string
+        originCity:
+          description: 原産地(市区町村)
+          maxLength: 32
+          type: string
+        originPrefectureCode:
+          description: 原産地(都道府県)
+          maximum: 47
+          minimum: 1
+          type: integer
+        price:
+          description: 販売価格(税込)
+          minimum: 0
+          type: integer
+        productTagIds:
+          description: 商品タグID一覧
+          items:
+            type: string
+          maxItems: 8
+          type: array
+          uniqueItems: false
+        productTypeId:
+          description: 品目ID
+          type: string
+        public:
+          description: 公開フラグ
+          type: boolean
+        recommendedPoint1:
+          description: おすすめポイント1
+          maxLength: 128
+          type: string
+        recommendedPoint2:
+          description: おすすめポイント2
+          maxLength: 128
+          type: string
+        recommendedPoint3:
+          description: おすすめポイント3
+          maxLength: 128
+          type: string
+        startAt:
+          description: 販売開始日時
+          type: integer
+        storageMethodType:
+          description: 保存方法
+          type: integer
+          x-enum-comments:
+            StorageMethodTypeCoolDark: 冷暗所保存
+            StorageMethodTypeFrozen: 冷凍保存
+            StorageMethodTypeNormal: 常温保存
+            StorageMethodTypeRefrigerated: 冷蔵保存
+          x-enum-varnames:
+            - StorageMethodTypeUnknown
+            - StorageMethodTypeNormal
+            - StorageMethodTypeCoolDark
+            - StorageMethodTypeRefrigerated
+            - StorageMethodTypeFrozen
+        weight:
+          description: 重量(kg,少数第一位まで)
+          minimum: 0
+          type: number
+      required:
+        - deliveryType
+        - description
+        - endAt
+        - itemDescription
+        - itemUnit
+        - name
+        - originPrefectureCode
+        - productTagIds
+        - productTypeId
+        - startAt
+        - storageMethodType
+        - box60Rate
+        - box80Rate
+        - box100Rate
+        - cost
+        - expirationDate
+        - inventory
+        - media
+        - originCity
+        - price
+        - public
+        - recommendedPoint1
+        - recommendedPoint2
+        - recommendedPoint3
+        - weight
       type: object
     UpdateProductTagRequest:
       properties:
@@ -6400,7 +6721,7 @@ components:
         thumbnailUrl:
           description: サムネイルURL
           type: string
-        updateAt:
+        updatedAt:
           description: 更新日時
           type: integer
         username:
@@ -6420,7 +6741,7 @@ components:
         - registered
         - status
         - thumbnailUrl
-        - updateAt
+        - updatedAt
         - username
     UserOrder:
       properties:
@@ -8225,6 +8546,222 @@ paths:
       summary: コーディネータ一覧取得
       tags:
         - Coordinator
+    post:
+      description: 新しいコーディネータを作成します。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCoordinatorRequest'
+        description: コーディネータ作成リクエスト
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoordinatorResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータの登録権限がない
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: すでに存在するメールアドレス
+      security:
+        - bearerauth: []
+      summary: コーディネータ新規作成
+      tags:
+        - Coordinator
+  /v1/coordinators/{coordinatorId}:
+    delete:
+      description: 指定されたIDのコーディネータを削除します。
+      parameters:
+        - description: コーディネータID
+          example: '"coordinator-id"'
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータの削除権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータが存在しない
+      security:
+        - bearerauth: []
+      summary: コーディネータ削除
+      tags:
+        - Coordinator
+    get:
+      description: 指定されたIDのコーディネータの詳細情報を取得します。
+      parameters:
+        - description: コーディネータID
+          example: '"coordinator-id"'
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoordinatorResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Not Found
+      security:
+        - bearerauth: []
+      summary: コーディネータ詳細取得
+      tags:
+        - Coordinator
+    patch:
+      description: 指定されたIDのコーディネータ情報を更新します。
+      parameters:
+        - description: コーディネータID
+          example: '"coordinator-id"'
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCoordinatorRequest'
+        description: コーディネータ更新リクエスト
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータの更新権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータが存在しない
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: すでに存在するメールアドレス
+      security:
+        - bearerauth: []
+      summary: コーディネータ更新
+      tags:
+        - Coordinator
+  /v1/coordinators/{coordinatorId}/email:
+    patch:
+      description: 指定されたIDのコーディネータのメールアドレスを更新します。
+      parameters:
+        - description: コーディネータID
+          example: '"coordinator-id"'
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCoordinatorEmailRequest'
+        description: メールアドレス更新リクエスト
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータの更新権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータが存在しない
+      security:
+        - bearerauth: []
+      summary: コーディネータメールアドレス更新
+      tags:
+        - Coordinator
+  /v1/coordinators/{coordinatorId}/password:
+    patch:
+      description: 指定されたIDのコーディネータのパスワードをリセットします。
+      parameters:
+        - description: コーディネータID
+          example: '"coordinator-id"'
+          in: path
+          name: coordinatorId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータの更新権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: コーディネータが存在しない
+      security:
+        - bearerauth: []
+      summary: コーディネータパスワードリセット
+      tags:
+        - Coordinator
   /v1/coordinators/{coordinatorId}/producers:
     get:
       description: 指定されたコーディネーターに関連する生産者の一覧を取得します。
@@ -9294,8 +9831,15 @@ paths:
         description: 注文履歴のCSV出力
         required: true
       responses:
-        "204":
-          description: No Content
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+          description: CSVファイル
         "403":
           content:
             application/json:
@@ -9472,6 +10016,51 @@ paths:
       security:
         - bearerauth: []
       summary: 注文下書き保存
+      tags:
+        - Order
+  /v1/orders/{orderId}/fulfillments/{fulfillmentId}:
+    patch:
+      description: 注文の配送情報を更新します。
+      parameters:
+        - description: 注文ID
+          example: '"kSByoE6FetnPs5Byk3a9Zx"'
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+        - description: 配送ID
+          example: '"kSByoE6FetnPs5Byk3a9Zx-1"'
+          in: path
+          name: fulfillmentId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderFulfillmentRequest'
+        description: 注文の配送情報更新
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 操作の権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 注文が存在しない
+      security:
+        - bearerauth: []
+      summary: 注文の配送情報更新
       tags:
         - Order
   /v1/orders/{orderId}/refund:
@@ -9990,12 +10579,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品の登録権限がない
       security:
         - bearerauth: []
       summary: 商品登録
       tags:
         - Product
   /v1/products/{productId}:
+    delete:
+      description: 商品を削除します。
+      parameters:
+        - description: 商品ID
+          example: '"kSByoE6FetnPs5Byk3a9Zx"'
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品の削除権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品が存在しない
+      security:
+        - bearerauth: []
+      summary: 商品削除
+      tags:
+        - Product
     get:
       description: 指定された商品の詳細情報を取得します。
       parameters:
@@ -10022,6 +10647,49 @@ paths:
       security:
         - bearerauth: []
       summary: 商品取得
+      tags:
+        - Product
+    patch:
+      description: 商品の情報を更新します。
+      parameters:
+        - description: 商品ID
+          example: '"kSByoE6FetnPs5Byk3a9Zx"'
+          in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+        description: 商品情報
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: バリデーションエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品の更新権限がない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: 商品が存在しない
+      security:
+        - bearerauth: []
+      summary: 商品更新
       tags:
         - Product
   /v1/promotions:

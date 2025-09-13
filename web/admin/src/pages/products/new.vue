@@ -11,13 +11,9 @@ import {
   useProductTagStore,
   useProductTypeStore,
 } from '~/store'
-import {
-
-  DeliveryType,
-  Prefecture,
-  StorageMethodType,
-} from '~/types/api'
-import type { CreateProductRequest, CreateProductRequestMediaInner } from '~/types/api'
+import { Prefecture } from '~/types'
+import { DeliveryType, StorageMethodType } from '~/types/api/v1'
+import type { CreateProductRequest, CreateProductMedia } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -50,7 +46,7 @@ const selectedCategoryId = ref<string>()
 const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
-  public: false,
+  _public: false,
   coordinatorId: '',
   producerId: '',
   productTypeId: '',
@@ -62,12 +58,12 @@ const formData = ref<CreateProductRequest>({
   weight: 0,
   itemUnit: '',
   itemDescription: '',
-  deliveryType: DeliveryType.NORMAL,
+  deliveryType: DeliveryType.DeliveryTypeNormal,
   recommendedPoint1: '',
   recommendedPoint2: '',
   recommendedPoint3: '',
   expirationDate: 0,
-  storageMethodType: StorageMethodType.NORMAL,
+  storageMethodType: StorageMethodType.StorageMethodTypeNormal,
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
@@ -84,7 +80,7 @@ const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
     )
     formData.value.name = `${sourceProduct.product.name}のコピー`
     formData.value.description = sourceProduct.product.description
-    formData.value.public = sourceProduct.product.public
+    formData.value._public = sourceProduct.product._public
     formData.value.coordinatorId = sourceProduct.product.coordinatorId
     formData.value.producerId = sourceProduct.product.producerId
     formData.value.productTypeId = sourceProduct.product.productTypeId
@@ -110,7 +106,7 @@ const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
     formData.value.startAt = sourceProduct.product.startAt
     formData.value.endAt = sourceProduct.product.endAt
     formData.value.media = sourceProduct.product.media.map(
-      (item): CreateProductRequestMediaInner => ({
+      (item): CreateProductMedia => ({
         url: item.url,
         isThumbnail: item.isThumbnail,
       }),
@@ -229,7 +225,7 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
     return
   }
   formData.value.media = formData.value.media.map(
-    (item, i): CreateProductRequestMediaInner => ({
+    (item, i): CreateProductMedia => ({
       ...item,
       isThumbnail: i === 0,
     }),

@@ -3,8 +3,8 @@ import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { AdminType } from '~/types/api'
-import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '~/types/api/v1'
 import { getErrorMessage } from '~/lib/validations'
 import { CreateCategoryValidationRules, UpdateCategoryValidationRules } from '~/types/validations'
 
@@ -15,7 +15,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   createDialog: {
     type: Boolean,
@@ -119,11 +119,11 @@ const createFormDataValidate = useVuelidate(CreateCategoryValidationRules, creat
 const updateFormDataValidate = useVuelidate(UpdateCategoryValidationRules, updateFormDataValue)
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const onClickNew = (): void => {

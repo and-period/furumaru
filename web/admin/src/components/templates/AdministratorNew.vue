@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import type { CreateAdministratorRequest } from '~/types/api'
+import type { CreateAdministratorRequest } from '~/types/api/v1'
 import { CreateAdministratorValidationRules } from '~/types/validations'
 
 const props = defineProps({

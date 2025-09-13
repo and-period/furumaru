@@ -6,20 +6,19 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { findPrefecture, getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
+import { Prefecture } from '~/types'
 import {
   FulfillmentStatus,
-  OrderRefundType,
   OrderStatus,
   PaymentMethodType,
   PaymentStatus,
-  Prefecture,
   ShippingCarrier,
   ShippingSize,
   ShippingType,
-
   OrderType,
-} from '~/types/api'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User } from '~/types/api'
+  RefundType,
+} from '~/types/api/v1'
+import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMedia, RefundOrderRequest, User } from '~/types/api/v1'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -48,7 +47,7 @@ const props = defineProps({
       promotionId: '',
       userId: '',
       shippingMessage: '',
-      status: OrderStatus.UNKNOWN,
+      status: OrderStatus.OrderStatusUnknown,
       payment: {
         transactionId: '',
         methodType: 0,
@@ -59,8 +58,11 @@ const props = defineProps({
         total: 0,
         addressId: '',
         lastname: '',
+        lastnameKana: '',
         firstname: '',
+        firstnameKana: '',
         postalCode: '',
+        prefecture: '',
         prefectureCode: Prefecture.UNKNOWN,
         city: '',
         addressLine1: '',
@@ -72,7 +74,7 @@ const props = defineProps({
       fulfillments: [],
       refund: {
         total: 0,
-        type: OrderRefundType.NONE,
+        type: RefundType.RefundTypeNone,
         reason: '',
         canceled: false,
         canceledAt: 0,
@@ -188,9 +190,9 @@ const productHeaders: VDataTable['headers'] = [
 ]
 
 const shippingCarriers = [
-  { title: '未選択', value: ShippingCarrier.UNKNOWN },
-  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO },
-  { title: '佐川急便', value: ShippingCarrier.SAGAWA },
+  { title: '未選択', value: ShippingCarrier.ShippingCarrierUnknown },
+  { title: 'ヤマト運輸', value: ShippingCarrier.ShippingCarrierYamato },
+  { title: '佐川急便', value: ShippingCarrier.ShippingCarrierSagawa },
 ]
 
 const completeFormDataValue = computed({
@@ -235,18 +237,18 @@ const getUserName = (lastname?: string, firstname?: string): string => {
 }
 
 const isAuthorized = (): boolean => {
-  return props.order.status === OrderStatus.WAITING
+  return props.order.status === OrderStatus.OrderStatusWaiting
 }
 
 // 発送連絡時のメッセージ下書き保存 - 商品購入時のみ
 const isPreservable = (): boolean => {
-  if (!props.order || props.order.type !== OrderType.PRODUCT) {
+  if (!props.order || props.order.type !== OrderType.OrderTypeProduct) {
     return false
   }
   const targets: OrderStatus[] = [
-    OrderStatus.WAITING,
-    OrderStatus.PREPARING,
-    OrderStatus.SHIPPED,
+    OrderStatus.OrderStatusWaiting,
+    OrderStatus.OrderStatusPreparing,
+    OrderStatus.OrderStatusShipped,
   ]
   return targets.includes(props.order.status)
 }
@@ -258,11 +260,11 @@ const isCompletable = (): boolean => {
   }
   const targets: OrderStatus[] = []
   switch (props.order.type) {
-    case OrderType.PRODUCT:
-      targets.push(OrderStatus.PREPARING, OrderStatus.SHIPPED)
+    case OrderType.OrderTypeProduct:
+      targets.push(OrderStatus.OrderStatusPreparing, OrderStatus.OrderStatusShipped)
       break
-    case OrderType.EXPERIENCE:
-      targets.push(OrderStatus.SHIPPED)
+    case OrderType.OrderTypeExperience:
+      targets.push(OrderStatus.OrderStatusShipped)
       break
   }
   return targets.includes(props.order.status)
@@ -270,25 +272,25 @@ const isCompletable = (): boolean => {
 
 const isCancelable = (): boolean => {
   const targets: OrderStatus[] = [
-    OrderStatus.WAITING,
+    OrderStatus.OrderStatusWaiting,
   ]
   return targets.includes(props.order.status)
 }
 
 const isRefundable = (): boolean => {
   const targets: OrderStatus[] = [
-    OrderStatus.PREPARING,
-    OrderStatus.SHIPPED,
-    OrderStatus.COMPLETED,
+    OrderStatus.OrderStatusPreparing,
+    OrderStatus.OrderStatusShipped,
+    OrderStatus.OrderStatusCompleted,
   ]
   return targets.includes(props.order.status)
 }
 
 const isUpdatableFulfillment = (): boolean => {
   const targets: OrderStatus[] = [
-    OrderStatus.PREPARING,
-    OrderStatus.SHIPPED,
-    OrderStatus.COMPLETED,
+    OrderStatus.OrderStatusPreparing,
+    OrderStatus.OrderStatusShipped,
+    OrderStatus.OrderStatusCompleted,
   ]
   return targets.includes(props.order.status)
 }
@@ -302,21 +304,21 @@ const getCoordinatorName = (): string => {
 
 const getStatus = (): string => {
   switch (props.order.status) {
-    case OrderStatus.UNPAID:
+    case OrderStatus.OrderStatusUnpaid:
       return '支払い待ち'
-    case OrderStatus.WAITING:
+    case OrderStatus.OrderStatusWaiting:
       return '受注待ち'
-    case OrderStatus.PREPARING:
-      return props.order.type === OrderType.EXPERIENCE ? '体験準備中' : '発送準備中'
-    case OrderStatus.SHIPPED:
+    case OrderStatus.OrderStatusPreparing:
+      return props.order.type === OrderType.OrderTypeExperience ? '体験準備中' : '発送準備中'
+    case OrderStatus.OrderStatusShipped:
       return '発送完了'
-    case OrderStatus.COMPLETED:
+    case OrderStatus.OrderStatusCompleted:
       return '完了'
-    case OrderStatus.CANCELED:
+    case OrderStatus.OrderStatusCanceled:
       return 'キャンセル'
-    case OrderStatus.REFUNDED:
+    case OrderStatus.OrderStatusRefunded:
       return '返金'
-    case OrderStatus.FAILED:
+    case OrderStatus.OrderStatusFailed:
       return '失敗'
     default:
       return '不明'
@@ -325,21 +327,21 @@ const getStatus = (): string => {
 
 const getStatusColor = (): string => {
   switch (props.order.status) {
-    case OrderStatus.UNPAID:
+    case OrderStatus.OrderStatusUnpaid:
       return 'secondary'
-    case OrderStatus.WAITING:
+    case OrderStatus.OrderStatusWaiting:
       return 'secondary'
-    case OrderStatus.PREPARING:
+    case OrderStatus.OrderStatusPreparing:
       return 'info'
-    case OrderStatus.SHIPPED:
+    case OrderStatus.OrderStatusShipped:
       return 'info'
-    case OrderStatus.COMPLETED:
+    case OrderStatus.OrderStatusCompleted:
       return 'primary'
-    case OrderStatus.CANCELED:
+    case OrderStatus.OrderStatusCanceled:
       return 'warning'
-    case OrderStatus.REFUNDED:
+    case OrderStatus.OrderStatusRefunded:
       return 'warning'
-    case OrderStatus.FAILED:
+    case OrderStatus.OrderStatusFailed:
       return 'error'
     default:
       return 'unknown'
@@ -378,15 +380,15 @@ const getAllItems = computed(() => {
 
 const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
-    case PaymentStatus.UNPAID:
+    case PaymentStatus.PaymentStatusUnpaid:
       return '未払い'
-    case PaymentStatus.AUTHORIZED:
+    case PaymentStatus.PaymentStatusAuthorized:
       return 'オーソリ済み'
-    case PaymentStatus.PAID:
+    case PaymentStatus.PaymentStatusPaid:
       return '支払い済み'
-    case PaymentStatus.CANCELED:
+    case PaymentStatus.PaymentStatusCanceled:
       return 'キャンセル済み'
-    case PaymentStatus.FAILED:
+    case PaymentStatus.PaymentStatusFailed:
       return '失敗'
     default:
       return '不明'
@@ -395,15 +397,15 @@ const getPaymentStatus = (status: PaymentStatus): string => {
 
 const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
-    case PaymentStatus.UNPAID:
+    case PaymentStatus.PaymentStatusUnpaid:
       return 'secondary'
-    case PaymentStatus.AUTHORIZED:
+    case PaymentStatus.PaymentStatusAuthorized:
       return 'info'
-    case PaymentStatus.PAID:
+    case PaymentStatus.PaymentStatusPaid:
       return 'primary'
-    case PaymentStatus.CANCELED:
+    case PaymentStatus.PaymentStatusCanceled:
       return 'warning'
-    case PaymentStatus.FAILED:
+    case PaymentStatus.PaymentStatusFailed:
       return 'error'
     default:
       return 'unkown'
@@ -412,27 +414,27 @@ const getPaymentStatusColor = (status: PaymentStatus): string => {
 
 const getPaymentMethodType = (): string => {
   switch (props.order?.payment?.methodType) {
-    case PaymentMethodType.CASH:
+    case PaymentMethodType.PaymentMethodTypeCash:
       return '代引支払い'
-    case PaymentMethodType.CREDIT_CARD:
+    case PaymentMethodType.PaymentMethodTypeCreditCard:
       return 'クレジットカード決済'
-    case PaymentMethodType.KONBINI:
+    case PaymentMethodType.PaymentMethodTypeKonbini:
       return 'コンビニ決済'
-    case PaymentMethodType.BANK_TRANSFER:
+    case PaymentMethodType.PaymentMethodTypeBankTransfer:
       return '銀行振込決済'
-    case PaymentMethodType.PAYPAY:
+    case PaymentMethodType.PaymentMethodTypePayPay:
       return 'QR決済（PayPay）'
-    case PaymentMethodType.LINE_PAY:
+    case PaymentMethodType.PaymentMethodTypeLinePay:
       return 'QR決済（LINE Pay）'
-    case PaymentMethodType.MERPAY:
+    case PaymentMethodType.PaymentMethodTypeMerpay:
       return 'QR決済（メルペイ）'
-    case PaymentMethodType.RAKUTEN_PAY:
+    case PaymentMethodType.PaymentMethodTypeRakutenPay:
       return 'QR決済（楽天ペイ）'
-    case PaymentMethodType.AU_PAY:
+    case PaymentMethodType.PaymentMethodTypeAUPay:
       return 'QR決済（au PAY）'
-    case PaymentMethodType.PAIDY:
+    case PaymentMethodType.PaymentMethodTypePaidy:
       return 'ペイディ（Paidy）'
-    case PaymentMethodType.PAY_EASY:
+    case PaymentMethodType.PaymentMethodTypePayEasy:
       return 'ペイジー（Pay-easy）'
     default:
       return '不明'
@@ -463,7 +465,7 @@ const getProductName = (productId: string): string => {
 
 const getThumbnail = (productId: string): string => {
   const product = getProduct(productId)
-  const thumbnail = product?.media.find((media: ProductMediaInner): boolean => {
+  const thumbnail = product?.media.find((media: ProductMedia): boolean => {
     return media.isThumbnail
   })
   return thumbnail?.url || ''
@@ -471,7 +473,7 @@ const getThumbnail = (productId: string): string => {
 
 const getResizedThumbnails = (productId: string): string => {
   const product = getProduct(productId)
-  const thumbnail = product?.media.find((media: ProductMediaInner) => {
+  const thumbnail = product?.media.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   if (!thumbnail) {
@@ -485,9 +487,9 @@ const getResizedThumbnails = (productId: string): string => {
  */
 const getFulfillmentStatus = (status: FulfillmentStatus): string => {
   switch (status) {
-    case FulfillmentStatus.UNFULFILLED:
+    case FulfillmentStatus.FulfillmentStatusUnfulfilled:
       return '未配送'
-    case FulfillmentStatus.FULFILLED:
+    case FulfillmentStatus.FulfillmentStatusFulfilled:
       return '配送済み'
     default:
       return '不明'
@@ -496,9 +498,9 @@ const getFulfillmentStatus = (status: FulfillmentStatus): string => {
 
 const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
   switch (status) {
-    case FulfillmentStatus.UNFULFILLED:
+    case FulfillmentStatus.FulfillmentStatusUnfulfilled:
       return 'error'
-    case FulfillmentStatus.FULFILLED:
+    case FulfillmentStatus.FulfillmentStatusFulfilled:
       return 'primary'
     default:
       return 'unkown'
@@ -507,11 +509,11 @@ const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
 
 const getShippingType = (shippingType: ShippingType): string => {
   switch (shippingType) {
-    case ShippingType.NORMAL:
+    case ShippingType.ShippingTypeNormal:
       return '常温・冷蔵便'
-    case ShippingType.FROZEN:
+    case ShippingType.ShippingTypeFrozen:
       return '冷凍便'
-    case ShippingType.PICKUP:
+    case ShippingType.ShippingTypePickup:
       return '店舗受け取り'
     default:
       return '不明'
@@ -520,11 +522,11 @@ const getShippingType = (shippingType: ShippingType): string => {
 
 const getBoxSize = (size: ShippingSize): string => {
   switch (size) {
-    case ShippingSize.SIZE60:
+    case ShippingSize.ShippingSize60:
       return '60'
-    case ShippingSize.SIZE80:
+    case ShippingSize.ShippingSize80:
       return '80'
-    case ShippingSize.SIZE100:
+    case ShippingSize.ShippingSize100:
       return '100'
     default:
       return '不明'
@@ -588,7 +590,7 @@ const isPickupShipping = (): boolean => {
   if (!props.order || !props.order.fulfillments || props.order.fulfillments.length === 0) {
     return false
   }
-  return props.order.fulfillments[0]?.shippingType === ShippingType.PICKUP
+  return props.order.fulfillments[0]?.shippingType === ShippingType.ShippingTypePickup
 }
 
 // 受け取り日時を取得
@@ -613,13 +615,13 @@ const getOrderItems = (fulfillmentId: string): OrderItem[] => {
 }
 
 const showShippingMessage = (): boolean => {
-  if (!props.order || props.order.type !== OrderType.PRODUCT) {
+  if (!props.order || props.order.type !== OrderType.OrderTypeProduct) {
     return false
   }
   const targets: OrderStatus[] = [
-    OrderStatus.PREPARING,
-    OrderStatus.SHIPPED,
-    OrderStatus.COMPLETED,
+    OrderStatus.OrderStatusPreparing,
+    OrderStatus.OrderStatusShipped,
+    OrderStatus.OrderStatusCompleted,
   ]
   return targets.includes(props.order.status)
 }
@@ -868,7 +870,7 @@ const onSubmitRefund = (): void => {
         </v-card-text>
       </v-card>
       <v-card
-        v-if="props.order.type === OrderType.PRODUCT"
+        v-if="props.order.type === OrderType.OrderTypeProduct"
         elevation="0"
         class="mb-4"
       >
@@ -919,7 +921,7 @@ const onSubmitRefund = (): void => {
         </v-card-text>
       </v-card>
       <v-card
-        v-if="props.order.type === OrderType.EXPERIENCE"
+        v-if="props.order.type === OrderType.OrderTypeExperience"
         elevation="0"
         class="mb-4"
       >
@@ -1009,7 +1011,7 @@ const onSubmitRefund = (): void => {
               <div>&phone; {{ props.customer.phoneNumber }}</div>
             </v-list-item>
             <v-list-item
-              v-if="props.order.type !== OrderType.EXPERIENCE"
+              v-if="props.order.type !== OrderType.OrderTypeExperience"
               class="mb-4"
             >
               <v-list-item-subtitle class="pb-2">
@@ -1256,7 +1258,7 @@ const onSubmitRefund = (): void => {
           start
           :icon="mdiPlus"
         />
-        {{ props.order.type === OrderType.PRODUCT ? '発送完了を通知' : 'レビュー依頼を送信' }}
+        {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : 'レビュー依頼を送信' }}
       </v-btn>
       <v-btn
         v-show="isCancelable()"

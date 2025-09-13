@@ -1,4 +1,4 @@
-import { Prefecture } from '~/types/api'
+import { Prefecture } from '~/types'
 
 export interface PrefecturesListItem {
   id: number

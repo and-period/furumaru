@@ -3,8 +3,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { usePaymentSystemStore } from '~/store'
-import { PaymentSystemStatus } from '~/types/api'
-import type { PaymentMethodType, PaymentSystem } from '~/types/api'
+import { PaymentSystemStatus } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentSystem } from '~/types/api/v1'
 
 const paymentSystemStore = usePaymentSystemStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -39,14 +39,14 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
   }
 
   switch (system.status) {
-    case PaymentSystemStatus.IN_USE:
-      status = PaymentSystemStatus.OUTAGE
+    case PaymentSystemStatus.PaymentSystemStatusInUse:
+      status = PaymentSystemStatus.PaymentSystemStatusOutage
       break
-    case PaymentSystemStatus.OUTAGE:
-      status = PaymentSystemStatus.IN_USE
+    case PaymentSystemStatus.PaymentSystemStatusOutage:
+      status = PaymentSystemStatus.PaymentSystemStatusInUse
       break
     default:
-      status = PaymentSystemStatus.UNKNOWN
+      status = PaymentSystemStatus.PaymentSystemStatusUnknown
   }
 
   try {

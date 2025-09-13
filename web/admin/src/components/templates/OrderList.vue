@@ -4,14 +4,13 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
+import { CharacterEncodingType } from '~/types'
 import {
-  CharacterEncodingType,
   OrderStatus,
   ShippingType,
   ShippingCarrier,
-
-} from '~/types/api'
-import type { Coordinator, ExportOrdersRequest, Order, Promotion, User, OrderFulfillment } from '~/types/api'
+} from '~/types/api/v1'
+import type { Coordinator, ExportOrdersRequest, Order, Promotion, User, OrderFulfillment } from '~/types/api/v1'
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface ImportFormData {
@@ -76,7 +75,7 @@ const props = defineProps({
   exportFormData: {
     type: Object as PropType<ExportOrdersRequest>,
     default: () => ({
-      shippingCarrier: ShippingCarrier.UNKNOWN,
+      shippingCarrier: ShippingCarrier.ShippingCarrierUnknown,
       characterEncodingType: CharacterEncodingType.UTF8,
     }),
   },
@@ -133,9 +132,9 @@ const headers: VDataTable['headers'] = [
   },
 ]
 const fulfillmentCompanies = [
-  { title: '指定なし', value: ShippingCarrier.UNKNOWN },
-  { title: '佐川急便', value: ShippingCarrier.SAGAWA },
-  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO },
+  { title: '指定なし', value: ShippingCarrier.ShippingCarrierUnknown },
+  { title: '佐川急便', value: ShippingCarrier.ShippingCarrierSagawa },
+  { title: 'ヤマト運輸', value: ShippingCarrier.ShippingCarrierYamato },
 ]
 const characterEncodingTypes = [
   { title: 'UTF-8', value: CharacterEncodingType.UTF8 },
@@ -168,21 +167,21 @@ const getCustomerName = (userId: string): string => {
 
 const getStatus = (order: Order): string => {
   switch (order.status) {
-    case OrderStatus.UNPAID:
+    case OrderStatus.OrderStatusUnpaid:
       return '支払い待ち'
-    case OrderStatus.WAITING:
+    case OrderStatus.OrderStatusWaiting:
       return '受注待ち'
-    case OrderStatus.PREPARING:
+    case OrderStatus.OrderStatusPreparing:
       return '発送準備中'
-    case OrderStatus.SHIPPED:
+    case OrderStatus.OrderStatusShipped:
       return '発送完了'
-    case OrderStatus.COMPLETED:
+    case OrderStatus.OrderStatusCompleted:
       return '完了'
-    case OrderStatus.CANCELED:
+    case OrderStatus.OrderStatusCanceled:
       return 'キャンセル'
-    case OrderStatus.REFUNDED:
+    case OrderStatus.OrderStatusRefunded:
       return '返金'
-    case OrderStatus.FAILED:
+    case OrderStatus.OrderStatusFailed:
       return '失敗'
     default:
       return '不明'
@@ -191,21 +190,21 @@ const getStatus = (order: Order): string => {
 
 const getStatusColor = (order: Order): string => {
   switch (order.status) {
-    case OrderStatus.UNPAID:
+    case OrderStatus.OrderStatusUnpaid:
       return 'secondary'
-    case OrderStatus.WAITING:
+    case OrderStatus.OrderStatusWaiting:
       return 'secondary'
-    case OrderStatus.PREPARING:
+    case OrderStatus.OrderStatusPreparing:
       return 'info'
-    case OrderStatus.SHIPPED:
+    case OrderStatus.OrderStatusShipped:
       return 'info'
-    case OrderStatus.COMPLETED:
+    case OrderStatus.OrderStatusCompleted:
       return 'primary'
-    case OrderStatus.CANCELED:
+    case OrderStatus.OrderStatusCanceled:
       return 'warning'
-    case OrderStatus.REFUNDED:
+    case OrderStatus.OrderStatusRefunded:
       return 'warning'
-    case OrderStatus.FAILED:
+    case OrderStatus.OrderStatusFailed:
       return 'error'
     default:
       return 'unknown'
@@ -214,9 +213,9 @@ const getStatusColor = (order: Order): string => {
 
 const getShippingType = (shippingType: ShippingType): string => {
   switch (shippingType) {
-    case ShippingType.NORMAL:
+    case ShippingType.ShippingTypeNormal:
       return '常温・冷蔵便'
-    case ShippingType.FROZEN:
+    case ShippingType.ShippingTypeFrozen:
       return '冷凍便'
     default:
       return '不明'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import type { UpdateAuthEmailRequest } from '~/types/api'
+import type { UpdateAuthEmailRequest } from '~/types/api/v1'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import { UpdateAuthEmailValidationRules } from '~/types/validations'

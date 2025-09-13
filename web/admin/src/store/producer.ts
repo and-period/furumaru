@@ -1,16 +1,21 @@
-import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { useShopStore } from './shop'
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProducerRequest,
-  GetUploadUrlRequest,
   ProducerResponse,
   Producer,
   UpdateProducerRequest,
-  Shop,
-} from '~/types/api'
+  V1ProducersGetRequest,
+  V1ProducersProducerIdGetRequest,
+  V1ProducersPostRequest,
+  V1UploadProducersThumbnailPostRequest,
+  V1UploadProducersHeaderPostRequest,
+  V1UploadProducersPromotionVideoPostRequest,
+  V1UploadProducersBonusVideoPostRequest,
+  V1ProducersProducerIdPatchRequest,
+  V1ProducersProducerIdDeleteRequest,
+} from '~/types/api/v1'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
@@ -27,16 +32,18 @@ export const useProducerStore = defineStore('producer', {
      */
     async fetchProducers(limit = 20, offset = 0, options = ''): Promise<void> {
       try {
-        const res = await apiClient
-          .producerApi()
-          .v1ListProducers(limit, offset, options)
+        const params: V1ProducersGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.producerApi().v1ProducersGet(params)
 
         const coordinatorStore = useCoordinatorStore()
         const shopStore = useShopStore()
-        this.producers = res.data.producers
-        this.totalItems = res.data.total
-        coordinatorStore.coordinators = res.data.coordinators
-        shopStore.shops = res.data.shops
+        this.producers = res.producers
+        this.totalItems = res.total
+        coordinatorStore.coordinators = res.coordinators
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -53,9 +60,10 @@ export const useProducerStore = defineStore('producer', {
       producerIds: string[] = [],
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .producerApi()
-          .v1ListProducers(undefined, undefined, name)
+        const params: V1ProducersGetRequest = {
+          username: name,
+        }
+        const res = await this.producerApi().v1ProducersGet(params)
         const producers: Producer[] = []
         this.producers.forEach((producer: Producer): void => {
           if (!producerIds.includes(producer.id)) {
@@ -63,7 +71,7 @@ export const useProducerStore = defineStore('producer', {
           }
           producers.push(producer)
         })
-        res.data.producers.forEach((producer: Producer): void => {
+        res.producers.forEach((producer: Producer): void => {
           if (producers.find((v): boolean => v.id === producer.id)) {
             return
           }
@@ -71,8 +79,8 @@ export const useProducerStore = defineStore('producer', {
         })
         const shopStore = useShopStore()
         this.producers = producers
-        this.totalItems = res.data.total
-        shopStore.shops = res.data.shops
+        this.totalItems = res.total
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -86,14 +94,17 @@ export const useProducerStore = defineStore('producer', {
      */
     async getProducer(producerId: string): Promise<ProducerResponse> {
       try {
-        const res = await apiClient.producerApi().v1GetProducer(producerId)
+        const params: V1ProducersProducerIdGetRequest = {
+          producerId,
+        }
+        const res = await this.producerApi().v1ProducersProducerIdGet(params)
 
         const coordinatorStore = useCoordinatorStore()
         const shopStore = useShopStore()
-        this.producer = res.data.producer
-        coordinatorStore.coordinators = res.data.coordinators
-        shopStore.shops = res.data.shops
-        return res.data
+        this.producer = res.producer
+        coordinatorStore.coordinators = res.coordinators
+        shopStore.shops = res.shops
+        return res
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -109,7 +120,10 @@ export const useProducerStore = defineStore('producer', {
      */
     async createProducer(payload: CreateProducerRequest): Promise<void> {
       try {
-        await apiClient.producerApi().v1CreateProducer(payload)
+        const params: V1ProducersPostRequest = {
+          createProducerRequest: payload,
+        }
+        await this.producerApi().v1ProducersPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -127,14 +141,14 @@ export const useProducerStore = defineStore('producer', {
     async uploadProducerThumbnail(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadProducersThumbnailPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .producerApi()
-          .v1GetProducerThumbnailUploadUrl(body)
+        const res = await this.uploadApi().v1UploadProducersThumbnailPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -151,14 +165,14 @@ export const useProducerStore = defineStore('producer', {
     async uploadProducerHeader(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadProducersHeaderPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .producerApi()
-          .v1GetProducerHeaderUploadUrl(body)
+        const res = await this.uploadApi().v1UploadProducersHeaderPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -175,14 +189,14 @@ export const useProducerStore = defineStore('producer', {
     async uploadProducerPromotionVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadProducersPromotionVideoPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .producerApi()
-          .v1GetProducerPromotionVideoUploadUrl(body)
+        const res = await this.uploadApi().v1UploadProducersPromotionVideoPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -199,14 +213,14 @@ export const useProducerStore = defineStore('producer', {
     async uploadProducerBonusVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadProducersBonusVideoPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .producerApi()
-          .v1GetProducerBonusVideoUploadUrl(body)
+        const res = await this.uploadApi().v1UploadProducersBonusVideoPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -223,7 +237,11 @@ export const useProducerStore = defineStore('producer', {
      */
     async updateProducer(producerId: string, payload: UpdateProducerRequest) {
       try {
-        await apiClient.producerApi().v1UpdateProducer(producerId, payload)
+        const params: V1ProducersProducerIdPatchRequest = {
+          producerId,
+          updateProducerRequest: payload,
+        }
+        await this.producerApi().v1ProducersProducerIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -240,7 +258,10 @@ export const useProducerStore = defineStore('producer', {
      */
     async deleteProducer(producerId: string) {
       try {
-        await apiClient.producerApi().v1DeleteProducer(producerId)
+        const params: V1ProducersProducerIdDeleteRequest = {
+          producerId,
+        }
+        await this.producerApi().v1ProducersProducerIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {

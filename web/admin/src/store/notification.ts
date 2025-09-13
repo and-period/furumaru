@@ -1,12 +1,14 @@
-import { defineStore } from 'pinia'
 import { useAdminStore } from './admin'
-
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreateNotificationRequest,
   Notification,
   UpdateNotificationRequest,
-} from '~/types/api'
+  V1NotificationsGetRequest,
+  V1NotificationsNotificationIdDeleteRequest,
+  V1NotificationsNotificationIdGetRequest,
+  V1NotificationsNotificationIdPatchRequest,
+  V1NotificationsPostRequest,
+} from '~/types/api/v1'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
@@ -24,12 +26,17 @@ export const useNotificationStore = defineStore('notification', {
      */
     async fetchNotifications(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await apiClient.notificationApi().v1ListNotifications(limit, offset, undefined, undefined, orders.join(''))
+        const params: V1NotificationsGetRequest = {
+          limit,
+          offset,
+          orders: orders.join(','),
+        }
+        const res = await this.notificationApi().v1NotificationsGet(params)
 
         const adminStore = useAdminStore()
-        this.notifications = res.data.notifications
-        this.totalItems = res.data.total
-        adminStore.admins = res.data.admins
+        this.notifications = res.notifications
+        this.totalItems = res.total
+        adminStore.admins = res.admins
       }
       catch (err) {
         return this.errorHandler(err)
@@ -43,12 +50,15 @@ export const useNotificationStore = defineStore('notification', {
      */
     async getNotification(id: string): Promise<Notification> {
       try {
-        const res = await apiClient.notificationApi().v1GetNotification(id)
+        const params: V1NotificationsNotificationIdGetRequest = {
+          notificationId: id,
+        }
+        const res = await this.notificationApi().v1NotificationsNotificationIdGet(params)
 
         const adminStore = useAdminStore()
-        this.notification = res.data.notification
-        adminStore.admin = res.data.admin
-        return res.data.notification
+        this.notification = res.notification
+        adminStore.admin = res.admin
+        return res.notification
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
@@ -63,7 +73,10 @@ export const useNotificationStore = defineStore('notification', {
       payload: CreateNotificationRequest,
     ): Promise<void> {
       try {
-        await apiClient.notificationApi().v1CreateNotification(payload)
+        const params: V1NotificationsPostRequest = {
+          createNotificationRequest: payload,
+        }
+        await this.notificationApi().v1NotificationsPost(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
@@ -76,7 +89,10 @@ export const useNotificationStore = defineStore('notification', {
      */
     async deleteNotification(id: string): Promise<void> {
       try {
-        await apiClient.notificationApi().v1DeleteNotification(id)
+        const params: V1NotificationsNotificationIdDeleteRequest = {
+          notificationId: id,
+        }
+        await this.notificationApi().v1NotificationsNotificationIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
@@ -94,7 +110,11 @@ export const useNotificationStore = defineStore('notification', {
       payload: UpdateNotificationRequest,
     ): Promise<void> {
       try {
-        await apiClient.notificationApi().v1UpdateNotification(id, payload)
+        const params: V1NotificationsNotificationIdPatchRequest = {
+          notificationId: id,
+          updateNotificationRequest: payload,
+        }
+        await this.notificationApi().v1NotificationsNotificationIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {

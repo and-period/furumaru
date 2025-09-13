@@ -4,8 +4,8 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useCoordinatorStore, useProductTypeStore, useShopStore } from '~/store'
-import { Prefecture } from '~/types/api'
-import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest } from '~/types/api'
+import { Prefecture } from '~/types'
+import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const authStore = useAuthStore()
@@ -46,7 +46,7 @@ const coordinatorFormData = ref<UpdateCoordinatorRequest>({
 const shopFormData = ref<UpdateShopRequest>({
   name: '',
   productTypeIds: [],
-  businessDays: [],
+  businessDays: new Set<number>(),
 })
 const shippingFormData = ref<UpsertShippingRequest>({
   box60Rates: [
@@ -103,7 +103,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber),
     }
-    shopFormData.value = { ...shop.value }
+    shopFormData.value = { ...shop.value, businessDays: new Set(shop.value.businessDays) }
     shippingFormData.value = { ...shipping.value }
     if (productTypes.value.length === 0) {
       productTypeStore.fetchProductTypes(20)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CreateShippingRequest } from '~/types/api'
+import type { CreateShippingRequest } from '~/types/api/v1'
 import { useAuthStore } from '~/store/auth'
 import { useShippingStore } from '~/store'
 import { useAlert } from '~/lib/hooks'

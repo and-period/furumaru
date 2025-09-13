@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { DiscountType } from '~/types/api'
-import type { CreatePromotionRequest } from '~/types/api'
+import { DiscountType } from '~/types/api/v1'
+import type { CreatePromotionRequest } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import { CreatePromotionValidationRules, TimeDataValidationRules } from '~/types/validations'
 
@@ -31,8 +31,8 @@ const props = defineProps({
     default: (): CreatePromotionRequest => ({
       title: '',
       description: '',
-      public: false,
-      discountType: DiscountType.AMOUNT,
+      _public: false,
+      discountType: DiscountType.DiscountTypeAmount,
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
@@ -51,9 +51,9 @@ const statusList = [
   { status: '無効', value: false },
 ]
 const discountMethodList = [
-  { method: '円', value: DiscountType.AMOUNT },
-  { method: '%', value: DiscountType.RATE },
-  { method: '送料無料', value: DiscountType.FREE_SHIPPING },
+  { method: '円', value: DiscountType.DiscountTypeAmount },
+  { method: '%', value: DiscountType.DiscountTypeRate },
+  { method: '送料無料', value: DiscountType.DiscountTypeFreeShipping },
 ]
 
 const formDataValue = computed({
@@ -240,7 +240,7 @@ const onSubmit = async (): Promise<void> => {
           />
         </div>
         <v-switch
-          v-model="formDataValue.public"
+          v-model="formDataValue._public"
           label="クーポンを有効にする"
           color="primary"
         />

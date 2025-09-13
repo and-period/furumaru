@@ -6,7 +6,7 @@ import type {
   UpdateVideoRequest,
   Product,
   Experience,
-} from '~/types/api'
+} from '~/types/api/v1'
 
 interface Props {
   id: string
@@ -194,7 +194,7 @@ const handleSubmit = () => {
       :rules="titleRules"
     />
     <v-select
-      v-model="formData.public"
+      v-model="formData._public"
       label="公開状況"
       :items="publicSelectItems"
       items-title="title"
@@ -210,14 +210,14 @@ const handleSubmit = () => {
           type="date"
           density="compact"
           variant="outlined"
-          :disabled="!formData.public"
+          :disabled="!formData._public"
         />
         <v-text-field
           v-model="publishedAtTime"
           type="time"
           density="compact"
           variant="outlined"
-          :disabled="!formData.public"
+          :disabled="!formData._public"
         />
         <div class="pt-3">
           ～

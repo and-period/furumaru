@@ -5,8 +5,8 @@ import {
 
   BroadcastStatus,
 
-} from '~/types/api'
-import type { Broadcast, AuthYoutubeBroadcastRequest } from '~/types/api'
+} from '~/types/api/v1'
+import type { Broadcast, AuthYoutubeBroadcastRequest } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -44,7 +44,7 @@ const props = defineProps({
     default: (): Broadcast => ({
       id: '',
       scheduleId: '',
-      status: BroadcastStatus.UNKNOWN,
+      status: BroadcastStatus.BroadcastStatusUnknown,
       inputUrl: '',
       outputUrl: '',
       archiveUrl: '',
@@ -82,11 +82,11 @@ const emit = defineEmits<{
 }>()
 
 const statuses = [
-  { title: 'リソース未作成', value: BroadcastStatus.DISABLED },
-  { title: 'リソース作成中', value: BroadcastStatus.WAITING },
-  { title: '配信停止中', value: BroadcastStatus.IDLE },
-  { title: '配信中', value: BroadcastStatus.ACTIVE },
-  { title: '不明', value: BroadcastStatus.UNKNOWN },
+  { title: 'リソース未作成', value: BroadcastStatus.BroadcastStatusDisabled },
+  { title: 'リソース作成中', value: BroadcastStatus.BroadcastStatusWaiting },
+  { title: '配信停止中', value: BroadcastStatus.BroadcastStatusIdle },
+  { title: '配信中', value: BroadcastStatus.BroadcastStatusActive },
+  { title: '不明', value: BroadcastStatus.BroadcastStatusUnknown },
 ]
 
 const videoRef = ref<HTMLVideoElement>()
@@ -133,11 +133,11 @@ watch(
 )
 
 const isLive = (): boolean => {
-  return props.broadcast?.status === BroadcastStatus.ACTIVE
+  return props.broadcast?.status === BroadcastStatus.BroadcastStatusActive
 }
 
 const isVOD = (): boolean => {
-  return props.broadcast?.status === BroadcastStatus.DISABLED
+  return props.broadcast?.status === BroadcastStatus.BroadcastStatusDisabled
 }
 
 const onClickVideo = (): void => {

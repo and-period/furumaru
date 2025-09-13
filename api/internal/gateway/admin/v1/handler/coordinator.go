@@ -114,6 +114,15 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     コーディネータ詳細取得
+// @Description 指定されたIDのコーディネータの詳細情報を取得します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators/{coordinatorId} [get]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネータID" example("coordinator-id")
+// @Produce     json
+// @Success     200 {object} types.CoordinatorResponse
+// @Failure     404 {object} util.ErrorResponse
 func (h *handler) GetCoordinator(ctx *gin.Context) {
 	in := &user.GetCoordinatorInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
@@ -142,6 +151,18 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     コーディネータ新規作成
+// @Description 新しいコーディネータを作成します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators [post]
+// @Security    bearerauth
+// @Accept      json
+// @Produce     json
+// @Param       request body types.CreateCoordinatorRequest true "コーディネータ作成リクエスト"
+// @Success     200 {object} types.CoordinatorResponse
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "コーディネータの登録権限がない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) CreateCoordinator(ctx *gin.Context) {
 	req := &types.CreateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -202,6 +223,19 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     コーディネータ更新
+// @Description 指定されたIDのコーディネータ情報を更新します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators/{coordinatorId} [patch]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネータID" example("coordinator-id")
+// @Accept      json
+// @Param       request body types.UpdateCoordinatorRequest true "コーディネータ更新リクエスト"
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "コーディネータの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
+// @Failure     409 {object} util.ErrorResponse "すでに存在するメールアドレス"
 func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 	req := &types.UpdateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -238,6 +272,17 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     コーディネータメールアドレス更新
+// @Description 指定されたIDのコーディネータのメールアドレスを更新します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators/{coordinatorId}/email [patch]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネータID" example("coordinator-id")
+// @Accept      json
+// @Param       request body types.UpdateCoordinatorEmailRequest true "メールアドレス更新リクエスト"
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "コーディネータの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 	req := &types.UpdateCoordinatorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -257,6 +302,15 @@ func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     コーディネータパスワードリセット
+// @Description 指定されたIDのコーディネータのパスワードをリセットします。
+// @Tags        Coordinator
+// @Router      /v1/coordinators/{coordinatorId}/password [patch]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネータID" example("coordinator-id")
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "コーディネータの更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
 	in := &user.ResetCoordinatorPasswordInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
@@ -269,6 +323,15 @@ func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// @Summary     コーディネータ削除
+// @Description 指定されたIDのコーディネータを削除します。
+// @Tags        Coordinator
+// @Router      /v1/coordinators/{coordinatorId} [delete]
+// @Security    bearerauth
+// @Param       coordinatorId path string true "コーディネータID" example("coordinator-id")
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "コーディネータの削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "コーディネータが存在しない"
 func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 	in := &user.DeleteCoordinatorInput{
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),

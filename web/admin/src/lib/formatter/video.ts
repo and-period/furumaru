@@ -1,4 +1,4 @@
-import { VideoStatus } from '~/types/api'
+import { VideoStatus } from '~/types/api/v1'
 
 /**
  * 動画のステータス情報を文字列に変換する関数
@@ -7,15 +7,15 @@ import { VideoStatus } from '~/types/api'
  */
 export function videoStatusToString(status: VideoStatus): string {
   switch (status) {
-    case VideoStatus.UNKNOWN:
+    case VideoStatus.VideoStatusUnknown:
       return '不明'
-    case VideoStatus.PRIVATE:
+    case VideoStatus.VideoStatusPrivate:
       return '非公開'
-    case VideoStatus.WAITING:
+    case VideoStatus.VideoStatusWaiting:
       return '公開前'
-    case VideoStatus.LIMITED:
+    case VideoStatus.VideoStatusLimited:
       return '限定公開'
-    case VideoStatus.PUBLISHED:
+    case VideoStatus.VideoStatusPublished:
       return '公開済み'
     default:
       return '不明'
@@ -29,15 +29,15 @@ export function videoStatusToString(status: VideoStatus): string {
  */
 export function videoStatusToColor(status: VideoStatus): string {
   switch (status) {
-    case VideoStatus.UNKNOWN:
+    case VideoStatus.VideoStatusUnknown:
       return 'gray'
-    case VideoStatus.PRIVATE:
+    case VideoStatus.VideoStatusPrivate:
       return 'red'
-    case VideoStatus.WAITING:
+    case VideoStatus.VideoStatusWaiting:
       return 'info'
-    case VideoStatus.LIMITED:
+    case VideoStatus.VideoStatusLimited:
       return 'secondary'
-    case VideoStatus.PUBLISHED:
+    case VideoStatus.VideoStatusPublished:
       return 'primary'
     default:
       return 'gray'

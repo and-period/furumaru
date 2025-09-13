@@ -2,8 +2,9 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 
-import { AdminStatus, Prefecture } from '~/types/api'
-import type { UpdateCoordinatorRequest, Coordinator } from '~/types/api'
+import { Prefecture } from '~/types'
+import { AdminStatus } from '~/types/api/v1'
+import type { UpdateCoordinatorRequest, Coordinator } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { UpdateCoordinatorValidationRules } from '~/types/validations'
@@ -40,7 +41,8 @@ const props = defineProps({
     type: Object as PropType<Coordinator>,
     default: (): Coordinator => ({
       id: '',
-      status: AdminStatus.UNKNOWN,
+      shopId: '',
+      status: AdminStatus.AdminStatusUnknown,
       lastname: '',
       lastnameKana: '',
       firstname: '',
@@ -60,6 +62,7 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
+      producerTotal: 0,
       createdAt: 0,
       updatedAt: 0,
     }),

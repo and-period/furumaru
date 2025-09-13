@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from '~/types/api'
+import type { Product } from '~/types/api/v1'
 import { getProductThumbnailUrl } from '~/lib/formatter'
 
 interface Props {

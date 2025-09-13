@@ -4,7 +4,7 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useSpotTypeStore } from '~/store'
-import type { CreateSpotTypeRequest, UpdateSpotTypeRequest } from '~/types/api'
+import type { CreateSpotTypeRequest, UpdateSpotTypeRequest } from '~/types/api/v1'
 
 const commonStore = useCommonStore()
 const authStore = useAuthStore()

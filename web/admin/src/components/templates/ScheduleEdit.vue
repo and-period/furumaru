@@ -8,8 +8,8 @@ import {
 
   ScheduleStatus,
 
-} from '~/types/api'
-import type { Broadcast, Coordinator, CreateLiveRequest, Live, Product, Schedule, UpdateLiveRequest, UpdateScheduleRequest, Producer, AuthYoutubeBroadcastRequest, BroadcastViewerLog } from '~/types/api'
+} from '~/types/api/v1'
+import type { Broadcast, Coordinator, CreateLiveRequest, Live, Product, Schedule, UpdateLiveRequest, UpdateScheduleRequest, Producer, AuthYoutubeBroadcastRequest, BroadcastViewerLog } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -89,14 +89,15 @@ const props = defineProps({
     type: Object as PropType<Schedule>,
     default: (): Schedule => ({
       id: '',
+      shopId: '',
       coordinatorId: '',
       title: '',
       description: '',
-      status: ScheduleStatus.UNKNOWN,
+      status: ScheduleStatus.ScheduleStatusUnknown,
       thumbnailUrl: '',
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
+      _public: false,
       approved: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
@@ -127,7 +128,7 @@ const props = defineProps({
     default: (): Broadcast => ({
       id: '',
       scheduleId: '',
-      status: BroadcastStatus.UNKNOWN,
+      status: BroadcastStatus.BroadcastStatusUnknown,
       inputUrl: '',
       outputUrl: '',
       archiveUrl: '',

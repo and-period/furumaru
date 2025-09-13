@@ -4,13 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import {
-
-  ProductStatus,
-
-  AdminType,
-} from '~/types/api'
-import type { Product, ProductMediaInner, Category, ProductTag, ProductType, Producer } from '~/types/api'
+import { ProductStatus, AdminType } from '~/types/api/v1'
+import type { Product, ProductMedia, Category, ProductTag, ProductType, Producer } from '~/types/api/v1'
 
 const props = defineProps({
   selectedItemId: {
@@ -23,7 +18,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -148,11 +143,11 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.COORDINATOR
+  return props.adminType === AdminType.AdminTypeCoordinator
 }
 
 const isDeletable = (): boolean => {
-  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
   return targets.includes(props.adminType)
 }
 
@@ -179,15 +174,15 @@ const getProducerName = (producerId: string): string => {
   return producer ? producer.username : ''
 }
 
-const getThumbnail = (media: ProductMediaInner[]): string => {
-  const thumbnail = media.find((media: ProductMediaInner) => {
+const getThumbnail = (media: ProductMedia[]): string => {
+  const thumbnail = media.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail?.url || ''
 }
 
-const getResizedThumbnails = (media: ProductMediaInner[]): string => {
-  const thumbnail = media.find((media: ProductMediaInner) => {
+const getResizedThumbnails = (media: ProductMedia[]): string => {
+  const thumbnail = media.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   if (!thumbnail) {
@@ -198,15 +193,15 @@ const getResizedThumbnails = (media: ProductMediaInner[]): string => {
 
 const getStatus = (status: ProductStatus): string => {
   switch (status) {
-    case ProductStatus.PRESALE:
+    case ProductStatus.ProductStatusPresale:
       return '予約販売'
-    case ProductStatus.FOR_SALE:
+    case ProductStatus.ProductStatusForSale:
       return '販売中'
-    case ProductStatus.OUT_OF_SALES:
+    case ProductStatus.ProductStatusOutOfSale:
       return '販売終了'
-    case ProductStatus.PRIVATE:
+    case ProductStatus.ProductStatusPrivate:
       return '非公開'
-    case ProductStatus.ARCHIVED:
+    case ProductStatus.ProductStatusArchived:
       return 'アーカイブ済み'
     default:
       return ''
@@ -215,15 +210,15 @@ const getStatus = (status: ProductStatus): string => {
 
 const getStatusColor = (status: ProductStatus): string => {
   switch (status) {
-    case ProductStatus.PRESALE:
+    case ProductStatus.ProductStatusPresale:
       return 'info'
-    case ProductStatus.FOR_SALE:
+    case ProductStatus.ProductStatusForSale:
       return 'primary'
-    case ProductStatus.OUT_OF_SALES:
+    case ProductStatus.ProductStatusOutOfSale:
       return 'secondary'
-    case ProductStatus.PRIVATE:
+    case ProductStatus.ProductStatusPrivate:
       return 'warning'
-    case ProductStatus.ARCHIVED:
+    case ProductStatus.ProductStatusArchived:
       return 'error'
     default:
       return ''

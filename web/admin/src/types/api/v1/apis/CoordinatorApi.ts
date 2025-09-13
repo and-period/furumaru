@@ -15,12 +15,49 @@
 
 import * as runtime from '../runtime';
 import type {
+  CoordinatorResponse,
   CoordinatorsResponse,
+  CreateCoordinatorRequest,
+  ErrorResponse,
+  UpdateCoordinatorEmailRequest,
+  UpdateCoordinatorRequest,
 } from '../models/index';
 import {
+    CoordinatorResponseFromJSON,
+    CoordinatorResponseToJSON,
     CoordinatorsResponseFromJSON,
     CoordinatorsResponseToJSON,
+    CreateCoordinatorRequestFromJSON,
+    CreateCoordinatorRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    UpdateCoordinatorEmailRequestFromJSON,
+    UpdateCoordinatorEmailRequestToJSON,
+    UpdateCoordinatorRequestFromJSON,
+    UpdateCoordinatorRequestToJSON,
 } from '../models/index';
+
+export interface V1CoordinatorsCoordinatorIdDeleteRequest {
+    coordinatorId: string;
+}
+
+export interface V1CoordinatorsCoordinatorIdEmailPatchRequest {
+    coordinatorId: string;
+    updateCoordinatorEmailRequest: UpdateCoordinatorEmailRequest;
+}
+
+export interface V1CoordinatorsCoordinatorIdGetRequest {
+    coordinatorId: string;
+}
+
+export interface V1CoordinatorsCoordinatorIdPasswordPatchRequest {
+    coordinatorId: string;
+}
+
+export interface V1CoordinatorsCoordinatorIdPatchRequest {
+    coordinatorId: string;
+    updateCoordinatorRequest: UpdateCoordinatorRequest;
+}
 
 export interface V1CoordinatorsGetRequest {
     limit?: number;
@@ -28,10 +65,265 @@ export interface V1CoordinatorsGetRequest {
     username?: string;
 }
 
+export interface V1CoordinatorsPostRequest {
+    createCoordinatorRequest: CreateCoordinatorRequest;
+}
+
 /**
  * 
  */
 export class CoordinatorApi extends runtime.BaseAPI {
+
+    /**
+     * 指定されたIDのコーディネータを削除します。
+     * コーディネータ削除
+     */
+    async v1CoordinatorsCoordinatorIdDeleteRaw(requestParameters: V1CoordinatorsCoordinatorIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 指定されたIDのコーディネータを削除します。
+     * コーディネータ削除
+     */
+    async v1CoordinatorsCoordinatorIdDelete(requestParameters: V1CoordinatorsCoordinatorIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CoordinatorsCoordinatorIdDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 指定されたIDのコーディネータのメールアドレスを更新します。
+     * コーディネータメールアドレス更新
+     */
+    async v1CoordinatorsCoordinatorIdEmailPatchRaw(requestParameters: V1CoordinatorsCoordinatorIdEmailPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdEmailPatch().'
+            );
+        }
+
+        if (requestParameters['updateCoordinatorEmailRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateCoordinatorEmailRequest',
+                'Required parameter "updateCoordinatorEmailRequest" was null or undefined when calling v1CoordinatorsCoordinatorIdEmailPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators/{coordinatorId}/email`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateCoordinatorEmailRequestToJSON(requestParameters['updateCoordinatorEmailRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 指定されたIDのコーディネータのメールアドレスを更新します。
+     * コーディネータメールアドレス更新
+     */
+    async v1CoordinatorsCoordinatorIdEmailPatch(requestParameters: V1CoordinatorsCoordinatorIdEmailPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CoordinatorsCoordinatorIdEmailPatchRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 指定されたIDのコーディネータの詳細情報を取得します。
+     * コーディネータ詳細取得
+     */
+    async v1CoordinatorsCoordinatorIdGetRaw(requestParameters: V1CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CoordinatorResponse>> {
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CoordinatorResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 指定されたIDのコーディネータの詳細情報を取得します。
+     * コーディネータ詳細取得
+     */
+    async v1CoordinatorsCoordinatorIdGet(requestParameters: V1CoordinatorsCoordinatorIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorResponse> {
+        const response = await this.v1CoordinatorsCoordinatorIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 指定されたIDのコーディネータのパスワードをリセットします。
+     * コーディネータパスワードリセット
+     */
+    async v1CoordinatorsCoordinatorIdPasswordPatchRaw(requestParameters: V1CoordinatorsCoordinatorIdPasswordPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdPasswordPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators/{coordinatorId}/password`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 指定されたIDのコーディネータのパスワードをリセットします。
+     * コーディネータパスワードリセット
+     */
+    async v1CoordinatorsCoordinatorIdPasswordPatch(requestParameters: V1CoordinatorsCoordinatorIdPasswordPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CoordinatorsCoordinatorIdPasswordPatchRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 指定されたIDのコーディネータ情報を更新します。
+     * コーディネータ更新
+     */
+    async v1CoordinatorsCoordinatorIdPatchRaw(requestParameters: V1CoordinatorsCoordinatorIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdPatch().'
+            );
+        }
+
+        if (requestParameters['updateCoordinatorRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateCoordinatorRequest',
+                'Required parameter "updateCoordinatorRequest" was null or undefined when calling v1CoordinatorsCoordinatorIdPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators/{coordinatorId}`;
+        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateCoordinatorRequestToJSON(requestParameters['updateCoordinatorRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 指定されたIDのコーディネータ情報を更新します。
+     * コーディネータ更新
+     */
+    async v1CoordinatorsCoordinatorIdPatch(requestParameters: V1CoordinatorsCoordinatorIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CoordinatorsCoordinatorIdPatchRaw(requestParameters, initOverrides);
+    }
 
     /**
      * コーディネータの一覧を取得します。
@@ -81,6 +373,55 @@ export class CoordinatorApi extends runtime.BaseAPI {
      */
     async v1CoordinatorsGet(requestParameters: V1CoordinatorsGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorsResponse> {
         const response = await this.v1CoordinatorsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 新しいコーディネータを作成します。
+     * コーディネータ新規作成
+     */
+    async v1CoordinatorsPostRaw(requestParameters: V1CoordinatorsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CoordinatorResponse>> {
+        if (requestParameters['createCoordinatorRequest'] == null) {
+            throw new runtime.RequiredError(
+                'createCoordinatorRequest',
+                'Required parameter "createCoordinatorRequest" was null or undefined when calling v1CoordinatorsPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/coordinators`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateCoordinatorRequestToJSON(requestParameters['createCoordinatorRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CoordinatorResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 新しいコーディネータを作成します。
+     * コーディネータ新規作成
+     */
+    async v1CoordinatorsPost(requestParameters: V1CoordinatorsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorResponse> {
+        const response = await this.v1CoordinatorsPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

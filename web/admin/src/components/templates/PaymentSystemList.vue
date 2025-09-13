@@ -5,8 +5,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { paymentsList } from '~/constants'
 import type { PaymentListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { PaymentSystemStatus } from '~/types/api'
-import type { PaymentMethodType, PaymentSystem } from '~/types/api'
+import { PaymentSystemStatus } from '~/types/api/v1'
+import type { PaymentMethodType, PaymentSystem } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -62,9 +62,9 @@ const getPaymentSystemName = (methodType: PaymentMethodType): string => {
 
 const getPaymentSystemStatus = (status: PaymentSystemStatus): string => {
   switch (status) {
-    case PaymentSystemStatus.IN_USE:
+    case PaymentSystemStatus.PaymentSystemStatusInUse:
       return '利用可能'
-    case PaymentSystemStatus.OUTAGE:
+    case PaymentSystemStatus.PaymentSystemStatusOutage:
       return '停止中'
     default:
       return '不明'
@@ -73,9 +73,9 @@ const getPaymentSystemStatus = (status: PaymentSystemStatus): string => {
 
 const getUpdateButtonLabel = (status: PaymentSystemStatus): string => {
   switch (status) {
-    case PaymentSystemStatus.IN_USE:
+    case PaymentSystemStatus.PaymentSystemStatusInUse:
       return '停止する'
-    case PaymentSystemStatus.OUTAGE:
+    case PaymentSystemStatus.PaymentSystemStatusOutage:
       return '利用開始'
     default:
       return ''
@@ -84,9 +84,9 @@ const getUpdateButtonLabel = (status: PaymentSystemStatus): string => {
 
 const getUpdateButtonColor = (status: PaymentSystemStatus): string => {
   switch (status) {
-    case PaymentSystemStatus.IN_USE:
+    case PaymentSystemStatus.PaymentSystemStatusInUse:
       return 'error'
-    case PaymentSystemStatus.OUTAGE:
+    case PaymentSystemStatus.PaymentSystemStatusOutage:
       return 'primary'
     default:
       return ''

@@ -17,7 +17,7 @@ import {
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
 import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
-import { AdminType } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
 
 interface NavigationDrawerItem {
   to: string
@@ -50,61 +50,61 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/products',
     icon: mdiCart,
     title: '商品管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/experiences',
     icon: mdiFootPrint,
     title: '体験管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/videos',
     icon: mdiVideo,
     title: '動画管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
     title: '注文管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/customers',
     icon: mdiAccountDetails,
     title: '顧客管理',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   // {
   //   to: '/contacts',
   //   icon: mdiForum,
   //   title: 'お問い合わせ',
-  //   adminTypes: [AdminType.ADMINISTRATOR]
+  //   adminTypes: [AdminType.AdminTypeAdministrator],
   // },
   {
     to: '/notifications',
     icon: mdiBellRing,
     title: 'お知らせ情報',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/promotions',
     icon: mdiCash100,
     title: 'セール情報',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
 ]
 const settingDrawers: NavigationDrawerItem[] = [
@@ -112,19 +112,19 @@ const settingDrawers: NavigationDrawerItem[] = [
     to: '/accounts',
     icon: mdiAccount,
     title: 'マイページ',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/system',
     icon: mdiCog,
     title: 'システム設定',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     to: '/version',
     icon: mdiCog,
     title: 'バージョン情報',
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
 ]
 

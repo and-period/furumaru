@@ -24,7 +24,6 @@ export default defineNuxtConfig({
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
 
   plugins: [
-    '~/plugins/axios',
     '~/plugins/chartjs.client',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
@@ -38,7 +37,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/google-fonts',
     '@nuxtjs/stylelint-module',
-    '@pinia/nuxt',
+    ['@pinia/nuxt', { autoImports: ['defineStore', 'acceptHMRUpdate'] }],
     '@vueuse/nuxt',
   ],
 

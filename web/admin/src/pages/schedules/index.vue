@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useCoordinatorStore, useScheduleStore } from '~/store'
-import type { Schedule } from '~/types/api'
+import type { Schedule } from '~/types/api/v1'
 
 const router = useRouter()
 const commonStore = useCommonStore()
@@ -86,7 +86,7 @@ const handleClickPublished = async (scheduleId: string): Promise<void> => {
     if (!schedule) {
       throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
     }
-    await scheduleStore.publishSchedule(scheduleId, !schedule.public)
+    await scheduleStore.publishSchedule(scheduleId, !schedule._public)
     commonStore.addSnackbar({
       message: `${schedule.title}を更新しました。`,
       color: 'info',

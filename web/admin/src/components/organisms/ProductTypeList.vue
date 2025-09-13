@@ -3,8 +3,8 @@ import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { AdminType } from '~/types/api'
-import type { Category, CreateProductTypeRequest, ProductType, UpdateProductTypeRequest } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { Category, CreateProductTypeRequest, ProductType, UpdateProductTypeRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { getResizedImages } from '~/lib/helpers'
@@ -17,7 +17,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   createDialog: {
     type: Boolean,
@@ -70,7 +70,6 @@ const props = defineProps({
       categoryId: '',
       name: '',
       iconUrl: '',
-      icons: [],
       createdAt: 0,
       updatedAt: 0,
     }),
@@ -164,11 +163,11 @@ const createFormDataValidate = useVuelidate(CreateProductTypeValidationRules, cr
 const updateFormDataValidate = useVuelidate(UpdateProductTypeValidationRules, updateFormDataValue)
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const getCategoryName = (categoryId: string): string => {
@@ -179,9 +178,6 @@ const getCategoryName = (categoryId: string): string => {
 }
 
 const getIcons = (productType: ProductType): string => {
-  if (!productType.icons) {
-    return ''
-  }
   return getResizedImages(productType.iconUrl)
 }
 

@@ -22,6 +22,7 @@ import type {
   OrderResponse,
   OrdersResponse,
   RefundOrderRequest,
+  UpdateOrderFulfillmentRequest,
 } from '../models/index';
 import {
     CompleteOrderRequestFromJSON,
@@ -38,6 +39,8 @@ import {
     OrdersResponseToJSON,
     RefundOrderRequestFromJSON,
     RefundOrderRequestToJSON,
+    UpdateOrderFulfillmentRequestFromJSON,
+    UpdateOrderFulfillmentRequestToJSON,
 } from '../models/index';
 
 export interface V1OrdersExportPostRequest {
@@ -69,6 +72,12 @@ export interface V1OrdersOrderIdDraftPostRequest {
     draftOrderRequest: DraftOrderRequest;
 }
 
+export interface V1OrdersOrderIdFulfillmentsFulfillmentIdPatchRequest {
+    orderId: string;
+    fulfillmentId: string;
+    updateOrderFulfillmentRequest: UpdateOrderFulfillmentRequest;
+}
+
 export interface V1OrdersOrderIdGetRequest {
     orderId: string;
 }
@@ -87,7 +96,7 @@ export class OrderApi extends runtime.BaseAPI {
      * 注文履歴をCSV形式で出力します。
      * 注文履歴のCSV出力
      */
-    async v1OrdersExportPostRaw(requestParameters: V1OrdersExportPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async v1OrdersExportPostRaw(requestParameters: V1OrdersExportPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['exportOrdersRequest'] == null) {
             throw new runtime.RequiredError(
                 'exportOrdersRequest',
@@ -120,15 +129,20 @@ export class OrderApi extends runtime.BaseAPI {
             body: ExportOrdersRequestToJSON(requestParameters['exportOrdersRequest']),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      * 注文履歴をCSV形式で出力します。
      * 注文履歴のCSV出力
      */
-    async v1OrdersExportPost(requestParameters: V1OrdersExportPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1OrdersExportPostRaw(requestParameters, initOverrides);
+    async v1OrdersExportPost(requestParameters: V1OrdersExportPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.v1OrdersExportPostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -388,6 +402,70 @@ export class OrderApi extends runtime.BaseAPI {
      */
     async v1OrdersOrderIdDraftPost(requestParameters: V1OrdersOrderIdDraftPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1OrdersOrderIdDraftPostRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 注文の配送情報を更新します。
+     * 注文の配送情報更新
+     */
+    async v1OrdersOrderIdFulfillmentsFulfillmentIdPatchRaw(requestParameters: V1OrdersOrderIdFulfillmentsFulfillmentIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['orderId'] == null) {
+            throw new runtime.RequiredError(
+                'orderId',
+                'Required parameter "orderId" was null or undefined when calling v1OrdersOrderIdFulfillmentsFulfillmentIdPatch().'
+            );
+        }
+
+        if (requestParameters['fulfillmentId'] == null) {
+            throw new runtime.RequiredError(
+                'fulfillmentId',
+                'Required parameter "fulfillmentId" was null or undefined when calling v1OrdersOrderIdFulfillmentsFulfillmentIdPatch().'
+            );
+        }
+
+        if (requestParameters['updateOrderFulfillmentRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateOrderFulfillmentRequest',
+                'Required parameter "updateOrderFulfillmentRequest" was null or undefined when calling v1OrdersOrderIdFulfillmentsFulfillmentIdPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/orders/{orderId}/fulfillments/{fulfillmentId}`;
+        urlPath = urlPath.replace(`{${"orderId"}}`, encodeURIComponent(String(requestParameters['orderId'])));
+        urlPath = urlPath.replace(`{${"fulfillmentId"}}`, encodeURIComponent(String(requestParameters['fulfillmentId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateOrderFulfillmentRequestToJSON(requestParameters['updateOrderFulfillmentRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 注文の配送情報を更新します。
+     * 注文の配送情報更新
+     */
+    async v1OrdersOrderIdFulfillmentsFulfillmentIdPatch(requestParameters: V1OrdersOrderIdFulfillmentsFulfillmentIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1OrdersOrderIdFulfillmentsFulfillmentIdPatchRaw(requestParameters, initOverrides);
     }
 
     /**

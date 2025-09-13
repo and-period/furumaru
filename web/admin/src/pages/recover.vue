@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore } from '~/store'
-import type { ForgotAuthPasswordRequest, ResetAuthPasswordRequest } from '~/types/api'
+import type { ForgotAuthPasswordRequest, ResetAuthPasswordRequest } from '~/types/api/v1'
 
 definePageMeta({
   layout: 'auth',

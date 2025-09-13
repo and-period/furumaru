@@ -5,8 +5,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { prefecturesList } from '~/constants'
 import type { PrefecturesListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { UserStatus } from '~/types/api'
-import type { UserToList } from '~/types/api'
+import { UserStatus } from '~/types/api/v1'
+import type { UserToList } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -82,13 +82,13 @@ const getName = (item: UserToList): string => {
 
 const getStatus = (status: UserStatus): string => {
   switch (status) {
-    case UserStatus.GUEST:
+    case UserStatus.UserStatusGuest:
       return 'ゲスト'
-    case UserStatus.PROVISIONAL:
+    case UserStatus.UserStatusProvisional:
       return '仮登録'
-    case UserStatus.VERIFIED:
+    case UserStatus.UserStatusVerified:
       return '認証済み'
-    case UserStatus.WITH_DRAWAL:
+    case UserStatus.UserStatusDeactivated:
       return '退会済み'
     default:
       return '不明'
@@ -97,13 +97,13 @@ const getStatus = (status: UserStatus): string => {
 
 const getStatusColor = (status: UserStatus): string => {
   switch (status) {
-    case UserStatus.GUEST:
+    case UserStatus.UserStatusGuest:
       return 'secondary'
-    case UserStatus.PROVISIONAL:
+    case UserStatus.UserStatusProvisional:
       return 'warning'
-    case UserStatus.VERIFIED:
+    case UserStatus.UserStatusVerified:
       return 'primary'
-    case UserStatus.WITH_DRAWAL:
+    case UserStatus.UserStatusDeactivated:
       return 'error'
     default:
       return 'unknown'

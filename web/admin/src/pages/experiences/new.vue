@@ -10,7 +10,7 @@ import {
   useExperienceTypeStore,
   useProducerStore,
 } from '~/store'
-import type { CreateExperienceRequest } from '~/types/api'
+import type { CreateExperienceRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const commonStore = useCommonStore()
@@ -29,7 +29,7 @@ const loading = ref<boolean>(false)
 const formData = ref<CreateExperienceRequest>({
   title: '',
   description: '',
-  public: false,
+  _public: false,
   soldOut: false,
   coordinatorId: '',
   producerId: '',

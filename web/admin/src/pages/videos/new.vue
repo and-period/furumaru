@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { useVideoStore, useProductStore, useAuthStore } from '~/store'
-import type { CreateVideoRequest, Product, Experience } from '~/types/api'
+import type { CreateVideoRequest, Product, Experience } from '~/types/api/v1'
 import { ApiBaseError } from '~/types/exception'
 import { getProductThumbnailUrl } from '~/lib/formatter'
 
@@ -22,7 +22,7 @@ const formData = ref<CreateVideoRequest>({
   experienceIds: [],
   thumbnailUrl: '',
   videoUrl: '',
-  public: false,
+  _public: false,
   limited: false,
   publishedAt: 0,
   displayProduct: false,

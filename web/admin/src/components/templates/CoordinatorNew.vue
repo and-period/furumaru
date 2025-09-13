@@ -2,8 +2,9 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import { Prefecture, Weekday } from '~/types/api'
-import type { CreateCoordinatorRequest, ProductType } from '~/types/api'
+import { Prefecture } from '~/types'
+import { TimeWeekday } from '~/types/api/v1'
+import type { CreateCoordinatorRequest, ProductType } from '~/types/api/v1'
 import { getErrorMessage } from '~/lib/validations'
 import type { ImageUploadStatus } from '~/types/props'
 import { CreateCoordinatorValidationRules } from '~/types/validations'
@@ -49,7 +50,7 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
-      businessDays: [],
+      businessDays: new Set<TimeWeekday>(),
     }),
   },
   productTypes: {
@@ -95,13 +96,13 @@ const props = defineProps({
 })
 
 const weekdays = [
-  { title: '日曜日', value: Weekday.SUNDAY },
-  { title: '月曜日', value: Weekday.MONDAY },
-  { title: '火曜日', value: Weekday.TUESDAY },
-  { title: '水曜日', value: Weekday.WEDNESDAY },
-  { title: '木曜日', value: Weekday.THURSDAY },
-  { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY },
+  { title: '日曜日', value: TimeWeekday.Sunday },
+  { title: '月曜日', value: TimeWeekday.Monday },
+  { title: '火曜日', value: TimeWeekday.Tuesday },
+  { title: '水曜日', value: TimeWeekday.Wednesday },
+  { title: '木曜日', value: TimeWeekday.Thursday },
+  { title: '金曜日', value: TimeWeekday.Friday },
+  { title: '土曜日', value: TimeWeekday.Saturday },
 ]
 
 const emit = defineEmits<{

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AlertType } from '~/lib/hooks'
-import type { AuthProvider } from '~/types/api'
-import { AuthProviderType } from '~/types/api'
+import type { AuthProvider } from '~/types/api/v1'
+import { AuthProviderType } from '~/types/api/v1'
 
 interface listItem {
   name: string
@@ -50,14 +50,14 @@ const onClickLINE = (): void => {
 const items: listItem[] = [
   {
     name: 'Google',
-    type: AuthProviderType.GOOGLE,
+    type: AuthProviderType.AuthProviderTypeGoogle,
     image: '/sns/google.png',
     connected: false,
     action: onClickGoogle,
   },
   {
     name: 'LINE',
-    type: AuthProviderType.LINE,
+    type: AuthProviderType.AuthProviderTypeLINE,
     image: '/sns/line.png',
     connected: false,
     action: onClickLINE,

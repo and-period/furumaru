@@ -4,8 +4,9 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
-import { ShippingCarrier, CharacterEncodingType } from '~/types/api'
-import type { ExportOrdersRequest } from '~/types/api'
+import { CharacterEncodingType } from '~/types'
+import { ShippingCarrier } from '~/types/api/v1'
+import type { ExportOrdersRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const orderStore = useOrderStore()
@@ -29,7 +30,7 @@ const importFormData = ref({
   company: '',
 })
 const exportFormData = ref<ExportOrdersRequest>({
-  shippingCarrier: ShippingCarrier.UNKNOWN,
+  shippingCarrier: ShippingCarrier.ShippingCarrierUnknown,
   characterEncodingType: CharacterEncodingType.UTF8,
 })
 

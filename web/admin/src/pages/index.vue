@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
 import { useTopStore } from '~/store'
-import { TopOrderPeriodType } from '~/types/api'
+import { TopOrderPeriodType } from '~/types'
 
 const topStore = useTopStore()
 const { alertType, isShow, alertText, show } = useAlert('error')

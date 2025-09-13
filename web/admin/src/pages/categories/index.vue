@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCategoryStore, useCommonStore, useProductTypeStore } from '~/store'
-import type { Category, CreateCategoryRequest, CreateProductTypeRequest, ProductType, UpdateCategoryRequest } from '~/types/api'
+import type { Category, CreateCategoryRequest, CreateProductTypeRequest, ProductType, UpdateCategoryRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const commonStore = useCommonStore()
@@ -22,7 +22,6 @@ const initialProductType: ProductType = {
   categoryId: '',
   name: '',
   iconUrl: '',
-  icons: [],
   createdAt: 0,
   updatedAt: 0,
 }

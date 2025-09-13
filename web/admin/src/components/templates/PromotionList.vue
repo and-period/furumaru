@@ -10,8 +10,8 @@ import {
   PromotionStatus,
   PromotionTargetType,
 
-} from '~/types/api'
-import type { Promotion, Shop } from '~/types/api'
+} from '~/types/api/v1'
+import type { Promotion, Shop } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -24,7 +24,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -125,15 +125,15 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  const registerable: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  const registerable: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
   return registerable.includes(props.adminType)
 }
 
 const isEditable = (promotion: Promotion): boolean => {
   switch (props.adminType) {
-    case AdminType.ADMINISTRATOR:
+    case AdminType.AdminTypeAdministrator:
       return true
-    case AdminType.COORDINATOR:
+    case AdminType.AdminTypeCoordinator:
       return props.shopIds.includes(promotion.shopId)
     default:
       return false
@@ -142,9 +142,9 @@ const isEditable = (promotion: Promotion): boolean => {
 
 const getTarget = (promotion: Promotion): string => {
   switch (promotion.targetType) {
-    case PromotionTargetType.ALL_SHOP:
+    case PromotionTargetType.PromotionTargetTypeAllShop:
       return '全て'
-    case PromotionTargetType.SPECIFIC_SHOP: {
+    case PromotionTargetType.PromotionTargetTypeSpecificShop: {
       const shop = props.shops.find((shop: Shop): boolean => shop.id === promotion.shopId)
       return shop?.name || ''
     }
@@ -158,11 +158,11 @@ const getDiscount = (
   discountRate: number,
 ): string => {
   switch (discountType) {
-    case DiscountType.AMOUNT:
+    case DiscountType.DiscountTypeAmount:
       return '￥' + discountRate.toLocaleString()
-    case DiscountType.RATE:
+    case DiscountType.DiscountTypeRate:
       return discountRate + '％'
-    case DiscountType.FREE_SHIPPING:
+    case DiscountType.DiscountTypeFreeShipping:
       return '送料無料'
     default:
       return ''
@@ -171,13 +171,13 @@ const getDiscount = (
 
 const getStatus = (status: PromotionStatus): string => {
   switch (status) {
-    case PromotionStatus.PRIVATE:
+    case PromotionStatus.PromotionStatusPrivate:
       return '非公開'
-    case PromotionStatus.WAITING:
+    case PromotionStatus.PromotionStatusWaiting:
       return '開始前'
-    case PromotionStatus.ENABLED:
+    case PromotionStatus.PromotionStatusEnabled:
       return '有効'
-    case PromotionStatus.FINISHED:
+    case PromotionStatus.PromotionStatusFinished:
       return '終了'
     default:
       return '無効'
@@ -186,13 +186,13 @@ const getStatus = (status: PromotionStatus): string => {
 
 const getStatusColor = (status: PromotionStatus): string => {
   switch (status) {
-    case PromotionStatus.PRIVATE:
+    case PromotionStatus.PromotionStatusPrivate:
       return 'warning'
-    case PromotionStatus.WAITING:
+    case PromotionStatus.PromotionStatusWaiting:
       return 'info'
-    case PromotionStatus.ENABLED:
+    case PromotionStatus.PromotionStatusEnabled:
       return 'primary'
-    case PromotionStatus.FINISHED:
+    case PromotionStatus.PromotionStatusFinished:
       return 'secondary'
     default:
       return 'error'

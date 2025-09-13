@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
 import { useAdministratorStore, useCommonStore } from '~/store'
-import type { UpdateAdministratorRequest } from '~/types/api'
+import type { UpdateAdministratorRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()

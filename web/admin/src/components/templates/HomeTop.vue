@@ -11,8 +11,9 @@ import { LineChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
 
 import type { AlertType } from '~/lib/hooks'
-import { PaymentMethodType, TopOrderPeriodType } from '~/types/api'
-import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api'
+import { TopOrderPeriodType } from '~/types'
+import { PaymentMethodType } from '~/types/api/v1'
+import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 
 use([
@@ -181,27 +182,27 @@ const getComparisonColor = (num: number): string => {
 
 const getPaymentMethod = (methodType: PaymentMethodType): string => {
   switch (methodType) {
-    case PaymentMethodType.CASH:
+    case PaymentMethodType.PaymentMethodTypeCash:
       return '代引支払い'
-    case PaymentMethodType.CREDIT_CARD:
+    case PaymentMethodType.PaymentMethodTypeCreditCard:
       return 'クレジットカード決済'
-    case PaymentMethodType.KONBINI:
+    case PaymentMethodType.PaymentMethodTypeKonbini:
       return 'コンビニ決済'
-    case PaymentMethodType.BANK_TRANSFER:
+    case PaymentMethodType.PaymentMethodTypeBankTransfer:
       return '銀行振込決済'
-    case PaymentMethodType.PAYPAY:
+    case PaymentMethodType.PaymentMethodTypePayPay:
       return 'QR決済（PayPay）'
-    case PaymentMethodType.LINE_PAY:
+    case PaymentMethodType.PaymentMethodTypeLinePay:
       return 'QR決済（LINE Pay）'
-    case PaymentMethodType.MERPAY:
+    case PaymentMethodType.PaymentMethodTypeMerpay:
       return 'QR決済（メルペイ）'
-    case PaymentMethodType.RAKUTEN_PAY:
+    case PaymentMethodType.PaymentMethodTypeRakutenPay:
       return 'QR決済（楽天ペイ）'
-    case PaymentMethodType.AU_PAY:
+    case PaymentMethodType.PaymentMethodTypeAUPay:
       return 'QR決済（au PAY）'
-    case PaymentMethodType.PAIDY:
+    case PaymentMethodType.PaymentMethodTypePaidy:
       return 'ペイディ（Paidy）'
-    case PaymentMethodType.PAY_EASY:
+    case PaymentMethodType.PaymentMethodTypePayEasy:
       return 'ペイジー（Pay-easy）'
     default:
       return '不明'

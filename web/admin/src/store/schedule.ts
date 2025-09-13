@@ -1,16 +1,22 @@
-import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
-import { apiClient } from '~/plugins/api-client'
 import type {
-  ApproveScheduleRequest,
   BroadcastViewerLog,
   CreateScheduleRequest,
-  GetUploadUrlRequest,
-  PublishScheduleRequest,
   Schedule,
   UpdateScheduleRequest,
-} from '~/types/api'
+  V1SchedulesGetRequest,
+  V1SchedulesPostRequest,
+  V1SchedulesScheduleIdAnalyticsGetRequest,
+  V1SchedulesScheduleIdApprovalPatchRequest,
+  V1SchedulesScheduleIdDeleteRequest,
+  V1SchedulesScheduleIdGetRequest,
+  V1SchedulesScheduleIdPatchRequest,
+  V1SchedulesScheduleIdPublishPatchRequest,
+  V1UploadSchedulesImagePostRequest,
+  V1UploadSchedulesOpeningVideoPostRequest,
+  V1UploadSchedulesThumbnailPostRequest,
+} from '~/types/api/v1'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -28,14 +34,16 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async fetchSchedules(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient
-          .scheduleApi()
-          .v1ListSchedules(limit, offset)
+        const params: V1SchedulesGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.scheduleApi().v1SchedulesGet(params)
 
         const coordinatorStore = useCoordinatorStore()
-        this.schedules = res.data.schedules
-        this.total = res.data.total
-        coordinatorStore.coordinators = res.data.coordinators
+        this.schedules = res.schedules
+        this.total = res.total
+        coordinatorStore.coordinators = res.coordinators
       }
       catch (err) {
         return this.errorHandler(err)
@@ -49,11 +57,14 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async getSchedule(scheduleId: string): Promise<void> {
       try {
-        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
+        const params: V1SchedulesScheduleIdGetRequest = {
+          scheduleId,
+        }
+        const res = await this.scheduleApi().v1SchedulesScheduleIdGet(params)
 
         const coordinatorStore = useCoordinatorStore()
-        this.schedule = res.data.schedule
-        coordinatorStore.coordinators.push(res.data.coordinator)
+        this.schedule = res.schedule
+        coordinatorStore.coordinators.push(res.coordinator)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -64,9 +75,12 @@ export const useScheduleStore = defineStore('schedule', {
 
     async analyzeSchedule(scheduleId: string): Promise<void> {
       try {
-        const res = await apiClient.scheduleApi().v1AnalyzeSchedule(scheduleId)
+        const params: V1SchedulesScheduleIdAnalyticsGetRequest = {
+          scheduleId,
+        }
+        const res = await this.scheduleApi().v1SchedulesScheduleIdAnalyticsGet(params)
 
-        this.viewerLogs = res.data.viewerLogs
+        this.viewerLogs = res.viewerLogs
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -81,8 +95,11 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async createSchedule(payload: CreateScheduleRequest): Promise<Schedule> {
       try {
-        const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
-        return res.data.schedule
+        const params: V1SchedulesPostRequest = {
+          createScheduleRequest: payload,
+        }
+        const res = await this.scheduleApi().v1SchedulesPost(params)
+        return res.schedule
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -101,7 +118,11 @@ export const useScheduleStore = defineStore('schedule', {
       payload: UpdateScheduleRequest,
     ): Promise<void> {
       try {
-        await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
+        const params: V1SchedulesScheduleIdPatchRequest = {
+          scheduleId,
+          updateScheduleRequest: payload,
+        }
+        await this.scheduleApi().v1SchedulesScheduleIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -118,7 +139,10 @@ export const useScheduleStore = defineStore('schedule', {
      */
     async deleteSchedule(scheduleId: string): Promise<void> {
       try {
-        await apiClient.scheduleApi().v1DeleteSchedule(scheduleId)
+        const params: V1SchedulesScheduleIdDeleteRequest = {
+          scheduleId,
+        }
+        await this.scheduleApi().v1SchedulesScheduleIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -139,8 +163,13 @@ export const useScheduleStore = defineStore('schedule', {
       approved: boolean,
     ): Promise<void> {
       try {
-        const req: ApproveScheduleRequest = { approved }
-        await apiClient.scheduleApi().v1ApproveSchedule(scheduleId, req)
+        const approveParams: V1SchedulesScheduleIdApprovalPatchRequest = {
+          scheduleId,
+          approveScheduleRequest: {
+            approved,
+          },
+        }
+        await this.scheduleApi().v1SchedulesScheduleIdApprovalPatch(approveParams)
 
         // データの更新
         const index = this.schedules.findIndex(
@@ -149,8 +178,11 @@ export const useScheduleStore = defineStore('schedule', {
         if (index === -1) {
           return
         }
-        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
-        this.schedules.splice(index, 1, res.data.schedule)
+        const getParams: V1SchedulesScheduleIdGetRequest = {
+          scheduleId,
+        }
+        const res = await this.scheduleApi().v1SchedulesScheduleIdGet(getParams)
+        this.schedules.splice(index, 1, res.schedule)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -171,8 +203,13 @@ export const useScheduleStore = defineStore('schedule', {
       published: boolean,
     ): Promise<void> {
       try {
-        const req: PublishScheduleRequest = { public: published }
-        await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
+        const publishParams: V1SchedulesScheduleIdPublishPatchRequest = {
+          scheduleId,
+          publishScheduleRequest: {
+            _public: published,
+          },
+        }
+        await this.scheduleApi().v1SchedulesScheduleIdPublishPatch(publishParams)
 
         // データの更新
         const index = this.schedules.findIndex(
@@ -181,8 +218,11 @@ export const useScheduleStore = defineStore('schedule', {
         if (index === -1) {
           return
         }
-        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
-        this.schedules.splice(index, 1, res.data.schedule)
+        const getParams: V1SchedulesScheduleIdGetRequest = {
+          scheduleId,
+        }
+        const res = await this.scheduleApi().v1SchedulesScheduleIdGet(getParams)
+        this.schedules.splice(index, 1, res.schedule)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -200,14 +240,14 @@ export const useScheduleStore = defineStore('schedule', {
     async uploadScheduleThumbnail(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadSchedulesThumbnailPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .scheduleApi()
-          .v1GetScheduleThumbnailUploadUrl(body)
+        const res = await this.uploadApi().v1UploadSchedulesThumbnailPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -224,14 +264,14 @@ export const useScheduleStore = defineStore('schedule', {
     async uploadScheduleImage(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadSchedulesImagePostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .scheduleApi()
-          .v1GetScheduleImageUploadUrl(body)
+        const res = await this.uploadApi().v1UploadSchedulesImagePost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -248,14 +288,14 @@ export const useScheduleStore = defineStore('schedule', {
     async uploadScheduleOpeningVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: contentType,
+        const params: V1UploadSchedulesOpeningVideoPostRequest = {
+          getUploadURLRequest: {
+            fileType: contentType,
+          },
         }
-        const res = await apiClient
-          .scheduleApi()
-          .v1GetScheduleOpeningVideoUploadUrl(body)
+        const res = await this.uploadApi().v1UploadSchedulesOpeningVideoPost(params)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
