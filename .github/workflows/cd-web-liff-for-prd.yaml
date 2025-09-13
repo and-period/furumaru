@@ -1,0 +1,47 @@
+name: '[Frontend] Deploy LIFF Web for prd'
+on:
+  push:
+    tags:
+    - 'v*'
+    paths:
+    - '.github/actions/**'
+    - '.github/workflows/_deploy_amplify.yaml'
+    - '.github/workflows/cd-web-liff-for-prd.yaml'
+    - 'web/liff/**'
+    - 'infra/docker/web/liff/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  set_output:
+    name: set output
+    environment: prd
+    runs-on: ubuntu-latest
+    outputs:
+      amplify-app-id: ${{ vars.AMPLIFY_LIFF_APP_ID }}
+      sentry-organization: ${{ vars.SENTRY_ORGANIZATION }}
+      sentry-project: ${{ vars.SENTRY_PROJECT_LIFF_WEB }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+  deploy:
+    name: deploy
+    needs:
+    - set_output
+    uses: ./.github/workflows/_deploy_amplify.yaml
+    with:
+      branch-name: main
+      working-directory: ./web/liff
+      sentry-organization: ${{ needs.set_output.outputs.sentry-organization }}
+      sentry-project: ${{ needs.set_output.outputs.sentry-project }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      app-id: ${{ needs.set_output.outputs.amplify-app-id }}
+      sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
