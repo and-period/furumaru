@@ -368,6 +368,26 @@ func TestDeleteUser(t *testing.T) {
 			UpdatedAt: now,
 		},
 	}
+	f := &entity.User{
+		ID:         "user-id",
+		Status:     entity.UserStatusVerified,
+		Registered: false,
+		FacilityUser: entity.FacilityUser{
+			UserID:        "user-id",
+			ProducerID:    "producer-id",
+			ProviderType:  entity.UserAuthProviderTypeLINE,
+			ExternalID:    "external-id",
+			Email:         "test-user@and-period.jp",
+			Lastname:      "テスト",
+			Firstname:     "ユーザー",
+			LastnameKana:  "てすと",
+			FirstnameKana: "ゆーざー",
+			PhoneNumber:   "+810000000000",
+			LastCheckInAt: now,
+			CreatedAt:     now,
+			UpdatedAt:     now,
+		},
+	}
 
 	tests := []struct {
 		name      string
@@ -396,6 +416,17 @@ func TestDeleteUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(g, nil)
 				mocks.db.Guest.EXPECT().Delete(ctx, "user-id").Return(nil)
+			},
+			input: &user.DeleteUserInput{
+				UserID: "user-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success facility user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(f, nil)
+				mocks.db.FacilityUser.EXPECT().Delete(ctx, "user-id").Return(nil)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
@@ -434,6 +465,17 @@ func TestDeleteUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(g, nil)
 				mocks.db.Guest.EXPECT().Delete(ctx, "user-id").Return(assert.AnError)
+			},
+			input: &user.DeleteUserInput{
+				UserID: "user-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to delete facility user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(f, nil)
+				mocks.db.FacilityUser.EXPECT().Delete(ctx, "user-id").Return(assert.AnError)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",

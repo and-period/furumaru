@@ -82,3 +82,29 @@ func (f *facilityUser) Update(ctx context.Context, userID string, params *databa
 		Updates(updates).Error
 	return dbError(err)
 }
+
+func (f *facilityUser) Delete(ctx context.Context, userID string) error {
+	err := f.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := f.now()
+		facilityUserParams := map[string]interface{}{
+			"exists":     nil,
+			"updated_at": now,
+		}
+		err := tx.WithContext(ctx).
+			Table(facilityUserTable).
+			Where("user_id = ?", userID).
+			Updates(facilityUserParams).Error
+		if err != nil {
+			return err
+		}
+		userParams := map[string]interface{}{
+			"deleted_at": now,
+			"updated_at": now,
+		}
+		return tx.WithContext(ctx).
+			Table(userTable).
+			Where("id = ?", userID).
+			Updates(userParams).Error
+	})
+	return dbError(err)
+}

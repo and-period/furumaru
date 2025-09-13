@@ -238,6 +238,7 @@ type FacilityUser interface {
 	GetByExternalID(ctx context.Context, providerType entity.UserAuthProviderType, externalID, producerID string, fields ...string) (*entity.FacilityUser, error)
 	Create(ctx context.Context, user *entity.User) error
 	Update(ctx context.Context, userID string, params *UpdateFacilityUserParams) error
+	Delete(ctx context.Context, userID string) error
 }
 
 type UpdateFacilityUserParams struct {

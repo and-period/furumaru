@@ -73,7 +73,8 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 	if err != nil {
 		return internalError(err)
 	}
-	if u.Registered {
+	switch u.Type {
+	case entity.UserTypeMember:
 		auth := func(ctx context.Context) error {
 			err := s.userAuth.DeleteUser(ctx, u.CognitoID)
 			if errors.Is(err, cognito.ErrNotFound) {
@@ -82,8 +83,10 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 			return err
 		}
 		err = s.db.Member.Delete(ctx, u.ID, auth)
-	} else {
+	case entity.UserTypeGuest:
 		err = s.db.Guest.Delete(ctx, u.ID)
+	case entity.UserTypeFacilityUser:
+		err = s.db.FacilityUser.Delete(ctx, u.ID)
 	}
 	return internalError(err)
 }
