@@ -1,12 +1,6 @@
-import axios from 'axios'
-import { apiClient } from '~/plugins/api-client'
-import type { Prefecture } from '~/types'
-
-export interface SearchAddress {
-  prefecture: Prefecture
-  city: string
-  town: string
-}
+import { useAddressStore } from '~/store'
+import { ApiBaseError } from '~/types'
+import type { SearchAddress } from '~/types/props'
 
 export interface UseSearchAddress {
   loading: Ref<boolean>
@@ -25,21 +19,19 @@ export function useSearchAddress(): UseSearchAddress {
     loading.value = true
     errorMessage.value = ''
     try {
-      const res = await apiClient.addressApi().v1SearchPostalCode(postalCode)
-      return {
-        prefecture: res.data.prefectureCode as Prefecture,
-        city: res.data.city,
-        town: res.data.town,
-      }
+      const store = useAddressStore()
+
+      const res = await store.searchAddressByPostalCode(postalCode)
+      return res
     }
     catch (err) {
-      if (!axios.isAxiosError(err)) {
+      if (!(err instanceof ApiBaseError)) {
         errorMessage.value = '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
         throw err
       }
 
       let msg: string
-      switch (err.response?.status) {
+      switch (err.status) {
         case 400:
           msg = '入力内容に誤りがあります'
           break

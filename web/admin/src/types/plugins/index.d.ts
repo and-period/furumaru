@@ -1,7 +1,7 @@
 import 'pinia'
 
 import type { CustomErrorMessage } from '~/plugins/api-error-handler'
-import type { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '../api/v1'
+import type { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '../api/v1'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -42,6 +42,7 @@ declare module 'pinia' {
     notificationApi: (token?: string | undefined) => NotificationApi
     orderApi: (token?: string | undefined) => OrderApi
     paymentSystemApi: (token?: string | undefined) => PaymentSystemApi
+    postalCodeApi: (token?: string | undefined) => PostalCodeApi
     producerApi: (token?: string | undefined) => ProducerApi
     productApi: (token?: string | undefined) => ProductApi
     productTagApi: (token?: string | undefined) => ProductTagApi

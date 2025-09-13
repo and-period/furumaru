@@ -1,5 +1,5 @@
 import type { PiniaPluginContext } from 'pinia'
-import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '~/types/api/v1'
+import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '~/types/api/v1'
 import type { BaseAPI } from '~/types/api/v1/runtime'
 
 /**
@@ -55,6 +55,8 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.orderApi = (token?: string): OrderApi => apiClientFactory.create<OrderApi>(OrderApi, token)
 
   store.paymentSystemApi = (token?: string): PaymentSystemApi => apiClientFactory.create<PaymentSystemApi>(PaymentSystemApi, token)
+
+  store.postalCodeApi = (token?: string): PostalCodeApi => apiClientFactory.create<PostalCodeApi>(PostalCodeApi, token)
 
   store.producerApi = (token?: string): ProducerApi => apiClientFactory.create<ProducerApi>(ProducerApi, token)
 
