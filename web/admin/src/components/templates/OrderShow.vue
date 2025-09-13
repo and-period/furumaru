@@ -19,7 +19,7 @@ import {
 
   OrderType,
 } from '~/types/api'
-import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User } from '~/types/api'
+import type { CompleteOrderRequest, Coordinator, Order, OrderItem, OrderFulfillment, Product, ProductMediaInner, RefundOrderRequest, User, Experience } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
@@ -117,6 +117,10 @@ const props = defineProps({
   products: {
     type: Array<Product>,
     default: () => [],
+  },
+  experience: {
+    type: Object as PropType<Experience | null>,
+    default: () => null,
   },
   completeFormData: {
     type: Object as PropType<CompleteOrderRequest>,
@@ -926,6 +930,10 @@ const onSubmitRefund = (): void => {
         <v-card-title class="pb-4">
           予約情報
         </v-card-title>
+        <div class="px-4 pb-2 font-medium">
+          <p>&#x1F3AB; {{ props.experience.title }}</p>
+          <p>&#x1F4CD; {{ props.experience.hostCity }}{{ props.experience.hostAddressLine1 }}{{ props.experience.hostAddressLine2 }}</p>
+        </div>
         <v-card-text>
           <v-row>
             <v-col cols="3">

@@ -4421,6 +4421,12 @@ export interface OrderResponse {
      * @memberof OrderResponse
      */
     'products': Array<Product>;
+    /**
+     *
+     * @type {Experience}
+     * @memberof OrderResponse
+     */
+    'experience': Experience;
 }
 /**
  * 注文ステータス
