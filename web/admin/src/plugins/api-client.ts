@@ -1,6 +1,7 @@
 import type { PiniaPluginContext } from 'pinia'
+import { useAuthStore } from '~/store'
 import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '~/types/api/v1'
-import type { BaseAPI } from '~/types/api/v1/runtime'
+import type { BaseAPI, Middleware, RequestContext } from '~/types/api/v1/runtime'
 
 /**
  * API クライアントのインスタンスを生成するファクトリ
@@ -11,15 +12,34 @@ class ApiClientFactory {
     const baseUrl = runtimeConfig.public.API_BASE_URL
 
     const config = new Configuration({
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       basePath: baseUrl,
       credentials: 'include',
+      middleware: [authMiddleware],
     })
 
     return new Client(config)
   }
+}
+
+/**
+ * API クライアントの認証ミドルウェア
+ */
+const authMiddleware: Middleware = {
+  async pre(ctx: RequestContext) {
+    const store = useAuthStore()
+
+    const headers = new Headers(ctx.init?.headers || {})
+
+    const token: string | undefined = store.accessToken
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    return {
+      url: ctx.url,
+      init: { ...ctx.init, headers },
+    }
+  },
 }
 
 /**
