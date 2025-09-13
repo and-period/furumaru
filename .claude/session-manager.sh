@@ -9,7 +9,7 @@ update_session() {
     local field=$1
     local value=$2
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    
+
     # jqを使用してセッションを更新
     if command -v jq &> /dev/null; then
         jq --arg field "$field" --arg value "$value" --arg ts "$timestamp" \
@@ -25,7 +25,7 @@ update_session() {
 add_task() {
     local task=$1
     local status=${2:-"pending"}
-    
+
     if command -v jq &> /dev/null; then
         jq --arg task "$task" --arg status "$status" \
             '.current_session.tasks[$status] += [$task]' \
@@ -37,7 +37,7 @@ add_task() {
 add_note() {
     local note=$1
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    
+
     if command -v jq &> /dev/null; then
         jq --arg note "$note" --arg ts "$timestamp" \
             '.current_session.notes += [{"timestamp": $ts, "content": $note}]' \
@@ -49,27 +49,27 @@ add_note() {
 save_session() {
     local timestamp=$(date +"%Y%m%d_%H%M%S")
     local backup_file="$SESSION_BACKUP_DIR/session_$timestamp.json"
-    
+
     # バックアップディレクトリが存在しない場合は作成
     mkdir -p "$SESSION_BACKUP_DIR"
-    
+
     # 現在のセッションをバックアップにコピー
     cp "$SESSION_FILE" "$backup_file"
-    
+
     # 現在のセッションを履歴にアーカイブ
     if command -v jq &> /dev/null; then
         current_session=$(jq '.current_session' "$SESSION_FILE")
         jq --argjson session "$current_session" \
             '.history = [$session] + .history | .history = .history[0:100]' \
             "$SESSION_FILE" > "$SESSION_FILE.tmp" && mv "$SESSION_FILE.tmp" "$SESSION_FILE"
-        
+
         # 現在のセッションをリセット
         new_session_id="session_$(date +"%Y%m%d_%H%M%S")"
         jq --arg id "$new_session_id" --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
             '.current_session = {"id": $id, "started_at": $ts, "status": "active", "context": {}, "tasks": {"current": "", "completed": [], "pending": []}, "notes": []}' \
             "$SESSION_FILE" > "$SESSION_FILE.tmp" && mv "$SESSION_FILE.tmp" "$SESSION_FILE"
     fi
-    
+
     echo "セッションを保存しました: $backup_file"
 }
 
@@ -79,7 +79,7 @@ list_sessions() {
         echo "最近のセッション:"
         ls -1t "$SESSION_BACKUP_DIR" | head -10
     fi
-    
+
     if command -v jq &> /dev/null && [ -f "$SESSION_FILE" ]; then
         echo -e "\n現在のセッション:"
         jq -r '.current_session | "ID: \(.id)\n開始: \(.started_at)\nステータス: \(.status)"' "$SESSION_FILE"
