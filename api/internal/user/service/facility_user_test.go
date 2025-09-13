@@ -16,6 +16,7 @@ import (
 func TestCreateFacilityUser(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2025, 8, 26, 12, 0, 0, 0)
 	lastCheckInAt := jst.Date(2025, 8, 27, 12, 0, 0, 0)
 
 	tests := []struct {
@@ -90,7 +91,7 @@ func TestCreateFacilityUser(t *testing.T) {
 				FirstnameKana: "たろう",
 				Email:         "test@example.com",
 				PhoneNumber:   "+819012345678",
-				LastCheckInAt: jst.Now().Add(time.Hour), // future date
+				LastCheckInAt: now.Add(-time.Hour), // future date
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -119,7 +120,7 @@ func TestCreateFacilityUser(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateFacilityUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }
 
@@ -156,11 +157,11 @@ func TestGetFacilityUser(t *testing.T) {
 	}
 
 	tests := []struct {
-		name        string
-		setup       func(ctx context.Context, mocks *mocks)
-		input       *user.GetFacilityUserInput
-		expect      *entity.User
-		expectErr   error
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.GetFacilityUserInput
+		expect    *entity.User
+		expectErr error
 	}{
 		{
 			name: "success",
