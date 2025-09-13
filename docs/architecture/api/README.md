@@ -41,7 +41,7 @@ internal/{module}/
 ## 詳細設計
 
 APIの詳細設計・内部仕様については以下を参照：
-- **[API Services Overview](../api-services-overview.md)** - 各モジュール詳細
-- **[Database Design](../database-design.md)** - データベース設計
-- **[Documentation Patterns](./documentation-patterns.md)** - APIドキュメントパターン
+- **[APIサービス概要](./api-services-overview.md)** - 各モジュール詳細
+- **[データベース設計](./database-design.md)** - データベース設計
+- **[APIドキュメントパターン](./documentation-patterns.md)** - APIドキュメントパターン
 

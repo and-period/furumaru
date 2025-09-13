@@ -67,5 +67,5 @@ OpenAPI 3.0 形式のAPI定義を格納
 ## 関連ドキュメント
 
 - [アーキテクチャ概要](../architecture/overview.md)
-- [API サービス概要](../architecture/api-services-overview.md)
+- [API サービス概要](../architecture/api/api-services-overview.md)
 - [API ドキュメントパターン](../architecture/api/documentation-patterns.md)

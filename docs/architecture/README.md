@@ -16,13 +16,13 @@
 - 認証・認可アーキテクチャ
 - ビジネスドメイン構造
 
-### 📊 [api-services-overview.md](./api-services-overview.md)
+### 📊 [api/api-services-overview.md](./api/api-services-overview.md)
 APIモジュール詳細構成
 - 各モジュールの責務と機能
 - モジュール間通信パターン
 - 技術スタック詳細
 
-### 🗄️ [database-design.md](./database-design.md)
+### 🗄️ [api/database-design.md](./api/database-design.md)
 データベース設計仕様
 - モジュール別DB構成
 - エンティティ関係

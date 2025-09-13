@@ -1,8 +1,8 @@
-# Frontend Applications Overview
+# フロントエンドアプリケーション構成
 
 Furumaru プロジェクトのフロントエンドアプリケーション構成とアーキテクチャを定義します。
 
-## Application Architecture
+## アプリケーション構成
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -17,13 +17,13 @@ Furumaru プロジェクトのフロントエンドアプリケーション構�
    Management Tools        E-Commerce Site          LINE Mini App           Shared Components
 ```
 
-## Detailed Application Specifications
+## 各アプリケーション詳細仕様
 
-### 👨‍💼 admin - Management Portal
+### 👨‍💼 admin - 管理者ポータル
 
-**Target Users**: 管理者、コーディネーター、生産者
+**対象ユーザー**: 管理者、コーディネーター、生産者
 
-**Technology Stack**:
+**技術スタック**:
 ```json
 {
   "framework": "Nuxt 4.1.1",
@@ -35,7 +35,7 @@ Furumaru プロジェクトのフロントエンドアプリケーション構�
 }
 ```
 
-**Key Features**:
+**主要機能**:
 - **Rich Editor**: TipTap v2.26.1 for content creation
 - **Data Visualization**: Chart.js v4.5.0 + ECharts v5.6.0
 - **Real-time Updates**: Firebase integration
@@ -43,7 +43,7 @@ Furumaru プロジェクトのフロントエンドアプリケーション構�
 - **Push Notifications**: Firebase Cloud Messaging
 - **Error Monitoring**: Sentry integration
 
-**Directory Structure**:
+**ディレクトリ構成**:
 ```
 src/
 ├── components/         # Vuetify-based components
@@ -55,16 +55,16 @@ src/
 └── types/             # TypeScript definitions
 ```
 
-**Authentication Flow**:
+**認証フロー**:
 ```
 Login → Firebase Auth → JWT Token → API Gateway → Admin Services
 ```
 
-### 🛒 user - E-Commerce Portal
+### 🛒 user - ECポータル
 
-**Target Users**: 購入者（会員・ゲスト・施設利用者）
+**対象ユーザー**: 購入者（会員・ゲスト・施設利用者）
 
-**Technology Stack**:
+**技術スタック**:
 ```json
 {
   "framework": "Nuxt 3",
@@ -77,7 +77,7 @@ Login → Firebase Auth → JWT Token → API Gateway → Admin Services
 }
 ```
 
-**Key Features**:
+**主要機能**:
 - **E-Commerce**: Product catalog, cart, checkout, order management
 - **Live Commerce**: HLS.js v1.4.10 for video streaming
 - **Multi-language**: i18n support
@@ -86,7 +86,7 @@ Login → Firebase Auth → JWT Token → API Gateway → Admin Services
 - **Location Services**: Google Maps integration
 - **Content Management**: microCMS integration
 
-**Directory Structure**:
+**ディレクトリ構成**:
 ```
 src/
 ├── components/         # Tailwind-based components
@@ -98,15 +98,15 @@ src/
 └── types/             # API response types
 ```
 
-**Rendering Strategy**:
+**レンダリング戦略**:
 - **SSR**: Product pages, category pages (SEO critical)
 - **SPA**: User dashboard, cart, checkout (interactive)
 
-### 📱 liff - LINE Mini App
+### 📱 liff - LINEミニアプリ
 
-**Target Users**: LINEユーザー（チャット統合購入体験）
+**対象ユーザー**: LINEユーザー（チャット統合購入体験）
 
-**Technology Stack**:
+**技術スタック**:
 ```json
 {
   "framework": "Nuxt 3",
@@ -118,14 +118,14 @@ src/
 }
 ```
 
-**Key Features**:
+**主要機能**:
 - **LINE Integration**: LIFF SDK for native LINE features
 - **Seamless Auth**: LINE user profile integration
 - **Optimized UX**: Mobile-first, touch-optimized
 - **Chat Integration**: Purchase sharing to LINE chats
 - **Lightweight**: Minimal bundle size for fast loading
 
-**Directory Structure**:
+**ディレクトリ構成**:
 ```
 src/
 ├── components/         # Mobile-optimized components
@@ -135,7 +135,7 @@ src/
 └── plugins/           # LIFF initialization
 ```
 
-**LIFF Integration Pattern**:
+**LIFF連携パターン**:
 ```javascript
 // LIFF initialization
 await liff.init({ liffId: process.env.LIFF_ID })
@@ -143,11 +143,11 @@ const profile = await liff.getProfile()
 // Sync with backend user system
 ```
 
-### 🧩 shared - Component Library
+### 🧩 shared - コンポーネントライブラリ
 
-**Purpose**: デザインシステム・共通コンポーネント・開発効率化
+**目的**: デザインシステム・共通コンポーネント・開発効率化
 
-**Technology Stack**:
+**技術スタック**:
 ```json
 {
   "framework": "Vue 3 + TypeScript",
@@ -158,25 +158,25 @@ const profile = await liff.getProfile()
 }
 ```
 
-**Component Categories**:
+**コンポーネント分類**:
 - **Atoms**: Button, Input, Icon, Badge
 - **Molecules**: SearchBox, ProductCard, UserAvatar
 - **Organisms**: Header, Footer, ProductGrid
 - **Templates**: PageLayout, FormLayout
 - **Utilities**: Composables, Type definitions
 
-**Design System Features**:
+**デザインシステム機能**:
 - **Theme Support**: CSS Custom Properties
 - **Responsive Design**: Mobile-first breakpoints
 - **Accessibility**: ARIA compliance, keyboard navigation
 - **Icon System**: SVG sprite optimization
 - **Animation**: CSS transitions + Vue transition components
 
-## Cross-Application Architecture
+## アプリケーション間アーキテクチャ
 
-### State Management Strategy
+### 状態管理戦略
 
-**Pinia Store Organization**:
+**Piniaストア構成**:
 ```typescript
 // Shared store structure across apps
 interface StoreStructure {
@@ -188,7 +188,7 @@ interface StoreStructure {
 }
 ```
 
-**State Persistence**:
+**状態永続化**:
 - **admin**: Session-based (no persistence)
 - **user**: `@pinia-plugin-persistedstate` for cart/preferences
 - **liff**: localStorage for session continuity
