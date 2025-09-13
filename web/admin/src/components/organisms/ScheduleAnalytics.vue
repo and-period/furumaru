@@ -9,7 +9,7 @@ import {
 } from 'echarts/components'
 import { LineChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
-import type { BroadcastViewerLog } from '~/types/api'
+import type { BroadcastViewerLog } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {

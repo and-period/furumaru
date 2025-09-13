@@ -3,8 +3,9 @@ import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminStatus, Prefecture } from '~/types/api'
-import type { Producer, UpdateProducerRequest } from '~/types/api'
+import { Prefecture } from '~/types'
+import { AdminStatus } from '~/types/api/v1'
+import type { Producer, UpdateProducerRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 import { UpdateProducerValidationRules } from '~/types/validations'
 
@@ -29,8 +30,7 @@ const props = defineProps({
     type: Object as PropType<Producer>,
     default: (): Producer => ({
       id: '',
-      status: AdminStatus.UNKNOWN,
-      coordinatorId: '',
+      status: AdminStatus.AdminStatusUnknown,
       lastname: '',
       lastnameKana: '',
       firstname: '',

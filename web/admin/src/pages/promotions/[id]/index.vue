@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
 import { useAuthStore, useCommonStore, usePromotionStore, useShopStore } from '~/store'
-import type { UpdatePromotionRequest } from '~/types/api'
+import type { UpdatePromotionRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const route = useRoute()
@@ -24,7 +24,7 @@ const loading = ref<boolean>(false)
 const formData = ref<UpdatePromotionRequest>({
   title: '',
   description: '',
-  public: false,
+  _public: false,
   discountType: 1,
   discountRate: 0,
   code: '',

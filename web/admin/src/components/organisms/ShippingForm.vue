@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import type { CreateShippingRequest, UpdateShippingRequest } from '~/types/api'
+import type { CreateShippingRequest, UpdateShippingRequest } from '~/types/api/v1'
 
 import { getErrorMessage } from '~/lib/validations'
 import { getSelectablePrefecturesList } from '~/lib/prefectures'

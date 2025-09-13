@@ -5,7 +5,7 @@ import type { ValidationArgs } from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import type { UpdateAuthPasswordRequest } from '~/types/api'
+import type { UpdateAuthPasswordRequest } from '~/types/api/v1'
 import { UpdateAuthPasswordValidationRules } from '~/types/validations'
 
 const props = defineProps({

@@ -1,8 +1,7 @@
 import axios from 'axios'
 import type { RawAxiosRequestHeaders } from 'axios'
-
-import { apiClient } from '~/plugins/api-client'
-import { UploadStatus } from '~/types/api'
+import { UploadStatus } from '~/types/api/v1'
+import type { UploadApi, V1UploadStateGetRequest } from '~/types/api/v1'
 
 /**
  * サーバーへファイルをアップロードする非同期関数
@@ -11,6 +10,7 @@ import { UploadStatus } from '~/types/api'
  * @returns 参照先URL
  */
 export async function fileUpload(
+  client: UploadApi,
   file: File,
   key: string,
   url: string,
@@ -19,7 +19,7 @@ export async function fileUpload(
   await upload(file, url)
 
   // アップロード後のバリデーション結果を取得
-  return await getUploadResult(key)
+  return await getUploadResult(client, key)
 }
 
 /**
@@ -49,19 +49,22 @@ async function upload(file: File, uploadUrl: string): Promise<void> {
  * @param uploadUrl アップロード先URL
  * @returns ファイルの参照先URL
  */
-async function getUploadResult(uploadUrl: string): Promise<string> {
+async function getUploadResult(client: UploadApi, uploadUrl: string): Promise<string> {
   while (true) {
     // アップロード処理が、サーバー側では非同期実行となるため
     await sleep(200)
 
-    const event = await apiClient.otherApi().v1GetUploadState(uploadUrl)
+    const params: V1UploadStateGetRequest = {
+      key: uploadUrl,
+    }
+    const event = await client.v1UploadStateGet(params)
 
-    switch (event.data.status) {
-      case UploadStatus.SUCEEDED:
-        return event.data.url
-      case UploadStatus.FAILED:
+    switch (event.status) {
+      case UploadStatus.UploadStatusSucceeded:
+        return event.url
+      case UploadStatus.UploadStatusFailed:
         throw new Error('ファイルのアップロードに失敗しました。')
-      case UploadStatus.WAITING:
+      case UploadStatus.UploadStatusWaiting:
         continue // 再度状態を取得
     }
   }

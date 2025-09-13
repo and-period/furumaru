@@ -1,8 +1,6 @@
-import { defineStore } from 'pinia'
 import { useProducerStore } from './producer'
 import { useProductStore } from './product'
-import { apiClient } from '~/plugins/api-client'
-import type { CreateLiveRequest, Live, UpdateLiveRequest } from '~/types/api'
+import type { CreateLiveRequest, Live, UpdateLiveRequest, V1SchedulesScheduleIdLivesGetRequest, V1SchedulesScheduleIdLivesLiveIdDeleteRequest, V1SchedulesScheduleIdLivesLiveIdPatchRequest, V1SchedulesScheduleIdLivesPostRequest } from '~/types/api/v1'
 
 export const useLiveStore = defineStore('live', {
   state: () => ({
@@ -18,14 +16,17 @@ export const useLiveStore = defineStore('live', {
      */
     async fetchLives(scheduleId: string): Promise<void> {
       try {
-        const res = await apiClient.liveApi().v1ListLives(scheduleId)
+        const params: V1SchedulesScheduleIdLivesGetRequest = {
+          scheduleId,
+        }
+        const res = await this.liveApi().v1SchedulesScheduleIdLivesGet(params)
 
         const producerStore = useProducerStore()
         const productStore = useProductStore()
-        this.lives = res.data.lives
-        this.total = res.data.total
-        producerStore.producers = res.data.producers
-        productStore.products = res.data.products
+        this.lives = res.lives
+        this.total = res.total
+        producerStore.producers = res.producers
+        productStore.products = res.products
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -51,9 +52,13 @@ export const useLiveStore = defineStore('live', {
       payload: CreateLiveRequest,
     ): Promise<void> {
       try {
-        const res = await apiClient.liveApi().v1CreateLive(scheduleId, payload)
+        const params: V1SchedulesScheduleIdLivesPostRequest = {
+          scheduleId,
+          createLiveRequest: payload,
+        }
+        const res = await this.liveApi().v1SchedulesScheduleIdLivesPost(params)
 
-        this.lives.push(res.data.live)
+        this.lives.push(res.live)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -77,7 +82,12 @@ export const useLiveStore = defineStore('live', {
       payload: UpdateLiveRequest,
     ): Promise<void> {
       try {
-        await apiClient.liveApi().v1UpdateLive(scheduleId, liveId, payload)
+        const params: V1SchedulesScheduleIdLivesLiveIdPatchRequest = {
+          scheduleId,
+          liveId,
+          updateLiveRequest: payload,
+        }
+        await this.liveApi().v1SchedulesScheduleIdLivesLiveIdPatch(params)
 
         const index = this.lives.findIndex(
           (live: Live): boolean => live.id === liveId,
@@ -102,7 +112,11 @@ export const useLiveStore = defineStore('live', {
      */
     async deleteLive(scheduleId: string, liveId: string): Promise<void> {
       try {
-        await apiClient.liveApi().v1DeleteLive(scheduleId, liveId)
+        const params: V1SchedulesScheduleIdLivesLiveIdDeleteRequest = {
+          scheduleId,
+          liveId,
+        }
+        await this.liveApi().v1SchedulesScheduleIdLivesLiveIdDelete(params)
 
         const index = this.lives.findIndex(
           (live: Live): boolean => live.id === liveId,

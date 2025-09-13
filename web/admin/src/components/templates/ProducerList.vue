@@ -5,8 +5,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { AdminType } from '~/types/api'
-import type { Shop, Coordinator, Producer } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { Shop, Coordinator, Producer } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -15,7 +15,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -105,7 +105,7 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.COORDINATOR
+  return props.adminType === AdminType.AdminTypeCoordinator
 }
 
 const getShopName = (producer?: Producer) => {

@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminType, DiscountType, PromotionStatus, PromotionTargetType } from '~/types/api'
-import type { Promotion, Shop, UpdatePromotionRequest } from '~/types/api'
+import { AdminType, DiscountType, PromotionStatus, PromotionTargetType } from '~/types/api/v1'
+import type { Promotion, Shop, UpdatePromotionRequest } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types/validations'
 
@@ -20,7 +20,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   isAlert: {
     type: Boolean,
@@ -39,8 +39,8 @@ const props = defineProps({
     default: (): UpdatePromotionRequest => ({
       title: '',
       description: '',
-      public: false,
-      discountType: DiscountType.AMOUNT,
+      _public: false,
+      discountType: DiscountType.DiscountTypeAmount,
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
@@ -54,10 +54,10 @@ const props = defineProps({
       shopId: '',
       title: '',
       description: '',
-      public: false,
-      status: PromotionStatus.UNKNOWN,
-      targetType: PromotionTargetType.UNKNOWN,
-      discountType: DiscountType.AMOUNT,
+      _public: false,
+      status: PromotionStatus.PromotionStatusUnknown,
+      targetType: PromotionTargetType.PromotionTargetTypeUnknown,
+      discountType: DiscountType.DiscountTypeAmount,
       discountRate: 0,
       code: '',
       usedCount: 0,
@@ -90,9 +90,9 @@ const emit = defineEmits<{
 }>()
 
 const discountMethodList = [
-  { method: '円', value: DiscountType.AMOUNT },
-  { method: '%', value: DiscountType.RATE },
-  { method: '送料無料', value: DiscountType.FREE_SHIPPING },
+  { method: '円', value: DiscountType.DiscountTypeAmount },
+  { method: '%', value: DiscountType.DiscountTypeRate },
+  { method: '送料無料', value: DiscountType.DiscountTypeFreeShipping },
 ]
 
 const formDataValue = computed({
@@ -128,9 +128,9 @@ const getTarget = computed(() => {
     return ''
   }
   switch (props.promotion.targetType) {
-    case PromotionTargetType.ALL_SHOP:
+    case PromotionTargetType.PromotionTargetTypeAllShop:
       return '全て'
-    case PromotionTargetType.SPECIFIC_SHOP:
+    case PromotionTargetType.PromotionTargetTypeSpecificShop:
       return props.shop.name
     default:
       return ''
@@ -143,9 +143,9 @@ const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataVal
 
 const isEditable = (): boolean => {
   switch (props.adminType) {
-    case AdminType.ADMINISTRATOR:
+    case AdminType.AdminTypeAdministrator:
       return true
-    case AdminType.COORDINATOR:
+    case AdminType.AdminTypeCoordinator:
       return props.shopIds.includes(props.promotion.shopId)
     default:
       return false
@@ -282,7 +282,7 @@ const onSubmit = async (): Promise<void> => {
           />
         </div>
         <v-switch
-          v-model="formDataValue.public"
+          v-model="formDataValue._public"
           label="クーポンを有効にする"
           color="primary"
         />

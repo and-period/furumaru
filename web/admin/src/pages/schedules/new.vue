@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useScheduleStore } from '~/store'
-import type { CreateScheduleRequest } from '~/types/api'
+import type { CreateScheduleRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
@@ -22,7 +22,7 @@ const formData = ref<CreateScheduleRequest>({
   thumbnailUrl: '',
   imageUrl: 'https://furumaru.s3.ap-northeast-1.amazonaws.com/asset/furumaru_waiting.png',
   openingVideoUrl: 'https://furumaru.s3.ap-northeast-1.amazonaws.com/asset/furumaru_opening.mp4',
-  public: true, // 公開状態で作成する(承認フラグで公開かの出し分けを実施)
+  _public: true, // 公開状態で作成する(承認フラグで公開かの出し分けを実施)
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
 })

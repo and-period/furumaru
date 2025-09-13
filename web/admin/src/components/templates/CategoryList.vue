@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { AdminType } from '~/types/api'
-import type { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, UpdateCategoryRequest, UpdateProductTypeRequest } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { CreateCategoryRequest, Category, ProductType, CreateProductTypeRequest, UpdateCategoryRequest, UpdateProductTypeRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -12,7 +12,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   isAlert: {
     type: Boolean,
@@ -132,7 +132,6 @@ const props = defineProps({
       categoryId: '',
       name: '',
       iconUrl: '',
-      icons: [],
       createdAt: 0,
       updatedAt: 0,
     }),

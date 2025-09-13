@@ -1,8 +1,5 @@
-import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
-
-import { apiClient } from '~/plugins/api-client'
-import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, CallbackAuthYoutubeBroadcastRequest, CreateYoutubeBroadcastRequest, GetUploadUrlRequest, GuestBroadcast, UpdateBroadcastArchiveRequest } from '~/types/api'
+import type { AuthYoutubeBroadcastRequest, Broadcast, CallbackAuthYoutubeBroadcastRequest, CreateYoutubeBroadcastRequest, GuestBroadcast, V1GuestsSchedulesBroadcastsYoutubeAuthCompletePostRequest, V1GuestsSchedulesBroadcastsYoutubePostRequest, V1SchedulesScheduleIdBroadcastsArchiveVideoPostRequest, V1SchedulesScheduleIdBroadcastsDeleteRequest, V1SchedulesScheduleIdBroadcastsGetRequest, V1SchedulesScheduleIdBroadcastsMp4PostRequest, V1SchedulesScheduleIdBroadcastsPostRequest, V1SchedulesScheduleIdBroadcastsRtmpPostRequest, V1SchedulesScheduleIdBroadcastsStaticImageDeleteRequest, V1SchedulesScheduleIdBroadcastsStaticImagePostRequest, V1SchedulesScheduleIdBroadcastsYoutubeAuthPostRequest, V1UploadSchedulesBroadcastsLivePostRequest, V1UploadSchedulesScheduleIdBroadcastsArchivePostRequest } from '~/types/api/v1'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({
@@ -18,8 +15,11 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async getBroadcastByScheduleId(scheduleId: string): Promise<void> {
       try {
-        const res = await apiClient.broadcastApi().v1GetBroadcast(scheduleId)
-        this.broadcast = res.data.broadcast
+        const params: V1SchedulesScheduleIdBroadcastsGetRequest = {
+          scheduleId,
+        }
+        const res = await this.broadcastApi().v1SchedulesScheduleIdBroadcastsGet(params)
+        this.broadcast = res.broadcast
       }
       catch (err) {
         return this.errorHandler(err)
@@ -33,7 +33,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async pause(scheduleId: string): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1PauseBroadcast(scheduleId)
+        const params: V1SchedulesScheduleIdBroadcastsDeleteRequest = {
+          scheduleId,
+        }
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsDelete(params)
       }
       catch (err) {
         return this.errorHandler(err)
@@ -47,7 +50,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async unpause(scheduleId: string): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1UnpauseBroadcast(scheduleId)
+        const params: V1SchedulesScheduleIdBroadcastsPostRequest = {
+          scheduleId,
+        }
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsPost(params)
       }
       catch (err) {
         return this.errorHandler(err)
@@ -61,7 +67,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async activateStaticImage(scheduleId: string): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1ActivateBroadcastStaticImage(scheduleId)
+        const params: V1SchedulesScheduleIdBroadcastsStaticImagePostRequest = {
+          scheduleId,
+        }
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsStaticImagePost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -78,7 +87,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async deactivateStaticImage(scheduleId: string): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1DeactivateBroadcastStaticImage(scheduleId)
+        const params: V1SchedulesScheduleIdBroadcastsStaticImageDeleteRequest = {
+          scheduleId,
+        }
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsStaticImageDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -96,17 +108,22 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async activateMp4Input(scheduleId: string, payload: File): Promise<void> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const uploadParams: V1UploadSchedulesBroadcastsLivePostRequest = {
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient.broadcastApi().v1GetBroadcastLiveUploadUrl(body)
+        const res = await this.uploadApi().v1UploadSchedulesBroadcastsLivePost(uploadParams)
 
-        const inputUrl = await fileUpload(payload, res.data.key, res.data.url)
+        const inputUrl = await fileUpload(this.uploadApi(), payload, res.key, res.url)
 
-        const req: ActivateBroadcastMP4Request = {
-          inputUrl,
+        const activateParams: V1SchedulesScheduleIdBroadcastsMp4PostRequest = {
+          scheduleId,
+          activateBroadcastMP4Request: {
+            inputUrl,
+          },
         }
-        await apiClient.broadcastApi().v1ActivateBroadcastMP4(scheduleId, req)
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsMp4Post(activateParams)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -123,7 +140,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async activateRtmpInput(scheduleId: string): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1ActivateBroadcastRTMP(scheduleId)
+        const params: V1SchedulesScheduleIdBroadcastsRtmpPostRequest = {
+          scheduleId,
+        }
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsRtmpPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -141,17 +161,23 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async uploadArchiveMp4(scheduleId: string, payload: File): Promise<void> {
       try {
-        const body: GetUploadUrlRequest = {
-          fileType: payload.type,
+        const uploadParams: V1UploadSchedulesScheduleIdBroadcastsArchivePostRequest = {
+          scheduleId,
+          getUploadURLRequest: {
+            fileType: payload.type,
+          },
         }
-        const res = await apiClient.broadcastApi().v1GetBroadcastArchiveUploadUrl(scheduleId, body)
+        const res = await this.uploadApi().v1UploadSchedulesScheduleIdBroadcastsArchivePost(uploadParams)
 
-        const archiveUrl = await fileUpload(payload, res.data.key, res.data.url)
+        const archiveUrl = await fileUpload(this.uploadApi(), payload, res.key, res.url)
 
-        const req: UpdateBroadcastArchiveRequest = {
-          archiveUrl,
+        const archiveParams: V1SchedulesScheduleIdBroadcastsArchiveVideoPostRequest = {
+          scheduleId,
+          updateBroadcastArchiveRequest: {
+            archiveUrl,
+          },
         }
-        await apiClient.broadcastApi().v1UpdateBroadcastArchive(scheduleId, req)
+        await this.broadcastApi().v1SchedulesScheduleIdBroadcastsArchiveVideoPost(archiveParams)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -167,8 +193,8 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async getGuestBroadcast(): Promise<void> {
       try {
-        const res = await apiClient.broadcastApi().v1GuestGetBroadcast()
-        this.guestBroadcast = res.data.broadcast
+        const res = await this.broadcastApi().v1GuestsSchedulesBroadcastsGet()
+        this.guestBroadcast = res.broadcast
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -187,8 +213,12 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async authYouTube(scheduleId: string, payload: AuthYoutubeBroadcastRequest): Promise<string> {
       try {
-        const res = await apiClient.broadcastApi().v1AuthYoutubeBroadcast(scheduleId, payload)
-        return res.data.url
+        const params: V1SchedulesScheduleIdBroadcastsYoutubeAuthPostRequest = {
+          scheduleId,
+          authYoutubeBroadcastRequest: payload,
+        }
+        const res = await this.broadcastApi().v1SchedulesScheduleIdBroadcastsYoutubeAuthPost(params)
+        return res.url
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -205,8 +235,11 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async connectYouTube(payload: CallbackAuthYoutubeBroadcastRequest): Promise<void> {
       try {
-        const res = await apiClient.broadcastApi().v1CallbackAuthYoutubeBroadcast(payload)
-        this.guestBroadcast = res.data.broadcast
+        const params: V1GuestsSchedulesBroadcastsYoutubeAuthCompletePostRequest = {
+          callbackAuthYoutubeBroadcastRequest: payload,
+        }
+        const res = await this.guestApi().v1GuestsSchedulesBroadcastsYoutubeAuthCompletePost(params)
+        this.guestBroadcast = res.broadcast
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -225,7 +258,10 @@ export const useBroadcastStore = defineStore('broadcast', {
      */
     async createYoutubeLive(payload: CreateYoutubeBroadcastRequest): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1CreateYoutubeBroadcast(payload)
+        const params: V1GuestsSchedulesBroadcastsYoutubePostRequest = {
+          createYoutubeBroadcastRequest: payload,
+        }
+        await this.guestApi().v1GuestsSchedulesBroadcastsYoutubePost(params)
       }
       catch (err) {
         return this.errorHandler(err, {

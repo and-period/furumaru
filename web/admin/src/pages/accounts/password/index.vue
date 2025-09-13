@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore } from '~/store'
-import type { UpdateAuthPasswordRequest } from '~/types/api'
+import type { UpdateAuthPasswordRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const commonStore = useCommonStore()

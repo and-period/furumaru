@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest } from '~/types/api'
+import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest, V1SpotTypesGetRequest, V1SpotTypesPostRequest, V1SpotTypesSpotTypeIdDeleteRequest, V1SpotTypesSpotTypeIdPatchRequest } from '~/types/api/v1'
 
 export const useSpotTypeStore = defineStore('spotType', {
   state: () => ({
@@ -18,9 +15,14 @@ export const useSpotTypeStore = defineStore('spotType', {
      */
     async fetchSpotTypes(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.spotTypeApi().v1ListSpotTypes(limit, offset, '')
-        this.spotTypes = res.data.spotTypes
-        this.total = res.data.total
+        const params: V1SpotTypesGetRequest = {
+          limit,
+          offset,
+          name: '',
+        }
+        const res = await this.spotTypeApi().v1SpotTypesGet(params)
+        this.spotTypes = res.spotTypes
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -34,7 +36,10 @@ export const useSpotTypeStore = defineStore('spotType', {
      */
     async searchSpotTypes(name = '', spotTypeIds: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.spotTypeApi().v1ListSpotTypes(undefined, undefined, name)
+        const params: V1SpotTypesGetRequest = {
+          name,
+        }
+        const res = await this.spotTypeApi().v1SpotTypesGet(params)
         const spotTypes: SpotType[] = []
         this.spotTypes.forEach((spotType: SpotType): void => {
           if (!spotTypeIds.includes(spotType.id)) {
@@ -42,14 +47,14 @@ export const useSpotTypeStore = defineStore('spotType', {
           }
           spotTypes.push(spotType)
         })
-        res.data.spotTypes.forEach((spotType: SpotType): void => {
+        res.spotTypes.forEach((spotType: SpotType): void => {
           if (spotTypes.find((v): boolean => v.id === spotType.id)) {
             return
           }
           spotTypes.push(spotType)
         })
         this.spotTypes = spotTypes
-        this.total = res.data.total
+        this.total = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -62,8 +67,11 @@ export const useSpotTypeStore = defineStore('spotType', {
      */
     async createSpotType(payload: CreateSpotTypeRequest): Promise<void> {
       try {
-        const res = await apiClient.spotTypeApi().v1CreateSpotType(payload)
-        this.spotTypes.unshift(res.data.spotType)
+        const params: V1SpotTypesPostRequest = {
+          createSpotTypeRequest: payload,
+        }
+        const res = await this.spotTypeApi().v1SpotTypesPost(params)
+        this.spotTypes.unshift(res.spotType)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -80,7 +88,11 @@ export const useSpotTypeStore = defineStore('spotType', {
      */
     async updateSpotType(spotTypeId: string, payload: UpdateSpotTypeRequest): Promise<void> {
       try {
-        await apiClient.spotTypeApi().v1UpdateSpotType(spotTypeId, payload)
+        const params: V1SpotTypesSpotTypeIdPatchRequest = {
+          spotTypeId,
+          updateSpotTypeRequest: payload,
+        }
+        await this.spotTypeApi().v1SpotTypesSpotTypeIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -97,7 +109,10 @@ export const useSpotTypeStore = defineStore('spotType', {
      */
     async deleteSpotType(spotTypeId: string): Promise<void> {
       try {
-        await apiClient.spotTypeApi().v1DeleteSpotType(spotTypeId)
+        const params: V1SpotTypesSpotTypeIdDeleteRequest = {
+          spotTypeId,
+        }
+        await this.spotTypeApi().v1SpotTypesSpotTypeIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, { 404: 'このスポット種別は存在しません。' })

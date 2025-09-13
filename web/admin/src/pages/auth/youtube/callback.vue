@@ -5,7 +5,7 @@ import { useAlert } from '~/lib/hooks'
 import type {
   CreateYoutubeBroadcastRequest,
   CallbackAuthYoutubeBroadcastRequest,
-} from '~/types/api'
+} from '~/types/api/v1'
 import { useBroadcastStore } from '~/store'
 
 const route = useRoute()
@@ -26,7 +26,7 @@ const loading = ref<boolean>(false)
 const formData = reactive<CreateYoutubeBroadcastRequest>({
   title: '',
   description: '',
-  public: false,
+  _public: false,
 })
 
 const parseTime = (unixtime: number): string => {

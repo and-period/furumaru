@@ -1,14 +1,19 @@
-import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreateExperienceRequest,
   Experience,
   ExperiencesResponse,
-  GetUploadUrlRequest,
+  GetUploadURLRequest,
   UpdateExperienceRequest,
-  UploadUrlResponse,
-} from '~/types/api'
+  UploadURLResponse,
+  V1ExperiencesExperienceIdDeleteRequest,
+  V1ExperiencesExperienceIdGetRequest,
+  V1ExperiencesExperienceIdPatchRequest,
+  V1ExperiencesGetRequest,
+  V1ExperiencesPostRequest,
+  V1UploadProductsImagePostRequest,
+  V1UploadProductsVideoPostRequest,
+} from '~/types/api/v1'
 
 export const useExperienceStore = defineStore('experience', {
   state: () => ({
@@ -28,23 +33,25 @@ export const useExperienceStore = defineStore('experience', {
       experienceId: string[] = [],
     ) {
       try {
-        const res = await apiClient
-          .experienceApi()
-          .v1ListExperiences(undefined, undefined, producerId, name)
+        const params: V1ExperiencesGetRequest = {
+          name,
+          producerId,
+        }
+        const res = await this.experienceApi().v1ExperiencesGet(params)
         const experiences: Experience[] = []
         this.experiences.forEach((experience) => {
           if (experienceId.includes(experience.id)) {
             experiences.push(experience)
           }
         })
-        res.data.experiences.forEach((experience) => {
+        res.experiences.forEach((experience) => {
           if (experiences.find(e => e.id === experience.id)) {
             return
           }
           experiences.push(experience)
         })
         this.experiences = experiences
-        this.totalItems = res.data.total
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -59,14 +66,16 @@ export const useExperienceStore = defineStore('experience', {
      */
     async fetchExperiences(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient
-          .experienceApi()
-          .v1ListExperiences(limit, offset)
+        const params: V1ExperiencesGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.experienceApi().v1ExperiencesGet(params)
 
         const experienceStore = useExperienceStore()
-        this.experiencesResponse = res.data
-        this.totalItems = res.data.total
-        experienceStore.experiences = res.data.experiences
+        this.experiencesResponse = res
+        this.totalItems = res.total
+        experienceStore.experiences = res.experiences
       }
       catch (err) {
         return this.errorHandler(err)
@@ -80,10 +89,11 @@ export const useExperienceStore = defineStore('experience', {
      */
     async fetchExperience(experienceId: string) {
       try {
-        const res = await apiClient
-          .experienceApi()
-          .v1GetExperience(experienceId)
-        return res.data
+        const params: V1ExperiencesExperienceIdGetRequest = {
+          experienceId,
+        }
+        const res = await this.experienceApi().v1ExperiencesExperienceIdGet(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err)
@@ -92,8 +102,11 @@ export const useExperienceStore = defineStore('experience', {
 
     async createExperience(payload: CreateExperienceRequest) {
       try {
-        const res = await apiClient.experienceApi().v1CreateExperience(payload)
-        return res.data
+        const params: V1ExperiencesPostRequest = {
+          createExperienceRequest: payload,
+        }
+        const res = await this.experienceApi().v1ExperiencesPost(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -114,10 +127,12 @@ export const useExperienceStore = defineStore('experience', {
       payload: UpdateExperienceRequest,
     ) {
       try {
-        const res = await apiClient
-          .experienceApi()
-          .v1UpdateExperience(experienceId, payload)
-        return res.data
+        const params: V1ExperiencesExperienceIdPatchRequest = {
+          experienceId,
+          updateExperienceRequest: payload,
+        }
+        const res = await this.experienceApi().v1ExperiencesExperienceIdPatch(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err)
@@ -134,7 +149,7 @@ export const useExperienceStore = defineStore('experience', {
       try {
         const res = await this.getExperienceMediaUploadUrl(contentType)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -143,17 +158,16 @@ export const useExperienceStore = defineStore('experience', {
       }
     },
 
-    async getExperienceMediaUploadUrl(
-      contentType: string,
-    ): Promise<AxiosResponse<UploadUrlResponse, any>> {
-      const body: GetUploadUrlRequest = {
+    async getExperienceMediaUploadUrl(contentType: string): Promise<UploadURLResponse> {
+      const body: GetUploadURLRequest = {
         fileType: contentType,
       }
       if (contentType.includes('image/')) {
         try {
-          const res = await apiClient
-            .productApi()
-            .v1GetProductImageUploadUrl(body)
+          const params: V1UploadProductsImagePostRequest = {
+            getUploadURLRequest: body,
+          }
+          const res = await this.uploadApi().v1UploadProductsImagePost(params)
           return res
         }
         catch (err) {
@@ -164,9 +178,10 @@ export const useExperienceStore = defineStore('experience', {
       }
       if (contentType.includes('video/')) {
         try {
-          const res = await apiClient
-            .productApi()
-            .v1GetProductVideoUploadUrl(body)
+          const params: V1UploadProductsVideoPostRequest = {
+            getUploadURLRequest: body,
+          }
+          const res = await this.uploadApi().v1UploadProductsVideoPost(params)
           return res
         }
         catch (err) {
@@ -184,7 +199,10 @@ export const useExperienceStore = defineStore('experience', {
      */
     async deleteExperience(experienceId: string) {
       try {
-        await apiClient.experienceApi().v1DeleteExperience(experienceId)
+        const params: V1ExperiencesExperienceIdDeleteRequest = {
+          experienceId,
+        }
+        await this.experienceApi().v1ExperiencesExperienceIdDelete(params)
         const index = this.experiences.findIndex(
           experience => experience.id === experienceId,
         )

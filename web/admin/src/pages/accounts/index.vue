@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
-import { AdminType } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
 import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
@@ -12,22 +12,22 @@ const menus: SettingMenu[] = [
   {
     text: 'プロフィール変更',
     action: () => router.push('/accounts/coordinator'),
-    adminTypes: [AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeCoordinator],
   },
   {
     text: 'メールアドレス変更',
     action: () => router.push('/accounts/email'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator, AdminType.AdminTypeProducer],
   },
   {
     text: 'パスワード変更',
     action: () => router.push('/accounts/password'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator, AdminType.AdminTypeProducer],
   },
   {
     text: 'SNSアカウント連携',
     action: () => router.push('/accounts/providers'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator, AdminType.AdminTypeProducer],
   },
   {
     text: 'サインアウト',
@@ -36,7 +36,7 @@ const menus: SettingMenu[] = [
       authStore.logout()
       router.push('/signin')
     },
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR, AdminType.PRODUCER],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator, AdminType.AdminTypeProducer],
   },
 ]
 

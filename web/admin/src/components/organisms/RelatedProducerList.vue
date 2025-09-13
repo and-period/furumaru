@@ -3,7 +3,7 @@ import { mdiAccount, mdiPencil } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { useCoordinatorStore } from '~/store'
-import type { Producer } from '~/types/api'
+import type { Producer } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {

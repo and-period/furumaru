@@ -1,15 +1,9 @@
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
-import { defineStore } from 'pinia'
-
 import { messaging } from '~/plugins/firebase'
-import { apiClient } from '~/plugins/api-client'
-import {
-  AdminType,
-
-} from '~/types/api'
-import type { AuthProvider, AuthResponse, AuthUserResponse, ConnectGoogleAccountRequest, ConnectLineAccountRequest, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, Shipping, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, UpsertShippingRequest, VerifyAuthEmailRequest } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { AuthProvider, AuthResponse, AuthUserResponse, ConnectGoogleAccountRequest, ConnectLINEAccountRequest, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, Shipping, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, UpsertShippingRequest, V1AuthCoordinatorPatchRequest, V1AuthCoordinatorShippingsPatchRequest, V1AuthDevicePostRequest, V1AuthEmailPatchRequest, V1AuthEmailVerifiedPostRequest, V1AuthForgotPasswordPostRequest, V1AuthForgotPasswordVerifiedPostRequest, V1AuthGoogleGetRequest, V1AuthGooglePostRequest, V1AuthLineGetRequest, V1AuthLinePostRequest, V1AuthPasswordPatchRequest, V1AuthPostRequest, V1AuthRefreshTokenPostRequest, V1CoordinatorsGetRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
 import { useProductTypeStore } from '~/store'
 
 interface FetchTokenResponse {
@@ -43,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
       return state.user?.shopIds || []
     },
     adminType(state): AdminType {
-      return state.user?.type || AdminType.UNKNOWN
+      return state.user?.type as AdminType || AdminType.AdminTypeUnknown
     },
   },
 
@@ -77,8 +71,11 @@ export const useAuthStore = defineStore('auth', {
      */
     async signIn(payload: SignInRequest): Promise<string> {
       try {
-        const res = await apiClient.authApi().v1SignIn(payload)
-        return await this.setAuth(res.data)
+        const params: V1AuthPostRequest = {
+          signInRequest: payload,
+        }
+        const res = await this.authApi().v1AuthPost(params)
+        return await this.setAuth(res)
       }
       catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
@@ -98,14 +95,17 @@ export const useAuthStore = defineStore('auth', {
           throw new Error('OAuthトークンの取得に失敗しました。')
         })
 
-        const auth = await apiClient.authApi().v1RefreshAuthToken({
-          refreshToken: token.refresh_token,
-        }).catch((err) => {
+        const params: V1AuthRefreshTokenPostRequest = {
+          refreshAuthTokenRequest: {
+            refreshToken: token.refresh_token,
+          },
+        }
+        const auth = await this.authApi().v1AuthRefreshTokenPost(params).catch((err) => {
           console.error('OAuth認証に失敗しました。', err)
           throw new Error('OAuth認証に失敗しました。')
         })
 
-        return await this.setAuth({ ...auth.data, refreshToken: token.refresh_token })
+        return await this.setAuth({ ...auth, refreshToken: token.refresh_token })
       }
       catch (err) {
         return this.errorHandler(err, { 401: 'Googleアカウントでのログインに失敗しました。' })
@@ -117,8 +117,8 @@ export const useAuthStore = defineStore('auth', {
      */
     async getUser(): Promise<void> {
       try {
-        const res = await apiClient.authApi().v1GetAuthUser()
-        this.user = res.data
+        const res = await this.authApi().v1AuthUserGet()
+        this.user = res
       }
       catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
@@ -131,7 +131,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async updateEmail(payload: UpdateAuthEmailRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1UpdateAuthEmail(payload)
+        const params: V1AuthEmailPatchRequest = {
+          updateAuthEmailRequest: payload,
+        }
+        await this.authApi().v1AuthEmailPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -147,7 +150,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async verifyEmail(payload: VerifyAuthEmailRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1VerifyAuthEmail(payload)
+        const params: V1AuthEmailVerifiedPostRequest = {
+          verifyAuthEmailRequest: payload,
+        }
+        await this.authApi().v1AuthEmailVerifiedPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -163,7 +169,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async updatePassword(payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1UpdateAuthPassword(payload)
+        const params: V1AuthPasswordPatchRequest = {
+          updateAuthPasswordRequest: payload,
+        }
+        await this.authApi().v1AuthPasswordPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -178,7 +187,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async forgotPassword(payload: ForgotAuthPasswordRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1ForgotAuthPassword(payload)
+        const params: V1AuthForgotPasswordPostRequest = {
+          forgotAuthPasswordRequest: payload,
+        }
+        await this.authApi().v1AuthForgotPasswordPost(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -191,7 +203,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async resetPassword(payload: ResetAuthPasswordRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1ResetAuthPassword(payload)
+        const params: V1AuthForgotPasswordVerifiedPostRequest = {
+          resetAuthPasswordRequest: payload,
+        }
+        await this.authApi().v1AuthForgotPasswordVerifiedPost(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -204,7 +219,12 @@ export const useAuthStore = defineStore('auth', {
      */
     async registerDeviceToken(deviceToken: string): Promise<void> {
       try {
-        await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
+        const params: V1AuthDevicePostRequest = {
+          registerAuthDeviceRequest: {
+            device: deviceToken,
+          },
+        }
+        await this.authApi().v1AuthDevicePost(params)
 
         const cookie = useCookie('deviceToken', { secure: true })
         cookie.value = deviceToken
@@ -223,12 +243,15 @@ export const useAuthStore = defineStore('auth', {
      */
     async getAuthByRefreshToken(refreshToken: string): Promise<void> {
       try {
-        const res = await apiClient.authApi().v1RefreshAuthToken({
-          refreshToken,
-        })
-        this.setExpiredAt(res.data)
+        const params: V1AuthRefreshTokenPostRequest = {
+          refreshAuthTokenRequest: {
+            refreshToken,
+          },
+        }
+        const res = await this.authApi().v1AuthRefreshTokenPost(params)
+        this.setExpiredAt(res)
         this.isAuthenticated = true
-        this.auth = res.data
+        this.auth = res
         this.auth.refreshToken = refreshToken
       }
       catch (err) {
@@ -270,11 +293,11 @@ export const useAuthStore = defineStore('auth', {
      */
     async getCoordinator(): Promise<void> {
       try {
-        const res = await apiClient.authApi().v1GetAuthCoordinator()
+        const res = await this.authApi().v1AuthCoordinatorGet()
 
         const productTypeStore = useProductTypeStore()
-        this.coordinator = res.data.coordinator
-        productTypeStore.productTypes = res.data.productTypes
+        this.coordinator = res.coordinator
+        productTypeStore.productTypes = res.productTypes
       }
       catch (err) {
         return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
@@ -287,7 +310,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async updateCoordinator(payload: UpdateCoordinatorRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1UpdateAuthCoordinator(payload)
+        const params: V1AuthCoordinatorPatchRequest = {
+          updateCoordinatorRequest: payload,
+        }
+        await this.authApi().v1AuthCoordinatorPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -301,8 +327,8 @@ export const useAuthStore = defineStore('auth', {
      */
     async fetchShipping(): Promise<void> {
       try {
-        const res = await apiClient.authApi().v1GetAuthShipping()
-        this.shipping = res.data.shipping
+        const res = await this.authApi().v1AuthCoordinatorShippingsGet()
+        this.shipping = res.shipping
       }
       catch (err) {
         return this.errorHandler(err, { 404: '配送設定が見つかりません。' })
@@ -316,7 +342,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async upsertShipping(payload: UpsertShippingRequest): Promise<void> {
       try {
-        await apiClient.authApi().v1UpsertAuthShipping(payload)
+        const params: V1AuthCoordinatorShippingsPatchRequest = {
+          upsertShippingRequest: payload,
+        }
+        await this.authApi().v1AuthCoordinatorShippingsPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -393,8 +422,8 @@ export const useAuthStore = defineStore('auth', {
      */
     async listAuthProviders(): Promise<void> {
       try {
-        const res = await apiClient.authApi().v1AuthProviders()
-        this.providers = res.data.providers
+        const res = await this.authApi().v1AuthProvidersGet()
+        this.providers = res.providers
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -409,8 +438,12 @@ export const useAuthStore = defineStore('auth', {
      */
     async getAuthGoogleUrl(state: string, redirectUri?: string): Promise<string> {
       try {
-        const res = await apiClient.authApi().v1AuthGoogleAccount(state, redirectUri)
-        return res.data.url
+        const params: V1AuthGoogleGetRequest = {
+          state,
+          redirectUri,
+        }
+        const res = await this.authApi().v1AuthGoogleGet(params)
+        return res.url
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -424,14 +457,15 @@ export const useAuthStore = defineStore('auth', {
      * @returns
      */
     async linkGoogleAccount(code: string, nonce: string, redirectUri?: string): Promise<void> {
-      const req: ConnectGoogleAccountRequest = {
-        code,
-        nonce,
-        redirectUri,
-      }
-
       try {
-        await apiClient.authApi().v1ConnectGoogleAccount(req)
+        const params: V1AuthGooglePostRequest = {
+          connectGoogleAccountRequest: {
+            code,
+            nonce,
+            redirectUri: redirectUri || '',
+          },
+        }
+        await this.authApi().v1AuthGooglePost(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -446,8 +480,12 @@ export const useAuthStore = defineStore('auth', {
      */
     async getAuthLineUrl(state: string, redirectUri?: string): Promise<string> {
       try {
-        const res = await apiClient.authApi().v1AuthLineAccount(state, redirectUri)
-        return res.data.url
+        const params: V1AuthLineGetRequest = {
+          state,
+          redirectUri,
+        }
+        const res = await this.authApi().v1AuthLineGet(params)
+        return res.url
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -461,14 +499,15 @@ export const useAuthStore = defineStore('auth', {
      * @returns
      */
     async linkLineAccount(code: string, nonce: string, redirectUri?: string): Promise<void> {
-      const req: ConnectLineAccountRequest = {
-        code,
-        nonce,
-        redirectUri,
-      }
-
       try {
-        await apiClient.authApi().v1ConnectLineAccount(req)
+        const params: V1AuthLinePostRequest = {
+          connectLINEAccountRequest: {
+            code,
+            nonce,
+            redirectUri: redirectUri || '',
+          },
+        }
+        await this.authApi().v1AuthLinePost(params)
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
@@ -485,7 +524,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await apiClient.authApi().v1SignOut()
+        await this.authApi().v1AuthDelete()
 
         const auth = useCookie('auth', { secure: true })
         const refreshToken = useCookie('refreshToken', { secure: true })

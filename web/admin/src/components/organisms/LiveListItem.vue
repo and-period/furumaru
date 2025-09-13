@@ -6,9 +6,9 @@ import type {
   Live,
   Producer,
   Product,
-  ProductMediaInner,
+  ProductMedia,
   UpdateLiveRequest,
-} from '~/types/api'
+} from '~/types/api/v1'
 import {
   TimeDataValidationRules,
   UpdateLiveValidationRules,
@@ -65,7 +65,7 @@ const emits = defineEmits<Emits>()
  * 商品のサムネイル情報を取得する関数
  */
 const getProductThumbnailUrl = (product: Product): string => {
-  const thumbnail = product.media?.find((media: ProductMediaInner) => {
+  const thumbnail = product.media?.find((media: ProductMedia) => {
     return media.isThumbnail
   })
   return thumbnail ? thumbnail.url : ''

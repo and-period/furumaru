@@ -104,7 +104,7 @@ export interface User {
      * @type {number}
      * @memberof User
      */
-    updateAt: number;
+    updatedAt: number;
     /**
      * ユーザー名（表示名）
      * @type {string}
@@ -131,7 +131,7 @@ export function instanceOfUser(value: object): value is User {
     if (!('registered' in value) || value['registered'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
-    if (!('updateAt' in value) || value['updateAt'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
@@ -158,7 +158,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         'registered': json['registered'],
         'status': UserStatusFromJSON(json['status']),
         'thumbnailUrl': json['thumbnailUrl'],
-        'updateAt': json['updateAt'],
+        'updatedAt': json['updatedAt'],
         'username': json['username'],
     };
 }
@@ -186,7 +186,7 @@ export function UserToJSONTyped(value?: User | null, ignoreDiscriminator: boolea
         'registered': value['registered'],
         'status': UserStatusToJSON(value['status']),
         'thumbnailUrl': value['thumbnailUrl'],
-        'updateAt': value['updateAt'],
+        'updatedAt': value['updatedAt'],
         'username': value['username'],
     };
 }

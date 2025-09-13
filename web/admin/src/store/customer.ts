@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { User, UserOrder, UserToList } from '~/types/api'
+import type { User, UserOrder, UserToList, V1UsersGetRequest, V1UsersUserIdDeleteRequest, V1UsersUserIdGetRequest, V1UsersUserIdOrdersGetRequest } from '~/types/api/v1'
 import { useAddressStore } from '~/store'
 
 export const useCustomerStore = defineStore('customer', {
@@ -25,9 +22,13 @@ export const useCustomerStore = defineStore('customer', {
      */
     async fetchCustomers(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.userApi().v1ListUsers(limit, offset)
-        this.customersToList = res.data.users
-        this.totalItems = res.data.total
+        const params: V1UsersGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.userApi().v1UsersGet(params)
+        this.customersToList = res.users
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -40,10 +41,13 @@ export const useCustomerStore = defineStore('customer', {
      */
     async getCustomer(customerId: string): Promise<void> {
       try {
-        const res = await apiClient.userApi().v1GetUser(customerId)
+        const params: V1UsersUserIdGetRequest = {
+          userId: customerId,
+        }
+        const res = await this.userApi().v1UsersUserIdGet(params)
         const addressStore = useAddressStore()
-        this.customer = res.data.user
-        addressStore.address = res.data.address
+        this.customer = res.user
+        addressStore.address = res.address
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -60,12 +64,17 @@ export const useCustomerStore = defineStore('customer', {
      */
     async fetchCustomerOrders(customerId: string, limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.userApi().v1ListUserOrders(customerId, limit, offset)
-        this.orders = res.data.orders
-        this.totalOrderCount = res.data.orderTotalCount
-        this.totalPaymentCount = res.data.paymentTotalAmount
-        this.totalProductAmount = res.data.productTotalAmount
-        this.totalPaymentAmount = res.data.paymentTotalAmount
+        const params: V1UsersUserIdOrdersGetRequest = {
+          userId: customerId,
+          limit,
+          offset,
+        }
+        const res = await this.userApi().v1UsersUserIdOrdersGet(params)
+        this.orders = res.orders
+        this.totalOrderCount = res.orderTotalCount
+        this.totalPaymentCount = res.paymentTotalAmount
+        this.totalProductAmount = res.productTotalAmount
+        this.totalPaymentAmount = res.paymentTotalAmount
       }
       catch (err) {
         return this.errorHandler(err)
@@ -77,7 +86,10 @@ export const useCustomerStore = defineStore('customer', {
      */
     async deleteCustomer(customerId: string): Promise<void> {
       try {
-        await apiClient.userApi().v1DeleteUser(customerId)
+        const params: V1UsersUserIdDeleteRequest = {
+          userId: customerId,
+        }
+        await this.userApi().v1UsersUserIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {

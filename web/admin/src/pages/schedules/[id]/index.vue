@@ -17,7 +17,7 @@ import type {
   Live,
   UpdateLiveRequest,
   UpdateScheduleRequest,
-} from '~/types/api'
+} from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()

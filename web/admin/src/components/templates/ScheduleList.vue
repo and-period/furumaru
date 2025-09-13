@@ -10,8 +10,8 @@ import {
   ScheduleStatus,
 
   AdminType,
-} from '~/types/api'
-import type { Coordinator, Schedule } from '~/types/api'
+} from '~/types/api/v1'
+import type { Coordinator, Schedule } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -20,7 +20,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -112,7 +112,7 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.COORDINATOR
+  return props.adminType === AdminType.AdminTypeCoordinator
 }
 
 const getCoordinatorName = (coordinatorId: string): string => {
@@ -137,15 +137,15 @@ const getResizedThumbnails = (schedule: Schedule): string => {
 
 const getStatus = (status: ScheduleStatus): string => {
   switch (status) {
-    case ScheduleStatus.PRIVATE:
+    case ScheduleStatus.ScheduleStatusPrivate:
       return '非公開'
-    case ScheduleStatus.IN_PROGRESS:
+    case ScheduleStatus.ScheduleStatusInProgress:
       return '申請中'
-    case ScheduleStatus.WAITING:
+    case ScheduleStatus.ScheduleStatusWaiting:
       return '開催前'
-    case ScheduleStatus.LIVE:
+    case ScheduleStatus.ScheduleStatusLive:
       return '開催中'
-    case ScheduleStatus.CLOSED:
+    case ScheduleStatus.ScheduleStatusClosed:
       return '終了(アーカイブ)'
     default:
       return '不明'
@@ -154,15 +154,15 @@ const getStatus = (status: ScheduleStatus): string => {
 
 const getStatusColor = (status: ScheduleStatus): string => {
   switch (status) {
-    case ScheduleStatus.PRIVATE:
+    case ScheduleStatus.ScheduleStatusPrivate:
       return 'error'
-    case ScheduleStatus.IN_PROGRESS:
+    case ScheduleStatus.ScheduleStatusInProgress:
       return 'warning'
-    case ScheduleStatus.WAITING:
+    case ScheduleStatus.ScheduleStatusWaiting:
       return 'info'
-    case ScheduleStatus.LIVE:
+    case ScheduleStatus.ScheduleStatusLive:
       return 'primary'
-    case ScheduleStatus.CLOSED:
+    case ScheduleStatus.ScheduleStatusClosed:
       return 'secondary'
     default:
       return ''
@@ -178,7 +178,7 @@ const getTerm = (schedule: Schedule): string => {
 }
 
 const getPublished = (schedule: Schedule): string => {
-  return schedule.public ? '非公開にする' : '公開する'
+  return schedule._public ? '非公開にする' : '公開する'
 }
 
 const onClickUpdatePage = (page: number): void => {

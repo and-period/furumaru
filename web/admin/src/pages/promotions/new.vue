@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { useAlert } from '~/lib/hooks'
 
 import { useCommonStore, usePromotionStore } from '~/store'
-import type { CreatePromotionRequest } from '~/types/api'
+import type { CreatePromotionRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const commonStore = useCommonStore()
@@ -14,7 +14,7 @@ const loading = ref<boolean>(false)
 const formData = ref<CreatePromotionRequest>({
   title: '',
   description: '',
-  public: false,
+  _public: false,
   discountType: 1,
   discountRate: 0,
   code: '',

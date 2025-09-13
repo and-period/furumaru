@@ -4,8 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import useVuelidate from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminType } from '~/types/api'
-import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { CreateSpotTypeRequest, SpotType, UpdateSpotTypeRequest } from '~/types/api/v1'
 import { getErrorMessage } from '~/lib/validations'
 import { CreateSpotTypeValidationRules, UpdateSpotTypeValidationRules } from '~/types/validations'
 
@@ -16,7 +16,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   newDialog: {
     type: Boolean,
@@ -123,11 +123,11 @@ const newValidate = useVuelidate<CreateSpotTypeRequest>(CreateSpotTypeValidation
 const editValidate = useVuelidate<UpdateSpotTypeRequest>(UpdateSpotTypeValidationRules, editFormDataValue)
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const onClickUpdatePage = (page: number): void => {

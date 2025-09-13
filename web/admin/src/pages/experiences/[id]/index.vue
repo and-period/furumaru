@@ -5,8 +5,7 @@ import {
   useExperienceTypeStore,
   useProducerStore,
 } from '~/store'
-
-import type { UpdateExperienceRequest } from '~/types/api'
+import type { UpdateExperienceRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,7 +25,7 @@ const isLoading = ref<boolean>(false)
 const formData = ref<UpdateExperienceRequest>({
   title: '',
   description: '',
-  public: false,
+  _public: false,
   soldOut: false,
   experienceTypeId: '',
   media: [],

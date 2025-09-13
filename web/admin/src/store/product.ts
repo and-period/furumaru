@@ -1,20 +1,24 @@
-import { defineStore } from 'pinia'
-import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { useCoordinatorStore } from './coordinator'
 import { useProductTypeStore } from './product-type'
 import { useProductTagStore } from './product-tag'
 import { useProducerStore } from './producer'
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductRequest,
   ProductResponse,
   Product,
   UpdateProductRequest,
-  GetUploadUrlRequest,
-  UploadUrlResponse,
-} from '~/types/api'
+  V1ProductsGetRequest,
+  V1ProductsProductIdGetRequest,
+  UploadURLResponse,
+  GetUploadURLRequest,
+  V1UploadProductsImagePostRequest,
+  V1UploadProductsVideoPostRequest,
+  V1ProductsPostRequest,
+  V1ProductsProductIdPatchRequest,
+  V1ProductsProductIdDeleteRequest,
+} from '~/types/api/v1'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -32,20 +36,24 @@ export const useProductStore = defineStore('product', {
      */
     async fetchProducts(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.productApi().v1ListProducts(limit, offset)
+        const params: V1ProductsGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.productApi().v1ProductsGet(params)
 
         const coordinatorStore = useCoordinatorStore()
         const producerStore = useProducerStore()
         const categoryStore = useCategoryStore()
         const productTypeStore = useProductTypeStore()
         const productTagStore = useProductTagStore()
-        this.products = res.data.products
-        this.totalItems = res.data.total
-        coordinatorStore.coordinators = res.data.coordinators
-        producerStore.producers = res.data.producers
-        categoryStore.categories = res.data.categories
-        productTypeStore.productTypes = res.data.productTypes
-        productTagStore.productTags = res.data.productTags
+        this.products = res.products
+        this.totalItems = res.total
+        coordinatorStore.coordinators = res.coordinators
+        producerStore.producers = res.producers
+        categoryStore.categories = res.categories
+        productTypeStore.productTypes = res.productTypes
+        productTagStore.productTags = res.productTags
       }
       catch (err) {
         return this.errorHandler(err)
@@ -64,9 +72,11 @@ export const useProductStore = defineStore('product', {
       productIds: string[] = [],
     ): Promise<void> {
       try {
-        const res = await apiClient
-          .productApi()
-          .v1ListProducts(undefined, undefined, producerId, name)
+        const params: V1ProductsGetRequest = {
+          name,
+          producerId,
+        }
+        const res = await this.productApi().v1ProductsGet(params)
         const products: Product[] = []
         this.products.forEach((product: Product): void => {
           if (!productIds.includes(product.id)) {
@@ -74,14 +84,14 @@ export const useProductStore = defineStore('product', {
           }
           products.push(product)
         })
-        res.data.products.forEach((product: Product): void => {
+        res.products.forEach((product: Product): void => {
           if (products.find((v): boolean => v.id === product.id)) {
             return
           }
           products.push(product)
         })
         this.products = products
-        this.totalItems = res.data.total
+        this.totalItems = res.total
       }
       catch (err) {
         return this.errorHandler(err)
@@ -95,20 +105,23 @@ export const useProductStore = defineStore('product', {
      */
     async getProduct(productId: string): Promise<ProductResponse> {
       try {
-        const res = await apiClient.productApi().v1GetProduct(productId)
+        const params: V1ProductsProductIdGetRequest = {
+          productId,
+        }
+        const res = await this.productApi().v1ProductsProductIdGet(params)
 
         const coordinatorStore = useCoordinatorStore()
         const producerStore = useProducerStore()
         const categoryStore = useCategoryStore()
         const productTypeStore = useProductTypeStore()
         const productTagStore = useProductTagStore()
-        this.product = res.data.product
-        coordinatorStore.coordinators = [res.data.coordinator]
-        producerStore.producers = [res.data.producer]
-        categoryStore.categories = [res.data.category]
-        productTypeStore.productTypes = [res.data.productType]
-        productTagStore.productTags = res.data.productTags
-        return res.data
+        this.product = res.product
+        coordinatorStore.coordinators = [res.coordinator]
+        producerStore.producers = [res.producer]
+        categoryStore.categories = [res.category]
+        productTypeStore.productTypes = [res.productType]
+        productTagStore.productTags = res.productTags
+        return res
       }
       catch (err: any) {
         return this.errorHandler(err, {
@@ -128,7 +141,7 @@ export const useProductStore = defineStore('product', {
       try {
         const res = await this.getProductMediaUploadUrl(contentType)
 
-        return await fileUpload(payload, res.data.key, res.data.url)
+        return await fileUpload(this.uploadApi(), payload, res.key, res.url)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -137,17 +150,16 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async getProductMediaUploadUrl(
-      contentType: string,
-    ): Promise<AxiosResponse<UploadUrlResponse, any>> {
-      const body: GetUploadUrlRequest = {
+    async getProductMediaUploadUrl(contentType: string): Promise<UploadURLResponse> {
+      const body: GetUploadURLRequest = {
         fileType: contentType,
       }
       if (contentType.includes('image/')) {
         try {
-          const res = await apiClient
-            .productApi()
-            .v1GetProductImageUploadUrl(body)
+          const params: V1UploadProductsImagePostRequest = {
+            getUploadURLRequest: body,
+          }
+          const res = await this.uploadApi().v1UploadProductsImagePost(params)
           return res
         }
         catch (err) {
@@ -158,9 +170,10 @@ export const useProductStore = defineStore('product', {
       }
       if (contentType.includes('video/')) {
         try {
-          const res = await apiClient
-            .productApi()
-            .v1GetProductVideoUploadUrl(body)
+          const params: V1UploadProductsVideoPostRequest = {
+            getUploadURLRequest: body,
+          }
+          const res = await this.uploadApi().v1UploadProductsVideoPost(params)
           return res
         }
         catch (err) {
@@ -177,10 +190,13 @@ export const useProductStore = defineStore('product', {
      */
     async createProduct(payload: CreateProductRequest): Promise<void> {
       try {
-        await apiClient.productApi().v1CreateProduct({
-          ...payload,
-          inventory: Number(payload.inventory),
-        })
+        const params: V1ProductsPostRequest = {
+          createProductRequest: {
+            ...payload,
+            inventory: Number(payload.inventory),
+          },
+        }
+        await this.productApi().v1ProductsPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -197,7 +213,14 @@ export const useProductStore = defineStore('product', {
      */
     async updateProduct(productId: string, payload: UpdateProductRequest) {
       try {
-        await apiClient.productApi().v1UpdateProduct(productId, payload)
+        const params: V1ProductsProductIdPatchRequest = {
+          productId,
+          updateProductRequest: {
+            ...payload,
+            inventory: Number(payload.inventory),
+          },
+        }
+        await this.productApi().v1ProductsProductIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -215,7 +238,10 @@ export const useProductStore = defineStore('product', {
      */
     async deleteProduct(productId: string) {
       try {
-        await apiClient.productApi().v1DeleteProduct(productId)
+        const params: V1ProductsProductIdDeleteRequest = {
+          productId,
+        }
+        await this.productApi().v1ProductsProductIdDelete(params)
         const index = this.products.findIndex(
           product => product.id === productId,
         )

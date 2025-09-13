@@ -1,9 +1,6 @@
-import { defineStore } from 'pinia'
 import { useCoordinatorStore } from './coordinator'
 import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
-import { useProductStore } from './product'
-import { apiClient } from '~/plugins/api-client'
 import type {
   CompleteOrderRequest,
   DraftOrderRequest,
@@ -12,7 +9,16 @@ import type {
   OrderResponse,
   RefundOrderRequest,
   UpdateOrderFulfillmentRequest,
-} from '~/types/api'
+  V1OrdersExportPostRequest,
+  V1OrdersGetRequest,
+  V1OrdersOrderIdCancelPostRequest,
+  V1OrdersOrderIdCapturePostRequest,
+  V1OrdersOrderIdCompletePostRequest,
+  V1OrdersOrderIdDraftPostRequest,
+  V1OrdersOrderIdFulfillmentsFulfillmentIdPatchRequest,
+  V1OrdersOrderIdGetRequest,
+  V1OrdersOrderIdRefundPostRequest,
+} from '~/types/api/v1'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -30,16 +36,20 @@ export const useOrderStore = defineStore('order', {
      */
     async fetchOrders(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.orderApi().v1ListOrders(limit, offset)
+        const params: V1OrdersGetRequest = {
+          limit,
+          offset,
+        }
+        const res = await this.orderApi().v1OrdersGet(params)
 
         const coordinatorStore = useCoordinatorStore()
         const customerStore = useCustomerStore()
         const promotionStore = usePromotionStore()
-        this.orders = res.data.orders
-        this.totalItems = res.data.total
-        coordinatorStore.coordinators = res.data.coordinators
-        customerStore.customers = res.data.users
-        promotionStore.promotions = res.data.promotions
+        this.orders = res.orders
+        this.totalItems = res.total
+        coordinatorStore.coordinators = res.coordinators
+        customerStore.customers = res.users
+        promotionStore.promotions = res.promotions
       }
       catch (err) {
         return this.errorHandler(err)
@@ -53,8 +63,11 @@ export const useOrderStore = defineStore('order', {
      */
     async getOrder(orderId: string): Promise<OrderResponse> {
       try {
-        const res = await apiClient.orderApi().v1GetOrder(orderId)
-        return res.data
+        const params: V1OrdersOrderIdGetRequest = {
+          orderId,
+        }
+        const res = await this.orderApi().v1OrdersOrderIdGet(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -71,7 +84,10 @@ export const useOrderStore = defineStore('order', {
      */
     async captureOrder(orderId: string): Promise<void> {
       try {
-        await apiClient.orderApi().v1CaptureOrder(orderId)
+        const params: V1OrdersOrderIdCapturePostRequest = {
+          orderId,
+        }
+        await this.orderApi().v1OrdersOrderIdCapturePost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -92,7 +108,11 @@ export const useOrderStore = defineStore('order', {
       payload: DraftOrderRequest,
     ): Promise<void> {
       try {
-        await apiClient.orderApi().v1DraftOrder(orderId, payload)
+        const params: V1OrdersOrderIdDraftPostRequest = {
+          orderId,
+          draftOrderRequest: payload,
+        }
+        await this.orderApi().v1OrdersOrderIdDraftPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -113,7 +133,11 @@ export const useOrderStore = defineStore('order', {
       payload: CompleteOrderRequest,
     ): Promise<void> {
       try {
-        await apiClient.orderApi().v1CompleteOrder(orderId, payload)
+        const params: V1OrdersOrderIdCompletePostRequest = {
+          orderId,
+          completeOrderRequest: payload,
+        }
+        await this.orderApi().v1OrdersOrderIdCompletePost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -130,7 +154,10 @@ export const useOrderStore = defineStore('order', {
      */
     async cancelOrder(orderId: string): Promise<void> {
       try {
-        await apiClient.orderApi().v1CancelOrder(orderId)
+        const params: V1OrdersOrderIdCancelPostRequest = {
+          orderId,
+        }
+        await this.orderApi().v1OrdersOrderIdCancelPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -151,7 +178,11 @@ export const useOrderStore = defineStore('order', {
       payload: RefundOrderRequest,
     ): Promise<void> {
       try {
-        await apiClient.orderApi().v1RefundOrder(orderId, payload)
+        const params: V1OrdersOrderIdRefundPostRequest = {
+          orderId,
+          refundOrderRequest: payload,
+        }
+        await this.orderApi().v1OrdersOrderIdRefundPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -174,9 +205,12 @@ export const useOrderStore = defineStore('order', {
       payload: UpdateOrderFulfillmentRequest,
     ): Promise<void> {
       try {
-        await apiClient
-          .orderApi()
-          .v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
+        const params: V1OrdersOrderIdFulfillmentsFulfillmentIdPatchRequest = {
+          orderId,
+          fulfillmentId,
+          updateOrderFulfillmentRequest: payload,
+        }
+        await this.orderApi().v1OrdersOrderIdFulfillmentsFulfillmentIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -193,8 +227,11 @@ export const useOrderStore = defineStore('order', {
      */
     async exportOrders(payload: ExportOrdersRequest): Promise<string> {
       try {
-        const res = await apiClient.orderApi().v1ExportOrders(payload)
-        return res.data
+        const params: V1OrdersExportPostRequest = {
+          exportOrdersRequest: payload,
+        }
+        const res = await this.orderApi().v1OrdersExportPost(params)
+        return res
       }
       catch (err) {
         return this.errorHandler(err, {

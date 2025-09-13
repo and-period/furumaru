@@ -4,18 +4,14 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
+import { Prefecture } from '~/types'
 import {
-
   DeliveryType,
-  Prefecture,
-
   ProductStatus,
-
   StorageMethodType,
-
   AdminType,
-} from '~/types/api'
-import type { Category, Producer, Product, ProductTag, ProductType, UpdateProductRequest } from '~/types/api'
+} from '~/types/api/v1'
+import type { Category, Producer, Product, ProductTag, ProductType, UpdateProductRequest } from '~/types/api/v1'
 import { getErrorMessage } from '~/lib/validations'
 import {
   prefecturesList,
@@ -48,14 +44,14 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   formData: {
     type: Object as PropType<UpdateProductRequest>,
     default: (): UpdateProductRequest => ({
       name: '',
       description: '',
-      public: false,
+      _public: false,
       productTypeId: '',
       productTagIds: [],
       media: [],
@@ -65,12 +61,12 @@ const props = defineProps({
       weight: 0,
       itemUnit: '',
       itemDescription: '',
-      deliveryType: DeliveryType.NORMAL,
+      deliveryType: DeliveryType.DeliveryTypeNormal,
       recommendedPoint1: '',
       recommendedPoint2: '',
       recommendedPoint3: '',
       expirationDate: 0,
-      storageMethodType: StorageMethodType.NORMAL,
+      storageMethodType: StorageMethodType.StorageMethodTypeNormal,
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
@@ -86,8 +82,8 @@ const props = defineProps({
       id: '',
       name: '',
       description: '',
-      public: false,
-      status: ProductStatus.UNKNOWN,
+      _public: false,
+      status: ProductStatus.ProductStatusUnknown,
       coordinatorId: '',
       producerId: '',
       categoryId: '',
@@ -105,7 +101,7 @@ const props = defineProps({
       recommendedPoint2: '',
       recommendedPoint3: '',
       expirationDate: 0,
-      storageMethodType: StorageMethodType.UNKNOWN,
+      storageMethodType: StorageMethodType.StorageMethodTypeUnknown,
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
@@ -154,23 +150,23 @@ const statuses = [
   { title: '下書き', value: false },
 ]
 const productStatuses = [
-  { title: '予約販売', value: ProductStatus.PRESALE },
-  { title: '販売中', value: ProductStatus.FOR_SALE },
-  { title: '販売期間外', value: ProductStatus.OUT_OF_SALES },
-  { title: '非公開', value: ProductStatus.PRIVATE },
-  { title: 'アーカイブ済み', value: ProductStatus.ARCHIVED },
-  { title: '不明', value: ProductStatus.UNKNOWN },
+  { title: '予約販売', value: ProductStatus.ProductStatusPresale },
+  { title: '販売中', value: ProductStatus.ProductStatusForSale },
+  { title: '販売期間外', value: ProductStatus.ProductStatusOutOfSale },
+  { title: '非公開', value: ProductStatus.ProductStatusPrivate },
+  { title: 'アーカイブ済み', value: ProductStatus.ProductStatusArchived },
+  { title: '不明', value: ProductStatus.ProductStatusUnknown },
 ]
 const storageMethodTypes = [
-  { title: '常温保存', value: StorageMethodType.NORMAL },
-  { title: '冷暗所保存', value: StorageMethodType.COOL_DARK_PLACE },
-  { title: '冷蔵保存', value: StorageMethodType.REFRIGERATED },
-  { title: '冷凍保存', value: StorageMethodType.FROZEN },
+  { title: '常温保存', value: StorageMethodType.StorageMethodTypeNormal },
+  { title: '冷暗所保存', value: StorageMethodType.StorageMethodTypeCoolDark },
+  { title: '冷蔵保存', value: StorageMethodType.StorageMethodTypeRefrigerated },
+  { title: '冷凍保存', value: StorageMethodType.StorageMethodTypeFrozen },
 ]
 const deliveryTypes = [
-  { title: '通常便', value: DeliveryType.NORMAL },
-  { title: '冷蔵便', value: DeliveryType.REFRIGERATED },
-  { title: '冷凍便', value: DeliveryType.FROZEN },
+  { title: '通常便', value: DeliveryType.DeliveryTypeNormal },
+  { title: '冷蔵便', value: DeliveryType.DeliveryTypeRefrigerated },
+  { title: '冷凍便', value: DeliveryType.DeliveryTypeFrozen },
 ]
 const itemUnits = ['個', '瓶']
 
@@ -199,22 +195,22 @@ const endTimeDataValue = computed({
   },
 })
 const productStatus = computed<ProductStatus>(() => {
-  if (!formDataValue.value.public) {
-    return ProductStatus.PRIVATE
+  if (!formDataValue.value._public) {
+    return ProductStatus.ProductStatusPrivate
   }
   if (!formDataValue.value.startAt || !formDataValue.value.endAt) {
-    return ProductStatus.UNKNOWN
+    return ProductStatus.ProductStatusUnknown
   }
   const now = dayjs()
   const startAt = unix(formDataValue.value.startAt)
   const endAt = unix(formDataValue.value.endAt)
   if (now.isBefore(startAt)) {
-    return ProductStatus.PRESALE
+    return ProductStatus.ProductStatusPresale
   }
   if (now.isAfter(endAt)) {
-    return ProductStatus.OUT_OF_SALES
+    return ProductStatus.ProductStatusOutOfSale
   }
-  return ProductStatus.FOR_SALE
+  return ProductStatus.ProductStatusForSale
 })
 const selectedCategoryIdValue = computed({
   get: (): string => props.selectedCategoryId || '',
@@ -272,10 +268,10 @@ const endTimeDataValidate = useVuelidate(
 )
 
 const isUpdatable = (): boolean => {
-  if (props.product.status === ProductStatus.ARCHIVED) {
+  if (props.product.status === ProductStatus.ProductStatusArchived) {
     return false
   }
-  const targets: AdminType[] = [AdminType.ADMINISTRATOR, AdminType.COORDINATOR]
+  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
   return targets.includes(props.adminType)
 }
 

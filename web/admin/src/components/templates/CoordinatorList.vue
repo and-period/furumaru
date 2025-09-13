@@ -5,8 +5,8 @@ import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { AdminStatus } from '~/types/api'
-import type { Shop, Coordinator, ProductType } from '~/types/api'
+import { AdminStatus } from '~/types/api/v1'
+import type { Shop, Coordinator, ProductType } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -112,11 +112,11 @@ const deleteDialogValue = computed({
 
 const getStatus = (status: AdminStatus): string => {
   switch (status) {
-    case AdminStatus.ACTIVATED:
+    case AdminStatus.AdminStatusActivated:
       return '有効'
-    case AdminStatus.INVITED:
+    case AdminStatus.AdminStatusInvited:
       return '招待中'
-    case AdminStatus.DEACTIVATED:
+    case AdminStatus.AdminStatusDeactivated:
       return '無効'
     default:
       return '不明'
@@ -125,11 +125,11 @@ const getStatus = (status: AdminStatus): string => {
 
 const getStatusColor = (status: AdminStatus): string => {
   switch (status) {
-    case AdminStatus.ACTIVATED:
+    case AdminStatus.AdminStatusActivated:
       return 'primary'
-    case AdminStatus.INVITED:
+    case AdminStatus.AdminStatusInvited:
       return 'secondary'
-    case AdminStatus.DEACTIVATED:
+    case AdminStatus.AdminStatusDeactivated:
       return 'error'
     default:
       return 'unknown'

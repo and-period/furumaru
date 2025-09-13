@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { getErrorMessage } from '~/lib/validations'
-import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
+import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api/v1'
 import { UpsertShippingRateValidationRules } from '~/types/validations'
 
 interface Props {

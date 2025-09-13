@@ -1,170 +1,95 @@
-import type { AxiosInstance } from 'axios'
-import { client } from './axios'
-import {
-  AddressApi,
-  AdministratorApi,
-  AuthApi,
-  BroadcastApi,
-  CategoryApi,
-  Configuration,
-  ContactApi,
-  CoordinatorApi,
-  ExperienceApi,
-  ExperienceTypeApi,
-  GuestApi,
-  LiveApi,
-  MessageApi,
-  NotificationApi,
-  OrderApi,
-  OtherApi,
-  PaymentSystemApi,
-  ProducerApi,
-  ProductApi,
-  ProductTagApi,
-  ProductTypeApi,
-  PromotionApi,
-  ScheduleApi,
-  ShippingApi,
-  ShopApi,
-  SpotTypeApi,
-  TopApi,
-  UserApi,
-  VideoApi,
-} from '~/types/api'
+import type { PiniaPluginContext } from 'pinia'
+import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '~/types/api/v1'
+import type { BaseAPI } from '~/types/api/v1/runtime'
 
-let apiClient: ApiClient
+/**
+ * API クライアントのインスタンスを生成するファクトリ
+ */
+class ApiClientFactory {
+  create<T extends BaseAPI>(Client: new (config: Configuration) => T, token?: string): T {
+    const runtimeConfig = useRuntimeConfig()
+    const baseUrl = runtimeConfig.public.API_BASE_URL
 
-export class ApiClient {
-  basePath: string
-  config: Configuration
-  instance: AxiosInstance
+    const config = new Configuration({
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      basePath: baseUrl,
+      credentials: 'include',
+    })
 
-  constructor(basePath: string) {
-    this.basePath = basePath
-    this.config = new Configuration()
-    this.instance = client
-  }
-
-  addressApi() {
-    return new AddressApi(this.config, this.basePath, this.instance)
-  }
-
-  administratorApi() {
-    return new AdministratorApi(this.config, this.basePath, this.instance)
-  }
-
-  authApi() {
-    return new AuthApi(this.config, this.basePath, this.instance)
-  }
-
-  broadcastApi() {
-    return new BroadcastApi(this.config, this.basePath, this.instance)
-  }
-
-  categoryApi() {
-    return new CategoryApi(this.config, this.basePath, this.instance)
-  }
-
-  contactApi() {
-    return new ContactApi(this.config, this.basePath, this.instance)
-  }
-
-  coordinatorApi() {
-    return new CoordinatorApi(this.config, this.basePath, this.instance)
-  }
-
-  experienceApi() {
-    return new ExperienceApi(this.config, this.basePath, this.instance)
-  }
-
-  experienceTypeApi() {
-    return new ExperienceTypeApi(this.config, this.basePath, this.instance)
-  }
-
-  liveApi() {
-    return new LiveApi(this.config, this.basePath, this.instance)
-  }
-
-  messageApi() {
-    return new MessageApi(this.config, this.basePath, this.instance)
-  }
-
-  notificationApi() {
-    return new NotificationApi(this.config, this.basePath, this.instance)
-  }
-
-  orderApi() {
-    return new OrderApi(this.config, this.basePath, this.instance)
-  }
-
-  paymentSystemApi() {
-    return new PaymentSystemApi(this.config, this.basePath, this.instance)
-  }
-
-  producerApi() {
-    return new ProducerApi(this.config, this.basePath, this.instance)
-  }
-
-  productApi() {
-    return new ProductApi(this.config, this.basePath, this.instance)
-  }
-
-  productTagApi() {
-    return new ProductTagApi(this.config, this.basePath, this.instance)
-  }
-
-  productTypeApi() {
-    return new ProductTypeApi(this.config, this.basePath, this.instance)
-  }
-
-  promotionApi() {
-    return new PromotionApi(this.config, this.basePath, this.instance)
-  }
-
-  scheduleApi() {
-    return new ScheduleApi(this.config, this.basePath, this.instance)
-  }
-
-  shippingApi() {
-    return new ShippingApi(this.config, this.basePath, this.instance)
-  }
-
-  shopApi() {
-    return new ShopApi(this.config, this.basePath, this.instance)
-  }
-
-  spotTypeApi() {
-    return new SpotTypeApi(this.config, this.basePath, this.instance)
-  }
-
-  topApi() {
-    return new TopApi(this.config, this.basePath, this.instance)
-  }
-
-  userApi() {
-    return new UserApi(this.config, this.basePath, this.instance)
-  }
-
-  otherApi() {
-    return new OtherApi(this.config, this.basePath, this.instance)
-  }
-
-  guestApi() {
-    return new GuestApi(this.config, this.basePath, this.instance)
-  }
-
-  videoApi() {
-    return new VideoApi(this.config, this.basePath, this.instance)
+    return new Client(config)
   }
 }
 
-export default defineNuxtPlugin(() => {
-  const runtimeConfig = useRuntimeConfig()
-  const baseUrl = runtimeConfig.public.API_BASE_URL
+/**
+ * Pinia の store に API クライアントを注入する
+ */
+function apiClientInjector({ store }: PiniaPluginContext) {
+  const apiClientFactory = new ApiClientFactory()
 
-  apiClient = new ApiClient(baseUrl)
+  store.administratorApi = (token?: string): AdministratorApi => apiClientFactory.create<AdministratorApi>(AdministratorApi, token)
 
-  return { provide: {} }
+  store.authApi = (token?: string): AuthApi => apiClientFactory.create<AuthApi>(AuthApi, token)
+
+  store.broadcastApi = (token?: string): BroadcastApi => apiClientFactory.create<BroadcastApi>(BroadcastApi, token)
+
+  store.categoryApi = (token?: string): CategoryApi => apiClientFactory.create<CategoryApi>(CategoryApi, token)
+
+  store.contactApi = (token?: string): ContactApi => apiClientFactory.create<ContactApi>(ContactApi, token)
+
+  store.coordinatorApi = (token?: string): CoordinatorApi => apiClientFactory.create<CoordinatorApi>(CoordinatorApi, token)
+
+  store.experienceApi = (token?: string): ExperienceApi => apiClientFactory.create<ExperienceApi>(ExperienceApi, token)
+
+  store.experienceTypeApi = (token?: string): ExperienceTypeApi => apiClientFactory.create<ExperienceTypeApi>(ExperienceTypeApi, token)
+
+  store.guestApi = (token?: string): GuestApi => apiClientFactory.create<GuestApi>(GuestApi, token)
+
+  store.liveApi = (token?: string): LiveApi => apiClientFactory.create<LiveApi>(LiveApi, token)
+
+  store.messageApi = (token?: string): MessageApi => apiClientFactory.create<MessageApi>(MessageApi, token)
+
+  store.notificationApi = (token?: string): NotificationApi => apiClientFactory.create<NotificationApi>(NotificationApi, token)
+
+  store.orderApi = (token?: string): OrderApi => apiClientFactory.create<OrderApi>(OrderApi, token)
+
+  store.paymentSystemApi = (token?: string): PaymentSystemApi => apiClientFactory.create<PaymentSystemApi>(PaymentSystemApi, token)
+
+  store.postalCodeApi = (token?: string): PostalCodeApi => apiClientFactory.create<PostalCodeApi>(PostalCodeApi, token)
+
+  store.producerApi = (token?: string): ProducerApi => apiClientFactory.create<ProducerApi>(ProducerApi, token)
+
+  store.productApi = (token?: string): ProductApi => apiClientFactory.create<ProductApi>(ProductApi, token)
+
+  store.productTagApi = (token?: string): ProductTagApi => apiClientFactory.create<ProductTagApi>(ProductTagApi, token)
+
+  store.productTypeApi = (token?: string): ProductTypeApi => apiClientFactory.create<ProductTypeApi>(ProductTypeApi, token)
+
+  store.promotionApi = (token?: string): PromotionApi => apiClientFactory.create<PromotionApi>(PromotionApi, token)
+
+  store.scheduleApi = (token?: string): ScheduleApi => apiClientFactory.create<ScheduleApi>(ScheduleApi, token)
+
+  store.shippingApi = (token?: string): ShippingApi => apiClientFactory.create<ShippingApi>(ShippingApi, token)
+
+  store.shopApi = (token?: string): ShopApi => apiClientFactory.create<ShopApi>(ShopApi, token)
+
+  store.spotTypeApi = (token?: string): SpotTypeApi => apiClientFactory.create<SpotTypeApi>(SpotTypeApi, token)
+
+  store.topApi = (token?: string): TopApi => apiClientFactory.create<TopApi>(TopApi, token)
+
+  store.uploadApi = (token?: string): UploadApi => apiClientFactory.create<UploadApi>(UploadApi, token)
+
+  store.userApi = (token?: string): UserApi => apiClientFactory.create<UserApi>(UserApi, token)
+
+  store.videoApi = (token?: string): VideoApi => apiClientFactory.create<VideoApi>(VideoApi, token)
+}
+
+/**
+ * Pinia に ApiClient をinjection する Nuxt プラグイン
+ */
+const apiClientPlugin = defineNuxtPlugin(({ $pinia }) => {
+  $pinia.use(apiClientInjector) // type: ignore
 })
 
-export { apiClient }
+export default apiClientPlugin

@@ -4,8 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { dateTimeFormatter } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { AdminType } from '~/types/api'
-import type { Coordinator, Shipping } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
+import type { Coordinator, Shipping } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -14,7 +14,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -94,7 +94,7 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.COORDINATOR
+  return props.adminType === AdminType.AdminTypeCoordinator
 }
 
 const getCoordinatorName = (coordinatorId: string) => {

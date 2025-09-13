@@ -5,8 +5,9 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { Prefecture, PaymentStatus, UserStatus, AdminType, AdminStatus } from '~/types/api'
-import type { UserOrder, User, Address } from '~/types/api'
+import { Prefecture } from '~/types'
+import { PaymentStatus, UserStatus, AdminType, AdminStatus } from '~/types/api/v1'
+import type { UserOrder, User, Address } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -15,7 +16,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   isAlert: {
     type: Boolean,
@@ -44,9 +45,10 @@ const props = defineProps({
       lastnameKana: '',
       firstnameKana: '',
       registered: false,
-      status: UserStatus.UNKNOWN,
+      status: UserStatus.UserStatusUnknown,
       email: '',
       phoneNumber: '',
+      thumbnailUrl: '',
       createdAt: 0,
       updatedAt: 0,
     }),
@@ -155,10 +157,10 @@ const deleteDialogValue = computed({
 })
 
 const isEditable = (): boolean => {
-  if (!props.customer || props.customer.status === AdminStatus.DEACTIVATED) {
+  if (!props.customer || props.customer.status === AdminStatus.AdminStatusDeactivated) {
     return false
   }
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const getName = (): string => {
@@ -189,13 +191,13 @@ const getAddressArea = (): string => {
 
 const getCustomerStatus = (): string => {
   switch (props.customer.status) {
-    case UserStatus.GUEST:
+    case UserStatus.UserStatusGuest:
       return 'ゲスト'
-    case UserStatus.PROVISIONAL:
+    case UserStatus.UserStatusProvisional:
       return '仮登録'
-    case UserStatus.VERIFIED:
+    case UserStatus.UserStatusVerified:
       return '認証済み'
-    case UserStatus.WITH_DRAWAL:
+    case UserStatus.UserStatusDeactivated:
       return '退会済み'
     default:
       return '不明'
@@ -204,13 +206,13 @@ const getCustomerStatus = (): string => {
 
 const getCustomerStatusColor = (): string => {
   switch (props.customer.status) {
-    case UserStatus.GUEST:
+    case UserStatus.UserStatusGuest:
       return 'secondary'
-    case UserStatus.PROVISIONAL:
+    case UserStatus.UserStatusProvisional:
       return 'warning'
-    case UserStatus.VERIFIED:
+    case UserStatus.UserStatusVerified:
       return 'primary'
-    case UserStatus.WITH_DRAWAL:
+    case UserStatus.UserStatusDeactivated:
       return 'error'
     default:
       return 'unknown'
@@ -219,15 +221,15 @@ const getCustomerStatusColor = (): string => {
 
 const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
-    case PaymentStatus.UNPAID:
+    case PaymentStatus.PaymentStatusUnpaid:
       return '未払い'
-    case PaymentStatus.AUTHORIZED:
+    case PaymentStatus.PaymentStatusAuthorized:
       return 'オーソリ済み'
-    case PaymentStatus.PAID:
+    case PaymentStatus.PaymentStatusPaid:
       return '支払い済み'
-    case PaymentStatus.CANCELED:
+    case PaymentStatus.PaymentStatusCanceled:
       return 'キャンセル済み'
-    case PaymentStatus.FAILED:
+    case PaymentStatus.PaymentStatusFailed:
       return '失敗'
     default:
       return '不明'
@@ -236,15 +238,15 @@ const getPaymentStatus = (status: PaymentStatus): string => {
 
 const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
-    case PaymentStatus.UNPAID:
+    case PaymentStatus.PaymentStatusUnpaid:
       return 'secondary'
-    case PaymentStatus.AUTHORIZED:
+    case PaymentStatus.PaymentStatusAuthorized:
       return 'info'
-    case PaymentStatus.PAID:
+    case PaymentStatus.PaymentStatusPaid:
       return 'primary'
-    case PaymentStatus.CANCELED:
+    case PaymentStatus.PaymentStatusCanceled:
       return 'warning'
-    case PaymentStatus.FAILED:
+    case PaymentStatus.PaymentStatusFailed:
       return 'error'
     default:
       return 'unkown'

@@ -259,6 +259,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} types.ProductResponse
 // @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "商品の登録権限がない"
 func (h *handler) CreateProduct(ctx *gin.Context) {
 	req := &types.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -379,6 +380,19 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary     商品更新
+// @Description 商品の情報を更新します。
+// @Tags        Product
+// @Router      /v1/products/{productId} [patch]
+// @Param       productId path string true "商品ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Security    bearerauth
+// @Accept      json
+// @Param       request body types.UpdateProductRequest true "商品情報"
+// @Produce     json
+// @Success     204
+// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
+// @Failure     403 {object} util.ErrorResponse "商品の更新権限がない"
+// @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) UpdateProduct(ctx *gin.Context) {
 	req := &types.UpdateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -469,6 +483,16 @@ func (h *handler) newProductPoints(points ...string) []string {
 	return res
 }
 
+// @Summary     商品削除
+// @Description 商品を削除します。
+// @Tags        Product
+// @Router      /v1/products/{productId} [delete]
+// @Param       productId path string true "商品ID" example("kSByoE6FetnPs5Byk3a9Zx")
+// @Security    bearerauth
+// @Produce     json
+// @Success     204
+// @Failure     403 {object} util.ErrorResponse "商品の削除権限がない"
+// @Failure     404 {object} util.ErrorResponse "商品が存在しない"
 func (h *handler) DeleteProduct(ctx *gin.Context) {
 	in := &store.DeleteProductInput{
 		ProductID: util.GetParam(ctx, "productId"),

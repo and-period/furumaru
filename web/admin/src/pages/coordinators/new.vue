@@ -6,8 +6,8 @@ import { storeToRefs } from 'pinia'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore, useProductTypeStore } from '~/store'
-import { Prefecture } from '~/types/api'
-import type { CreateCoordinatorRequest } from '~/types/api'
+import { Prefecture } from '~/types'
+import type { CreateCoordinatorRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
@@ -42,7 +42,7 @@ const formData = ref<CreateCoordinatorRequest>({
   bonusVideoUrl: '',
   instagramId: '',
   facebookId: '',
-  businessDays: [],
+  businessDays: new Set<number>(),
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,

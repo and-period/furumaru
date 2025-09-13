@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import type { CreateScheduleRequest } from '~/types/api'
+import type { CreateScheduleRequest } from '~/types/api/v1'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import {
   CreateScheduleValidationRules,
@@ -36,7 +36,7 @@ const props = defineProps({
       thumbnailUrl: '',
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
+      _public: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
     }),

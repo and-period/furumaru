@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
 import { useAuthStore, useCommonStore } from '~/store'
-import type { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api'
+import type { UpdateAuthEmailRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()

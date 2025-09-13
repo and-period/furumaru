@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useVideoStore, useProductStore, useExperienceStore } from '~/store'
-import type { UpdateVideoRequest, Product, Experience } from '~/types/api'
+import type { UpdateVideoRequest, Product, Experience } from '~/types/api/v1'
 import { ApiBaseError } from '~/types/exception'
 import {
   getProductThumbnailUrl,
@@ -21,12 +21,13 @@ const videoId = route.params.id as string
 
 const formData = ref<UpdateVideoRequest>({
   title: '',
+  coordinatorId: '',
   description: '',
   productIds: [],
   experienceIds: [],
   thumbnailUrl: '',
   videoUrl: '',
-  public: false,
+  _public: false,
   limited: false,
   publishedAt: 0,
   displayProduct: false,
@@ -39,7 +40,7 @@ const selectedExperiences = ref<Experience[]>([])
 const { status } = useAsyncData(async () => {
   const res = await videoStore.fetchVideo(videoId)
   formData.value.title = res.video.title
-  formData.value.public = res.video.public
+  formData.value._public = res.video._public
   formData.value.publishedAt = res.video.publishedAt
   formData.value.description = res.video.description
   formData.value.videoUrl = res.video.videoUrl

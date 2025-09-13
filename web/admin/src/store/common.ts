@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia'
-
 export interface AddSnackbarPayload {
   message: string
   color: 'primary' | 'success' | 'info' | 'error'

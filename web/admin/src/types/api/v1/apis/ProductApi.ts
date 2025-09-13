@@ -19,6 +19,7 @@ import type {
   ErrorResponse,
   ProductResponse,
   ProductsResponse,
+  UpdateProductRequest,
 } from '../models/index';
 import {
     CreateProductRequestFromJSON,
@@ -29,6 +30,8 @@ import {
     ProductResponseToJSON,
     ProductsResponseFromJSON,
     ProductsResponseToJSON,
+    UpdateProductRequestFromJSON,
+    UpdateProductRequestToJSON,
 } from '../models/index';
 
 export interface V1ProductsGetRequest {
@@ -43,8 +46,17 @@ export interface V1ProductsPostRequest {
     createProductRequest: CreateProductRequest;
 }
 
+export interface V1ProductsProductIdDeleteRequest {
+    productId: string;
+}
+
 export interface V1ProductsProductIdGetRequest {
     productId: string;
+}
+
+export interface V1ProductsProductIdPatchRequest {
+    productId: string;
+    updateProductRequest: UpdateProductRequest;
 }
 
 /**
@@ -161,6 +173,52 @@ export class ProductApi extends runtime.BaseAPI {
     }
 
     /**
+     * 商品を削除します。
+     * 商品削除
+     */
+    async v1ProductsProductIdDeleteRaw(requestParameters: V1ProductsProductIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1ProductsProductIdDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/products/{productId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 商品を削除します。
+     * 商品削除
+     */
+    async v1ProductsProductIdDelete(requestParameters: V1ProductsProductIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1ProductsProductIdDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * 指定された商品の詳細情報を取得します。
      * 商品取得
      */
@@ -205,6 +263,62 @@ export class ProductApi extends runtime.BaseAPI {
     async v1ProductsProductIdGet(requestParameters: V1ProductsProductIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProductResponse> {
         const response = await this.v1ProductsProductIdGetRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * 商品の情報を更新します。
+     * 商品更新
+     */
+    async v1ProductsProductIdPatchRaw(requestParameters: V1ProductsProductIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1ProductsProductIdPatch().'
+            );
+        }
+
+        if (requestParameters['updateProductRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateProductRequest',
+                'Required parameter "updateProductRequest" was null or undefined when calling v1ProductsProductIdPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerauth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/products/{productId}`;
+        urlPath = urlPath.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateProductRequestToJSON(requestParameters['updateProductRequest']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 商品の情報を更新します。
+     * 商品更新
+     */
+    async v1ProductsProductIdPatch(requestParameters: V1ProductsProductIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1ProductsProductIdPatchRaw(requestParameters, initOverrides);
     }
 
 }

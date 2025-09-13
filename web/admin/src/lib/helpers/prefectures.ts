@@ -1,6 +1,6 @@
 import { prefecturesList } from '~/constants'
 import type { PrefecturesListItem } from '~/constants'
-import type { Prefecture } from '~/types/api'
+import type { Prefecture } from '~/types'
 
 export function findPrefecture(code?: Prefecture): PrefecturesListItem | undefined {
   if (!code) {

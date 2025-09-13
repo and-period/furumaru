@@ -2,7 +2,8 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useContactStore } from '~/store'
-import type { ContactStatus, UpdateContactRequest } from '~/types/api'
+import { ContactStatus } from '~/types/api/v1'
+import type { UpdateContactRequest } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,8 +17,16 @@ const { contact } = storeToRefs(contactStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdateContactRequest>({
-  status: ContactStatus.UNKNOWN,
+  status: ContactStatus.ContactStatusUnknown,
   note: '',
+  categoryId: '',
+  content: '',
+  email: '',
+  phoneNumber: '',
+  responderId: '',
+  title: '',
+  userId: '',
+  username: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {

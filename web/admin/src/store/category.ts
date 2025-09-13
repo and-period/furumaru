@@ -1,12 +1,13 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
 import type {
   CategoriesResponse,
   Category,
   CreateCategoryRequest,
   UpdateCategoryRequest,
-} from '~/types/api'
+  V1CategoriesCategoryIdDeleteRequest,
+  V1CategoriesCategoryIdPatchRequest,
+  V1CategoriesGetRequest,
+  V1CategoriesPostRequest,
+} from '~/types/api/v1'
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
@@ -23,7 +24,7 @@ export const useCategoryStore = defineStore('category', {
      */
     async fetchCategories(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset, '', orders)
+        const res = await this.listCategories(limit, offset, '', orders)
         this.categories = res.categories
         this.total = res.total
       }
@@ -39,7 +40,7 @@ export const useCategoryStore = defineStore('category', {
      */
     async searchCategories(name = '', categoryIds: string[] = []): Promise<void> {
       try {
-        const res = await listCategories(undefined, undefined, name, [])
+        const res = await this.listCategories(undefined, undefined, name, [])
         const categories: Category[] = []
         this.categories.forEach((category: Category): void => {
           if (!categoryIds.includes(category.id)) {
@@ -69,7 +70,7 @@ export const useCategoryStore = defineStore('category', {
      */
     async moreCategories(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
-        const res = await listCategories(limit, offset, '', orders)
+        const res = await this.listCategories(limit, offset, '', orders)
         this.categories.push(...res.categories)
         this.total = res.total
       }
@@ -84,8 +85,11 @@ export const useCategoryStore = defineStore('category', {
      */
     async createCategory(payload: CreateCategoryRequest): Promise<void> {
       try {
-        const res = await apiClient.categoryApi().v1CreateCategory(payload)
-        this.categories.unshift(res.data.category)
+        const params: V1CategoriesPostRequest = {
+          createCategoryRequest: payload,
+        }
+        const res = await this.categoryApi().v1CategoriesPost(params)
+        this.categories.unshift(res.category)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -102,7 +106,11 @@ export const useCategoryStore = defineStore('category', {
      */
     async updateCategory(categoryId: string, payload: UpdateCategoryRequest) {
       try {
-        await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
+        const params: V1CategoriesCategoryIdPatchRequest = {
+          categoryId,
+          updateCategoryRequest: payload,
+        }
+        await this.categoryApi().v1CategoriesCategoryIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -120,7 +128,10 @@ export const useCategoryStore = defineStore('category', {
      */
     async deleteCategory(categoryId: string): Promise<void> {
       try {
-        await apiClient.categoryApi().v1DeleteCategory(categoryId)
+        const params: V1CategoriesCategoryIdDeleteRequest = {
+          categoryId,
+        }
+        await this.categoryApi().v1CategoriesCategoryIdDelete(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -130,10 +141,16 @@ export const useCategoryStore = defineStore('category', {
       }
       this.fetchCategories()
     },
+
+    async listCategories(limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
+      const params: V1CategoriesGetRequest = {
+        limit,
+        offset,
+        name,
+        orders: orders.join(','),
+      }
+      const res = await this.categoryApi().v1CategoriesGet(params)
+      return { ...res }
+    },
   },
 })
-
-async function listCategories(limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
-  const res = await apiClient.categoryApi().v1ListCategories(limit, offset, name, orders.join(','))
-  return { ...res.data }
-}

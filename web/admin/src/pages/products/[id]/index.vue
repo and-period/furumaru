@@ -11,13 +11,9 @@ import {
   useProductTagStore,
   useProductTypeStore,
 } from '~/store'
-import {
-
-  DeliveryType,
-  StorageMethodType,
-  Prefecture,
-} from '~/types/api'
-import type { UpdateProductRequest, CreateProductRequestMediaInner } from '~/types/api'
+import { Prefecture } from '~/types'
+import { DeliveryType, StorageMethodType } from '~/types/api/v1'
+import type { UpdateProductRequest, CreateProductMedia } from '~/types/api/v1'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,7 +40,7 @@ const selectedCategoryId = ref<string>()
 const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
-  public: false,
+  _public: false,
   productTypeId: '',
   productTagIds: [],
   media: [],
@@ -54,12 +50,12 @@ const formData = ref<UpdateProductRequest>({
   weight: 0,
   itemUnit: '',
   itemDescription: '',
-  deliveryType: DeliveryType.NORMAL,
+  deliveryType: DeliveryType.DeliveryTypeNormal,
   recommendedPoint1: '',
   recommendedPoint2: '',
   recommendedPoint3: '',
   expirationDate: 0,
-  storageMethodType: StorageMethodType.NORMAL,
+  storageMethodType: StorageMethodType.StorageMethodTypeNormal,
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
@@ -174,7 +170,7 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
 
   // 設定されていなければ、mediaの最初の要素をサムネイルに設定
   formData.value.media = formData.value.media.map(
-    (item, i): CreateProductRequestMediaInner => ({
+    (item, i): CreateProductMedia => ({
       ...item,
       isThumbnail: i === 0,
     }),

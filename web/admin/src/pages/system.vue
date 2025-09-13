@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store'
-import { AdminType } from '~/types/api'
+import { AdminType } from '~/types/api/v1'
 import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
@@ -13,47 +13,47 @@ const menus: SettingMenu[] = [
   {
     text: '管理者管理',
     action: () => router.push('/administrators'),
-    adminTypes: [AdminType.ADMINISTRATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator],
   },
   {
     text: 'コーディネーター管理',
     action: () => router.push('/coordinators'),
-    adminTypes: [AdminType.ADMINISTRATOR],
+    adminTypes: [AdminType.AdminTypeCoordinator],
   },
   {
     text: 'カテゴリー・品目管理',
     action: () => router.push('/categories'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     text: '商品タグ管理',
     action: () => router.push('/product-tags'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     text: '体験種別管理',
     action: () => router.push('/experience-types'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     text: '配送設定管理',
     action: () => router.push('/shippings'),
-    adminTypes: [AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeCoordinator],
   },
   {
     text: 'デフォルト配送設定管理',
     action: () => router.push('/shippings/default'),
-    adminTypes: [AdminType.ADMINISTRATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator],
   },
   {
     text: 'スポット種別管理',
     action: () => router.push('/spot-types'),
-    adminTypes: [AdminType.ADMINISTRATOR, AdminType.COORDINATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
   },
   {
     text: '決済システム管理',
     action: () => router.push('/payment-systems'),
-    adminTypes: [AdminType.ADMINISTRATOR],
+    adminTypes: [AdminType.AdminTypeAdministrator],
   },
 ]
 

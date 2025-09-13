@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Experience } from '~/types/api'
+import type { Experience } from '~/types/api/v1'
 
 interface Props {
   item: Experience

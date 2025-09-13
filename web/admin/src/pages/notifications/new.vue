@@ -4,8 +4,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
-import { NotificationType } from '~/types/api'
-import type { CreateNotificationRequest } from '~/types/api'
+import { NotificationType } from '~/types/api/v1'
+import type { CreateNotificationRequest } from '~/types/api/v1'
 
 const router = useRouter()
 const commonStore = useCommonStore()
@@ -19,7 +19,7 @@ const { promotions } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateNotificationRequest>({
-  type: NotificationType.OTHER,
+  type: NotificationType.NotificationTypeOther,
   targets: [],
   title: '',
   body: '',
@@ -43,7 +43,7 @@ const fetchPromotions = async (): Promise<void> => {
 const updateNotificationType = async (type: NotificationType): Promise<void> => {
   loading.value = true
   switch (type) {
-    case NotificationType.PROMOTION:
+    case NotificationType.NotificationTypePromotion:
       await fetchPromotions()
       break
     default:

@@ -1,7 +1,5 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { TopOrderPeriodType, TopOrdersResponse } from '~/types/api'
+import type { TopOrderPeriodType } from '~/types'
+import type { TopOrdersResponse, V1TopOrdersGetRequest } from '~/types/api/v1'
 
 export const useTopStore = defineStore('top', {
   state: () => ({
@@ -14,9 +12,14 @@ export const useTopStore = defineStore('top', {
      */
     async fetchOrders(startAt?: number, endAt?: number, periodType?: TopOrderPeriodType): Promise<void> {
       try {
-        const res = await apiClient.topApi().v1TopOrders(startAt, endAt, periodType)
+        const params: V1TopOrdersGetRequest = {
+          startAt,
+          endAt,
+          periodType,
+        }
+        const res = await this.topApi().v1TopOrdersGet(params)
 
-        this.orders = res.data
+        this.orders = res
       }
       catch (err) {
         return this.errorHandler(err)

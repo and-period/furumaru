@@ -1,12 +1,14 @@
-import { defineStore } from 'pinia'
 import { useShopStore } from './shop'
-
-import { apiClient } from '~/plugins/api-client'
 import type {
   CreatePromotionRequest,
   Promotion,
   UpdatePromotionRequest,
-} from '~/types/api'
+  V1PromotionsGetRequest,
+  V1PromotionsPostRequest,
+  V1PromotionsPromotionIdDeleteRequest,
+  V1PromotionsPromotionIdGetRequest,
+  V1PromotionsPromotionIdPatchRequest,
+} from '~/types/api/v1'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({
@@ -23,12 +25,17 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async fetchPromotions(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.promotionApi().v1ListPromotions(limit, offset, orders.join(','))
+        const params: V1PromotionsGetRequest = {
+          limit,
+          offset,
+          orders: orders.join(','),
+        }
+        const res = await this.promotionApi().v1PromotionsGet(params)
 
         const shopStore = useShopStore()
-        this.promotions = res.data.promotions
-        this.total = res.data.total
-        shopStore.shops = res.data.shops
+        this.promotions = res.promotions
+        this.total = res.total
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -42,7 +49,10 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async searchPromotions(name = '', promotionIds: string[] = []): Promise<void> {
       try {
-        const res = await apiClient.promotionApi().v1ListPromotions(undefined, undefined, name)
+        const params: V1PromotionsGetRequest = {
+          title: name,
+        }
+        const res = await this.promotionApi().v1PromotionsGet(params)
         const promotions: Promotion[] = []
         this.promotions.forEach((promotion: Promotion): void => {
           if (!promotionIds.includes(promotion.id)) {
@@ -50,7 +60,7 @@ export const usePromotionStore = defineStore('promotion', {
           }
           promotions.push(promotion)
         })
-        res.data.promotions.forEach((promotion: Promotion): void => {
+        res.promotions.forEach((promotion: Promotion): void => {
           if (promotions.find((v): boolean => v.id === promotion.id)) {
             return
           }
@@ -59,8 +69,8 @@ export const usePromotionStore = defineStore('promotion', {
 
         const shopStore = useShopStore()
         this.promotions = promotions
-        this.total = res.data.total
-        shopStore.shops = res.data.shops
+        this.total = res.total
+        shopStore.shops = res.shops
       }
       catch (err) {
         return this.errorHandler(err)
@@ -74,14 +84,17 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async getPromotion(promotionId: string): Promise<void> {
       try {
-        const res = await apiClient.promotionApi().v1GetPromotion(promotionId)
-        this.promotion = res.data.promotion
-        if (!res.data.shop) {
+        const params: V1PromotionsPromotionIdGetRequest = {
+          promotionId,
+        }
+        const res = await this.promotionApi().v1PromotionsPromotionIdGet(params)
+        this.promotion = res.promotion
+        if (!res.shop) {
           return
         }
 
         const shopStore = useShopStore()
-        shopStore.shop = res.data.shop
+        shopStore.shop = res.shop
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })
@@ -94,7 +107,10 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async createPromotion(payload: CreatePromotionRequest): Promise<void> {
       try {
-        await apiClient.promotionApi().v1CreatePromotion(payload)
+        const params: V1PromotionsPostRequest = {
+          createPromotionRequest: payload,
+        }
+        await this.promotionApi().v1PromotionsPost(params)
       }
       catch (err) {
         return this.errorHandler(err, {
@@ -110,7 +126,10 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async deletePromotion(promotionId: string): Promise<void> {
       try {
-        await apiClient.promotionApi().v1DeletePromotion(promotionId)
+        const params: V1PromotionsPromotionIdDeleteRequest = {
+          promotionId,
+        }
+        await this.promotionApi().v1PromotionsPromotionIdDelete(params)
         this.fetchPromotions()
       }
       catch (err) {
@@ -125,7 +144,11 @@ export const usePromotionStore = defineStore('promotion', {
      */
     async updatePromotion(promotionId: string, payload: UpdatePromotionRequest): Promise<void> {
       try {
-        await apiClient.promotionApi().v1UpdatePromotion(promotionId, payload)
+        const params: V1PromotionsPromotionIdPatchRequest = {
+          promotionId,
+          updatePromotionRequest: payload,
+        }
+        await this.promotionApi().v1PromotionsPromotionIdPatch(params)
       }
       catch (err) {
         return this.errorHandler(err, {

@@ -4,8 +4,8 @@ import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import type { Admin, Notification, NotificationTarget } from '~/types/api'
-import { AdminType, NotificationStatus, NotificationType } from '~/types/api'
+import type { Admin, Notification, NotificationTarget } from '~/types/api/v1'
+import { AdminType, NotificationStatus, NotificationType } from '~/types/api/v1'
 
 const props = defineProps({
   loading: {
@@ -14,7 +14,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   deleteDialog: {
     type: Boolean,
@@ -110,11 +110,11 @@ const deleteDialogValue = computed({
 })
 
 const isRegisterable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const getAdminName = (adminId: string): string => {
@@ -126,13 +126,13 @@ const getAdminName = (adminId: string): string => {
 
 const getType = (type: NotificationType): string => {
   switch (type) {
-    case NotificationType.SYSTEM:
+    case NotificationType.NotificationTypeSystem:
       return 'システム関連'
-    case NotificationType.LIVE:
+    case NotificationType.NotificationTypeLive:
       return 'ライブ関連'
-    case NotificationType.PROMOTION:
+    case NotificationType.NotificationTypePromotion:
       return 'セール関連'
-    case NotificationType.OTHER:
+    case NotificationType.NotificationTypeOther:
       return 'その他'
     default:
       return 'その他'
@@ -141,9 +141,9 @@ const getType = (type: NotificationType): string => {
 
 const getStatus = (status: NotificationStatus): string => {
   switch (status) {
-    case NotificationStatus.WAITING:
+    case NotificationStatus.NotificationStatusWaiting:
       return '投稿前'
-    case NotificationStatus.NOTIFIED:
+    case NotificationStatus.NotificationStatusNotified:
       return '投稿済み'
     default:
       return '不明'
@@ -152,9 +152,9 @@ const getStatus = (status: NotificationStatus): string => {
 
 const getStatusColor = (status: NotificationStatus): string => {
   switch (status) {
-    case NotificationStatus.WAITING:
+    case NotificationStatus.NotificationStatusWaiting:
       return 'error'
-    case NotificationStatus.NOTIFIED:
+    case NotificationStatus.NotificationStatusNotified:
       return 'primary'
     default:
       return ''

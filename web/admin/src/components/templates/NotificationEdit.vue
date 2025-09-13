@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 
 import { getErrorMessage } from '~/lib/validations'
-import { AdminType, DiscountType, NotificationStatus, NotificationTarget, NotificationType, PromotionStatus } from '~/types/api'
-import type { Notification, Promotion, UpdateNotificationRequest } from '~/types/api'
+import { AdminType, DiscountType, NotificationStatus, NotificationTarget, NotificationType, PromotionStatus, PromotionTargetType } from '~/types/api/v1'
+import type { Notification, Promotion, UpdateNotificationRequest } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules } from '~/types/validations'
 import { UpdateNotificationValidationRules } from '~/types/validations/notification'
@@ -17,7 +17,7 @@ const props = defineProps({
   },
   adminType: {
     type: Number as PropType<AdminType>,
-    default: AdminType.UNKNOWN,
+    default: AdminType.AdminTypeUnknown,
   },
   isAlert: {
     type: Boolean,
@@ -45,8 +45,8 @@ const props = defineProps({
     type: Object as PropType<Notification>,
     default: (): Notification => ({
       id: '',
-      type: NotificationType.UNKNOWN,
-      status: NotificationStatus.UNKNOWN,
+      type: NotificationType.NotificationTypeUnknown,
+      status: NotificationStatus.NotificationStatusUnknown,
       targets: [],
       title: '',
       body: '',
@@ -63,11 +63,13 @@ const props = defineProps({
     type: Object as PropType<Promotion>,
     default: (): Promotion => ({
       id: '',
+      shopId: '',
       title: '',
       description: '',
-      public: false,
-      status: PromotionStatus.UNKNOWN,
-      discountType: DiscountType.UNKNOWN,
+      _public: false,
+      targetType: PromotionTargetType.PromotionTargetTypeUnknown,
+      status: PromotionStatus.PromotionStatusUnknown,
+      discountType: DiscountType.DiscountTypeUnknown,
       discountRate: 0,
       code: '',
       startAt: 0,
@@ -86,16 +88,16 @@ const emit = defineEmits<{
 }>()
 
 const typeList = [
-  { title: 'システム関連', value: NotificationType.SYSTEM },
-  { title: 'ライブ関連', value: NotificationType.LIVE },
-  { title: 'セール関連', value: NotificationType.PROMOTION },
-  { title: 'その他', value: NotificationType.OTHER },
+  { title: 'システム関連', value: NotificationType.NotificationTypeSystem },
+  { title: 'ライブ関連', value: NotificationType.NotificationTypeLive },
+  { title: 'セール関連', value: NotificationType.NotificationTypePromotion },
+  { title: 'その他', value: NotificationType.NotificationTypeOther },
 ]
 const targetList = [
-  { title: 'ユーザー', value: NotificationTarget.USERS },
-  { title: '生産者', value: NotificationTarget.PRODUCERS },
-  { title: 'コーディネーター', value: NotificationTarget.COORDINATORS },
-  { title: '管理者', value: NotificationTarget.ADMINISTRATORS },
+  { title: 'ユーザー', value: NotificationTarget.NotificationTargetUsers },
+  { title: '生産者', value: NotificationTarget.NotificationTargetProducers },
+  { title: 'コーディネーター', value: NotificationTarget.NotificationTargetCoordinators },
+  { title: '管理者', value: NotificationTarget.NotificationTargetAdministrators },
 ]
 
 const formDataValue = computed({
@@ -120,7 +122,7 @@ const formDataValidate = useVuelidate(UpdateNotificationValidationRules, formDat
 const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const isEditable = (): boolean => {
-  return props.adminType === AdminType.ADMINISTRATOR
+  return props.adminType === AdminType.AdminTypeAdministrator
 }
 
 const onChangePublishedAt = (): void => {
@@ -151,11 +153,11 @@ const getPromotionDiscount = (): string => {
   }
 
   switch (props.promotion.discountType) {
-    case DiscountType.AMOUNT:
+    case DiscountType.DiscountTypeAmount:
       return '￥' + props.promotion.discountRate
-    case DiscountType.RATE:
+    case DiscountType.DiscountTypeRate:
       return props.promotion.discountRate + '％'
-    case DiscountType.FREE_SHIPPING:
+    case DiscountType.DiscountTypeFreeShipping:
       return '送料無料'
     default:
       return ''
@@ -188,7 +190,7 @@ const onSubmit = async (): Promise<void> => {
           readonly
         />
         <!-- セール情報 -->
-        <div v-if="notification.type === NotificationType.PROMOTION">
+        <div v-if="notification.type === NotificationType.NotificationTypePromotion">
           <v-table>
             <tbody>
               <tr>

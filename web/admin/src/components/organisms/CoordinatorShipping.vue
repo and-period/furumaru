@@ -2,7 +2,7 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 
-import type { Shipping, UpsertShippingRequest } from '~/types/api'
+import type { Shipping, UpsertShippingRequest } from '~/types/api/v1'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
@@ -48,6 +48,7 @@ const props = defineProps({
     type: Object as PropType<Shipping>,
     default: (): Shipping => ({
       id: '',
+      name: '',
       isDefault: false,
       box60Rates: [],
       box60Frozen: 0,

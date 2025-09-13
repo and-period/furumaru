@@ -1,7 +1,4 @@
-import { defineStore } from 'pinia'
-
-import { apiClient } from '~/plugins/api-client'
-import type { Message, MessagesResponse } from '~/types/api'
+import type { Message, MessagesResponse, V1MessagesGetRequest, V1MessagesMessageIdGetRequest } from '~/types/api/v1'
 
 export const useMessageStore = defineStore('message', {
   state: () => ({
@@ -28,12 +25,13 @@ export const useMessageStore = defineStore('message', {
         if (orders.length === 0) {
           orders = ['-read', '-receivedAt'] // 優先順位: 未読 && 受信日時が新しい
         }
-        const res = await apiClient.messageApi().v1ListMessages(
+        const params: V1MessagesGetRequest = {
           limit,
           offset,
-          orders.join(','),
-        )
-        const { messages, total }: MessagesResponse = res.data
+          orders: orders.join(','),
+        }
+        const res = await this.messageApi().v1MessagesGet(params)
+        const { messages, total }: MessagesResponse = res
 
         this.messages = messages
         this.total = total
@@ -51,11 +49,17 @@ export const useMessageStore = defineStore('message', {
      */
     async fetchMessage(messageId = ''): Promise<void> {
       try {
-        const res = await apiClient.messageApi().v1GetMessage(messageId)
-        const message = res.data.message || {}
+        const params: V1MessagesMessageIdGetRequest = {
+          messageId,
+        }
+        const res = await this.messageApi().v1MessagesMessageIdGet(params)
+        const message = res.message || {}
 
         this.message = message
         this.messages.forEach((v: Message, i: number) => {
+          if (!this.messages[i]) {
+            return
+          }
           if (v.id === message.id) {
             this.messages[i].read = true
           }

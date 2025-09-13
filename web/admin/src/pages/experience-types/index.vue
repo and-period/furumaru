@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useExperienceTypeStore } from '~/store'
+import type { CreateExperienceTypeRequest, UpdateExperienceTypeRequest } from '~/types/api/v1'
 
 const commonStore = useCommonStore()
 const authStore = useAuthStore()

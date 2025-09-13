@@ -26,7 +26,7 @@ type User struct {
 	PhoneNumber   string     `json:"phoneNumber"`   // 電話番号
 	ThumbnailURL  string     `json:"thumbnailUrl"`  // サムネイルURL
 	CreatedAt     int64      `json:"createdAt"`     // 登録日時
-	UpdatedAt     int64      `json:"updateAt"`      // 更新日時
+	UpdatedAt     int64      `json:"updatedAt"`     // 更新日時
 }
 
 // UserToList - 購入者一覧情報
