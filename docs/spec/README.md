@@ -27,11 +27,11 @@ spec/
 - その他外部API仕様
 
 ### 🏗️ internal/
-ふるマル内部設計・仕様書を格納
-- マイクロサービス間の通信仕様
-- データベース設計書
-- ビジネスロジック仕様
-- 内部API設計書
+ふるマル機能実装の仕様書を格納
+- 機能仕様書
+- 実装仕様書
+- ビジネスルール定義
+- 実装ガイドライン
 
 ### 📊 swagger/
 OpenAPI 3.0 形式のAPI定義を格納
@@ -61,11 +61,11 @@ OpenAPI 3.0 形式のAPI定義を格納
 仕様確認時は以下の順序で参照することを推奨：
 
 1. **swagger/**: 現在のAPI仕様
-2. **internal/**: 内部設計・ビジネスロジック
+2. **internal/**: 機能実装仕様
 3. **external/**: 外部連携仕様
 
 ## 関連ドキュメント
 
 - [アーキテクチャ概要](../architecture/overview.md)
+- [API サービス概要](../architecture/api-services-overview.md)
 - [API ドキュメントパターン](../architecture/api/documentation-patterns.md)
-- [技術スタック](../rules/tech-stack.md)
