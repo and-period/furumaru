@@ -2,19 +2,19 @@
 
 OPENAPITOOLS_VERSION := 2.23.1
 
-ADMIN_V1_INPUT         := gen/admin/v1/swagger.yaml
-ADMIN_V1_OUTPUT_TS_DIR := ./../../tmp/data/swagger/admin/v1/types
+ADMIN_V1_INPUT         := admin/v1/swagger.yaml
+ADMIN_V1_OUTPUT_TS_DIR := ./../../../tmp/data/swagger/admin/v1/types
 
-USER_V1_INPUT         := gen/user/v1/swagger.yaml
-USER_V1_OUTPUT_TS_DIR := ./../../tmp/data/swagger/user/v1/types
+USER_V1_INPUT         := user/v1/swagger.yaml
+USER_V1_OUTPUT_TS_DIR := ./../../../tmp/data/swagger/user/v1/types
 
-USER_FACILITY_INPUT         := gen/user/facility/swagger.yaml
-USER_FACILITY_OUTPUT_TS_DIR := ./../../tmp/data/swagger/user/facility/types
+USER_FACILITY_INPUT         := user/facility/swagger.yaml
+USER_FACILITY_OUTPUT_TS_DIR := ./../../../tmp/data/swagger/user/facility/types
 
-ADMIN_WEB_V1_TYPES_DIR  := ./../../web/admin/src/types/api/v1
-USER_WEB_V1_TYPES_DIR   := ./../../web/user/src/types/api/v1
-LIFF_V1_TYPES_DIR       := ./../../web/liff/src/types/api/v1
-LIFF_FACILITY_TYPES_DIR := ./../../web/liff/src/types/api/facility
+ADMIN_WEB_V1_TYPES_DIR  := ./../../../web/admin/src/types/api/v1
+USER_WEB_V1_TYPES_DIR   := ./../../../web/user/src/types/api/v1
+LIFF_V1_TYPES_DIR       := ./../../../web/liff/src/types/api/v1
+LIFF_FACILITY_TYPES_DIR := ./../../../web/liff/src/types/api/facility
 
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

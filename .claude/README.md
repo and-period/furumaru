@@ -1,42 +1,50 @@
 # .claude ディレクトリ
 
-このディレクトリはClaude Codeのプロジェクト固有の情報を管理するためのディレクトリです。
+Claude Code の作業用ディレクトリです。エージェント共通の正式ドキュメントは `docs/` 配下に移設されています。
 
 ## ディレクトリ構造
 
 ```
 .claude/
-├── README.md              # このファイル
-├── rules/                 # プロジェクトルール
-│   ├── architecture.md    # アーキテクチャ設計ルール
-│   ├── tech-stack.md      # 技術スタックルール
-│   ├── coding.md          # コーディングルール
-│   └── workflow.md        # 開発ワークフロー
-├── knowledge/             # 知見・学習記録
-│   ├── knowledge.md       # 実装パターン
-│   ├── improvements.md    # 教訓と改善
-│   ├── commands.md        # コマンド一覧
-│   └── troubleshooting.md # トラブルシューティング
-└── debug/                 # デバッグ関連ファイル
-    └── README.md          # デバッグ用README
+├── README.md              # このファイル（このディレクトリの説明）
+├── commands/              # Claude Code カスタムコマンド定義
+├── debug/                 # 作業セッション記録・デバッグ情報（重要：残す）
+├── settings.local.json    # Claude Code ローカル設定
+├── session.json          # セッション管理情報
+└── session-manager.sh    # セッション管理スクリプト
 ```
 
-## 使用方法
+## 正式ドキュメントの参照先
 
-### rules/ - プロジェクトルール
-プロジェクト固有のルールや規約を記録します。
-- **architecture.md**: システム設計の原則、マイクロサービス間の通信ルールなど
-- **tech-stack.md**: 使用する技術スタックの選定基準、バージョン管理など
-- **coding.md**: コーディング規約、命名規則、コードレビュー基準など
-- **workflow.md**: Git運用、CI/CD、リリースフローなど
+エージェント向けの正式ドキュメントは以下に移設されています：
 
-### knowledge/ - 知見・学習記録
-開発中に得られた知見を記録します。
-- **knowledge.md**: 有用な実装パターン、ベストプラクティス
-- **improvements.md**: 過去の失敗から学んだ教訓、改善提案
-- **commands.md**: よく使うコマンドの一覧とその説明
-- **troubleshooting.md**: よくあるエラーとその解決方法
+### メインインデックス
+- **[AGENTS.md](../AGENTS.md)** - エージェント共通の運用ガイド（メインインデックス）
 
-### debug/ - デバッグ関連ファイル
-デバッグに役立つ情報を保存します。
-- **README.md**: デバッグ手順、ツールの使い方など
+### 詳細ドキュメント
+- **[docs/agents/](../docs/agents/)** - エージェント向け詳細ガイド
+- **[docs/rules/](../docs/rules/)** - 守るべき規約・原則
+- **[docs/architecture/](../docs/architecture/)** - システム設計意図・構造
+- **[docs/knowledge/](../docs/knowledge/)** - 実装知見・手順・Tips
+
+## .claude ディレクトリの役割
+
+### commands/ - Claude Code カスタムコマンド
+Claude Code の `/load-rules`、`/save` などのカスタムコマンド定義。
+
+### debug/ - 作業セッション記録（重要：保持）
+- 作業セッションの詳細ログ
+- エラー発生時の調査・解決過程
+- 試行錯誤の記録
+- ファイル命名規則: `YYYY-MM-DD_[作業内容].md`
+
+### 設定ファイル
+- **settings.local.json**: Claude Code のローカル設定
+- **session.json**: セッション管理情報
+- **session-manager.sh**: セッション管理スクリプト
+
+## 注意点
+
+- **作業記録は必ず残してください**: `.claude/debug/` の内容は Claude Code の作業に必要です。
+- **恒常的なドキュメント**: 一般的に参照される内容は `docs/` 配下に移設済みです。
+- **一時的な調査メモ**: `.claude/debug/` に記録し、汎用化できる知見は `docs/knowledge/` に整理してください。

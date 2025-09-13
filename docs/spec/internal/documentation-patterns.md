@@ -1,4 +1,4 @@
-# API Documentation Patterns - Furumaru
+# API ドキュメンテーションパターン（Furumaru）
 
 ## Swagger/OpenAPI ドキュメント生成アーキテクチャ
 

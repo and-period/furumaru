@@ -1,17 +1,35 @@
-# Furumaru API Architecture Knowledge
+# Furumaru アーキテクチャ概要
 
-## サービス構成
+## システム構成
 
-### Gateway Services
-- **gateway/admin**: 管理者向けAPIゲートウェイ
-- **gateway/user**: 購入者向けAPIゲートウェイ  
-- **gateway/facility**: 施設向けAPIゲートウェイ
+### バックエンドアーキテクチャ
 
-### Core Services  
-- **media**: 動画ストリーミング、配信、メディアコンテンツ
-- **messenger**: 通知とメッセージング
-- **store**: ECコア機能（商品、注文、決済、配送）
-- **user**: ユーザー管理と認証
+**モジュラーモノリス + レイヤードアーキテクチャ**
+```
+api/ (単一アプリケーション)
+├── cmd/                    # エントリポイント
+├── internal/              # ビジネスモジュール
+│   ├── gateway/           # APIゲートウェイ
+│   ├── user/              # ユーザー管理（レイヤード）
+│   ├── store/             # EC機能（レイヤード）
+│   ├── media/             # メディア管理（レイヤード）
+│   └── messenger/         # 通知機能（レイヤード）
+└── pkg/                   # 共通パッケージ
+```
+
+**各モジュール構成（レイヤード）**:
+- **api/**: プレゼンテーション層（HTTPハンドラー）
+- **service/**: ビジネスロジック層
+- **database/**: データアクセス層
+- **entity/**: エンティティ・ドメインモデル
+
+### フロントエンドアーキテクチャ
+
+**マルチアプリケーション構成**
+- **web/admin**: 管理者ポータル（Nuxt 4 + Vuetify）
+- **web/user**: 購入者ポータル（Nuxt 3 + Tailwind）
+- **web/liff**: LINEアプリ（Nuxt 3 + LINE LIFF）
+- **web/shared**: 共通コンポーネント（Vue 3 + Vite）
 
 ## 認証・認可アーキテクチャ
 
@@ -24,16 +42,16 @@
 
 #### Bearer Token Authentication
 ```
-Client -> Gateway -> Internal Service
+Client -> Gateway -> Internal Module
   |         |           |
-  JWT       JWT         gRPC with UserID
+  JWT       JWT         Function Call with UserID
 ```
 
 #### Cookie Session Authentication  
 ```
-Client -> Gateway -> Internal Service
+Client -> Gateway -> Internal Module
   |         |           |
-  Cookie    SessionID   gRPC with SessionID
+  Cookie    SessionID   Function Call with SessionID
 ```
 
 ### 認証スキーム適用パターン
@@ -50,10 +68,12 @@ Client -> Gateway -> Internal Service
 
 ### リクエストフロー
 ```
-Web Frontend -> API Gateway -> Internal Service -> Database
-     |              |               |                |
-   (HTTP/JSON)   (HTTP/JSON)    (gRPC/Proto)      (MySQL)
+Web Frontend -> API Gateway -> Internal Module -> Database
+     |              |               |               |
+   (HTTP/JSON)   (HTTP/JSON)    (Function Call)   (MySQL/TiDB)
 ```
+
+**モノリス内通信**: 各モジュール間は関数呼び出しで連携（直接的なGoの関数呼び出し）
 
 ### 横断的機能
 - **バリデーション**: Gateway層で実施
@@ -104,10 +124,10 @@ Checkout Request -> Payment System Check -> Provider API -> Redirect URL
 
 ### マイクロサービス別DB
 - 各サービスが独自のデータベース／スキーマを保持
-- **media**: メディアコンテンツ、コメント
-- **messengers**: 通知、メッセージ  
-- **stores**: 商品、注文、決済
-- **users**: ユーザー、認証情報
+- **user_db**: ユーザー、認証情報
+- **store_db**: 商品、注文、決済
+- **media_db**: メディアコンテンツ、コメント
+- **messenger_db**: 通知、メッセージ
 
 ### 主要エンティティ関係
 
