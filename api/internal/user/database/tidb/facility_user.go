@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -32,10 +33,19 @@ func (f *facilityUser) GetByExternalID(
 ) (*entity.FacilityUser, error) {
 	var facilityUser *entity.FacilityUser
 
+	if len(fields) == 0 {
+		fields = []string{"*"}
+	}
+	for i, field := range fields {
+		fields[i] = fmt.Sprintf("facility_users.%s", field)
+	}
+
 	stmt := f.db.Statement(ctx, f.db.DB, facilityUserTable, fields...).
+		Joins("INNER JOIN users ON facility_users.user_id = users.id").
 		Where("provider_type = ?", providerType).
 		Where("external_id = ?", externalID).
-		Where("producer_id = ?", producerID)
+		Where("producer_id = ?", producerID).
+		Where("users.deleted_at IS NULL")
 
 	if err := stmt.First(&facilityUser).Error; err != nil {
 		return nil, dbError(err)
