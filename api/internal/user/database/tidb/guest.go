@@ -2,6 +2,7 @@ package tidb
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -28,7 +29,17 @@ func NewGuest(db *mysql.Client) database.Guest {
 func (g *guest) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error) {
 	var guest *entity.Guest
 
-	stmt := g.db.Statement(ctx, g.db.DB, guestTable, fields...).Where("email = ?", email)
+	if len(fields) == 0 {
+		fields = []string{"*"}
+	}
+	for i, field := range fields {
+		fields[i] = fmt.Sprintf("guests.%s", field)
+	}
+
+	stmt := g.db.Statement(ctx, g.db.DB, guestTable, fields...).
+		Joins("INNER JOIN users ON guests.user_id = users.id").
+		Where("email = ?", email).
+		Where("users.deleted_at IS NULL")
 
 	if err := stmt.First(&guest).Error; err != nil {
 		return nil, dbError(err)
