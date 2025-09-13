@@ -1,5 +1,31 @@
 # Changelog
 
+## [v7.0.0](https://github.com/and-period/furumaru/compare/v6.0.1...v7.0.0) - 2025-09-13
+- feat: ユーザー登録部分の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3008
+- LIFFアプリで取得する商品情報の変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3010
+- fix(web/admin): LIFF購入後の注文詳細でundefinedエラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3012
+- refactor(api): ゲートウェイのrequest/response構造を types ディレクトリに統一 by @taba2424 in https://github.com/and-period/furumaru/pull/3013
+- refactor(api): fix gateway admin v1 service type references by @taba2424 in https://github.com/and-period/furumaru/pull/3015
+- chore(deps): Update dependency vite [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3014
+- チェックアウト処理の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3011
+- build(deps): bump the dependencies group in /web/admin with 35 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3017
+- build(deps): bump the dependencies group with 6 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3016
+- refactor(api): update gateway service types references and tests by @taba2424 in https://github.com/and-period/furumaru/pull/3019
+- refactor(api): update API type definitions across web applications by @taba2424 in https://github.com/and-period/furumaru/pull/3020
+- refactor(api): update API type definitions across web applications by @taba2424 in https://github.com/and-period/furumaru/pull/3021
+- LIFFのリダイレクト処理への対応 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3022
+- Feat/web/liff/ux by @wf-yamaday in https://github.com/and-period/furumaru/pull/3023
+- refactor(api): consolidate and reorganize API type definitions by @taba2424 in https://github.com/and-period/furumaru/pull/3024
+- chore(deps): Update dependency axios to v1.12.0 [SECURITY] by @renovate[bot] in https://github.com/and-period/furumaru/pull/3025
+- refactor(web): consolidate and reorganize API type definitions by @taba2424 in https://github.com/and-period/furumaru/pull/3026
+- docs: reorganize and update architecture documentation by @taba2424 in https://github.com/and-period/furumaru/pull/3027
+- refactor(web): improve API client authentication with middleware pattern by @taba2424 in https://github.com/and-period/furumaru/pull/3028
+- feat(workflow): LIFFアプリの本番リリース用ワークフローを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3029
+- feat(web): add LIFF initialization to facility detail page by @taba2424 in https://github.com/and-period/furumaru/pull/3030
+- feat(api): implement FacilityUser Delete method with transaction support by @taba2424 in https://github.com/and-period/furumaru/pull/3031
+- docs: README.mdの改善 - プロジェクト情報を充実化 by @taba2424 in https://github.com/and-period/furumaru/pull/3032
+- fix(user): 外部施設向け利用者登録時のバリデーション修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3033
+
 ## [v6.0.1](https://github.com/and-period/furumaru/compare/v6.0.0...v6.0.1) - 2025-09-07
 - Claude Codeセッション管理システムの追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3006
 
