@@ -4,14 +4,19 @@ import { NuxtLink } from '#components';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '~/stores/product';
 import { useShoppingCartStore } from '~/stores/shopping';
+import { useLiffInit } from '~/composables/useLiffInit';
 
 const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
+
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
+const { init: initLiff } = useLiffInit();
 
 // 商品取得
 const productStore = useProductStore();
 const { products, isLoading, error } = storeToRefs(productStore);
-onMounted(() => {
+onMounted(async () => {
+  await initLiff(runtimeConfig.public.LIFF_ID);
   productStore.fetchProducts();
 });
 
