@@ -344,6 +344,7 @@ func TestDeleteUser(t *testing.T) {
 	now := jst.Now()
 	m := &entity.User{
 		ID:         "user-id",
+		Type:       entity.UserTypeMember,
 		Registered: true,
 		Status:     entity.UserStatusVerified,
 		Member: entity.Member{
@@ -359,6 +360,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 	g := &entity.User{
 		ID:         "user-id",
+		Type:       entity.UserTypeGuest,
 		Status:     entity.UserStatusGuest,
 		Registered: false,
 		Guest: entity.Guest{
@@ -370,6 +372,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 	f := &entity.User{
 		ID:         "user-id",
+		Type:       entity.UserTypeFacilityUser,
 		Status:     entity.UserStatusVerified,
 		Registered: false,
 		FacilityUser: entity.FacilityUser{
