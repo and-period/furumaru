@@ -1,5 +1,5 @@
-import axios from 'axios'
 import type { PiniaPluginContext } from 'pinia'
+import { ResponseError } from '~/types/api/v1'
 
 import {
   AuthError,
@@ -34,15 +34,15 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
    * @param customObject エラーメッセージをカスタマイズするオブジェクト
    * @returns Promise.rejectを返す。呼び出す側で再度returnすることを想定している。
    */
-  const errorHandler = (error: unknown, customObject?: CustomErrorMessage) => {
-    if (axios.isAxiosError(error)) {
-      if (!error.response) {
+  const errorHandler = (err: unknown, customObject?: CustomErrorMessage) => {
+    if (err instanceof ResponseError) {
+      if (!err.response) {
         return Promise.reject(
           new AuthError('認証エラー。再度ログインをしてください。'),
         )
       }
 
-      const statusCode = error.response.status
+      const statusCode = err.response.status
 
       let customMessage: string | undefined
       if (customObject && statusCode in customObject) {
@@ -54,68 +54,68 @@ function apiErrorHandler({ store }: PiniaPluginContext) {
           return Promise.reject(
             new ValidationError(
               customMessage || '入力内容に誤りがあります。',
-              error,
+              err,
             ),
           )
         case 401:
           return Promise.reject(
             new AuthError(
               customMessage || '認証エラー。再度ログインをしてください。',
-              error,
+              err,
             ),
           )
         case 403:
           return Promise.reject(
             new PermissionError(
               customMessage || 'この操作を実施する権限がありません。',
-              error,
+              err,
             ),
           )
         case 404:
           return Promise.reject(
             new NotFoundError(
               customMessage || '指定したリソースが見つかりません。',
-              error,
+              err,
             ),
           )
         case 409:
           return Promise.reject(
             new ConflictError(
               customMessage || '指定したリソースは競合しています。',
-              error,
+              err,
             ),
           )
         case 412:
           return Promise.reject(
             new PreconditionError(
               customMessage || '指定したリソースは条件を満たしていません。',
-              error,
+              err,
             ),
           )
         case 429:
           return Promise.reject(
             new TooManyRequestsError(
               customMessage || 'リクエスト数が上限を超えています。',
-              error,
+              err,
             ),
           )
         case 499:
           return Promise.reject(
             new CancelledError(
               customMessage || '正常に処理を完了できませんでした。',
-              error,
+              err,
             ),
           )
         case 501:
-          return Promise.reject(new NotImplementedError(error))
+          return Promise.reject(new NotImplementedError(err))
         case 503:
-          return Promise.reject(new ServiceUnavailableError(error))
+          return Promise.reject(new ServiceUnavailableError(err))
         case 500:
         default:
-          return Promise.reject(new InternalServerError(error))
+          return Promise.reject(new InternalServerError(err))
       }
     }
-    return Promise.reject(new InternalServerError(error))
+    return Promise.reject(new InternalServerError(err))
   }
 
   store.errorHandler = markRaw(errorHandler)
