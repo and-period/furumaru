@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { dateTimeFormatter } from '~/lib/formatter';
-import type { UpdateVideoRequest, VideoComment } from '~/types/api/v1';
+import { dateTimeFormatter } from '~/lib/formatter'
+import type { UpdateVideoRequest, VideoComment } from '~/types/api/v1'
 
 const props = defineProps({
   formData: {
@@ -17,7 +17,7 @@ const props = defineProps({
       _public: false,
       publishedAt: 0,
       thumbnailUrl: '',
-      title: ''
+      title: '',
     }),
   },
   comments: {
@@ -27,7 +27,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click:ban-comment', commentId: string): void;
+  (e: 'click:ban-comment', commentId: string): void
 }>()
 
 const onClickBanComment = (commentId: string): void => {
@@ -39,8 +39,14 @@ const onClickBanComment = (commentId: string): void => {
   <v-card-text>
     <v-container fluid>
       <v-row>
-        <v-col cols="12" md="8">
-          <div v-if="formData.videoUrl" class="video-preview">
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <div
+            v-if="formData.videoUrl"
+            class="video-preview"
+          >
             <video
               :src="formData.videoUrl"
               controls
@@ -55,21 +61,30 @@ const onClickBanComment = (commentId: string): void => {
             動画がアップロードされていません。基本情報タブから動画をアップロードしてください。
           </v-alert>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-card>
             <v-card-title class="text-h6">
               コメント一覧
             </v-card-title>
             <v-divider />
             <v-card-text style="max-height: 500px; overflow-y: auto;">
-              <v-list v-if="props.comments && props.comments.length > 0" lines="two">
+              <v-list
+                v-if="props.comments && props.comments.length > 0"
+                lines="two"
+              >
                 <v-list-item
                   v-for="comment in props.comments"
                   :key="comment.id"
                   class="mb-2"
                 >
                   <template #prepend>
-                    <v-avatar color="grey" size="40">
+                    <v-avatar
+                      color="grey"
+                      size="40"
+                    >
                       <v-icon>mdi-account</v-icon>
                     </v-avatar>
                   </template>

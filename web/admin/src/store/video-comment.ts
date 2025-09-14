@@ -1,4 +1,4 @@
-import type { V1VideosVideoIdCommentsCommentIdPatchRequest, V1VideosVideoIdCommentsGetRequest, VideoComment } from "~/types/api/v1";
+import type { V1VideosVideoIdCommentsCommentIdPatchRequest, V1VideosVideoIdCommentsGetRequest, VideoComment } from '~/types/api/v1'
 
 export const useVideoCommentStore = defineStore('video-comment', {
   state: () => ({
@@ -28,7 +28,7 @@ export const useVideoCommentStore = defineStore('video-comment', {
       try {
         let allComments: VideoComment[] = []
         let nextToken: string | null = null
-        
+
         do {
           const params: V1VideosVideoIdCommentsGetRequest = {
             videoId,
@@ -39,7 +39,7 @@ export const useVideoCommentStore = defineStore('video-comment', {
           allComments = [...allComments, ...res.comments]
           nextToken = res.nextToken
         } while (nextToken)
-        
+
         this.comments = allComments
         this.nextToken = null
       }

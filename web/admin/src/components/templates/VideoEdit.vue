@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { AlertType } from '~/lib/hooks';
-import type { Product, Experience, UpdateVideoRequest, VideoComment, VideoViewerLog } from '~/types/api/v1';
+import type { AlertType } from '~/lib/hooks'
+import type { Product, Experience, UpdateVideoRequest, VideoComment, VideoViewerLog } from '~/types/api/v1'
 import { getProductThumbnailUrl, getExperienceThumbnailUrl, dateTimeFormatter } from '~/lib/formatter'
-import type { UploadStatus } from '~/types/props';
-import type { VTabs } from 'vuetify/components';
+import type { UploadStatus } from '~/types/props'
+import type { VTabs } from 'vuetify/components'
 
 const props = defineProps({
   loading: {
@@ -56,7 +56,7 @@ const props = defineProps({
       _public: false,
       publishedAt: 0,
       thumbnailUrl: '',
-      title: ''
+      title: '',
     }),
   },
   productFormData: {
@@ -110,23 +110,23 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:video-form-data', formData: UpdateVideoRequest): void;
-  (e: 'update:product-form-data', products: string[]): void;
-  (e: 'update:experience-form-data', experiences: string[]): void;
-  (e: 'update:product-dialog', value: boolean): void;
-  (e: 'update:experience-dialog', value: boolean): void;
-  (e: 'update:search-product', name: string): void;
-  (e: 'update:search-experience', title: string): void;
-  (e: 'submit'): void;
-  (e: 'submit:upload-video', file: File): void;
-  (e: 'submit:upload-thumbnail', file: File): void;
-  (e: 'click:add-products'): void;
-  (e: 'click:add-experiences'): void;
-  (e: 'click:remove-product', productId: string): void;
-  (e: 'click:remove-experience', experienceId: string): void;
-  (e: 'click:back'): void;
-  (e: 'update:current-tab', value: number): void;
-  (e: 'click:ban-comment', commentId: string): void;
+  (e: 'update:video-form-data', formData: UpdateVideoRequest): void
+  (e: 'update:product-form-data', products: string[]): void
+  (e: 'update:experience-form-data', experiences: string[]): void
+  (e: 'update:product-dialog', value: boolean): void
+  (e: 'update:experience-dialog', value: boolean): void
+  (e: 'update:search-product', name: string): void
+  (e: 'update:search-experience', title: string): void
+  (e: 'submit'): void
+  (e: 'submit:upload-video', file: File): void
+  (e: 'submit:upload-thumbnail', file: File): void
+  (e: 'click:add-products'): void
+  (e: 'click:add-experiences'): void
+  (e: 'click:remove-product', productId: string): void
+  (e: 'click:remove-experience', experienceId: string): void
+  (e: 'click:back'): void
+  (e: 'update:current-tab', value: number): void
+  (e: 'click:ban-comment', commentId: string): void
 }>()
 
 const tabs: VTabs[] = [
@@ -153,6 +153,16 @@ const productFormDataValue = computed({
 const experienceFormDataValue = computed({
   get: (): string[] => props.experienceFormData,
   set: (item: string[]): void => emit('update:experience-form-data', item),
+})
+
+const productDialogValue = computed({
+  get: (): boolean => props.productDialog,
+  set: (value: boolean): void => emit('update:product-dialog', value),
+})
+
+const experienceDialogValue = computed({
+  get: (): boolean => props.experienceDialog,
+  set: (value: boolean): void => emit('update:experience-dialog', value),
 })
 
 const onChangeSearchProduct = (name: string): void => {
@@ -206,57 +216,11 @@ const onSubmitUploadThumbnail = (file: File): void => {
 const onClickBanComment = (commentId: string): void => {
   emit('click:ban-comment', commentId)
 }
-
-// 分析情報の計算されたプロパティ
-const totalViewCount = computed(() => {
-  if (!props.viewerLogs || props.viewerLogs.length === 0) return 0
-  return props.viewerLogs.reduce((sum, log) => sum + log.total, 0)
-})
-
-const totalCollectionPeriods = computed(() => {
-  if (!props.viewerLogs || props.viewerLogs.length === 0) return 0
-  return props.viewerLogs.length
-})
-
-const averageViewersPerPeriod = computed(() => {
-  if (!props.viewerLogs || props.viewerLogs.length === 0) return 0
-  return Math.round(totalViewCount.value / props.viewerLogs.length)
-})
-
-const latestLogDate = computed(() => {
-  if (!props.viewerLogs || props.viewerLogs.length === 0) return null
-  const latest = props.viewerLogs.reduce((latest, log) =>
-    log.endAt > latest.endAt ? log : latest
-  )
-  return dateTimeFormatter(latest.endAt)
-})
-
-const formatDuration = (seconds: number): string => {
-  if (seconds === 0) return '0秒'
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const remainingSeconds = seconds % 60
-
-  if (hours > 0) {
-    return `${hours}時間${minutes}分${remainingSeconds}秒`
-  } else if (minutes > 0) {
-    return `${minutes}分${remainingSeconds}秒`
-  } else {
-    return `${remainingSeconds}秒`
-  }
-}
-
-const viewerLogHeaders = [
-  { title: '集計開始時刻', key: 'startAt' },
-  { title: '集計終了時刻', key: 'endAt' },
-  { title: '視聴者数', key: 'total' },
-  { title: '動画ID', key: 'videoId' },
-]
 </script>
 
 <template>
   <div>
-    <v-dialog v-model="props.productDialog">
+    <v-dialog v-model="productDialogValue">
       <v-card>
         <v-card-title>商品紐づけ</v-card-title>
         <v-card-text>
@@ -303,7 +267,7 @@ const viewerLogHeaders = [
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="props.experienceDialog">
+    <v-dialog v-model="experienceDialogValue">
       <v-card>
         <v-card-title>体験紐づけ</v-card-title>
         <v-card-text>
@@ -355,7 +319,10 @@ const viewerLogHeaders = [
       :loading="props.loading"
     >
       <v-card-title>動画編集</v-card-title>
-      <v-tabs v-model="currentTabValue" grow>
+      <v-tabs
+        v-model="currentTabValue"
+        grow
+      >
         <v-tab
           v-for="item in tabs"
           :key="item.value"
