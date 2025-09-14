@@ -36,7 +36,6 @@ interface NavigationGroup {
   expanded?: boolean
 }
 
-const drawer = ref<boolean>(true)
 const searchQuery = ref<string>('')
 const expandedGroups = ref<{ [key: string]: boolean }>({
   general: true,
@@ -237,6 +236,31 @@ const isGroupExpanded = (groupTitle: string) => {
 const isDesktop = computed(() => windowWidth.value >= 1280)
 const isTablet = computed(() => windowWidth.value >= 960 && windowWidth.value < 1280)
 const isMobile = computed(() => windowWidth.value < 960)
+
+// Drawer state management
+const drawer = ref<boolean>(false)
+
+// Initialize drawer based on screen size
+const initializeDrawer = () => {
+  if (isDesktop.value) {
+    drawer.value = true // Always open on desktop
+  }
+  else {
+    drawer.value = false // Closed by default on mobile/tablet
+  }
+}
+
+// Watch for screen size changes and adjust drawer accordingly
+watch([isDesktop, isTablet, isMobile], () => {
+  initializeDrawer()
+}, { immediate: false })
+
+// Initialize drawer on mount
+onMounted(() => {
+  nextTick(() => {
+    initializeDrawer()
+  })
+})
 
 const drawerConfig = computed(() => {
   if (isDesktop.value) {
