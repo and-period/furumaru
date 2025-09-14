@@ -5,10 +5,9 @@ import { CanvasRenderer } from 'echarts/renderers'
 import {
   TitleComponent,
   GridComponent,
-  TooltipComponent,
+  TooltipComponent, LegendComponent,
 } from 'echarts/components'
 import { LineChart, PieChart } from 'echarts/charts'
-import { LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 
 import type { AlertType } from '~/lib/hooks'
@@ -154,11 +153,11 @@ const orderChartOption = computed(() => {
     xAxis: {
       type: 'category',
       data: labels,
-      boundaryGap: false,  // 線グラフの点を目盛りの位置に配置
+      boundaryGap: false, // 線グラフの点を目盛りの位置に配置
       axisLabel: {
         rotate: 30,
-        interval: 0,  // すべてのラベルを表示
-        align: 'right',  // ラベルを右寄せで回転
+        interval: 0, // すべてのラベルを表示
+        align: 'right', // ラベルを右寄せで回転
       },
       name: '期間',
       nameLocation: 'middle',
@@ -177,9 +176,9 @@ const orderChartOption = computed(() => {
         type: 'line',
         data: values,
         smooth: true,
-        symbolSize: 6,  // データポイントのサイズ
+        symbolSize: 6, // データポイントのサイズ
         itemStyle: {
-          color: '#1976D2',  // プライマリカラー
+          color: '#1976D2', // プライマリカラー
         },
         lineStyle: {
           width: 2,
@@ -261,7 +260,7 @@ const paymentChartOption = computed(() => {
       value: p.orderCount,
       name: getPaymentMethod(p.paymentMethodType),
     }))
-    .sort((a, b) => b.value - a.value)  // 降順（大きい順）にソート
+    .sort((a, b) => b.value - a.value) // 降順（大きい順）にソート
 
   return {
     title: {
@@ -312,14 +311,14 @@ const paymentChartOption = computed(() => {
       data,
       // 色の設定（大きい順に濃い色から薄い色へ）
       color: [
-        '#1976D2',  // 濃い青
-        '#42A5F5',  // 青
-        '#66BB6A',  // 緑
-        '#FFA726',  // オレンジ
-        '#EF5350',  // 赤
-        '#AB47BC',  // 紫
-        '#78909C',  // グレー
-        '#8D6E63',  // 茶色
+        '#1976D2', // 濃い青
+        '#42A5F5', // 青
+        '#66BB6A', // 緑
+        '#FFA726', // オレンジ
+        '#EF5350', // 赤
+        '#AB47BC', // 紫
+        '#78909C', // グレー
+        '#8D6E63', // 茶色
       ],
     }],
   }
@@ -339,10 +338,16 @@ const onChangeEndAt = (): void => {
 <template>
   <v-container>
     <!-- Date Range & Period Selection -->
-    <v-card class="mb-4" elevation="2">
+    <v-card
+      class="mb-4"
+      elevation="2"
+    >
       <v-card-text>
         <v-row align="center">
-          <v-col cols="12" md="9">
+          <v-col
+            cols="12"
+            md="9"
+          >
             <div class="d-flex align-center flex-wrap ga-3">
               <v-text-field
                 v-model="startAtValue.date"
@@ -371,7 +376,10 @@ const onChangeEndAt = (): void => {
               />
             </div>
           </v-col>
-          <v-col cols="12" md="3">
+          <v-col
+            cols="12"
+            md="3"
+          >
             <v-select
               v-model="periodTypeValue"
               :items="periodTypes"
@@ -387,11 +395,21 @@ const onChangeEndAt = (): void => {
 
     <!-- KPI Cards -->
     <v-row class="mb-4">
-      <v-col cols="12" md="3">
-        <v-card class="kpi-card" elevation="2">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
           <v-card-text>
             <div class="d-flex align-center mb-2">
-              <v-icon color="primary" size="small" class="mr-2">
+              <v-icon
+                color="primary"
+                size="small"
+                class="mr-2"
+              >
                 mdi-currency-jpy
               </v-icon>
               <span class="text-caption text-grey-darken-1">売上総額</span>
@@ -404,7 +422,10 @@ const onChangeEndAt = (): void => {
               size="x-small"
               label
             >
-              <v-icon size="x-small" class="mr-1">
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
                 {{ orders.sales.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
               </v-icon>
               {{ getComparison(orders.sales.comparison) }}%
@@ -413,11 +434,21 @@ const onChangeEndAt = (): void => {
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3">
-        <v-card class="kpi-card" elevation="2">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
           <v-card-text>
             <div class="d-flex align-center mb-2">
-              <v-icon color="info" size="small" class="mr-2">
+              <v-icon
+                color="info"
+                size="small"
+                class="mr-2"
+              >
                 mdi-cart-outline
               </v-icon>
               <span class="text-caption text-grey-darken-1">注文件数</span>
@@ -431,7 +462,10 @@ const onChangeEndAt = (): void => {
               size="x-small"
               label
             >
-              <v-icon size="x-small" class="mr-1">
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
                 {{ orders.orders.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
               </v-icon>
               {{ getComparison(orders.orders.comparison) }}%
@@ -440,11 +474,21 @@ const onChangeEndAt = (): void => {
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3">
-        <v-card class="kpi-card" elevation="2">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
           <v-card-text>
             <div class="d-flex align-center mb-2">
-              <v-icon color="success" size="small" class="mr-2">
+              <v-icon
+                color="success"
+                size="small"
+                class="mr-2"
+              >
                 mdi-account-multiple-outline
               </v-icon>
               <span class="text-caption text-grey-darken-1">購入者数</span>
@@ -458,7 +502,10 @@ const onChangeEndAt = (): void => {
               size="x-small"
               label
             >
-              <v-icon size="x-small" class="mr-1">
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
                 {{ orders.users.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
               </v-icon>
               {{ getComparison(orders.users.comparison) }}%
@@ -467,11 +514,21 @@ const onChangeEndAt = (): void => {
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="3">
-        <v-card class="kpi-card" elevation="2">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
           <v-card-text>
             <div class="d-flex align-center mb-2">
-              <v-icon color="warning" size="small" class="mr-2">
+              <v-icon
+                color="warning"
+                size="small"
+                class="mr-2"
+              >
                 mdi-cash-multiple
               </v-icon>
               <span class="text-caption text-grey-darken-1">平均単価</span>
@@ -489,10 +546,19 @@ const onChangeEndAt = (): void => {
 
     <!-- Charts Row -->
     <v-row>
-      <v-col cols="12" lg="8">
-        <v-card :loading="loading" elevation="2">
+      <v-col
+        cols="12"
+        lg="8"
+      >
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center">
-            <v-icon color="primary" class="mr-2">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
               mdi-chart-line
             </v-icon>
             売上額推移
@@ -507,10 +573,19 @@ const onChangeEndAt = (): void => {
         </v-card>
       </v-col>
 
-      <v-col cols="12" lg="4">
-        <v-card :loading="loading" elevation="2">
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center">
-            <v-icon color="info" class="mr-2">
+            <v-icon
+              color="info"
+              class="mr-2"
+            >
               mdi-credit-card-outline
             </v-icon>
             支払い方法別
@@ -529,9 +604,15 @@ const onChangeEndAt = (): void => {
     <!-- Payment Details Table -->
     <v-row>
       <v-col cols="12">
-        <v-card :loading="loading" elevation="2">
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
           <v-card-title class="d-flex align-center">
-            <v-icon color="secondary" class="mr-2">
+            <v-icon
+              color="secondary"
+              class="mr-2"
+            >
               mdi-table
             </v-icon>
             支払い方法別詳細
@@ -565,7 +646,11 @@ const onChangeEndAt = (): void => {
                 {{ item.userCount.toLocaleString() }} 人
               </template>
               <template #[`item.orderRate`]="{ item }">
-                <v-chip size="small" variant="tonal" color="primary">
+                <v-chip
+                  size="small"
+                  variant="tonal"
+                  color="primary"
+                >
                   {{ getOrderRate(item.rate) }}%
                 </v-chip>
               </template>
@@ -588,7 +673,7 @@ const onChangeEndAt = (): void => {
 
 .kpi-card {
   transition: all 0.3s;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
