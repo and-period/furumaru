@@ -237,66 +237,15 @@ const isDesktop = computed(() => windowWidth.value >= 1280)
 const isTablet = computed(() => windowWidth.value >= 960 && windowWidth.value < 1280)
 const isMobile = computed(() => windowWidth.value < 960)
 
-// Drawer state management
-const drawer = ref<boolean>(false)
+// Simple drawer state (like original)
+const drawer = ref<boolean>(true)
 
-// Initialize drawer based on screen size
-const initializeDrawer = () => {
-  if (isDesktop.value) {
-    drawer.value = true // Always open on desktop
-  }
-  else {
-    drawer.value = false // Closed by default on mobile/tablet
-  }
-}
-
-// Watch for screen size changes and adjust drawer accordingly
-watch([isDesktop, isTablet, isMobile], () => {
-  initializeDrawer()
-}, { immediate: false })
-
-// Initialize drawer on mount
-onMounted(() => {
-  nextTick(() => {
-    initializeDrawer()
-  })
-})
-
-const drawerConfig = computed(() => {
-  if (isDesktop.value) {
-    return {
-      permanent: true,
-      temporary: false,
-      rail: false,
-      width: 280,
-    }
-  }
-  else if (isTablet.value) {
-    return {
-      permanent: false,
-      temporary: true,
-      rail: false,
-      width: 280,
-    }
-  }
-  else {
-    return {
-      permanent: false,
-      temporary: true,
-      rail: false,
-      width: '100%',
-    }
-  }
-})
+// Simplified drawer configuration
+const drawerPermanent = computed(() => isDesktop.value)
+const drawerTemporary = computed(() => !isDesktop.value)
 
 const handleClickNavIcon = () => {
   drawer.value = !drawer.value
-}
-
-const handleDrawerClose = () => {
-  if (!isDesktop.value) {
-    drawer.value = false
-  }
 }
 
 // Auto-close drawer on route change for mobile/tablet
@@ -385,32 +334,16 @@ const calcStyle = (i: number) => {
 
     <v-navigation-drawer
       v-model="drawer"
-      :permanent="drawerConfig.permanent"
-      :temporary="drawerConfig.temporary"
-      :rail="drawerConfig.rail"
-      :width="drawerConfig.width"
+      :permanent="drawerPermanent"
+      :temporary="drawerTemporary"
+      width="280"
       class="custom-drawer"
     >
-      <!-- Mobile Close Button -->
-      <div
-        v-if="isMobile"
-        class="d-flex justify-end pa-2"
-      >
-        <v-btn
-          icon
-          size="small"
-          variant="text"
-          @click="handleDrawerClose"
-        >
-          <v-icon icon="mdi-close" />
-        </v-btn>
-      </div>
-
-      <!-- User Profile Section (Mobile/Tablet) -->
+      <!-- User Profile Section (Mobile/Tablet only) -->
       <v-list v-if="!isDesktop && user">
-        <v-list-item class="px-4 py-4">
+        <v-list-item class="px-2 py-3">
           <template #prepend>
-            <v-avatar size="48">
+            <v-avatar size="40">
               <v-img
                 v-if="user?.thumbnailUrl"
                 :src="user?.thumbnailUrl"
@@ -420,20 +353,19 @@ const calcStyle = (i: number) => {
               <v-icon
                 v-else
                 :icon="mdiAccount"
-                size="24"
               />
             </v-avatar>
           </template>
-          <div class="ml-4">
-            <div class="text-subtitle-1 font-weight-medium">
+          <div class="ml-3">
+            <div class="text-subtitle-2 font-weight-medium">
               {{ user?.username || "" }}
             </div>
-            <div class="text-body-2 text-grey-darken-1">
+            <div class="text-caption text-grey-darken-1">
               {{ user?.email || "" }}
             </div>
           </div>
         </v-list-item>
-        <v-divider class="mb-2" />
+        <v-divider />
       </v-list>
 
       <!-- Search Section -->
@@ -504,7 +436,6 @@ const calcStyle = (i: number) => {
               :prepend-icon="item.icon"
               color="primary"
               class="rounded-lg mx-2 mb-1 nav-item"
-              @click="handleDrawerClose"
             >
               <v-list-item-title class="text-body-2">
                 {{ item.title }}
@@ -610,98 +541,20 @@ const calcStyle = (i: number) => {
 }
 
 .custom-drawer {
-  // Desktop styles (lg+)
-  @media (min-width: 1280px) {
-    .v-list-item {
-      margin: 0 8px 4px 8px;
-      border-radius: 8px;
+  .v-list-item {
+    margin: 0 8px 4px 8px;
+    border-radius: 8px;
 
-      &:not(.nav-item):hover {
-        background: rgba(var(--v-theme-primary), 0.04);
-      }
+    &:not(.nav-item):hover {
+      background: rgba(var(--v-theme-primary), 0.04);
     }
   }
 
-  // Tablet styles (md)
-  @media (min-width: 960px) and (max-width: 1279px) {
+  // Mobile and tablet responsive adjustments
+  @media (max-width: 1279px) {
     .v-list-item {
-      margin: 0 8px 4px 8px;
-      border-radius: 8px;
-      padding: 8px 16px;
-
-      .v-list-item-title {
-        font-size: 0.875rem;
-      }
-    }
-
-    .search-field {
-      .v-field__input {
-        font-size: 0.875rem;
-      }
-    }
-  }
-
-  // Mobile styles (sm and down)
-  @media (max-width: 959px) {
-    .v-list-item {
-      margin: 0 12px 6px 12px;
-      border-radius: 12px;
-      padding: 12px 16px;
       min-height: 48px;
-
-      .v-list-item-title {
-        font-size: 1rem;
-        font-weight: 500;
-      }
-
-      .v-icon {
-        margin-right: 16px;
-      }
     }
-
-    .search-field {
-      .v-field {
-        font-size: 1rem;
-      }
-
-      .v-field__input {
-        padding: 12px 16px;
-        font-size: 1rem;
-      }
-    }
-
-    // Group headers on mobile
-    .v-list-item.cursor-pointer {
-      background: rgba(var(--v-theme-surface), 0.8);
-      margin: 0 8px 8px 8px;
-      border-radius: 8px;
-
-      .v-list-item-title {
-        font-size: 0.875rem;
-        font-weight: 700;
-        color: rgb(var(--v-theme-primary));
-      }
-    }
-  }
-}
-
-// Mobile-specific fullscreen drawer
-@media (max-width: 959px) {
-  .custom-drawer .v-navigation-drawer__content {
-    height: 100vh;
-    overflow-y: auto;
-    padding-bottom: 20px;
-  }
-
-  .custom-drawer.v-navigation-drawer--temporary {
-    z-index: 2001;
-  }
-}
-
-// Tablet-specific styles
-@media (min-width: 960px) and (max-width: 1279px) {
-  .custom-drawer.v-navigation-drawer--temporary {
-    z-index: 1005;
   }
 }
 </style>
