@@ -46,7 +46,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const messageStore = useMessageStore()
-const { display } = useDisplay()
+const { $vuetify } = useNuxtApp()
 
 const { user, adminType } = storeToRefs(authStore)
 
@@ -212,9 +212,9 @@ const isGroupExpanded = (groupTitle: string) => {
 }
 
 // Responsive drawer behavior
-const isDesktop = computed(() => display.lgAndUp.value)
-const isTablet = computed(() => display.md.value)
-const isMobile = computed(() => display.smAndDown.value)
+const isDesktop = computed(() => $vuetify.display.lgAndUp)
+const isTablet = computed(() => $vuetify.display.md)
+const isMobile = computed(() => $vuetify.display.smAndDown)
 
 const drawerConfig = computed(() => {
   if (isDesktop.value) {
