@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import dayjs, { unix } from 'dayjs'
+import dayjs from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import { DiscountType } from '~/types/api/v1'
 import type { CreatePromotionRequest } from '~/types/api/v1'
-import type { DateTimeInput } from '~/types/props'
-import { CreatePromotionValidationRules, TimeDataValidationRules } from '~/types/validations'
+import { CreatePromotionValidationRules } from '~/types/validations'
+import { DISCOUNT_METHODS } from '~/constants/promotion'
+import { usePromotionForm } from '~/composables/usePromotionForm'
+import { usePromotionValidation } from '~/composables/usePromotionValidation'
 
 const props = defineProps({
   loading: {
@@ -46,93 +48,23 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const statusList = [
-  { status: '有効', value: true },
-  { status: '無効', value: false },
-]
-const discountMethodList = [
-  { method: '円', value: DiscountType.DiscountTypeAmount },
-  { method: '%', value: DiscountType.DiscountTypeRate },
-  { method: '送料無料', value: DiscountType.DiscountTypeFreeShipping },
-]
-
 const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData,
   set: (val: CreatePromotionRequest) => emit('update:form-data', val),
 })
-const startTimeDataValue = computed({
-  get: (): DateTimeInput => ({
-    date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm'),
-  }),
-  set: (timeData: DateTimeInput): void => {
-    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
-    formDataValue.value.startAt = startAt.unix()
-  },
-})
-const endTimeDataValue = computed({
-  get: (): DateTimeInput => ({
-    date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm'),
-  }),
-  set: (timeData: DateTimeInput): void => {
-    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
-    formDataValue.value.endAt = endAt.unix()
-  },
-})
+
+const { startTimeDataValue, endTimeDataValue, onChangeStartAt, onChangeEndAt, generateRandomCode } = usePromotionForm(formDataValue)
+const { getDiscountErrorMessage } = usePromotionValidation(formDataValue)
 
 const formDataValidate = useVuelidate(CreatePromotionValidationRules, formDataValue)
-const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
-const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
-
-const onChangeStartAt = (): void => {
-  const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
-  formDataValue.value.startAt = startAt.unix()
-}
-
-const onChangeEndAt = (): void => {
-  const endAt = dayjs(`${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`)
-  formDataValue.value.endAt = endAt.unix()
-}
 
 const onClickGenerateCode = (): void => {
-  formDataValue.value.code = generateRandomString()
-}
-
-const generateRandomString = (): string => {
-  const characters
-    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  const charactersLength = characters.length
-  for (let i = 0; i < 8; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-
-  return result
-}
-
-const getDiscountErrorMessage = (): string => {
-  switch (formDataValue.value.discountType) {
-    case 1:
-      if (formDataValue.value.discountRate >= 0) {
-        return ''
-      }
-      return '0以上の値を指定してください'
-    case 2:
-      if (formDataValue.value.discountRate >= 0 && formDataValue.value.discountRate <= 100) {
-        return ''
-      }
-      return '0~100の値を指定してください'
-    default:
-      return ''
-  }
+  formDataValue.value.code = generateRandomCode()
 }
 
 const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
-  const startTimeDataValid = await startTimeDataValidate.value.$validate()
-  const endTimeDataValid = await endTimeDataValidate.value.$validate()
-  if (!formDataValid || !startTimeDataValid || !endTimeDataValid) {
+  if (!formDataValid) {
     return
   }
 
@@ -151,99 +83,79 @@ const onSubmit = async (): Promise<void> => {
     <v-card-title>セール情報登録</v-card-title>
 
     <v-form @submit.prevent="onSubmit">
-      <v-card-text>
-        <v-text-field
-          v-model="formDataValidate.title.$model"
-          :error-messages="getErrorMessage(formDataValidate.title.$errors)"
-          label="タイトル"
-        />
-        <v-textarea
-          v-model="formDataValidate.description.$model"
-          :error-messages="getErrorMessage(formDataValidate.description.$errors)"
-          label="説明"
-        />
-        <div class="d-flex align-center">
+      <v-card-text class="pa-6">
+        <div class="d-flex flex-column ga-4">
           <v-text-field
-            v-model="formDataValidate.code.$model"
-            :error-messages="getErrorMessage(formDataValidate.code.$errors)"
-            class="mr-2"
-            label="割引コード(8文字)"
-          />
-          <v-btn
+            v-model="formDataValidate.title.$model"
+            :error-messages="getErrorMessage(formDataValidate.title.$errors)"
+            label="タイトル *"
             variant="outlined"
-            size="small"
+            maxlength="128"
+          />
+
+          <v-textarea
+            v-model="formDataValidate.description.$model"
+            :error-messages="getErrorMessage(formDataValidate.description.$errors)"
+            label="説明"
+            variant="outlined"
+            rows="3"
+            maxlength="500"
+            counter
+          />
+
+          <div class="d-flex align-center ga-2">
+            <v-text-field
+              v-model="formDataValidate.code.$model"
+              :error-messages="getErrorMessage(formDataValidate.code.$errors)"
+              label="割引コード (8文字) *"
+              variant="outlined"
+              maxlength="8"
+            />
+            <v-btn
+              variant="tonal"
+              color="primary"
+              @click="onClickGenerateCode"
+            >
+              自動生成
+            </v-btn>
+          </div>
+
+          <div class="d-flex align-center ga-2">
+            <v-select
+              v-model="formDataValidate.discountType.$model"
+              :error-messages="getErrorMessage(formDataValidate.discountType.$errors)"
+              label="割引方法 *"
+              :items="DISCOUNT_METHODS"
+              item-title="method"
+              item-value="value"
+              variant="outlined"
+            />
+            <v-text-field
+              v-if="formDataValue.discountType !== DiscountType.DiscountTypeFreeShipping"
+              v-model.number="formDataValidate.discountRate.$model"
+              :error-messages="getDiscountErrorMessage()"
+              label="割引値 *"
+              type="number"
+              variant="outlined"
+              min="0"
+              :max="formDataValue.discountType === DiscountType.DiscountTypeRate ? 100 : undefined"
+            />
+          </div>
+
+          <molecules-promotion-period-input
+            v-model:start-time="startTimeDataValue"
+            v-model:end-time="endTimeDataValue"
+            @change:start-at="onChangeStartAt"
+            @change:end-at="onChangeEndAt"
+          />
+
+          <v-switch
+            v-model="formDataValue._public"
+            label="クーポンを有効にする"
             color="primary"
-            @click="onClickGenerateCode"
-          >
-            自動生成
-          </v-btn>
-          <v-spacer />
-        </div>
-        <div class="d-flex align-center">
-          <v-select
-            v-model="formDataValidate.discountType.$model"
-            :error-messages="getErrorMessage(formDataValidate.discountType.$errors)"
-            label="割引方法"
-            :items="discountMethodList"
-            item-title="method"
-            item-value="value"
-            class="mr-2"
-          />
-          <v-text-field
-            v-if="formDataValue.discountType != 3"
-            v-model.number="formDataValidate.discountRate.$model"
-            :error-messages="getDiscountErrorMessage()"
-            label="割引値"
-            type="number"
+            inset
           />
         </div>
-        <p class="text-subtitle-2 text-grey py-2">
-          使用期間
-        </p>
-        <div class="d-flex flex-column flex-md-row justify-center">
-          <v-text-field
-            v-model="startTimeDataValidate.date.$model"
-            :error-messages="getErrorMessage(startTimeDataValidate.date.$errors)"
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeStartAt"
-          />
-          <v-text-field
-            v-model="startTimeDataValidate.time.$model"
-            :error-messages="getErrorMessage(startTimeDataValidate.time.$errors)"
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeStartAt"
-          />
-          <p class="text-subtitle-2 mx-4 pt-md-3 pb-4 pb-md-6">
-            〜
-          </p>
-          <v-text-field
-            v-model="endTimeDataValidate.date.$model"
-            :error-messages="getErrorMessage(endTimeDataValidate.date.$errors)"
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeEndAt"
-          />
-          <v-text-field
-            v-model="endTimeDataValidate.time.$model"
-            :error-messages="getErrorMessage(endTimeDataValidate.time.$errors)"
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeEndAt"
-          />
-        </div>
-        <v-switch
-          v-model="formDataValue._public"
-          label="クーポンを有効にする"
-          color="primary"
-        />
       </v-card-text>
 
       <v-card-actions>
