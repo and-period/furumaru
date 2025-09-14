@@ -1,5 +1,18 @@
 <script lang="ts" setup>
-import { mdiClose, mdiPlus } from '@mdi/js'
+import {
+  mdiClose,
+  mdiPlus,
+  mdiPackageVariant,
+  mdiImageMultiple,
+  mdiStar,
+  mdiCurrencyJpy,
+  mdiPackage,
+  mdiTruck,
+  mdiCalendarClock,
+  mdiTagMultiple,
+  mdiArrowLeft,
+  mdiContentSave,
+} from '@mdi/js'
 
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
@@ -349,6 +362,11 @@ const onSubmit = async (): Promise<void> => {
 
   emit('submit')
 }
+
+// Expose onSubmit method
+defineExpose({
+  onSubmit,
+})
 
 // Expose the onSubmit method to parent components
 defineExpose({
