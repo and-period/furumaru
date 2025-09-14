@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiAccount, mdiDelete, mdiPlus } from '@mdi/js'
+import { mdiAccount, mdiDelete, mdiPlus, mdiAccountGroup } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
@@ -169,109 +169,219 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert
-    v-show="props.isAlert"
-    :type="props.alertType"
-    v-text="props.alertText"
-  />
+  <v-container class="pa-0">
+    <v-alert
+      v-show="props.isAlert"
+      :type="props.alertType"
+      class="mb-4"
+      v-text="props.alertText"
+    />
 
-  <v-dialog
-    v-model="deleteDialogValue"
-    width="500"
-  >
-    <v-card>
-      <v-card-title>
-        {{ producerName(selectedItem) }}を本当に削除しますか？
-      </v-card-title>
-      <v-card-actions>
+    <v-dialog
+      v-model="deleteDialogValue"
+      max-width="500"
+    >
+      <v-card class="delete-dialog-card">
+        <v-card-title class="text-h6 font-weight-medium">
+          削除の確認
+        </v-card-title>
+        <v-card-text class="text-body-1">
+          <div class="d-flex align-center mb-3">
+            <v-avatar
+              v-if="selectedItem?.thumbnailUrl"
+              size="48"
+              class="mr-3"
+            >
+              <v-img :src="selectedItem.thumbnailUrl" />
+            </v-avatar>
+            <v-avatar
+              v-else
+              color="grey-lighten-3"
+              size="48"
+              class="mr-3"
+            >
+              <v-icon
+                :icon="mdiAccount"
+                color="grey"
+              />
+            </v-avatar>
+            <div>
+              <div class="font-weight-medium">
+                {{ producerName(selectedItem) }}
+              </div>
+              <div class="text-caption text-grey">
+                {{ selectedItem?.email }}
+              </div>
+            </div>
+          </div>
+          <v-alert
+            type="warning"
+            variant="tonal"
+            density="compact"
+            class="text-body-2"
+          >
+            この操作は取り消せません。生産者に関連するすべてのデータが削除されます。
+          </v-alert>
+        </v-card-text>
+        <v-card-actions class="pa-4">
+          <v-spacer />
+          <v-btn
+            variant="text"
+            @click="onClickCloseDeleteDialog"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="elevated"
+            :loading="loading"
+            @click="onClickDelete"
+          >
+            削除する
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-card
+      class="producer-list-card"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center pa-6">
+        <div class="d-flex align-center">
+          <v-icon
+            :icon="mdiAccountGroup"
+            size="28"
+            class="mr-3 text-primary"
+          />
+          <div>
+            <h2 class="text-h5 font-weight-bold">
+              生産者管理
+            </h2>
+            <p class="text-caption text-grey mb-0">
+              {{ props.tableItemsTotal }}件の生産者が登録されています
+            </p>
+          </div>
+        </div>
         <v-spacer />
         <v-btn
-          color="error"
-          variant="text"
-          @click="onClickCloseDeleteDialog"
-        >
-          キャンセル
-        </v-btn>
-        <v-btn
+          v-show="isRegisterable()"
           color="primary"
-          variant="outlined"
-          :loading="loading"
-          @click="onClickDelete"
+          variant="elevated"
+          @click="onClickAdd"
         >
-          削除
+          <v-icon
+            :icon="mdiPlus"
+            start
+          />
+          生産者登録
         </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      </v-card-title>
+      <v-divider />
 
-  <v-card
-    class="mt-4"
-    flat
-  >
-    <v-card-title class="d-flex flex-row">
-      生産者管理
-      <v-spacer />
-      <v-btn
-        v-show="isRegisterable()"
-        variant="outlined"
-        color="primary"
-        @click="onClickAdd"
-      >
-        <v-icon
-          start
-          :icon="mdiPlus"
-        />
-        生産者登録
-      </v-btn>
-    </v-card-title>
-
-    <v-card-text>
-      <v-data-table-server
-        :headers="headers"
-        :loading="loading"
-        :items="producers"
-        :items-per-page="props.tableItemsPerPage"
-        :items-length="props.tableItemsTotal"
-        hover
-        no-data-text="登録されている生産者がいません。"
-        @update:page="onClickUpdatePage"
-        @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
-      >
-        <template #[`item.thumbnail`]="{ item }">
-          <v-avatar>
-            <v-img
-              v-if="item.thumbnailUrl !== ''"
-              cover
-              :src="item.thumbnailUrl"
-              :srcset="getImages(item)"
-            />
-            <v-icon
-              v-else
-              :icon="mdiAccount"
-            />
-          </v-avatar>
-        </template>
-        <template #[`item.coordinatorName`]="{ item }">
-          {{ getShopName(item) }}
-        </template>
-        <template #[`item.phoneNumber`]="{ item }">
-          {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn
-            color="primary"
-            size="small"
-            variant="outlined"
-            @click.stop="onClickOpenDeleteDialog(item)"
-          >
-            <v-icon
+      <v-card-text class="pa-0">
+        <v-data-table-server
+          :headers="headers"
+          :loading="loading"
+          :items="producers"
+          :items-per-page="props.tableItemsPerPage"
+          :items-length="props.tableItemsTotal"
+          class="producer-table"
+          hover
+          no-data-text="登録されている生産者がいません。"
+          @update:page="onClickUpdatePage"
+          @update:items-per-page="onClickUpdateItemsPerPage"
+          @click:row="(_: any, { item }: any) => onClickRow(item.id)"
+        >
+          <template #[`item.thumbnail`]="{ item }">
+            <v-avatar
+              size="40"
+              class="producer-avatar"
+            >
+              <v-img
+                v-if="item.thumbnailUrl !== ''"
+                cover
+                :src="item.thumbnailUrl"
+                :srcset="getImages(item)"
+              />
+              <v-icon
+                v-else
+                :icon="mdiAccount"
+                color="grey"
+              />
+            </v-avatar>
+          </template>
+          <template #[`item.coordinatorName`]="{ item }">
+            <span class="text-body-2">
+              {{ getShopName(item) || '未設定' }}
+            </span>
+          </template>
+          <template #[`item.phoneNumber`]="{ item }">
+            <span class="text-body-2">
+              {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
+            </span>
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-btn
+              color="error"
               size="small"
-              :icon="mdiDelete"
-            />削除
-          </v-btn>
-        </template>
-      </v-data-table-server>
-    </v-card-text>
-  </v-card>
+              variant="text"
+              icon
+              @click.stop="onClickOpenDeleteDialog(item)"
+            >
+              <v-icon
+                size="small"
+                :icon="mdiDelete"
+              />
+            </v-btn>
+          </template>
+        </v-data-table-server>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
+
+<style scoped>
+.producer-list-card {
+  border-radius: 12px;
+}
+
+.producer-table {
+  border-radius: 0 0 12px 12px;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.producer-table :deep(.v-table__wrapper) {
+  border-radius: 0 0 12px 12px;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.producer-table :deep(tbody tr) {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.producer-table :deep(tbody tr:hover) {
+  background-color: rgb(0 0 0 / 2%);
+}
+
+.producer-avatar {
+  border: 2px solid rgb(0 0 0 / 8%);
+}
+
+.delete-dialog-card {
+  border-radius: 12px;
+}
+
+@media (width <= 600px) {
+  .producer-list-card {
+    border-radius: 0;
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  .producer-table :deep(.v-data-table__td) {
+    padding: 8px;
+  }
+}
+</style>
