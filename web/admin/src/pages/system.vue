@@ -55,6 +55,11 @@ const menus: SettingMenu[] = [
     action: () => router.push('/payment-systems'),
     adminTypes: [AdminType.AdminTypeAdministrator],
   },
+  {
+    text: 'バージョン情報',
+    action: () => router.push('/version'),
+    adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
+  },
 ]
 
 const getMenus = (): SettingMenu[] => {
