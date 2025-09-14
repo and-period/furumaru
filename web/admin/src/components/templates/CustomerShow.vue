@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDotsVertical } from '@mdi/js'
+import { mdiDelete, mdiDotsVertical } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -127,29 +127,33 @@ const headers: VDataTable['headers'] = [
   },
 ]
 
-const activities = [
-  {
-    eventType: 'notification',
-    detail: '注文(#1000)の発想が完了しました。',
-    createdAt: '2023/04/12 10:34',
-  },
-  {
-    eventType: 'notification',
-    detail: '注文(#1000)の発送済みメールを送りました。',
-    createdAt: '2023/04/10 10:34',
-  },
-  {
-    eventType: 'comment',
-    username: 'ふるマル管理者',
-    detail: '発送準備をコーディネーターに依頼済み',
-    createdAt: '2023/04/06 12:00',
-  },
-  {
-    eventType: 'notification',
-    detail: '注文(#1000)の支払い完了メールを送りました。',
-    createdAt: '2023/04/05 10:34',
-  },
-]
+// TODO: Replace with API data
+const activities = computed(() => {
+  // Placeholder data - should be replaced with real API call
+  return [
+    {
+      eventType: 'notification',
+      detail: '注文(#1000)の発想が完了しました。',
+      createdAt: '2023/04/12 10:34',
+    },
+    {
+      eventType: 'notification',
+      detail: '注文(#1000)の発送済みメールを送りました。',
+      createdAt: '2023/04/10 10:34',
+    },
+    {
+      eventType: 'comment',
+      username: 'ふるマル管理者',
+      detail: '発送準備をコーディネーターに依頼済み',
+      createdAt: '2023/04/06 12:00',
+    },
+    {
+      eventType: 'notification',
+      detail: '注文(#1000)の支払い完了メールを送りました。',
+      createdAt: '2023/04/05 10:34',
+    },
+  ]
+})
 
 const deleteDialogValue = computed({
   get: () => props.deleteDialog,
@@ -335,70 +339,126 @@ const onSubmitDelete = (): void => {
       lg="4"
       order-lg="2"
     >
-      <v-card elevation="0">
-        <v-card-title class="d-flex flex-row align-center mx-4 mt-2">
+      <v-card
+        elevation="0"
+        class="customer-info-card"
+      >
+        <v-card-title class="d-flex flex-row align-center pa-6">
+          <v-icon
+            icon="mdi-account-circle"
+            size="24"
+            class="mr-2 text-primary"
+          />
           顧客情報
           <v-spacer />
           <v-menu v-show="isEditable()">
             <template #activator="{ props: item }">
               <v-btn
-                variant="plain"
+                variant="text"
                 size="small"
                 :icon="mdiDotsVertical"
+                class="action-menu-btn"
                 v-bind="item"
               />
             </template>
             <v-list>
-              <v-list-item @click="onClickOpenDeleteDialog">
+              <v-list-item
+                class="text-error"
+                @click="onClickOpenDeleteDialog"
+              >
+                <template #prepend>
+                  <v-icon
+                    :icon="mdiDelete"
+                    size="20"
+                  />
+                </template>
                 削除する
               </v-list-item>
             </v-list>
           </v-menu>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="px-6">
           <v-list>
-            <v-list-item class="mb-4">
-              <v-list-item-subtitle class="pb-2">
+            <v-list-item class="mb-6 px-0">
+              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
                 氏名
               </v-list-item-subtitle>
-              <div>{{ getUsername() }}</div>
-              <div>{{ getUsernameKana() }}</div>
+              <div class="text-h6 font-weight-medium mb-1">
+                {{ getUsername() }}
+              </div>
+              <div class="text-body-2 text-grey-darken-2">
+                {{ getUsernameKana() }}
+              </div>
             </v-list-item>
-            <v-list-item class="mb-4">
-              <v-list-item-subtitle class="mb-2">
+            <v-list-item class="mb-6 px-0">
+              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
                 基本情報
               </v-list-item-subtitle>
-              <div>
-                ステータス：
+              <div class="d-flex align-center mb-2">
+                <span class="text-body-2 text-grey-darken-2 mr-2">ステータス：</span>
                 <v-chip
                   size="small"
                   :color="getCustomerStatusColor()"
+                  variant="flat"
                 >
                   {{ getCustomerStatus() }}
                 </v-chip>
               </div>
-              <div v-show="customer.username != ''">
-                ユーザー名：{{ customer.username }}
+              <div
+                v-show="customer.username != ''"
+                class="text-body-2 mb-1"
+              >
+                <span class="text-grey-darken-2">ユーザー名：</span>
+                <span>{{ customer.username }}</span>
               </div>
-              <div v-show="customer.accountId != ''">
-                アカウントID：{{ customer.accountId }}
+              <div
+                v-show="customer.accountId != ''"
+                class="text-body-2"
+              >
+                <span class="text-grey-darken-2">アカウントID：</span>
+                <span>{{ customer.accountId }}</span>
               </div>
             </v-list-item>
-            <v-list-item class="mb-4">
-              <v-list-item-subtitle class="pb-2">
+            <v-list-item class="mb-6 px-0">
+              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
                 連絡先情報
               </v-list-item-subtitle>
-              <div>メール：{{ props.customer.email }}</div>
-              <div>電話番号：{{ getPhoneNumber() }}</div>
+              <div class="text-body-2 mb-1">
+                <span class="text-grey-darken-2">メール：</span>
+                <span>{{ props.customer.email }}</span>
+              </div>
+              <div class="text-body-2">
+                <span class="text-grey-darken-2">電話番号：</span>
+                <span>{{ getPhoneNumber() }}</span>
+              </div>
             </v-list-item>
-            <v-list-item v-show="props.address?.postalCode !== ''">
-              <v-list-item-subtitle class="pb-2">
+            <v-list-item
+              v-show="props.address?.postalCode !== ''"
+              class="px-0"
+            >
+              <v-list-item-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-3">
                 請求先情報
               </v-list-item-subtitle>
-              <div>&#12306; {{ props.address?.postalCode || '' }}</div>
-              <div>{{ getAddressArea() }}</div>
-              <div>{{ props.address?.addressLine1 || '' }}</div>
-              <div>{{ props.address?.addressLine2 || '' }}</div>
+              <div class="text-body-2 mb-1">
+                <v-icon
+                  icon="mdi-map-marker"
+                  size="16"
+                  class="mr-1"
+                />
+                〒{{ props.address?.postalCode || '' }}
+              </div>
+              <div class="text-body-2 mb-1">
+                {{ getAddressArea() }}
+              </div>
+              <div class="text-body-2 mb-1">
+                {{ props.address?.addressLine1 || '' }}
+              </div>
+              <div
+                v-show="props.address?.addressLine2"
+                class="text-body-2"
+              >
+                {{ props.address?.addressLine2 || '' }}
+              </div>
             </v-list-item>
           </v-list>
         </v-card-text>
@@ -413,28 +473,43 @@ const onSubmitDelete = (): void => {
     >
       <v-card
         elevation="0"
-        class="mb-4"
+        class="mb-4 purchase-stats-card"
       >
-        <v-card-title class="mx-4 mt-2">
+        <v-card-title class="pa-6">
+          <v-icon
+            icon="mdi-shopping"
+            size="24"
+            class="mr-2 text-primary"
+          />
           購入情報
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text class="px-6">
           <v-row>
-            <v-col>
-              <v-card-subtitle class="pb-4">
-                購入商品金額（※送料等は除く）
-              </v-card-subtitle>
-              <div class="px-4">
-                &yen; {{ props.totalProductAmount.toLocaleString() }}
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <div class="stats-item">
+                <v-card-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-2">
+                  購入商品金額（※送料等は除く）
+                </v-card-subtitle>
+                <div class="text-h5 font-weight-bold text-primary">
+                  ¥{{ props.totalProductAmount.toLocaleString() }}
+                </div>
               </div>
             </v-col>
-            <v-col>
-              <v-card-subtitle class="pb-4">
-                注文数
-              </v-card-subtitle>
-              <div class="px-4">
-                {{ props.totalPaymentCount.toLocaleString() }} 件
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <div class="stats-item">
+                <v-card-subtitle class="text-subtitle-2 font-weight-medium text-grey-darken-1 pb-2">
+                  注文数
+                </v-card-subtitle>
+                <div class="text-h5 font-weight-bold text-primary">
+                  {{ props.totalPaymentCount.toLocaleString() }} 件
+                </div>
               </div>
             </v-col>
           </v-row>
@@ -442,8 +517,16 @@ const onSubmitDelete = (): void => {
       </v-card>
       <v-card
         elevation="0"
-        class="mb-4"
+        class="mb-4 order-history-card"
       >
+        <v-card-title class="pa-6">
+          <v-icon
+            icon="mdi-history"
+            size="24"
+            class="mr-2 text-primary"
+          />
+          注文履歴
+        </v-card-title>
         <v-card-text>
           <v-data-table-server
             :headers="headers"
@@ -453,12 +536,17 @@ const onSubmitDelete = (): void => {
             :items-length="props.totalOrderCount"
             no-data-text="注文履歴がありません"
             hover
+            class="order-history-table"
             @update:page="onClickUpdatePage"
             @update:items-per-page="onClickUpdateItemsPerPage"
             @click:row="(_: any, { item }: any) => onClickRow(item)"
           >
             <template #[`item.status`]="{ item }">
-              <v-chip :color="getPaymentStatusColor(item.status)">
+              <v-chip
+                :color="getPaymentStatusColor(item.status)"
+                size="small"
+                variant="flat"
+              >
                 {{ getPaymentStatus(item.status) }}
               </v-chip>
             </template>
@@ -469,67 +557,153 @@ const onSubmitDelete = (): void => {
               {{ getPaidAt(item.paidAt) }}
             </template>
             <template #[`item.total`]="{ item }">
-              &yen; {{ item.total.toLocaleString() }}
+              <span class="font-weight-medium">
+                ¥{{ item.total.toLocaleString() }}
+              </span>
             </template>
           </v-data-table-server>
         </v-card-text>
       </v-card>
 
-      <div class="pa-4">
-        <h4 class="pb-2">
+      <v-card
+        elevation="0"
+        class="timeline-card"
+      >
+        <v-card-title class="pa-6">
+          <v-icon
+            icon="mdi-timeline"
+            size="24"
+            class="mr-2 text-primary"
+          />
           タイムライン
-        </h4>
+        </v-card-title>
         <v-divider />
-
-        <v-timeline
-          side="end"
-          density="compact"
-        >
-          <template
-            v-for="(activity, i) in activities"
-            :key="i"
+        <v-card-text class="pa-6">
+          <v-timeline
+            side="end"
+            density="compact"
+            class="customer-timeline"
           >
-            <v-timeline-item
-              v-if="activity.eventType === 'notification'"
-              class="mb-4"
-              dot-color="grey"
-              size="small"
-              max-width="75vw"
+            <template
+              v-for="(activity, i) in activities"
+              :key="i"
             >
-              <div class="d-flex flex-column flex-lg-row justify-space-between flex-grow-1">
-                <div>{{ activity.detail }}</div>
-                <div class="flex-shrink-0 text-grey">
-                  {{ activity.createdAt }}
+              <v-timeline-item
+                v-if="activity.eventType === 'notification'"
+                class="mb-4"
+                dot-color="info"
+                size="small"
+                max-width="75vw"
+              >
+                <template #icon>
+                  <v-icon
+                    icon="mdi-bell"
+                    size="16"
+                  />
+                </template>
+                <div class="timeline-content">
+                  <div class="d-flex flex-column flex-lg-row justify-space-between flex-grow-1">
+                    <div class="text-body-2">
+                      {{ activity.detail }}
+                    </div>
+                    <div class="flex-shrink-0 text-caption text-grey-darken-1 mt-1 mt-lg-0">
+                      {{ activity.createdAt }}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </v-timeline-item>
-            <v-timeline-item
-              v-if="activity.eventType === 'comment'"
-              class="mb-4"
-              dot-color="grey"
-              size="small"
-              max-width="75vw"
-            >
-              <template #icon>
-                <v-avatar image="https://i.pravatar.cc/64" />
-              </template>
-              <v-card class="elevation-0">
-                <v-card-title class="d-lg-flex flex-lg-row align-center">
-                  <div class="pr-2">
-                    {{ activity.username }}
-                  </div>
-                  <div class="text-subtitle-2 text-grey">
-                    {{ activity.createdAt }}
-                  </div>
-                </v-card-title>
-                <v-card-text>
-                  <div>{{ activity.detail }}</div>
-                </v-card-text>
-              </v-card>
-            </v-timeline-item>
-          </template>
-        </v-timeline>
-      </div>
+              </v-timeline-item>
+              <v-timeline-item
+                v-if="activity.eventType === 'comment'"
+                class="mb-4"
+                dot-color="primary"
+                size="small"
+                max-width="75vw"
+              >
+                <template #icon>
+                  <v-avatar
+                    image="https://i.pravatar.cc/64"
+                    size="32"
+                  />
+                </template>
+                <v-card
+                  class="elevation-0 timeline-comment-card"
+                  variant="outlined"
+                >
+                  <v-card-title class="d-lg-flex flex-lg-row align-center pa-4">
+                    <div class="text-subtitle-2 font-weight-medium pr-2">
+                      {{ activity.username }}
+                    </div>
+                    <div class="text-caption text-grey-darken-1">
+                      {{ activity.createdAt }}
+                    </div>
+                  </v-card-title>
+                  <v-card-text class="pa-4 pt-0">
+                    <div class="text-body-2">
+                      {{ activity.detail }}
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-timeline-item>
+            </template>
+          </v-timeline>
+        </v-card-text>
+      </v-card>
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+.customer-info-card,
+.purchase-stats-card,
+.order-history-card,
+.timeline-card {
+  border-radius: 12px;
+  border: 1px solid rgb(0 0 0 / 5%);
+}
+
+.action-menu-btn {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.action-menu-btn:hover {
+  opacity: 1;
+}
+
+.stats-item {
+  padding: 16px;
+  background: rgb(33 150 243 / 4%);
+  border-radius: 8px;
+  border-left: 4px solid rgb(33 150 243);
+}
+
+.order-history-table {
+  border-radius: 8px;
+}
+
+.customer-timeline {
+  margin-top: 8px;
+}
+
+.timeline-content {
+  background: rgb(255 255 255 / 80%);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.timeline-comment-card {
+  background: rgb(243 247 251 / 70%);
+  border-radius: 8px;
+  border: 1px solid rgb(33 150 243 / 20%);
+}
+
+@media (width <= 960px) {
+  .stats-item {
+    margin-bottom: 16px;
+  }
+
+  .timeline-content {
+    font-size: 14px;
+  }
+}
+</style>
