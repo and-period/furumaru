@@ -185,13 +185,6 @@ const navigationGroups: NavigationGroup[] = [
         adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
         category: 'settings',
       },
-      {
-        to: '/version',
-        icon: mdiCog,
-        title: 'バージョン情報',
-        adminTypes: [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator],
-        category: 'settings',
-      },
     ],
   },
 ]

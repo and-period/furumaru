@@ -38,6 +38,7 @@ const getMenuIcon = (text: string): string => {
   if (text.includes('デフォルト配送設定管理')) return mdiTruckOutline
   if (text.includes('配送設定管理')) return mdiTruck
   if (text.includes('決済システム管理')) return mdiCreditCardSettings
+  if (text.includes('バージョン情報')) return mdiCog
   return mdiCog
 }
 
@@ -51,6 +52,7 @@ const getMenuDescription = (text: string): string => {
   if (text.includes('デフォルト配送設定管理')) return 'システム全体のデフォルト配送設定'
   if (text.includes('配送設定管理')) return 'コーディネーター別配送設定'
   if (text.includes('決済システム管理')) return '決済サービスの設定・管理'
+  if (text.includes('バージョン情報')) return 'システムのバージョン情報を確認'
   return '各種システム設定'
 }
 
@@ -61,7 +63,7 @@ const getMenuCategory = (text: string): string => {
   if (text.includes('カテゴリー') || text.includes('タグ') || text.includes('体験種別') || text.includes('スポット種別')) {
     return '商品・コンテンツ管理'
   }
-  if (text.includes('配送') || text.includes('決済')) {
+  if (text.includes('配送') || text.includes('決済') || text.includes('バージョン情報')) {
     return 'システム設定'
   }
   return 'その他'
