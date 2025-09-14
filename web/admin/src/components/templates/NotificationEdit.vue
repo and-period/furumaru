@@ -136,7 +136,7 @@ const onSubmit = async (): Promise<void> => {
 
           <!-- セール情報 -->
           <div v-if="notification.type === NotificationType.NotificationTypePromotion">
-            <NotificationPromotionDisplay
+            <molecules-notification-promotion-display
               :promotion="promotion"
               show-title
             />

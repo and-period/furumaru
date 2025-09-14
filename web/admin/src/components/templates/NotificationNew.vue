@@ -131,7 +131,7 @@ const onSubmit = async (): Promise<void> => {
               @update:model-value="onChangePromotion"
               @update:search="onChangeSearchPromotion"
             />
-            <NotificationPromotionDisplay :promotion="selectedPromotion" />
+            <molecules-notification-promotion-display :promotion="selectedPromotion" />
           </div>
 
           <!-- その他 -->
