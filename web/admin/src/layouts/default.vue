@@ -46,9 +46,30 @@ const router = useRouter()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const messageStore = useMessageStore()
-const { $vuetify } = useNuxtApp()
 
 const { user, adminType } = storeToRefs(authStore)
+
+// Responsive breakpoints using window size
+const windowWidth = ref(1280) // Default to desktop size
+
+const updateWindowWidth = () => {
+  if (import.meta.client && window) {
+    windowWidth.value = window.innerWidth
+  }
+}
+
+onMounted(() => {
+  updateWindowWidth()
+  if (import.meta.client) {
+    window.addEventListener('resize', updateWindowWidth)
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client && window) {
+    window.removeEventListener('resize', updateWindowWidth)
+  }
+})
 
 const snackbars = computed(() => {
   return commonStore.snackbars.filter(item => item.isOpen)
@@ -211,10 +232,11 @@ const isGroupExpanded = (groupTitle: string) => {
   return expandedGroups.value[groupTitle] !== false
 }
 
-// Responsive drawer behavior
-const isDesktop = computed(() => $vuetify.display.lgAndUp)
-const isTablet = computed(() => $vuetify.display.md)
-const isMobile = computed(() => $vuetify.display.smAndDown)
+// Responsive drawer behavior based on Vuetify breakpoints
+// xs: <600px, sm: 600-959px, md: 960-1279px, lg: 1280-1919px, xl: >=1920px
+const isDesktop = computed(() => windowWidth.value >= 1280)
+const isTablet = computed(() => windowWidth.value >= 960 && windowWidth.value < 1280)
+const isMobile = computed(() => windowWidth.value < 960)
 
 const drawerConfig = computed(() => {
   if (isDesktop.value) {
