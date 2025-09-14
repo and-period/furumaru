@@ -1,6 +1,6 @@
 import type { PiniaPluginContext } from 'pinia'
 import { useAuthStore } from '~/store'
-import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi } from '~/types/api/v1'
+import { AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, PaymentSystemApi, PostalCodeApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, ShopApi, SpotTypeApi, TopApi, UploadApi, UserApi, VideoApi, VideoCommentApi } from '~/types/api/v1'
 import type { BaseAPI, Middleware, RequestContext } from '~/types/api/v1/runtime'
 
 /**
@@ -103,6 +103,8 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.userApi = (token?: string): UserApi => apiClientFactory.create<UserApi>(UserApi, token)
 
   store.videoApi = (token?: string): VideoApi => apiClientFactory.create<VideoApi>(VideoApi, token)
+
+  store.videoCommentApi = (token?: string): VideoCommentApi => apiClientFactory.create<VideoCommentApi>(VideoCommentApi, token)
 }
 
 /**

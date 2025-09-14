@@ -1,20 +1,28 @@
 import { fileUpload } from './helper'
 import type {
   CreateVideoRequest,
+  Experience,
+  Product,
   UpdateVideoRequest,
   V1UploadVideosFilePostRequest,
   V1UploadVideosThumbnailPostRequest,
   V1VideosGetRequest,
   V1VideosPostRequest,
+  V1VideosVideoIdAnalyticsGetRequest,
   V1VideosVideoIdDeleteRequest,
   V1VideosVideoIdGetRequest,
   V1VideosVideoIdPatchRequest,
-  VideoResponse,
+  Video,
   VideosResponse,
+  VideoViewerLog,
 } from '~/types/api/v1'
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
+    video: null as Video | null,
+    products: [] as Product[],
+    experiences: [] as Experience[],
+    viewerLogs: [] as VideoViewerLog[],
     videoResponse: null as VideosResponse | null,
   }),
 
@@ -47,17 +55,39 @@ export const useVideoStore = defineStore('video', {
      * @param id 動画ID
      * @returns
      */
-    async fetchVideo(id: string): Promise<VideoResponse> {
+    async fetchVideo(id: string): Promise<void> {
       try {
         const params: V1VideosVideoIdGetRequest = {
           videoId: id,
         }
         const res = await this.videoApi().v1VideosVideoIdGet(params)
-        return res
+        this.video = res.video
+        this.products = res.products
+        this.experiences = res.experiences
       }
       catch (error) {
         console.log(error)
         return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * 動画の分析情報を取得する関数
+     * @param videoId 動画ID
+     * @returns
+     */
+    async analyzeVideo(videoId: string): Promise<void> {
+      try {
+        const params: V1VideosVideoIdAnalyticsGetRequest = {
+          videoId,
+        }
+        const res = await this.videoApi().v1VideosVideoIdAnalyticsGet(params)
+        this.viewerLogs = res.viewerLogs
+      }
+      catch (err) {
+        return this.errorHandler(err, {
+          404: '対象の動画が見つかりません。',
+        })
       }
     },
 
@@ -71,7 +101,7 @@ export const useVideoStore = defineStore('video', {
         const params: V1VideosPostRequest = {
           createVideoRequest: payload,
         }
-        const res = await this.videoApi().v1VideosPost(params)
+        await this.videoApi().v1VideosPost(params)
       }
       catch (error) {
         console.log(error)
