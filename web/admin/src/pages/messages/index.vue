@@ -25,6 +25,26 @@ const handleClickMessage = async (messageId: string) => {
     loading.value = false
   }
 }
+
+// 初期化処理
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await messageStore.fetchMessages(50, 0) // 最大50件のメッセージを取得
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+})
+
+try {
+  await fetchState.execute()
+}
+catch (err) {
+  console.log('failed to setup message list', err)
+}
 </script>
 
 <template>
