@@ -11,14 +11,27 @@
 - **実装ガイドライン**: 開発時の実装方針
 - **データフロー仕様**: 機能間のデータ連携仕様
 
+## ドキュメント作成ルール
+
+### ファイル命名規則
+- フォーマット: `${作成日時}_${タイトル}.md`
+- 例: `20250914_admin-dashboard-improvement.md`
+- 作成日時は `YYYYMMDD` 形式
+
+### テンプレート
+- 必ず `template.md` のフォーマットに従って作成すること
+- 各セクションは省略せず、該当なしの場合は「特になし」と記載
+
 ## ファイル構成例
 
 ```
 internal/
-├── user-registration-spec.md    # ユーザー登録機能仕様
-├── order-processing-spec.md     # 注文処理機能仕様
-├── payment-flow-spec.md         # 決済フロー仕様
-└── live-commerce-spec.md        # ライブコマース機能仕様
+├── template.md                              # ドキュメントテンプレート
+├── 20250914_admin-dashboard-improvement.md  # 管理画面ダッシュボード改善
+├── user-registration-spec.md                # ユーザー登録機能仕様
+├── order-processing-spec.md                 # 注文処理機能仕様
+├── payment-flow-spec.md                     # 決済フロー仕様
+└── live-commerce-spec.md                    # ライブコマース機能仕様
 ```
 
 ## 注意事項

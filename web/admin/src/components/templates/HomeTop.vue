@@ -5,9 +5,9 @@ import { CanvasRenderer } from 'echarts/renderers'
 import {
   TitleComponent,
   GridComponent,
-  TooltipComponent,
+  TooltipComponent, LegendComponent,
 } from 'echarts/components'
-import { LineChart } from 'echarts/charts'
+import { LineChart, PieChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
 
 import type { AlertType } from '~/lib/hooks'
@@ -20,8 +20,10 @@ use([
   GridComponent,
   CanvasRenderer,
   LineChart,
+  PieChart,
   TitleComponent,
   TooltipComponent,
+  LegendComponent,
 ])
 
 const props = defineProps({
@@ -142,24 +144,52 @@ const orderChartOption = computed(() => {
     tooltip: {
       trigger: 'axis',
     },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '10%',
+      containLabel: true,
+    },
     xAxis: {
       type: 'category',
       data: labels,
+      boundaryGap: false, // 線グラフの点を目盛りの位置に配置
       axisLabel: {
-        rotate: 20,
+        rotate: 30,
+        interval: 0, // すべてのラベルを表示
+        align: 'right', // ラベルを右寄せで回転
       },
-      name: '時刻',
+      name: '期間',
+      nameLocation: 'middle',
+      nameGap: 30,
     },
     yAxis: {
       minInterval: 1,
       type: 'value',
-      name: '売上総額',
+      name: '売上総額（円）',
+      axisLabel: {
+        formatter: (value: number) => `¥${value.toLocaleString()}`,
+      },
     },
     series: [
       {
         type: 'line',
         data: values,
         smooth: true,
+        symbolSize: 6, // データポイントのサイズ
+        itemStyle: {
+          color: '#1976D2', // プライマリカラー
+        },
+        lineStyle: {
+          width: 2,
+        },
+        emphasis: {
+          focus: 'series',
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)',
+          },
+        },
       },
     ],
   }
@@ -213,6 +243,87 @@ const getOrderRate = (rate: number): string => {
   return rate.toFixed()
 }
 
+const averageOrderValue = computed(() => {
+  if (props.orders.orders.value === 0) {
+    return 0
+  }
+  return Math.floor(props.orders.sales.value / props.orders.orders.value)
+})
+
+const sortedPayments = computed(() => {
+  return [...props.orders.payments].sort((a, b) => b.orderCount - a.orderCount)
+})
+
+const paymentChartOption = computed(() => {
+  const data = props.orders.payments
+    .map(p => ({
+      value: p.orderCount,
+      name: getPaymentMethod(p.paymentMethodType),
+    }))
+    .sort((a, b) => b.value - a.value) // 降順（大きい順）にソート
+
+  return {
+    title: {
+      show: data.length === 0,
+      left: 'center',
+      top: 'center',
+      text: 'データがありません',
+      textStyle: {
+        color: '#c0c0c0',
+      },
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c}件 ({d}%)',
+    },
+    legend: {
+      type: 'scroll',
+      orient: 'vertical',
+      right: 10,
+      top: 20,
+      bottom: 20,
+    },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['40%', '50%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2,
+      },
+      label: {
+        show: false,
+        position: 'center',
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 16,
+          fontWeight: 'bold',
+          formatter: '{b}\n{c}件 ({d}%)',
+        },
+      },
+      labelLine: {
+        show: false,
+      },
+      data,
+      // 色の設定（大きい順に濃い色から薄い色へ）
+      color: [
+        '#1976D2', // 濃い青
+        '#42A5F5', // 青
+        '#66BB6A', // 緑
+        '#FFA726', // オレンジ
+        '#EF5350', // 赤
+        '#AB47BC', // 紫
+        '#78909C', // グレー
+        '#8D6E63', // 茶色
+      ],
+    }],
+  }
+})
+
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${startAtValue.value.date} 00:00:00`)
   emit('update:start-at', startAt.unix())
@@ -226,93 +337,230 @@ const onChangeEndAt = (): void => {
 
 <template>
   <v-container>
+    <!-- Date Range & Period Selection -->
+    <v-card
+      class="mb-4"
+      elevation="2"
+    >
+      <v-card-text>
+        <v-row align="center">
+          <v-col
+            cols="12"
+            md="9"
+          >
+            <div class="d-flex align-center flex-wrap ga-3">
+              <v-text-field
+                v-model="startAtValue.date"
+                type="date"
+                label="開始日"
+                variant="outlined"
+                density="compact"
+                hide-details
+                class="flex-grow-1"
+                style="max-width: 200px"
+                @change="onChangeStartAt"
+              />
+              <div class="text-subtitle-2 px-2">
+                〜
+              </div>
+              <v-text-field
+                v-model="endAtValue.date"
+                type="date"
+                label="終了日"
+                variant="outlined"
+                density="compact"
+                hide-details
+                class="flex-grow-1"
+                style="max-width: 200px"
+                @change="onChangeEndAt"
+              />
+            </div>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-select
+              v-model="periodTypeValue"
+              :items="periodTypes"
+              label="集計単位"
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- KPI Cards -->
+    <v-row class="mb-4">
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
+          <v-card-text>
+            <div class="d-flex align-center mb-2">
+              <v-icon
+                color="primary"
+                size="small"
+                class="mr-2"
+              >
+                mdi-currency-jpy
+              </v-icon>
+              <span class="text-caption text-grey-darken-1">売上総額</span>
+            </div>
+            <div class="text-h5 font-weight-bold mb-1">
+              ¥{{ orders.sales.value.toLocaleString() }}
+            </div>
+            <v-chip
+              :color="orders.sales.comparison >= 0 ? 'success' : 'error'"
+              size="x-small"
+              label
+            >
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
+                {{ orders.sales.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
+              </v-icon>
+              {{ getComparison(orders.sales.comparison) }}%
+            </v-chip>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
+          <v-card-text>
+            <div class="d-flex align-center mb-2">
+              <v-icon
+                color="info"
+                size="small"
+                class="mr-2"
+              >
+                mdi-cart-outline
+              </v-icon>
+              <span class="text-caption text-grey-darken-1">注文件数</span>
+            </div>
+            <div class="text-h5 font-weight-bold mb-1">
+              {{ orders.orders.value.toLocaleString() }}
+              <span class="text-body-2">件</span>
+            </div>
+            <v-chip
+              :color="orders.orders.comparison >= 0 ? 'success' : 'error'"
+              size="x-small"
+              label
+            >
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
+                {{ orders.orders.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
+              </v-icon>
+              {{ getComparison(orders.orders.comparison) }}%
+            </v-chip>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
+          <v-card-text>
+            <div class="d-flex align-center mb-2">
+              <v-icon
+                color="success"
+                size="small"
+                class="mr-2"
+              >
+                mdi-account-multiple-outline
+              </v-icon>
+              <span class="text-caption text-grey-darken-1">購入者数</span>
+            </div>
+            <div class="text-h5 font-weight-bold mb-1">
+              {{ orders.users.value.toLocaleString() }}
+              <span class="text-body-2">人</span>
+            </div>
+            <v-chip
+              :color="orders.users.comparison >= 0 ? 'success' : 'error'"
+              size="x-small"
+              label
+            >
+              <v-icon
+                size="x-small"
+                class="mr-1"
+              >
+                {{ orders.users.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
+              </v-icon>
+              {{ getComparison(orders.users.comparison) }}%
+            </v-chip>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="kpi-card"
+          elevation="2"
+        >
+          <v-card-text>
+            <div class="d-flex align-center mb-2">
+              <v-icon
+                color="warning"
+                size="small"
+                class="mr-2"
+              >
+                mdi-cash-multiple
+              </v-icon>
+              <span class="text-caption text-grey-darken-1">平均単価</span>
+            </div>
+            <div class="text-h5 font-weight-bold mb-1">
+              ¥{{ averageOrderValue.toLocaleString() }}
+            </div>
+            <div class="text-caption text-grey">
+              売上 ÷ 注文数
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Charts Row -->
     <v-row>
       <v-col
-        class="d-flex flex-column flex-md-row justify-center"
-        cols="8"
+        cols="12"
+        lg="8"
       >
-        <v-text-field
-          v-model="startAtValue.date"
-          type="date"
-          variant="outlined"
-          density="compact"
-          class="mr-md-2"
-          @change="onChangeStartAt"
-        />
-        <p class="text-subtitle-2 mx-4 pt-md-3 mb-4 pb-md-6">
-          〜
-        </p>
-        <v-text-field
-          v-model="endAtValue.date"
-          type="date"
-          variant="outlined"
-          density="compact"
-          @change="onChangeEndAt"
-        />
-      </v-col>
-      <v-col cols="4">
-        <v-select
-          v-model="periodTypeValue"
-          :items="periodTypes"
-          variant="outlined"
-        />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="4">
-        <v-card class="py-2">
-          <v-card-title class="mb-2">
-            注文件数
-          </v-card-title>
-          <v-card-text>
-            <div class="text-h5 mb-2">
-              {{ orders.orders.value.toLocaleString() }} 件
-            </div>
-            <div :class="getComparisonColor(orders.orders.comparison)">
-              {{ getComparison(orders.orders.comparison) }} &percnt;
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="4">
-        <v-card class="py-2">
-          <v-card-title class="mb-2">
-            売上総額
-          </v-card-title>
-          <v-card-text>
-            <div class="text-h5 mb-2">
-              {{ orders.sales.value.toLocaleString() }} 円
-            </div>
-            <div :class="getComparisonColor(orders.sales.comparison)">
-              {{ getComparison(orders.sales.comparison) }} &percnt;
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="4">
-        <v-card class="py-2">
-          <v-card-title class="mb-2">
-            購入者数
-          </v-card-title>
-          <v-card-text>
-            <div class="text-h5 mb-2">
-              {{ orders.users.value.toLocaleString() }} 人
-            </div>
-            <div :class="getComparisonColor(orders.users.comparison)">
-              {{ getComparison(orders.users.comparison) }} &percnt;
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12">
-        <v-card :loading="loading">
-          <v-card-title>
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-chart-line
+            </v-icon>
             売上額推移
           </v-card-title>
           <v-card-text>
@@ -325,20 +573,71 @@ const onChangeEndAt = (): void => {
         </v-card>
       </v-col>
 
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center">
+            <v-icon
+              color="info"
+              class="mr-2"
+            >
+              mdi-credit-card-outline
+            </v-icon>
+            支払い方法別
+          </v-card-title>
+          <v-card-text>
+            <v-chart
+              :option="paymentChartOption"
+              class="payment-chart"
+              autoresize
+            />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Payment Details Table -->
+    <v-row>
       <v-col cols="12">
-        <v-card :loading="loading">
-          <v-card-title>
-            利用状況（支払い方法別）
+        <v-card
+          :loading="loading"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center">
+            <v-icon
+              color="secondary"
+              class="mr-2"
+            >
+              mdi-table
+            </v-icon>
+            支払い方法別詳細
           </v-card-title>
           <v-card-text>
             <v-data-table
               :loading="loading"
               :headers="paymentHeaders"
-              :items="orders.payments"
+              :items="sortedPayments"
               no-data-text="データがありません"
+              disable-pagination
+              hide-default-footer
             >
-              <template #[`item.paymentMethod`]="{ item }">
-                {{ getPaymentMethod(item.paymentMethodType) }}
+              <template #[`item.paymentMethod`]="{ item, index }">
+                <div class="d-flex align-center">
+                  <v-chip
+                    v-if="index < 3"
+                    size="x-small"
+                    :color="index === 0 ? 'gold' : index === 1 ? 'grey' : 'brown'"
+                    class="mr-2"
+                  >
+                    {{ index + 1 }}
+                  </v-chip>
+                  {{ getPaymentMethod(item.paymentMethodType) }}
+                </div>
               </template>
               <template #[`item.orderCount`]="{ item }">
                 {{ item.orderCount.toLocaleString() }} 件
@@ -347,7 +646,13 @@ const onChangeEndAt = (): void => {
                 {{ item.userCount.toLocaleString() }} 人
               </template>
               <template #[`item.orderRate`]="{ item }">
-                {{ getOrderRate(item.rate) }} &percnt;
+                <v-chip
+                  size="small"
+                  variant="tonal"
+                  color="primary"
+                >
+                  {{ getOrderRate(item.rate) }}%
+                </v-chip>
               </template>
             </v-data-table>
           </v-card-text>
@@ -360,5 +665,22 @@ const onChangeEndAt = (): void => {
 <style scoped lang="scss">
 .chart {
   height: 400px;
+}
+
+.payment-chart {
+  height: 380px;
+}
+
+.kpi-card {
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+:deep(.v-chip) {
+  font-weight: 600;
 }
 </style>
