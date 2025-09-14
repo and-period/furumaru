@@ -18,7 +18,7 @@ const menus: SettingMenu[] = [
   {
     text: 'コーディネーター管理',
     action: () => router.push('/coordinators'),
-    adminTypes: [AdminType.AdminTypeCoordinator],
+    adminTypes: [AdminType.AdminTypeAdministrator],
   },
   {
     text: 'カテゴリー・品目管理',

@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { useVideoStore, useProductStore, useExperienceStore } from '~/store'
+import { useVideoStore, useProductStore, useExperienceStore, useVideoCommentStore } from '~/store'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api/v1'
 import { ApiBaseError } from '~/types/exception'
-import {
-  getProductThumbnailUrl,
-  getExperienceThumbnailUrl,
-} from '~/lib/formatter'
+import { useAlert } from '~/lib/hooks'
 
 const route = useRoute()
 const router = useRouter()
+const { alertType, isShow, alertText } = useAlert('error')
+
 const videoStore = useVideoStore()
+const { video, viewerLogs, products: sproducts, experiences: sexperiences } = storeToRefs(videoStore)
+
+const videoCommentStore = useVideoCommentStore()
+const { comments } = storeToRefs(videoCommentStore)
 
 const productStore = useProductStore()
 const { products } = storeToRefs(productStore)
@@ -38,20 +41,15 @@ const selectedProducts = ref<Product[]>([])
 const selectedExperiences = ref<Experience[]>([])
 
 const { status } = useAsyncData(async () => {
-  const res = await videoStore.fetchVideo(videoId)
-  formData.value.title = res.video.title
-  formData.value._public = res.video._public
-  formData.value.publishedAt = res.video.publishedAt
-  formData.value.description = res.video.description
-  formData.value.videoUrl = res.video.videoUrl
-  formData.value.displayProduct = res.video.displayProduct
-  formData.value.displayExperience = res.video.displayExperience
-  formData.value.thumbnailUrl = res.video.thumbnailUrl
-  formData.value.productIds = res.video.productIds
-  formData.value.experienceIds = res.video.experienceIds
+  await Promise.all([
+    videoStore.fetchVideo(videoId),
+    videoStore.analyzeVideo(videoId),
+    videoCommentStore.fetchAllComments(videoId),
+  ])
 
-  selectedProducts.value = res.products
-  selectedExperiences.value = res.experiences
+  formData.value = { ...formData.value, ...video.value }
+  selectedProducts.value = sproducts.value
+  selectedExperiences.value = sexperiences.value
 })
 
 const isInitLoading = computed<boolean>(() => status.value === 'pending')
@@ -293,153 +291,54 @@ const handleSubmit = async () => {
 const handleClickBackButton = () => {
   router.back()
 }
+
+const currentTab = ref<number>(0)
+
+const handleBanComment = async (commentId: string) => {
+  try {
+    await videoCommentStore.disableComment(videoId, commentId, true)
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      showError(err.message)
+    }
+    console.log(err)
+  }
+}
 </script>
 
 <template>
-  <div>
-    <v-dialog v-model="isOpenLinkProductDialog">
-      <v-card>
-        <v-card-title>商品紐づけ</v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model="linkTargetProductIds"
-            :loading="productSearchStatus.isLoading"
-            :items="products"
-            label="商品名"
-            messages="商品名を入力することで紐づける商品を検索できます。"
-            item-title="name"
-            item-value="id"
-            multiple
-            chips
-            @update:search-text="searchProducts"
-          >
-            <template #chip="{ props: val, item }">
-              <v-chip
-                v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :text="item.raw.name"
-                rounded
-                class="px-4"
-                variant="outlined"
-              />
-            </template>
-            <template #item="{ props: val, item }">
-              <v-list-item
-                v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :title="item.raw.name"
-              />
-            </template>
-          </v-autocomplete>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="handleClickLinkProductAddButton"
-          >
-            追加
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="isOpenLinkExperienceDialog">
-      <v-card>
-        <v-card-title>体験紐づけ</v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model="linkTargetExperienceIds"
-            :items="experiences"
-            item-title="title"
-            item-value="id"
-            label="体験名"
-            messages="体験名を入力することで紐づける体験を検索できます。"
-            :loading="experienceSearchStatus.isLoading"
-            multiple
-            chips
-            @update:search-text="searchExperiences"
-          >
-            <template #chip="{ props: val, item }">
-              <v-chip
-                v-bind="val"
-                :text="item.raw.title"
-                rounded
-                class="px-4"
-                variant="outlined"
-                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
-              />
-            </template>
-            <template #item="{ props: val, item }">
-              <v-list-item
-                v-bind="val"
-                :title="item.raw.title"
-                :prepend-avatar="getExperienceThumbnailUrl(item.raw)"
-              />
-            </template>
-          </v-autocomplete>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="handleClickLinkExperienceAddButton"
-          >
-            追加
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-card
-      class="mb-16"
-      :loading="isInitLoading"
-    >
-      <v-card-title>動画編集</v-card-title>
-      <v-card-text>
-        <template v-if="!isInitLoading">
-          <organisms-video-form
-            id="update-video-form"
-            v-model="formData"
-            :selected-products="selectedProducts"
-            :selected-experiences="selectedExperiences"
-            :video-is-uploading="uploadVideoStatus.isUploading"
-            :video-has-error="uploadVideoStatus.hasError"
-            :video-error-message="uploadVideoStatus.errorMessage"
-            :thumbnail-is-uploading="uploadThumbnailStatus.isUploading"
-            :thumbnail-has-error="uploadThumbnailStatus.hasError"
-            :thumbnail-error-message="uploadThumbnailStatus.errorMessage"
-            @update:video="handleUploadVideo"
-            @update:thumbnail="handleUploadThumbnail"
-            @click:link-product="handleClickLinkProductButton"
-            @click:link-experience="handleClickLinkExperienceButton"
-            @click:delete-linked-product="handleDeleteLinkedProduct"
-            @click:delete-linked-experience="handleDeleteLinkedExperience"
-            @submit="handleSubmit"
-          />
-        </template>
-      </v-card-text>
-    </v-card>
-    <div
-      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
-    >
-      <div class="d-inline-flex ga-4">
-        <v-btn
-          color="secondary"
-          variant="outlined"
-          @click="handleClickBackButton"
-        >
-          戻る
-        </v-btn>
-        <v-btn
-          color="primary"
-          variant="outlined"
-          type="submit"
-          form="update-video-form"
-        >
-          保存
-        </v-btn>
-      </div>
-    </div>
-  </div>
+  <templates-video-edit
+    v-model:video-form-data="formData"
+    v-model:product-form-data="linkTargetProductIds"
+    v-model:experience-form-data="linkTargetExperienceIds"
+    v-model:product-dialog="isOpenLinkProductDialog"
+    v-model:experience-dialog="isOpenLinkExperienceDialog"
+    v-model:current-tab="currentTab"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :loading="isInitLoading"
+    :viewer-logs="viewerLogs"
+    :video-upload-status="uploadVideoStatus"
+    :thumbnail-upload-status="uploadThumbnailStatus"
+    :product-search-loading="productSearchStatus.isLoading"
+    :experience-search-loading="experienceSearchStatus.isLoading"
+    :selected-products="selectedProducts"
+    :selected-experiences="selectedExperiences"
+    :searched-products="products"
+    :searched-experiences="experiences"
+    :comments="comments"
+    @submit="handleSubmit"
+    @submit:upload-video="handleUploadVideo"
+    @submit:upload-thumbnail="handleUploadThumbnail"
+    @click:add-products="handleClickLinkProductAddButton"
+    @click:add-experiences="handleClickLinkExperienceAddButton"
+    @click:remove-product="handleDeleteLinkedProduct"
+    @click:remove-experience="handleDeleteLinkedExperience"
+    @click:back="handleClickBackButton"
+    @update:search-product="searchProducts"
+    @update:search-experience="searchExperiences"
+    @click:ban-comment="handleBanComment"
+  />
 </template>
