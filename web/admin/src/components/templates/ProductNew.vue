@@ -471,7 +471,7 @@ const onSubmit = async (): Promise<void> => {
                         <v-btn
                           :icon="mdiClose"
                           color="error"
-                          variant="elevated"
+                          variant="text"
                           size="small"
                           class="delete-btn"
                           @click.stop="onDeleteThumbnail(i)"
@@ -883,8 +883,8 @@ const onSubmit = async (): Promise<void> => {
             </v-alert>
 
             <v-select
-              v-model="formDataValidate.public.$model"
-              :error-messages="getErrorMessage(formDataValidate.public.$errors)"
+              v-model="formDataValidate._public.$model"
+              :error-messages="getErrorMessage(formDataValidate._public.$errors)"
               label="公開状況 *"
               :items="statuses"
               variant="outlined"

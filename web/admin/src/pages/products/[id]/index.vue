@@ -203,19 +203,6 @@ const handleSubmit = async (): Promise<void> => {
   }
 }
 
-const handleClickBackButton = () => {
-  router.back()
-}
-
-const productEditRef = ref<UpdateProductRequest>(null)
-
-const handleClickUpdateButton = async () => {
-  // Call the onSubmit method of the ProductEdit component to trigger validation
-  if (productEditRef.value?.onSubmit) {
-    await productEditRef.value.onSubmit()
-  }
-}
-
 try {
   await fetchState.execute()
 }
@@ -225,94 +212,25 @@ catch (err) {
 </script>
 
 <template>
-  <div class="product-edit-container">
-    <templates-product-edit
-      ref="productEditRef"
-      v-model:form-data="formData"
-      v-model:selected-category-id="selectedCategoryId"
-      :loading="isLoading()"
-      :is-alert="isShow"
-      :alert-type="alertType"
-      :alert-text="alertText"
-      :product="product"
-      :producers="producers"
-      :categories="categories"
-      :product-types="productTypes"
-      :product-tags="productTags"
-      :admin-type="adminType"
-      class="mb-20"
-      @update:files="handleImageUpload"
-      @update:search-category="handleSearchCategory"
-      @update:search-product-type="handleSearchProductType"
-      @update:search-product-tag="handleSearchProductTag"
-      @submit="handleSubmit"
-    />
-
-    <!-- Fixed Footer -->
-    <div class="product-edit-footer">
-      <div class="footer-content">
-        <div class="d-flex justify-end gap-3">
-          <v-btn
-            variant="text"
-            size="large"
-            @click="handleClickBackButton"
-          >
-            戻る
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="elevated"
-            size="large"
-            :loading="loading"
-            @click="handleClickUpdateButton"
-          >
-            <v-icon
-              icon="mdi-content-save"
-              start
-            />
-            変更を保存
-          </v-btn>
-        </div>
-      </div>
-    </div>
-  </div>
+  <templates-product-edit
+    ref="productEditRef"
+    v-model:form-data="formData"
+    v-model:selected-category-id="selectedCategoryId"
+    :loading="isLoading()"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :product="product"
+    :producers="producers"
+    :categories="categories"
+    :product-types="productTypes"
+    :product-tags="productTags"
+    :admin-type="adminType"
+    class="mb-20"
+    @update:files="handleImageUpload"
+    @update:search-category="handleSearchCategory"
+    @update:search-product-type="handleSearchProductType"
+    @update:search-product-tag="handleSearchProductTag"
+    @submit="handleSubmit"
+  />
 </template>
-
-<style scoped>
-.product-edit-container {
-  min-height: 100vh;
-  position: relative;
-}
-
-.product-edit-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid rgb(0 0 0 / 10%);
-  z-index: 10;
-  box-shadow: 0 -4px 12px rgb(0 0 0 / 8%);
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px;
-}
-
-@media (width <= 600px) {
-  .footer-content {
-    padding: 12px 16px;
-  }
-
-  .product-edit-footer .d-flex {
-    flex-direction: column-reverse;
-    gap: 8px !important;
-  }
-
-  .product-edit-footer .v-btn {
-    width: 100%;
-  }
-}
-</style>
