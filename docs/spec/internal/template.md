@@ -6,7 +6,7 @@
 
 ## 仕様
 
-<!-- 仕様書（Asana/DocBase）リンクを貼る -->
+<!-- 仕様書（Kibela/Confluence）リンクを貼る -->
 
 ## 設計概要
 

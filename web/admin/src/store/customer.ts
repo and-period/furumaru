@@ -72,7 +72,7 @@ export const useCustomerStore = defineStore('customer', {
         const res = await this.userApi().v1UsersUserIdOrdersGet(params)
         this.orders = res.orders
         this.totalOrderCount = res.orderTotalCount
-        this.totalPaymentCount = res.paymentTotalAmount
+        this.totalPaymentCount = res.paymentTotalCount
         this.totalProductAmount = res.productTotalAmount
         this.totalPaymentAmount = res.paymentTotalAmount
       }
