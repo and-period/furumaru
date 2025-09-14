@@ -38,8 +38,11 @@ interface NavigationGroup {
 
 const searchQuery = ref<string>('')
 const expandedGroups = ref<{ [key: string]: boolean }>({
-  general: true,
-  settings: true,
+  販売・商品管理: true,
+  ライブ・動画: true,
+  注文・顧客管理: true,
+  マーケティング: true,
+  設定: true,
 })
 const router = useRouter()
 const authStore = useAuthStore()
@@ -224,11 +227,14 @@ const searchFilteredGroups = computed(() => {
 })
 
 const toggleGroup = (groupTitle: string) => {
-  expandedGroups.value[groupTitle] = !expandedGroups.value[groupTitle]
+  // If the group is undefined, set it to false (collapsed), otherwise toggle
+  const currentState = expandedGroups.value[groupTitle] ?? true
+  expandedGroups.value[groupTitle] = !currentState
 }
 
 const isGroupExpanded = (groupTitle: string) => {
-  return expandedGroups.value[groupTitle] !== false
+  // If the group is not defined, default to true (expanded)
+  return expandedGroups.value[groupTitle] ?? true
 }
 
 // Responsive drawer behavior based on Vuetify breakpoints
