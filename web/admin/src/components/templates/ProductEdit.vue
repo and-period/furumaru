@@ -363,12 +363,7 @@ const onSubmit = async (): Promise<void> => {
   emit('submit')
 }
 
-// Expose onSubmit method
-defineExpose({
-  onSubmit,
-})
-
-// Expose the onSubmit method to parent components
+// Expose onSubmit method to parent components
 defineExpose({
   onSubmit,
 })
