@@ -17,17 +17,23 @@ PRガイドラインに従って、レビュワーを意識したPR作成を行�
    - `git status` で現在の変更を確認
    - 変更されたディレクトリを特定（api/web）
 
-2. **ブランチ確認・作成**
+2. **フォーマット処理**
+   - webディレクトリに変更がある場合は `yarn format` を実行
+   - web/admin に変更: `cd web/admin && yarn format`
+   - web/user に変更: `cd web/user && yarn format`
+   - 両方に変更がある場合は両方で実行
+
+3. **ブランチ確認・作成**
    - 現在のブランチを確認
    - `main`ブランチの場合は自動的に新しいフィーチャーブランチを作成
    - ブランチ名: `feature/YYYY-MM-DD-description` または `fix/YYYY-MM-DD-description`
 
-3. **コミット作成**
+4. **コミット作成**
    - 変更内容に応じた適切なコミットメッセージを生成
    - コミットフォーマット: `{type}: {subject}`
    - type: feat/fix/docs/style/refactor/test/chore
 
-4. **PR作成/更新**
+5. **PR作成/更新**
    - 既存PRがある場合: pushのみ実行
    - 新規PRの場合: 
      - テンプレートに従った説明文を生成
@@ -105,6 +111,7 @@ PRガイドラインに従って、レビュワーを意識したPR作成を行�
    - mainブランチへのマージが基本
 
 5. **品質チェック**
+   - **webディレクトリの変更時は必ず `yarn format` を実行**
    - lint/formatチェックを事前実行
    - TypeScript型チェックの通過確認
    - Go テストとlintの通過確認
