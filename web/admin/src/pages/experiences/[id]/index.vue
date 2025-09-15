@@ -21,6 +21,7 @@ const { producers } = storeToRefs(producerStore)
 const { experienceTypes } = storeToRefs(experienceTypeStore)
 
 const isLoading = ref<boolean>(false)
+const producerSearchKeyword = ref<string>('')
 
 const formData = ref<UpdateExperienceRequest>({
   title: '',
@@ -151,7 +152,7 @@ const convertToTimeFormat = (time: string): string => {
 
 onMounted(async () => {
   isLoading.value = true
-  producerStore.fetchProducers()
+  producerStore.fetchProducers(100, 0)
   experienceTypeStore.fetchExperienceTypes()
   const result = await experienceStore.fetchExperience(experienceId.value)
   formData.value = {
@@ -166,18 +167,28 @@ onMounted(async () => {
   )
   isLoading.value = false
 })
+
+const filteredProducers = computed(() => {
+  if (!producerSearchKeyword.value) {
+    return producers.value
+  }
+  return producers.value.filter(producer =>
+    producer.username.toLowerCase().includes(producerSearchKeyword.value.toLowerCase()),
+  )
+})
 </script>
 
 <template>
   <templates-experience-new
     v-model:form-data="formData"
+    v-model:producer-search-keyword="producerSearchKeyword"
     :loading="isLoading"
     :search-loading="searchAddress.loading.value"
     :search-error-message="searchAddress.errorMessage.value"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :producers="producers"
+    :producers="filteredProducers"
     :experience-types="experienceTypes"
     :video-uploading="videoUploading"
     @click:search-address="handleSearchAddress"
