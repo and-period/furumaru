@@ -157,7 +157,7 @@ const handleSearchProduct = async (
 }
 
 const handleUploadThumbnail = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || !files[0]) {
     return
   }
 
@@ -177,7 +177,7 @@ const handleUploadThumbnail = (files: FileList): void => {
 }
 
 const handleUploadImage = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || !files[0]) {
     return
   }
 
@@ -197,7 +197,7 @@ const handleUploadImage = (files: FileList): void => {
 }
 
 const handleUploadOpeningVideo = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || !files[0]) {
     return
   }
 
@@ -291,7 +291,7 @@ const handleSubmitPublishSchedule = async (publish: boolean): Promise<void> => {
       message,
       color: 'info',
     })
-    schedule.value = { ...schedule.value, public: publish }
+    schedule.value = { ...schedule.value, _public: publish }
   }
   catch (err) {
     if (err instanceof Error) {
