@@ -1,5 +1,21 @@
 <script lang="ts" setup>
-import { mdiPaperclip, mdiContentCopy } from '@mdi/js'
+import {
+  mdiPaperclip,
+  mdiContentCopy,
+  mdiPlay,
+  mdiPause,
+  mdiStop,
+  mdiRefresh,
+  mdiYoutube,
+  mdiMonitor,
+  mdiCog,
+  mdiUpload,
+  mdiClose,
+  mdiCheck,
+  mdiAlert,
+  mdiVideo,
+  mdiRadio,
+} from '@mdi/js'
 import Hls from 'hls.js'
 import {
 
@@ -227,49 +243,80 @@ const onClickCopyUrl = (url: string) => {
 </script>
 
 <template>
+  <!-- 停止確認ダイアログ -->
   <v-dialog
     v-model="pauseDialogValue"
-    width="500"
+    max-width="400"
   >
-    <v-card>
-      <v-card-title class="text-h7">
-        本当に停止しますか？
+    <v-card class="dialog-card">
+      <v-card-title class="d-flex align-center section-header pa-6">
+        <v-icon
+          :icon="mdiAlert"
+          size="24"
+          class="mr-3 text-warning"
+        />
+        <span class="text-h6 font-weight-medium">配信停止の確認</span>
       </v-card-title>
-      <v-card-actions>
+      <v-card-text class="pa-6">
+        <p class="text-body-1 mb-0">
+          ライブ配信を停止しますか？
+        </p>
+        <p class="text-body-2 text-grey-darken-1 mt-2">
+          停止後は再開に時間がかかる場合があります。
+        </p>
+      </v-card-text>
+      <v-card-actions class="pa-6 pt-0">
         <v-spacer />
         <v-btn
-          color="info"
           variant="text"
           @click="onClosePauseDialog"
         >
-          閉じる
+          <v-icon
+            :icon="mdiClose"
+            start
+          />
+          キャンセル
         </v-btn>
         <v-btn
           :loading="loading"
           color="error"
-          variant="outlined"
+          variant="elevated"
           @click="onSubmitPause"
         >
+          <v-icon
+            :icon="mdiStop"
+            start
+          />
           停止
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="archiveMp4DialogValue">
-    <v-card>
-      <v-card-title class="primaryLight">
-        アーカイブ映像アップロード
+  <!-- アーカイブアップロードダイアログ -->
+  <v-dialog
+    v-model="archiveMp4DialogValue"
+    max-width="500"
+  >
+    <v-card class="dialog-card">
+      <v-card-title class="d-flex align-center section-header pa-6">
+        <v-icon
+          :icon="mdiUpload"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">アーカイブ映像アップロード</span>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pa-6">
         <v-file-input
           v-model="mp4FormDataValue"
-          counter
-          label="アーカイブ動画"
-          :prepend-icon="mdiPaperclip"
-          outlined
+          label="アーカイブ動画 *"
+          :prepend-icon="mdiVideo"
+          variant="outlined"
+          density="comfortable"
           accept="video/mp4"
           :show-size="1000"
+          counter
         >
           <template #selection="{ fileNames }">
             <template
@@ -278,8 +325,8 @@ const onClickCopyUrl = (url: string) => {
             >
               <v-chip
                 size="small"
-                label
                 color="primary"
+                variant="outlined"
                 class="me-2"
               >
                 {{ fileName }}
@@ -288,41 +335,58 @@ const onClickCopyUrl = (url: string) => {
           </template>
         </v-file-input>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="pa-6 pt-0">
         <v-spacer />
         <v-btn
-          color="error"
           variant="text"
           @click="onCloseArchiveMp4Dialog"
         >
+          <v-icon
+            :icon="mdiClose"
+            start
+          />
           キャンセル
         </v-btn>
         <v-btn
           :loading="loading"
           color="primary"
-          variant="outlined"
+          variant="elevated"
           @click="onSubmitUploadArchiveMp4"
         >
-          送信
+          <v-icon
+            :icon="mdiUpload"
+            start
+          />
+          アップロード
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="liveMp4DialogValue">
-    <v-card>
-      <v-card-title class="primaryLight">
-        ライブ映像切り替え
+  <!-- ライブ映像切り替えダイアログ -->
+  <v-dialog
+    v-model="liveMp4DialogValue"
+    max-width="500"
+  >
+    <v-card class="dialog-card">
+      <v-card-title class="d-flex align-center section-header pa-6">
+        <v-icon
+          :icon="mdiVideo"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">ライブ映像切り替え</span>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pa-6">
         <v-file-input
           v-model="mp4FormDataValue"
-          counter
-          label="ライブ動画"
-          :prepend-icon="mdiPaperclip"
-          outlined
+          label="ライブ動画 *"
+          :prepend-icon="mdiVideo"
+          variant="outlined"
+          density="comfortable"
           accept="video/mp4"
           :show-size="1000"
+          counter
         >
           <template #selection="{ fileNames }">
             <template
@@ -331,8 +395,8 @@ const onClickCopyUrl = (url: string) => {
             >
               <v-chip
                 size="small"
-                label
                 color="primary"
+                variant="outlined"
                 class="me-2"
               >
                 {{ fileName }}
@@ -341,276 +405,487 @@ const onClickCopyUrl = (url: string) => {
           </template>
         </v-file-input>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="pa-6 pt-0">
         <v-spacer />
         <v-btn
-          color="error"
           variant="text"
           @click="onCloseLiveMp4Dialog"
         >
+          <v-icon
+            :icon="mdiClose"
+            start
+          />
           キャンセル
         </v-btn>
         <v-btn
           :loading="loading"
           color="primary"
-          variant="outlined"
+          variant="elevated"
           @click="onSubmitChangeMp4Input"
         >
-          送信
+          <v-icon
+            :icon="mdiCheck"
+            start
+          />
+          切り替え
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-row>
-    <v-col
-      sm="12"
-      md="12"
-      lg="8"
-    >
-      <v-card>
-        <v-card-text>
-          <v-container>
-            <video
-              v-show="isLive()"
-              id="video"
-              ref="videoRef"
-              controls
+  <!-- メインコンテンツ -->
+  <div class="streaming-container">
+    <v-row>
+      <v-col
+        cols="12"
+        lg="8"
+      >
+        <!-- 配信プレビューセクション -->
+        <v-card
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiMonitor"
+              size="24"
+              class="mr-3 text-primary"
             />
-            <video
-              v-show="isVOD()"
-              id="video"
-              controls
-            >
-              <source
-                :src="broadcast.archiveUrl"
-                type="video/mp4"
-              >
-              <a
-                :href="broadcast.archiveUrl"
-                type="video/mp4"
-              >mp4</a>
-            </video>
+            <span class="text-h6 font-weight-medium">配信プレビュー</span>
+            <v-spacer />
             <v-btn
               v-show="isLive()"
+              variant="outlined"
+              size="small"
               @click="onClickVideo"
             >
-              映像の更新
+              <v-icon
+                :icon="mdiRefresh"
+                start
+              />
+              更新
             </v-btn>
-          </v-container>
-        </v-card-text>
-      </v-card>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <div class="video-container">
+              <video
+                v-show="isLive()"
+                id="video"
+                ref="videoRef"
+                controls
+                class="video-player"
+              />
+              <video
+                v-show="isVOD()"
+                id="video"
+                controls
+                class="video-player"
+              >
+                <source
+                  :src="broadcast.archiveUrl"
+                  type="video/mp4"
+                >
+                <a
+                  :href="broadcast.archiveUrl"
+                  type="video/mp4"
+                >mp4</a>
+              </video>
+              <div
+                v-if="!isLive() && !isVOD()"
+                class="video-placeholder"
+              >
+                <v-icon
+                  :icon="mdiMonitor"
+                  size="64"
+                  class="text-grey-lighten-1 mb-4"
+                />
+                <p class="text-body-1 text-grey-darken-1">
+                  配信が開始されていません
+                </p>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
 
-      <v-card class="mt-4">
-        <v-card-text>
-          <div class="my-4">
-            <div
-              v-if="broadcastValue.youtubeAccount === ''"
-              class="px-0"
-            >
+        <!-- YouTube連携セクション -->
+        <v-card
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiYoutube"
+              size="24"
+              class="mr-3 text-red"
+            />
+            <span class="text-h6 font-weight-medium">YouTube連携</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <div v-if="broadcastValue.youtubeAccount === ''">
               <template v-if="authYoutubeUrlValue === ''">
+                <p class="text-body-2 text-grey-darken-1 mb-4">
+                  YouTubeチャンネルと連携して配信を行います。ハンドル名を入力してください。
+                </p>
                 <v-text-field
                   v-model="authYoutubeFormDataValue.youtubeHandle"
+                  label="YouTube ハンドル名 *"
+                  placeholder="@から始まるハンドル名（例: @your-channel）"
                   variant="outlined"
-                  label="YouTube 連携先ハンドル名"
-                  placeholder="@から始まるハンドル名（@含めて入力してください）"
+                  density="comfortable"
+                  class="mb-4"
+                  :prepend-inner-icon="mdiYoutube"
                 />
                 <v-btn
-                  block
-                  variant="outlined"
-                  color="primary"
+                  color="red"
+                  variant="elevated"
+                  size="large"
                   @click="onClickLinkYouTube"
                 >
-                  連携する
+                  <v-icon
+                    :icon="mdiYoutube"
+                    start
+                  />
+                  YouTube連携を開始
                 </v-btn>
               </template>
               <template v-else>
+                <v-alert
+                  type="info"
+                  variant="tonal"
+                  class="mb-4"
+                >
+                  <v-icon
+                    :icon="mdiYoutube"
+                    start
+                  />
+                  配信者へ以下のURLを共有してください
+                </v-alert>
                 <v-text-field
                   v-model="authYoutubeUrlValue"
+                  label="YouTube 連携用URL"
                   variant="outlined"
-                  label="YouTube 連携用URL（配信者へ以下のURLを連携してください）"
+                  density="comfortable"
                   readonly
-                  :append-icon="mdiContentCopy"
-                  @click:append="onClickCopyUrl(authYoutubeUrlValue)"
+                  :append-inner-icon="mdiContentCopy"
+                  @click:append-inner="onClickCopyUrl(authYoutubeUrlValue)"
                 />
               </template>
             </div>
             <div v-else>
+              <v-alert
+                type="success"
+                variant="tonal"
+                class="mb-4"
+              >
+                <v-icon
+                  :icon="mdiYoutube"
+                  start
+                />
+                YouTube連携が完了しました
+              </v-alert>
               <v-text-field
                 v-model="broadcastValue.youtubeAccount"
+                label="連携先ハンドル名"
                 variant="outlined"
-                label="YouTube 連携先ハンドル名"
+                density="comfortable"
                 readonly
+                class="mb-4"
+                :prepend-inner-icon="mdiYoutube"
               />
               <v-text-field
                 v-model="broadcastValue.youtubeViewerUrl"
+                label="視聴画面URL"
                 variant="outlined"
-                label="YouTube 配信視聴画面URL"
+                density="comfortable"
                 readonly
-                :append-icon="mdiContentCopy"
-                @click:append="onClickCopyUrl(broadcast.youtubeViewerUrl)"
+                class="mb-4"
+                :append-inner-icon="mdiContentCopy"
+                @click:append-inner="onClickCopyUrl(broadcast.youtubeViewerUrl)"
               />
               <v-text-field
                 v-model="broadcastValue.youtubeAdminUrl"
+                label="管理画面URL"
                 variant="outlined"
-                label="YouTube 配信管理画面URL"
+                density="comfortable"
                 readonly
-                :append-icon="mdiContentCopy"
-                @click:append="onClickCopyUrl(broadcast.youtubeAdminUrl)"
+                :append-inner-icon="mdiContentCopy"
+                @click:append-inner="onClickCopyUrl(broadcast.youtubeAdminUrl)"
               />
             </div>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-col>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-    <v-col
-      sm="12"
-      md="12"
-      lg="4"
-    >
-      <v-card>
-        <v-card-text class="px-4">
-          <v-select
-            v-model="broadcastValue.status"
-            label="配信状況"
-            :items="statuses"
-            item-title="title"
-            item-value="value"
-            variant="outlined"
-            readonly
-          />
-          <v-text-field
-            v-show="isLive()"
-            v-model="broadcastValue.inputUrl"
-            label="配信エンドポイント：入力側"
-            readonly
-            variant="outlined"
-          />
-          <v-text-field
-            v-show="isLive()"
-            v-model="broadcastValue.outputUrl"
-            label="配信エンドポイント：出力側"
-            readonly
-            variant="outlined"
-          />
-          <v-text-field
-            v-show="isVOD()"
-            v-model="broadcastValue.archiveUrl"
-            label="オンデマンド配信URL"
-            readonly
-            variant="outlined"
-          />
-        </v-card-text>
-      </v-card>
-
-      <v-card
-        v-show="isLive()"
-        class="mt-4"
+      <v-col
+        cols="12"
+        lg="4"
       >
-        <v-card-text>
-          <v-list>
-            <v-list-item class="px-0">
-              <v-list-item-subtitle> ライブ配信の操作 </v-list-item-subtitle>
-              <v-btn
-                block
-                variant="outlined"
-                color="primary"
-                class="mt-2"
-                @click="onClickPause"
-              >
-                停止する
-              </v-btn>
-              <v-btn
-                block
-                variant="outlined"
-                color="secondary"
-                class="mt-2"
-                @click="onSubmitUnpause"
-              >
-                停止を解除する
-              </v-btn>
-            </v-list-item>
+        <!-- 配信状況セクション -->
+        <v-card
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiRadio"
+              size="24"
+              class="mr-3 text-primary"
+            />
+            <span class="text-h6 font-weight-medium">配信状況</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <v-select
+              v-model="broadcastValue.status"
+              label="配信ステータス"
+              :items="statuses"
+              item-title="title"
+              item-value="value"
+              variant="outlined"
+              density="comfortable"
+              readonly
+              class="mb-4"
+            />
+            <v-text-field
+              v-show="isLive()"
+              v-model="broadcastValue.inputUrl"
+              label="入力エンドポイント"
+              variant="outlined"
+              density="comfortable"
+              readonly
+              class="mb-4"
+            />
+            <v-text-field
+              v-show="isLive()"
+              v-model="broadcastValue.outputUrl"
+              label="出力エンドポイント"
+              variant="outlined"
+              density="comfortable"
+              readonly
+              class="mb-4"
+            />
+            <v-text-field
+              v-show="isVOD()"
+              v-model="broadcastValue.archiveUrl"
+              label="オンデマンド配信URL"
+              variant="outlined"
+              density="comfortable"
+              readonly
+            />
+          </v-card-text>
+        </v-card>
 
-            <v-list-item class="px-0 mt-4">
-              <v-list-item-subtitle>
-                入力チャンネルの設定
-              </v-list-item-subtitle>
-              <v-btn
-                block
-                variant="outlined"
-                color="primary"
-                class="mt-2"
-                @click="onSubmitChangeRtmpInput"
-              >
-                RTMP配信に切り替え
-              </v-btn>
-              <v-btn
-                block
-                variant="outlined"
-                color="secondary"
-                class="mt-2"
-                @click="onClickChangeMp4Input"
-              >
-                MP4配信に切り替え
-              </v-btn>
-            </v-list-item>
+        <!-- ライブ配信操作セクション -->
+        <v-card
+          v-show="isLive()"
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiCog"
+              size="24"
+              class="mr-3 text-primary"
+            />
+            <span class="text-h6 font-weight-medium">配信操作</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <div class="control-section">
+              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                ライブ配信制御
+              </p>
+              <div class="d-flex flex-column ga-3 mb-6">
+                <v-btn
+                  variant="outlined"
+                  color="error"
+                  size="large"
+                  @click="onClickPause"
+                >
+                  <v-icon
+                    :icon="mdiPause"
+                    start
+                  />
+                  配信を停止
+                </v-btn>
+                <v-btn
+                  variant="outlined"
+                  color="success"
+                  size="large"
+                  @click="onSubmitUnpause"
+                >
+                  <v-icon
+                    :icon="mdiPlay"
+                    start
+                  />
+                  停止を解除
+                </v-btn>
+              </div>
 
-            <v-list-item class="px-0 mt-4">
-              <v-list-item-subtitle> ふた絵の表示設定 </v-list-item-subtitle>
-              <v-btn
-                block
-                variant="outlined"
-                color="primary"
-                class="mt-2"
-                @click="onClickActivateStaticImage"
-              >
-                有効化
-              </v-btn>
-              <v-btn
-                block
-                variant="outlined"
-                color="secondary"
-                class="mt-2"
-                @click="onClickDeactivateStaticImage"
-              >
-                無効化
-              </v-btn>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
+              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                入力チャンネル設定
+              </p>
+              <div class="d-flex flex-column ga-3 mb-6">
+                <v-btn
+                  variant="outlined"
+                  color="primary"
+                  size="large"
+                  @click="onSubmitChangeRtmpInput"
+                >
+                  <v-icon
+                    :icon="mdiRadio"
+                    start
+                  />
+                  RTMP配信
+                </v-btn>
+                <v-btn
+                  variant="outlined"
+                  color="secondary"
+                  size="large"
+                  @click="onClickChangeMp4Input"
+                >
+                  <v-icon
+                    :icon="mdiVideo"
+                    start
+                  />
+                  MP4配信
+                </v-btn>
+              </div>
 
-      <v-card
-        v-show="isVOD()"
-        class="mt-4"
-      >
-        <v-card-text>
-          <v-list>
-            <v-list-item class="px-0">
-              <v-list-item-subtitle>
-                オンデマンド配信の設定
-              </v-list-item-subtitle>
-              <v-btn
-                block
-                variant="outlined"
-                color="secondary"
-                class="mt-2"
-                @click="onClickUploadArchiveMp4"
-              >
-                アップロード
-              </v-btn>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+              <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+                ふた絵表示設定
+              </p>
+              <div class="d-flex flex-column ga-3">
+                <v-btn
+                  variant="outlined"
+                  color="primary"
+                  size="large"
+                  @click="onClickActivateStaticImage"
+                >
+                  <v-icon
+                    :icon="mdiCheck"
+                    start
+                  />
+                  有効化
+                </v-btn>
+                <v-btn
+                  variant="outlined"
+                  color="secondary"
+                  size="large"
+                  @click="onClickDeactivateStaticImage"
+                >
+                  <v-icon
+                    :icon="mdiClose"
+                    start
+                  />
+                  無効化
+                </v-btn>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <!-- オンデマンド配信操作セクション -->
+        <v-card
+          v-show="isVOD()"
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiUpload"
+              size="24"
+              class="mr-3 text-primary"
+            />
+            <span class="text-h6 font-weight-medium">オンデマンド配信</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
+            <p class="text-body-2 text-grey-darken-1 mb-4">
+              アーカイブ動画をアップロードしてオンデマンド配信を開始できます。
+            </p>
+            <v-btn
+              variant="elevated"
+              color="primary"
+              size="large"
+              block
+              @click="onClickUploadArchiveMp4"
+            >
+              <v-icon
+                :icon="mdiUpload"
+                start
+              />
+              アーカイブをアップロード
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <style scoped>
-#video {
-  margin-bottom: 1.5em;
+.form-section-card {
+  border-radius: 12px;
+  max-width: none;
+}
+
+.section-header {
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  padding: 20px 24px;
+}
+
+.dialog-card {
+  border-radius: 12px;
+}
+
+.streaming-container {
+  min-height: 400px;
+}
+
+.video-container {
+  position: relative;
   width: 100%;
+  min-height: 300px;
+}
+
+.video-player {
+  width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  background: #000;
+}
+
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: rgb(245 245 245);
+  border-radius: 8px;
+  border: 2px dashed rgb(189 189 189);
+}
+
+.control-section {
+  border-top: 1px solid rgb(0 0 0 / 10%);
+  padding-top: 16px;
+}
+
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
+
+  .section-header {
+    padding: 16px 20px;
+  }
+
+  .dialog-card {
+    border-radius: 8px;
+    margin: 16px;
+  }
+
+  .video-placeholder {
+    height: 200px;
+  }
 }
 </style>

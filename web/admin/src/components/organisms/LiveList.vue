@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
+import {
+  mdiPlus,
+  mdiAccountGroup,
+  mdiClock,
+  mdiPackageVariant,
+  mdiClose,
+  mdiCheck,
+} from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getResizedImages } from '~/lib/helpers'
@@ -267,184 +274,381 @@ const onSubmitDelete = (liveId: string): void => {
 </script>
 
 <template>
+  <!-- ライブスケジュール作成ダイアログ -->
   <v-dialog
     v-model="createDialogValue"
-    width="500"
+    max-width="600"
+    scrollable
   >
-    <v-card>
-      <v-card-title class="text-h6 primaryLight">
-        スケジュール登録
-      </v-card-title>
-      <v-card-text>
-        <p class="text-subtitle-2 text-grey pb-2">
-          ライブ配開始日時
-        </p>
-        <div class="d-flex flex-column flex-md-row justify-center">
-          <v-text-field
-            v-model="createStartTimeDataValidate.date.$model"
-            :error-messages="
-              getErrorMessage(createStartTimeDataValidate.date.$errors)
-            "
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeCreateStartAt"
-          />
-          <v-text-field
-            v-model="createStartTimeDataValidate.time.$model"
-            :error-messages="
-              getErrorMessage(createStartTimeDataValidate.time.$errors)
-            "
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeCreateStartAt"
-          />
-        </div>
-        <p class="text-subtitle-2 text-grey pb-2">
-          ライブ配終了日時
-        </p>
-        <div class="d-flex flex-column flex-md-row justify-center">
-          <v-text-field
-            v-model="createEndTimeDataValidate.date.$model"
-            :error-messages="
-              getErrorMessage(createEndTimeDataValidate.date.$errors)
-            "
-            type="date"
-            variant="outlined"
-            density="compact"
-            class="mr-md-2"
-            @update:model-value="onChangeCreateEndAt"
-          />
-          <v-text-field
-            v-model="createEndTimeDataValidate.time.$model"
-            :error-messages="
-              getErrorMessage(createEndTimeDataValidate.time.$errors)
-            "
-            type="time"
-            variant="outlined"
-            density="compact"
-            @update:model-value="onChangeCreateEndAt"
-          />
-        </div>
-        <v-autocomplete
-          v-model="createFormDataValidate.producerId.$model"
-          :error-messages="
-            getErrorMessage(createFormDataValidate.producerId.$errors)
-          "
-          label="生産者"
-          :items="producers"
-          item-title="username"
-          item-value="id"
-          clearable
-          @update:search="onSearchProducer"
-          @update:model-value="onChangeCreateProducerId"
+    <v-card class="create-dialog-card">
+      <v-card-title class="d-flex align-center section-header pa-6">
+        <v-icon
+          :icon="mdiAccountGroup"
+          size="24"
+          class="mr-3 text-primary"
         />
-
-        <v-autocomplete
-          v-model="createFormDataValidate.productIds.$model"
-          :error-messages="
-            getErrorMessage(createFormDataValidate.productIds.$errors)
-          "
-          label="関連する商品"
-          :items="getProductsByProducerId(createFormDataValue.producerId)"
-          item-title="name"
-          item-value="id"
-          chips
-          closable-chips
-          clearable
-          multiple
-          density="comfortable"
-          @update:search="onSearchProductFromCreate"
-        >
-          <template #chip="{ props: val, item }">
-            <v-chip
-              v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :text="item.raw.name"
-              rounded
-              class="px-4"
-              variant="outlined"
-            />
-          </template>
-          <template #item="{ props: val, item }">
-            <v-list-item
-              v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :title="item.raw.name"
-            />
-          </template>
-        </v-autocomplete>
-
-        <v-textarea
-          v-model="createFormDataValidate.comment.$model"
-          :error-messages="
-            getErrorMessage(createFormDataValidate.comment.$errors)
-          "
-          label="概要"
-          maxlength="2000"
-        />
-      </v-card-text>
-      <v-card-actions>
+        <span class="text-h6 font-weight-medium">ライブスケジュール登録</span>
         <v-spacer />
         <v-btn
-          color=""
+          :icon="mdiClose"
           variant="text"
+          size="small"
+          @click="onClickCloseCreateDialog"
+        />
+      </v-card-title>
+
+      <v-card-text class="pa-6">
+        <!-- 開催期間設定 -->
+        <div class="mb-6">
+          <div class="d-flex align-center mb-4">
+            <v-icon
+              :icon="mdiClock"
+              size="20"
+              class="mr-2 text-primary"
+            />
+            <span class="text-subtitle-1 font-weight-medium">開催期間設定</span>
+          </div>
+
+          <div class="mb-4">
+            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              開始日時 *
+            </p>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  v-model="createStartTimeDataValidate.date.$model"
+                  :error-messages="
+                    getErrorMessage(createStartTimeDataValidate.date.$errors)
+                  "
+                  label="日付"
+                  type="date"
+                  variant="outlined"
+                  density="comfortable"
+                  @update:model-value="onChangeCreateStartAt"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  v-model="createStartTimeDataValidate.time.$model"
+                  :error-messages="
+                    getErrorMessage(createStartTimeDataValidate.time.$errors)
+                  "
+                  label="時刻"
+                  type="time"
+                  variant="outlined"
+                  density="comfortable"
+                  @update:model-value="onChangeCreateStartAt"
+                />
+              </v-col>
+            </v-row>
+          </div>
+
+          <div class="mb-4">
+            <p class="text-subtitle-2 mb-3 text-grey-darken-1">
+              終了日時 *
+            </p>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  v-model="createEndTimeDataValidate.date.$model"
+                  :error-messages="
+                    getErrorMessage(createEndTimeDataValidate.date.$errors)
+                  "
+                  label="日付"
+                  type="date"
+                  variant="outlined"
+                  density="comfortable"
+                  @update:model-value="onChangeCreateEndAt"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  v-model="createEndTimeDataValidate.time.$model"
+                  :error-messages="
+                    getErrorMessage(createEndTimeDataValidate.time.$errors)
+                  "
+                  label="時刻"
+                  type="time"
+                  variant="outlined"
+                  density="comfortable"
+                  @update:model-value="onChangeCreateEndAt"
+                />
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+
+        <!-- 生産者・商品設定 -->
+        <div class="mb-6">
+          <div class="d-flex align-center mb-4">
+            <v-icon
+              :icon="mdiPackageVariant"
+              size="20"
+              class="mr-2 text-primary"
+            />
+            <span class="text-subtitle-1 font-weight-medium">生産者・商品設定</span>
+          </div>
+
+          <v-autocomplete
+            v-model="createFormDataValidate.producerId.$model"
+            :error-messages="
+              getErrorMessage(createFormDataValidate.producerId.$errors)
+            "
+            label="生産者 *"
+            :items="producers"
+            item-title="username"
+            item-value="id"
+            variant="outlined"
+            density="comfortable"
+            clearable
+            class="mb-4"
+            @update:search="onSearchProducer"
+            @update:model-value="onChangeCreateProducerId"
+          />
+
+          <v-autocomplete
+            v-model="createFormDataValidate.productIds.$model"
+            :error-messages="
+              getErrorMessage(createFormDataValidate.productIds.$errors)
+            "
+            label="関連する商品 *"
+            :items="getProductsByProducerId(createFormDataValue.producerId)"
+            item-title="name"
+            item-value="id"
+            variant="outlined"
+            density="comfortable"
+            chips
+            closable-chips
+            clearable
+            multiple
+            class="mb-4"
+            @update:search="onSearchProductFromCreate"
+          >
+            <template #chip="{ props: val, item }">
+              <v-chip
+                v-bind="val"
+                :prepend-avatar="getProductThumbnailUrl(item.raw)"
+                :text="item.raw.name"
+                rounded
+                class="px-3"
+                variant="outlined"
+                color="primary"
+              />
+            </template>
+            <template #item="{ props: val, item }">
+              <v-list-item
+                v-bind="val"
+                :prepend-avatar="getProductThumbnailUrl(item.raw)"
+                :title="item.raw.name"
+              />
+            </template>
+          </v-autocomplete>
+
+          <v-textarea
+            v-model="createFormDataValidate.comment.$model"
+            :error-messages="
+              getErrorMessage(createFormDataValidate.comment.$errors)
+            "
+            label="概要・コメント"
+            maxlength="2000"
+            variant="outlined"
+            density="comfortable"
+            rows="3"
+            counter
+          />
+        </div>
+      </v-card-text>
+
+      <v-card-actions class="pa-6 pt-0">
+        <v-spacer />
+        <v-btn
+          variant="text"
+          size="large"
           @click="onClickCloseCreateDialog"
         >
+          <v-icon
+            :icon="mdiClose"
+            start
+          />
           キャンセル
         </v-btn>
         <v-btn
           :loading="loading"
           color="primary"
-          variant="text"
+          variant="elevated"
+          size="large"
           @click="onSubmitCreate"
         >
+          <v-icon
+            :icon="mdiCheck"
+            start
+          />
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-row>
-    <v-col sm="12">
-      <p class="text-subtitle-2 pb-2">
-        マルシェ開催期間
-      </p>
-      <p class="text-subtitle-2">
-        {{ getScheduleTerm(schedule) }}
-      </p>
-    </v-col>
-    <v-col sm="12">
-      <!-- 新コンポーネント -->
-      <div class="d-flex flex-column ga-2">
-        <organisms-live-list-item
-          v-for="(item, i) in props.lives"
-          :key="`live-${i}`"
-          :item="item"
-          :producer-thumbnail-url="getProducerThumbnailUrl(item)"
-          :producer-thumbnails-srcset="getProducerThumbnails(item)"
-          :producer-name="getProducerName(item)"
-          :products="getProductsByProducerId(item.producerId)"
-          :live-products="getProductsByLive(item)"
-          :producers="producers"
-          :loading="loading"
-          @submit:delete="onSubmitDelete"
-          @submit:update="onSubmitUpdate"
+  <!-- メインコンテンツ -->
+  <div class="live-list-container">
+    <!-- スケジュール情報セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiClock"
+          size="24"
+          class="mr-3 text-primary"
         />
-      </div>
-    </v-col>
-    <v-col sm="12">
-      <v-btn
-        block
-        variant="outlined"
-        color="primary"
-        @click="onClickNew"
-      >
-        <v-icon :icon="mdiPlus" />
-        生産者と商品を追加
-      </v-btn>
-    </v-col>
-  </v-row>
+        <span class="text-h6 font-weight-medium">マルシェ開催期間</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
+        <div class="schedule-period">
+          <v-chip
+            color="primary"
+            variant="outlined"
+            size="large"
+            class="pa-4"
+          >
+            <v-icon
+              :icon="mdiClock"
+              start
+              size="20"
+            />
+            {{ getScheduleTerm(schedule) }}
+          </v-chip>
+        </div>
+      </v-card-text>
+    </v-card>
+
+    <!-- ライブスケジュール一覧セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiAccountGroup"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">ライブスケジュール一覧</span>
+        <v-spacer />
+        <v-btn
+          variant="elevated"
+          color="primary"
+          size="small"
+          @click="onClickNew"
+        >
+          <v-icon
+            :icon="mdiPlus"
+            start
+          />
+          追加
+        </v-btn>
+      </v-card-title>
+      <v-card-text class="pa-6">
+        <div
+          v-if="props.lives.length > 0"
+          class="d-flex flex-column ga-4"
+        >
+          <organisms-live-list-item
+            v-for="(item, i) in props.lives"
+            :key="`live-${i}`"
+            :item="item"
+            :producer-thumbnail-url="getProducerThumbnailUrl(item)"
+            :producer-thumbnails-srcset="getProducerThumbnails(item)"
+            :producer-name="getProducerName(item)"
+            :products="getProductsByProducerId(item.producerId)"
+            :live-products="getProductsByLive(item)"
+            :producers="producers"
+            :loading="loading"
+            @submit:delete="onSubmitDelete"
+            @submit:update="onSubmitUpdate"
+          />
+        </div>
+        <div
+          v-else
+          class="text-center py-8"
+        >
+          <v-icon
+            :icon="mdiAccountGroup"
+            size="64"
+            class="text-grey-lighten-1 mb-4"
+          />
+          <p class="text-body-1 text-grey-darken-1 mb-4">
+            ライブスケジュールが登録されていません
+          </p>
+          <v-btn
+            variant="outlined"
+            color="primary"
+            size="large"
+            @click="onClickNew"
+          >
+            <v-icon
+              :icon="mdiPlus"
+              start
+            />
+            最初のライブスケジュールを追加
+          </v-btn>
+        </div>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
+
+<style scoped>
+.form-section-card {
+  border-radius: 12px;
+  max-width: none;
+}
+
+.section-header {
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  padding: 20px 24px;
+}
+
+.create-dialog-card {
+  border-radius: 12px;
+}
+
+.live-list-container {
+  min-height: 200px;
+}
+
+.schedule-period {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
+
+  .section-header {
+    padding: 16px 20px;
+  }
+
+  .create-dialog-card {
+    border-radius: 8px;
+    margin: 16px;
+  }
+}
+</style>

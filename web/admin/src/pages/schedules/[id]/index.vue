@@ -33,7 +33,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const scheduleId = route.params.id as string
 const tab = route.query.tab as string
 
-const { schedule, viewerLogs } = storeToRefs(scheduleStore)
+const { schedule, viewerLogs, totalViewers } = storeToRefs(scheduleStore)
 const { lives } = storeToRefs(liveStore)
 const { broadcast } = storeToRefs(broadcastStore)
 const { coordinators } = storeToRefs(coordinatorStore)
@@ -524,6 +524,7 @@ catch (err) {
     :producers="producers"
     :products="products"
     :viewer-logs="viewerLogs"
+    :total-viewers="totalViewers"
     :auth-youtube-url="authYoutubeUrl"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"

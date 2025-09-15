@@ -1,4 +1,14 @@
 <script lang="ts" setup>
+import {
+  mdiArrowLeft,
+  mdiCalendarToday,
+  mdiImageMultiple,
+  mdiVideo,
+  mdiClock,
+  mdiAccountGroup,
+  mdiChartLine,
+  mdiPlay,
+} from '@mdi/js'
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
@@ -154,6 +164,10 @@ const props = defineProps({
   viewerLogs: {
     type: Array<BroadcastViewerLog>,
     default: () => [],
+  },
+  totalViewers: {
+    type: Number,
+    default: 0,
   },
   authYoutubeUrl: {
     type: String,
@@ -354,100 +368,201 @@ const onSubmitUploadArchiveMp4 = (): void => {
 </script>
 
 <template>
-  <v-alert
-    v-show="props.isAlert"
-    :type="props.alertType"
-    class="mb-4"
-    v-text="props.alertText"
-  />
+  <v-container class="pa-6">
+    <v-alert
+      v-show="props.isAlert"
+      :type="props.alertType"
+      class="mb-6"
+      v-text="props.alertText"
+    />
 
-  <v-card class="mb-4">
-    <v-card-title>ライブ配信詳細</v-card-title>
-
-    <v-card-text>
-      <v-tabs
-        v-model="selectedTabItemValue"
-        grow
+    <div class="mb-6">
+      <v-btn
+        variant="text"
+        :prepend-icon="mdiArrowLeft"
+        @click="$router.back()"
       >
-        <v-tab
-          v-for="item in tabs"
-          :key="item.value"
-          :value="item.value"
+        戻る
+      </v-btn>
+      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+        ライブ配信編集
+      </h1>
+      <p class="text-body-1 text-grey-darken-1">
+        ライブ配信の詳細情報を編集・管理します。タブを切り替えて各種設定を行ってください。
+      </p>
+    </div>
+
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="section-header pa-0">
+        <v-tabs
+          v-model="selectedTabItemValue"
+          class="w-100"
+          density="comfortable"
         >
-          {{ item.name }}
-        </v-tab>
-      </v-tabs>
+          <v-tab
+            value="schedule"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="mdiCalendarToday"
+              size="20"
+              class="mr-2"
+            />
+            基本情報
+          </v-tab>
+          <v-tab
+            value="lives"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="mdiAccountGroup"
+              size="20"
+              class="mr-2"
+            />
+            ライブスケジュール
+          </v-tab>
+          <v-tab
+            value="streaming"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="mdiPlay"
+              size="20"
+              class="mr-2"
+            />
+            ライブ配信
+          </v-tab>
+          <v-tab
+            value="analytics"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="mdiChartLine"
+              size="20"
+              class="mr-2"
+            />
+            分析情報
+          </v-tab>
+        </v-tabs>
+      </v-card-title>
 
-      <v-window
-        v-model="selectedTabItemValue"
-        class="py-4"
-      >
-        <v-window-item value="schedule">
-          <organisms-schedule-show
-            v-model:form-data="scheduleFormDataValue"
-            :loading="loading"
-            :updatable="updatable"
-            :schedule="schedule"
-            :coordinators="coordinators"
-            :thumbnail-upload-status="thumbnailUploadStatus"
-            :image-upload-status="imageUploadStatus"
-            :opening-video-upload-status="openingVideoUploadStatus"
-            @update:thumbnail="onChangeThumbnailFile"
-            @update:image="onChangeImageFile"
-            @update:opening-video="onChangeOpeningVideo"
-            @update:public="onChangePublic"
-            @submit="onSubmitSchedule"
-          />
-        </v-window-item>
+      <v-card-text class="pa-0">
+        <v-window
+          v-model="selectedTabItemValue"
+          class="tab-content"
+        >
+          <v-window-item value="schedule">
+            <div class="pa-6">
+              <organisms-schedule-show
+                v-model:form-data="scheduleFormDataValue"
+                :loading="loading"
+                :updatable="updatable"
+                :schedule="schedule"
+                :coordinators="coordinators"
+                :thumbnail-upload-status="thumbnailUploadStatus"
+                :image-upload-status="imageUploadStatus"
+                :opening-video-upload-status="openingVideoUploadStatus"
+                @update:thumbnail="onChangeThumbnailFile"
+                @update:image="onChangeImageFile"
+                @update:opening-video="onChangeOpeningVideo"
+                @update:public="onChangePublic"
+                @submit="onSubmitSchedule"
+              />
+            </div>
+          </v-window-item>
 
-        <v-window-item value="lives">
-          <organisms-live-list
-            v-model:create-dialog="createLiveDialogValue"
-            v-model:create-form-data="createLiveFormDataValue"
-            :loading="loading"
-            :live="live"
-            :lives="lives"
-            :schedule="schedule"
-            :producers="producers"
-            :products="products"
-            @click:new="onClickNewLive"
-            @search:producer="onSearchProducer"
-            @search:product="onSearchProduct"
-            @submit:create="onSubmitCreateLive"
-            @submit:update="onSubmitUpdateLive"
-            @submit:delete="onSubmitDeleteLive"
-          />
-        </v-window-item>
+          <v-window-item value="lives">
+            <div class="pa-6">
+              <organisms-live-list
+                v-model:create-dialog="createLiveDialogValue"
+                v-model:create-form-data="createLiveFormDataValue"
+                :loading="loading"
+                :live="live"
+                :lives="lives"
+                :schedule="schedule"
+                :producers="producers"
+                :products="products"
+                @click:new="onClickNewLive"
+                @search:producer="onSearchProducer"
+                @search:product="onSearchProduct"
+                @submit:create="onSubmitCreateLive"
+                @submit:update="onSubmitUpdateLive"
+                @submit:delete="onSubmitDeleteLive"
+              />
+            </div>
+          </v-window-item>
 
-        <v-window-item value="streaming">
-          <organisms-schedule-streaming
-            v-model:pause-dialog="pauseDialogValue"
-            v-model:live-mp4-dialog="liveMp4DialogValue"
-            v-model:archive-mp4-dialog="archiveMp4DialogValue"
-            v-model:mp4-form-data="mp4FormDataValue"
-            v-model:auth-youtube-form-data="authYoutubeFormDataValue"
-            :loading="loading"
-            :selected-tab-item="selectedTabItem"
-            :broadcast="broadcast"
-            :auth-youtube-url="authYoutubeUrl"
-            @click:link-youtube="onClickLinkYouTube"
-            @click:activate-static-image="onSubmitActivateStaticImage"
-            @click:deactivate-static-image="onSubmitDeactivateStaticImage"
-            @submit:pause="onSubmitPause"
-            @submit:unpause="onSubmitUnpause"
-            @submit:change-input-mp4="onSubmitChangeMp4Input"
-            @submit:change-input-rtmp="onSubmitChangeRtmpInput"
-            @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
-          />
-        </v-window-item>
+          <v-window-item value="streaming">
+            <div class="pa-6">
+              <organisms-schedule-streaming
+                v-model:pause-dialog="pauseDialogValue"
+                v-model:live-mp4-dialog="liveMp4DialogValue"
+                v-model:archive-mp4-dialog="archiveMp4DialogValue"
+                v-model:mp4-form-data="mp4FormDataValue"
+                v-model:auth-youtube-form-data="authYoutubeFormDataValue"
+                :loading="loading"
+                :selected-tab-item="selectedTabItem"
+                :broadcast="broadcast"
+                :auth-youtube-url="authYoutubeUrl"
+                @click:link-youtube="onClickLinkYouTube"
+                @click:activate-static-image="onSubmitActivateStaticImage"
+                @click:deactivate-static-image="onSubmitDeactivateStaticImage"
+                @submit:pause="onSubmitPause"
+                @submit:unpause="onSubmitUnpause"
+                @submit:change-input-mp4="onSubmitChangeMp4Input"
+                @submit:change-input-rtmp="onSubmitChangeRtmpInput"
+                @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
+              />
+            </div>
+          </v-window-item>
 
-        <v-window-item value="analytics">
-          <organisms-schedule-analytics
-            :loading="loading"
-            :viewer-logs="viewerLogs"
-          />
-        </v-window-item>
-      </v-window>
-    </v-card-text>
-  </v-card>
+          <v-window-item value="analytics">
+            <div class="pa-6">
+              <organisms-schedule-analytics
+                :loading="loading"
+                :viewer-logs="viewerLogs"
+                :total-viewers="totalViewers"
+              />
+            </div>
+          </v-window-item>
+        </v-window>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
+
+<style scoped>
+.form-section-card {
+  border-radius: 12px;
+  max-width: none;
+}
+
+.section-header {
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  padding: 0;
+}
+
+.tab-item {
+  text-transform: none;
+  font-weight: 500;
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
+
+  .tab-item {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
+}
+</style>
