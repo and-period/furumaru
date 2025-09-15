@@ -23,6 +23,7 @@ export const useScheduleStore = defineStore('schedule', {
     schedule: {} as Schedule,
     schedules: [] as Schedule[],
     viewerLogs: [] as BroadcastViewerLog[],
+    totalViewers: 0,
     total: 0,
   }),
 
@@ -81,6 +82,7 @@ export const useScheduleStore = defineStore('schedule', {
         const res = await this.scheduleApi().v1SchedulesScheduleIdAnalyticsGet(params)
 
         this.viewerLogs = res.viewerLogs
+        this.totalViewers = res.totalViewers
       }
       catch (err) {
         return this.errorHandler(err, {

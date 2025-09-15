@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPencil, mdiPlus, mdiCalendarToday } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -227,13 +227,21 @@ const onClickPublished = (scheduleId: string): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h7">
-        {{ selectedItem?.title || "" }}を本当に削除しますか？
+      <v-card-title class="text-h6 py-4">
+        ライブ配信削除の確認
       </v-card-title>
-      <v-card-actions>
+      <v-card-text class="pb-4">
+        <div class="text-body-1">
+          「{{ selectedItem?.title || "" }}」を削除しますか？
+        </div>
+        <div class="text-body-2 text-medium-emphasis mt-2">
+          この操作は取り消せません。
+        </div>
+      </v-card-text>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="onClickCloseDeleteDialog"
         >
@@ -241,8 +249,8 @@ const onClickPublished = (scheduleId: string): void => {
         </v-btn>
         <v-btn
           :loading="loading"
-          color="primary"
-          variant="outlined"
+          color="error"
+          variant="elevated"
           @click="onClickDelete"
         >
           削除
@@ -252,27 +260,42 @@ const onClickPublished = (scheduleId: string): void => {
   </v-dialog>
 
   <v-card
-    class="mt-4"
-    flat
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
   >
-    <v-card-title class="d-flex flex-row">
-      ライブ配信管理
-    </v-card-title>
-    <div class="w-100 d-flex px-6">
-      <v-spacer />
-      <v-btn
-        v-show="isRegisterable()"
-        variant="outlined"
-        color="primary"
-        @click="onClickAdd"
-      >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
         <v-icon
-          start
-          :icon="mdiPlus"
+          :icon="mdiCalendarToday"
+          size="28"
+          class="mr-3 text-primary"
         />
-        ライブ配信登録
-      </v-btn>
-    </div>
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            ライブ配信管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            ライブ配信の登録・編集・削除を行います
+          </p>
+        </div>
+      </div>
+      <div class="d-flex ga-3">
+        <v-btn
+          v-show="isRegisterable()"
+          variant="elevated"
+          color="primary"
+          size="large"
+          @click="onClickAdd"
+        >
+          <v-icon
+            start
+            :icon="mdiPlus"
+          />
+          ライブ配信登録
+        </v-btn>
+      </div>
+    </v-card-title>
 
     <v-card-text>
       <v-data-table-server
