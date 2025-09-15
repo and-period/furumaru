@@ -1,101 +1,33 @@
-<script setup lang="ts">
-import { mdiDelete, mdiPlus } from '@mdi/js'
-import { unix } from 'dayjs'
+<script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCommonStore, useVideoStore } from '~/store'
-import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
-import { AdminType } from '~/types/api/v1'
-import type { Video, VideoResponse } from '~/types/api/v1'
+import type { Video } from '~/types/api/v1'
 
+const router = useRouter()
+const commonStore = useCommonStore()
+const authStore = useAuthStore()
 const videoStore = useVideoStore()
+const pagination = usePagination()
+const { alertType, isShow, alertText, show } = useAlert('error')
+
+const { adminType } = storeToRefs(authStore)
 const { videoResponse } = storeToRefs(videoStore)
 
-const pagination = usePagination()
-const router = useRouter()
+const loading = ref<boolean>(false)
+const deleteDialog = ref<boolean>(false)
 
-const authStore = useAuthStore()
-const { adminType } = storeToRefs(authStore)
-
-const selectedItem = ref<Video | null>(null)
-const commonStore = useCommonStore()
-const deleteDialogValue = ref<boolean>(false)
-
-const { isShow, alertText, alertType, show } = useAlert('error')
-
-const headers: VDataTable['headers'] = [
-  {
-    title: 'サムネイル',
-    key: 'thumbnailUrl',
-    sortable: false,
-  },
-  {
-    title: 'タイトル',
-    key: 'title',
-    sortable: false,
-  },
-  {
-    title: '公開日時',
-    key: 'publishedAt',
-    sortable: false,
-  },
-  {
-    title: 'ステータス',
-    key: 'status',
-    sortable: false,
-  },
-  {
-    title: '',
-    key: 'actions',
-    sortable: false,
-  },
-]
-
-const fetchVideos = async () => {
-  await videoStore.fetchVideos()
-}
-
-const handleClickNewVideoButton = () => {
-  router.push('/videos/new')
-}
-
-const getPublishedAt = (publishedAt: number) => {
-  if (publishedAt === 0) {
-    return '-'
-  }
-  return unix(publishedAt).format('YYYY/MM/DD HH:mm')
-}
-
-const handleClickRow = (id: string) => {
-  router.push(`/videos/${id}`)
-}
-
-const { status } = useAsyncData(async () => {
+const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchVideos()
 })
 
-const isDeletable = (): boolean => {
-  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
-  return targets.includes(adminType.value)
-}
+watch(pagination.itemsPerPage, (): void => {
+  fetchVideos()
+})
 
-const toggleDeleteDialog = (item: Video): void => {
-  if (item) {
-    selectedItem.value = item
-  }
-  deleteDialogValue.value = !deleteDialogValue.value
-}
-
-const onClickDelete = async () => {
+const fetchVideos = async (): Promise<void> => {
   try {
-    if (selectedItem.value) {
-      await videoStore.deleteVideo(selectedItem.value.id)
-      commonStore.addSnackbar({
-        color: 'info',
-        message: '動画を削除しました。',
-      })
-    }
-    fetchVideos()
-    deleteDialogValue.value = !deleteDialogValue.value
+    await videoStore.fetchVideos(pagination.itemsPerPage.value, pagination.offset.value)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -104,94 +36,75 @@ const onClickDelete = async () => {
     console.log(err)
   }
 }
+
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdatePage = async (page: number): Promise<void> => {
+  pagination.updateCurrentPage(page)
+  await fetchVideos()
+}
+
+const handleClickAdd = (): void => {
+  router.push('/videos/new')
+}
+
+const handleClickRow = (videoId: string): void => {
+  router.push(`/videos/${videoId}`)
+}
+
+const handleClickDelete = async (videoId: string): Promise<void> => {
+  try {
+    loading.value = true
+    const video = videoResponse.value?.videos.find((video: Video): boolean => {
+      return video.id === videoId
+    })
+    if (!video) {
+      throw new Error(`failed to find video. videoId=${videoId}`)
+    }
+    await videoStore.deleteVideo(videoId)
+    commonStore.addSnackbar({
+      message: `${video.title}を削除しました。`,
+      color: 'info',
+    })
+    deleteDialog.value = false
+    fetchState.execute()
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+try {
+  await fetchState.execute()
+}
+catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
-  <v-card>
-    <v-dialog
-      v-model="deleteDialogValue"
-      width="500"
-    >
-      <v-card>
-        <v-card-text class="text-h7">
-          {{ selectedItem?.title }}を本当に削除しますか？
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="error"
-            variant="text"
-            @click="toggleDeleteDialog"
-          >
-            キャンセル
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="onClickDelete"
-          >
-            削除
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-card-title>動画管理</v-card-title>
-
-    <v-card-text
-      v-if="adminType === AdminType.AdminTypeCoordinator"
-      class="text-right"
-    >
-      <v-btn
-        color="primary"
-        variant="outlined"
-        @click="handleClickNewVideoButton"
-      >
-        <v-icon :icon="mdiPlus" />
-        新規動画
-      </v-btn>
-    </v-card-text>
-
-    <v-card-text>
-      <v-data-table-server
-        :headers="headers"
-        :items="videoResponse?.videos"
-        :loading="status === 'pending'"
-        :items-length="videoResponse?.total"
-        :items-per-page="pagination.itemsPerPage.value"
-        hover
-        @click:row="(_: any, { item }: any) => handleClickRow(item.id)"
-      >
-        <template #[`item.thumbnailUrl`]="{ item }">
-          <v-img
-            :src="item.thumbnailUrl"
-            width="50"
-            aspect-ratio="16/9"
-          />
-        </template>
-        <template #[`item.publishedAt`]="{ item }">
-          {{ getPublishedAt(item.publishedAt) }}
-        </template>
-        <template #[`item.status`]="{ item }">
-          <v-chip :color="videoStatusToColor(item.status)">
-            {{ videoStatusToString(item.status) }}
-          </v-chip>
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-btn
-            v-show="isDeletable()"
-            variant="outlined"
-            color="primary"
-            size="small"
-            @click.stop="toggleDeleteDialog(item)"
-          >
-            <v-icon
-              size="small"
-              :icon="mdiDelete"
-            />
-            削除
-          </v-btn>
-        </template>
-      </v-data-table-server>
-    </v-card-text>
-  </v-card>
+  <templates-video-list
+    v-model:delete-dialog="deleteDialog"
+    :loading="isLoading()"
+    :admin-type="adminType"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :videos="videoResponse?.videos || []"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-total="videoResponse?.total || 0"
+    @click:row="handleClickRow"
+    @click:add="handleClickAdd"
+    @click:delete="handleClickDelete"
+    @click:update-page="handleUpdatePage"
+    @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+  />
 </template>

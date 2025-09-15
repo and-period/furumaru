@@ -76,10 +76,12 @@ export const useVideoStore = defineStore('video', {
      * @param videoId 動画ID
      * @returns
      */
-    async analyzeVideo(videoId: string): Promise<void> {
+    async analyzeVideo(videoId: string, start?: number, end?: number): Promise<void> {
       try {
         const params: V1VideosVideoIdAnalyticsGetRequest = {
           videoId,
+          start,
+          end,
         }
         const res = await this.videoApi().v1VideosVideoIdAnalyticsGet(params)
         this.viewerLogs = res.viewerLogs

@@ -1,19 +1,24 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import dayjs from 'dayjs'
-import { useVideoStore, useProductStore, useAuthStore } from '~/store'
+import { storeToRefs } from 'pinia'
+import { useAlert } from '~/lib/hooks'
+import { useAuthStore, useCommonStore, useVideoStore, useProductStore, useExperienceStore } from '~/store'
 import type { CreateVideoRequest, Product, Experience } from '~/types/api/v1'
-import { ApiBaseError } from '~/types/exception'
-import { getProductThumbnailUrl } from '~/lib/formatter'
+import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
-const videoStore = useVideoStore()
-
-const productStore = useProductStore()
-const { products } = storeToRefs(productStore)
-
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
-const { adminId } = storeToRefs(authStore)
+const videoStore = useVideoStore()
+const productStore = useProductStore()
+const experienceStore = useExperienceStore()
+const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { adminId } = storeToRefs(authStore)
+const { products } = storeToRefs(productStore)
+const { experiences } = storeToRefs(experienceStore)
+
+const loading = ref<boolean>(false)
 const formData = ref<CreateVideoRequest>({
   title: '',
   description: '',
@@ -24,7 +29,7 @@ const formData = ref<CreateVideoRequest>({
   videoUrl: '',
   _public: false,
   limited: false,
-  publishedAt: 0,
+  publishedAt: dayjs().unix(),
   displayProduct: false,
   displayExperience: false,
 })
@@ -32,129 +37,94 @@ const formData = ref<CreateVideoRequest>({
 const selectedProducts = ref<Product[]>([])
 const selectedExperiences = ref<Experience[]>([])
 
-/**
- * 動画ファイルアップロードステータス
- */
-const uploadVideoStatus = ref<{
-  isUploading: boolean
-  hasError: boolean
-  errorMessage: string
-}>({
-  isUploading: false,
-  hasError: false,
-  errorMessage: '',
+const videoUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: '',
+})
+const thumbnailUploadStatus = ref<ImageUploadStatus>({
+  error: false,
+  message: '',
 })
 
-/**
- * 動画ファイルアップロード関数
- */
-const handleUploadVideo = async (file: File) => {
+const isLoading = (): boolean => {
+  return loading.value
+}
+
+const handleUploadVideo = (file: File): void => {
+  loading.value = true
+  videoStore.uploadVideoFile(file)
+    .then((url: string) => {
+      formData.value.videoUrl = url
+    })
+    .catch(() => {
+      videoUploadStatus.value.error = true
+      videoUploadStatus.value.message = '動画のアップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const handleUploadThumbnail = (file: File): void => {
+  loading.value = true
+  videoStore.uploadThumbnailFile(file)
+    .then((url: string) => {
+      formData.value.thumbnailUrl = url
+    })
+    .catch(() => {
+      thumbnailUploadStatus.value.error = true
+      thumbnailUploadStatus.value.message = 'サムネイルのアップロードに失敗しました。'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+const productDialog = ref<boolean>(false)
+const experienceDialog = ref<boolean>(false)
+const productFormData = ref<string[]>([])
+const experienceFormData = ref<string[]>([])
+
+const productSearchLoading = ref<boolean>(false)
+const experienceSearchLoading = ref<boolean>(false)
+
+const handleSearchProduct = async (name: string): Promise<void> => {
   try {
-    uploadVideoStatus.value.isUploading = true
-    const newUrl = await videoStore.uploadVideoFile(file)
-    formData.value.videoUrl = newUrl
+    productSearchLoading.value = true
+    await productStore.searchProducts(name, undefined, productFormData.value)
   }
-  catch (error) {
-    uploadVideoStatus.value.hasError = true
-    if (error instanceof ApiBaseError) {
-      uploadVideoStatus.value.errorMessage = error.message
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
-    else {
-      uploadVideoStatus.value.errorMessage
-        = '動画ファイルのアップロードに失敗しました。不明なエラーが発生しました。'
-    }
+    console.log(err)
   }
   finally {
-    uploadVideoStatus.value.isUploading = false
+    productSearchLoading.value = false
   }
 }
 
-/**
- * サムネイル画像アップロードステータス
- */
-const uploadThumbnailStatus = ref<{
-  isUploading: boolean
-  hasError: boolean
-  errorMessage: string
-}>({
-  isUploading: false,
-  hasError: false,
-  errorMessage: '',
-})
-
-/**
- * サムネイル画像ファイルアップロード関数
- * @param file
- */
-const handleUploadThumbnail = async (file: File) => {
+const handleSearchExperience = async (title: string): Promise<void> => {
   try {
-    uploadThumbnailStatus.value.isUploading = true
-    const newUrl = await videoStore.uploadThumbnailFile(file)
-    formData.value.thumbnailUrl = newUrl
+    experienceSearchLoading.value = true
+    await experienceStore.searchExperiences(title)
   }
-  catch (error) {
-    uploadThumbnailStatus.value.hasError = true
-    if (error instanceof ApiBaseError) {
-      uploadThumbnailStatus.value.errorMessage = error.message
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
     }
-    else {
-      uploadThumbnailStatus.value.errorMessage
-        = 'サムネイル画像のアップロードに失敗しました。不明なエラーが発生しました。'
-    }
+    console.log(err)
   }
   finally {
-    uploadThumbnailStatus.value.isUploading = false
+    experienceSearchLoading.value = false
   }
 }
 
-const isOpenLinkProductDialog = ref<boolean>(false)
-
-const handleClickLinkProductButton = () => {
-  console.log('link product')
-  isOpenLinkProductDialog.value = true
-}
-
-const linkTargetProductIds = ref<string[]>([])
-
-/**
- * 商品検索ステータス
- */
-const productSearchStatus = ref<{
-  isLoading: boolean
-  hasError: boolean
-  errorMessage: string
-}>({
-  isLoading: false,
-  hasError: false,
-  errorMessage: '',
-})
-
-/**
- * 商品検索関数
- * @param text
- */
-const searchProducts = (text: string) => {
-  try {
-    productSearchStatus.value.isLoading = true
-    productStore.searchProducts(text, undefined, linkTargetProductIds.value)
-  }
-  catch (error) {
-    productSearchStatus.value.hasError = true
-  }
-  finally {
-    productSearchStatus.value.isLoading = false
-  }
-}
-
-/**
- * 紐づけ対象の商品をフォームに加える処理
- */
-const handleClickLinkProductAddButton = () => {
+const handleClickAddProducts = (): void => {
   const targetProducts = products.value.filter((product) => {
-    // 未選択の商品でかつ選択対象の商品IDリストに含まれる商品を対象とする
     return (
       !formData.value.productIds.includes(product.id)
-      && linkTargetProductIds.value.includes(product.id)
+      && productFormData.value.includes(product.id)
     )
   })
 
@@ -162,26 +132,29 @@ const handleClickLinkProductAddButton = () => {
   formData.value.productIds.push(
     ...targetProducts.map(product => product.id),
   )
-  isOpenLinkProductDialog.value = false
+  productDialog.value = false
 }
 
-searchProducts('')
+const handleClickAddExperiences = (): void => {
+  const targetExperiences = experiences.value.filter((experience) => {
+    return (
+      !formData.value.experienceIds.includes(experience.id)
+      && experienceFormData.value.includes(experience.id)
+    )
+  })
 
-const isOpenLinkExperienceDialog = ref<boolean>(false)
-
-const handleClickLinkExperienceButton = () => {
-  isOpenLinkExperienceDialog.value = true
+  selectedExperiences.value.push(...targetExperiences)
+  formData.value.experienceIds.push(
+    ...targetExperiences.map(experience => experience.id),
+  )
+  experienceDialog.value = false
 }
 
-/**
- * 紐づけ済みの商品を削除する処理
- * @param productId
- */
-const handleDeleteLinkedProduct = (productId: string) => {
+const handleClickRemoveProduct = (productId: string): void => {
   formData.value.productIds = formData.value.productIds.filter(
     id => id !== productId,
   )
-  linkTargetProductIds.value = linkTargetProductIds.value.filter(
+  productFormData.value = productFormData.value.filter(
     id => id !== productId,
   )
   selectedProducts.value = selectedProducts.value.filter(
@@ -189,14 +162,11 @@ const handleDeleteLinkedProduct = (productId: string) => {
   )
 }
 
-/**
- * 紐づけ済みの体験を削除する処理
- */
-const handleDeleteLinkedExperience = (experienceId: string) => {
+const handleClickRemoveExperience = (experienceId: string): void => {
   formData.value.experienceIds = formData.value.experienceIds.filter(
     id => id !== experienceId,
   )
-  linkTargetExperienceIds.value = linkTargetExperienceIds.value.filter(
+  experienceFormData.value = experienceFormData.value.filter(
     id => id !== experienceId,
   )
   selectedExperiences.value = selectedExperiences.value.filter(
@@ -204,122 +174,72 @@ const handleDeleteLinkedExperience = (experienceId: string) => {
   )
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
-    await videoStore.createVideo({
+    loading.value = true
+    const req: CreateVideoRequest = {
       ...formData.value,
       coordinatorId: adminId.value,
-      publishedAt: dayjs().unix(),
+    }
+    await videoStore.createVideo(req)
+    commonStore.addSnackbar({
+      message: `${formData.value.title}を作成しました。`,
+      color: 'info',
     })
     router.push('/videos')
   }
-  catch (error) {
-    console.log('create error')
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    console.log(err)
+  }
+  finally {
+    loading.value = false
   }
 }
 
-const handleClickBackButton = () => {
+const handleClickBack = (): void => {
   router.back()
 }
+
+// 初期データ取得
+handleSearchProduct('')
+handleSearchExperience('')
 </script>
 
 <template>
-  <div>
-    <v-dialog v-model="isOpenLinkProductDialog">
-      <v-card>
-        <v-card-title>商品紐づけ</v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model="linkTargetProductIds"
-            :loading="productSearchStatus.isLoading"
-            :items="products"
-            label="商品名"
-            messages="商品名を入力することで紐づける商品を検索できます。"
-            item-title="name"
-            item-value="id"
-            multiple
-            chips
-            @update:search-text="searchProducts"
-          >
-            <template #chip="{ props: val, item }">
-              <v-chip
-                v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :text="item.raw.name"
-                rounded
-                class="px-4"
-                variant="outlined"
-              />
-            </template>
-            <template #item="{ props: val, item }">
-              <v-list-item
-                v-bind="val"
-                :prepend-avatar="getProductThumbnailUrl(item.raw)"
-                :title="item.raw.name"
-              />
-            </template>
-          </v-autocomplete>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="handleClickLinkProductAddButton"
-          >
-            追加
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="isOpenLinkExperienceDialog">
-      体験紐づけダイアログ
-    </v-dialog>
-
-    <v-card class="mb-16">
-      <v-card-title>動画登録</v-card-title>
-      <v-card-text>
-        <organisms-video-form
-          id="new-video-form"
-          v-model="formData"
-          :selected-products="selectedProducts"
-          :selected-experiences="selectedExperiences"
-          :video-is-uploading="uploadVideoStatus.isUploading"
-          :video-has-error="uploadVideoStatus.hasError"
-          :video-error-message="uploadVideoStatus.errorMessage"
-          :thumbnail-is-uploading="uploadThumbnailStatus.isUploading"
-          :thumbnail-has-error="uploadThumbnailStatus.hasError"
-          :thumbnail-error-message="uploadThumbnailStatus.errorMessage"
-          @update:video="handleUploadVideo"
-          @update:thumbnail="handleUploadThumbnail"
-          @click:link-product="handleClickLinkProductButton"
-          @click:link-experience="handleClickLinkExperienceButton"
-          @click:delete-linked-product="handleDeleteLinkedProduct"
-          @click:delete-linked-experience="handleDeleteLinkedExperience"
-          @submit="handleSubmit"
-        />
-      </v-card-text>
-    </v-card>
-    <div
-      class="position-fixed bottom-0 left-0 w-100 bg-white pa-4 text-right elevation-3"
-    >
-      <div class="d-inline-flex ga-4">
-        <v-btn
-          color="secondary"
-          variant="outlined"
-          @click="handleClickBackButton"
-        >
-          戻る
-        </v-btn>
-        <v-btn
-          color="primary"
-          variant="outlined"
-          type="submit"
-          form="new-video-form"
-        >
-          保存
-        </v-btn>
-      </div>
-    </div>
-  </div>
+  <templates-video-new
+    v-model:form-data="formData"
+    v-model:product-dialog="productDialog"
+    v-model:experience-dialog="experienceDialog"
+    v-model:product-form-data="productFormData"
+    v-model:experience-form-data="experienceFormData"
+    :loading="isLoading()"
+    :is-alert="isShow"
+    :alert-type="alertType"
+    :alert-text="alertText"
+    :video-upload-status="videoUploadStatus"
+    :thumbnail-upload-status="thumbnailUploadStatus"
+    :selected-products="selectedProducts"
+    :selected-experiences="selectedExperiences"
+    :searched-products="products"
+    :searched-experiences="experiences"
+    :product-search-loading="productSearchLoading"
+    :experience-search-loading="experienceSearchLoading"
+    @update:video="handleUploadVideo"
+    @update:thumbnail="handleUploadThumbnail"
+    @click:add-products="handleClickAddProducts"
+    @click:add-experiences="handleClickAddExperiences"
+    @click:remove-product="handleClickRemoveProduct"
+    @click:remove-experience="handleClickRemoveExperience"
+    @update:search-product="handleSearchProduct"
+    @update:search-experience="handleSearchExperience"
+    @submit="handleSubmit"
+    @click:back="handleClickBack"
+  />
 </template>

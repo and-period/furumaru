@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { useVideoStore, useProductStore, useExperienceStore, useVideoCommentStore } from '~/store'
+import { useVideoStore, useProductStore, useExperienceStore, useVideoCommentStore, useCommonStore } from '~/store'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api/v1'
 import { ApiBaseError } from '~/types/exception'
 import { useAlert } from '~/lib/hooks'
+import dayjs from 'dayjs'
 
 const route = useRoute()
 const router = useRouter()
-const { alertType, isShow, alertText } = useAlert('error')
+const commonStore = useCommonStore()
+const { alertType, isShow, alertText, show: showError } = useAlert('error')
 
 const videoStore = useVideoStore()
 const { video, viewerLogs, products: sproducts, experiences: sexperiences } = storeToRefs(videoStore)
@@ -40,19 +42,36 @@ const formData = ref<UpdateVideoRequest>({
 const selectedProducts = ref<Product[]>([])
 const selectedExperiences = ref<Experience[]>([])
 
-const { status } = useAsyncData(async () => {
-  await Promise.all([
-    videoStore.fetchVideo(videoId),
-    videoStore.analyzeVideo(videoId),
-    videoCommentStore.fetchAllComments(videoId),
-  ])
+const fetchState = useAsyncData(async (): Promise<void> => {
+  try {
+    await Promise.all([
+      videoStore.fetchVideo(videoId),
+      videoCommentStore.fetchAllComments(videoId),
+    ])
 
-  formData.value = { ...formData.value, ...video.value }
-  selectedProducts.value = sproducts.value
-  selectedExperiences.value = sexperiences.value
+    const endAt = dayjs().unix()
+    let startAt = dayjs().subtract(3, 'month').unix()
+    if (video.value?.publishedAt && video.value.publishedAt > startAt) {
+      startAt = video.value.publishedAt
+    }
+
+    await videoStore.analyzeVideo(videoId, startAt, endAt)
+
+    formData.value = { ...formData.value, ...video.value }
+    selectedProducts.value = sproducts.value
+    selectedExperiences.value = sexperiences.value
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      showError(err.message)
+    }
+    console.log(err)
+  }
 })
 
-const isInitLoading = computed<boolean>(() => status.value === 'pending')
+const isLoading = (): boolean => {
+  return fetchState?.pending?.value || false
+}
 
 /**
  * 動画ファイルアップロードステータス
@@ -140,34 +159,24 @@ const handleClickLinkExperienceButton = () => {
 }
 
 const linkTargetProductIds = ref<string[]>([])
+const linkTargetExperienceIds = ref<string[]>([])
 
-/**
- * 商品検索ステータス
- */
-const productSearchStatus = ref<{
-  isLoading: boolean
-  hasError: boolean
-  errorMessage: string
-}>({
-  isLoading: false,
-  hasError: false,
-  errorMessage: '',
-})
+const productSearchLoading = ref<boolean>(false)
+const experienceSearchLoading = ref<boolean>(false)
 
-/**
- * 商品検索関数
- * @param text
- */
-const searchProducts = (text: string) => {
+const handleSearchProduct = async (name: string): Promise<void> => {
   try {
-    productSearchStatus.value.isLoading = true
-    productStore.searchProducts(text, undefined, linkTargetProductIds.value)
+    productSearchLoading.value = true
+    await productStore.searchProducts(name, undefined, linkTargetProductIds.value)
   }
-  catch (error) {
-    productSearchStatus.value.hasError = true
+  catch (err) {
+    if (err instanceof Error) {
+      showError(err.message)
+    }
+    console.log(err)
   }
   finally {
-    productSearchStatus.value.isLoading = false
+    productSearchLoading.value = false
   }
 }
 
@@ -190,38 +199,19 @@ const handleClickLinkProductAddButton = () => {
   isOpenLinkProductDialog.value = false
 }
 
-searchProducts('')
-
-const isOpenLinkExperienceDialog = ref<boolean>(false)
-const linkTargetExperienceIds = ref<string[]>([])
-
-/**
- * 体験検索ステータス
- */
-const experienceSearchStatus = ref<{
-  isLoading: boolean
-  hasError: boolean
-  errorMessage: string
-}>({
-  isLoading: false,
-  hasError: false,
-  errorMessage: '',
-})
-
-/**
- * 体験検索関数
- * @param text
- */
-const searchExperiences = (text: string) => {
+const handleSearchExperience = async (title: string): Promise<void> => {
   try {
-    experienceSearchStatus.value.isLoading = true
-    experienceStore.searchExperiences(text)
+    experienceSearchLoading.value = true
+    await experienceStore.searchExperiences(title)
   }
-  catch (error) {
-    experienceSearchStatus.value.hasError = true
+  catch (err) {
+    if (err instanceof Error) {
+      showError(err.message)
+    }
+    console.log(err)
   }
   finally {
-    experienceSearchStatus.value.isLoading = false
+    experienceSearchLoading.value = false
   }
 }
 
@@ -245,7 +235,11 @@ const handleClickLinkExperienceAddButton = () => {
   isOpenLinkExperienceDialog.value = false
 }
 
-searchExperiences('')
+const isOpenLinkExperienceDialog = ref<boolean>(false)
+
+// 初期データ取得
+handleSearchProduct('')
+handleSearchExperience('')
 
 /**
  * 紐づけ済みの商品を削除する処理
@@ -278,17 +272,28 @@ const handleDeleteLinkedExperience = (experienceId: string) => {
   )
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   try {
     await videoStore.updateVideo(videoId, formData.value)
+    commonStore.addSnackbar({
+      message: `${formData.value.title}を更新しました。`,
+      color: 'info',
+    })
     router.push('/videos')
   }
-  catch (error) {
-    console.log('update error')
+  catch (err) {
+    if (err instanceof Error) {
+      showError(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    console.log(err)
   }
 }
 
-const handleClickBackButton = () => {
+const handleClickBack = (): void => {
   router.back()
 }
 
@@ -305,6 +310,13 @@ const handleBanComment = async (commentId: string) => {
     console.log(err)
   }
 }
+
+try {
+  await fetchState.execute()
+}
+catch (err) {
+  console.log('failed to setup', err)
+}
 </script>
 
 <template>
@@ -318,12 +330,12 @@ const handleBanComment = async (commentId: string) => {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :loading="isInitLoading"
+    :loading="isLoading()"
     :viewer-logs="viewerLogs"
     :video-upload-status="uploadVideoStatus"
     :thumbnail-upload-status="uploadThumbnailStatus"
-    :product-search-loading="productSearchStatus.isLoading"
-    :experience-search-loading="experienceSearchStatus.isLoading"
+    :product-search-loading="productSearchLoading"
+    :experience-search-loading="experienceSearchLoading"
     :selected-products="selectedProducts"
     :selected-experiences="selectedExperiences"
     :searched-products="products"
@@ -336,9 +348,9 @@ const handleBanComment = async (commentId: string) => {
     @click:add-experiences="handleClickLinkExperienceAddButton"
     @click:remove-product="handleDeleteLinkedProduct"
     @click:remove-experience="handleDeleteLinkedExperience"
-    @click:back="handleClickBackButton"
-    @update:search-product="searchProducts"
-    @update:search-experience="searchExperiences"
+    @click:back="handleClickBack"
+    @update:search-product="handleSearchProduct"
+    @update:search-experience="handleSearchExperience"
     @click:ban-comment="handleBanComment"
   />
 </template>
