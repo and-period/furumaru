@@ -18,7 +18,7 @@ const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { adminType } = storeToRefs(authStore)
-const { experiencesResponse, totalItems } = storeToRefs(experienceStore)
+const { experiences, totalItems } = storeToRefs(experienceStore)
 const { experienceTypes } = storeToRefs(experienceTypeStore)
 const { producers } = storeToRefs(producerStore)
 
@@ -27,28 +27,12 @@ const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
 const fetchState = useAsyncData(async (): Promise<void> => {
-  await Promise.all([
-    fetchExperiences(),
-    fetchExperienceTypes(),
-    fetchProducers(),
-  ])
+  await fetchExperiences()
 })
 
 watch(pagination.itemsPerPage, (): void => {
   fetchState.refresh()
 })
-
-const fetchProducers = async (): Promise<void> => {
-  try {
-    await producerStore.fetchProducers(pagination.itemsPerPage.value, pagination.offset.value)
-  }
-  catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-  }
-}
 
 const fetchExperiences = async (): Promise<void> => {
   try {
@@ -56,18 +40,6 @@ const fetchExperiences = async (): Promise<void> => {
       pagination.itemsPerPage.value,
       pagination.offset.value,
     )
-  }
-  catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-  }
-}
-
-const fetchExperienceTypes = async (): Promise<void> => {
-  try {
-    await experienceTypeStore.fetchExperienceTypes()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -92,6 +64,12 @@ const handleClickShow = (experienceId: string): void => {
 
 const handleClickNew = (): void => {
   router.push('/experiences/new')
+}
+
+const handleClickCopyItem = (): void => {
+  if (selectedItemId.value !== '') {
+    router.push(`/experiences/new?from=${selectedItemId.value}`)
+  }
 }
 
 const handleClickDelete = async (experienceId: string): Promise<void> => {
@@ -128,9 +106,9 @@ catch (err) {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :producers="producers"
-    :experiences-response="experiencesResponse"
+    :experiences="experiences"
     :experience-types="experienceTypes"
+    :producers="producers"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
     @click:show="handleClickShow"
@@ -138,5 +116,6 @@ catch (err) {
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @click:copy-item="handleClickCopyItem"
   />
 </template>

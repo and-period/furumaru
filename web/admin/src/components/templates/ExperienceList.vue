@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus, mdiContentCopy } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiContentCopy, mdiCalendarCheck } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
@@ -45,10 +45,6 @@ const props = defineProps({
     type: Array<Producer>,
     defaut: () => [],
   },
-  experiencesResponse: {
-    type: Array<ExperiencesResponse>,
-    default: () => [],
-  },
   experiences: {
     type: Array<Experience>,
     default: () => [],
@@ -72,7 +68,7 @@ const emit = defineEmits<{
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:show', productId: string): void
   (e: 'click:new'): void
-  (e: 'click:copyItem'): void
+  (e: 'click:copy-item'): void
   (e: 'click:delete', productId: string): void
   (e: 'update:delete-dialog', v: boolean): void
   (e: 'update:selectedItemId', v: string): void
@@ -125,7 +121,6 @@ const handleUpdateSelectItemId = (itemIds: string[]): void => {
     emit('update:selectedItemId', itemIds[0])
   }
 }
-console.log(props.experiencesResponse)
 
 const selectedItem = ref<Experience>()
 
@@ -188,6 +183,10 @@ const onClickShow = (productId: string): void => {
 
 const onClickNew = (): void => {
   emit('click:new')
+}
+
+const onClickCopyItem = (): void => {
+  emit('click:copy-item')
 }
 
 const onClickDelete = (): void => {
@@ -253,13 +252,21 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
     width="500"
   >
     <v-card>
-      <v-card-text class="text-h7">
-        {{ selectedItem?.title }}を本当に削除しますか？
+      <v-card-title class="text-h6 py-4">
+        体験削除の確認
+      </v-card-title>
+      <v-card-text class="pb-4">
+        <div class="text-body-1">
+          「{{ selectedItem?.title }}」を削除しますか？
+        </div>
+        <div class="text-body-2 text-medium-emphasis mt-2">
+          この操作は取り消せません。
+        </div>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="toggleDeleteDialog"
         >
@@ -267,8 +274,8 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
         </v-btn>
         <v-btn
           :loading="loading"
-          color="primary"
-          variant="outlined"
+          color="error"
+          variant="elevated"
           @click="onClickDelete"
         >
           削除
@@ -278,34 +285,69 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
   </v-dialog>
 
   <v-card
-    class="mt-4"
-    flat
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
   >
-    <v-card-title class="d-flex flex-row">
-      体験管理
-    </v-card-title>
-
-    <div class="d-flex w-100 px-6 ga-2">
-      <v-spacer />
-      <v-btn
-        v-show="isRegisterable()"
-        variant="outlined"
-        color="primary"
-        @click="onClickNew"
-      >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
         <v-icon
-          start
-          :icon="mdiPlus"
+          :icon="mdiCalendarCheck"
+          size="28"
+          class="mr-3 text-primary"
         />
-        体験登録
-      </v-btn>
-    </div>
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            体験管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            体験の登録・編集・削除を行います
+          </p>
+        </div>
+      </div>
+      <div class="d-flex ga-3">
+        <v-btn
+          v-show="isRegisterable()"
+          variant="outlined"
+          color="secondary"
+          size="large"
+          :disabled="selectedItemId === ''"
+          @click="onClickCopyItem"
+        >
+          <v-icon
+            start
+            :icon="mdiContentCopy"
+          />
+          体験複製
+          <v-tooltip
+            v-if="selectedItemId === ''"
+            activator="parent"
+            location="bottom"
+          >
+            コピー元の体験をチェックする必要があります。
+          </v-tooltip>
+        </v-btn>
+        <v-btn
+          v-show="isRegisterable()"
+          variant="elevated"
+          color="primary"
+          size="large"
+          @click="onClickNew"
+        >
+          <v-icon
+            start
+            :icon="mdiPlus"
+          />
+          体験登録
+        </v-btn>
+      </div>
+    </v-card-title>
 
     <v-card-text>
       <v-data-table-server
         :headers="headers"
         :loading="loading"
-        :items="props.experiencesResponse.experiences"
+        :items="props.experiences"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         hover
@@ -344,7 +386,7 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
           <v-btn
             v-show="isDeletable()"
             variant="outlined"
-            color="primary"
+            color="error"
             size="small"
             @click.stop="toggleDeleteDialog(item)"
           >
