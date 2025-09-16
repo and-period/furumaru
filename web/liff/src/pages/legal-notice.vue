@@ -41,59 +41,100 @@ definePageMeta({
       <!-- 特定商取引法に基づく表記本文 -->
       <div class="mt-4 text-gray-700 space-y-6">
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">販売業者</h3>
-          <p class="text-sm leading-relaxed">株式会社アンドピリオド</p>
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-gray-900 mb-2">販売責任者</h3>
-          <p class="text-sm leading-relaxed">藤中拓弥</p>
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-gray-900 mb-2">ホームページ</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            販売業者
+          </h3>
           <p class="text-sm leading-relaxed">
-            <a href="https://www.and-period.co.jp/" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">
+            株式会社アンドピリオド
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            販売責任者
+          </h3>
+          <p class="text-sm leading-relaxed">
+            藤中拓弥
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            ホームページ
+          </h3>
+          <p class="text-sm leading-relaxed">
+            <a
+              href="https://www.and-period.co.jp/"
+              class="text-blue-600 hover:text-blue-800 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               https://www.and-period.co.jp/
             </a>
           </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">所在地</h3>
-          <p class="text-sm leading-relaxed">広島県豊田郡大崎上島町中野5748-2</p>
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-gray-900 mb-2">電話番号</h3>
-          <p class="text-sm leading-relaxed">050-3700-7904</p>
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-gray-900 mb-2">メールアドレス</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            所在地
+          </h3>
           <p class="text-sm leading-relaxed">
-            <a href="mailto:support@and-period.co.jp" class="text-blue-600 hover:text-blue-800 underline">
+            広島県豊田郡大崎上島町中野5748-2
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            電話番号
+          </h3>
+          <p class="text-sm leading-relaxed">
+            050-3700-7904
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            メールアドレス
+          </h3>
+          <p class="text-sm leading-relaxed">
+            <a
+              href="mailto:support@and-period.co.jp"
+              class="text-blue-600 hover:text-blue-800 underline"
+            >
               support@and-period.co.jp
             </a>
           </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">URL</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            URL
+          </h3>
           <p class="text-sm leading-relaxed">
-            <a href="https://www.furumaru.and-period.co.jp/" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.furumaru.and-period.co.jp/"
+              class="text-blue-600 hover:text-blue-800 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               https://www.furumaru.and-period.co.jp/
             </a>
           </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">引き渡し時期</h3>
-          <p class="text-sm leading-relaxed">ご注文から7日以内に発送いたします。（商品によっては収穫時期により異なる）</p>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            引き渡し時期
+          </h3>
+          <p class="text-sm leading-relaxed">
+            ご注文から7日以内に発送いたします。（商品によっては収穫時期により異なる）
+          </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">お支払い方法</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            お支払い方法
+          </h3>
           <ul class="text-sm leading-relaxed list-disc list-inside space-y-1">
             <li>クレジットカード</li>
             <li>QRコード決済</li>
@@ -101,14 +142,18 @@ definePageMeta({
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">返金・交換について</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            返金・交換について
+          </h3>
           <p class="text-sm leading-relaxed">
             本サイトで取り扱う商品はすべて食品となるため、返金・交換は一切承っておりません。ただし、お届けした商品に破損、汚損等あった場合や、注文品と違う商品が届いた場合はその限りではありません。
           </p>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">返金・交換の対象となる商品</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            返金・交換の対象となる商品
+          </h3>
           <ul class="text-sm leading-relaxed list-disc list-inside space-y-1">
             <li>商品が腐っている</li>
             <li>商品が傷んでいる</li>
@@ -118,11 +163,14 @@ definePageMeta({
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">返金・交換対応の流れ</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            返金・交換対応の流れ
+          </h3>
           <div class="text-sm leading-relaxed space-y-2">
             <ol class="list-decimal list-inside space-y-1">
               <li>商品の状態がわかるお写真を撮影してください。</li>
-              <li>お問い合わせフォームより以下を記載の上、商品のお写真を添付して送信してください
+              <li>
+                お問い合わせフォームより以下を記載の上、商品のお写真を添付して送信してください
                 <ul class="list-disc list-inside ml-4 space-y-1 mt-1">
                   <li>注文番号</li>
                   <li>商品の状態</li>
@@ -130,7 +178,9 @@ definePageMeta({
               </li>
               <li>ふるまる運営事務局より今後の対応について1営業日以内に返信いたします。</li>
             </ol>
-            <p class="mt-2">以上で手続きは完了となります。</p>
+            <p class="mt-2">
+              以上で手続きは完了となります。
+            </p>
             <p class="text-xs text-gray-500 mt-2">
               ※宅配ボックスへのお届けや置き配など、一部適用外となる場合もあります。
             </p>
@@ -145,22 +195,30 @@ definePageMeta({
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">商品代金以外に必要な費用</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            商品代金以外に必要な費用
+          </h3>
           <ul class="text-sm leading-relaxed list-disc list-inside">
             <li>商品により配送費用</li>
           </ul>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">送料に関して</h3>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            送料に関して
+          </h3>
           <div class="text-sm leading-relaxed space-y-2">
             <p>ふるマルのご注文には一部商品を除き、送料（税込）が箱ごとにかかる場合がございます。また、お届け先によって料金が異なります。</p>
           </div>
         </div>
 
         <div>
-          <h3 class="font-semibold text-gray-900 mb-2">返品送料</h3>
-          <p class="text-sm leading-relaxed">返金・交換対象に当てはまる場合は当社負担で配送させて頂きます。</p>
+          <h3 class="font-semibold text-gray-900 mb-2">
+            返品送料
+          </h3>
+          <p class="text-sm leading-relaxed">
+            返金・交換対象に当てはまる場合は当社負担で配送させて頂きます。
+          </p>
         </div>
       </div>
     </div>
