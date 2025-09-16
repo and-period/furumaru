@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
+import { useCommonStore, useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
 import { CharacterEncodingType } from '~/types'
 import { ShippingCarrier } from '~/types/api/v1'
 import type { ExportOrdersRequest } from '~/types/api/v1'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const orderStore = useOrderStore()
 const coordinatorStore = useCoordinatorStore()
 const customerStore = useCustomerStore()
@@ -24,6 +26,8 @@ const { promotions } = storeToRefs(promotionStore)
 const loading = ref<boolean>(false)
 const importDialog = ref<boolean>(false)
 const exportDialog = ref<boolean>(false)
+const selectedItemId = ref<string>('')
+const sortBy = ref<VDataTable['sortBy']>([])
 
 // TODO: API設計が決まり次第型定義の厳格化
 const importFormData = ref({
@@ -39,6 +43,10 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 })
 
 watch(pagination.itemsPerPage, (): void => {
+  fetchState.refresh()
+})
+
+watch(sortBy, (): void => {
   fetchState.refresh()
 })
 
@@ -105,6 +113,7 @@ catch (err) {
     v-model:export-dialog="exportDialog"
     v-model:import-form-data="importFormData"
     v-model:export-form-data="exportFormData"
+    v-model:selected-item-id="selectedItemId"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -115,10 +124,12 @@ catch (err) {
     :promotions="promotions"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
+    :table-sort-by="sortBy"
     @click:row="handleClickRow"
     @click:update-page="handleUpdateTablePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
     @submit:import="handleImport"
     @submit:export="handleExport"
+    @update:sort-by="fetchState.refresh"
   />
 </template>

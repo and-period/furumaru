@@ -28,7 +28,7 @@ watch(pagination.itemsPerPage, (): void => {
   fetchNotifications()
 })
 watch(sortBy, (): void => {
-  fetchState.refresh()
+  fetchNotifications()
 })
 
 const fetchNotifications = async (): Promise<void> => {
@@ -107,6 +107,6 @@ catch (err) {
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
-    @update:sort-by="fetchState.refresh"
+    @update:sort-by="fetchNotifications"
   />
 </template>

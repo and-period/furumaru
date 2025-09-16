@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiTagOutline } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -253,13 +253,21 @@ const onClickDelete = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h7">
-        {{ selectedItem?.title || "" }}を本当に削除しますか？
+      <v-card-title class="text-h6 py-4">
+        セール情報削除の確認
       </v-card-title>
-      <v-card-actions>
+      <v-card-text class="pb-4">
+        <div class="text-body-1">
+          「{{ selectedItem?.title || "" }}」を削除しますか？
+        </div>
+        <div class="text-body-2 text-medium-emphasis mt-2">
+          この操作は取り消せません。
+        </div>
+      </v-card-text>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="onClickCloseDeleteDialog"
         >
@@ -267,8 +275,8 @@ const onClickDelete = (): void => {
         </v-btn>
         <v-btn
           :loading="loading"
-          color="primary"
-          variant="outlined"
+          color="error"
+          variant="elevated"
           @click="onClickDelete"
         >
           削除
@@ -278,24 +286,41 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card
-    class="mt-4"
-    flat
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
   >
-    <v-card-title class="d-flex flex-row">
-      セール情報
-      <v-spacer />
-      <v-btn
-        v-show="isRegisterable()"
-        variant="outlined"
-        color="primary"
-        @click="onClickAdd"
-      >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
         <v-icon
-          start
-          :icon="mdiPlus"
+          :icon="mdiTagOutline"
+          size="28"
+          class="mr-3 text-primary"
         />
-        セール情報登録
-      </v-btn>
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            セール情報管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            セール・キャンペーン情報の登録・編集・削除を行います
+          </p>
+        </div>
+      </div>
+      <div class="d-flex ga-3">
+        <v-btn
+          v-show="isRegisterable()"
+          variant="elevated"
+          color="primary"
+          size="large"
+          @click="onClickAdd"
+        >
+          <v-icon
+            start
+            :icon="mdiPlus"
+          />
+          セール情報登録
+        </v-btn>
+      </div>
     </v-card-title>
 
     <v-card-text>
@@ -306,13 +331,11 @@ const onClickDelete = (): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         :sort-by="props.sortBy"
-        :multi-sort="true"
         hover
         no-data-text="登録されているセール情報がありません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.title`]="{ item }">
@@ -323,7 +346,6 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip
-            size="small"
             :color="getStatusColor(item.status)"
           >
             {{ getStatus(item.status) }}
@@ -341,15 +363,12 @@ const onClickDelete = (): void => {
         <template #[`item.actions`]="{ item }">
           <v-btn
             v-show="isEditable(item)"
-            color="primary"
-            size="small"
             variant="outlined"
+            color="error"
+            size="small"
+            :prepend-icon="mdiDelete"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon
-              size="small"
-              :icon="mdiDelete"
-            />
             削除
           </v-btn>
         </template>

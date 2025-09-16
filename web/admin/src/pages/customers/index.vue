@@ -2,9 +2,10 @@
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCustomerStore } from '~/store/customer'
+import { useCommonStore, useCustomerStore } from '~/store'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -20,6 +21,10 @@ const fetchState = useAsyncData(async () => {
 
 watch(pagination.itemsPerPage, () => {
   fetchUsers()
+})
+
+watch(sortBy, (): void => {
+  fetchState.refresh()
 })
 
 const fetchUsers = async (): Promise<void> => {
