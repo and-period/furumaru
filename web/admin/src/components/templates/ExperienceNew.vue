@@ -22,6 +22,7 @@ import type {
   Producer,
   UpdateExperienceRequest,
 } from '~/types/api/v1'
+import { ExperienceStatus } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
 import {
   CreateExperienceValidationRules,
@@ -29,6 +30,7 @@ import {
   TimeDataValidationRules,
 } from '~/types/validations'
 import { getErrorMessage } from '~/lib/validations'
+import { experienceStatues, experiencePublicationStatuses, experienceSoldStatus } from '~/constants'
 
 interface Props {
   loading: boolean
@@ -81,15 +83,92 @@ const thumbnailIndex = computed<number>({
   },
 })
 
-const publicStatus = [
-  { title: '公開', value: true },
-  { title: '非公開', value: false },
-]
+const formDataValue = computed({
+  get: (): CreateExperienceRequest | UpdateExperienceRequest => props.formData,
+  set: (formData: CreateExperienceRequest | UpdateExperienceRequest): void =>
+    emit('update:form-data', formData),
+})
+const startTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.startAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.startAt).format('HH:mm'),
+  }),
+  set: (timeData: DateTimeInput): void => {
+    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
+    formDataValue.value.startAt = startAt.unix()
+  },
+})
+const endTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.endAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.endAt).format('HH:mm'),
+  }),
+  set: (timeData: DateTimeInput): void => {
+    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
+    formDataValue.value.endAt = endAt.unix()
+  },
+})
+const experienceStatusValue = computed<ExperienceStatus>(() => {
+  if (!formDataValue.value._public) {
+    return ExperienceStatus.ExperienceStatusPrivate
+  }
+  if (formDataValue.value.soldOut) {
+    return ExperienceStatus.ExperienceStatusSoldOut
+  }
+  const now = dayjs().unix()
+  if (formDataValue.value.startAt > now) {
+    return ExperienceStatus.ExperienceStatusWaiting
+  }
+  if (formDataValue.value.endAt !== 0 && formDataValue.value.endAt < now) {
+    return ExperienceStatus.ExperienceStatusFinished
+  }
+  return ExperienceStatus.ExperienceStatusAccepting
+})
 
-const soldStatus = [
-  { title: '販売中', value: false },
-  { title: '在庫なし', value: true },
-]
+const producerSearchKeywordValue = computed({
+  get: (): string => props.producerSearchKeyword || '',
+  set: (v: string): void => emit('update:producer-search-keyword', v),
+})
+
+const formDataValidate = useVuelidate(
+  CreateExperienceValidationRules,
+  formDataValue,
+)
+const startTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  startTimeDataValue,
+)
+const endTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  endTimeDataValue,
+)
+
+const notSameTimeValidate = useVuelidate(
+  () => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'),
+  formDataValue,
+)
+
+const getStatus = (status: ExperienceStatus): string => {
+  const value = experienceStatues.find(s => s.value === status)
+  return value ? value.title : ''
+}
+
+const getStatusColor = (status: ExperienceStatus): string => {
+  switch (status) {
+    case ExperienceStatus.ExperienceStatusWaiting:
+      return 'info'
+    case ExperienceStatus.ExperienceStatusAccepting:
+      return 'primary'
+    case ExperienceStatus.ExperienceStatusSoldOut:
+      return 'secondary'
+    case ExperienceStatus.ExperienceStatusPrivate:
+      return 'warning'
+    case ExperienceStatus.ExperienceStatusFinished:
+      return 'error'
+    default:
+      return ''
+  }
+}
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(
@@ -143,55 +222,6 @@ const onChangeVideo = (files?: FileList): void => {
 const onClickSearchAddress = (): void => {
   emit('click:search-address')
 }
-
-const formDataValue = computed({
-  get: (): CreateExperienceRequest | UpdateExperienceRequest => props.formData,
-  set: (formData: CreateExperienceRequest | UpdateExperienceRequest): void =>
-    emit('update:form-data', formData),
-})
-const startTimeDataValue = computed({
-  get: (): DateTimeInput => ({
-    date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm'),
-  }),
-  set: (timeData: DateTimeInput): void => {
-    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
-    formDataValue.value.startAt = startAt.unix()
-  },
-})
-const endTimeDataValue = computed({
-  get: (): DateTimeInput => ({
-    date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm'),
-  }),
-  set: (timeData: DateTimeInput): void => {
-    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
-    formDataValue.value.endAt = endAt.unix()
-  },
-})
-
-const producerSearchKeywordValue = computed({
-  get: (): string => props.producerSearchKeyword || '',
-  set: (v: string): void => emit('update:producer-search-keyword', v),
-})
-
-const formDataValidate = useVuelidate(
-  CreateExperienceValidationRules,
-  formDataValue,
-)
-const startTimeDataValidate = useVuelidate(
-  TimeDataValidationRules,
-  startTimeDataValue,
-)
-const endTimeDataValidate = useVuelidate(
-  TimeDataValidationRules,
-  endTimeDataValue,
-)
-
-const notSameTimeValidate = useVuelidate(
-  () => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'),
-  formDataValue,
-)
 
 const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
@@ -290,6 +320,7 @@ const onSubmit = async (): Promise<void> => {
 
         <!-- 体験画像管理セクション -->
         <v-card
+          :loading="props.loading"
           class="form-section-card mb-6"
           elevation="2"
         >
@@ -397,7 +428,7 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text class="pa-6">
             <molecules-video-select-form
               label="紹介動画をアップロード"
-              :loading="videoUploading"
+              :loading="props.videoUploading"
               @update:file="onChangeVideo"
             />
             <template v-if="formDataValue.promotionVideoUrl">
@@ -678,10 +709,19 @@ const onSubmit = async (): Promise<void> => {
             <span class="text-h6 font-weight-medium">販売設定</span>
           </v-card-title>
           <v-card-text class="pa-6">
+            <v-alert
+              :color="getStatusColor(experienceStatusValue)"
+              variant="tonal"
+              density="compact"
+              class="mb-4"
+            >
+              現在の状況: {{ getStatus(experienceStatusValue) }}
+            </v-alert>
+
             <v-select
               v-model="formDataValue._public"
               label="公開状況 *"
-              :items="publicStatus"
+              :items="experiencePublicationStatuses"
               item-title="title"
               item-value="value"
               variant="outlined"
@@ -691,7 +731,7 @@ const onSubmit = async (): Promise<void> => {
             <v-select
               v-model="formDataValue.soldOut"
               label="販売状況 *"
-              :items="soldStatus"
+              :items="experienceSoldStatus"
               item-title="title"
               item-value="value"
               variant="outlined"

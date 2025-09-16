@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus, mdiContentCopy, mdiPackageVariant } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiContentCopy, mdiPackageVariant, mdiCoffee } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import { productStatuses } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
@@ -192,20 +193,8 @@ const getResizedThumbnails = (media: ProductMedia[]): string => {
 }
 
 const getStatus = (status: ProductStatus): string => {
-  switch (status) {
-    case ProductStatus.ProductStatusPresale:
-      return '予約販売'
-    case ProductStatus.ProductStatusForSale:
-      return '販売中'
-    case ProductStatus.ProductStatusOutOfSale:
-      return '販売終了'
-    case ProductStatus.ProductStatusPrivate:
-      return '非公開'
-    case ProductStatus.ProductStatusArchived:
-      return 'アーカイブ済み'
-    default:
-      return ''
-  }
+  const value = productStatuses.find(s => s.value === status)
+  return value ? value.title : '不明'
 }
 
 const getStatusColor = (status: ProductStatus): string => {
@@ -381,13 +370,19 @@ const onClickCopyItem = (): void => {
         @click:row="(_: any, { item }: any) => onClickShow(item.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img
-            aspect-ratio="1/1"
-            :max-height="56"
-            :max-width="80"
-            :src="getThumbnail(item.media)"
-            :srcset="getResizedThumbnails(item.media)"
-          />
+          <v-avatar size="40">
+            <v-img
+              v-if="getThumbnail(item.media) !== ''"
+              cover
+              :src="getThumbnail(item.media)"
+              :srcset="getResizedThumbnails(item.media)"
+            />
+            <v-icon
+              v-else
+              :icon="mdiCoffee"
+              color="grey"
+            />
+          </v-avatar>
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">

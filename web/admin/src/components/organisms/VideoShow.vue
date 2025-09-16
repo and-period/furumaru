@@ -16,6 +16,7 @@ import { VideoStatus } from '~/types/api/v1'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api/v1'
 import type { DateTimeInput, UploadStatus } from '~/types/props'
 import { TimeDataValidationRules, UpdateVideoValidationRules } from '~/types/validations'
+import { videoStatuses } from '~/constants'
 import dayjs, { unix } from 'dayjs'
 
 const props = defineProps({
@@ -81,13 +82,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const videoStatuses = [
-  { value: VideoStatus.VideoStatusPrivate, title: '非公開' },
-  { value: VideoStatus.VideoStatusLimited, title: '限定公開' },
-  { value: VideoStatus.VideoStatusPublished, title: '公開中' },
-  { value: VideoStatus.VideoStatusWaiting, title: '公開予定' },
-]
-
 const formDataValue = computed({
   get: (): UpdateVideoRequest => props.formData,
   set: (formData: UpdateVideoRequest): void =>
@@ -103,7 +97,7 @@ const publishTimeDataValue = computed({
     formDataValue.value.publishedAt = publishedAt.unix()
   },
 })
-const videoStatus = computed<VideoStatus>(() => {
+const videoStatusValue = computed<VideoStatus>(() => {
   if (!formDataValue.value._public) {
     if (formDataValue.value.limited) {
       return VideoStatus.VideoStatusLimited // 限定公開
@@ -127,6 +121,26 @@ const publishTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
   publishTimeDataValue,
 )
+
+const getStatus = (status: VideoStatus): string => {
+  const value = videoStatuses.find(s => s.value === status)
+  return value ? value.title : ''
+}
+
+const getStatusColor = (status: VideoStatus): string => {
+  switch (status) {
+    case VideoStatus.VideoStatusWaiting:
+      return 'info'
+    case VideoStatus.VideoStatusPublished:
+      return 'primary'
+    case VideoStatus.VideoStatusLimited:
+      return 'secondary'
+    case VideoStatus.VideoStatusPrivate:
+      return 'warning'
+    default:
+      return ''
+  }
+}
 
 const onChangePublishedAt = (): void => {
   const publishedAt = dayjs(
@@ -427,12 +441,12 @@ const onSubmit = async (): Promise<void> => {
         </v-card-title>
         <v-card-text class="pa-6">
           <v-alert
-            :type="videoStatus === VideoStatus.VideoStatusPublished ? 'success' : 'info'"
+            :color="getStatusColor(videoStatusValue)"
             variant="tonal"
             density="compact"
             class="mb-4"
           >
-            現在の状況: {{ videoStatuses.find(s => s.value === videoStatus)?.title || '不明' }}
+            現在の状況: {{ getStatus(videoStatusValue) }}
           </v-alert>
 
           <v-checkbox
