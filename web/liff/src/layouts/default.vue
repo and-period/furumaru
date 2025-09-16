@@ -177,6 +177,13 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
         >
           プライバシーポリシー
         </nuxt-link>
+
+        <nuxt-link
+          to="/legal-notice"
+          @click="onMenuSelect()"
+        >
+          特定商取引法に基づく表記
+        </nuxt-link>
       </div>
     </div>
   </div>
