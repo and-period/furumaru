@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete } from '@mdi/js'
+import { mdiAccountGroup } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { prefecturesList } from '~/constants'
@@ -141,8 +141,28 @@ const onClickRow = (item: UserToList): void => {
     v-text="props.alertText"
   />
 
-  <v-card flat>
-    <v-card-title>顧客管理</v-card-title>
+  <v-card
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
+  >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
+        <v-icon
+          :icon="mdiAccountGroup"
+          size="28"
+          class="mr-3 text-primary"
+        />
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            顧客管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            顧客情報の確認・管理を行います
+          </p>
+        </div>
+      </div>
+    </v-card-title>
 
     <v-card-text>
       <v-data-table-server
@@ -152,12 +172,11 @@ const onClickRow = (item: UserToList): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         :sort-by="props.tableSortBy"
-        no-data-text="登録されている顧客情報がありません"
         hover
+        no-data-text="登録されている顧客がありません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_: any, { item }: any) => onClickRow(item)"
       >
         <template #[`item.name`]="{ item }">
@@ -168,7 +187,6 @@ const onClickRow = (item: UserToList): void => {
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip
-            size="small"
             :color="getStatusColor(item.status)"
           >
             {{ getStatus(item.status) }}

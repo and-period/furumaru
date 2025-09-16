@@ -26,7 +26,11 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 })
 
 watch(pagination.itemsPerPage, (): void => {
-  fetchPromotions()
+  fetchState.refresh()
+})
+
+watch(sortBy, (): void => {
+  fetchState.refresh()
 })
 
 const fetchPromotions = async (): Promise<void> => {

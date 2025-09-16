@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiBellOutline } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -221,27 +221,41 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
+
   <v-dialog
     v-model="deleteDialogValue"
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h7">
-        {{ selectedItem?.title || '' }}を本当に削除しますか？
+      <v-card-title class="text-h6 py-4">
+        お知らせ削除の確認
       </v-card-title>
-      <v-card-actions>
+      <v-card-text class="pb-4">
+        <div class="text-body-1">
+          「{{ selectedItem?.title || '' }}」を削除しますか？
+        </div>
+        <div class="text-body-2 text-medium-emphasis mt-2">
+          この操作は取り消せません。
+        </div>
+      </v-card-text>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="onClickCloseDeleteDialog"
         >
           キャンセル
         </v-btn>
         <v-btn
-          color="primary"
-          variant="outlined"
           :loading="loading"
+          color="error"
+          variant="elevated"
           @click="onClickDelete"
         >
           削除
@@ -251,24 +265,41 @@ const onClickDelete = (): void => {
   </v-dialog>
 
   <v-card
-    class="mt-4"
-    flat
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
   >
-    <v-card-title class="d-flex flex-row">
-      お知らせ管理
-      <v-spacer />
-      <v-btn
-        v-show="isRegisterable()"
-        color="primary"
-        variant="outlined"
-        @click="onClickAdd"
-      >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
         <v-icon
-          start
-          :icon="mdiPlus"
+          :icon="mdiBellOutline"
+          size="28"
+          class="mr-3 text-primary"
         />
-        お知らせ登録
-      </v-btn>
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            お知らせ管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            お知らせの登録・編集・削除を行います
+          </p>
+        </div>
+      </div>
+      <div class="d-flex ga-3">
+        <v-btn
+          v-show="isRegisterable()"
+          variant="elevated"
+          color="primary"
+          size="large"
+          @click="onClickAdd"
+        >
+          <v-icon
+            start
+            :icon="mdiPlus"
+          />
+          お知らせ登録
+        </v-btn>
+      </div>
     </v-card-title>
 
     <v-card-text>
@@ -279,13 +310,11 @@ const onClickDelete = (): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         :sort-by="props.tableSortBy"
-        :multi-sort="true"
         hover
-        no-data-text="登録されているお知らせ情報がありません"
+        no-data-text="登録されているお知らせがありません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @update:sort-desc="onClickUpdateSortBy"
         @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.type`]="{ item }">
@@ -293,7 +322,6 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip
-            size="small"
             :color="getStatusColor(item.status)"
           >
             {{ getStatus(item.status) }}
@@ -312,14 +340,11 @@ const onClickDelete = (): void => {
           <v-btn
             v-show="isEditable()"
             variant="outlined"
-            color="primary"
+            color="error"
             size="small"
+            :prepend-icon="mdiDelete"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon
-              size="small"
-              :icon="mdiDelete"
-            />
             削除
           </v-btn>
         </template>

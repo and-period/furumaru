@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiImport, mdiExport } from '@mdi/js'
+import { mdiImport, mdiExport, mdiContentCopy, mdiFileDocumentOutline } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { unix } from 'dayjs'
 
@@ -18,6 +18,10 @@ interface ImportFormData {
 }
 
 const props = defineProps({
+  selectedItemId: {
+    type: String,
+    default: '',
+  },
   loading: {
     type: Boolean,
     default: false,
@@ -41,6 +45,10 @@ const props = defineProps({
   alertText: {
     type: String,
     default: '',
+  },
+  tableSortBy: {
+    type: Array as PropType<VDataTable['sortBy']>,
+    default: () => [],
   },
   orders: {
     type: Array<Order>,
@@ -83,13 +91,14 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'click:row', orderId: string): void
-  (e: 'click:edit', orderId: string): void
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
+  (e: 'update:selected-item-id', v: string): void
   (e: 'update:import-dialog', dialog: boolean): void
   (e: 'update:export-dialog', dialog: boolean): void
   (e: 'update:import-form-data', formData: object): void
   (e: 'update:export-form-data', formData: ExportOrdersRequest): void
+  (e: 'update:sort-by'): void
   (e: 'submit:import'): void
   (e: 'submit:export'): void
 }>()
@@ -141,6 +150,8 @@ const characterEncodingTypes = [
   { title: 'Shift-JIS', value: CharacterEncodingType.ShiftJIS },
 ]
 
+const selectedItem = ref<Order>()
+
 const importDialogValue = computed({
   get: (): boolean => props.importDialog,
   set: (v: boolean): void => emit('update:import-dialog', v),
@@ -157,6 +168,15 @@ const exportFormDataValue = computed({
   get: (): ExportOrdersRequest => props.exportFormData,
   set: (v: ExportOrdersRequest): void => emit('update:export-form-data', v),
 })
+
+const handleUpdateSelectItemId = (itemIds: string[]): void => {
+  if (itemIds.length === 0) {
+    emit('update:selected-item-id', '')
+  }
+  else {
+    emit('update:selected-item-id', itemIds[0])
+  }
+}
 
 const getCustomerName = (userId: string): string => {
   const customer = props.customers.find((customer: User): boolean => {
@@ -294,28 +314,27 @@ const onSubmitExport = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 primaryLight">
+      <v-card-title class="text-h6 py-4">
         ファイルの取り込み
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="pb-4">
         <v-select
           v-model="importFormDataValue.company"
           label="配送会社"
-          class="mr-2 ml-2"
+          class="mb-4"
           :items="fulfillmentCompanies"
           item-title="title"
           item-value="value"
         />
         <v-file-input
-          class="mr-2"
           label="CSVを選択"
         />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="toggleImportDialog"
         >
@@ -323,11 +342,11 @@ const onSubmitExport = (): void => {
         </v-btn>
         <v-btn
           color="primary"
-          variant="outlined"
+          variant="elevated"
           :loading="loading"
           @click="onSubmitImport"
         >
-          登録
+          取り込み
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -338,14 +357,15 @@ const onSubmitExport = (): void => {
     width="500"
   >
     <v-card>
-      <v-card-title class="text-h6 primaryLight">
+      <v-card-title class="text-h6 py-4">
         ファイルの出力
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="pb-4">
         <v-select
           v-model="exportFormDataValue.shippingCarrier"
           label="配送会社"
+          class="mb-4"
           :items="fulfillmentCompanies"
         />
         <v-select
@@ -354,10 +374,10 @@ const onSubmitExport = (): void => {
           :items="characterEncodingTypes"
         />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-6 pb-4">
         <v-spacer />
         <v-btn
-          color="error"
+          color="medium-emphasis"
           variant="text"
           @click="toggleExportDialog"
         >
@@ -365,39 +385,51 @@ const onSubmitExport = (): void => {
         </v-btn>
         <v-btn
           color="primary"
-          variant="outlined"
+          variant="elevated"
           :loading="loading"
           @click="onSubmitExport"
         >
-          登録
+          出力
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
   <v-card
-    class="mt-4"
-    flat
+    class="mt-6"
+    elevation="0"
+    rounded="lg"
   >
-    <v-card-title class="d-flex flex-row">
-      注文
-      <v-spacer />
-      <!-- <v-btn color="primary" variant="outlined" @click="toggleImportDialog">
-        <v-icon start :icon="mdiImport" />
-        Import
-      </v-btn> -->
-      <v-btn
-        class="ml-4"
-        color="secondary"
-        variant="outlined"
-        @click="toggleExportDialog"
-      >
+    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
+      <div class="d-flex align-center">
         <v-icon
-          start
-          :icon="mdiExport"
+          :icon="mdiFileDocumentOutline"
+          size="28"
+          class="mr-3 text-primary"
         />
-        エクスポート
-      </v-btn>
+        <div>
+          <h1 class="text-h5 font-weight-bold text-primary">
+            注文管理
+          </h1>
+          <p class="text-body-2 text-medium-emphasis ma-0">
+            注文の確認・管理・エクスポートを行います
+          </p>
+        </div>
+      </div>
+      <div class="d-flex ga-3">
+        <v-btn
+          variant="outlined"
+          color="info"
+          size="large"
+          @click="toggleExportDialog"
+        >
+          <v-icon
+            start
+            :icon="mdiExport"
+          />
+          エクスポート
+        </v-btn>
+      </div>
     </v-card-title>
 
     <v-card-text>
@@ -407,20 +439,22 @@ const onSubmitExport = (): void => {
         :items="props.orders"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
+        :sort-by="props.tableSortBy"
         hover
-        no-data-text="表示する注文がありません"
+        select-strategy="single"
+        show-select
+        no-data-text="登録されている注文がありません。"
+        @update:model-value="handleUpdateSelectItemId"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
+        @update:sort-by="emit('update:sort-by')"
         @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.userId`]="{ item }">
           {{ getCustomerName(item.userId) }}
         </template>
         <template #[`item.payment.status`]="{ item }">
-          <v-chip
-            size="small"
-            :color="getStatusColor(item)"
-          >
+          <v-chip :color="getStatusColor(item)">
             {{ getStatus(item) }}
           </v-chip>
         </template>
