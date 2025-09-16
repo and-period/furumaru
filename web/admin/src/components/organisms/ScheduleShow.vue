@@ -8,12 +8,9 @@ import {
 } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
+import { scheduleStatuses } from '~/constants'
 import { getErrorMessage } from '~/lib/validations'
-import {
-
-  ScheduleStatus,
-
-} from '~/types/api/v1'
+import { ScheduleStatus } from '~/types/api/v1'
 import type { Schedule, UpdateScheduleRequest } from '~/types/api/v1'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import {
@@ -95,15 +92,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const statuses = [
-  { title: '非公開', value: ScheduleStatus.ScheduleStatusPrivate },
-  { title: '申請中', value: ScheduleStatus.ScheduleStatusInProgress },
-  { title: '開催前', value: ScheduleStatus.ScheduleStatusWaiting },
-  { title: '開催中', value: ScheduleStatus.ScheduleStatusLive },
-  { title: '終了', value: ScheduleStatus.ScheduleStatusClosed },
-  { title: '不明', value: ScheduleStatus.ScheduleStatusUnknown },
-]
-
 const scheduleValue = computed({
   get: (): Schedule => props.schedule,
   set: (schedule: Schedule): void => emit('update:schedule', schedule),
@@ -133,6 +121,27 @@ const endTimeDataValue = computed({
     formDataValue.value.endAt = endAt.unix()
   },
 })
+const scheduleStatusValue = computed<ScheduleStatus>(() => {
+  if (!props.schedule._public) {
+    return ScheduleStatus.ScheduleStatusPrivate
+  }
+  if (props.schedule.approved) {
+    if (props.schedule.startAt > dayjs().unix()) {
+      return ScheduleStatus.ScheduleStatusWaiting
+    }
+    if (
+      props.schedule.startAt <= dayjs().unix()
+      && props.schedule.endAt >= dayjs().unix()
+    ) {
+      return ScheduleStatus.ScheduleStatusLive
+    }
+    if (props.schedule.endAt < dayjs().unix()) {
+      return ScheduleStatus.ScheduleStatusClosed
+    }
+    return ScheduleStatus.ScheduleStatusUnknown
+  }
+  return ScheduleStatus.ScheduleStatusInProgress
+})
 
 const formDataValidate = useVuelidate(
   UpdateScheduleValidationRules,
@@ -146,6 +155,28 @@ const endTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
   endTimeDataValue,
 )
+
+const getStatus = (status: ScheduleStatus): string => {
+  const value = scheduleStatuses.find(s => s.value === status)
+  return value?.title || '不明'
+}
+
+const getStatusColor = (status: ScheduleStatus): string => {
+  switch (status) {
+    case ScheduleStatus.ScheduleStatusPrivate:
+      return 'error'
+    case ScheduleStatus.ScheduleStatusInProgress:
+      return 'warning'
+    case ScheduleStatus.ScheduleStatusWaiting:
+      return 'info'
+    case ScheduleStatus.ScheduleStatusLive:
+      return 'primary'
+    case ScheduleStatus.ScheduleStatusClosed:
+      return 'secondary'
+    default:
+      return ''
+  }
+}
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(
@@ -316,16 +347,14 @@ const onSubmit = async (): Promise<void> => {
           <span class="text-h6 font-weight-medium">ステータス情報</span>
         </v-card-title>
         <v-card-text class="pa-6">
-          <v-select
-            v-model="scheduleValue.status"
-            :items="statuses"
-            item-title="title"
-            item-value="value"
-            label="開催ステータス"
-            variant="outlined"
-            density="comfortable"
-            readonly
-          />
+          <v-alert
+            :color="getStatusColor(schedule.status)"
+            variant="tonal"
+            density="compact"
+            class="mb-4"
+          >
+            現在の状況: {{ getStatus(schedule.status) }}
+          </v-alert>
         </v-card-text>
       </v-card>
 

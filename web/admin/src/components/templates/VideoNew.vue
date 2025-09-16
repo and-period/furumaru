@@ -17,9 +17,11 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import { getProductThumbnailUrl, getExperienceThumbnailUrl } from '~/lib/formatter'
+import { VideoStatus } from '~/types/api/v1'
 import type { CreateVideoRequest, Product, Experience } from '~/types/api/v1'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import { CreateVideoValidationRules, TimeDataValidationRules } from '~/types/validations'
+import { videoStatuses } from '~/constants'
 
 const props = defineProps({
   loading: {
@@ -144,6 +146,21 @@ const publishTimeDataValue = computed({
     formDataValue.value.publishedAt = publishedAt.unix()
   },
 })
+const videoStatusValue = computed<VideoStatus>(() => {
+  if (!formDataValue.value._public) {
+    if (formDataValue.value.limited) {
+      return VideoStatus.VideoStatusLimited // 限定公開
+    }
+    return VideoStatus.VideoStatusPrivate // 非公開
+  }
+  else {
+    const now = Math.floor(Date.now() / 1000)
+    if (formDataValue.value.publishedAt <= now) {
+      return VideoStatus.VideoStatusPublished // 公開中
+    }
+    return VideoStatus.VideoStatusWaiting // 公開予定
+  }
+})
 const productDialogValue = computed({
   get: (): boolean => props.productDialog,
   set: (value: boolean): void => emit('update:product-dialog', value),
@@ -169,6 +186,26 @@ const publishTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
   publishTimeDataValue,
 )
+
+const getStatus = (status: VideoStatus): string => {
+  const value = videoStatuses.find(s => s.value === status)
+  return value ? value.title : ''
+}
+
+const getStatusColor = (status: VideoStatus): string => {
+  switch (status) {
+    case VideoStatus.VideoStatusWaiting:
+      return 'info'
+    case VideoStatus.VideoStatusPublished:
+      return 'primary'
+    case VideoStatus.VideoStatusLimited:
+      return 'secondary'
+    case VideoStatus.VideoStatusPrivate:
+      return 'warning'
+    default:
+      return ''
+  }
+}
 
 const onClickBack = (): void => {
   emit('click:back')
@@ -643,6 +680,15 @@ const onChangeSearchExperience = (title: string): void => {
                 <span class="text-h6 font-weight-medium">公開設定</span>
               </v-card-title>
               <v-card-text class="pa-6">
+                <v-alert
+                  :color="getStatusColor(videoStatusValue)"
+                  variant="tonal"
+                  density="compact"
+                  class="mb-4"
+                >
+                  現在の状況: {{ getStatus(videoStatusValue) }}
+                </v-alert>
+
                 <v-checkbox
                   v-model="formDataValue._public"
                   label="動画を公開する"

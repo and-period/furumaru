@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPencil, mdiPlus, mdiCalendarToday } from '@mdi/js'
+import { mdiDelete, mdiPencil, mdiPlus, mdiCalendarToday, mdiPlayCircle } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import { scheduleStatuses } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
@@ -136,20 +137,8 @@ const getResizedThumbnails = (schedule: Schedule): string => {
 }
 
 const getStatus = (status: ScheduleStatus): string => {
-  switch (status) {
-    case ScheduleStatus.ScheduleStatusPrivate:
-      return '非公開'
-    case ScheduleStatus.ScheduleStatusInProgress:
-      return '申請中'
-    case ScheduleStatus.ScheduleStatusWaiting:
-      return '開催前'
-    case ScheduleStatus.ScheduleStatusLive:
-      return '開催中'
-    case ScheduleStatus.ScheduleStatusClosed:
-      return '終了(アーカイブ)'
-    default:
-      return '不明'
-  }
+  const value = scheduleStatuses.find(s => s.value === status)
+  return value?.title || '不明'
 }
 
 const getStatusColor = (status: ScheduleStatus): string => {
@@ -179,6 +168,10 @@ const getTerm = (schedule: Schedule): string => {
 
 const getPublished = (schedule: Schedule): string => {
   return schedule._public ? '非公開にする' : '公開する'
+}
+
+const getPublishedColor = (schedule: Schedule): string => {
+  return schedule._public ? 'secondary' : 'primary'
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -311,13 +304,19 @@ const onClickPublished = (scheduleId: string): void => {
         @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
-          <v-img
-            aspect-ratio="1/1"
-            :max-height="56"
-            :max-width="80"
-            :src="getThumbnail(item)"
-            :srcset="getResizedThumbnails(item)"
-          />
+          <v-avatar size="40">
+            <v-img
+              v-if="getThumbnail(item) !== ''"
+              cover
+              :src="getThumbnail(item)"
+              :srcset="getResizedThumbnails(item)"
+            />
+            <v-icon
+              v-else
+              :icon="mdiPlayCircle"
+              color="grey"
+            />
+          </v-avatar>
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">
@@ -334,8 +333,8 @@ const onClickPublished = (scheduleId: string): void => {
           <v-btn
             variant="outlined"
             class="mr-2"
-            color="primary"
             size="small"
+            :color="getPublishedColor(item)"
             @click.stop="onClickPublished(item.id)"
           >
             <v-icon
@@ -346,7 +345,7 @@ const onClickPublished = (scheduleId: string): void => {
           </v-btn>
           <v-btn
             variant="outlined"
-            color="primary"
+            color="error"
             size="small"
             @click.stop="onClickOpenDeleteDialog(item)"
           >

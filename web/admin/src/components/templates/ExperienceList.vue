@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus, mdiContentCopy, mdiCalendarCheck } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiContentCopy, mdiCalendarCheck, mdiAccount, mdiTent } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
-import { prefecturesList } from '~/constants'
+import { experienceStatues, prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import {
@@ -113,6 +113,28 @@ const headers: VDataTable['headers'] = [
   },
 ]
 
+const getStatus = (status: ExperienceStatus): string => {
+  const value = experienceStatues.find(s => s.value === status)
+  return value ? value.title : ''
+}
+
+const getStatusColor = (status: ExperienceStatus): string => {
+  switch (status) {
+    case ExperienceStatus.ExperienceStatusWaiting:
+      return 'info'
+    case ExperienceStatus.ExperienceStatusAccepting:
+      return 'primary'
+    case ExperienceStatus.ExperienceStatusSoldOut:
+      return 'secondary'
+    case ExperienceStatus.ExperienceStatusPrivate:
+      return 'warning'
+    case ExperienceStatus.ExperienceStatusFinished:
+      return 'error'
+    default:
+      return ''
+  }
+}
+
 const handleUpdateSelectItemId = (itemIds: string[]): void => {
   if (itemIds.length === 0) {
     emit('update:selectedItemId', '')
@@ -198,40 +220,6 @@ const getProducerName = (producerId: string): string => {
     return producer.id === producerId
   })
   return producer ? producer.username : ''
-}
-
-const getStatus = (status: ExperienceStatus): string => {
-  switch (status) {
-    case ExperienceStatus.ExperienceStatusWaiting:
-      return '販売開始前'
-    case ExperienceStatus.ExperienceStatusAccepting:
-      return '体験受付中'
-    case ExperienceStatus.ExperienceStatusSoldOut:
-      return '体験受付終了'
-    case ExperienceStatus.ExperienceStatusPrivate:
-      return '非公開'
-    case ExperienceStatus.ExperienceStatusFinished:
-      return '販売終了'
-    default:
-      return ''
-  }
-}
-
-const getStatusColor = (status: ExperienceStatus): string => {
-  switch (status) {
-    case ExperienceStatus.ExperienceStatusWaiting:
-      return 'info'
-    case ExperienceStatus.ExperienceStatusAccepting:
-      return 'primary'
-    case ExperienceStatus.ExperienceStatusSoldOut:
-      return 'secondary'
-    case ExperienceStatus.ExperienceStatusPrivate:
-      return 'warning'
-    case ExperienceStatus.ExperienceStatusFinished:
-      return 'error'
-    default:
-      return ''
-  }
 }
 
 const getPrefecture = (hostPrefectureCode: Prefecture): string => {
@@ -360,13 +348,19 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
         @click:row="(_: any, { item }: any) => onClickShow(item.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img
-            aspect-ratio="1/1"
-            :max-height="56"
-            :max-width="80"
-            :src="getThumbnail(item.media)"
-            :srcset="getResizedThumbnails(item.media)"
-          />
+          <v-avatar size="40">
+            <v-img
+              v-if="getThumbnail(item.media) !== ''"
+              cover
+              :src="getThumbnail(item.media)"
+              :srcset="getResizedThumbnails(item.media)"
+            />
+            <v-icon
+              v-else
+              :icon="mdiTent"
+              color="grey"
+            />
+          </v-avatar>
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">

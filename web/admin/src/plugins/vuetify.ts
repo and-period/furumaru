@@ -31,6 +31,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       VAutocomplete: {
         variant: 'underlined',
       },
+      VAvatar: {
+        variant: 'outlined',
+        color: 'grey-lighten-1',
+      },
       VTextarea: {
         variant: 'underlined',
       },

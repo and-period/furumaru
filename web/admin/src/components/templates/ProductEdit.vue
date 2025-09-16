@@ -28,7 +28,7 @@ import type { Category, Producer, Product, ProductTag, ProductType, UpdateProduc
 import { getErrorMessage } from '~/lib/validations'
 import {
   prefecturesList,
-  cityList,
+  cityList, productStatuses, productPublicationStatuses, storageMethodTypes, deliveryTypes, productItemUnits,
 
 } from '~/constants'
 import type { PrefecturesListItem, CityListItem } from '~/constants'
@@ -159,31 +159,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const statuses = [
-  { title: '公開', value: true },
-  { title: '下書き', value: false },
-]
-const productStatuses = [
-  { title: '予約販売', value: ProductStatus.ProductStatusPresale },
-  { title: '販売中', value: ProductStatus.ProductStatusForSale },
-  { title: '販売期間外', value: ProductStatus.ProductStatusOutOfSale },
-  { title: '非公開', value: ProductStatus.ProductStatusPrivate },
-  { title: 'アーカイブ済み', value: ProductStatus.ProductStatusArchived },
-  { title: '不明', value: ProductStatus.ProductStatusUnknown },
-]
-const storageMethodTypes = [
-  { title: '常温保存', value: StorageMethodType.StorageMethodTypeNormal },
-  { title: '冷暗所保存', value: StorageMethodType.StorageMethodTypeCoolDark },
-  { title: '冷蔵保存', value: StorageMethodType.StorageMethodTypeRefrigerated },
-  { title: '冷凍保存', value: StorageMethodType.StorageMethodTypeFrozen },
-]
-const deliveryTypes = [
-  { title: '通常便', value: DeliveryType.DeliveryTypeNormal },
-  { title: '冷蔵便', value: DeliveryType.DeliveryTypeRefrigerated },
-  { title: '冷凍便', value: DeliveryType.DeliveryTypeFrozen },
-]
-const itemUnits = ['個', '瓶']
-
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData,
   set: (v: UpdateProductRequest): void => emit('update:form-data', v),
@@ -285,12 +260,26 @@ const notSameTimeValidate = useVuelidate(
   formDataValue,
 )
 
-const isUpdatable = (): boolean => {
-  if (props.product.status === ProductStatus.ProductStatusArchived) {
-    return false
+const getStatus = (status: ProductStatus): string => {
+  const value = productStatuses.find(s => s.value === status)
+  return value ? value.title : '不明'
+}
+
+const getStatusColor = (status: ProductStatus): string => {
+  switch (status) {
+    case ProductStatus.ProductStatusPresale:
+      return 'info'
+    case ProductStatus.ProductStatusForSale:
+      return 'primary'
+    case ProductStatus.ProductStatusOutOfSale:
+      return 'secondary'
+    case ProductStatus.ProductStatusPrivate:
+      return 'warning'
+    case ProductStatus.ProductStatusArchived:
+      return 'error'
+    default:
+      return ''
   }
-  const targets: AdminType[] = [AdminType.AdminTypeAdministrator, AdminType.AdminTypeCoordinator]
-  return targets.includes(props.adminType)
 }
 
 const onChangeStartAt = (): void => {
@@ -450,6 +439,7 @@ const onSubmit = async (): Promise<void> => {
 
         <!-- 商品画像管理セクション -->
         <v-card
+          :loading="props.loading"
           class="form-section-card mb-6"
           elevation="2"
         >
@@ -781,7 +771,7 @@ const onSubmit = async (): Promise<void> => {
                     getErrorMessage(formDataValidate.itemUnit.$errors)
                   "
                   label="単位"
-                  :items="itemUnits"
+                  :items="productItemUnits"
                   variant="outlined"
                   density="comfortable"
                 />
@@ -908,19 +898,19 @@ const onSubmit = async (): Promise<void> => {
           </v-card-title>
           <v-card-text class="pa-6">
             <v-alert
-              :type="productStatus === 2 ? 'success' : 'info'"
+              :color="getStatusColor(productStatus)"
               variant="tonal"
               density="compact"
               class="mb-4"
             >
-              現在の状況: {{ productStatuses.find(s => s.value === productStatus)?.title || '不明' }}
+              現在の状況: {{ getStatus(productStatus) }}
             </v-alert>
 
             <v-select
               v-model="formDataValidate._public.$model"
               :error-messages="getErrorMessage(formDataValidate._public.$errors)"
               label="公開状況 *"
-              :items="statuses"
+              :items="productPublicationStatuses"
               variant="outlined"
               density="comfortable"
               class="mb-4"

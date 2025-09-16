@@ -20,7 +20,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const { producers } = storeToRefs(producerStore)
 const { experienceTypes } = storeToRefs(experienceTypeStore)
 
-const isLoading = ref<boolean>(false)
+const loading = ref<boolean>(false)
 const producerSearchKeyword = ref<string>('')
 
 const formData = ref<UpdateExperienceRequest>({
@@ -52,6 +52,10 @@ const formData = ref<UpdateExperienceRequest>({
   businessCloseTime: '',
 })
 
+const isLoading = (): boolean => {
+  return loading.value || videoUploading.value
+}
+
 const handleSearchAddress = async (): Promise<void> => {
   try {
     searchAddress.loading.value = true
@@ -75,6 +79,7 @@ const handleSearchAddress = async (): Promise<void> => {
 }
 
 const handleImageUpload = async (files: FileList): Promise<void> => {
+  loading.value = true
   for (const [index, file] of Array.from(files).entries()) {
     try {
       const url: string = await experienceStore.uploadExperienceMedia(file)
@@ -87,6 +92,7 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
       console.log(err)
     }
   }
+  loading.value = false
 
   const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
   if (thumbnailItem) {
@@ -131,7 +137,7 @@ const handleSubmit = async () => {
     businessCloseTime: formData.value.businessCloseTime.replace(':', ''),
   }
   try {
-    isLoading.value = true
+    loading.value = true
     await experienceStore.updateExperience(experienceId.value, req)
     router.push('/experiences')
   }
@@ -142,7 +148,7 @@ const handleSubmit = async () => {
     console.log(err)
   }
   finally {
-    isLoading.value = false
+    loading.value = false
   }
 }
 
@@ -151,7 +157,7 @@ const convertToTimeFormat = (time: string): string => {
 }
 
 onMounted(async () => {
-  isLoading.value = true
+  loading.value = true
   producerStore.fetchProducers(100, 0)
   experienceTypeStore.fetchExperienceTypes()
   const result = await experienceStore.fetchExperience(experienceId.value)
@@ -165,7 +171,7 @@ onMounted(async () => {
   formData.value.businessCloseTime = convertToTimeFormat(
     formData.value.businessCloseTime,
   )
-  isLoading.value = false
+  loading.value = false
 })
 
 const filteredProducers = computed(() => {
@@ -182,7 +188,7 @@ const filteredProducers = computed(() => {
   <templates-experience-new
     v-model:form-data="formData"
     v-model:producer-search-keyword="producerSearchKeyword"
-    :loading="isLoading"
+    :loading="isLoading()"
     :search-loading="searchAddress.loading.value"
     :search-error-message="searchAddress.errorMessage.value"
     :is-alert="isShow"

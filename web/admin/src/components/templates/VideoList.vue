@@ -251,10 +251,7 @@ const onClickDelete = (): void => {
         @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
-          <v-avatar
-            size="40"
-            class="video-avatar"
-          >
+          <v-avatar size="40">
             <v-img
               v-if="getThumbnail(item) !== ''"
               cover
@@ -293,7 +290,7 @@ const onClickDelete = (): void => {
           <v-btn
             v-show="isDeletable()"
             variant="outlined"
-            color="primary"
+            color="error"
             size="small"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
@@ -308,9 +305,3 @@ const onClickDelete = (): void => {
     </v-card-text>
   </v-card>
 </template>
-
-<style scoped>
-.video-avatar {
-  border: 2px solid rgb(0 0 0 / 8%);
-}
-</style>
