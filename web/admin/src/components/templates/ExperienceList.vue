@@ -363,7 +363,7 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
           </v-avatar>
         </template>
         <template #[`item.title`]="{ item }">
-            {{ item.title.length > 24 ? item.title.slice(0, 24) + '...' : item.title }}
+          {{ item.title.length > 24 ? item.title.slice(0, 24) + '...' : item.title }}
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">

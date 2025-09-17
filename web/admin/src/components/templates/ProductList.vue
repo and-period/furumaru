@@ -385,7 +385,7 @@ const onClickCopyItem = (): void => {
           </v-avatar>
         </template>
         <template #[`item.name`]="{ item }">
-            {{ item.name.length > 24 ? item.name.slice(0, 24) + '...' : item.name }}
+          {{ item.name.length > 24 ? item.name.slice(0, 24) + '...' : item.name }}
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">

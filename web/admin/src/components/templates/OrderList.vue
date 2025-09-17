@@ -171,7 +171,7 @@ const getCustomerName = (userId: string): string => {
 }
 
 const getStatus = (order: Order): string => {
-  const value = orderStatuses.find((status) => status.value === order.status)
+  const value = orderStatuses.find(status => status.value === order.status)
   return value ? value.title : '不明'
 }
 
@@ -199,12 +199,12 @@ const getStatusColor = (order: Order): string => {
 }
 
 const getOrderType = (orderType: OrderType): string => {
-  const value = orderTypes.find((type) => type.value === orderType)
+  const value = orderTypes.find(type => type.value === orderType)
   return value ? value.title : '不明'
 }
 
 const getShippingType = (shippingType: ShippingType): string => {
-  const value = orderShippingTypes.find((type) => type.value === shippingType)
+  const value = orderShippingTypes.find(type => type.value === shippingType)
   return value ? value.title : '不明'
 }
 

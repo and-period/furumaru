@@ -1,4 +1,4 @@
-import { OrderStatus, OrderType, ShippingCarrier, ShippingType } from "~/types/api/v1"
+import { OrderStatus, OrderType, ShippingCarrier, ShippingType } from '~/types/api/v1'
 
 export const orderTypes = [
   { title: '商品', value: OrderType.OrderTypeProduct },

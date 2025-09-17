@@ -1,4 +1,4 @@
-import { CharacterEncodingType } from "~/types"
+import { CharacterEncodingType } from '~/types'
 
 export const characterEncodingTypes = [
   { title: 'UTF-8', value: CharacterEncodingType.UTF8 },
