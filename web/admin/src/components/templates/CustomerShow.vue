@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiDotsVertical } from '@mdi/js'
+import { mdiAccountCircle, mdiDelete, mdiDotsVertical, mdiHistory, mdiShopping, mdiTimeline } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -345,7 +345,7 @@ const onSubmitDelete = (): void => {
       >
         <v-card-title class="d-flex flex-row align-center pa-6">
           <v-icon
-            icon="mdi-account-circle"
+            :icon="mdiAccountCircle"
             size="24"
             class="mr-2 text-primary"
           />
@@ -477,7 +477,7 @@ const onSubmitDelete = (): void => {
       >
         <v-card-title class="pa-6">
           <v-icon
-            icon="mdi-shopping"
+            :icon="mdiShopping"
             size="24"
             class="mr-2 text-primary"
           />
@@ -521,7 +521,7 @@ const onSubmitDelete = (): void => {
       >
         <v-card-title class="pa-6">
           <v-icon
-            icon="mdi-history"
+            :icon="mdiHistory"
             size="24"
             class="mr-2 text-primary"
           />
@@ -571,7 +571,7 @@ const onSubmitDelete = (): void => {
       >
         <v-card-title class="pa-6">
           <v-icon
-            icon="mdi-timeline"
+            :icon="mdiTimeline"
             size="24"
             class="mr-2 text-primary"
           />

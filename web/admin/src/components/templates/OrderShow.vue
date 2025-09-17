@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus, mdiInformation, mdiCalculator, mdiPackageVariant, mdiCalendarStar, mdiCog, mdiAccount, mdiReceipt, mdiStore, mdiTruck, mdiPackageVariantClosed, mdiSend, mdiAlertCircle, mdiCreditCardRefund, mdiCheckCircle, mdiContentSave, mdiCancel, mdiUpdate, mdiCircle, mdiCurrencyJpy, mdiCreditCard, mdiCart, mdiTag, mdiPhone, mdiEmail, mdiMapMarker, mdiCalendar, mdiSchool, mdiAccountSchool, mdiAccountSupervisor, mdiBaby, mdiStoreClock } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiInformation, mdiCalculator, mdiPackageVariant, mdiCalendarStar, mdiCog, mdiAccount, mdiReceipt, mdiStore, mdiTruck, mdiPackageVariantClosed, mdiSend, mdiAlertCircle, mdiCreditCardRefund, mdiCheckCircle, mdiContentSave, mdiCancel, mdiUpdate, mdiCircle, mdiCurrencyJpy, mdiCreditCard, mdiCart, mdiTag, mdiPhone, mdiEmail, mdiMapMarker, mdiCalendar, mdiSchool, mdiAccountSchool, mdiAccountSupervisor, mdiBaby, mdiStoreClock, mdiAlert } from '@mdi/js'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
@@ -722,15 +722,14 @@ const onSubmitRefund = (): void => {
           >
             <v-chip
               size="large"
-              class="ma-1"
+              class="bg-white ma-1"
               :color="getStatusColor()"
             >
               <v-icon
                 start
                 size="small"
-              >
-                mdi-circle
-              </v-icon>
+                :icon="mdiCircle"
+              />
               {{ getStatus() }}
             </v-chip>
           </v-col>
@@ -750,9 +749,8 @@ const onSubmitRefund = (): void => {
               size="32"
               color="primary"
               class="mb-2"
-            >
-              mdi-currency-jpy
-            </v-icon>
+              :icon="mdiCurrencyJpy"
+            />
             <h3 class="text-h4 font-weight-bold mb-1">
               ¥{{ (order?.payment?.total || 0).toLocaleString() }}
             </h3>
@@ -770,13 +768,12 @@ const onSubmitRefund = (): void => {
           <v-card-text class="text-center">
             <v-icon
               size="32"
-              :color="getPaymentStatusColor(order?.payment?.status)"
+              :color="getPaymentStatusColor(order?.payment.status)"
+              :icon="mdiCreditCard"
               class="mb-2"
-            >
-              mdi-credit-card
-            </v-icon>
+            />
             <h3 class="text-h5 font-weight-bold mb-1">
-              {{ getPaymentStatus(order?.payment?.status) }}
+              {{ getPaymentStatus(order?.payment.status) }}
             </h3>
             <p class="text-subtitle-1 text-grey">
               支払い状況
@@ -794,9 +791,8 @@ const onSubmitRefund = (): void => {
               size="32"
               color="info"
               class="mb-2"
-            >
-              {{ props.order.type === OrderType.OrderTypeExperience ? 'mdi-calendar-star' : 'mdi-package-variant' }}
-            </v-icon>
+              :icon="props.order.type === OrderType.OrderTypeExperience ? mdiCalendarStar : mdiPackageVariant"
+            />
             <h3 class="text-h5 font-weight-bold mb-1">
               {{ getAllItemsCount }}
             </h3>
@@ -823,9 +819,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-information
-            </v-icon>
+              :icon="mdiInformation"
+            />
             基本情報
           </v-card-title>
           <v-card-text class="pa-6">
@@ -885,9 +880,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-calculator
-            </v-icon>
+              :icon="mdiCalculator"
+            />
             支払い詳細
           </v-card-title>
           <v-card-text class="pa-0">
@@ -899,9 +893,8 @@ const onSubmitRefund = (): void => {
                       size="20"
                       class="mr-2"
                       color="grey"
-                    >
-                      mdi-cart
-                    </v-icon>
+                      :icon="mdiCart"
+                    />
                     小計
                   </td>
                   <td class="pa-4 text-grey">
@@ -917,9 +910,8 @@ const onSubmitRefund = (): void => {
                       size="20"
                       class="mr-2"
                       color="grey"
-                    >
-                      mdi-truck
-                    </v-icon>
+                      :icon="mdiTruck"
+                    />
                     配送手数料
                   </td>
                   <td class="pa-4 text-grey">
@@ -935,9 +927,8 @@ const onSubmitRefund = (): void => {
                       size="20"
                       class="mr-2"
                       color="success"
-                    >
-                      mdi-tag
-                    </v-icon>
+                      :icon="mdiTag"
+                    />
                     割引
                   </td>
                   <td class="pa-4" />
@@ -971,9 +962,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-package-variant
-            </v-icon>
+              :icon="mdiPackageVariant"
+            />
             注文商品
           </v-card-title>
           <v-card-text class="pa-0">
@@ -1029,9 +1019,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-calendar-star
-            </v-icon>
+              :icon="mdiCalendarStar"
+            />
             体験予約詳細
           </v-card-title>
           <v-card-text class="pa-6">
@@ -1058,9 +1047,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-account
-            </v-icon>
+              :icon="mdiAccount"
+            />
             顧客情報
           </v-card-title>
           <v-card-text class="pa-4">
@@ -1076,9 +1064,8 @@ const onSubmitRefund = (): void => {
                   size="16"
                   class="mr-2"
                   color="grey"
-                >
-                  mdi-email
-                </v-icon>
+                  :icon="mdiEmail"
+                />
                 <span class="text-body-2">{{ props.customer.email }}</span>
               </div>
               <div class="d-flex align-center">
@@ -1086,9 +1073,8 @@ const onSubmitRefund = (): void => {
                   size="16"
                   class="mr-2"
                   color="grey"
-                >
-                  mdi-phone
-                </v-icon>
+                  :icon="mdiPhone"
+                />
                 <span class="text-body-2">{{ props.customer.phoneNumber }}</span>
               </div>
             </div>
@@ -1105,9 +1091,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-receipt
-            </v-icon>
+              :icon="mdiReceipt"
+            />
             請求先情報
           </v-card-title>
           <v-card-text class="pa-4">
@@ -1119,9 +1104,8 @@ const onSubmitRefund = (): void => {
                 size="16"
                 class="mr-2"
                 color="grey"
-              >
-                mdi-phone
-              </v-icon>
+                :icon="mdiPhone"
+              />
               <span class="text-body-2">{{ getShippingAddressPhoneNumber() }}</span>
             </div>
             <div class="d-flex align-start mt-2">
@@ -1129,9 +1113,8 @@ const onSubmitRefund = (): void => {
                 size="16"
                 class="mr-2 mt-1"
                 color="grey"
-              >
-                mdi-map-marker
-              </v-icon>
+                :icon="mdiMapMarker"
+              />
               <div class="text-body-2">
                 <div>〒{{ props.order?.payment?.postalCode || '' }}</div>
                 <div>{{ `${getShippingAddressPrefecture()} ${props.order?.payment?.city || ''}` }}</div>
@@ -1154,9 +1137,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              {{ isPickupShipping() ? 'mdi-store' : 'mdi-truck' }}
-            </v-icon>
+              :icon="isPickupShipping() ? mdiStore : mdiTruck"
+            />
             {{ isPickupShipping() ? '受け取り情報' : '配送先情報' }}
           </v-card-title>
           <v-card-text class="pa-4">
@@ -1166,9 +1148,8 @@ const onSubmitRefund = (): void => {
                   size="20"
                   class="mr-3"
                   color="info"
-                >
-                  mdi-store
-                </v-icon>
+                  :icon="mdiStore"
+                />
                 <div>
                   <p class="text-subtitle-2 mb-1">
                     受け取り場所
@@ -1183,9 +1164,8 @@ const onSubmitRefund = (): void => {
                   size="20"
                   class="mr-3"
                   color="info"
-                >
-                  mdi-calendar
-                </v-icon>
+                  :icon="mdiCalendar"
+                />
                 <div>
                   <p class="text-subtitle-2 mb-1">
                     受け取り日時
@@ -1205,9 +1185,8 @@ const onSubmitRefund = (): void => {
                   size="16"
                   class="mr-2"
                   color="grey"
-                >
-                  mdi-phone
-                </v-icon>
+                  :icon="mdiPhone"
+                />
                 <span class="text-body-2">{{ getFulfillmentAddressPhoneNumber() }}</span>
               </div>
               <div class="d-flex align-start mt-2">
@@ -1215,9 +1194,8 @@ const onSubmitRefund = (): void => {
                   size="16"
                   class="mr-2 mt-1"
                   color="grey"
-                >
-                  mdi-map-marker
-                </v-icon>
+                  :icon="mdiMapMarker"
+                />
                 <div class="text-body-2">
                   <div>〒{{ props.order.fulfillments[0]?.postalCode || '' }}</div>
                   <div>{{ `${getFulfillmentAddressPrefecture()} ${props.order.fulfillments[0]?.city || ''}` }}</div>
@@ -1245,9 +1223,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-package-variant-closed
-            </v-icon>
+              :icon="mdiPackageVariantClosed"
+            />
             配送詳細 {{ index + 1 }}
             <v-spacer />
             <v-chip
@@ -1272,9 +1249,8 @@ const onSubmitRefund = (): void => {
                       <v-icon
                         class="mr-2"
                         size="24"
-                      >
-                        mdi-store-clock
-                      </v-icon>
+                        :icon="mdiStoreClock"
+                      />
                       受け取り予定
                     </v-card-title>
                     <v-card-text>
@@ -1568,9 +1544,10 @@ const onSubmitRefund = (): void => {
                         block
                         @click="onSubmitUpdate(fulfillment.fulfillmentId)"
                       >
-                        <v-icon start>
-                          mdi-update
-                        </v-icon>
+                        <v-icon
+                          start
+                          :icon="mdiUpdate"
+                        />
                         追跡情報を更新
                       </v-btn>
                     </v-card-text>
@@ -1591,9 +1568,8 @@ const onSubmitRefund = (): void => {
             <v-icon
               class="mr-2"
               color="primary"
-            >
-              mdi-send
-            </v-icon>
+              :icon="mdiSend"
+            />
             発送完了メッセージ
           </v-card-title>
           <v-card-text class="pa-6">
@@ -1620,9 +1596,8 @@ const onSubmitRefund = (): void => {
           <v-icon
             class="mr-2"
             color="white"
-          >
-            mdi-alert-circle
-          </v-icon>
+            :icon="mdiAlertCircle"
+          />
           注文キャンセル確認
         </v-card-title>
         <v-card-text class="py-6">
@@ -1663,9 +1638,8 @@ const onSubmitRefund = (): void => {
           <v-icon
             class="mr-2"
             color="white"
-          >
-            mdi-credit-card-refund
-          </v-icon>
+            :icon="mdiCreditCardRefund"
+          />
           返金処理
         </v-card-title>
         <v-card-text class="py-6">
@@ -1725,9 +1699,10 @@ const onSubmitRefund = (): void => {
             size="large"
             @click="onSubmitCapture()"
           >
-            <v-icon start>
-              mdi-check-circle
-            </v-icon>
+            <v-icon
+              start
+              :icon="mdiCheckCircle"
+            />
             注文を確定
           </v-btn>
           <v-btn
@@ -1738,9 +1713,10 @@ const onSubmitRefund = (): void => {
             size="large"
             @click="onSubmitComplete()"
           >
-            <v-icon start>
-              mdi-send
-            </v-icon>
+            <v-icon
+              start
+              :icon="mdiSend"
+            />
             {{ props.order.type === OrderType.OrderTypeProduct ? '発送完了を通知' : 'レビュー依頼を送信' }}
           </v-btn>
           <v-btn
@@ -1751,9 +1727,10 @@ const onSubmitRefund = (): void => {
             size="large"
             @click="onSubmitSaveDraft()"
           >
-            <v-icon start>
-              mdi-content-save
-            </v-icon>
+            <v-icon
+              start
+              :icon="mdiContentSave"
+            />
             下書きを保存
           </v-btn>
           <!-- Dangerous Actions -->
@@ -1770,9 +1747,10 @@ const onSubmitRefund = (): void => {
               size="large"
               @click="onClickOpenCancelDialog()"
             >
-              <v-icon start>
-                mdi-cancel
-              </v-icon>
+              <v-icon
+                start
+                :icon="mdiCancel"
+              />
               キャンセル
             </v-btn>
             <v-btn
@@ -1783,9 +1761,10 @@ const onSubmitRefund = (): void => {
               size="large"
               @click="onClickOpenRefundDialog"
             >
-              <v-icon start>
-                mdi-credit-card-refund
-              </v-icon>
+              <v-icon
+                start
+                :icon="mdiCreditCardRefund"
+              />
               返金処理
             </v-btn>
           </template>
