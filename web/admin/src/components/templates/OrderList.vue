@@ -5,12 +5,13 @@ import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { CharacterEncodingType } from '~/types'
+import { fulfillmentCompanies, characterEncodingTypes, orderStatuses, orderShippingTypes, orderTypes } from '~/constants'
 import {
   OrderStatus,
   ShippingType,
   ShippingCarrier,
 } from '~/types/api/v1'
-import type { Coordinator, ExportOrdersRequest, Order, Promotion, User, OrderFulfillment } from '~/types/api/v1'
+import type { Coordinator, ExportOrdersRequest, Order, Promotion, User, OrderFulfillment, OrderType } from '~/types/api/v1'
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface ImportFormData {
@@ -93,7 +94,6 @@ const emit = defineEmits<{
   (e: 'click:row', orderId: string): void
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
-  (e: 'update:selected-item-id', v: string): void
   (e: 'update:import-dialog', dialog: boolean): void
   (e: 'update:export-dialog', dialog: boolean): void
   (e: 'update:import-form-data', formData: object): void
@@ -107,6 +107,11 @@ const headers: VDataTable['headers'] = [
   {
     title: '注文No.',
     key: 'managementId',
+    sortable: false,
+  },
+  {
+    title: '注文種別',
+    key: 'orderType',
     sortable: false,
   },
   {
@@ -140,17 +145,6 @@ const headers: VDataTable['headers'] = [
     sortable: false,
   },
 ]
-const fulfillmentCompanies = [
-  { title: '指定なし', value: ShippingCarrier.ShippingCarrierUnknown },
-  { title: '佐川急便', value: ShippingCarrier.ShippingCarrierSagawa },
-  { title: 'ヤマト運輸', value: ShippingCarrier.ShippingCarrierYamato },
-]
-const characterEncodingTypes = [
-  { title: 'UTF-8', value: CharacterEncodingType.UTF8 },
-  { title: 'Shift-JIS', value: CharacterEncodingType.ShiftJIS },
-]
-
-const selectedItem = ref<Order>()
 
 const importDialogValue = computed({
   get: (): boolean => props.importDialog,
@@ -169,15 +163,6 @@ const exportFormDataValue = computed({
   set: (v: ExportOrdersRequest): void => emit('update:export-form-data', v),
 })
 
-const handleUpdateSelectItemId = (itemIds: string[]): void => {
-  if (itemIds.length === 0) {
-    emit('update:selected-item-id', '')
-  }
-  else {
-    emit('update:selected-item-id', itemIds[0])
-  }
-}
-
 const getCustomerName = (userId: string): string => {
   const customer = props.customers.find((customer: User): boolean => {
     return customer.id === userId
@@ -186,26 +171,8 @@ const getCustomerName = (userId: string): string => {
 }
 
 const getStatus = (order: Order): string => {
-  switch (order.status) {
-    case OrderStatus.OrderStatusUnpaid:
-      return '支払い待ち'
-    case OrderStatus.OrderStatusWaiting:
-      return '受注待ち'
-    case OrderStatus.OrderStatusPreparing:
-      return '発送準備中'
-    case OrderStatus.OrderStatusShipped:
-      return '発送完了'
-    case OrderStatus.OrderStatusCompleted:
-      return '完了'
-    case OrderStatus.OrderStatusCanceled:
-      return 'キャンセル'
-    case OrderStatus.OrderStatusRefunded:
-      return '返金'
-    case OrderStatus.OrderStatusFailed:
-      return '失敗'
-    default:
-      return '不明'
-  }
+  const value = orderStatuses.find(status => status.value === order.status)
+  return value ? value.title : '不明'
 }
 
 const getStatusColor = (order: Order): string => {
@@ -231,18 +198,20 @@ const getStatusColor = (order: Order): string => {
   }
 }
 
+const getOrderType = (orderType: OrderType): string => {
+  const value = orderTypes.find(type => type.value === orderType)
+  return value ? value.title : '不明'
+}
+
 const getShippingType = (shippingType: ShippingType): string => {
-  switch (shippingType) {
-    case ShippingType.ShippingTypeNormal:
-      return '常温・冷蔵便'
-    case ShippingType.ShippingTypeFrozen:
-      return '冷凍便'
-    default:
-      return '不明'
-  }
+  const value = orderShippingTypes.find(type => type.value === shippingType)
+  return value ? value.title : '不明'
 }
 
 const getShippingTypes = (fulfillments: OrderFulfillment[]): string => {
+  if (fulfillments.length === 0) {
+    return '-'
+  }
   let types: ShippingType[] = []
   fulfillments.forEach((fulfillment: OrderFulfillment): void => {
     if (!types.includes(fulfillment.shippingType)) {
@@ -257,6 +226,12 @@ const getShippingTypes = (fulfillments: OrderFulfillment[]): string => {
 }
 
 const getTrackingNumbers = (fulfillments: OrderFulfillment[]): string => {
+  if (fulfillments.length === 0) {
+    return '-'
+  }
+  if (fulfillments[0]?.shippingType === ShippingType.ShippingTypePickup) {
+    return '-'
+  }
   const numbers: string[] = []
   fulfillments.forEach((fulfillment: OrderFulfillment): void => {
     if (fulfillment.trackingNumber !== '') {
@@ -442,9 +417,7 @@ const onSubmitExport = (): void => {
         :sort-by="props.tableSortBy"
         hover
         select-strategy="single"
-        show-select
         no-data-text="登録されている注文がありません。"
-        @update:model-value="handleUpdateSelectItemId"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="emit('update:sort-by')"
@@ -457,6 +430,9 @@ const onSubmitExport = (): void => {
           <v-chip :color="getStatusColor(item)">
             {{ getStatus(item) }}
           </v-chip>
+        </template>
+        <template #[`item.orderType`]="{ item }">
+          {{ getOrderType(item.type) }}
         </template>
         <template #[`item.payment.orderedAt`]="{ item }">
           {{ getOrderedAt(item.payment.orderedAt) }}

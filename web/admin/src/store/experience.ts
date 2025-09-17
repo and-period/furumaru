@@ -1,8 +1,8 @@
+import { useExperienceTypeStore } from './experience-type'
 import { fileUpload } from './helper'
 import type {
   CreateExperienceRequest,
   Experience,
-  ExperiencesResponse,
   GetUploadURLRequest,
   UpdateExperienceRequest,
   UploadURLResponse,
@@ -14,12 +14,12 @@ import type {
   V1UploadProductsImagePostRequest,
   V1UploadProductsVideoPostRequest,
 } from '~/types/api/v1'
+import { useProducerStore } from './producer'
 
 export const useExperienceStore = defineStore('experience', {
   state: () => ({
     experience: {} as Experience,
     experiences: [] as Experience[],
-    experiencesResponse: null as ExperiencesResponse | null,
     totalItems: 0,
   }),
 
@@ -72,10 +72,14 @@ export const useExperienceStore = defineStore('experience', {
         }
         const res = await this.experienceApi().v1ExperiencesGet(params)
 
-        const experienceStore = useExperienceStore()
-        this.experiencesResponse = res
         this.totalItems = res.total
-        experienceStore.experiences = res.experiences
+        this.experiences = res.experiences
+
+        const producerStore = useProducerStore()
+        producerStore.producers = res.producers
+
+        const experienceTypeStore = useExperienceTypeStore()
+        experienceTypeStore.experienceTypes = res.experienceTypes
       }
       catch (err) {
         return this.errorHandler(err)
