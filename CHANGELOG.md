@@ -1,5 +1,31 @@
 # Changelog
 
+## [v7.1.0](https://github.com/and-period/furumaru/compare/v7.0.0...v7.1.0) - 2025-09-17
+- feat(web): 動画編集画面にタブ機能と分析情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3034
+- feat(web): 管理画面ダッシュボードの情報充実化 by @taba2424 in https://github.com/and-period/furumaru/pull/3036
+- feat(web): メッセージ一覧UIを現代的なメールクライアント風に刷新 by @taba2424 in https://github.com/and-period/furumaru/pull/3037
+- 注文詳細画面の体験予約コンポーネント改善とアイテム数計算修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3038
+- feat(web): 管理画面レイアウトのUX向上・モダン化 by @taba2424 in https://github.com/and-period/furumaru/pull/3039
+- feat(web): プロモーション管理UIの改善・統一化 by @taba2424 in https://github.com/and-period/furumaru/pull/3041
+- feat(web): お知らせ管理UIの改善・統一化 by @taba2424 in https://github.com/and-period/furumaru/pull/3040
+- feat(web): 顧客詳細画面のUI改善とモダン化 by @taba2424 in https://github.com/and-period/furumaru/pull/3042
+- feat(web): アカウント設定ページ群のUI・UX改善とモダン化 by @taba2424 in https://github.com/and-period/furumaru/pull/3043
+- fix(admin): エラーハンドリングの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3044
+- feat(web): システム設定ページのUI・UX改善とカテゴリ整理 by @taba2424 in https://github.com/and-period/furumaru/pull/3045
+- feat(web): 生産者管理ページUI・UX改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3046
+- feat(web): 商品管理ページUI・UX改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3047
+- feat(web): 商品管理ページUI改善の最終仕上げとProducerList統一 by @taba2424 in https://github.com/and-period/furumaru/pull/3048
+- feat(web): 体験管理ページのUI/UX改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3049
+- feat(web): スケジュール・体験管理ページUI/UX改善の最終仕上げ by @taba2424 in https://github.com/and-period/furumaru/pull/3050
+- feat(web): 動画管理ページのUI/UX改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3051
+- feat(web): 動画管理ページのUI/UX改善と定数整理 by @taba2424 in https://github.com/and-period/furumaru/pull/3052
+- feat(web): 管理画面一覧ページのUI/UXデザイン統一 by @taba2424 in https://github.com/and-period/furumaru/pull/3053
+- feat:画面上部にメニューを配置し、マイページ、プライバシーポリシーへの導線を整備 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3054
+- Feat/privacy policy by @hamachans in https://github.com/and-period/furumaru/pull/3055
+- feat: マイページの更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3056
+- refactor(web): update Vuetify icon usage to imported constants by @taba2424 in https://github.com/and-period/furumaru/pull/3057
+- feat(admin): 注文一覧画面の改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3058
+
 ## [v7.0.0](https://github.com/and-period/furumaru/compare/v6.0.1...v7.0.0) - 2025-09-13
 - feat: ユーザー登録部分の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3008
 - LIFFアプリで取得する商品情報の変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/3010
