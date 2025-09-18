@@ -166,6 +166,12 @@ const formatPrice = (price: number) => price.toLocaleString('ja-JP');
           商品一覧
         </nuxt-link>
         <nuxt-link
+          :to="`/${facilityId}/orders`"
+          @click="onMenuSelect()"
+        >
+          注文一覧
+        </nuxt-link>
+        <nuxt-link
           :to="`/${facilityId}/mypage`"
           @click="onMenuSelect()"
         >
