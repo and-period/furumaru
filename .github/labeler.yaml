@@ -5,6 +5,10 @@ frontend (admin):
 - changed-files:
   - any-glob-to-any-file:
     - web/admin/**/*
+frontend (liff):
+- changed-files:
+  - any-glob-to-any-file:
+    - web/liff/**/*
 frontend (user):
 - changed-files:
   - any-glob-to-any-file:
@@ -49,8 +53,12 @@ infra (container):
 - changed-files:
   - any-glob-to-any-file:
     - infra/docker/**/*
-    - infra/helm/**
-    - infra/kubernetes/**
+    - infra/helm/**/*
+    - infra/kubernetes/**/*
+infra (function):
+- changed-files:
+  - any-glob-to-any-file:
+    - infra/serverless/**/*
 infra (terraform):
 - changed-files:
   - any-glob-to-any-file:
@@ -59,6 +67,7 @@ infra (database):
 - changed-files:
   - any-glob-to-any-file:
     - infra/mysql/**/*
+    - infra/tidb/**/*
 
 ##################################################
 # Other
