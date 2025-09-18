@@ -1,5 +1,10 @@
 # Changelog
 
+## [v7.1.1](https://github.com/and-period/furumaru/compare/v7.1.0...v7.1.1) - 2025-09-18
+- chore(deps): Pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3062
+- chore(deps): Pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3061
+- fix(web): 管理画面の一覧ページのレスポンシブ対応 by @taba2424 in https://github.com/and-period/furumaru/pull/3063
+
 ## [v7.1.0](https://github.com/and-period/furumaru/compare/v7.0.0...v7.1.0) - 2025-09-17
 - feat(web): 動画編集画面にタブ機能と分析情報を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/3034
 - feat(web): 管理画面ダッシュボードの情報充実化 by @taba2424 in https://github.com/and-period/furumaru/pull/3036
