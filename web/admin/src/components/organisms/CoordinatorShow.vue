@@ -9,6 +9,7 @@ import {
   mdiPhone,
   mdiMapMarker,
   mdiShareVariant,
+  mdiContentSave,
 } from '@mdi/js'
 
 import { Prefecture } from '~/types'
@@ -433,24 +434,27 @@ const onClickSearchAddress = (): void => {
       </v-card-text>
     </v-card>
 
-    <!-- 更新ボタン -->
-    <div class="d-flex justify-end mt-6">
+    <!-- 送信ボタン -->
+    <div class="d-flex justify-end gap-3">
+      <v-btn
+        variant="text"
+        size="large"
+        @click="$router.back()"
+      >
+        キャンセル
+      </v-btn>
       <v-btn
         :loading="loading"
-        variant="elevated"
         color="primary"
+        variant="elevated"
         size="large"
         type="submit"
-        class="px-8 py-2"
-        elevation="2"
       >
         <v-icon
+          :icon="mdiContentSave"
           start
-          size="20"
-        >
-          mdi-content-save
-        </v-icon>
-        コーディネーター情報を更新
+        />
+        変更を保存
       </v-btn>
     </div>
   </v-form>
@@ -458,22 +462,16 @@ const onClickSearchAddress = (): void => {
 
 <style scoped>
 .form-section-card {
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  border: 1px solid rgb(0 0 0 / 6%);
-}
-
-.form-section-card:hover {
-  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
-  transform: translateY(-2px);
+  transition: all 0.2s ease;
+  border: 1px solid rgb(0 0 0 / 5%);
 }
 
 .section-header {
-  background: linear-gradient(135deg, rgb(33 150 243 / 8%) 0%, rgb(33 150 243 / 0%) 100%);
-  border-bottom: 1px solid rgb(33 150 243 / 12%);
-  padding: 18px 24px;
-  font-weight: 500;
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  padding: 20px 24px;
 }
 
 @media (width <= 600px) {
@@ -482,7 +480,7 @@ const onClickSearchAddress = (): void => {
   }
 
   .section-header {
-    padding: 12px 16px;
+    padding: 16px 20px;
   }
 }
 </style>

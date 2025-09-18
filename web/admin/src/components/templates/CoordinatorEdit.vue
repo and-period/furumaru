@@ -4,6 +4,7 @@ import {
   mdiAccount,
   mdiStore,
   mdiPackageVariant,
+  mdiArrowLeft,
 } from '@mdi/js'
 
 import type { AlertType } from '~/lib/hooks'
@@ -404,158 +405,156 @@ const onSubmitDeleteShipping = (): void => {
 </script>
 
 <template>
-  <transition
-    name="fade-slide"
-    mode="out-in"
-  >
+  <v-container class="pa-6">
     <v-alert
       v-show="props.isAlert"
       :type="props.alertType"
       class="mb-6"
-      closable
       v-text="props.alertText"
     />
-  </transition>
 
-  <v-card
-    class="form-section-card"
-    elevation="0"
-    :loading="loading"
-  >
-    <v-card-title class="section-header pa-0">
-      <v-tabs
-        v-model="selectedTabItemValue"
-        class="w-100"
-        density="comfortable"
+    <div class="mb-6">
+      <v-btn
+        variant="text"
+        :prepend-icon="mdiArrowLeft"
+        @click="$router.back()"
       >
-        <v-tab
-          v-for="item in tabs"
-          :key="item.value"
-          :value="item.value"
-          class="tab-item"
+        戻る
+      </v-btn>
+      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+        コーディネーター編集
+      </h1>
+      <p class="text-body-1 text-grey-darken-1">
+        コーディネーター情報を編集・管理します。タブを切り替えて各種設定を行ってください。
+      </p>
+    </div>
+
+    <v-card
+      class="form-section-card"
+      elevation="2"
+      :loading="loading"
+    >
+      <v-card-title class="section-header pa-0">
+        <v-tabs
+          v-model="selectedTabItemValue"
+          class="w-100"
+          density="comfortable"
         >
-          <v-icon
-            :icon="item.icon"
-            size="20"
-            class="mr-2"
-          />
-          {{ item.title }}
-        </v-tab>
-      </v-tabs>
-    </v-card-title>
-    <v-card-text class="pa-0">
-      <v-window
-        v-model="selectedTabItemValue"
-        class="tab-content"
-      >
-        <v-window-item value="coordinator">
-          <div class="pa-6">
-            <organisms-coordinator-show
-              v-model:form-data="coordinatorFormDataValue"
-              :loading="loading"
-              :coordinator="coordinator"
-              :thumbnail-upload-status="thumbnailUploadStatus"
-              :header-upload-status="headerUploadStatus"
-              :promotion-video-upload-status="promotionVideoUploadStatus"
-              :bonus-video-upload-status="bonusVideoUploadStatus"
-              :search-error-message="searchErrorMessage"
-              :search-loading="searchLoading"
-              @update:thumbnail-file="onChangeThumbnailFile"
-              @update:header-file="onChangeHeaderFile"
-              @update:promotion-video="onChangePromotionVideo"
-              @update:bonus-video="onChangeBonusVideo"
-              @click:search-address="onClickSearchAddress"
-              @submit="onSubmitCoordinator"
+          <v-tab
+            v-for="item in tabs"
+            :key="item.value"
+            :value="item.value"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="item.icon"
+              size="20"
+              class="mr-2"
             />
-          </div>
-        </v-window-item>
+            {{ item.title }}
+          </v-tab>
+        </v-tabs>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <v-window
+          v-model="selectedTabItemValue"
+          class="tab-content"
+        >
+          <v-window-item value="coordinator">
+            <div class="pa-6">
+              <organisms-coordinator-show
+                v-model:form-data="coordinatorFormDataValue"
+                :loading="loading"
+                :coordinator="coordinator"
+                :thumbnail-upload-status="thumbnailUploadStatus"
+                :header-upload-status="headerUploadStatus"
+                :promotion-video-upload-status="promotionVideoUploadStatus"
+                :bonus-video-upload-status="bonusVideoUploadStatus"
+                :search-error-message="searchErrorMessage"
+                :search-loading="searchLoading"
+                @update:thumbnail-file="onChangeThumbnailFile"
+                @update:header-file="onChangeHeaderFile"
+                @update:promotion-video="onChangePromotionVideo"
+                @update:bonus-video="onChangeBonusVideo"
+                @click:search-address="onClickSearchAddress"
+                @submit="onSubmitCoordinator"
+              />
+            </div>
+          </v-window-item>
 
-        <v-window-item value="shop">
-          <div class="pa-6">
-            <organisms-coordinator-shop
-              v-model:form-data="shopFormDataValue"
-              :loading="loading"
-              :shop="shop"
-              :product-types="productTypes"
-              @update:search-product-type="onChangeSearchProductType"
-              @submit="onSubmitShop"
-            />
-          </div>
-        </v-window-item>
+          <v-window-item value="shop">
+            <div class="pa-6">
+              <organisms-coordinator-shop
+                v-model:form-data="shopFormDataValue"
+                :loading="loading"
+                :shop="shop"
+                :product-types="productTypes"
+                @update:search-product-type="onChangeSearchProductType"
+                @submit="onSubmitShop"
+              />
+            </div>
+          </v-window-item>
 
-        <v-window-item value="shipping">
-          <div class="pa-6">
-            <organisms-coordinator-shipping
-              v-model:create-form-data="createShippingFormDataValue"
-              v-model:update-form-data="updateShippingFormDataValue"
-              v-model:create-dialog="createShippingDialogValue"
-              v-model:update-dialog="updateShippingDialogValue"
-              v-model:delete-dialog="deleteShippingDialogValue"
-              :loading="props.loading"
-              :shipping="props.shipping"
-              :shippings="props.shippings"
-              :table-items-per-page="props.shippingTableItemsPerPage"
-              :table-items-total="props.shippingTableItemsTotal"
-              @click:update-page="onClickUpdateShippingPage"
-              @click:update-items-per-page="onClickUpdateShippingItemsPerPage"
-              @click:create="onClickCreateShipping"
-              @click:update="onClickUpdateShipping"
-              @click:copy="onClickCopyShipping"
-              @click:delete="onClickDeleteShipping"
-              @submit:create="onSubmitCreateShipping"
-              @submit:update="onSubmitUpdateShipping"
-              @submit:delete="onSubmitDeleteShipping"
-            />
-          </div>
-        </v-window-item>
-      </v-window>
-    </v-card-text>
-  </v-card>
+          <v-window-item value="shipping">
+            <div class="pa-6">
+              <organisms-coordinator-shipping
+                v-model:create-form-data="createShippingFormDataValue"
+                v-model:update-form-data="updateShippingFormDataValue"
+                v-model:create-dialog="createShippingDialogValue"
+                v-model:update-dialog="updateShippingDialogValue"
+                v-model:delete-dialog="deleteShippingDialogValue"
+                :loading="props.loading"
+                :shipping="props.shipping"
+                :shippings="props.shippings"
+                :table-items-per-page="props.shippingTableItemsPerPage"
+                :table-items-total="props.shippingTableItemsTotal"
+                @click:update-page="onClickUpdateShippingPage"
+                @click:update-items-per-page="onClickUpdateShippingItemsPerPage"
+                @click:create="onClickCreateShipping"
+                @click:update="onClickUpdateShipping"
+                @click:copy="onClickCopyShipping"
+                @click:delete="onClickDeleteShipping"
+                @submit:create="onSubmitCreateShipping"
+                @submit:update="onSubmitUpdateShipping"
+                @submit:delete="onSubmitDeleteShipping"
+              />
+            </div>
+          </v-window-item>
+        </v-window>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <style scoped>
 .form-section-card {
-  border-radius: 16px;
+  border-radius: 12px;
   max-width: none;
-  border: 1px solid rgb(0 0 0 / 8%);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
-  transition: all 0.3s ease;
-}
-
-.form-section-card:hover {
-  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 }
 
 .section-header {
-  background: linear-gradient(135deg, rgb(33 150 243 / 8%) 0%, rgb(33 150 243 / 0%) 100%);
-  border-bottom: 1px solid rgb(33 150 243 / 12%);
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
   padding: 0;
 }
 
 .tab-item {
   text-transform: none;
   font-weight: 500;
-  letter-spacing: 0.025rem;
-  transition: all 0.2s ease;
 }
 
 .tab-content {
-  min-height: 500px;
-  animation: fadeIn 0.3s ease;
+  min-height: 400px;
 }
 
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
 
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
+  .tab-item {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
 }
 </style>

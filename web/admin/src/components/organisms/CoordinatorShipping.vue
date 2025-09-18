@@ -428,11 +428,17 @@ const onSubmitDelete = (): void => {
 <template>
   <v-dialog
     v-model="createDialogValue"
-    width="500"
+    width="600"
+    scrollable
   >
     <v-card>
-      <v-card-title class="primaryLight">
-        配送設定登録
+      <v-card-title class="d-flex align-center pa-6 bg-blue-grey-lighten-5">
+        <v-icon
+          :icon="mdiPackageVariant"
+          size="28"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h5 font-weight-medium">配送設定登録</span>
       </v-card-title>
       <v-card-text class="mt-6">
         <v-card
@@ -489,12 +495,16 @@ const onSubmitDelete = (): void => {
             <div
               v-for="i in createBox60RateItemsSize"
               :key="`60-${i}`"
-              class="px-4 py-2 mb-2 border"
+              class="shipping-rate-item"
             >
-              <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+              <div class="d-flex flex-row align-center mb-3">
+                <v-chip
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                >
                   オプション{{ i + 1 }}
-                </p>
+                </v-chip>
                 <v-spacer />
                 <v-btn
                   v-show="createBox60RateItemsSize.length > 1"
@@ -556,12 +566,16 @@ const onSubmitDelete = (): void => {
             <div
               v-for="i in createBox80RateItemsSize"
               :key="`80-${i}`"
-              class="px-4 py-2 mb-2 border"
+              class="shipping-rate-item"
             >
-              <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+              <div class="d-flex flex-row align-center mb-3">
+                <v-chip
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                >
                   オプション{{ i + 1 }}
-                </p>
+                </v-chip>
                 <v-spacer />
                 <v-btn
                   v-show="createBox80RateItemsSize.length > 1"
@@ -592,9 +606,19 @@ const onSubmitDelete = (): void => {
           </v-card-actions>
         </v-card>
 
-        <v-card class="mb-4 py-2">
-          <v-card-title>配送オプション：サイズ100</v-card-title>
-          <v-card-text>
+        <v-card
+          class="form-section-card mb-6"
+          elevation="2"
+        >
+          <v-card-title class="d-flex align-center section-header">
+            <v-icon
+              :icon="mdiPackageVariant"
+              size="24"
+              class="mr-3 text-primary"
+            />
+            <span class="text-h6 font-weight-medium">配送オプション：サイズ100</span>
+          </v-card-title>
+          <v-card-text class="pa-6">
             <div class="d-flex flex-column flex-md-row justify-center">
               <v-text-field
                 v-model.number="createFormDataValidate.box100Frozen.$model"
@@ -604,17 +628,24 @@ const onSubmitDelete = (): void => {
                 prefix="通常配送料＋"
                 suffix="円"
                 min="0"
+                variant="outlined"
+                density="comfortable"
+                :prepend-inner-icon="mdiSnowflake"
               />
             </div>
             <div
               v-for="i in createBox100RateItemsSize"
               :key="`100-${i}`"
-              class="px-4 py-2 mb-2 border"
+              class="shipping-rate-item"
             >
-              <div class="d-flex flex-row align-center">
-                <p class="text-subtitle-2 text-grey">
+              <div class="d-flex flex-row align-center mb-3">
+                <v-chip
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                >
                   オプション{{ i + 1 }}
-                </p>
+                </v-chip>
                 <v-spacer />
                 <v-btn
                   v-show="createBox100RateItemsSize.length > 1"
@@ -632,15 +663,15 @@ const onSubmitDelete = (): void => {
               />
             </div>
           </v-card-text>
-          <v-card-actions class="pa-4">
+          <v-card-actions>
             <v-btn
               color="primary"
-              variant="tonal"
+              variant="outlined"
               block
               @click="addCreateBox100RateItem"
             >
               <v-icon :icon="mdiPlus" />
-              オプション追加
+              追加
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -678,11 +709,11 @@ const onSubmitDelete = (): void => {
           </v-card-text>
         </v-card>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer />
+      <v-divider />
+      <v-card-actions class="d-flex justify-end pa-6 gap-3">
         <v-btn
-          color="error"
           variant="text"
+          size="large"
           @click="onClickCloseCreateDialog"
         >
           キャンセル
@@ -690,10 +721,15 @@ const onSubmitDelete = (): void => {
         <v-btn
           :loading="props.loading"
           color="primary"
-          variant="outlined"
+          variant="elevated"
+          size="large"
           @click="onSubmitCreate"
         >
-          登録
+          <v-icon
+            icon="mdi-content-save"
+            start
+          />
+          配送設定を登録
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -701,11 +737,17 @@ const onSubmitDelete = (): void => {
 
   <v-dialog
     v-model="updateDialogValue"
-    width="500"
+    width="600"
+    scrollable
   >
     <v-card>
-      <v-card-title class="primaryLight">
-        配送設定編集
+      <v-card-title class="d-flex align-center pa-6 bg-blue-grey-lighten-5">
+        <v-icon
+          :icon="mdiPackageVariant"
+          size="28"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h5 font-weight-medium">配送設定編集</span>
       </v-card-title>
       <v-card-text class="mt-6">
         <v-card
@@ -1010,24 +1052,34 @@ const onSubmitDelete = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card>
-    <v-card-title class="d-flex flex-column flex-sm-row align-start align-sm-center justify-space-between pa-4 pa-sm-6 pb-4">
-      <span class="d-flex align-center mb-3 mb-sm-0">配送情報一覧</span>
-      <v-spacer />
+  <v-card
+    class="form-section-card"
+    elevation="2"
+  >
+    <v-card-title class="d-flex align-center justify-space-between section-header">
+      <div class="d-flex align-center">
+        <v-icon
+          :icon="mdiPackageVariant"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">配送設定一覧</span>
+      </div>
       <v-btn
         variant="elevated"
         color="primary"
-        size="small"
-        class="d-flex ga-3 w-100 w-sm-auto"
+        size="default"
+        :prepend-icon="mdiPlus"
+        class="text-none"
         @click="onClickCreate"
       >
-        配送情報を追加
+        新しい配送設定を追加
       </v-btn>
     </v-card-title>
     <v-card-text class="pa-6">
       <div
         v-if="props.shippings.length > 0"
-        class="d-flex flex-column ga-4"
+        class="shipping-table-container"
       >
         <v-data-table-server
           :loading="props.loading"
@@ -1036,6 +1088,7 @@ const onSubmitDelete = (): void => {
           :items-per-page="props.tableItemsPerPage"
           :items-length="props.tableItemsTotal"
           hover
+          class="elevation-1 rounded-lg"
           no-data-text="配送情報が登録されていません"
           @update:page="onClickUpdatePage"
           @update:items-per-page="onClickUpdateItemsPerPage"
@@ -1044,47 +1097,73 @@ const onSubmitDelete = (): void => {
           <template #[`item.isDefault`]="{ item }">
             <v-chip
               :color="getIsDefaultColor(item.isDefault)"
-              text-color="white"
+              variant="elevated"
               size="small"
-              class="ma-1"
+              class="font-weight-medium"
             >
               {{ getIsDefault(item.isDefault) }}
             </v-chip>
           </template>
           <template #[`item.createdAt`]="{ item }">
-            {{ getDateTimeString(item.createdAt) }}
+            <span class="text-body-2 text-grey-darken-1">
+              {{ getDateTimeString(item.createdAt) }}
+            </span>
           </template>
           <template #[`item.updatedAt`]="{ item }">
-            {{ getDateTimeString(item.updatedAt) }}
+            <span class="text-body-2 text-grey-darken-1">
+              {{ getDateTimeString(item.updatedAt) }}
+            </span>
           </template>
           <template #[`item.actions`]="{ item }">
-            <v-btn
-              variant="outlined"
-              color="secondary"
-              size="small"
-              :prepend-icon="mdiContentCopy"
-              @click.stop="onClickCopy(item.id)"
-            >
-              複製
-            </v-btn>
-            <v-btn
-              v-show="isDeletable()"
-              variant="outlined"
-              color="error"
-              size="small"
-              :prepend-icon="mdiDelete"
-              @click.stop="onClickDelete(item.id)"
-            >
-              削除
-            </v-btn>
+            <div class="d-flex gap-2">
+              <v-btn
+                variant="outlined"
+                color="primary"
+                size="small"
+                :prepend-icon="mdiContentCopy"
+                class="text-none"
+                @click.stop="onClickCopy(item.id)"
+              >
+                複製
+              </v-btn>
+              <v-btn
+                v-show="isDeletable()"
+                variant="outlined"
+                color="error"
+                size="small"
+                :prepend-icon="mdiDelete"
+                class="text-none"
+                @click.stop="onClickDelete(item.id)"
+              >
+                削除
+              </v-btn>
+            </div>
           </template>
         </v-data-table-server>
       </div>
       <div
         v-else
-        class="text-center py-8"
+        class="empty-state"
       >
-        配送情報が登録されていません
+        <v-icon
+          :icon="mdiPackageVariant"
+          size="64"
+          class="text-grey-lighten-1 mb-4"
+        />
+        <h3 class="text-h6 text-grey-darken-1 mb-2">
+          配送情報が登録されていません
+        </h3>
+        <p class="text-body-2 text-grey-darken-1 mb-4">
+          配送料金や配送オプションを設定してください
+        </p>
+        <v-btn
+          color="primary"
+          variant="elevated"
+          :prepend-icon="mdiPlus"
+          @click="onClickCreate"
+        >
+          最初の配送設定を追加
+        </v-btn>
       </div>
     </v-card-text>
   </v-card>
@@ -1094,12 +1173,45 @@ const onSubmitDelete = (): void => {
 .form-section-card {
   border-radius: 12px;
   overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid rgb(0 0 0 / 5%);
 }
 
 .section-header {
   background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
   border-bottom: 1px solid rgb(0 0 0 / 5%);
-  padding: 16px 24px;
+  padding: 20px 24px;
+}
+
+.shipping-table-container {
+  background: rgb(250 250 250);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 64px 32px;
+  background: rgb(250 250 250);
+  border-radius: 12px;
+  border: 2px dashed rgb(0 0 0 / 10%);
+}
+
+.shipping-rate-item {
+  background: rgb(248 249 250);
+  border: 1px solid rgb(0 0 0 / 6%);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.shipping-rate-item:hover {
+  border-color: rgb(33 150 243 / 20%);
+  background: rgb(248 249 250 / 80%);
 }
 
 @media (width <= 600px) {
@@ -1108,7 +1220,15 @@ const onSubmitDelete = (): void => {
   }
 
   .section-header {
-    padding: 12px 16px;
+    padding: 16px 20px;
+  }
+
+  .empty-state {
+    padding: 48px 24px;
+  }
+
+  .shipping-rate-item {
+    padding: 12px;
   }
 }
 </style>
