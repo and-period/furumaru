@@ -1,7 +1,7 @@
 import type { PiniaPluginContext } from 'pinia';
 import ApiClientFactory from './helper/factory';
 import { ProductApi } from '@/types/api/v1';
-import { AuthApi, ProductApi as FacilityProductApi } from '@/types/api/facility';
+import { AuthApi, ProductApi as FacilityProductApi, OrderApi } from '@/types/api/facility';
 
 function apiClientInjector({ store }: PiniaPluginContext) {
   const apiClientFactory = new ApiClientFactory();
@@ -22,8 +22,13 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const facilityProductApiClient = (token?: string): FacilityProductApi =>
     apiClientFactory.createFacility<FacilityProductApi>(FacilityProductApi, token);
 
-  // @ts-expect-error 型拡張は各storeで宣言
   store.facilityProductApiClient = facilityProductApiClient;
+
+  // 施設向け 注文APIクライアントをstoreに定義
+  const facilityOrderApiClient = (token?: string): OrderApi =>
+    apiClientFactory.createFacility<OrderApi>(OrderApi, token);
+
+  store.facilityOrderApiClient = facilityOrderApiClient;
 }
 
 export default defineNuxtPlugin(() => {
