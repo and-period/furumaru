@@ -1,92 +1,256 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { FmTextInput } from '@furumaru/shared';
+import { useUserStore } from '@/stores/user';
+import type { UpdateAuthUserRequest } from '@/types/api/facility';
 
-// 仮データ: 実際はpropsやstore等で受け取る想定
-const lastName = ref('山田');
-const firstName = ref('太郎');
-const lastNameKana = ref('ヤマダ');
-const firstNameKana = ref('タロウ');
-const phoneNumber = ref('09012345678');
-const stayDate = ref('2025-08-18');
+const userStore = useUserStore();
+const { isLoading, error, profile } = storeToRefs(userStore);
+
+const route = useRoute();
+const router = useRouter();
+
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
+
+// フォームデータ
+const lastName = ref('');
+const firstName = ref('');
+const lastNameKana = ref('');
+const firstNameKana = ref('');
+const phoneNumber = ref('');
+
+// 編集モード（初期値: false=表示モード）
+const isEditMode = ref(false);
+
+// エラーメッセージ
+const formError = ref('');
+
+// ユーザー情報を取得してフォームに設定
+onMounted(async () => {
+  try {
+    await userStore.fetchMe(facilityId.value);
+    if (profile.value) {
+      lastName.value = profile.value.lastname || '';
+      firstName.value = profile.value.firstname || '';
+      lastNameKana.value = profile.value.lastnameKana || '';
+      firstNameKana.value = profile.value.firstnameKana || '';
+      phoneNumber.value = profile.value.phoneNumber?.replace('+81', '0') || '';
+    }
+  }
+  catch {
+    // エラーは userStore.error に格納される
+  }
+});
+
+// 編集モードの切り替え
+const toggleEditMode = () => {
+  isEditMode.value = !isEditMode.value;
+  formError.value = '';
+};
+
+// フォームのバリデーション
+const validateForm = (): boolean => {
+  if (!lastName.value.trim()) {
+    formError.value = '姓を入力してください';
+    return false;
+  }
+  if (!firstName.value.trim()) {
+    formError.value = '名を入力してください';
+    return false;
+  }
+  if (!lastNameKana.value.trim()) {
+    formError.value = '姓（かな）を入力してください';
+    return false;
+  }
+  if (!firstNameKana.value.trim()) {
+    formError.value = '名（かな）を入力してください';
+    return false;
+  }
+  if (!phoneNumber.value.trim()) {
+    formError.value = '電話番号を入力してください';
+    return false;
+  }
+
+  // 電話番号の簡単な形式チェック
+  const phoneRegex = /^[0-9-]+$/;
+  if (!phoneRegex.test(phoneNumber.value)) {
+    formError.value = '電話番号の形式が正しくありません';
+    return false;
+  }
+
+  return true;
+};
+
+// 更新処理
+const handleUpdate = async () => {
+  formError.value = '';
+
+  if (!validateForm()) {
+    return;
+  }
+
+  try {
+    // 電話番号を+81形式に変換（先頭の0を+81に置換）
+    const formattedPhoneNumber = phoneNumber.value.startsWith('0')
+      ? phoneNumber.value.replace(/^0/, '+81')
+      : phoneNumber.value;
+
+    const updateData: UpdateAuthUserRequest = {
+      lastname: lastName.value.trim(),
+      firstname: firstName.value.trim(),
+      lastnameKana: lastNameKana.value.trim(),
+      firstnameKana: firstNameKana.value.trim(),
+      phoneNumber: formattedPhoneNumber,
+      // lastCheckInAtは現在の値を保持
+      lastCheckInAt: profile.value?.lastCheckInAt || Math.floor(Date.now() / 1000),
+    };
+
+    await userStore.updateMe(facilityId.value, updateData);
+
+    // 更新成功後は編集モードを終了
+    isEditMode.value = false;
+
+    // マイページに戻る
+    await router.push(`/${facilityId.value}/mypage`);
+  }
+  catch (e) {
+    console.error('Update failed:', e);
+    formError.value = 'ユーザー情報の更新に失敗しました';
+  }
+};
+
+// キャンセル処理
+const handleCancel = () => {
+  // 元の値に戻す
+  if (profile.value) {
+    lastName.value = profile.value.lastname || '';
+    firstName.value = profile.value.firstname || '';
+    lastNameKana.value = profile.value.lastnameKana || '';
+    firstNameKana.value = profile.value.firstnameKana || '';
+    phoneNumber.value = profile.value.phoneNumber?.replace('+81', '0') || '';
+  }
+  isEditMode.value = false;
+  formError.value = '';
+};
 </script>
 
 <template>
   <div>
     <p class="mt-6 font-inter text-xl text-center w-full text-main font-semibold">
-      チェックイン内容の確認
+      ユーザー情報{{ isEditMode ? '編集' : '確認' }}
     </p>
-    <div class="grid grid-cols-2 gap-2 mt-8 max-w-md mx-auto">
-      <div>
-        <label class="inline-block text-xs px-2">名前(姓)</label>
-        <FmTextInput
-          :model-value="lastName"
-          :disabled="true"
-          class="w-full px-2"
-        />
-      </div>
-      <div>
-        <label class="inline-block text-xs px-2">名前(名)</label>
-        <FmTextInput
-          :model-value="firstName"
-          :disabled="true"
-          class="w-full px-2"
-        />
-      </div>
-    </div>
-    <div class="grid grid-cols-2 gap-2 mt-4 max-w-md mx-auto">
-      <div>
-        <label class="inline-block text-xs px-2">フリガナ(姓)</label>
-        <FmTextInput
-          :model-value="lastNameKana"
-          :disabled="true"
-          class="w-full px-2"
-        />
-      </div>
-      <div>
-        <label class="inline-block text-xs px-2">フリガナ(名)</label>
-        <FmTextInput
-          :model-value="firstNameKana"
-          :disabled="true"
-          class="w-full px-2"
-        />
-      </div>
-    </div>
-    <div class="mt-4 max-w-md mx-auto">
-      <div class="px-2">
-        <label
-          for="stay_date"
-          class="inline-block text-xs px-2"
-        >宿泊日</label>
-        <input
-          id="stay_date"
-          v-model="stayDate"
-          :disabled="false"
-          name="stay_date"
-          type="date"
-          required
-          class="w-full px-2 custom-input"
-        >
-      </div>
-    </div>
-    <div class="mt-4 max-w-md mx-auto">
-      <div>
-        <label class="inline-block text-xs px-2">電話番号</label>
-        <FmTextInput
-          :model-value="phoneNumber"
-          :disabled="true"
-          class="w-full px-2"
-        />
-      </div>
-    </div>
-  </div>
-  <div class="mt-8 max-w-md mx-auto flex justify-center px-2">
-    <button
-      type="submit"
-      class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+
+    <!-- ローディング表示 -->
+    <div
+      v-if="isLoading"
+      class="mt-8 text-center text-gray-500"
     >
-      編集する
-    </button>
+      読み込み中…
+    </div>
+
+    <!-- エラー表示 -->
+    <div
+      v-else-if="error"
+      class="mt-6 text-center text-red-600 text-sm"
+    >
+      {{ error }}
+    </div>
+
+    <!-- フォームエラー表示 -->
+    <div
+      v-if="formError"
+      class="mt-6 max-w-md mx-auto text-center text-red-600 text-sm"
+    >
+      {{ formError }}
+    </div>
+
+    <!-- フォーム表示 -->
+    <div v-else-if="profile">
+      <div class="grid grid-cols-2 gap-2 mt-8 max-w-md mx-auto">
+        <div>
+          <label class="inline-block text-xs px-2">名前(姓)</label>
+          <FmTextInput
+            v-model="lastName"
+            :disabled="!isEditMode"
+            class="w-full px-2"
+          />
+        </div>
+        <div>
+          <label class="inline-block text-xs px-2">名前(名)</label>
+          <FmTextInput
+            v-model="firstName"
+            :disabled="!isEditMode"
+            class="w-full px-2"
+          />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-4 max-w-md mx-auto">
+        <div>
+          <label class="inline-block text-xs px-2">フリガナ(姓)</label>
+          <FmTextInput
+            v-model="lastNameKana"
+            :disabled="!isEditMode"
+            class="w-full px-2"
+          />
+        </div>
+        <div>
+          <label class="inline-block text-xs px-2">フリガナ(名)</label>
+          <FmTextInput
+            v-model="firstNameKana"
+            :disabled="!isEditMode"
+            class="w-full px-2"
+          />
+        </div>
+      </div>
+      <div class="mt-4 max-w-md mx-auto">
+        <div>
+          <label class="inline-block text-xs px-2">電話番号</label>
+          <FmTextInput
+            v-model="phoneNumber"
+            :disabled="!isEditMode"
+            class="w-full px-2"
+          />
+        </div>
+      </div>
+
+      <!-- ボタン群 -->
+      <div class="mt-8 max-w-md mx-auto px-2">
+        <!-- 編集モードでない場合: 編集ボタン -->
+        <button
+          v-if="!isEditMode"
+          type="button"
+          class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+          @click="toggleEditMode"
+        >
+          編集する
+        </button>
+
+        <!-- 編集モードの場合: 保存・キャンセルボタン -->
+        <div
+          v-else
+          class="space-y-3"
+        >
+          <button
+            type="button"
+            class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+            :disabled="isLoading"
+            @click="handleUpdate"
+          >
+            <span v-if="isLoading">更新中...</span>
+            <span v-else>保存する</span>
+          </button>
+          <button
+            type="button"
+            class="bg-gray-500 text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+            :disabled="isLoading"
+            @click="handleCancel"
+          >
+            キャンセル
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

@@ -77,6 +77,16 @@ onMounted(async () => {
           {{ lastCheckInAt }}
         </div>
       </div>
+
+      <!-- ユーザー情報編集ボタン -->
+      <div class="mt-6">
+        <NuxtLink
+          :to="`/${facilityId}/checkin`"
+          class="block bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide text-center"
+        >
+          ユーザー情報を編集
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>

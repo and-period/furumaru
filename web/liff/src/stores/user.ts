@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import ApiClientFactory from '@/plugins/helper/factory';
 import { AuthUserApi } from '@/types/api/facility';
 import { useAuthStore } from '@/stores/auth';
-import type { AuthUserResponse } from '@/types/api/facility';
+import type { AuthUserResponse, UpdateAuthUserRequest } from '@/types/api/facility';
 import { buildApiErrorMessage } from '@/plugins/helper/error';
 
 interface UserState {
@@ -66,6 +66,36 @@ export const useUserStore = defineStore('user', {
         console.error('User fetchMe failed:', e);
         this.error = await buildApiErrorMessage(e);
         this.profile = null;
+        throw e;
+      }
+      finally {
+        this.isLoading = false;
+      }
+    },
+
+    async updateMe(facilityId: string, userData: UpdateAuthUserRequest) {
+      this.isLoading = true;
+      this.error = null;
+      try {
+        // authStoreからアクセストークンを取得してAPIに付与
+        const authStore = useAuthStore();
+        const accessToken = authStore.token?.accessToken;
+        const factory = new ApiClientFactory();
+        const api = factory.createFacility<AuthUserApi>(AuthUserApi, accessToken);
+
+        await api.facilitiesFacilityIdUsersMePut({
+          facilityId,
+          updateAuthUserRequest: userData,
+        });
+
+        // 更新成功後に最新データを取得
+        await this.fetchMe(facilityId);
+
+        return true;
+      }
+      catch (e) {
+        console.error('User updateMe failed:', e);
+        this.error = await buildApiErrorMessage(e);
         throw e;
       }
       finally {
