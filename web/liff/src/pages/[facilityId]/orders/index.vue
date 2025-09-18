@@ -73,7 +73,7 @@ const getOrderStatusText = (status: number): string => {
 const getOrderStatusClass = (status: number): string => {
   const classMap: Record<number, string> = {
     1: 'bg-yellow-100 text-yellow-800',
-    2: 'bg-blue-100 text-blue-800',
+    2: 'bg-orange text-white',
     3: 'bg-purple-100 text-purple-800',
     4: 'bg-green-100 text-green-800',
     5: 'bg-red-100 text-red-800',
@@ -93,10 +93,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-center mb-6">
+  <div class="container mx-auto px-4 pb-6">
+    <h2 class="mt-6 font-semibold font-inter text-center w-full">
       注文一覧
-    </h1>
+    </h2>
 
     <!-- Loading state -->
     <div
@@ -117,7 +117,7 @@ onMounted(() => {
         エラーが発生しました: {{ error }}
       </p>
       <button
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        class="bg-main text-white px-4 py-2 rounded hover:bg-orange transition-colors"
         @click="fetchOrders"
       >
         再試行
@@ -127,7 +127,7 @@ onMounted(() => {
     <!-- 注文一覧 -->
     <div
       v-else-if="orders?.orders && orders.orders.length > 0"
-      class="space-y-4"
+      class="space-y-4 mt-6"
     >
       <div
         v-for="order in orders.orders"
@@ -137,9 +137,9 @@ onMounted(() => {
       >
         <div class="flex justify-between items-start mb-2">
           <div>
-            <h3 class="font-semibold text-lg">
+            <div class="font-semibold text-md">
               注文 #{{ order.id.slice(-8) }}
-            </h3>
+            </div>
             <p class="text-sm text-gray-600">
               {{ formatDate(order.payment.orderedAt) }}
             </p>
@@ -180,8 +180,8 @@ onMounted(() => {
 
           <!-- 合計金額 -->
           <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-            <span class="font-semibold">合計金額:</span>
-            <span class="font-bold text-lg text-blue-600">
+            <span class="font-semibold text-gray-800">合計金額:</span>
+            <span class="font-bold text-lg text-main">
               {{ formatPrice(order.payment.total) }}
             </span>
           </div>
@@ -211,7 +211,7 @@ onMounted(() => {
       class="text-center mt-6"
     >
       <button
-        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors disabled:opacity-50"
+        class="border border-orange text-orange px-4 py-2 rounded transition-colors disabled:opacity-50 hover:bg-orange/10"
         :disabled="isLoading"
         @click="fetchOrders"
       >

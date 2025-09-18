@@ -83,7 +83,7 @@ const getOrderStatusText = (status: number): string => {
 const getOrderStatusClass = (status: number): string => {
   const classMap: Record<number, string> = {
     1: 'bg-yellow-100 text-yellow-800',
-    2: 'bg-blue-100 text-blue-800',
+    2: 'bg-orange text-white',
     3: 'bg-purple-100 text-purple-800',
     4: 'bg-green-100 text-green-800',
     5: 'bg-red-100 text-red-800',
@@ -103,34 +103,35 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6">
-    <!-- 戻るボタン -->
-    <div class="mb-4">
-      <button
-        class="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-        @click="goBackToOrders"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-5 h-5 mr-1"
+  <div class="min-h-screen bg-white relative mb-[186px] overflow-auto">
+    <!-- Navigation header for mobile -->
+    <div class="top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 fixed w-full">
+      <div class="flex items-center">
+        <button
+          class="flex items-center text-gray-600 hover:text-gray-800"
+          @click="router.back()"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 19.5L8.25 12l7.5-7.5"
-          />
-        </svg>
-        注文一覧に戻る
-      </button>
+          <svg
+            class="w-6 h-6 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          戻る
+        </button>
+      </div>
     </div>
 
-    <h1 class="text-2xl font-bold text-center mb-6">
+    <h2 class="mt-6 font-semibold font-inter text-center w-full">
       注文詳細
-    </h1>
+    </h2>
 
     <!-- Loading state -->
     <div
@@ -161,7 +162,7 @@ onMounted(() => {
     <!-- 注文詳細 -->
     <div
       v-else-if="orderDetail?.order"
-      class="space-y-6"
+      class="space-y-6 mt-6 px-4"
     >
       <!-- 注文基本情報 -->
       <div class="bg-white border border-gray-200 rounded-lg p-6">
@@ -292,7 +293,7 @@ onMounted(() => {
           <div class="border-t border-gray-200 pt-3">
             <div class="flex justify-between text-lg font-bold">
               <span>合計金額:</span>
-              <span class="text-blue-600">{{ formatPrice(orderDetail.order.payment.total) }}</span>
+              <span class="text-main">{{ formatPrice(orderDetail.order.payment.total) }}</span>
             </div>
           </div>
         </div>
