@@ -257,28 +257,29 @@ const onClickPublished = (scheduleId: string): void => {
     elevation="0"
     rounded="lg"
   >
-    <v-card-title class="d-flex align-center justify-space-between pa-6 pb-4">
-      <div class="d-flex align-center">
+    <v-card-title class="d-flex flex-column flex-sm-row align-start align-sm-center justify-space-between pa-4 pa-sm-6 pb-4">
+      <div class="d-flex align-center mb-3 mb-sm-0">
         <v-icon
           :icon="mdiCalendarToday"
           size="28"
           class="mr-3 text-primary"
         />
         <div>
-          <h1 class="text-h5 font-weight-bold text-primary">
+          <h1 class="text-h6 text-sm-h5 font-weight-bold text-primary">
             ライブ配信管理
           </h1>
-          <p class="text-body-2 text-medium-emphasis ma-0">
+          <p class="text-caption text-sm-body-2 text-medium-emphasis ma-0">
             ライブ配信の登録・編集・削除を行います
           </p>
         </div>
       </div>
-      <div class="d-flex ga-3">
+      <div class="d-flex ga-3 w-100 w-sm-auto">
         <v-btn
           v-show="isRegisterable()"
           variant="elevated"
           color="primary"
-          size="large"
+          :size="$vuetify.display.smAndDown ? 'default' : 'large'"
+          class="w-100 w-sm-auto"
           @click="onClickAdd"
         >
           <v-icon

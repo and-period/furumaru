@@ -15,6 +15,7 @@ import { TopOrderPeriodType } from '~/types'
 import { PaymentMethodType } from '~/types/api/v1'
 import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
+import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable } from '@mdi/js'
 
 use([
   GridComponent,
@@ -409,9 +410,8 @@ const onChangeEndAt = (): void => {
                 color="primary"
                 size="small"
                 class="mr-2"
-              >
-                mdi-currency-jpy
-              </v-icon>
+                :icon="mdiCurrencyJpy"
+              />
               <span class="text-caption text-grey-darken-1">売上総額</span>
             </div>
             <div class="text-h5 font-weight-bold mb-1">
@@ -448,9 +448,8 @@ const onChangeEndAt = (): void => {
                 color="info"
                 size="small"
                 class="mr-2"
-              >
-                mdi-cart-outline
-              </v-icon>
+                :icon="mdiCartOutline"
+              />
               <span class="text-caption text-grey-darken-1">注文件数</span>
             </div>
             <div class="text-h5 font-weight-bold mb-1">
@@ -488,9 +487,8 @@ const onChangeEndAt = (): void => {
                 color="success"
                 size="small"
                 class="mr-2"
-              >
-                mdi-account-multiple-outline
-              </v-icon>
+                :icon="mdiAccountMultipleOutline"
+              />
               <span class="text-caption text-grey-darken-1">購入者数</span>
             </div>
             <div class="text-h5 font-weight-bold mb-1">
@@ -528,9 +526,8 @@ const onChangeEndAt = (): void => {
                 color="warning"
                 size="small"
                 class="mr-2"
-              >
-                mdi-cash-multiple
-              </v-icon>
+                :icon="mdiCashMultiple"
+              />
               <span class="text-caption text-grey-darken-1">平均単価</span>
             </div>
             <div class="text-h5 font-weight-bold mb-1">
@@ -558,9 +555,8 @@ const onChangeEndAt = (): void => {
             <v-icon
               color="primary"
               class="mr-2"
-            >
-              mdi-chart-line
-            </v-icon>
+              :icon="mdiChartLine"
+            />
             売上額推移
           </v-card-title>
           <v-card-text>
@@ -585,9 +581,8 @@ const onChangeEndAt = (): void => {
             <v-icon
               color="info"
               class="mr-2"
-            >
-              mdi-credit-card-outline
-            </v-icon>
+              :icon="mdiCreditCardOutline"
+            />
             支払い方法別
           </v-card-title>
           <v-card-text>
@@ -612,10 +607,8 @@ const onChangeEndAt = (): void => {
             <v-icon
               color="secondary"
               class="mr-2"
-            >
-              mdi-table
-            </v-icon>
-            支払い方法別詳細
+              :icon="mdiTable"
+            />
           </v-card-title>
           <v-card-text>
             <v-data-table
