@@ -5,6 +5,7 @@ import {
   mdiLock,
   mdiLink,
   mdiLogout,
+  mdiChevronRight,
 } from '@mdi/js'
 import type { SettingMenu } from '~/types/props'
 
@@ -124,7 +125,7 @@ const getMenuDescription = (text: string): string => {
             >
               {{ item.color === 'error' ? 'サインアウト' : '変更する' }}
               <v-icon
-                :icon="item.color === 'error' ? mdiLogout : 'mdi-chevron-right'"
+                :icon="item.color === 'error' ? mdiLogout : mdiChevronRight"
                 end
               />
             </v-btn>

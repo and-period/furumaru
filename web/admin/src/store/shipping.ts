@@ -1,15 +1,17 @@
-import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
+import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
     shipping: {} as Shipping,
+    shippings: [] as Array<Shipping>,
+    total: 0,
   }),
 
   actions: {
     /**
      * コーディネーターが登録している配送先一覧を取得する非同期関数
      */
-    async fetchShippings(coordinatorId: string, limit: number, offset: number): Promise<ShippingsResponse> {
+    async fetchShippings(coordinatorId: string, limit?: number, offset?: number): Promise<ShippingsResponse> {
       try {
         const params: V1CoordinatorsCoordinatorIdShippingsGetRequest = {
           coordinatorId,
@@ -17,6 +19,8 @@ export const useShippingStore = defineStore('shipping', {
           offset,
         }
         const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsGet(params)
+        this.shippings = res.shippings
+        this.total = res.total
         return res
       }
       catch (err) {
@@ -40,6 +44,46 @@ export const useShippingStore = defineStore('shipping', {
       }
       catch (err) {
         return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 指定した配送設定を更新する非同期関数
+     * @param coordinatorId コーディネーターID
+     * @param shippingId 配送設定ID
+     * @param payload 配送先情報
+     * @returns
+     */
+    async updateShipping(coordinatorId: string, shippingId: string, payload: UpdateShippingRequest): Promise<void> {
+      try {
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest = {
+          coordinatorId,
+          shippingId,
+          updateShippingRequest: payload,
+        }
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(params)
+      }
+      catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 指定した配送設定を削除する非同期関数
+     * @param coordinatorId コーディネーターID
+     * @param shippingId 配送設定ID
+     * @returns
+     */
+    async deleteShipping(coordinatorId: string, shippingId: string): Promise<void> {
+      try {
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest = {
+          coordinatorId,
+          shippingId,
+        }
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdDelete(params)
+      }
+      catch (err) {
+        return this.errorHandler(err, { 404: '対象の配送設定が見つかりません。' })
       }
     },
 

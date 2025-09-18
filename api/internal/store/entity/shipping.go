@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -82,7 +83,7 @@ func NewShipping(params *NewShippingParams) *Shipping {
 	}
 	revision := NewShippingRevision(rparams)
 	return &Shipping{
-		ID:               params.CoordinatorID, // PKはコーディネータと同一にする
+		ID:               uuid.Base58Encode(uuid.New()),
 		ShopID:           params.ShopID,
 		CoordinatorID:    params.CoordinatorID,
 		Name:             params.Name,
@@ -92,7 +93,7 @@ func NewShipping(params *NewShippingParams) *Shipping {
 }
 
 func (s *Shipping) IsDefault() bool {
-	return s.ID == DefaultShippingID
+	return s.ID == DefaultShippingID || s.InUse
 }
 
 func (s *Shipping) CalcShippingFee(

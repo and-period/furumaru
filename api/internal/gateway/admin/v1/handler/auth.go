@@ -565,6 +565,7 @@ func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
 
 	res := &types.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
+		Shop:         shop.Response(),
 		ProductTypes: productTypes.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

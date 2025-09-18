@@ -217,6 +217,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 
 	res := &types.CoordinatorResponse{
 		Coordinator:  service.NewCoordinator(coordinator, shop).Response(),
+		Shop:         shop.Response(),
 		ProductTypes: productTypes.Response(),
 		Password:     password,
 	}

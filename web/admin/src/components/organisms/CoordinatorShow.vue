@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import { mdiFacebook, mdiInstagram } from '@mdi/js'
+import {
+  mdiFacebook,
+  mdiInstagram,
+  mdiAccount,
+  mdiImage,
+  mdiEmail,
+  mdiPhone,
+  mdiMapMarker,
+  mdiShareVariant,
+} from '@mdi/js'
 
 import { Prefecture } from '~/types'
 import { AdminStatus } from '~/types/api/v1'
@@ -166,101 +175,113 @@ const onClickSearchAddress = (): void => {
 </script>
 
 <template>
-  <v-card>
-    <v-form @submit.prevent="onSubmit">
-      <v-card-text>
+  <v-form @submit.prevent="onSubmit">
+    <!-- 基本情報セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiAccount"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">基本情報</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
         <v-text-field
           v-model="validate.username.$model"
           :error-messages="getErrorMessage(validate.username.$errors)"
-          class="mr-4"
-          label="コーディネーター名"
+          label="コーディネーター名 *"
+          variant="outlined"
+          density="comfortable"
+          class="mb-4"
         />
-        <v-row>
-          <v-col
-            cols="12"
-            ms="12"
-            lg="6"
-          >
-            <molecules-video-select-form
-              label="紹介動画"
-              :loading="loading"
-              :video-url="formDataValue.promotionVideoUrl"
-              :error="props.promotionVideoUploadStatus.error"
-              :message="props.promotionVideoUploadStatus.message"
-              @update:file="onChangePromotionVideo"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            sm="12"
-            lg="6"
-          >
-            <molecules-video-select-form
-              label="サンキュー動画"
-              :loading="loading"
-              :video-url="formDataValue.bonusVideoUrl"
-              :error="props.bonusVideoUploadStatus.error"
-              :message="props.bonusVideoUploadStatus.message"
-              @update:file="onChangeBonusVideo"
-            />
-          </v-col>
-        </v-row>
         <v-textarea
           v-model="validate.profile.$model"
           :error-messages="getErrorMessage(validate.profile.$errors)"
           label="プロフィール"
+          variant="outlined"
+          density="comfortable"
+          rows="4"
           maxlength="2000"
-        />
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="validate.lastname.$model"
-              :error-messages="getErrorMessage(validate.lastname.$errors)"
-              class="mr-4"
-              label="コーディネーター:姓"
-            />
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="validate.firstname.$model"
-              :error-messages="getErrorMessage(validate.firstname.$errors)"
-              label="コーディネーター:名"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="validate.lastnameKana.$model"
-              :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
-              class="mr-4"
-              label="コーディネーター:姓（ふりがな）"
-            />
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="validate.firstnameKana.$model"
-              :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
-              label="コーディネーター:名（ふりがな）"
-            />
-          </v-col>
-        </v-row>
-        <v-text-field
-          v-model="coordinatorValue.email"
-          label="連絡先（Email）"
-          readonly
-        />
-        <v-text-field
-          v-model="validate.phoneNumber.$model"
-          :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
-          type="tel"
-          label="連絡先（電話番号）"
+          counter
+          class="mb-4"
         />
         <v-row>
           <v-col
             cols="12"
             sm="6"
-            md="6"
+          >
+            <v-text-field
+              v-model="validate.lastname.$model"
+              :error-messages="getErrorMessage(validate.lastname.$errors)"
+              label="姓 *"
+              variant="outlined"
+              density="comfortable"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            sm="6"
+          >
+            <v-text-field
+              v-model="validate.firstname.$model"
+              :error-messages="getErrorMessage(validate.firstname.$errors)"
+              label="名 *"
+              variant="outlined"
+              density="comfortable"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            cols="12"
+            sm="6"
+          >
+            <v-text-field
+              v-model="validate.lastnameKana.$model"
+              :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
+              label="姓（ふりがな） *"
+              variant="outlined"
+              density="comfortable"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            sm="6"
+          >
+            <v-text-field
+              v-model="validate.firstnameKana.$model"
+              :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
+              label="名（ふりがな） *"
+              variant="outlined"
+              density="comfortable"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- メディアセクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiImage"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">画像・動画</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
+        <v-row>
+          <v-col
+            cols="12"
+            sm="6"
           >
             <molecules-icon-select-form
               label="アイコン画像"
@@ -274,7 +295,6 @@ const onClickSearchAddress = (): void => {
           <v-col
             cols="12"
             sm="6"
-            md="6"
           >
             <molecules-image-select-form
               label="ヘッダー画像"
@@ -286,6 +306,86 @@ const onClickSearchAddress = (): void => {
             />
           </v-col>
         </v-row>
+        <v-row class="mt-4">
+          <v-col
+            cols="12"
+            sm="6"
+          >
+            <molecules-video-select-form
+              label="紹介動画"
+              :loading="loading"
+              :video-url="formDataValue.promotionVideoUrl"
+              :error="props.promotionVideoUploadStatus.error"
+              :message="props.promotionVideoUploadStatus.message"
+              @update:file="onChangePromotionVideo"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            sm="6"
+          >
+            <molecules-video-select-form
+              label="サンキュー動画"
+              :loading="loading"
+              :video-url="formDataValue.bonusVideoUrl"
+              :error="props.bonusVideoUploadStatus.error"
+              :message="props.bonusVideoUploadStatus.message"
+              @update:file="onChangeBonusVideo"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- 連絡先セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiEmail"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">連絡先</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
+        <v-text-field
+          v-model="coordinatorValue.email"
+          label="メールアドレス *"
+          type="email"
+          variant="outlined"
+          density="comfortable"
+          readonly
+          class="mb-4"
+        />
+        <v-text-field
+          v-model="validate.phoneNumber.$model"
+          :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
+          type="tel"
+          label="電話番号 *"
+          variant="outlined"
+          density="comfortable"
+          class="mb-4"
+        />
+      </v-card-text>
+    </v-card>
+
+    <!-- 住所セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiMapMarker"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">住所</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
         <molecules-address-form
           v-model:postal-code="formDataValue.postalCode"
           v-model:prefecture="formDataValue.prefectureCode"
@@ -296,32 +396,93 @@ const onClickSearchAddress = (): void => {
           :loading="loading"
           @click:search="onClickSearchAddress"
         />
-        <p>SNS連携</p>
+      </v-card-text>
+    </v-card>
+
+    <!-- SNS連携セクション -->
+    <v-card
+      class="form-section-card mb-6"
+      elevation="2"
+    >
+      <v-card-title class="d-flex align-center section-header">
+        <v-icon
+          :icon="mdiShareVariant"
+          size="24"
+          class="mr-3 text-primary"
+        />
+        <span class="text-h6 font-weight-medium">SNS連携</span>
+      </v-card-title>
+      <v-card-text class="pa-6">
         <v-text-field
           v-model="validate.instagramId.$model"
           :error-messages="getErrorMessage(validate.instagramId.$errors)"
           :prepend-icon="mdiInstagram"
           prefix="https://www.instagram.com/"
+          variant="outlined"
+          density="comfortable"
+          class="mb-4"
         />
         <v-text-field
           v-model="validate.facebookId.$model"
           :error-messages="getErrorMessage(validate.facebookId.$errors)"
           :prepend-icon="mdiFacebook"
           prefix="https://www.facebook.com/"
+          variant="outlined"
+          density="comfortable"
         />
       </v-card-text>
+    </v-card>
 
-      <v-card-actions>
-        <v-btn
-          block
-          :loading="loading"
-          variant="outlined"
-          color="primary"
-          type="submit"
+    <!-- 更新ボタン -->
+    <div class="d-flex justify-end mt-6">
+      <v-btn
+        :loading="loading"
+        variant="elevated"
+        color="primary"
+        size="large"
+        type="submit"
+        class="px-8 py-2"
+        elevation="2"
+      >
+        <v-icon
+          start
+          size="20"
         >
-          更新
-        </v-btn>
-      </v-card-actions>
-    </v-form>
-  </v-card>
+          mdi-content-save
+        </v-icon>
+        コーディネーター情報を更新
+      </v-btn>
+    </div>
+  </v-form>
 </template>
+
+<style scoped>
+.form-section-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgb(0 0 0 / 6%);
+}
+
+.form-section-card:hover {
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+  transform: translateY(-2px);
+}
+
+.section-header {
+  background: linear-gradient(135deg, rgb(33 150 243 / 8%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(33 150 243 / 12%);
+  padding: 18px 24px;
+  font-weight: 500;
+}
+
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
+
+  .section-header {
+    padding: 12px 16px;
+  }
+}
+</style>

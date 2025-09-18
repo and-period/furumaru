@@ -15,7 +15,7 @@ import { TopOrderPeriodType } from '~/types'
 import { PaymentMethodType } from '~/types/api/v1'
 import type { TopOrderSalesTrend, TopOrdersResponse } from '~/types/api/v1'
 import type { DateTimeInput } from '~/types/props'
-import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable } from '@mdi/js'
+import { mdiAccountMultipleOutline, mdiCartOutline, mdiCashMultiple, mdiChartLine, mdiCreditCardOutline, mdiCurrencyJpy, mdiTable, mdiTrendingDown, mdiTrendingUp } from '@mdi/js'
 
 use([
   GridComponent,
@@ -426,7 +426,7 @@ const onChangeEndAt = (): void => {
                 size="x-small"
                 class="mr-1"
               >
-                {{ orders.sales.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
+                {{ orders.sales.comparison >= 0 ? mdiTrendingUp : mdiTrendingDown }}
               </v-icon>
               {{ getComparison(orders.sales.comparison) }}%
             </v-chip>
@@ -464,9 +464,8 @@ const onChangeEndAt = (): void => {
               <v-icon
                 size="x-small"
                 class="mr-1"
-              >
-                {{ orders.orders.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
-              </v-icon>
+                :icon="orders.orders.comparison >= 0 ? mdiTrendingUp : mdiTrendingDown"
+              />
               {{ getComparison(orders.orders.comparison) }}%
             </v-chip>
           </v-card-text>
@@ -503,9 +502,8 @@ const onChangeEndAt = (): void => {
               <v-icon
                 size="x-small"
                 class="mr-1"
-              >
-                {{ orders.users.comparison >= 0 ? 'mdi-trending-up' : 'mdi-trending-down' }}
-              </v-icon>
+                :icon="orders.users.comparison >= 0 ? mdiTrendingUp : mdiTrendingDown"
+              />
               {{ getComparison(orders.users.comparison) }}%
             </v-chip>
           </v-card-text>
