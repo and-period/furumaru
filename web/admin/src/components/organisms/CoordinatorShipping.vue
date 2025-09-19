@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiClose, mdiContentCopy, mdiCurrencyJpy, mdiDelete, mdiPackageVariant, mdiPlus, mdiSnowflake, mdiTruck } from '@mdi/js'
+import { mdiCheckCircle, mdiClose, mdiContentCopy, mdiContentSave, mdiCurrencyJpy, mdiDelete, mdiPackageVariant, mdiPlus, mdiSnowflake, mdiTruck } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/components'
@@ -106,6 +106,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  activeDialog: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits<{
@@ -114,15 +118,18 @@ const emit = defineEmits<{
   (e: 'update:create-dialog', toggle: boolean): void
   (e: 'update:update-dialog', toggle: boolean): void
   (e: 'update:delete-dialog', toggle: boolean): void
+  (e: 'update:active-dialog', toggle: boolean): void
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:create'): void
   (e: 'click:update', shippingId: string): void
-  (e: 'click:copy', shippingId: string): void
   (e: 'click:delete', shippingId: string): void
+  (e: 'click:active', shippingId: string): void
+  (e: 'click:copy', shippingId: string): void
   (e: 'submit:create'): void
   (e: 'submit:update'): void
   (e: 'submit:delete'): void
+  (e: 'submit:active'): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -190,6 +197,10 @@ const updateDialogValue = computed({
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val),
+})
+const activeDialogValue = computed({
+  get: (): boolean => props.activeDialog,
+  set: (val: boolean): void => emit('update:active-dialog', val),
 })
 
 const createFormDataValidate = useVuelidate(CreateShippingValidationRules, createFormDataValue)
@@ -353,6 +364,10 @@ const onClickCloseDeleteDialog = (): void => {
   deleteDialogValue.value = false
 }
 
+const onClickCloseActiveDialog = (): void => {
+  activeDialogValue.value = false
+}
+
 const getShippingName = (shipping?: Shipping) => {
   if (!shipping) {
     return ''
@@ -396,12 +411,16 @@ const onClickUpdate = (shippingId: string): void => {
   emit('click:update', shippingId)
 }
 
+const onClickDelete = (shippingId: string): void => {
+  emit('click:delete', shippingId)
+}
+
 const onClickCopy = (shippingId: string): void => {
   emit('click:copy', shippingId)
 }
 
-const onClickDelete = (shippingId: string): void => {
-  emit('click:delete', shippingId)
+const onClickActive = (shippingId: string): void => {
+  emit('click:active', shippingId)
 }
 
 const onSubmitCreate = async (): Promise<void> => {
@@ -422,6 +441,10 @@ const onSubmitUpdate = async (): Promise<void> => {
 
 const onSubmitDelete = (): void => {
   emit('submit:delete')
+}
+
+const onSubmitActive = (): void => {
+  emit('submit:active')
 }
 </script>
 
@@ -723,12 +746,9 @@ const onSubmitDelete = (): void => {
           color="primary"
           variant="elevated"
           size="large"
+          :prepend-icon="mdiContentSave"
           @click="onSubmitCreate"
         >
-          <v-icon
-            icon="mdi-content-save"
-            start
-          />
           配送設定を登録
         </v-btn>
       </v-card-actions>
@@ -1007,6 +1027,7 @@ const onSubmitDelete = (): void => {
           :loading="props.loading"
           color="primary"
           variant="outlined"
+          :prepend-icon="mdiContentSave"
           @click="onSubmitUpdate"
         >
           更新
@@ -1025,7 +1046,7 @@ const onSubmitDelete = (): void => {
       </v-card-title>
       <v-card-text class="pb-4">
         <div class="text-body-1">
-          「{{ getShippingName(selectedItem) }}」を削除しますか？
+          「{{ getShippingName(shipping) }}」を削除しますか？
         </div>
         <div class="text-body-2 text-medium-emphasis mt-2">
           この操作は取り消せません。
@@ -1047,6 +1068,40 @@ const onSubmitDelete = (): void => {
           @click="onSubmitDelete"
         >
           削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="activeDialogValue"
+    width="500"
+  >
+    <v-card>
+      <v-card-title class="text-h6 py-4">
+        配送設定有効化前確認
+      </v-card-title>
+      <v-card-text class="pb-4">
+        <div class="text-body-1">
+          「{{ getShippingName(shipping) }}」を有効化しますか？
+        </div>
+      </v-card-text>
+      <v-card-actions class="px-6 pb-4">
+        <v-spacer />
+        <v-btn
+          color="medium-emphasis"
+          variant="text"
+          @click="onClickCloseActiveDialog"
+        >
+          キャンセル
+        </v-btn>
+        <v-btn
+          :loading="props.loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitActive"
+        >
+          有効化
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -1117,8 +1172,19 @@ const onSubmitDelete = (): void => {
           <template #[`item.actions`]="{ item }">
             <div class="d-flex gap-2">
               <v-btn
+                v-show="!item.isDefault"
                 variant="outlined"
                 color="primary"
+                size="small"
+                :prepend-icon="mdiCheckCircle"
+                class="text-none"
+                @click.stop="onClickActive(item.id)"
+              >
+                有効化
+              </v-btn>
+              <v-btn
+                variant="outlined"
+                color="secondary"
                 size="small"
                 :prepend-icon="mdiContentCopy"
                 class="text-none"

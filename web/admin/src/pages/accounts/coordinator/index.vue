@@ -7,13 +7,14 @@ import { Prefecture } from '~/types'
 import type { UpdateCoordinatorRequest, UpdateShopRequest, CreateShippingRequest, UpdateShippingRequest, Shipping } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
+const route = useRoute()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const coordinatorStore = useCoordinatorStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
-const shopStore = useShopStore()
 const shippingStore = useShippingStore()
+const shopStore = useShopStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -22,8 +23,10 @@ const { productTypes } = storeToRefs(productTypeStore)
 const { shop } = storeToRefs(shopStore)
 const { shippings, total } = storeToRefs(shippingStore)
 
+const initialTab = route.query.tab as string | undefined || 'coordinator'
+
 const loading = ref<boolean>(false)
-const selector = ref<string>('coordinator')
+const selector = ref<string>(initialTab)
 const selectedShipping = ref<Shipping>()
 
 const initialShippingFormData: CreateShippingRequest | UpdateShippingRequest = {
@@ -81,12 +84,12 @@ const shopFormData = ref<UpdateShopRequest>({
   productTypeIds: [],
   businessDays: new Set<number>(),
 })
-
 const createShippingFormData = ref<CreateShippingRequest>({ ...initialShippingFormData })
 const updateShippingFormData = ref<UpdateShippingRequest>({ ...initialShippingFormData })
 const createShippingDialog = ref<boolean>(false)
 const updateShippingDialog = ref<boolean>(false)
 const deleteShippingDialog = ref<boolean>(false)
+const activeShippingDialog = ref<boolean>(false)
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: '',
@@ -168,15 +171,6 @@ const handleClickUpdateShipping = (shippingId: string): void => {
   updateShippingDialog.value = true
 }
 
-const handleClickCopyShipping = (shippingId: string) => {
-  const selectedShipping = shippings.value.find(s => s.id === shippingId)
-  if (!selectedShipping) {
-    return
-  }
-  createShippingFormData.value = { ...selectedShipping }
-  createShippingDialog.value = true
-}
-
 const handleClickDeleteShipping = (shippingId: string): void => {
   const selected = shippings.value.find(s => s.id === shippingId)
   if (!selected) {
@@ -184,6 +178,24 @@ const handleClickDeleteShipping = (shippingId: string): void => {
   }
   selectedShipping.value = selected
   deleteShippingDialog.value = true
+}
+
+const handleClickCopyShipping = (shippingId: string) => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  createShippingFormData.value = { ...selected }
+  createShippingDialog.value = true
+}
+
+const handleClickActiveShipping = (shippingId: string) => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  selectedShipping.value = selected
+  activeShippingDialog.value = true
 }
 
 const handleSubmitCoordinator = async (): Promise<void> => {
@@ -254,10 +266,6 @@ const handleSubmitCreateShipping = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
     console.log(err)
   }
   finally {
@@ -285,10 +293,6 @@ const handleSubmitUpdateShipping = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
     console.log(err)
   }
   finally {
@@ -315,10 +319,32 @@ const handleSubmitDeleteShipping = async (): Promise<void> => {
     if (err instanceof Error) {
       show(err.message)
     }
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitActiveShipping = async (): Promise<void> => {
+  try {
+    loading.value = true
+    if (!selectedShipping.value) {
+      throw new Error('配送設定が選択されていません。')
+    }
+    await shippingStore.activeShipping(coordinator.value.id, selectedShipping.value.id)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '配送設定を有効化しました。',
     })
+    fetchShippings()
+    activeShippingDialog.value = false
+    selectedShipping.value = undefined
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
   finally {
@@ -453,6 +479,7 @@ catch (err) {
     v-model:create-shipping-dialog="createShippingDialog"
     v-model:update-shipping-dialog="updateShippingDialog"
     v-model:delete-shipping-dialog="deleteShippingDialog"
+    v-model:active-shipping-dialog="activeShippingDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -470,11 +497,13 @@ catch (err) {
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:search-address="handleSearchAddress"
+    @click:update-shipping-page="handleUpdateShippingPage"
     @click:update-shipping-items-per-page="pagination.handleUpdateItemsPerPage"
     @click:create-shipping="handleClickCreateShipping"
     @click:update-shipping="handleClickUpdateShipping"
-    @click:copy-shipping="handleClickCopyShipping"
     @click:delete-shipping="handleClickDeleteShipping"
+    @click:copy-shipping="handleClickCopyShipping"
+    @click:active-shipping="handleClickActiveShipping"
     @update:search-product-type="handleSearchProductType"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
@@ -485,5 +514,6 @@ catch (err) {
     @submit:create-shipping="handleSubmitCreateShipping"
     @submit:update-shipping="handleSubmitUpdateShipping"
     @submit:delete-shipping="handleSubmitDeleteShipping"
+    @submit:active-shipping="handleSubmitActiveShipping"
   />
 </template>

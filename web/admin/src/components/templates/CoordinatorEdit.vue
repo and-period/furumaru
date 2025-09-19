@@ -254,6 +254,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  activeShippingDialog: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits<{
@@ -270,6 +274,7 @@ const emit = defineEmits<{
   (e: 'update:create-shipping-dialog', val: boolean): void
   (e: 'update:update-shipping-dialog', val: boolean): void
   (e: 'update:delete-shipping-dialog', val: boolean): void
+  (e: 'update:active-shipping-dialog', val: boolean): void
   (e: 'click:search-address'): void
   (e: 'click:update-shipping-page', page: number): void
   (e: 'click:update-shipping-items-per-page', itemsPerPage: number): void
@@ -277,11 +282,13 @@ const emit = defineEmits<{
   (e: 'click:update-shipping', shippingId: string): void
   (e: 'click:copy-shipping', shippingId: string): void
   (e: 'click:delete-shipping', shippingId: string): void
+  (e: 'click:active-shipping', shippingId: string): void
   (e: 'submit:coordinator'): void
   (e: 'submit:shop'): void
   (e: 'submit:create-shipping'): void
   (e: 'submit:update-shipping'): void
   (e: 'submit:delete-shipping'): void
+  (e: 'submit:active-shipping'): void
 }>()
 
 const tabs = [
@@ -321,6 +328,10 @@ const updateShippingDialogValue = computed({
 const deleteShippingDialogValue = computed({
   get: (): boolean => props.deleteShippingDialog,
   set: (val: boolean): void => emit('update:delete-shipping-dialog', val),
+})
+const activeShippingDialogValue = computed({
+  get: (): boolean => props.activeShippingDialog,
+  set: (val: boolean): void => emit('update:active-shipping-dialog', val),
 })
 
 const onChangeThumbnailFile = (files?: FileList) => {
@@ -383,6 +394,10 @@ const onClickDeleteShipping = (shippingId: string): void => {
   emit('click:delete-shipping', shippingId)
 }
 
+const onClickActiveShipping = (shippingId: string): void => {
+  emit('click:active-shipping', shippingId)
+}
+
 const onSubmitCoordinator = (): void => {
   emit('submit:coordinator')
 }
@@ -401,6 +416,10 @@ const onSubmitUpdateShipping = (): void => {
 
 const onSubmitDeleteShipping = (): void => {
   emit('submit:delete-shipping')
+}
+
+const onSubmitActiveShipping = (): void => {
+  emit('submit:active-shipping')
 }
 </script>
 
@@ -503,6 +522,7 @@ const onSubmitDeleteShipping = (): void => {
                 v-model:create-dialog="createShippingDialogValue"
                 v-model:update-dialog="updateShippingDialogValue"
                 v-model:delete-dialog="deleteShippingDialogValue"
+                v-model:active-dialog="activeShippingDialogValue"
                 :loading="props.loading"
                 :shipping="props.shipping"
                 :shippings="props.shippings"
@@ -512,11 +532,13 @@ const onSubmitDeleteShipping = (): void => {
                 @click:update-items-per-page="onClickUpdateShippingItemsPerPage"
                 @click:create="onClickCreateShipping"
                 @click:update="onClickUpdateShipping"
-                @click:copy="onClickCopyShipping"
                 @click:delete="onClickDeleteShipping"
+                @click:copy="onClickCopyShipping"
+                @click:active="onClickActiveShipping"
                 @submit:create="onSubmitCreateShipping"
                 @submit:update="onSubmitUpdateShipping"
                 @submit:delete="onSubmitDeleteShipping"
+                @submit:active="onSubmitActiveShipping"
               />
             </div>
           </v-window-item>

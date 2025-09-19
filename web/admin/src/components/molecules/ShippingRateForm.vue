@@ -2,18 +2,18 @@
 import useVuelidate from '@vuelidate/core'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { getErrorMessage } from '~/lib/validations'
-import type { CreateShippingRate, UpdateDefaultShippingRate, UpdateShippingRate, UpsertShippingRate } from '~/types/api/v1'
-import { UpsertShippingRateValidationRules } from '~/types/validations'
+import type { CreateShippingRate, UpdateDefaultShippingRate, UpdateShippingRate } from '~/types/api/v1'
+import { ShippingRateValidationRules } from '~/types/validations'
 
 interface Props {
-  modelValue: CreateShippingRate | UpdateShippingRate
+  modelValue: CreateShippingRate | UpdateShippingRate | UpdateDefaultShippingRate
   selectablePrefectureList: PrefecturesListSelectItems[]
 }
 
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:modelValue', val: CreateShippingRate | UpdateShippingRate): void
+  (e: 'update:modelValue', val: CreateShippingRate | UpdateShippingRate | UpdateDefaultShippingRate): void
   (e: 'click:selectAll'): void
 }
 
@@ -21,10 +21,10 @@ const emits = defineEmits<Emits>()
 
 const formDataValue = computed({
   get: () => props.modelValue,
-  set: (val: CreateShippingRate | UpdateShippingRate) => emits('update:modelValue', val),
+  set: (val: CreateShippingRate | UpdateShippingRate | UpdateDefaultShippingRate) => emits('update:modelValue', val),
 })
 
-const v$ = useVuelidate<CreateShippingRate | UpdateShippingRate>(UpsertShippingRateValidationRules, formDataValue)
+const v$ = useVuelidate<CreateShippingRate | UpdateShippingRate | UpdateDefaultShippingRate>(ShippingRateValidationRules, formDataValue)
 
 const handleClickSelectAll = () => {
   emits('click:selectAll')

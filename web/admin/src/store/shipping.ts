@@ -1,4 +1,4 @@
-import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
+import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdActivationPatchRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -25,6 +25,28 @@ export const useShippingStore = defineStore('shipping', {
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
+      }
+    },
+
+    /**
+     * 指定した配送設定を取得する非同期関数
+     * @param coordinatorId コーディネーターID
+     * @param shippingId 配送設定ID
+     * @returns
+     */
+    async fetchShipping(coordinatorId: string, shippingId: string): Promise<Shipping> {
+      try {
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest = {
+          coordinatorId,
+          shippingId,
+        }
+        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdGet(params)
+        return res.shipping
+      }
+      catch (err) {
+        return this.errorHandler(err, {
+          404: '配送設定が見つかりません。',
+        })
       }
     },
 
@@ -88,24 +110,21 @@ export const useShippingStore = defineStore('shipping', {
     },
 
     /**
-     * 指定した配送設定を取得する非同期関数
+     * 指定した配送設定を有効化する非同期関数
      * @param coordinatorId コーディネーターID
      * @param shippingId 配送設定ID
      * @returns
      */
-    async fetchShipping(coordinatorId: string, shippingId: string): Promise<Shipping> {
+    async activeShipping(coordinatorId: string, shippingId: string): Promise<void> {
       try {
-        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest = {
+        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdActivationPatchRequest = {
           coordinatorId,
           shippingId,
         }
-        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdGet(params)
-        return res.shipping
+        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdActivationPatch(params)
       }
       catch (err) {
-        return this.errorHandler(err, {
-          404: '配送設定が見つかりません。',
-        })
+        return this.errorHandler(err, { 404: '対象の配送設定が見つかりません。' })
       }
     },
 
@@ -155,52 +174,6 @@ export const useShippingStore = defineStore('shipping', {
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
-      }
-    },
-
-    /**
-     * 指定した配送設定を更新する非同期関数
-     * @param coordinatorId
-     * @param shippingId
-     * @param payload
-     * @returns
-     */
-    async updateShipping(coordinatorId: string, shippingId: string, payload: UpdateShippingRequest): Promise<void> {
-      try {
-        const params: V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest = {
-          coordinatorId,
-          shippingId,
-          updateShippingRequest: payload,
-        }
-        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsShippingIdPatch(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、入力内容に誤りがあります。',
-          404: '対象のコーディネーターが見つかりません。',
-        })
-      }
-    },
-
-    /**
-     * 指定したコーディネーターの配送設定を変更する非同期関数
-     * @param coordinatorId コーディネーターID
-     * @param payload
-     * @returns
-     */
-    async upsertShipping(coordinatorId: string, payload: UpsertShippingRequest): Promise<void> {
-      try {
-        const params: V1CoordinatorsCoordinatorIdShippingsPatchRequest = {
-          coordinatorId,
-          upsertShippingRequest: payload,
-        }
-        await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsPatch(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '必須項目が不足しているか、入力内容に誤りがあります。',
-          404: '対象のコーディネーターが見つかりません。',
-        })
       }
     },
   },
