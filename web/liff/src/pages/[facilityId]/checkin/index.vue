@@ -20,9 +20,6 @@ const lastNameKana = ref('');
 const firstNameKana = ref('');
 const phoneNumber = ref('');
 
-// 編集モード（初期値: false=表示モード）
-const isEditMode = ref(false);
-
 // エラーメッセージ
 const formError = ref('');
 
@@ -42,12 +39,6 @@ onMounted(async () => {
     // エラーは userStore.error に格納される
   }
 });
-
-// 編集モードの切り替え
-const toggleEditMode = () => {
-  isEditMode.value = !isEditMode.value;
-  formError.value = '';
-};
 
 // フォームのバリデーション
 const validateForm = (): boolean => {
@@ -108,9 +99,6 @@ const handleUpdate = async () => {
 
     await userStore.updateMe(facilityId.value, updateData);
 
-    // 更新成功後は編集モードを終了
-    isEditMode.value = false;
-
     // マイページに戻る
     await router.push(`/${facilityId.value}/mypage`);
   }
@@ -122,23 +110,14 @@ const handleUpdate = async () => {
 
 // キャンセル処理
 const handleCancel = () => {
-  // 元の値に戻す
-  if (profile.value) {
-    lastName.value = profile.value.lastname || '';
-    firstName.value = profile.value.firstname || '';
-    lastNameKana.value = profile.value.lastnameKana || '';
-    firstNameKana.value = profile.value.firstnameKana || '';
-    phoneNumber.value = profile.value.phoneNumber?.replace('+81', '0') || '';
-  }
-  isEditMode.value = false;
-  formError.value = '';
+  router.back();
 };
 </script>
 
 <template>
   <div>
     <p class="mt-6 font-inter text-xl text-center w-full text-main font-semibold">
-      ユーザー情報{{ isEditMode ? '編集' : '確認' }}
+      ユーザー情報編集
     </p>
 
     <!-- ローディング表示 -->
@@ -172,7 +151,7 @@ const handleCancel = () => {
           <label class="inline-block text-xs px-2">名前(姓)</label>
           <FmTextInput
             v-model="lastName"
-            :disabled="!isEditMode"
+            name="lastName"
             class="w-full px-2"
           />
         </div>
@@ -180,25 +159,25 @@ const handleCancel = () => {
           <label class="inline-block text-xs px-2">名前(名)</label>
           <FmTextInput
             v-model="firstName"
-            :disabled="!isEditMode"
+            name="firstName"
             class="w-full px-2"
           />
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2 mt-4 max-w-md mx-auto">
         <div>
-          <label class="inline-block text-xs px-2">フリガナ(姓)</label>
+          <label class="inline-block text-xs px-2">ふりがな(姓)</label>
           <FmTextInput
             v-model="lastNameKana"
-            :disabled="!isEditMode"
+            name="lastNameKana"
             class="w-full px-2"
           />
         </div>
         <div>
-          <label class="inline-block text-xs px-2">フリガナ(名)</label>
+          <label class="inline-block text-xs px-2">ふりがな(名)</label>
           <FmTextInput
             v-model="firstNameKana"
-            :disabled="!isEditMode"
+            name="firstNameKana"
             class="w-full px-2"
           />
         </div>
@@ -208,58 +187,32 @@ const handleCancel = () => {
           <label class="inline-block text-xs px-2">電話番号</label>
           <FmTextInput
             v-model="phoneNumber"
-            :disabled="!isEditMode"
+            name="phoneNumber"
             class="w-full px-2"
           />
         </div>
       </div>
 
-      <!-- ボタン群 -->
-      <div class="mt-8 max-w-md mx-auto px-2">
-        <!-- 編集モードでない場合: 編集ボタン -->
+      <!-- ボタン群（常に編集可能） -->
+      <div class="mt-8 max-w-md mx-auto px-2 space-y-3">
         <button
-          v-if="!isEditMode"
           type="button"
           class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
-          @click="toggleEditMode"
+          :disabled="isLoading"
+          @click="handleUpdate"
         >
-          編集する
+          <span v-if="isLoading">更新中...</span>
+          <span v-else>保存する</span>
         </button>
-
-        <!-- 編集モードの場合: 保存・キャンセルボタン -->
-        <div
-          v-else
-          class="space-y-3"
+        <button
+          type="button"
+          class="bg-gray-500 text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
+          :disabled="isLoading"
+          @click="handleCancel"
         >
-          <button
-            type="button"
-            class="bg-[#F48D26] text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
-            :disabled="isLoading"
-            @click="handleUpdate"
-          >
-            <span v-if="isLoading">更新中...</span>
-            <span v-else>保存する</span>
-          </button>
-          <button
-            type="button"
-            class="bg-gray-500 text-white font-semibold rounded-[10px] px-8 w-full py-3 shadow-md hover:bg-opacity-90 transition-all duration-200 text-lg tracking-wide"
-            :disabled="isLoading"
-            @click="handleCancel"
-          >
-            キャンセル
-          </button>
-        </div>
+          キャンセル
+        </button>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.custom-input {
-  border-bottom: 1.5px solid #604c3f;
-}
-.custom-input:focus {
-  outline: none;
-  box-shadow: none;
-}
-</style>
