@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 import type { VTabs } from 'vuetify/lib/components/index.mjs'
+import {
+  mdiAccount,
+  mdiStore,
+  mdiPackageVariant,
+  mdiArrowLeft,
+} from '@mdi/js'
 
 import type { AlertType } from '~/lib/hooks'
 import { Prefecture } from '~/types'
 import { AdminStatus } from '~/types/api/v1'
-import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest, TimeWeekday } from '~/types/api/v1'
+import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest, TimeWeekday, CreateShippingRequest, UpdateShippingRequest } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -55,9 +61,42 @@ const props = defineProps({
       businessDays: new Set<TimeWeekday>(),
     }),
   },
-  shippingFormData: {
-    type: Object as PropType<UpsertShippingRequest>,
-    default: (): UpsertShippingRequest => ({
+  createShippingFormData: {
+    type: Object as PropType<CreateShippingRequest>,
+    default: (): CreateShippingRequest => ({
+      name: '',
+      box60Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: [],
+        },
+      ],
+      box60Frozen: 0,
+      box80Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: [],
+        },
+      ],
+      box80Frozen: 0,
+      box100Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: [],
+        },
+      ],
+      box100Frozen: 0,
+      hasFreeShipping: false,
+      freeShippingRates: 0,
+    }),
+  },
+  updateShippingFormData: {
+    type: Object as PropType<UpdateShippingRequest>,
+    default: (): UpdateShippingRequest => ({
+      name: '',
       box60Rates: [
         {
           name: '',
@@ -147,6 +186,10 @@ const props = defineProps({
       updatedAt: 0,
     }),
   },
+  shippings: {
+    type: Array<Shipping>,
+    default: () => [],
+  },
   productTypes: {
     type: Array<ProductType>,
     default: () => [],
@@ -191,28 +234,67 @@ const props = defineProps({
     type: String,
     default: 'coordinator',
   },
+  shippingTableItemsPerPage: {
+    type: Number,
+    default: 20,
+  },
+  shippingTableItemsTotal: {
+    type: Number,
+    default: 0,
+  },
+  createShippingDialog: {
+    type: Boolean,
+    default: false,
+  },
+  updateShippingDialog: {
+    type: Boolean,
+    default: false,
+  },
+  deleteShippingDialog: {
+    type: Boolean,
+    default: false,
+  },
+  activeShippingDialog: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits<{
   (e: 'update:selected-tab-item', item: string): void
   (e: 'update:coordinator-form-data', formData: UpdateCoordinatorRequest): void
   (e: 'update:shop-form-data', formData: UpdateShopRequest): void
-  (e: 'update:shipping-form-data', formData: UpsertShippingRequest): void
+  (e: 'update:create-shipping-form-data', formData: CreateShippingRequest): void
+  (e: 'update:update-shipping-form-data', formData: UpdateShippingRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
   (e: 'update:search-product-type', name: string): void
+  (e: 'update:create-shipping-dialog', val: boolean): void
+  (e: 'update:update-shipping-dialog', val: boolean): void
+  (e: 'update:delete-shipping-dialog', val: boolean): void
+  (e: 'update:active-shipping-dialog', val: boolean): void
   (e: 'click:search-address'): void
+  (e: 'click:update-shipping-page', page: number): void
+  (e: 'click:update-shipping-items-per-page', itemsPerPage: number): void
+  (e: 'click:create-shipping'): void
+  (e: 'click:update-shipping', shippingId: string): void
+  (e: 'click:copy-shipping', shippingId: string): void
+  (e: 'click:delete-shipping', shippingId: string): void
+  (e: 'click:active-shipping', shippingId: string): void
   (e: 'submit:coordinator'): void
   (e: 'submit:shop'): void
-  (e: 'submit:shipping'): void
+  (e: 'submit:create-shipping'): void
+  (e: 'submit:update-shipping'): void
+  (e: 'submit:delete-shipping'): void
+  (e: 'submit:active-shipping'): void
 }>()
 
-const tabs: VTabs[] = [
-  { title: '基本情報', value: 'coordinator' },
-  { title: '店舗情報', value: 'shop' },
-  { title: '配送設定', value: 'shipping' },
+const tabs = [
+  { title: '基本情報', value: 'coordinator', icon: mdiAccount },
+  { title: '店舗情報', value: 'shop', icon: mdiStore },
+  { title: '配送設定', value: 'shipping', icon: mdiPackageVariant },
 ]
 
 const selectedTabItemValue = computed({
@@ -227,9 +309,29 @@ const shopFormDataValue = computed({
   get: (): UpdateShopRequest => props.shopFormData,
   set: (val: UpdateShopRequest): void => emit('update:shop-form-data', val),
 })
-const shippingFormDataValue = computed({
-  get: (): UpsertShippingRequest => props.shippingFormData,
-  set: (val: UpsertShippingRequest): void => emit('update:shipping-form-data', val),
+const createShippingFormDataValue = computed({
+  get: (): CreateShippingRequest => props.createShippingFormData,
+  set: (val: CreateShippingRequest): void => emit('update:create-shipping-form-data', val),
+})
+const updateShippingFormDataValue = computed({
+  get: (): UpdateShippingRequest => props.updateShippingFormData,
+  set: (val: UpdateShippingRequest): void => emit('update:update-shipping-form-data', val),
+})
+const createShippingDialogValue = computed({
+  get: (): boolean => props.createShippingDialog,
+  set: (val: boolean): void => emit('update:create-shipping-dialog', val),
+})
+const updateShippingDialogValue = computed({
+  get: (): boolean => props.updateShippingDialog,
+  set: (val: boolean): void => emit('update:update-shipping-dialog', val),
+})
+const deleteShippingDialogValue = computed({
+  get: (): boolean => props.deleteShippingDialog,
+  set: (val: boolean): void => emit('update:delete-shipping-dialog', val),
+})
+const activeShippingDialogValue = computed({
+  get: (): boolean => props.activeShippingDialog,
+  set: (val: boolean): void => emit('update:active-shipping-dialog', val),
 })
 
 const onChangeThumbnailFile = (files?: FileList) => {
@@ -260,6 +362,42 @@ const onChangeBonusVideo = (files?: FileList) => {
   emit('update:bonus-video', files)
 }
 
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
+}
+
+const onClickSearchAddress = (): void => {
+  emit('click:search-address')
+}
+
+const onClickUpdateShippingPage = (page: number): void => {
+  emit('click:update-shipping-page', page)
+}
+
+const onClickUpdateShippingItemsPerPage = (itemsPerPage: number): void => {
+  emit('click:update-shipping-items-per-page', itemsPerPage)
+}
+
+const onClickCreateShipping = (): void => {
+  emit('click:create-shipping')
+}
+
+const onClickUpdateShipping = (shippingId: string): void => {
+  emit('click:update-shipping', shippingId)
+}
+
+const onClickCopyShipping = (shippingId: string): void => {
+  emit('click:copy-shipping', shippingId)
+}
+
+const onClickDeleteShipping = (shippingId: string): void => {
+  emit('click:delete-shipping', shippingId)
+}
+
+const onClickActiveShipping = (shippingId: string): void => {
+  emit('click:active-shipping', shippingId)
+}
+
 const onSubmitCoordinator = (): void => {
   emit('submit:coordinator')
 }
@@ -268,85 +406,177 @@ const onSubmitShop = (): void => {
   emit('submit:shop')
 }
 
-const onSubmitShipping = (): void => {
-  emit('submit:shipping')
+const onSubmitCreateShipping = (): void => {
+  emit('submit:create-shipping')
 }
 
-const onChangeSearchProductType = (name: string): void => {
-  emit('update:search-product-type', name)
+const onSubmitUpdateShipping = (): void => {
+  emit('submit:update-shipping')
 }
 
-const onClickSearchAddress = (): void => {
-  emit('click:search-address')
+const onSubmitDeleteShipping = (): void => {
+  emit('submit:delete-shipping')
+}
+
+const onSubmitActiveShipping = (): void => {
+  emit('submit:active-shipping')
 }
 </script>
 
 <template>
-  <v-alert
-    v-show="props.isAlert"
-    :type="props.alertType"
-    v-text="props.alertText"
-  />
+  <v-container class="pa-6">
+    <v-alert
+      v-show="props.isAlert"
+      :type="props.alertType"
+      class="mb-6"
+      v-text="props.alertText"
+    />
 
-  <v-card class="mb-4">
-    <v-card-title>コーディネーター詳細</v-card-title>
-
-    <v-card-text>
-      <v-tabs
-        v-model="selectedTabItemValue"
-        grow
-        color="dark"
+    <div class="mb-6">
+      <v-btn
+        variant="text"
+        :prepend-icon="mdiArrowLeft"
+        @click="$router.back()"
       >
-        <v-tab
-          v-for="item in tabs"
-          :key="item.value"
-          :value="item.value"
+        戻る
+      </v-btn>
+      <h1 class="text-h4 font-weight-bold mt-2 mb-2">
+        コーディネーター編集
+      </h1>
+      <p class="text-body-1 text-grey-darken-1">
+        コーディネーター情報を編集・管理します。タブを切り替えて各種設定を行ってください。
+      </p>
+    </div>
+
+    <v-card
+      class="form-section-card"
+      elevation="2"
+      :loading="loading"
+    >
+      <v-card-title class="section-header pa-0">
+        <v-tabs
+          v-model="selectedTabItemValue"
+          class="w-100"
+          density="comfortable"
         >
-          {{ item.title }}
-        </v-tab>
-      </v-tabs>
-    </v-card-text>
-  </v-card>
+          <v-tab
+            v-for="item in tabs"
+            :key="item.value"
+            :value="item.value"
+            class="tab-item"
+          >
+            <v-icon
+              :icon="item.icon"
+              size="20"
+              class="mr-2"
+            />
+            {{ item.title }}
+          </v-tab>
+        </v-tabs>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <v-window
+          v-model="selectedTabItemValue"
+          class="tab-content"
+        >
+          <v-window-item value="coordinator">
+            <div class="pa-6">
+              <organisms-coordinator-show
+                v-model:form-data="coordinatorFormDataValue"
+                :loading="loading"
+                :coordinator="coordinator"
+                :thumbnail-upload-status="thumbnailUploadStatus"
+                :header-upload-status="headerUploadStatus"
+                :promotion-video-upload-status="promotionVideoUploadStatus"
+                :bonus-video-upload-status="bonusVideoUploadStatus"
+                :search-error-message="searchErrorMessage"
+                :search-loading="searchLoading"
+                @update:thumbnail-file="onChangeThumbnailFile"
+                @update:header-file="onChangeHeaderFile"
+                @update:promotion-video="onChangePromotionVideo"
+                @update:bonus-video="onChangeBonusVideo"
+                @click:search-address="onClickSearchAddress"
+                @submit="onSubmitCoordinator"
+              />
+            </div>
+          </v-window-item>
 
-  <v-window v-model="selectedTabItemValue">
-    <v-window-item value="coordinator">
-      <organisms-coordinator-show
-        v-model:form-data="coordinatorFormDataValue"
-        :loading="loading"
-        :coordinator="coordinator"
-        :thumbnail-upload-status="thumbnailUploadStatus"
-        :header-upload-status="headerUploadStatus"
-        :promotion-video-upload-status="promotionVideoUploadStatus"
-        :bonus-video-upload-status="bonusVideoUploadStatus"
-        :search-error-message="searchErrorMessage"
-        :search-loading="searchLoading"
-        @update:thumbnail-file="onChangeThumbnailFile"
-        @update:header-file="onChangeHeaderFile"
-        @update:promotion-video="onChangePromotionVideo"
-        @update:bonus-video="onChangeBonusVideo"
-        @click:search-address="onClickSearchAddress"
-        @submit="onSubmitCoordinator"
-      />
-    </v-window-item>
+          <v-window-item value="shop">
+            <div class="pa-6">
+              <organisms-coordinator-shop
+                v-model:form-data="shopFormDataValue"
+                :loading="loading"
+                :shop="shop"
+                :product-types="productTypes"
+                @update:search-product-type="onChangeSearchProductType"
+                @submit="onSubmitShop"
+              />
+            </div>
+          </v-window-item>
 
-    <v-window-item value="shop">
-      <organisms-coordinator-shop
-        v-model:form-data="shopFormDataValue"
-        :loading="loading"
-        :shop="shop"
-        :product-types="productTypes"
-        @update:search-product-type="onChangeSearchProductType"
-        @submit="onSubmitShop"
-      />
-    </v-window-item>
-
-    <v-window-item value="shipping">
-      <organisms-coordinator-shipping
-        v-model:form-data="shippingFormDataValue"
-        :loading="loading"
-        :shipping="shipping"
-        @submit="onSubmitShipping"
-      />
-    </v-window-item>
-  </v-window>
+          <v-window-item value="shipping">
+            <div class="pa-6">
+              <organisms-coordinator-shipping
+                v-model:create-form-data="createShippingFormDataValue"
+                v-model:update-form-data="updateShippingFormDataValue"
+                v-model:create-dialog="createShippingDialogValue"
+                v-model:update-dialog="updateShippingDialogValue"
+                v-model:delete-dialog="deleteShippingDialogValue"
+                v-model:active-dialog="activeShippingDialogValue"
+                :loading="props.loading"
+                :shipping="props.shipping"
+                :shippings="props.shippings"
+                :table-items-per-page="props.shippingTableItemsPerPage"
+                :table-items-total="props.shippingTableItemsTotal"
+                @click:update-page="onClickUpdateShippingPage"
+                @click:update-items-per-page="onClickUpdateShippingItemsPerPage"
+                @click:create="onClickCreateShipping"
+                @click:update="onClickUpdateShipping"
+                @click:delete="onClickDeleteShipping"
+                @click:copy="onClickCopyShipping"
+                @click:active="onClickActiveShipping"
+                @submit:create="onSubmitCreateShipping"
+                @submit:update="onSubmitUpdateShipping"
+                @submit:delete="onSubmitDeleteShipping"
+                @submit:active="onSubmitActiveShipping"
+              />
+            </div>
+          </v-window-item>
+        </v-window>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
+
+<style scoped>
+.form-section-card {
+  border-radius: 12px;
+  max-width: none;
+}
+
+.section-header {
+  background: linear-gradient(90deg, rgb(33 150 243 / 5%) 0%, rgb(33 150 243 / 0%) 100%);
+  border-bottom: 1px solid rgb(0 0 0 / 5%);
+  padding: 0;
+}
+
+.tab-item {
+  text-transform: none;
+  font-weight: 500;
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+@media (width <= 600px) {
+  .form-section-card {
+    border-radius: 8px;
+  }
+
+  .tab-item {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
+}
+</style>

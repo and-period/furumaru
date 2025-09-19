@@ -6,7 +6,7 @@ import type { CreateShippingRequest, UpdateShippingRequest } from '~/types/api/v
 import { getErrorMessage } from '~/lib/validations'
 import { getSelectablePrefecturesList } from '~/lib/prefectures'
 import type { PrefecturesListSelectItems } from '~/lib/prefectures'
-import { UpsertShippingValidationRules } from '~/types/validations'
+import { ShippingValidationRules } from '~/types/validations'
 
 interface Props {
   formType: 'create' | 'update'
@@ -48,7 +48,7 @@ const box100RateItemsSize = computed(() => {
   return [...Array(formData.value.box100Rates.length).keys()]
 })
 
-const validate = useVuelidate(UpsertShippingValidationRules, formData)
+const validate = useVuelidate(ShippingValidationRules, formData)
 
 /**
  * サイズ60の配送料オプションを追加する

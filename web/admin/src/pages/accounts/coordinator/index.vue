@@ -1,54 +1,36 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
-import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useAuthStore, useCommonStore, useCoordinatorStore, useProductTypeStore, useShopStore } from '~/store'
+import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
+import { useAuthStore, useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
 import { Prefecture } from '~/types'
-import type { UpsertShippingRequest, UpdateCoordinatorRequest, UpdateShopRequest } from '~/types/api/v1'
+import type { UpdateCoordinatorRequest, UpdateShopRequest, CreateShippingRequest, UpdateShippingRequest, Shipping } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
+const route = useRoute()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const coordinatorStore = useCoordinatorStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
+const shippingStore = useShippingStore()
 const shopStore = useShopStore()
+const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { coordinator, shipping } = storeToRefs(authStore)
+const { coordinator } = storeToRefs(authStore)
 const { productTypes } = storeToRefs(productTypeStore)
 const { shop } = storeToRefs(shopStore)
+const { shippings, total } = storeToRefs(shippingStore)
+
+const initialTab = route.query.tab as string | undefined || 'coordinator'
 
 const loading = ref<boolean>(false)
-const selector = ref<string>('coordinator')
+const selector = ref<string>(initialTab)
+const selectedShipping = ref<Shipping>()
 
-const coordinatorFormData = ref<UpdateCoordinatorRequest>({
-  lastname: '',
-  lastnameKana: '',
-  firstname: '',
-  firstnameKana: '',
-  username: '',
-  phoneNumber: '',
-  postalCode: '',
-  prefectureCode: Prefecture.UNKNOWN,
-  city: '',
-  addressLine1: '',
-  addressLine2: '',
-  profile: '',
-  thumbnailUrl: '',
-  headerUrl: '',
-  promotionVideoUrl: '',
-  bonusVideoUrl: '',
-  instagramId: '',
-  facebookId: '',
-})
-const shopFormData = ref<UpdateShopRequest>({
+const initialShippingFormData: CreateShippingRequest | UpdateShippingRequest = {
   name: '',
-  productTypeIds: [],
-  businessDays: new Set<number>(),
-})
-const shippingFormData = ref<UpsertShippingRequest>({
   box60Rates: [
     {
       name: '',
@@ -75,7 +57,39 @@ const shippingFormData = ref<UpsertShippingRequest>({
   box100Frozen: 0,
   hasFreeShipping: false,
   freeShippingRates: 0,
+}
+
+const coordinatorFormData = ref<UpdateCoordinatorRequest>({
+  lastname: '',
+  lastnameKana: '',
+  firstname: '',
+  firstnameKana: '',
+  username: '',
+  phoneNumber: '',
+  postalCode: '',
+  prefectureCode: Prefecture.UNKNOWN,
+  city: '',
+  addressLine1: '',
+  addressLine2: '',
+  profile: '',
+  thumbnailUrl: '',
+  headerUrl: '',
+  promotionVideoUrl: '',
+  bonusVideoUrl: '',
+  instagramId: '',
+  facebookId: '',
 })
+const shopFormData = ref<UpdateShopRequest>({
+  name: '',
+  productTypeIds: [],
+  businessDays: new Set<number>(),
+})
+const createShippingFormData = ref<CreateShippingRequest>({ ...initialShippingFormData })
+const updateShippingFormData = ref<UpdateShippingRequest>({ ...initialShippingFormData })
+const createShippingDialog = ref<boolean>(false)
+const updateShippingDialog = ref<boolean>(false)
+const deleteShippingDialog = ref<boolean>(false)
+const activeShippingDialog = ref<boolean>(false)
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: '',
@@ -95,16 +109,13 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await Promise.all([
-      authStore.getCoordinator(),
-      authStore.fetchShipping(),
-    ])
+    await authStore.getCoordinator()
+    await fetchShippings()
+
     coordinatorFormData.value = {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber),
     }
-    shopFormData.value = { ...shop.value, businessDays: new Set(shop.value.businessDays) }
-    shippingFormData.value = { ...shipping.value }
     if (productTypes.value.length === 0) {
       productTypeStore.fetchProductTypes(20)
     }
@@ -117,8 +128,74 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   }
 })
 
+watch(pagination.itemsPerPage, async (): Promise<void> => {
+  loading.value = true
+  await fetchShippings()
+  loading.value = false
+})
+
+const fetchShippings = async (): Promise<void> => {
+  try {
+    await shippingStore.fetchShippings(coordinator.value.id, pagination.itemsPerPage.value, pagination.offset.value)
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
+}
+
+const handleUpdateShippingPage = async (page: number): Promise<void> => {
+  loading.value = true
+  pagination.updateCurrentPage(page)
+  await fetchShippings()
+  loading.value = false
+}
+
+const handleClickCreateShipping = (): void => {
+  createShippingDialog.value = true
+}
+
+const handleClickUpdateShipping = (shippingId: string): void => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  selectedShipping.value = selected
+  updateShippingFormData.value = { ...selected }
+  updateShippingDialog.value = true
+}
+
+const handleClickDeleteShipping = (shippingId: string): void => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  selectedShipping.value = selected
+  deleteShippingDialog.value = true
+}
+
+const handleClickCopyShipping = (shippingId: string) => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  createShippingFormData.value = { ...selected }
+  createShippingDialog.value = true
+}
+
+const handleClickActiveShipping = (shippingId: string) => {
+  const selected = shippings.value.find(s => s.id === shippingId)
+  if (!selected) {
+    return
+  }
+  selectedShipping.value = selected
+  activeShippingDialog.value = true
 }
 
 const handleSubmitCoordinator = async (): Promise<void> => {
@@ -173,23 +250,101 @@ const handleSubmitShop = async (): Promise<void> => {
   }
 }
 
-const handleSubmitShipping = async (): Promise<void> => {
+const handleSubmitCreateShipping = async (): Promise<void> => {
   try {
     loading.value = true
-    await authStore.upsertShipping(shippingFormData.value)
+    await shippingStore.createShipping(coordinator.value.id, createShippingFormData.value)
     commonStore.addSnackbar({
       color: 'info',
-      message: '配送設定を更新しました。',
+      message: '配送設定を作成しました。',
     })
+    fetchShippings()
+    createShippingDialog.value = false
+    createShippingFormData.value = { ...initialShippingFormData }
   }
   catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitUpdateShipping = async (): Promise<void> => {
+  try {
+    if (!selectedShipping.value) {
+      throw new Error('配送設定が選択されていません。')
+    }
+    loading.value = true
+    await shippingStore.updateShipping(coordinator.value.id, selectedShipping.value.id, updateShippingFormData.value)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '配送設定を更新しました。',
     })
+    fetchShippings()
+    updateShippingDialog.value = false
+    updateShippingFormData.value = { ...initialShippingFormData }
+    selectedShipping.value = undefined
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitDeleteShipping = async (): Promise<void> => {
+  try {
+    loading.value = true
+    if (!selectedShipping.value) {
+      throw new Error('配送設定が選択されていません。')
+    }
+    await shippingStore.deleteShipping(coordinator.value.id, selectedShipping.value.id)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '配送設定を削除しました。',
+    })
+    fetchShippings()
+    deleteShippingDialog.value = false
+    selectedShipping.value = undefined
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitActiveShipping = async (): Promise<void> => {
+  try {
+    loading.value = true
+    if (!selectedShipping.value) {
+      throw new Error('配送設定が選択されていません。')
+    }
+    await shippingStore.activeShipping(coordinator.value.id, selectedShipping.value.id)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '配送設定を有効化しました。',
+    })
+    fetchShippings()
+    activeShippingDialog.value = false
+    selectedShipping.value = undefined
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   }
   finally {
@@ -198,7 +353,7 @@ const handleSubmitShipping = async (): Promise<void> => {
 }
 
 const handleUpdateThumbnail = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || files[0] == null) {
     return
   }
 
@@ -217,7 +372,7 @@ const handleUpdateThumbnail = (files: FileList): void => {
 }
 
 const handleUpdateHeader = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || files[0] == null) {
     return
   }
 
@@ -236,7 +391,7 @@ const handleUpdateHeader = (files: FileList): void => {
 }
 
 const handleUpdatePromotionVideo = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || files[0] == null) {
     return
   }
 
@@ -255,7 +410,7 @@ const handleUpdatePromotionVideo = (files: FileList): void => {
 }
 
 const handleUpdateBonusVideo = (files: FileList): void => {
-  if (files.length === 0) {
+  if (files.length === 0 || files[0] == null) {
     return
   }
 
@@ -319,7 +474,12 @@ catch (err) {
     v-model:selected-tab-item="selector"
     v-model:coordinator-form-data="coordinatorFormData"
     v-model:shop-form-data="shopFormData"
-    v-model:shipping-form-data="shippingFormData"
+    v-model:create-shipping-form-data="createShippingFormData"
+    v-model:update-shipping-form-data="updateShippingFormData"
+    v-model:create-shipping-dialog="createShippingDialog"
+    v-model:update-shipping-dialog="updateShippingDialog"
+    v-model:delete-shipping-dialog="deleteShippingDialog"
+    v-model:active-shipping-dialog="activeShippingDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -332,8 +492,18 @@ catch (err) {
     :search-error-message="searchAddress.errorMessage.value"
     :coordinator="coordinator"
     :product-types="productTypes"
-    :shipping="shipping"
+    :shipping="selectedShipping"
+    :shippings="shippings"
+    :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-total="total"
     @click:search-address="handleSearchAddress"
+    @click:update-shipping-page="handleUpdateShippingPage"
+    @click:update-shipping-items-per-page="pagination.handleUpdateItemsPerPage"
+    @click:create-shipping="handleClickCreateShipping"
+    @click:update-shipping="handleClickUpdateShipping"
+    @click:delete-shipping="handleClickDeleteShipping"
+    @click:copy-shipping="handleClickCopyShipping"
+    @click:active-shipping="handleClickActiveShipping"
     @update:search-product-type="handleSearchProductType"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
@@ -341,6 +511,9 @@ catch (err) {
     @update:bonus-video="handleUpdateBonusVideo"
     @submit:coordinator="handleSubmitCoordinator"
     @submit:shop="handleSubmitShop"
-    @submit:shipping="handleSubmitShipping"
+    @submit:create-shipping="handleSubmitCreateShipping"
+    @submit:update-shipping="handleSubmitUpdateShipping"
+    @submit:delete-shipping="handleSubmitDeleteShipping"
+    @submit:active-shipping="handleSubmitActiveShipping"
   />
 </template>
