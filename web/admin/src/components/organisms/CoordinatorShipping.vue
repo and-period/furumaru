@@ -310,19 +310,19 @@ const selectCreateAllItem = (rate: '60' | '80' | '100', index: number): void => 
   switch (rate) {
     case '60':
       createFormDataValue.value.box60Rates[index].prefectureCodes
-       = getSelectableCreateBox60RatePrefecturesList(index)
+        = getSelectableCreateBox60RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '80':
       createFormDataValue.value.box80Rates[index].prefectureCodes
-       = getSelectableCreateBox80RatePrefecturesList(index)
+        = getSelectableCreateBox80RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '100':
       createFormDataValue.value.box100Rates[index].prefectureCodes
-       = getSelectableCreateBox100RatePrefecturesList(index)
+        = getSelectableCreateBox100RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
@@ -333,19 +333,19 @@ const selectUpdateAllItem = (rate: '60' | '80' | '100', index: number): void => 
   switch (rate) {
     case '60':
       updateFormDataValue.value.box60Rates[index].prefectureCodes
-       = getSelectableUpdateBox60RatePrefecturesList(index)
+        = getSelectableUpdateBox60RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '80':
       updateFormDataValue.value.box80Rates[index].prefectureCodes
-       = getSelectableUpdateBox80RatePrefecturesList(index)
+        = getSelectableUpdateBox80RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '100':
       updateFormDataValue.value.box100Rates[index].prefectureCodes
-       = getSelectableUpdateBox100RatePrefecturesList(index)
+        = getSelectableUpdateBox100RatePrefecturesList(index)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
