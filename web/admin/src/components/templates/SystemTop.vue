@@ -10,6 +10,7 @@ import {
   mdiTruckOutline,
   mdiCreditCardSettings,
   mdiCog,
+  mdiChevronRight,
 } from '@mdi/js'
 import type { SettingMenu } from '~/types/props'
 
@@ -181,7 +182,7 @@ const groupedMenus = computed(() => {
               >
                 管理する
                 <v-icon
-                  icon="mdi-chevron-right"
+                  :icon="mdiChevronRight"
                   end
                 />
               </v-btn>

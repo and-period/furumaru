@@ -37,7 +37,7 @@ const menus: SettingMenu[] = [
   },
   {
     text: '配送設定管理',
-    action: () => router.push('/shippings'),
+    action: () => router.push('/accounts/coordinator?tab=shipping'),
     adminTypes: [AdminType.AdminTypeCoordinator],
   },
   {

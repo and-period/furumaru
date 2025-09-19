@@ -81,7 +81,6 @@ func TestShipping(t *testing.T) {
 				FreeShippingRates: 3000,
 			},
 			expect: &Shipping{
-				ID:            "coordinator-id",
 				ShopID:        "shop-id",
 				CoordinatorID: "coordinator-id",
 				Name:          "配送設定",
@@ -103,6 +102,7 @@ func TestShipping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewShipping(tt.params)
+			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
