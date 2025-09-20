@@ -28,12 +28,10 @@ import type {
   RefreshAuthTokenRequest,
   RegisterAuthDeviceRequest,
   ResetAuthPasswordRequest,
-  ShippingResponse,
   SignInRequest,
   UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
   UpdateCoordinatorRequest,
-  UpsertShippingRequest,
   VerifyAuthEmailRequest,
 } from '../models/index';
 import {
@@ -63,8 +61,6 @@ import {
     RegisterAuthDeviceRequestToJSON,
     ResetAuthPasswordRequestFromJSON,
     ResetAuthPasswordRequestToJSON,
-    ShippingResponseFromJSON,
-    ShippingResponseToJSON,
     SignInRequestFromJSON,
     SignInRequestToJSON,
     UpdateAuthEmailRequestFromJSON,
@@ -73,18 +69,12 @@ import {
     UpdateAuthPasswordRequestToJSON,
     UpdateCoordinatorRequestFromJSON,
     UpdateCoordinatorRequestToJSON,
-    UpsertShippingRequestFromJSON,
-    UpsertShippingRequestToJSON,
     VerifyAuthEmailRequestFromJSON,
     VerifyAuthEmailRequestToJSON,
 } from '../models/index';
 
 export interface V1AuthCoordinatorPatchRequest {
     updateCoordinatorRequest: UpdateCoordinatorRequest;
-}
-
-export interface V1AuthCoordinatorShippingsPatchRequest {
-    upsertShippingRequest: UpsertShippingRequest;
 }
 
 export interface V1AuthDevicePostRequest {
@@ -227,93 +217,6 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async v1AuthCoordinatorPatch(requestParameters: V1AuthCoordinatorPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1AuthCoordinatorPatchRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * ログイン中のコーディネータの配送設定を取得します。
-     * 自身の配送設定取得
-     */
-    async v1AuthCoordinatorShippingsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ShippingResponse>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerauth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/v1/auth/coordinator/shippings`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ShippingResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * ログイン中のコーディネータの配送設定を取得します。
-     * 自身の配送設定取得
-     */
-    async v1AuthCoordinatorShippingsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ShippingResponse> {
-        const response = await this.v1AuthCoordinatorShippingsGetRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * ログイン中のコーディネータの配送設定を更新します。
-     * 自身の配送設定更新
-     */
-    async v1AuthCoordinatorShippingsPatchRaw(requestParameters: V1AuthCoordinatorShippingsPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['upsertShippingRequest'] == null) {
-            throw new runtime.RequiredError(
-                'upsertShippingRequest',
-                'Required parameter "upsertShippingRequest" was null or undefined when calling v1AuthCoordinatorShippingsPatch().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerauth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/v1/auth/coordinator/shippings`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: UpsertShippingRequestToJSON(requestParameters['upsertShippingRequest']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * ログイン中のコーディネータの配送設定を更新します。
-     * 自身の配送設定更新
-     */
-    async v1AuthCoordinatorShippingsPatch(requestParameters: V1AuthCoordinatorShippingsPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1AuthCoordinatorShippingsPatchRaw(requestParameters, initOverrides);
     }
 
     /**

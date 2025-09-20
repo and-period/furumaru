@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TimeWeekday } from './TimeWeekday';
+import {
+    TimeWeekdayFromJSON,
+    TimeWeekdayFromJSONTyped,
+    TimeWeekdayToJSON,
+    TimeWeekdayToJSONTyped,
+} from './TimeWeekday';
+
 /**
  * 
  * @export
@@ -21,10 +29,10 @@ import { mapValues } from '../runtime';
 export interface UpdateShopRequest {
     /**
      * 営業曜日(発送可能日)
-     * @type {Set<number>}
+     * @type {Array<TimeWeekday>}
      * @memberof UpdateShopRequest
      */
-    businessDays: Set<number>;
+    businessDays: Array<TimeWeekday>;
     /**
      * 店舗名
      * @type {string}
@@ -59,7 +67,7 @@ export function UpdateShopRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'businessDays': new Set(json['businessDays']),
+        'businessDays': ((json['businessDays'] as Array<any>).map(TimeWeekdayFromJSON)),
         'name': json['name'],
         'productTypeIds': json['productTypeIds'],
     };
@@ -76,7 +84,7 @@ export function UpdateShopRequestToJSONTyped(value?: UpdateShopRequest | null, i
 
     return {
         
-        'businessDays': Array.from(value['businessDays'] as Set<any>),
+        'businessDays': ((value['businessDays'] as Array<any>).map(TimeWeekdayToJSON)),
         'name': value['name'],
         'productTypeIds': value['productTypeIds'],
     };

@@ -9,11 +9,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*service.Shipping, error) {
-	in := &store.GetShippingByCoordinatorIDInput{
-		CoordinatorID: coordinatorID,
+func (h *handler) getShippingByShopID(ctx context.Context, shopID string) (*service.Shipping, error) {
+	in := &store.GetShippingByShopIDInput{
+		ShopID: shopID,
 	}
-	shipping, err := h.store.GetShippingByCoordinatorID(ctx, in)
+	shipping, err := h.store.GetShippingByShopID(ctx, in)
 	if errors.Is(err, exception.ErrNotFound) {
 		// 配送設定の登録をしていない場合、デフォルト配送設定を返却する
 		in := &store.GetDefaultShippingInput{}

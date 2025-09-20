@@ -44,4 +44,5 @@ export * from './ShippingSize';
 export * from './ShippingType';
 export * from './SignInRequest';
 export * from './StorageMethodType';
+export * from './TimeWeekday';
 export * from './UpdateAuthUserRequest';

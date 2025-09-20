@@ -70,8 +70,9 @@ func (t ShippingType) String() string {
 }
 
 func NewShipping(params *NewShippingParams) *Shipping {
+	shippingID := uuid.Base58Encode(uuid.New())
 	rparams := &NewShippingRevisionParams{
-		ShippingID:        params.CoordinatorID,
+		ShippingID:        shippingID,
 		Box60Rates:        params.Box60Rates,
 		Box60Frozen:       params.Box60Frozen,
 		Box80Rates:        params.Box80Rates,
@@ -83,7 +84,7 @@ func NewShipping(params *NewShippingParams) *Shipping {
 	}
 	revision := NewShippingRevision(rparams)
 	return &Shipping{
-		ID:               uuid.Base58Encode(uuid.New()),
+		ID:               shippingID,
 		ShopID:           params.ShopID,
 		CoordinatorID:    params.CoordinatorID,
 		Name:             params.Name,

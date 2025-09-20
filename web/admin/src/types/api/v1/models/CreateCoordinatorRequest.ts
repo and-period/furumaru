@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TimeWeekday } from './TimeWeekday';
+import {
+    TimeWeekdayFromJSON,
+    TimeWeekdayFromJSONTyped,
+    TimeWeekdayToJSON,
+    TimeWeekdayToJSONTyped,
+} from './TimeWeekday';
+
 /**
  * 
  * @export
@@ -39,10 +47,10 @@ export interface CreateCoordinatorRequest {
     bonusVideoUrl: string;
     /**
      * 営業曜日(発送可能日)
-     * @type {Set<number>}
+     * @type {Array<TimeWeekday>}
      * @memberof CreateCoordinatorRequest
      */
-    businessDays: Set<number>;
+    businessDays: Array<TimeWeekday>;
     /**
      * 市区町村
      * @type {string}
@@ -195,7 +203,7 @@ export function CreateCoordinatorRequestFromJSONTyped(json: any, ignoreDiscrimin
         'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'],
         'bonusVideoUrl': json['bonusVideoUrl'],
-        'businessDays': new Set(json['businessDays']),
+        'businessDays': ((json['businessDays'] as Array<any>).map(TimeWeekdayFromJSON)),
         'city': json['city'],
         'email': json['email'],
         'facebookId': json['facebookId'],
@@ -231,7 +239,7 @@ export function CreateCoordinatorRequestToJSONTyped(value?: CreateCoordinatorReq
         'addressLine1': value['addressLine1'],
         'addressLine2': value['addressLine2'],
         'bonusVideoUrl': value['bonusVideoUrl'],
-        'businessDays': Array.from(value['businessDays'] as Set<any>),
+        'businessDays': ((value['businessDays'] as Array<any>).map(TimeWeekdayToJSON)),
         'city': value['city'],
         'email': value['email'],
         'facebookId': value['facebookId'],

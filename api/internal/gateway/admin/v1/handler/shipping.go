@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -28,8 +27,6 @@ func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 	cr.PATCH("/:shippingId", h.UpdateShipping)
 	cr.DELETE("/:shippingId", h.DeleteShipping)
 	cr.PATCH("/:shippingId/activation", h.UpdateActiveShipping)
-	cr.GET("/-/activation", h.GetActiveShipping) // Deprecated
-	cr.PATCH("", h.UpsertShipping)               // Deprecated
 }
 
 func (h *handler) filterAccessShipping(ctx *gin.Context) {
@@ -173,8 +170,9 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		return
 	}
 	res := &types.ShippingsResponse{
-		Shippings: []*types.Shipping{service.NewShipping(shipping).Response()},
-		Total:     1,
+		Shippings:    []*types.Shipping{service.NewShipping(shipping).Response()},
+		Coordinators: []*types.Coordinator{},
+		Total:        1,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -393,83 +391,6 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-// @Summary     アクティブ配送設定取得
-// @Description Deprecated.指定されたコーディネーターのアクティブ配送設定を取得します。
-// @Tags        Shipping
-// @Router      /v1/coordinators/{coordinatorId}/shippings/-/activation [get]
-// @Security    bearerauth
-// @Param       coordinatorId path string true "コーディネーターID" example("kSByoE6FetnPs5Byk3a9Zx")
-// @Produce     json
-// @Success     200 {object} types.ShippingResponse
-// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
-// Deprecated
-func (h *handler) GetActiveShipping(ctx *gin.Context) {
-	in := &store.GetShippingByCoordinatorIDInput{
-		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
-	}
-	shipping, err := h.store.GetShippingByCoordinatorID(ctx, in)
-	if errors.Is(err, exception.ErrNotFound) {
-		// 配送設定の登録をしていない場合、デフォルト設定を返却する
-		in := &store.GetDefaultShippingInput{}
-		shipping, err = h.store.GetDefaultShipping(ctx, in)
-	}
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	res := &types.ShippingResponse{
-		Shipping: service.NewShipping(shipping).Response(),
-	}
-	ctx.JSON(http.StatusOK, res)
-}
-
-// @Summary     配送設定更新
-// @Description Deprecated.コーディネータの配送設定を更新します。
-// @Tags        Shipping
-// @Router      /v1/coordinators/{coordinatorId}/shippings [patch]
-// @Security    bearerauth
-// @Accept      json
-// @Param       request body types.UpsertShippingRequest true "配送設定情報"
-// @Param       coordinatorId path string true "コーディネータID" example("kSByoE6FetnPs5Byk3a9Zx")
-// @Produce     json
-// @Success     204
-// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
-// @Failure     403 {object} util.ErrorResponse "アクセス権限がない"
-func (h *handler) UpsertShipping(ctx *gin.Context) {
-	req := &types.UpsertShippingRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-	coordinatorID := util.GetParam(ctx, "coordinatorId")
-	if getAdminType(ctx).IsCoordinator() && getAdminID(ctx) != coordinatorID {
-		h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
-		return
-	}
-	shop, err := h.getShopByCoordinatorID(ctx, coordinatorID)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	in := &store.UpsertShippingInput{
-		ShopID:            shop.ID,
-		CoordinatorID:     coordinatorID,
-		Box60Rates:        h.newShippingRatesForUpsert(req.Box60Rates),
-		Box60Frozen:       req.Box60Frozen,
-		Box80Rates:        h.newShippingRatesForUpsert(req.Box80Rates),
-		Box80Frozen:       req.Box80Frozen,
-		Box100Rates:       h.newShippingRatesForUpsert(req.Box100Rates),
-		Box100Frozen:      req.Box100Frozen,
-		HasFreeShipping:   req.HasFreeShipping,
-		FreeShippingRates: req.FreeShippingRates,
-	}
-	if err := h.store.UpsertShipping(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	ctx.Status(http.StatusNoContent)
-}
-
 func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.Shipping, error) {
 	in := &store.GetShippingInput{
 		ShippingID: shippingID,
@@ -497,18 +418,6 @@ func (h *handler) newShippingRatesForUpdate(in []*types.UpdateShippingRate) []*s
 	res := make([]*store.UpdateShippingRate, len(in))
 	for i := range in {
 		res[i] = &store.UpdateShippingRate{
-			Name:            in[i].Name,
-			Price:           in[i].Price,
-			PrefectureCodes: in[i].PrefectureCodes,
-		}
-	}
-	return res
-}
-
-func (h *handler) newShippingRatesForUpsert(in []*types.UpsertShippingRate) []*store.UpsertShippingRate {
-	res := make([]*store.UpsertShippingRate, len(in))
-	for i := range in {
-		res[i] = &store.UpsertShippingRate{
 			Name:            in[i].Name,
 			Price:           in[i].Price,
 			PrefectureCodes: in[i].PrefectureCodes,

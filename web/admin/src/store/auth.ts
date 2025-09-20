@@ -3,8 +3,7 @@ import type { Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { messaging } from '~/plugins/firebase'
 import { AdminType } from '~/types/api/v1'
-import type { AuthProvider, AuthResponse, AuthUserResponse, ConnectGoogleAccountRequest, ConnectLINEAccountRequest, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, Shipping, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, UpsertShippingRequest, V1AuthCoordinatorPatchRequest, V1AuthCoordinatorShippingsPatchRequest, V1AuthDevicePostRequest, V1AuthEmailPatchRequest, V1AuthEmailVerifiedPostRequest, V1AuthForgotPasswordPostRequest, V1AuthForgotPasswordVerifiedPostRequest, V1AuthGoogleGetRequest, V1AuthGooglePostRequest, V1AuthLineGetRequest, V1AuthLinePostRequest, V1AuthPasswordPatchRequest, V1AuthPostRequest, V1AuthRefreshTokenPostRequest, V1CoordinatorsGetRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
-import { useProductTypeStore } from '~/store'
+import type { AuthProvider, AuthResponse, AuthUserResponse, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, V1AuthCoordinatorPatchRequest, V1AuthDevicePostRequest, V1AuthEmailPatchRequest, V1AuthEmailVerifiedPostRequest, V1AuthForgotPasswordPostRequest, V1AuthForgotPasswordVerifiedPostRequest, V1AuthGoogleGetRequest, V1AuthGooglePostRequest, V1AuthLineGetRequest, V1AuthLinePostRequest, V1AuthPasswordPatchRequest, V1AuthPostRequest, V1AuthRefreshTokenPostRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
 
 interface FetchTokenResponse {
   access_token: string
@@ -22,7 +21,6 @@ export const useAuthStore = defineStore('auth', {
     user: undefined as AuthUserResponse | undefined,
     providers: [] as AuthProvider[],
     coordinator: {} as Coordinator,
-    shipping: {} as Shipping,
     expiredAt: undefined as Dayjs | undefined,
   }),
 
@@ -294,10 +292,7 @@ export const useAuthStore = defineStore('auth', {
     async getCoordinator(): Promise<void> {
       try {
         const res = await this.authApi().v1AuthCoordinatorGet()
-
-        const productTypeStore = useProductTypeStore()
         this.coordinator = res.coordinator
-        productTypeStore.productTypes = res.productTypes
       }
       catch (err) {
         return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
@@ -317,41 +312,6 @@ export const useAuthStore = defineStore('auth', {
       }
       catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
-      }
-    },
-
-    /**
-     * 指定したコーディネーターの配送設定を取得する非同期関数
-     * @param coordinatorId
-     * @returns
-     */
-    async fetchShipping(): Promise<void> {
-      try {
-        const res = await this.authApi().v1AuthCoordinatorShippingsGet()
-        this.shipping = res.shipping
-      }
-      catch (err) {
-        return this.errorHandler(err, { 404: '配送設定が見つかりません。' })
-      }
-    },
-
-    /**
-     * 指定したコーディネーターの配送設定を変更する非同期関数
-     * @param payload
-     * @returns
-     */
-    async upsertShipping(payload: UpsertShippingRequest): Promise<void> {
-      try {
-        const params: V1AuthCoordinatorShippingsPatchRequest = {
-          upsertShippingRequest: payload,
-        }
-        await this.authApi().v1AuthCoordinatorShippingsPatch(params)
-      }
-      catch (err) {
-        return this.errorHandler(err, {
-          400: '入力内容に誤りがあります。',
-          404: '指定した配送設定が見つかりません。',
-        })
       }
     },
 

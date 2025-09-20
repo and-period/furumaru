@@ -4,11 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -36,8 +34,6 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.GET("/user", h.authentication, h.GetAuthUser)
 	r.GET("/coordinator", h.authentication, h.GetAuthCoordinator)
 	r.PATCH("/coordinator", h.authentication, h.UpdateAuthCoordinator)
-	r.GET("/coordinator/shippings", h.authentication, h.GetAuthShipping)
-	r.PATCH("/coordinator/shippings", h.authentication, h.UpsertAuthShipping)
 }
 
 // @Summary     トークン検証
@@ -619,77 +615,5 @@ func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
-}
-
-// @Summary     自身の配送設定取得
-// @Description ログイン中のコーディネータの配送設定を取得します。
-// @Tags        Auth
-// @Router      /v1/auth/coordinator/shippings [get]
-// @Security    bearerauth
-// @Produce     json
-// @Success     200 {object} types.ShippingResponse
-func (h *handler) GetAuthShipping(ctx *gin.Context) {
-	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
-		h.forbidden(ctx, errors.New("this user is not coordinator"))
-		return
-	}
-
-	in := &store.GetShippingByShopIDInput{
-		ShopID: getShopID(ctx),
-	}
-	shipping, err := h.store.GetShippingByShopID(ctx, in)
-	if errors.Is(err, exception.ErrNotFound) {
-		// 配送設定の登録をしていない場合、デフォルト設定を返却する
-		in := &store.GetDefaultShippingInput{}
-		shipping, err = h.store.GetDefaultShipping(ctx, in)
-	}
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	res := &types.ShippingResponse{
-		Shipping: service.NewShipping(shipping).Response(),
-	}
-	ctx.JSON(http.StatusOK, res)
-}
-
-// @Summary     自身の配送設定更新
-// @Description ログイン中のコーディネータの配送設定を更新します。
-// @Tags        Auth
-// @Router      /v1/auth/coordinator/shippings [patch]
-// @Security    bearerauth
-// @Accept      json
-// @Param       request body types.UpsertShippingRequest true "配送設定"
-// @Produce     json
-// @Success     204
-// @Failure     400 {object} util.ErrorResponse "バリデーションエラー"
-func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
-	if getAdminType(ctx).Response() != types.AdminTypeCoordinator {
-		h.forbidden(ctx, errors.New("this user is not coordinator"))
-		return
-	}
-
-	req := &types.UpsertShippingRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
-	in := &store.UpsertShippingInput{
-		CoordinatorID:     getAdminID(ctx),
-		Box60Rates:        h.newShippingRatesForUpsert(req.Box60Rates),
-		Box60Frozen:       req.Box60Frozen,
-		Box80Rates:        h.newShippingRatesForUpsert(req.Box80Rates),
-		Box80Frozen:       req.Box80Frozen,
-		Box100Rates:       h.newShippingRatesForUpsert(req.Box100Rates),
-		Box100Frozen:      req.Box100Frozen,
-		HasFreeShipping:   req.HasFreeShipping,
-		FreeShippingRates: req.FreeShippingRates,
-	}
-	if err := h.store.UpsertShipping(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
 	ctx.Status(http.StatusNoContent)
 }

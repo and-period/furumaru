@@ -151,12 +151,10 @@ type Service interface {
 	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)                                 // １件取得
 	GetDefaultShipping(ctx context.Context, in *GetDefaultShippingInput) (*entity.Shipping, error)                   // １件取得(デフォルト設定)
 	GetShippingByShopID(ctx context.Context, in *GetShippingByShopIDInput) (*entity.Shipping, error)                 // １件取得(店舗ID指定)
-	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)   // Deprecated: １件取得(コーディネータID指定)
 	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)                           // 登録
 	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error                                               // 更新
 	UpdateShippingInUse(ctx context.Context, in *UpdateShippingInUseInput) error                                     // 更新(使用中)
 	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                 // 登録または更新(デフォルト設定)
-	UpsertShipping(ctx context.Context, in *UpsertShippingInput) error                                               // Deprecated: 登録または更新(コーディネータごとの設定)
 	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error                                               // 削除
 	// Shop - 店舗
 	ListShops(ctx context.Context, in *ListShopsInput) (entity.Shops, int64, error)                    // 一覧取得

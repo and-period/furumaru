@@ -10,7 +10,7 @@ import {
 import type { AlertType } from '~/lib/hooks'
 import { Prefecture } from '~/types'
 import { AdminStatus } from '~/types/api/v1'
-import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest, TimeWeekday, CreateShippingRequest, UpdateShippingRequest } from '~/types/api/v1'
+import type { UpdateCoordinatorRequest, ProductType, Coordinator, UpsertShippingRequest, Shipping, Shop, UpdateShopRequest, TimeWeekday, CreateShippingRequest, UpdateShippingRequest, Producer } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -58,7 +58,7 @@ const props = defineProps({
     default: (): UpdateShopRequest => ({
       name: '',
       productTypeIds: [],
-      businessDays: new Set<TimeWeekday>(),
+      businessDays: [],
     }),
   },
   createShippingFormData: {
@@ -188,6 +188,10 @@ const props = defineProps({
   },
   shippings: {
     type: Array<Shipping>,
+    default: () => [],
+  },
+  producers: {
+    type: Array<Producer>,
     default: () => [],
   },
   productTypes: {
@@ -506,8 +510,9 @@ const onSubmitActiveShipping = (): void => {
               <organisms-coordinator-shop
                 v-model:form-data="shopFormDataValue"
                 :loading="loading"
-                :shop="shop"
+                :producers="producers"
                 :product-types="productTypes"
+                :shop="shop"
                 @update:search-product-type="onChangeSearchProductType"
                 @submit="onSubmitShop"
               />

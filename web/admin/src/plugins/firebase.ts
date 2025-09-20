@@ -3,6 +3,7 @@ import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
 import { getMessaging } from 'firebase/messaging'
 import type { Messaging } from 'firebase/messaging'
 
+/* eslint-disable import/no-mutable-exports */
 let app: FirebaseApp
 let messaging: Messaging
 
@@ -23,7 +24,10 @@ export default defineNuxtPlugin(() => {
   messaging = getMessaging(app)
 
   return {
-    provide: {},
+    provide: {
+      firebaseApp: app,
+      firebaseMessaging: messaging,
+    },
   }
 })
 

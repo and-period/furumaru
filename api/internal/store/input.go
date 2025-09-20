@@ -1039,28 +1039,6 @@ type UpdateShippingInUseInput struct {
 	ShippingID string `validate:"required"`
 }
 
-// Deprecated
-type UpsertShippingInput struct {
-	ShopID            string                `validate:"required"`
-	CoordinatorID     string                `validate:"required"`
-	Box60Rates        []*UpsertShippingRate `validate:"required,dive,required"`
-	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	Box80Rates        []*UpsertShippingRate `validate:"required,dive,required"`
-	Box80Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	Box100Rates       []*UpsertShippingRate `validate:"required,dive,required"`
-	Box100Frozen      int64                 `validate:"min=0,lt=10000000000"`
-	HasFreeShipping   bool                  `validate:""`
-	FreeShippingRates int64                 `validate:"min=0,lt=10000000000"`
-	InUse             bool                  `validate:""`
-}
-
-// Deprecated
-type UpsertShippingRate struct {
-	Name            string  `validate:"required"`
-	Price           int64   `validate:"min=0,lt=10000000000"`
-	PrefectureCodes []int32 `validate:"required"`
-}
-
 type UpdateDefaultShippingInput struct {
 	Box60Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
 	Box60Frozen       int64                        `validate:"min=0,lt=10000000000"`

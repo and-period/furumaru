@@ -1,4 +1,6 @@
 import type { Shop, UpdateShopRequest, V1ShopsShopIdGetRequest, V1ShopsShopIdPatchRequest } from '~/types/api/v1'
+import { useProducerStore } from './producer'
+import { useProductTypeStore } from './product-type'
 
 export const useShopStore = defineStore('shop', {
   state: () => ({
@@ -18,6 +20,12 @@ export const useShopStore = defineStore('shop', {
         }
         const res = await this.shopApi().v1ShopsShopIdGet(params)
         this.shop = res.shop
+
+        const producerStore = useProducerStore()
+        producerStore.producers = res.producers
+
+        const productTypeStore = useProductTypeStore()
+        productTypeStore.productTypes = res.productTypes
       }
       catch (err) {
         return this.errorHandler(err, {

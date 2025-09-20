@@ -50,7 +50,7 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
-      businessDays: new Set<TimeWeekday>(),
+      businessDays: [],
     }),
   },
   productTypes: {
