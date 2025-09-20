@@ -3660,32 +3660,10 @@ components:
         businessDays:
           description: 営業曜日(発送可能日)
           items:
-            type: integer
-            x-enum-varnames:
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
+            $ref: '#/components/schemas/time.Weekday'
           maxItems: 7
           type: array
-          uniqueItems: true
+          uniqueItems: false
         city:
           description: 市区町村
           maxLength: 32
@@ -6462,32 +6440,10 @@ components:
         businessDays:
           description: 営業曜日(発送可能日)
           items:
-            type: integer
-            x-enum-varnames:
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
-              - Sunday
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Friday
-              - Saturday
+            $ref: '#/components/schemas/time.Weekday'
           maxItems: 7
           type: array
-          uniqueItems: true
+          uniqueItems: false
         name:
           description: 店舗名
           maxLength: 64
@@ -8848,43 +8804,6 @@ paths:
       summary: 配送設定一覧取得
       tags:
         - Shipping
-    patch:
-      description: Deprecated.コーディネータの配送設定を更新します。
-      parameters:
-        - description: コーディネータID
-          example: '"kSByoE6FetnPs5Byk3a9Zx"'
-          in: path
-          name: coordinatorId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpsertShippingRequest'
-        description: 配送設定情報
-        required: true
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: バリデーションエラー
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: アクセス権限がない
-      security:
-        - bearerauth: []
-      summary: 配送設定更新
-      tags:
-        - Shipping
     post:
       description: 新しい配送設定を登録します。
       parameters:
@@ -8924,35 +8843,6 @@ paths:
       security:
         - bearerauth: []
       summary: 配送設定登録
-      tags:
-        - Shipping
-  /v1/coordinators/{coordinatorId}/shippings/-/activation:
-    get:
-      description: Deprecated.指定されたコーディネーターのアクティブ配送設定を取得します。
-      parameters:
-        - description: コーディネーターID
-          example: '"kSByoE6FetnPs5Byk3a9Zx"'
-          in: path
-          name: coordinatorId
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ShippingResponse'
-          description: OK
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: アクセス権限がない
-      security:
-        - bearerauth: []
-      summary: アクティブ配送設定取得
       tags:
         - Shipping
   /v1/coordinators/{coordinatorId}/shippings/{shippingId}:

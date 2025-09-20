@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, usePagination, useSearchAddress } from '~/lib/hooks'
-import { useAuthStore, useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
+import { useAuthStore, useCommonStore, useCoordinatorStore, useProducerStore, useProductTypeStore, useShippingStore, useShopStore } from '~/store'
 import { Prefecture } from '~/types'
 import type { UpdateCoordinatorRequest, UpdateShopRequest, CreateShippingRequest, UpdateShippingRequest, Shipping } from '~/types/api/v1'
 import type { ImageUploadStatus } from '~/types/props'
@@ -11,6 +11,7 @@ const route = useRoute()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const coordinatorStore = useCoordinatorStore()
+const producerStore = useProducerStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
 const shippingStore = useShippingStore()
@@ -19,9 +20,10 @@ const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { coordinator } = storeToRefs(authStore)
+const { producers } = storeToRefs(producerStore)
 const { productTypes } = storeToRefs(productTypeStore)
-const { shop } = storeToRefs(shopStore)
 const { shippings, total } = storeToRefs(shippingStore)
+const { shop } = storeToRefs(shopStore)
 
 const initialTab = route.query.tab as string | undefined || 'coordinator'
 
@@ -82,7 +84,7 @@ const coordinatorFormData = ref<UpdateCoordinatorRequest>({
 const shopFormData = ref<UpdateShopRequest>({
   name: '',
   productTypeIds: [],
-  businessDays: new Set<number>(),
+  businessDays: [],
 })
 const createShippingFormData = ref<CreateShippingRequest>({ ...initialShippingFormData })
 const updateShippingFormData = ref<UpdateShippingRequest>({ ...initialShippingFormData })
@@ -110,12 +112,16 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await authStore.getCoordinator()
-    await fetchShippings()
+    await Promise.all([
+      fetchShippings(),
+      fetchShop(),
+    ])
 
     coordinatorFormData.value = {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber),
     }
+    shopFormData.value = { ...shop.value }
     if (productTypes.value.length === 0) {
       productTypeStore.fetchProductTypes(20)
     }
@@ -137,6 +143,18 @@ watch(pagination.itemsPerPage, async (): Promise<void> => {
 const fetchShippings = async (): Promise<void> => {
   try {
     await shippingStore.fetchShippings(coordinator.value.id, pagination.itemsPerPage.value, pagination.offset.value)
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const fetchShop = async (): Promise<void> => {
+  try {
+    await shopStore.fetchShop(coordinator.value.shopId)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -484,16 +502,18 @@ catch (err) {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :thumbnail-upload-status="thumbnailUploadStatus"
+    :bonus-video-upload-status="bonusVideoUploadStatus"
     :header-upload-status="headerUploadStatus"
     :promotion-video-upload-status="promotionVideoUploadStatus"
-    :bonus-video-upload-status="bonusVideoUploadStatus"
+    :thumbnail-upload-status="thumbnailUploadStatus"
     :search-loading="searchAddress.loading.value"
     :search-error-message="searchAddress.errorMessage.value"
     :coordinator="coordinator"
+    :producers="producers"
     :product-types="productTypes"
     :shipping="selectedShipping"
     :shippings="shippings"
+    :shop="shop"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:search-address="handleSearchAddress"

@@ -381,6 +381,68 @@ func (a *app) convertEnumSchema(schemaName string, schemaNode *yaml.Node) bool {
 	return true
 }
 
+// fixBusinessDaysField fixes businessDays field to use time.Weekday reference
+func (a *app) fixBusinessDaysField(schemaName string, schemaNode *yaml.Node) bool {
+	if schemaNode.Kind != yaml.MappingNode {
+		return false
+	}
+
+	// propertiesノードを探す
+	var propertiesNode *yaml.Node
+	for i := 0; i < len(schemaNode.Content); i += 2 {
+		if schemaNode.Content[i].Value == "properties" {
+			propertiesNode = schemaNode.Content[i+1]
+			break
+		}
+	}
+
+	if propertiesNode == nil || propertiesNode.Kind != yaml.MappingNode {
+		return false
+	}
+
+	// businessDaysフィールドを探す
+	for i := 0; i < len(propertiesNode.Content); i += 2 {
+		fieldName := propertiesNode.Content[i].Value
+		if fieldName != "businessDays" {
+			continue
+		}
+
+		fieldValue := propertiesNode.Content[i+1]
+		if fieldValue.Kind != yaml.MappingNode {
+			continue
+		}
+
+		// itemsノードを探して修正
+		for j := 0; j < len(fieldValue.Content); j += 2 {
+			if fieldValue.Content[j].Value == "items" {
+				itemsNode := fieldValue.Content[j+1]
+				if itemsNode.Kind == yaml.MappingNode {
+					// インライン定義されている場合、$refに置き換える
+					hasType := false
+					for k := 0; k < len(itemsNode.Content); k += 2 {
+						if itemsNode.Content[k].Value == "type" {
+							hasType = true
+							break
+						}
+					}
+
+					if hasType {
+						// インライン定義を$refで置き換え
+						itemsNode.Content = []*yaml.Node{
+							{Kind: yaml.ScalarNode, Value: "$ref"},
+							{Kind: yaml.ScalarNode, Value: "#/components/schemas/time.Weekday"},
+						}
+						slog.Debug("Fixed businessDays field", slog.String("schema", schemaName))
+						return true
+					}
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 // addRequiredToSchema adds required fields to a single schema for all properties
 func (a *app) addRequiredToSchema(schemaName string, schemaNode *yaml.Node) int {
 	if schemaNode.Kind != yaml.MappingNode {
@@ -464,6 +526,51 @@ func (a *app) addRequiredToSchema(schemaName string, schemaNode *yaml.Node) int 
 	return len(requiredFields)
 }
 
+// fixUniqueItems fixes uniqueItems: true to uniqueItems: false
+func (a *app) fixUniqueItems(schemaName string, schemaNode *yaml.Node) bool {
+	if schemaNode.Kind != yaml.MappingNode {
+		return false
+	}
+
+	// propertiesノードを探す
+	var propertiesNode *yaml.Node
+	for i := 0; i < len(schemaNode.Content); i += 2 {
+		if schemaNode.Content[i].Value == "properties" {
+			propertiesNode = schemaNode.Content[i+1]
+			break
+		}
+	}
+
+	if propertiesNode == nil || propertiesNode.Kind != yaml.MappingNode {
+		return false
+	}
+
+	fixed := false
+	// 各プロパティをチェック
+	for i := 0; i < len(propertiesNode.Content); i += 2 {
+		fieldValue := propertiesNode.Content[i+1]
+		if fieldValue.Kind != yaml.MappingNode {
+			continue
+		}
+
+		// フィールド定義内でuniqueItemsを探す
+		for j := 0; j < len(fieldValue.Content); j += 2 {
+			if fieldValue.Content[j].Value == "uniqueItems" {
+				if fieldValue.Content[j+1].Value == "true" {
+					// uniqueItems: true を false に変更
+					fieldValue.Content[j+1].Value = "false"
+					slog.Debug("Fixed uniqueItems in schema",
+						slog.String("schema", schemaName),
+						slog.String("field", propertiesNode.Content[i].Value))
+					fixed = true
+				}
+			}
+		}
+	}
+
+	return fixed
+}
+
 // processSchemas processes schemas for both enum conversion and required field addition in a single pass
 func (a *app) processSchemas(content []byte) ([]byte, error) {
 	// YAMLをパース
@@ -510,6 +617,7 @@ func (a *app) processSchemas(content []byte) ([]byte, error) {
 	// カウンター
 	enumConvertedCount := 0
 	requiredAddedCount := 0
+	uniqueItemsFixedCount := 0
 
 	// 各スキーマをチェック
 	if schemasNode.Kind == yaml.MappingNode {
@@ -527,6 +635,15 @@ func (a *app) processSchemas(content []byte) ([]byte, error) {
 				count := a.addRequiredToSchema(schemaName, schemaNode)
 				requiredAddedCount += count
 			}
+
+			// uniqueItems処理
+			if a.fixUniqueItems(schemaName, schemaNode) {
+				uniqueItemsFixedCount++
+			}
+
+			// FIXME: time.Weekday参照に置き換え - businessDaysフィールドの修正
+			// ※ 本来はコード生成時に対応すべきだが、現状のコード生成ツールでは対応できないため暫定対応
+			a.fixBusinessDaysField(schemaName, schemaNode)
 		}
 	}
 
@@ -535,6 +652,9 @@ func (a *app) processSchemas(content []byte) ([]byte, error) {
 	}
 	if a.addRequired {
 		slog.Info("Required fields addition completed", slog.Int("fields_added", requiredAddedCount))
+	}
+	if uniqueItemsFixedCount > 0 {
+		slog.Info("UniqueItems fix completed", slog.Int("fixed_count", uniqueItemsFixedCount))
 	}
 
 	// YAMLに戻す（インデント2スペース）

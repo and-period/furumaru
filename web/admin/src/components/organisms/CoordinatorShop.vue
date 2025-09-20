@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 import type { PropType } from 'vue'
 import { mdiStore, mdiCalendarMonth, mdiTagMultiple, mdiContentSave } from '@mdi/js'
 import { getErrorMessage } from '~/lib/validations'
-import type { TimeWeekday, ProductType, Shop, UpdateShopRequest } from '~/types/api/v1'
+import type { TimeWeekday, ProductType, Shop, UpdateShopRequest, Producer } from '~/types/api/v1'
 import { UpdateShopValidationRules } from '~/types/validations'
 import { weekdays } from '~/constants'
 
@@ -17,7 +17,7 @@ const props = defineProps({
     default: (): UpdateShopRequest => ({
       name: '',
       productTypeIds: [],
-      businessDays: new Set<TimeWeekday>(),
+      businessDays: [],
     }),
   },
   shop: {
@@ -32,6 +32,10 @@ const props = defineProps({
       createdAt: 0,
       updatedAt: 0,
     }),
+  },
+  producers: {
+    type: Array<Producer>,
+    default: () => [],
   },
   productTypes: {
     type: Array<ProductType>,

@@ -42,7 +42,7 @@ const formData = ref<CreateCoordinatorRequest>({
   bonusVideoUrl: '',
   instagramId: '',
   facebookId: '',
-  businessDays: new Set<number>(),
+  businessDays: [],
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,

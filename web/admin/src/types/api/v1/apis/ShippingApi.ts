@@ -21,7 +21,6 @@ import type {
   ShippingsResponse,
   UpdateDefaultShippingRequest,
   UpdateShippingRequest,
-  UpsertShippingRequest,
 } from '../models/index';
 import {
     CreateShippingRequestFromJSON,
@@ -36,23 +35,12 @@ import {
     UpdateDefaultShippingRequestToJSON,
     UpdateShippingRequestFromJSON,
     UpdateShippingRequestToJSON,
-    UpsertShippingRequestFromJSON,
-    UpsertShippingRequestToJSON,
 } from '../models/index';
-
-export interface V1CoordinatorsCoordinatorIdShippingsActivationGetRequest {
-    coordinatorId: string;
-}
 
 export interface V1CoordinatorsCoordinatorIdShippingsGetRequest {
     coordinatorId: string;
     limit?: number;
     offset?: number;
-}
-
-export interface V1CoordinatorsCoordinatorIdShippingsPatchRequest {
-    coordinatorId: string;
-    upsertShippingRequest: UpsertShippingRequest;
 }
 
 export interface V1CoordinatorsCoordinatorIdShippingsPostRequest {
@@ -89,53 +77,6 @@ export interface V1ShippingsDefaultPatchRequest {
  * 
  */
 export class ShippingApi extends runtime.BaseAPI {
-
-    /**
-     * Deprecated.指定されたコーディネーターのアクティブ配送設定を取得します。
-     * アクティブ配送設定取得
-     */
-    async v1CoordinatorsCoordinatorIdShippingsActivationGetRaw(requestParameters: V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ShippingResponse>> {
-        if (requestParameters['coordinatorId'] == null) {
-            throw new runtime.RequiredError(
-                'coordinatorId',
-                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdShippingsActivationGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerauth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/v1/coordinators/{coordinatorId}/shippings/-/activation`;
-        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ShippingResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Deprecated.指定されたコーディネーターのアクティブ配送設定を取得します。
-     * アクティブ配送設定取得
-     */
-    async v1CoordinatorsCoordinatorIdShippingsActivationGet(requestParameters: V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ShippingResponse> {
-        const response = await this.v1CoordinatorsCoordinatorIdShippingsActivationGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * 指定されたコーディネーターの配送設定一覧を取得します。ページネーションに対応しています。
@@ -190,62 +131,6 @@ export class ShippingApi extends runtime.BaseAPI {
     async v1CoordinatorsCoordinatorIdShippingsGet(requestParameters: V1CoordinatorsCoordinatorIdShippingsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ShippingsResponse> {
         const response = await this.v1CoordinatorsCoordinatorIdShippingsGetRaw(requestParameters, initOverrides);
         return await response.value();
-    }
-
-    /**
-     * Deprecated.コーディネータの配送設定を更新します。
-     * 配送設定更新
-     */
-    async v1CoordinatorsCoordinatorIdShippingsPatchRaw(requestParameters: V1CoordinatorsCoordinatorIdShippingsPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['coordinatorId'] == null) {
-            throw new runtime.RequiredError(
-                'coordinatorId',
-                'Required parameter "coordinatorId" was null or undefined when calling v1CoordinatorsCoordinatorIdShippingsPatch().'
-            );
-        }
-
-        if (requestParameters['upsertShippingRequest'] == null) {
-            throw new runtime.RequiredError(
-                'upsertShippingRequest',
-                'Required parameter "upsertShippingRequest" was null or undefined when calling v1CoordinatorsCoordinatorIdShippingsPatch().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerauth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/v1/coordinators/{coordinatorId}/shippings`;
-        urlPath = urlPath.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId'])));
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: UpsertShippingRequestToJSON(requestParameters['upsertShippingRequest']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Deprecated.コーディネータの配送設定を更新します。
-     * 配送設定更新
-     */
-    async v1CoordinatorsCoordinatorIdShippingsPatch(requestParameters: V1CoordinatorsCoordinatorIdShippingsPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1CoordinatorsCoordinatorIdShippingsPatchRaw(requestParameters, initOverrides);
     }
 
     /**
