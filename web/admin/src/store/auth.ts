@@ -3,8 +3,7 @@ import type { Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { messaging } from '~/plugins/firebase'
 import { AdminType } from '~/types/api/v1'
-import type { AuthProvider, AuthResponse, AuthUserResponse, ConnectGoogleAccountRequest, ConnectLINEAccountRequest, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, Shipping, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, UpsertShippingRequest, V1AuthCoordinatorPatchRequest, V1AuthCoordinatorShippingsPatchRequest, V1AuthDevicePostRequest, V1AuthEmailPatchRequest, V1AuthEmailVerifiedPostRequest, V1AuthForgotPasswordPostRequest, V1AuthForgotPasswordVerifiedPostRequest, V1AuthGoogleGetRequest, V1AuthGooglePostRequest, V1AuthLineGetRequest, V1AuthLinePostRequest, V1AuthPasswordPatchRequest, V1AuthPostRequest, V1AuthRefreshTokenPostRequest, V1CoordinatorsGetRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
-import { useProductTypeStore } from '~/store'
+import type { AuthProvider, AuthResponse, AuthUserResponse, Coordinator, ForgotAuthPasswordRequest, ResetAuthPasswordRequest, SignInRequest, UpdateAuthEmailRequest, UpdateAuthPasswordRequest, UpdateCoordinatorRequest, V1AuthCoordinatorPatchRequest, V1AuthDevicePostRequest, V1AuthEmailPatchRequest, V1AuthEmailVerifiedPostRequest, V1AuthForgotPasswordPostRequest, V1AuthForgotPasswordVerifiedPostRequest, V1AuthGoogleGetRequest, V1AuthGooglePostRequest, V1AuthLineGetRequest, V1AuthLinePostRequest, V1AuthPasswordPatchRequest, V1AuthPostRequest, V1AuthRefreshTokenPostRequest, VerifyAuthEmailRequest } from '~/types/api/v1'
 
 interface FetchTokenResponse {
   access_token: string

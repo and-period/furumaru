@@ -86,16 +86,6 @@ func (s *service) GetShippingByShopID(ctx context.Context, in *store.GetShipping
 	return shipping, internalError(err)
 }
 
-func (s *service) GetShippingByCoordinatorID(
-	ctx context.Context, in *store.GetShippingByCoordinatorIDInput,
-) (*entity.Shipping, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
-	}
-	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, in.CoordinatorID)
-	return shipping, internalError(err)
-}
-
 func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingInput) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
@@ -214,61 +204,6 @@ func (s *service) UpdateDefaultShipping(ctx context.Context, in *store.UpdateDef
 	return internalError(err)
 }
 
-// Deprecated
-func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	box60Rates, err := s.newShippingRatesFromUpsert(in.Box60Rates)
-	if err != nil {
-		return fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	box80Rates, err := s.newShippingRatesFromUpsert(in.Box80Rates)
-	if err != nil {
-		return fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	box100Rates, err := s.newShippingRatesFromUpsert(in.Box100Rates)
-	if err != nil {
-		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, in.CoordinatorID)
-	if err != nil && !errors.Is(err, database.ErrNotFound) {
-		return internalError(err)
-	}
-	if errors.Is(err, database.ErrNotFound) {
-		// create
-		params := &entity.NewShippingParams{
-			ShopID:            in.ShopID,
-			CoordinatorID:     in.CoordinatorID,
-			Box60Rates:        box60Rates,
-			Box60Frozen:       in.Box60Frozen,
-			Box80Rates:        box80Rates,
-			Box80Frozen:       in.Box80Frozen,
-			Box100Rates:       box100Rates,
-			Box100Frozen:      in.Box100Frozen,
-			HasFreeShipping:   in.HasFreeShipping,
-			FreeShippingRates: in.FreeShippingRates,
-			InUse:             true,
-		}
-		shipping = entity.NewShipping(params)
-		err = s.db.Shipping.Create(ctx, shipping)
-	} else {
-		// update
-		params := &database.UpdateShippingParams{
-			Box60Rates:        box60Rates,
-			Box60Frozen:       in.Box60Frozen,
-			Box80Rates:        box80Rates,
-			Box80Frozen:       in.Box80Frozen,
-			Box100Rates:       box100Rates,
-			Box100Frozen:      in.Box100Frozen,
-			HasFreeShipping:   in.HasFreeShipping,
-			FreeShippingRates: in.FreeShippingRates,
-		}
-		err = s.db.Shipping.Update(ctx, shipping.ID, params)
-	}
-	return internalError(err)
-}
-
 func (s *service) DeleteShipping(ctx context.Context, in *store.DeleteShippingInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
@@ -300,17 +235,6 @@ func (s *service) newShippingRatesFromCreate(in []*store.CreateShippingRate) (en
 }
 
 func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (entity.ShippingRates, error) {
-	rates := make(entity.ShippingRates, len(in))
-	for i := range in {
-		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
-	}
-	if err := rates.Validate(); err != nil {
-		return nil, err
-	}
-	return rates, nil
-}
-
-func (s *service) newShippingRatesFromUpsert(in []*store.UpsertShippingRate) (entity.ShippingRates, error) {
 	rates := make(entity.ShippingRates, len(in))
 	for i := range in {
 		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)

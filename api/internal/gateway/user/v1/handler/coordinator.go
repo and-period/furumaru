@@ -111,7 +111,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		shipping, err = h.getShippingByCoordinatorID(ectx, coordinator.ID)
+		shipping, err = h.getShippingByShopID(ectx, coordinator.ShopID)
 		return
 	})
 	eg.Go(func() (err error) {

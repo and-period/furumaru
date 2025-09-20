@@ -211,8 +211,6 @@ export * from './UpdateVideoRequest';
 export * from './UploadStateResponse';
 export * from './UploadStatus';
 export * from './UploadURLResponse';
-export * from './UpsertShippingRate';
-export * from './UpsertShippingRequest';
 export * from './User';
 export * from './UserOrder';
 export * from './UserOrdersResponse';

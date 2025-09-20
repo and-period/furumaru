@@ -1,4 +1,4 @@
-import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, UpsertShippingRequest, V1CoordinatorsCoordinatorIdShippingsActivationGetRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPatchRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdActivationPatchRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
+import type { CreateShippingRequest, Shipping, ShippingsResponse, UpdateDefaultShippingRequest, UpdateShippingRequest, V1CoordinatorsCoordinatorIdShippingsGetRequest, V1CoordinatorsCoordinatorIdShippingsPostRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdActivationPatchRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdDeleteRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdGetRequest, V1CoordinatorsCoordinatorIdShippingsShippingIdPatchRequest, V1ShippingsDefaultPatchRequest } from '~/types/api/v1'
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
@@ -156,24 +156,6 @@ export const useShippingStore = defineStore('shipping', {
       }
       catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
-      }
-    },
-
-    /**
-     * 指定したコーディネーターの配送設定を取得する非同期関数
-     * @param coordinatorId
-     * @returns
-     */
-    async fetchActiveShipping(coordinatorId: string): Promise<void> {
-      try {
-        const params: V1CoordinatorsCoordinatorIdShippingsActivationGetRequest = {
-          coordinatorId,
-        }
-        const res = await this.shippingApi().v1CoordinatorsCoordinatorIdShippingsActivationGet(params)
-        this.shipping = res.shipping
-      }
-      catch (err) {
-        return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
       }
     },
   },

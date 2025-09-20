@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -383,6 +384,11 @@ func (a *app) convertEnumSchema(schemaName string, schemaNode *yaml.Node) bool {
 
 // fixBusinessDaysField fixes businessDays field to use time.Weekday reference
 func (a *app) fixBusinessDaysField(schemaName string, schemaNode *yaml.Node) bool {
+	// Request スキーマのみ処理
+	if !strings.HasSuffix(schemaName, "Request") {
+		return false
+	}
+
 	if schemaNode.Kind != yaml.MappingNode {
 		return false
 	}

@@ -425,15 +425,3 @@ func (h *handler) newShippingRatesForUpdate(in []*types.UpdateShippingRate) []*s
 	}
 	return res
 }
-
-func (h *handler) newShippingRatesForUpsert(in []*types.UpsertShippingRate) []*store.UpsertShippingRate {
-	res := make([]*store.UpsertShippingRate, len(in))
-	for i := range in {
-		res[i] = &store.UpsertShippingRate{
-			Name:            in[i].Name,
-			Price:           in[i].Price,
-			PrefectureCodes: in[i].PrefectureCodes,
-		}
-	}
-	return res
-}
