@@ -1,5 +1,12 @@
 # Changelog
 
+## [v7.1.2](https://github.com/and-period/furumaru/compare/v7.1.1...v7.1.2) - 2025-09-20
+- build(deps): bump the dependencies group across 1 directory with 21 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3065
+- [web/liff] 注文一覧画面、注文詳細画面の実装 by @Copilot in https://github.com/and-period/furumaru/pull/3067
+- feat(web): improve CoordinatorEdit design and shipping settings UI by @taba2424 in https://github.com/and-period/furumaru/pull/3069
+- [web/liff] ユーザー情報の更新画面への動線整備 by @Copilot in https://github.com/and-period/furumaru/pull/3071
+- feat: improve coordinator and shop management features by @taba2424 in https://github.com/and-period/furumaru/pull/3072
+
 ## [v7.1.1](https://github.com/and-period/furumaru/compare/v7.1.0...v7.1.1) - 2025-09-18
 - chore(deps): Pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3062
 - chore(deps): Pin dependencies by @renovate[bot] in https://github.com/and-period/furumaru/pull/3061
