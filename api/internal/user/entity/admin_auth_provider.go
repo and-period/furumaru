@@ -2,16 +2,12 @@ package entity
 
 import (
 	"errors"
-	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/cognito"
 )
 
-var (
-	ErrInvalidAdminAuthUsername     = errors.New("entity: invalid admin auth username")
-	ErrInvalidAdminAuthProviderType = errors.New("entity: invalid admin auth provider type")
-)
+var ErrInvalidAdminAuthProviderType = errors.New("entity: invalid admin auth provider type")
 
 // AdminAuthProviderType - 管理者認証プロバイダ種別
 type AdminAuthProviderType int32
@@ -52,9 +48,6 @@ type AdminAuthProviderParams struct {
 }
 
 func NewAdminAuthProvider(params *AdminAuthProviderParams) (*AdminAuthProvider, error) {
-	if strs := strings.Split(params.Auth.Username, "_"); len(strs) != 2 {
-		return nil, ErrInvalidAdminAuthUsername // CognitoユーザーはAuthProvider作成不要
-	}
 	identity := findAdminAuthIdentity(params.Auth, params.ProviderType)
 	if identity == nil {
 		return nil, ErrInvalidAdminAuthProviderType // 対象のプロバイダについての連携情報が存在しない

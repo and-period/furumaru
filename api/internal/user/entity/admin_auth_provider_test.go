@@ -73,33 +73,6 @@ func TestAdminAuthProvider(t *testing.T) {
 			err: nil,
 		},
 		{
-			name: "invalid username",
-			params: &AdminAuthProviderParams{
-				AdminID:      "admin-id",
-				ProviderType: AdminAuthProviderTypeGoogle,
-				Auth: &cognito.AuthUser{
-					Username: "google",
-					Email:    "test@example.com",
-					Identities: []*cognito.AuthUserIdentity{
-						{
-							UserID:       "123",
-							ProviderType: cognito.ProviderTypeGoogle,
-							Primary:      false,
-							DateCreated:  0,
-						},
-						{
-							UserID:       "xxx",
-							ProviderType: cognito.ProviderTypeLINE,
-							Primary:      false,
-							DateCreated:  0,
-						},
-					},
-				},
-			},
-			expect: nil,
-			err:    ErrInvalidAdminAuthUsername,
-		},
-		{
 			name: "invalid provider type",
 			params: &AdminAuthProviderParams{
 				AdminID:      "admin-id",
