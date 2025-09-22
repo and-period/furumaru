@@ -312,13 +312,8 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 		return internalError(err)
 	}
 
-	// 外部アカウントとCognitoアカウントを連携
-	linkParams := &cognito.LinkProviderParams{
-		Username:     admin.CognitoID,
-		ProviderType: provider.ProviderType.ToCognito(),
-		AccountID:    provider.AccountID,
-	}
-	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
+	// Cognitoユーザーのメールアドレスが未検証になるパターンがあるため更新
+	if err := s.adminAuth.AdminVerifyEmail(ctx, admin.CognitoID); err != nil {
 		return internalError(err)
 	}
 

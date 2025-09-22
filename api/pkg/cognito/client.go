@@ -33,8 +33,6 @@ type Client interface {
 	GenerateAuthURL(ctx context.Context, params *GenerateAuthURLParams) (string, error)
 	// OAuth2.0認証 (コード検証)
 	GetAccessToken(ctx context.Context, params *GetAccessTokenParams) (*AuthResult, error)
-	// OAuth2.0認証の紐づけ
-	LinkProvider(ctx context.Context, params *LinkProviderParams) error
 
 	// #############################################
 	// ユーザー関連
@@ -65,6 +63,8 @@ type Client interface {
 	AdminCreateUser(ctx context.Context, params *AdminCreateUserParams) error
 	// メールアドレス更新
 	AdminChangeEmail(ctx context.Context, params *AdminChangeEmailParams) error
+	// メールアドレス検証
+	AdminVerifyEmail(ctx context.Context, username string) error
 	// パスワード更新
 	AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error
 }
