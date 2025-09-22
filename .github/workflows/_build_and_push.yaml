@@ -51,6 +51,13 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+      with:
+        driver-opts: |
+          network=host
+          image=moby/buildkit:master
+        buildkitd-config-inline: |
+          [worker.oci]
+            max-parallelism = 4
 
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
@@ -70,22 +77,25 @@ jobs:
         ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
-      id: cache
+    - name: Setup Go build cache for Docker
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
         path: |
           go-mod-cache
           go-build-cache
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-docker-go-${{ hashFiles('api/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-docker-go-
 
-    - uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
+    - name: Inject Go caches into Docker
+      uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
       with:
         cache-map: |
           {
             "go-mod-cache": "/go/pkg/mod",
             "go-build-cache": "/root/.cache/go-build"
           }
-        skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+        skip-extraction: false
 
     - name: Build and push
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
@@ -97,5 +107,12 @@ jobs:
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
         push: true
         provenance: false
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: |
+          type=gha
+          type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache
+        cache-to: |
+          type=gha,mode=max
+          type=registry,ref=${{ steps.get-ecr-url.outputs.ecr-image-url }}:buildcache,mode=max
+        build-contexts: |
+          go-mod-cache=go-mod-cache
+          go-build-cache=go-build-cache
