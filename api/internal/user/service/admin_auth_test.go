@@ -103,7 +103,7 @@ func TestSignInAdmin(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "failed to get by cognito id",
+			name: "failed to update sign in at",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().SignIn(ctx, "username", "password").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
@@ -339,7 +339,7 @@ func TestRefreshAdminToken(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "success",
+			name: "failed to update sign in at",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.adminAuth.EXPECT().RefreshToken(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(result, nil)
 				mocks.adminAuth.EXPECT().GetUsername(ctx, "access-token").Return("username", nil)
@@ -944,7 +944,7 @@ func TestInitialAdminAuth(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "alraedy connected",
+			name: "already connected",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.AdminAuthProvider.EXPECT().Get(ctx, "admin-id", entity.AdminAuthProviderTypeGoogle).Return(&entity.AdminAuthProvider{}, nil)
 			},
@@ -1031,11 +1031,6 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T, providerType entity.AdminAuthP
 			},
 		},
 	}
-	linkParams := &cognito.LinkProviderParams{
-		Username:     "cognito-id",
-		ProviderType: providerType.ToCognito(),
-		AccountID:    "username",
-	}
 	provider := &entity.AdminAuthProvider{
 		AdminID:      "admin-id",
 		ProviderType: providerType,
@@ -1053,7 +1048,7 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T, providerType entity.AdminAuthP
 	m.db.Admin.EXPECT().Get(gomock.Any(), "admin-id").Return(admin, nil)
 	m.adminAuth.EXPECT().GetAccessToken(gomock.Any(), tokenParams).Return(token, nil)
 	m.adminAuth.EXPECT().GetUser(gomock.Any(), "access-token").Return(authUser, nil)
-	m.adminAuth.EXPECT().LinkProvider(gomock.Any(), linkParams).Return(nil)
+	m.adminAuth.EXPECT().AdminVerifyEmail(gomock.Any(), "cognito-id").Return(nil)
 	m.db.AdminAuthProvider.EXPECT().Upsert(gomock.Any(), provider).Return(nil)
 }
 
@@ -1087,11 +1082,6 @@ func TestConnectAdminAuth(t *testing.T) {
 			},
 		},
 	}
-	linkParams := &cognito.LinkProviderParams{
-		Username:     "cognito-id",
-		ProviderType: cognito.ProviderTypeGoogle,
-		AccountID:    "username",
-	}
 	provider := &entity.AdminAuthProvider{
 		AdminID:      "admin-id",
 		ProviderType: entity.AdminAuthProviderTypeGoogle,
@@ -1118,7 +1108,7 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
+				mocks.adminAuth.EXPECT().AdminVerifyEmail(ctx, "cognito-id").Return(nil)
 				mocks.db.AdminAuthProvider.EXPECT().Upsert(ctx, provider).Return(nil)
 			},
 			input: &connectAdminAuthParams{
@@ -1289,7 +1279,7 @@ func TestConnectAdminAuth(t *testing.T) {
 			expectErr: exception.ErrForbidden,
 		},
 		{
-			name: "failed to link provider",
+			name: "failed to verify email",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
 					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
@@ -1301,7 +1291,7 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(assert.AnError)
+				mocks.adminAuth.EXPECT().AdminVerifyEmail(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &connectAdminAuthParams{
 				adminID:     "admin-id",
@@ -1324,7 +1314,7 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
+				mocks.adminAuth.EXPECT().AdminVerifyEmail(ctx, "cognito-id").Return(nil)
 				mocks.db.AdminAuthProvider.EXPECT().Upsert(ctx, provider).Return(assert.AnError)
 			},
 			input: &connectAdminAuthParams{

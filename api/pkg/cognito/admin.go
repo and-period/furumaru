@@ -81,6 +81,21 @@ func (c *client) AdminChangeEmail(ctx context.Context, params *AdminChangeEmailP
 	return c.authError(err)
 }
 
+func (c *client) AdminVerifyEmail(ctx context.Context, username string) error {
+	in := &cognito.AdminUpdateUserAttributesInput{
+		UserPoolId: c.userPoolID,
+		Username:   aws.String(username),
+		UserAttributes: []types.AttributeType{
+			{
+				Name:  emailVerifiedField,
+				Value: aws.String("true"),
+			},
+		},
+	}
+	_, err := c.cognito.AdminUpdateUserAttributes(ctx, in)
+	return c.authError(err)
+}
+
 func (c *client) AdminChangePassword(ctx context.Context, params *AdminChangePasswordParams) error {
 	in := &cognito.AdminSetUserPasswordInput{
 		UserPoolId: c.userPoolID,
