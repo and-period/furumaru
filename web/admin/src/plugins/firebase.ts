@@ -1,13 +1,13 @@
 import { initializeApp } from 'firebase/app'
 import type { FirebaseApp, FirebaseOptions } from 'firebase/app'
-import { getMessaging } from 'firebase/messaging'
+import { getMessaging, isSupported } from 'firebase/messaging'
 import type { Messaging } from 'firebase/messaging'
 
 /* eslint-disable import/no-mutable-exports */
 let app: FirebaseApp
-let messaging: Messaging
+let messaging: Messaging | null = null
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig()
 
   const config: FirebaseOptions = {
@@ -21,7 +21,20 @@ export default defineNuxtPlugin(() => {
   }
 
   app = initializeApp(config)
-  messaging = getMessaging(app)
+
+  // Firebase Messaging のサポートチェック
+  try {
+    const supported = await isSupported()
+    if (supported) {
+      messaging = getMessaging(app)
+    }
+    else {
+      console.log('Firebase Messaging is not supported in this browser')
+    }
+  }
+  catch (error) {
+    console.log('Firebase Messaging initialization failed:', error)
+  }
 
   return {
     provide: {
