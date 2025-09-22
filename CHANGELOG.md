@@ -1,5 +1,8 @@
 # Changelog
 
+## [v7.1.3](https://github.com/and-period/furumaru/compare/v7.1.2...v7.1.3) - 2025-09-22
+- fix(web): Firebase Messaging の未サポートブラウザ対応 by @taba2424 in https://github.com/and-period/furumaru/pull/3073
+
 ## [v7.1.2](https://github.com/and-period/furumaru/compare/v7.1.1...v7.1.2) - 2025-09-20
 - build(deps): bump the dependencies group across 1 directory with 21 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3065
 - [web/liff] 注文一覧画面、注文詳細画面の実装 by @Copilot in https://github.com/and-period/furumaru/pull/3067
