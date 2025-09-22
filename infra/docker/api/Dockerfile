@@ -13,14 +13,15 @@ RUN apk add --update --no-cache \
       make \
       tzdata
 
+# 依存関係のダウンロードを別レイヤーにして最適化
+COPY ./api/go.mod ./api/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
+    go mod download
+
+# ビルド処理
+COPY ./api ./
 RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
     --mount=type=cache,target=/root/.cache/go-build,sharing=locked \
-    --mount=type=bind,source=./api/go.mod,target=go.mod \
-    --mount=type=bind,source=./api/go.sum,target=go.sum \
-    go mod download
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    --mount=type=bind,source=./api,target=. \
     make build SERVICE=${SERVICE} BUILD_DIR=/dist
 
 # 実行用コンテナ
