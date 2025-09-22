@@ -274,6 +274,12 @@ export const useAuthStore = defineStore('auth', {
         return '' // Push通知未対応ブラウザ
       }
 
+      // messaging が null の場合は空文字を返す
+      if (!messaging) {
+        console.log('Firebase Messaging is not initialized')
+        return ''
+      }
+
       return await getToken(messaging, {
         vapidKey: runtimeConfig.public.FIREBASE_VAPID_KEY,
       })
