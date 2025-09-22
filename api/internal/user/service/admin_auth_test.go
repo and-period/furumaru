@@ -1014,8 +1014,12 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T, providerType entity.AdminAuthP
 		IDToken:      "id-token",
 		ExpiresIn:    3600,
 	}
+	providerPrefix := "google"
+	if providerType == entity.AdminAuthProviderTypeLINE {
+		providerPrefix = "line"
+	}
 	authUser := &cognito.AuthUser{
-		Username:    "external_username",
+		Username:    providerPrefix + "_username",
 		Email:       "test@example.com",
 		PhoneNumber: "",
 		Identities: []*cognito.AuthUserIdentity{
@@ -1049,7 +1053,6 @@ func mockConnectAdminAuth(m *mocks, _ *testing.T, providerType entity.AdminAuthP
 	m.db.Admin.EXPECT().Get(gomock.Any(), "admin-id").Return(admin, nil)
 	m.adminAuth.EXPECT().GetAccessToken(gomock.Any(), tokenParams).Return(token, nil)
 	m.adminAuth.EXPECT().GetUser(gomock.Any(), "access-token").Return(authUser, nil)
-	m.adminAuth.EXPECT().DeleteUser(gomock.Any(), "external_username").Return(nil)
 	m.adminAuth.EXPECT().LinkProvider(gomock.Any(), linkParams).Return(nil)
 	m.db.AdminAuthProvider.EXPECT().Upsert(gomock.Any(), provider).Return(nil)
 }
@@ -1115,7 +1118,6 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(nil)
 				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
 				mocks.db.AdminAuthProvider.EXPECT().Upsert(ctx, provider).Return(nil)
 			},
@@ -1249,7 +1251,7 @@ func TestConnectAdminAuth(t *testing.T) {
 				nonce:       "nonce",
 				redirectURI: "http://example.com/auth/google/callback",
 			},
-			expectErr: exception.ErrAlreadyExists,
+			expectErr: exception.ErrForbidden,
 		},
 		{
 			name: "failed to unmatch provider type",
@@ -1287,29 +1289,6 @@ func TestConnectAdminAuth(t *testing.T) {
 			expectErr: exception.ErrForbidden,
 		},
 		{
-			name: "failed to delete external user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.cache.EXPECT().
-					Get(ctx, &entity.AdminAuthEvent{AdminID: "admin-id"}).
-					DoAndReturn(func(ctx context.Context, event *entity.AdminAuthEvent) error {
-						event.ProviderType = entity.AdminAuthProviderTypeGoogle
-						event.Nonce = "nonce"
-						return nil
-					})
-				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
-				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
-				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(assert.AnError)
-			},
-			input: &connectAdminAuthParams{
-				adminID:     "admin-id",
-				code:        "code",
-				nonce:       "nonce",
-				redirectURI: "http://example.com/auth/google/callback",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to link provider",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.cache.EXPECT().
@@ -1322,7 +1301,6 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(nil)
 				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(assert.AnError)
 			},
 			input: &connectAdminAuthParams{
@@ -1346,7 +1324,6 @@ func TestConnectAdminAuth(t *testing.T) {
 				mocks.db.Admin.EXPECT().Get(ctx, "admin-id").Return(admin, nil)
 				mocks.adminAuth.EXPECT().GetAccessToken(ctx, tokenParams).Return(token, nil)
 				mocks.adminAuth.EXPECT().GetUser(ctx, "access-token").Return(authUser, nil)
-				mocks.adminAuth.EXPECT().DeleteUser(ctx, "google_username").Return(nil)
 				mocks.adminAuth.EXPECT().LinkProvider(ctx, linkParams).Return(nil)
 				mocks.db.AdminAuthProvider.EXPECT().Upsert(ctx, provider).Return(assert.AnError)
 			},

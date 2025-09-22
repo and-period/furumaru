@@ -299,23 +299,16 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	}
 	slog.DebugContext(ctx, "Connecting admin account", slog.Any("user", user))
 
-	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みの外部アカウントを削除
 	providerParams := &entity.AdminAuthProviderParams{
 		AdminID:      admin.ID,
 		ProviderType: event.ProviderType,
 		Auth:         user,
 	}
 	provider, err := entity.NewAdminAuthProvider(providerParams)
-	if errors.Is(err, entity.ErrInvalidAdminAuthUsername) {
-		return fmt.Errorf("service: invalid admin auth provider type: %w", exception.ErrAlreadyExists)
-	}
 	if errors.Is(err, entity.ErrInvalidAdminAuthProviderType) {
 		return fmt.Errorf("service: invalid admin auth username: %w", exception.ErrForbidden)
 	}
 	if err != nil {
-		return internalError(err)
-	}
-	if err := s.adminAuth.DeleteUser(ctx, user.Username); err != nil {
 		return internalError(err)
 	}
 
