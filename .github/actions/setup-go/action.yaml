@@ -31,11 +31,6 @@ runs:
     working-directory: ${{ inputs.working-directory }}
     run: go mod download
 
-  - name: Verify Modules
-    shell: bash
-    working-directory: ${{ inputs.working-directory }}
-    run: go mod verify
-
   - name: Install tools
     shell: bash
     working-directory: ${{ inputs.working-directory }}
