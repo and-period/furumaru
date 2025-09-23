@@ -87,6 +87,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-docker-go-
 
+    - name: Ensure cache directories exist
+      run: |
+        mkdir -p go-mod-cache
+        mkdir -p go-build-cache
+
     - name: Inject Go caches into Docker
       uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
       with:
