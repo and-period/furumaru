@@ -6,10 +6,6 @@ inputs:
     description: '作業ディレクトリ'
     required: false
     default: '.'
-  service:
-    description: 'サービス名'
-    required: true
-    default: 'backend'
 
 runs:
   using: composite
@@ -33,8 +29,12 @@ runs:
   - name: Download modules
     shell: bash
     working-directory: ${{ inputs.working-directory }}
-    run: |
-      go mod download
+    run: go mod download
+
+  - name: Verify Modules
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: go mod verify
 
   - name: Install tools
     shell: bash
