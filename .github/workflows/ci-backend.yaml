@@ -17,7 +17,6 @@ env:
   DB_PORT: 4000
   DB_USERNAME: root
   DB_PASSWORD: ''
-  GOCACHE: /home/runner/.cache/go-build
   GOFLAGS: -buildvcs=false
 
 jobs:
@@ -84,6 +83,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        service: [gateway, media, messenger]
 
     steps:
     - name: Check out code
@@ -94,14 +94,18 @@ jobs:
         working-directory: ./api
         service: ${{ env.SERVICE }}
 
-    - name: Build gateway
-      run: make build SERVICE=gateway
+    - name: Cache Build
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      with:
+        path: |
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}-build-${{ matrix.service || github.job }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}
+          ${{ runner.os }}-go-
 
-    - name: Build media
-      run: make build SERVICE=media
-
-    - name: Build messenger
-      run: make build SERVICE=messenger
+    - name: Build
+      run: make build SERVICE=${{ matrix.service }}
 
   test:
     name: test
@@ -126,6 +130,16 @@ jobs:
 
     - uses: ./.github/actions/setup-tidb
 
+    - name: Cache Build
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      with:
+        path: |
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}-test
+        restore-keys: |
+          ${{ runner.os }}-go-${{ hashFiles('api/go.mod', 'api/go.sum') }}
+          ${{ runner.os }}-go-
+
     - name: Database Migration
       run: |
         go run ./hack/database-migrate-tidb/main.go \
@@ -135,12 +149,8 @@ jobs:
           -db-username=${DB_USERNAME} \
           -db-password=${DB_PASSWORD}
 
-    - name: Test with cache
-      run: |
-        # GOCACHEディレクトリを確認
-        echo "GOCACHE=$GOCACHE"
-        # テストを実行（キャッシュが利用可能な場合は自動的に使用される）
-        make test
+    - name: Test
+      run: make test
 
     - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
       with:

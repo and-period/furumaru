@@ -15,45 +15,33 @@ runs:
   using: composite
   steps:
   - name: Setup Golang
-    uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+    uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
     with:
       go-version-file: ${{ inputs.working-directory }}/go.mod
-      cache: true
-      cache-dependency-path: ${{ inputs.working-directory }}/go.sum
-    env:
-      GOCACHE: /home/runner/.cache/go-build
+      cache: false
 
-  - name: Cache go build cache
-    id: build-cache
+  - name: Cache Modules
     uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
     with:
       path: |
-        /home/runner/.cache/go-build
-      key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/*.go') }}
+        ~/go/pkg/mod
+      key: ${{ runner.os }}-go-${{ hashFiles(format('{0}/go.mod', inputs.working-directory), format('{0}/go.sum', inputs.working-directory)) }}
       restore-keys: |
-        ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}-
-        ${{ runner.os }}-go-build-
-
+        ${{ runner.os }}-go-${{ hashFiles(format('{0}/go.mod', inputs.working-directory), format('{0}/go.sum', inputs.working-directory)) }}
+        ${{ runner.os }}-go-
 
   - name: Download modules
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: |
       go mod download
-      go mod tidy
-    env:
-      GOCACHE: /home/runner/.cache/go-build
 
   - name: Install tools
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go get tool
-    env:
-      GOCACHE: /home/runner/.cache/go-build
 
   - name: Generate
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: go generate ./...
-    env:
-      GOCACHE: /home/runner/.cache/go-build
