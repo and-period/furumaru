@@ -11,6 +11,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
@@ -70,6 +71,16 @@ func (h *handler) Checkout(ctx *gin.Context) {
 	if err := h.checkPaymentSystem(ctx, methodType); err != nil {
 		return
 	}
+
+	pickupAt := auth.FacilityUser.LastCheckInAt
+	if req.PickupAt != 0 {
+		pickupAt = jst.ParseFromUnix(req.PickupAt)
+	}
+	pickupLocation := producer.Username
+	if req.PickupLocation != "" {
+		pickupLocation = req.PickupLocation
+	}
+
 	detail := &store.CheckoutDetail{
 		Type:          sentity.OrderTypeProduct,
 		UserID:        h.getUserID(ctx),
@@ -78,12 +89,13 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		PromotionCode: req.PromotionCode,
 		CallbackURL:   req.CallbackURL,
 		Total:         req.Total,
+		OrderRequest:  req.OrderRequest,
 		CheckoutProductDetail: store.CheckoutProductDetail{
 			CoordinatorID:  req.CoordinatorID,
 			BoxNumber:      req.BoxNumber,
 			Pickup:         true, // 施設での受取に限定する
-			PickupAt:       auth.FacilityUser.LastCheckInAt,
-			PickupLocation: producer.Username,
+			PickupAt:       pickupAt,
+			PickupLocation: pickupLocation,
 		},
 	}
 	params := &checkoutParams{

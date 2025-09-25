@@ -1,14 +1,17 @@
 package types
 
 type CheckoutRequest struct {
-	RequestID     string              `json:"requestId" validate:"required"`            // 支払いキー(重複判定用)
-	CoordinatorID string              `json:"coordinatorId" validate:"required"`        // コーディネータID
-	BoxNumber     int64               `json:"boxNumber" validate:"min=0"`               // 箱の通番（箱単位で購入する場合）
-	PromotionCode string              `json:"promotionCode" validate:"omitempty,len=8"` // プロモーションコード
-	PaymentMethod PaymentMethodType   `json:"paymentMethod" validate:"required"`        // 支払い方法
-	CreditCard    *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`     // クレジットカード決済情報
-	CallbackURL   string              `json:"callbackUrl" validate:"required,http_url"` // 決済完了後のリダイレクト先URL
-	Total         int64               `json:"total" validate:"min=0"`                   // 支払い合計金額（誤り検出用）
+	RequestID      string              `json:"requestId" validate:"required"`            // 支払いキー(重複判定用)
+	CoordinatorID  string              `json:"coordinatorId" validate:"required"`        // コーディネータID
+	BoxNumber      int64               `json:"boxNumber" validate:"min=0"`               // 箱の通番（箱単位で購入する場合）
+	PromotionCode  string              `json:"promotionCode" validate:"omitempty,len=8"` // プロモーションコード
+	PickupAt       int64               `json:"pickupAt" validate:"min=0"`                // 受け取り日時（UNIX時間）
+	PickupLocation string              `json:"pickupLocation" validate:"max=256"`        // 受け取り場所
+	OrderRequest   string              `json:"orderRequest" validate:"max=256"`          // 注文時リクエスト
+	PaymentMethod  PaymentMethodType   `json:"paymentMethod" validate:"required"`        // 支払い方法
+	CreditCard     *CheckoutCreditCard `json:"creditCard" validate:"omitempty,dive"`     // クレジットカード決済情報
+	CallbackURL    string              `json:"callbackUrl" validate:"required,http_url"` // 決済完了後のリダイレクト先URL
+	Total          int64               `json:"total" validate:"min=0"`                   // 支払い合計金額（誤り検出用）
 }
 
 type CheckoutCreditCard struct {

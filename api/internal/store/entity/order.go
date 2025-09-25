@@ -91,6 +91,7 @@ type NewProductOrderParams struct {
 	Pickup            bool
 	PickupAt          time.Time
 	PickupLocation    string
+	OrderRequest      string
 }
 
 type NewExperienceOrderParams struct {
@@ -111,6 +112,7 @@ type NewExperienceOrderParams struct {
 	Transportation        string
 	RequetsedDate         string
 	RequetsedTime         string
+	OrderRequest          string
 }
 
 func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
@@ -150,6 +152,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 		PickupAt:        params.PickupAt,
 		PickupLocation:  params.PickupLocation,
+		OrderRequest:    params.OrderRequest,
 	}
 	metadata := NewOrderMetadata(mparams)
 	return &Order{

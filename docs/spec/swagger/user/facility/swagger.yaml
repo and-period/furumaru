@@ -276,8 +276,20 @@ components:
           type: string
         creditCard:
           $ref: '#/components/schemas/CheckoutCreditCard'
+        orderRequest:
+          description: 注文時リクエスト
+          maxLength: 256
+          type: string
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethodType'
+        pickupAt:
+          description: 受け取り日時（UNIX時間）
+          minimum: 0
+          type: integer
+        pickupLocation:
+          description: 受け取り場所
+          maxLength: 256
+          type: string
         promotionCode:
           description: プロモーションコード
           type: string
@@ -295,6 +307,9 @@ components:
         - requestId
         - boxNumber
         - creditCard
+        - orderRequest
+        - pickupAt
+        - pickupLocation
         - promotionCode
         - total
       type: object
