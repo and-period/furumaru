@@ -148,6 +148,7 @@ type CheckoutDetail struct {
 	BillingAddressID         string           `validate:""`
 	CallbackURL              string           `validate:"required,http_url"`
 	Total                    int64            `validate:"min=0"`
+	OrderRequest             string           `validate:"max=256"`
 }
 
 type CheckoutProductDetail struct {

@@ -426,6 +426,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		Pickup:            params.payload.Pickup,
 		PickupAt:          params.payload.PickupAt,
 		PickupLocation:    params.payload.PickupLocation,
+		OrderRequest:      params.payload.OrderRequest,
 	}
 	order, err := entity.NewProductOrder(oparams)
 	if err != nil {
@@ -550,6 +551,7 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		Transportation:        params.payload.Transportation,
 		RequetsedDate:         params.payload.RequestedDate,
 		RequetsedTime:         params.payload.RequestedTime,
+		OrderRequest:          params.payload.OrderRequest,
 	}
 	order, err := entity.NewExperienceOrder(oparams)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 // OrderMetadata - 注文付加情報
 type OrderMetadata struct {
 	OrderID         string    `gorm:"primaryKey;<-:create"` // 注文履歴ID
+	OrderRequest    string    `gorm:"default:null"`         // 注文時リクエスト
 	PickupAt        time.Time `gorm:"default:null"`         // 受け取り日時
 	PickupLocation  string    `gorm:"default:null"`         // 受け取り場所
 	ShippingMessage string    `gorm:"default:null"`         // 発送時メッセージ
@@ -25,11 +26,13 @@ type NewOrderMetadataParams struct {
 	ShippingMessage string
 	PickupAt        time.Time
 	PickupLocation  string
+	OrderRequest    string
 }
 
 func NewOrderMetadata(params *NewOrderMetadataParams) *OrderMetadata {
 	res := &OrderMetadata{
-		OrderID: params.OrderID,
+		OrderID:      params.OrderID,
+		OrderRequest: params.OrderRequest,
 	}
 	switch {
 	case params.Pickup:
