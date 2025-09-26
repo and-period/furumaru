@@ -1,5 +1,15 @@
 # Changelog
 
+## [v7.1.4](https://github.com/and-period/furumaru/compare/v7.1.3...v7.1.4) - 2025-09-26
+- fix(api): Cognito外部認証プロバイダー連携の処理を改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3075
+- fix(api): admin auth テストの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3078
+- perf: optimize CI/CD caching for faster builds by @taba2424 in https://github.com/and-period/furumaru/pull/3077
+- fix(ci): CIビルド時のgo.sumエントリ不足エラーを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3079
+- fix(workflow): バックエンドのデプロイフローを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3080
+- fix(workflow): バックエンドのデプロイフローを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3081
+- build(deps): bump actions/cache from 4.2.3 to 4.2.4 in the dependencies group by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3082
+- feat(store): 受け取り情報を連携できるように by @taba2424 in https://github.com/and-period/furumaru/pull/3087
+
 ## [v7.1.3](https://github.com/and-period/furumaru/compare/v7.1.2...v7.1.3) - 2025-09-22
 - fix(web): Firebase Messaging の未サポートブラウザ対応 by @taba2424 in https://github.com/and-period/furumaru/pull/3073
 
