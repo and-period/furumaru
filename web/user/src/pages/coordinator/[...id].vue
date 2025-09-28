@@ -160,6 +160,23 @@ useAsyncData(`coordinator-${id.value}`, () => {
               </a>
             </div>
           </div>
+          <!-- プロモーション動画 -->
+          <div
+            v-if="coordinatorInfo.promotionVideoUrl"
+            class="mx-4 mt-4 md:mx-0"
+          >
+            <hr class="mb-4 border-dashed border-main">
+            <div class="mb-4 text-[14px] md:text-[16px]">
+              プロモーション動画
+            </div>
+            <video
+              class="w-full rounded-lg"
+              controls
+              :src="coordinatorInfo.promotionVideoUrl"
+            >
+              お使いのブラウザは動画再生をサポートしていません。
+            </video>
+          </div>
         </div>
         <div class="static pt-[16px] text-main md:col-span-5 md:pt-[100px]">
           <div class="flex w-full px-4 md:px-0">
