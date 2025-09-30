@@ -134,6 +134,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		params := &listVideoSummariesParams{
 			coordinatorID: coordinator.ID,
+			category:      videoCategoryAll,
 			noLimit:       true,
 		}
 		videos, _, err = h.listVideoSummaries(ectx, params)
