@@ -4,6 +4,7 @@ import liff from '@line/liff';
 import { useShoppingCartStore } from '~/stores/shopping';
 import { useLiffInit } from '~/composables/useLiffInit';
 import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '~/stores/user';
 import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
@@ -24,6 +25,7 @@ const shouldHideCart = computed(() => {
 // ストア
 const shoppingCartStore = useShoppingCartStore();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 const { shoppingCart, cartIsEmpty, totalPrice, totalQuantity } = storeToRefs(shoppingCartStore);
 
 const toggleExpand = () => {
@@ -87,6 +89,8 @@ onMounted(async () => {
       await authStore.signIn(liffIDToken);
       // 認証処理の後にカート情報を取得（トークン付与のため）
       await shoppingCartStore.getCart();
+      // 認証後にユーザー情報を取得（トークン付与のため）
+      await userStore.fetchMe(facilityId.value, authStore.token!.accessToken);
     }
     catch (err) {
       if (err instanceof ResponseError) {
