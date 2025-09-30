@@ -23,6 +23,19 @@ const checkinData = computed(() => {
   });
 });
 
+// チェックイン翌日の日付（表示用）
+const nextDayAfterCheckinData = computed(() => {
+  if (!profile.value || !profile.value.lastCheckInAt) return null;
+  const datetime = new Date(profile.value.lastCheckInAt * 1000);
+  // 翌日
+  datetime.setDate(datetime.getDate() + 1);
+  return datetime.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+});
+
 onMounted(() => {
   shoppingCartStore.getCart();
 });
@@ -70,8 +83,8 @@ const pickupAt = computed<number>(() => {
     return Math.floor(d.getTime() / 1000);
   }
   if (pickupAtFormData.value === 'morning') {
-    // 当日 08:00
-    const d = new Date(year, month, day, 8, 0, 0, 0);
+    // 翌日 08:00
+    const d = new Date(year, month, day + 1, 8, 0, 0, 0);
     return Math.floor(d.getTime() / 1000);
   }
   return 0;
@@ -216,7 +229,7 @@ const handlePay = async () => {
                 class="mx-2"
               >
               <label for="morning">
-                チェックイン当日午前（{{ checkinData }} 08:00）
+                チェックイン翌日午前（{{ nextDayAfterCheckinData }} 08:00）
               </label>
             </div>
           </div>
