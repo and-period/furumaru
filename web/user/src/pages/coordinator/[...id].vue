@@ -36,22 +36,29 @@ useAsyncData(`coordinator-${id.value}`, () => {
 </script>
 
 <template>
-  <div>
-    <div class="static mx-auto w-full text-main md:max-w-[1216px]">
+  <div class="min-h-screen bg-base">
+    <div class="mx-auto w-full max-w-7xl px-4 text-main md:px-8">
       <!-- ヘッダー部分 -->
-      <div class="h-[160px] w-full md:h-[320px] md:w-[1216px]">
+      <div class="relative h-[160px] w-full overflow-hidden rounded-lg shadow-lg md:h-[320px]">
         <template v-if="coordinatorInfo.headerUrl">
           <img
-            class="h-full w-full object-cover"
+            class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
             :src="coordinatorInfo.headerUrl"
+            :alt="coordinatorInfo.marcheName + 'のヘッダー画像'"
           >
         </template>
         <template v-else>
-          <div class="h-full w-full bg-gray-200" />
+          <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300">
+            <div class="text-center text-gray-400">
+              <p class="text-sm">
+                ヘッダー画像
+              </p>
+            </div>
+          </div>
         </template>
       </div>
       <div
-        class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12"
+        class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12 bg-base"
       >
         <div class="col-span-2">
           <div class="flex justify-center">
@@ -73,10 +80,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
               {{ coordinatorInfo.city }}
             </p>
           </div>
-          <div class="my-4 flex justify-center tracking-[2.4px]">
-            <p class="mt-auto text-[12px] md:text-[14px]">
-              コーディネータ
-            </p>
+          <div class="my-2 flex justify-center tracking-[2.4px]">
             <p class="ml-2 text-[16px] font-bold md:text-[24px]">
               {{ coordinatorInfo.username }}
             </p>
@@ -167,7 +171,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
           >
             <hr class="mb-4 border-dashed border-main">
             <div class="mb-4 text-[14px] md:text-[16px]">
-              プロモーション動画
+              紹介動画
             </div>
             <video
               class="w-full rounded-lg"
@@ -186,16 +190,20 @@ useAsyncData(`coordinator-${id.value}`, () => {
             >
           </div>
           <div
-            class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
+            class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[20px] md:pt-[65px] md:bottom-8 md:mx-0 md:w-full"
           >
-            <div class="px-4">
+            <div
+              v-if="lives.length > 0"
+              class="px-4"
+            >
               <div
-                class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
-                配信中・配信予定のマルシェ
+                配信中・配信予定のライブ
               </div>
             </div>
             <div
+              v-if="lives.length > 0"
               class="mx-4 grid grid-cols-1 gap-8 bg-white pt-4 md:mx-auto md:grid-cols-2"
             >
               <the-coordinator-live-item
@@ -214,7 +222,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
               <div
                 class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
-                過去のマルシェ
+                過去の動画
               </div>
             </div>
             <div
@@ -227,7 +235,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 :title="archive.title"
                 :img-src="archive.thumbnailUrl"
                 :width="320"
-                class="cursor-pointer"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                 @click="handleClickLiveItem(archive.scheduleId)"
               />
             </div>
