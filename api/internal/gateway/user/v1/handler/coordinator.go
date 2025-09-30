@@ -104,6 +104,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		shipping     *service.Shipping
 		lives        service.LiveSummaries
 		archives     service.ArchiveSummaries
+		videos       service.VideoSummaries
 		productTypes service.ProductTypes
 		producers    service.Producers
 		products     service.Products
@@ -128,6 +129,15 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 			noLimit: true,
 		}
 		archives, _, err = h.listArchiveSummaries(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		params := &listVideoSummariesParams{
+			coordinatorID: coordinator.ID,
+			category:      videoCategoryAll,
+			noLimit:       true,
+		}
+		videos, _, err = h.listVideoSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -168,6 +178,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		Shipping:     shipping.Response(),
 		Lives:        lives.Response(),
 		Archives:     archives.Response(),
+		Videos:       videos.Response(),
 		ProductTypes: productTypes.Response(),
 		Producers:    producers.Response(),
 		Products:     products.Response(),
