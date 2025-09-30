@@ -215,7 +215,7 @@ async function onSubmit() {
           <FmTextInput
             id="stay_date"
             v-model="stayDate"
-            label="宿泊日"
+            label="宿泊日時"
             name="stay_date"
             required
             class="w-full px-2"
