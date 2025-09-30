@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/stores/user';
 
@@ -8,15 +7,6 @@ const { isLoading, error, profile, phoneNumber, lastCheckInAt } = storeToRefs(us
 
 const route = useRoute();
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
-
-onMounted(async () => {
-  try {
-    await userStore.fetchMe(facilityId.value);
-  }
-  catch {
-    // エラーは store.error に格納される
-  }
-});
 </script>
 
 <template>

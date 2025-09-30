@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useOrderStore } from '~/stores/order';
-import { useAuthStore } from '~/stores/auth';
 
 const route = useRoute();
 const router = useRouter();
@@ -10,22 +9,10 @@ const facilityId = computed<string>(() => String(route.params.facilityId || ''))
 
 // ストア
 const orderStore = useOrderStore();
-const authStore = useAuthStore();
 const { orders, isLoading, error } = storeToRefs(orderStore);
-
-// 認証チェック
-const checkAuth = () => {
-  if (!authStore.isAuthenticated) {
-    router.push(`/${facilityId.value}`);
-    return false;
-  }
-  return true;
-};
 
 // 注文一覧取得
 const fetchOrders = async () => {
-  if (!checkAuth()) return;
-
   try {
     await orderStore.getOrders(facilityId.value, 50, 0);
   }
@@ -85,11 +72,6 @@ const getOrderStatusClass = (status: number): string => {
 const getProductInfo = (productId: string) => {
   return orders.value?.products?.find(product => product.id === productId);
 };
-
-// マウント時に注文一覧を取得
-onMounted(() => {
-  fetchOrders();
-});
 </script>
 
 <template>
