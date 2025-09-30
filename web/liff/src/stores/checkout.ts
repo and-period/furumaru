@@ -21,6 +21,7 @@ interface CheckoutState {
 export interface StartCheckoutPayload {
   callbackUrl: string;
   paymentMethod: PaymentMethodType;
+  pickupAt: number; // Unix timestamp
   requestId?: string;
   coordinatorId?: string; // 未指定時はカートから推定
   boxNumber?: number;
@@ -93,6 +94,9 @@ export const useCheckoutStore = defineStore('checkout', {
           paymentMethod: payload.paymentMethod,
           promotionCode: payload.promotionCode || '',
           requestId,
+          orderRequest: '',
+          pickupLocation: '',
+          pickupAt: payload.pickupAt,
           total: payload.total || 0,
         };
 
