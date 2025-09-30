@@ -37,13 +37,13 @@ export interface RequestCheckoutRequest {
      * @type {string}
      * @memberof RequestCheckoutRequest
      */
-    callbackUrl?: string;
+    callbackUrl: string;
     /**
      * コーディネータID
      * @type {string}
      * @memberof RequestCheckoutRequest
      */
-    coordinatorId?: string;
+    coordinatorId: string;
     /**
      * 
      * @type {RequestCheckoutCreditCard}
@@ -55,7 +55,7 @@ export interface RequestCheckoutRequest {
      * @type {number}
      * @memberof RequestCheckoutRequest
      */
-    paymentMethod?: number;
+    paymentMethod: number;
     /**
      * プロモーションコード
      * @type {string}
@@ -67,7 +67,7 @@ export interface RequestCheckoutRequest {
      * @type {string}
      * @memberof RequestCheckoutRequest
      */
-    requestId?: string;
+    requestId: string;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
@@ -80,6 +80,10 @@ export interface RequestCheckoutRequest {
  * Check if a given object implements the RequestCheckoutRequest interface.
  */
 export function instanceOfRequestCheckoutRequest(value: object): value is RequestCheckoutRequest {
+    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('requestId' in value) || value['requestId'] === undefined) return false;
     return true;
 }
 
@@ -94,12 +98,12 @@ export function RequestCheckoutRequestFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'boxNumber': json['boxNumber'] == null ? undefined : json['boxNumber'],
-        'callbackUrl': json['callbackUrl'] == null ? undefined : json['callbackUrl'],
-        'coordinatorId': json['coordinatorId'] == null ? undefined : json['coordinatorId'],
+        'callbackUrl': json['callbackUrl'],
+        'coordinatorId': json['coordinatorId'],
         'creditCard': json['creditCard'] == null ? undefined : RequestCheckoutCreditCardFromJSON(json['creditCard']),
-        'paymentMethod': json['paymentMethod'] == null ? undefined : json['paymentMethod'],
+        'paymentMethod': json['paymentMethod'],
         'promotionCode': json['promotionCode'] == null ? undefined : json['promotionCode'],
-        'requestId': json['requestId'] == null ? undefined : json['requestId'],
+        'requestId': json['requestId'],
         'total': json['total'] == null ? undefined : json['total'],
     };
 }

@@ -10,6 +10,19 @@ const route = useRoute();
 const shoppingCartStore = useShoppingCartStore();
 const checkoutStore = useCheckoutStore();
 
+const userStore = useUserStore();
+const { lastCheckInAt, profile } = storeToRefs(userStore);
+
+const checkinData = computed(() => {
+  if (!profile.value || !profile.value.lastCheckInAt) return null;
+  const datetime = new Date(profile.value.lastCheckInAt * 1000);
+  return datetime.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+});
+
 onMounted(() => {
   shoppingCartStore.getCart();
 });
@@ -33,6 +46,35 @@ const creditCard = ref<CreditCardData>({
   month: 0,
   year: 0,
   verificationValue: '',
+});
+
+// 受け取り日時
+const pickupAtFormData = ref<string>('checkin'); // 受け取り日時
+
+const pickupAt = computed<number>(() => {
+  const ts = profile.value?.lastCheckInAt;
+  if (!ts) return 0;
+
+  // 基準: チェックイン日のローカル日付
+  const base = new Date(ts * 1000);
+  const year = base.getFullYear();
+  const month = base.getMonth(); // 0-based
+  const day = base.getDate();
+
+  if (pickupAtFormData.value === 'checkin') {
+    return ts;
+  }
+  if (pickupAtFormData.value === 'afternoon') {
+    // 当日 17:00
+    const d = new Date(year, month, day, 17, 0, 0, 0);
+    return Math.floor(d.getTime() / 1000);
+  }
+  if (pickupAtFormData.value === 'morning') {
+    // 当日 08:00
+    const d = new Date(year, month, day, 8, 0, 0, 0);
+    return Math.floor(d.getTime() / 1000);
+  }
+  return 0;
 });
 
 const isSubmitting = ref(false);
@@ -64,6 +106,7 @@ const handlePay = async () => {
         year: creditCard.value.year,
         verificationValue: creditCard.value.verificationValue,
       },
+      pickupAt: pickupAt.value,
       total: summary.value.subtotal,
     });
 
@@ -137,6 +180,47 @@ const handlePay = async () => {
             :total="summary.subtotal"
           />
 
+          <!-- 受け取り日時選択 -->
+          <div class="flex flex-col px-4 gap-1">
+            <label class=" font-semibold text-sm block mb-2">配達時間</label>
+            <div>
+              <input
+                id="checkin"
+                v-model="pickupAtFormData"
+                type="radio"
+                value="checkin"
+                class="mx-2"
+              >
+              <label for="checkin">
+                チェックイン時間（{{ lastCheckInAt }}）
+              </label>
+            </div>
+            <div>
+              <input
+                id="afternoon"
+                v-model="pickupAtFormData"
+                type="radio"
+                value="afternoon"
+                class="mx-2"
+              >
+              <label for="afternoon">
+                チェックイン当日午後（{{ checkinData }} 17:00）
+              </label>
+            </div>
+            <div>
+              <input
+                id="morning"
+                v-model="pickupAtFormData"
+                type="radio"
+                value="morning"
+                class="mx-2"
+              >
+              <label for="morning">
+                チェックイン当日午前（{{ checkinData }} 08:00）
+              </label>
+            </div>
+          </div>
+
           <!-- 支払いフォーム -->
           <div class="mt-6 bg-white rounded-md border p-4">
             <div class="text-sm font-semibold mb-2">
@@ -158,6 +242,7 @@ const handlePay = async () => {
             </button>
           </div>
         </template>
+
         <template v-else>
           <div class="text-center text-gray-600">
             コーディネーター情報が見つかりませんでした。

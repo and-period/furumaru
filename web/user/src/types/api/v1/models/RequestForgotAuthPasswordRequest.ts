@@ -24,13 +24,14 @@ export interface RequestForgotAuthPasswordRequest {
      * @type {string}
      * @memberof RequestForgotAuthPasswordRequest
      */
-    email?: string;
+    email: string;
 }
 
 /**
  * Check if a given object implements the RequestForgotAuthPasswordRequest interface.
  */
 export function instanceOfRequestForgotAuthPasswordRequest(value: object): value is RequestForgotAuthPasswordRequest {
+    if (!('email' in value) || value['email'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RequestForgotAuthPasswordRequestFromJSONTyped(json: any, ignoreD
     }
     return {
         
-        'email': json['email'] == null ? undefined : json['email'],
+        'email': json['email'],
     };
 }
 

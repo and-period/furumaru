@@ -24,13 +24,14 @@ export interface RequestUpdateAuthUserUsernameRequest {
      * @type {string}
      * @memberof RequestUpdateAuthUserUsernameRequest
      */
-    username?: string;
+    username: string;
 }
 
 /**
  * Check if a given object implements the RequestUpdateAuthUserUsernameRequest interface.
  */
 export function instanceOfRequestUpdateAuthUserUsernameRequest(value: object): value is RequestUpdateAuthUserUsernameRequest {
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RequestUpdateAuthUserUsernameRequestFromJSONTyped(json: any, ign
     }
     return {
         
-        'username': json['username'] == null ? undefined : json['username'],
+        'username': json['username'],
     };
 }
 
