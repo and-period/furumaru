@@ -5,6 +5,7 @@ import { useShoppingCartStore } from '~/stores/shopping';
 import { useLiffInit } from '~/composables/useLiffInit';
 import { useAuthStore } from '~/stores/auth';
 import { useUserStore } from '~/stores/user';
+import { useOrderStore } from '~/stores/order';
 import { ResponseError } from '~/types/api/facility';
 
 const route = useRoute();
@@ -26,6 +27,7 @@ const shouldHideCart = computed(() => {
 const shoppingCartStore = useShoppingCartStore();
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const orderStore = useOrderStore();
 const { shoppingCart, cartIsEmpty, totalPrice, totalQuantity } = storeToRefs(shoppingCartStore);
 
 const toggleExpand = () => {
@@ -111,6 +113,24 @@ onMounted(async () => {
     }
   }
 });
+
+// ルートや認証状態の変化に応じて、注文一覧（/orders）にいる場合はフェッチ
+watch(
+  () => [route.path, authStore.isAuthenticated] as const,
+  async ([path, isAuthed]) => {
+    const id = facilityId.value;
+    const onOrdersIndex = /^\/[^/]+\/orders$/.test(path || '');
+    if (onOrdersIndex && isAuthed && id) {
+      try {
+        await orderStore.getOrders(id, 50, 0);
+      }
+      catch (e) {
+        console.error('Failed to fetch orders from layout:', e);
+      }
+    }
+  },
+  { immediate: true },
+);
 
 // 価格のフォーマット
 const formatPrice = (price: number) => price.toLocaleString('ja-JP');
