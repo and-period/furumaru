@@ -74,5 +74,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
       })
     },
+    videos(state) {
+      return {
+        ...state.coordinatorResponse.videos,
+      }
+    },
   },
 })

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useCoordinatorStore } from '~/store/coordinator'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
+
+const tt = (str: keyof I18n['base']['top']) => {
+  return i18n.t(`base.top.${str}`)
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -9,7 +16,7 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const { coordinatorInfo, archives, lives, producers }
+const { coordinatorInfo, archives, lives, producers, videos }
   = storeToRefs(coordinatorStore)
 
 const id = computed<string>(() => {
@@ -222,7 +229,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
               <div
                 class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
-                過去の動画
+                過去の配信
               </div>
             </div>
             <div
@@ -237,6 +244,27 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 :width="320"
                 class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                 @click="handleClickLiveItem(archive.scheduleId)"
+              />
+            </div>
+            <div class="my-8 px-4">
+              <div
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+              >
+                関連動画
+              </div>
+            </div>
+            <div
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
+            >
+              <the-video-item
+                v-for="video in videos"
+                :id="video.id"
+                :key="video.id"
+                :title="video.title"
+                :img-src="video.thumbnailUrl"
+                :width="368"
+                :archived-stream-text="tt('archivedStreamText')"
+                class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               />
             </div>
           </div>
