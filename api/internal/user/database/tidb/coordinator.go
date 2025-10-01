@@ -220,13 +220,21 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
-		updates := map[string]interface{}{
+		aupdates := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
 		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", coordinatorID)
-		if err := stmt.Updates(updates).Error; err != nil {
+		if err := stmt.Updates(aupdates).Error; err != nil {
+			return err
+		}
+		update := map[string]interface{}{
+			"updated_at": now,
+			"deleted_at": now,
+		}
+		stmt = tx.WithContext(ctx).Table(coordinatorTable).Where("admin_id = ?", coordinatorID)
+		if err := stmt.Updates(update).Error; err != nil {
 			return err
 		}
 		return auth(ctx)

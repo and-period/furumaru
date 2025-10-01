@@ -2,15 +2,18 @@ package entity
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Administrator - システム管理者情報
 type Administrator struct {
 	Admin       `gorm:"-"`
-	AdminID     string    `gorm:"primaryKey;<-:create"` // 管理者ID
-	PhoneNumber string    `gorm:""`                     // 電話番号
-	CreatedAt   time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt   time.Time `gorm:""`                     // 更新日時
+	AdminID     string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	PhoneNumber string         `gorm:""`                     // 電話番号
+	CreatedAt   time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt   time.Time      `gorm:""`                     // 更新日時
+	DeletedAt   gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Administrators []*Administrator

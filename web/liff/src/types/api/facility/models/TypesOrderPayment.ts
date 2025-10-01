@@ -26,7 +26,7 @@ export interface TypesOrderPayment {
      */
     discount?: number;
     /**
-     * 支払い方法
+     * 決済手段種別
      * @type {number}
      * @memberof TypesOrderPayment
      */

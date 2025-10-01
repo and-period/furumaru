@@ -15,7 +15,8 @@ const lastName = ref('');
 const firstName = ref('');
 const lastNameKana = ref('');
 const firstNameKana = ref('');
-const stayDate = ref(''); // yyyy-MM-dd
+// datetime-local の値（例: 2025-04-01T15:30 または 2025-04-01T15:30:00）
+const stayDate = ref('');
 const phoneNumber = ref('');
 
 const isSubmitting = ref(false);
@@ -47,10 +48,35 @@ const canSubmit = computed(() => {
   );
 });
 
-function toUnixSecondsFromDateInput(dateStr: string): number {
-  // ローカルタイムの 00:00 として扱い、UNIX秒へ
-  const d = new Date(`${dateStr}T00:00:00`);
-  return Math.floor(d.getTime() / 1000);
+function toUnixSecondsFromDateInput(input: string): number {
+  // datetime-local の文字列をローカルタイムとして解釈し、UNIX秒へ変換
+  // 受け取り想定: 'YYYY-MM-DDTHH:mm' または 'YYYY-MM-DDTHH:mm:ss'
+  if (!input) return 0;
+
+  const [datePart, timePart = ''] = input.split('T');
+  if (!datePart) return 0;
+
+  const [yStr, mStr, dStr] = datePart.split('-');
+  const [hStr = '0', minStr = '0', sStr = '0'] = timePart.split(':');
+
+  const year = Number(yStr);
+  const monthIndex = Number(mStr) - 1; // 0始まり
+  const day = Number(dStr);
+  const hour = Number(hStr);
+  const minute = Number(minStr);
+  // 秒は小数（ミリ秒を含む）になる場合があるため、小数点前のみ採用
+  const second = Number(String(sStr).split('.')[0] || '0');
+
+  if (
+    Number.isNaN(year) || Number.isNaN(monthIndex) || Number.isNaN(day)
+    || Number.isNaN(hour) || Number.isNaN(minute) || Number.isNaN(second)
+  ) {
+    return 0;
+  }
+
+  // Date(…) はローカルタイムで生成される
+  const date = new Date(year, monthIndex, day, hour, minute, second, 0);
+  return Math.floor(date.getTime() / 1000);
 }
 
 // 先頭0始まりの国内番号を国番号+81形式へ正規化（入力は0始まりでOK）
@@ -189,11 +215,11 @@ async function onSubmit() {
           <FmTextInput
             id="stay_date"
             v-model="stayDate"
-            label="宿泊日"
+            label="宿泊日時"
             name="stay_date"
             required
             class="w-full px-2"
-            type="date"
+            type="datetime-local"
             :disabled="isSubmitting"
           />
         </div>

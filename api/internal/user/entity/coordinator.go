@@ -4,29 +4,31 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"gorm.io/gorm"
 )
 
 // Coordinator - コーディネータ情報
 type Coordinator struct {
 	Admin             `gorm:"-"`
-	AdminID           string    `gorm:"primaryKey;<-:create"` // 管理者ID
-	PhoneNumber       string    `gorm:""`                     // 電話番号
-	Username          string    `gorm:""`                     // 表示名
-	Profile           string    `gorm:""`                     // 紹介文
-	ThumbnailURL      string    `gorm:""`                     // サムネイルURL
-	HeaderURL         string    `gorm:""`                     // ヘッダー画像URL
-	PromotionVideoURL string    `gorm:""`                     // 紹介動画URL
-	BonusVideoURL     string    `gorm:""`                     // 購入特典動画URL
-	InstagramID       string    `gorm:""`                     // SNS(Instagram)アカウント名
-	FacebookID        string    `gorm:""`                     // SNS(Facebook)アカウント名
-	PostalCode        string    `gorm:""`                     // 郵便番号
-	Prefecture        string    `gorm:"-"`                    // 都道府県
-	PrefectureCode    int32     `gorm:"column:prefecture"`    // 都道府県コード
-	City              string    `gorm:""`                     // 市区町村
-	AddressLine1      string    `gorm:""`                     // 町名・番地
-	AddressLine2      string    `gorm:""`                     // ビル名・号室など
-	CreatedAt         time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt         time.Time `gorm:""`                     // 更新日時
+	AdminID           string         `gorm:"primaryKey;<-:create"` // 管理者ID
+	PhoneNumber       string         `gorm:""`                     // 電話番号
+	Username          string         `gorm:""`                     // 表示名
+	Profile           string         `gorm:""`                     // 紹介文
+	ThumbnailURL      string         `gorm:""`                     // サムネイルURL
+	HeaderURL         string         `gorm:""`                     // ヘッダー画像URL
+	PromotionVideoURL string         `gorm:""`                     // 紹介動画URL
+	BonusVideoURL     string         `gorm:""`                     // 購入特典動画URL
+	InstagramID       string         `gorm:""`                     // SNS(Instagram)アカウント名
+	FacebookID        string         `gorm:""`                     // SNS(Facebook)アカウント名
+	PostalCode        string         `gorm:""`                     // 郵便番号
+	Prefecture        string         `gorm:"-"`                    // 都道府県
+	PrefectureCode    int32          `gorm:"column:prefecture"`    // 都道府県コード
+	City              string         `gorm:""`                     // 市区町村
+	AddressLine1      string         `gorm:""`                     // 町名・番地
+	AddressLine2      string         `gorm:""`                     // ビル名・号室など
+	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
+	DeletedAt         gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Coordinators []*Coordinator

@@ -3,9 +3,11 @@ import { ref, onMounted, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { FmTextInput } from '@furumaru/shared';
 import { useUserStore } from '@/stores/user';
+import { useAuthStore } from '@/stores/auth';
 import type { UpdateAuthUserRequest } from '@/types/api/facility';
 
 const userStore = useUserStore();
+const authStore = useAuthStore();
 const { isLoading, error, profile } = storeToRefs(userStore);
 
 const route = useRoute();
@@ -26,7 +28,7 @@ const formError = ref('');
 // ユーザー情報を取得してフォームに設定
 onMounted(async () => {
   try {
-    await userStore.fetchMe(facilityId.value);
+    await userStore.fetchMe(facilityId.value, authStore.token!.accessToken);
     if (profile.value) {
       lastName.value = profile.value.lastname || '';
       firstName.value = profile.value.firstname || '';

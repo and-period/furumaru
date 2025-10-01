@@ -227,3 +227,35 @@ func (c *client) GetAccessToken(ctx context.Context, params *GetAccessTokenParam
 	}
 	return auth, nil
 }
+
+func (c *client) LinkProvider(ctx context.Context, params *LinkProviderParams) error {
+	linkIn := &cognito.AdminLinkProviderForUserInput{
+		UserPoolId: c.userPoolID,
+		DestinationUser: &types.ProviderUserIdentifierType{
+			ProviderName:           aws.String(string(ProviderTypeCognito)),
+			ProviderAttributeValue: aws.String(params.Username),
+		},
+		SourceUser: &types.ProviderUserIdentifierType{
+			ProviderName:           aws.String(string(params.ProviderType)),
+			ProviderAttributeName:  aws.String("Cognito_Subject"),
+			ProviderAttributeValue: aws.String(params.AccountID),
+		},
+	}
+	if _, err := c.cognito.AdminLinkProviderForUser(ctx, linkIn); err != nil {
+		return c.authError(err)
+	}
+	attrIn := &cognito.AdminUpdateUserAttributesInput{
+		UserPoolId: c.userPoolID,
+		Username:   aws.String(params.Username),
+		UserAttributes: []types.AttributeType{
+			{
+				Name:  emailVerifiedField,
+				Value: aws.String("true"),
+			},
+		},
+	}
+	if _, err := c.cognito.AdminUpdateUserAttributes(ctx, attrIn); err != nil {
+		return c.authError(err)
+	}
+	return nil
+}

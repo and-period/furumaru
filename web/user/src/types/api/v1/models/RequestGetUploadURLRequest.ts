@@ -24,13 +24,14 @@ export interface RequestGetUploadURLRequest {
      * @type {string}
      * @memberof RequestGetUploadURLRequest
      */
-    fileType?: string;
+    fileType: string;
 }
 
 /**
  * Check if a given object implements the RequestGetUploadURLRequest interface.
  */
 export function instanceOfRequestGetUploadURLRequest(value: object): value is RequestGetUploadURLRequest {
+    if (!('fileType' in value) || value['fileType'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function RequestGetUploadURLRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'fileType': json['fileType'] == null ? undefined : json['fileType'],
+        'fileType': json['fileType'],
     };
 }
 

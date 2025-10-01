@@ -59,11 +59,29 @@ export interface CheckoutRequest {
      */
     creditCard: CheckoutCreditCard;
     /**
+     * 注文時リクエスト
+     * @type {string}
+     * @memberof CheckoutRequest
+     */
+    orderRequest: string;
+    /**
      * 
      * @type {PaymentMethodType}
      * @memberof CheckoutRequest
      */
     paymentMethod: PaymentMethodType;
+    /**
+     * 受け取り日時（UNIX時間）
+     * @type {number}
+     * @memberof CheckoutRequest
+     */
+    pickupAt: number;
+    /**
+     * 受け取り場所
+     * @type {string}
+     * @memberof CheckoutRequest
+     */
+    pickupLocation: string;
     /**
      * プロモーションコード
      * @type {string}
@@ -94,7 +112,10 @@ export function instanceOfCheckoutRequest(value: object): value is CheckoutReque
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
     if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
+    if (!('orderRequest' in value) || value['orderRequest'] === undefined) return false;
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('pickupAt' in value) || value['pickupAt'] === undefined) return false;
+    if (!('pickupLocation' in value) || value['pickupLocation'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
@@ -115,7 +136,10 @@ export function CheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
         'callbackUrl': json['callbackUrl'],
         'coordinatorId': json['coordinatorId'],
         'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'orderRequest': json['orderRequest'],
         'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
+        'pickupAt': json['pickupAt'],
+        'pickupLocation': json['pickupLocation'],
         'promotionCode': json['promotionCode'],
         'requestId': json['requestId'],
         'total': json['total'],
@@ -137,7 +161,10 @@ export function CheckoutRequestToJSONTyped(value?: CheckoutRequest | null, ignor
         'callbackUrl': value['callbackUrl'],
         'coordinatorId': value['coordinatorId'],
         'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
+        'orderRequest': value['orderRequest'],
         'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
+        'pickupAt': value['pickupAt'],
+        'pickupLocation': value['pickupLocation'],
         'promotionCode': value['promotionCode'],
         'requestId': value['requestId'],
         'total': value['total'],

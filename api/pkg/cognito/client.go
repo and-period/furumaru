@@ -33,6 +33,8 @@ type Client interface {
 	GenerateAuthURL(ctx context.Context, params *GenerateAuthURLParams) (string, error)
 	// OAuth2.0認証 (コード検証)
 	GetAccessToken(ctx context.Context, params *GetAccessTokenParams) (*AuthResult, error)
+	// OAuth2.0認証の紐づけ
+	LinkProvider(ctx context.Context, params *LinkProviderParams) error
 
 	// #############################################
 	// ユーザー関連

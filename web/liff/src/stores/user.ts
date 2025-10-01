@@ -31,7 +31,13 @@ export const useUserStore = defineStore('user', {
           return '—';
         }
         const datetime = new Date(state.profile.lastCheckInAt * 1000);
-        return datetime.toLocaleDateString('ja-JP');
+        return datetime.toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
       }
       return '—';
     },
@@ -44,21 +50,13 @@ export const useUserStore = defineStore('user', {
       this.profile = null;
     },
 
-    async fetchMe(facilityId?: string) {
+    async fetchMe(facilityId: string, accessToken: string) {
       this.isLoading = true;
       this.error = null;
       try {
-        const id = facilityId ?? String(useRoute().params.facilityId ?? '');
-        if (!id) {
-          throw new Error('facilityId is not specified in params.');
-        }
-
-        // authStoreからアクセストークンを取得してAPIに付与
-        const authStore = useAuthStore();
-        const accessToken = authStore.token?.accessToken;
         const factory = new ApiClientFactory();
         const api = factory.createFacility<AuthUserApi>(AuthUserApi, accessToken);
-        const res = await api.facilitiesFacilityIdUsersMeGet({ facilityId: id });
+        const res = await api.facilitiesFacilityIdUsersMeGet({ facilityId });
         this.profile = res;
         return res;
       }
@@ -79,7 +77,7 @@ export const useUserStore = defineStore('user', {
       try {
         // authStoreからアクセストークンを取得してAPIに付与
         const authStore = useAuthStore();
-        const accessToken = authStore.token?.accessToken;
+        const accessToken = authStore.token!.accessToken;
         const factory = new ApiClientFactory();
         const api = factory.createFacility<AuthUserApi>(AuthUserApi, accessToken);
 
@@ -89,7 +87,7 @@ export const useUserStore = defineStore('user', {
         });
 
         // 更新成功後に最新データを取得
-        await this.fetchMe(facilityId);
+        await this.fetchMe(facilityId, accessToken);
 
         return true;
       }

@@ -299,6 +299,8 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	}
 	slog.DebugContext(ctx, "Connecting admin account", slog.Any("user", user))
 
+	// Cognitoの仕様で「すでにサインイン済みの場合は連携できない」ため、登録済みの外部アカウントを削除
+	// @see https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/cognito-user-pools-identity-federation-consolidate-users.html
 	providerParams := &entity.AdminAuthProviderParams{
 		AdminID:      admin.ID,
 		ProviderType: event.ProviderType,
@@ -311,9 +313,17 @@ func (s *service) connectAdminAuth(ctx context.Context, params *connectAdminAuth
 	if err != nil {
 		return internalError(err)
 	}
+	if err := s.adminAuth.DeleteUser(ctx, user.Username); err != nil {
+		return internalError(err)
+	}
 
-	// Cognitoユーザーのメールアドレスが未検証になるパターンがあるため更新
-	if err := s.adminAuth.AdminVerifyEmail(ctx, admin.CognitoID); err != nil {
+	// 外部アカウントとCognitoアカウントを連携
+	linkParams := &cognito.LinkProviderParams{
+		Username:     admin.CognitoID,
+		ProviderType: provider.ProviderType.ToCognito(),
+		AccountID:    provider.AccountID,
+	}
+	if err := s.adminAuth.LinkProvider(ctx, linkParams); err != nil {
 		return internalError(err)
 	}
 

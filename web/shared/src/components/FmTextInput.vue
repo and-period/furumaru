@@ -5,7 +5,7 @@ interface Props {
   name: string
   id?: string
   label?: string
-  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date'
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'date' | 'datetime-local'
   placeholder?: string
   required?: boolean
   message?: string

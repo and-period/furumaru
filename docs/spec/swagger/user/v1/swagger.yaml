@@ -685,6 +685,12 @@ components:
           uniqueItems: false
         shipping:
           $ref: '#/components/schemas/Shipping'
+        videos:
+          description: オンデマンド動画一覧
+          items:
+            $ref: '#/components/schemas/VideoSummary'
+          type: array
+          uniqueItems: false
       type: object
       required:
         - archives
@@ -695,6 +701,7 @@ components:
         - productTypes
         - products
         - shipping
+        - videos
     CoordinatorsResponse:
       properties:
         coordinators:

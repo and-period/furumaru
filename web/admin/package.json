@@ -19,9 +19,9 @@
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
     "@sentry/vue": "^7.120.4",
-    "@tiptap/pm": "^3.4.4",
+    "@tiptap/pm": "^3.5.1",
     "@tiptap/starter-kit": "^2.26.1",
-    "@tiptap/vue-3": "^2.26.1",
+    "@tiptap/vue-3": "^2.26.2",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/integrations": "^13.9.0",
@@ -30,20 +30,20 @@
     "dayjs": "^1.11.18",
     "echarts": "^5.6.0",
     "firebase": "^10.14.1",
-    "hls.js": "^1.6.12",
+    "hls.js": "^1.6.13",
     "marked": "^12.0.2",
     "nuxt": "^4.1.2",
     "pinia": "^2.3.1",
-    "sass": "^1.92.1",
+    "sass": "^1.93.2",
     "sortablejs": "^1.15.6",
     "universal-cookie": "^7.2.2",
     "vue-chart-3": "^3.1.8",
     "vue-echarts": "^6.7.3",
-    "vuetify": "^3.10.2"
+    "vuetify": "^3.10.3"
   },
   "devDependencies": {
     "@mdi/js": "7.4.47",
-    "@nuxt/devtools": "2.6.3",
+    "@nuxt/devtools": "2.6.5",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/types": "2.18.1",
     "@nuxtjs/eslint-config-typescript": "12.1.0",
@@ -54,7 +54,7 @@
     "@vue/compiler-sfc": "3.5.21",
     "@vueuse/core": "13.9.0",
     "@vueuse/nuxt": "13.9.0",
-    "eslint": "9.35.0",
+    "eslint": "9.36.0",
     "postcss-html": "1.8.0",
     "prettier": "3.6.2",
     "raw-loader": "4.0.2",
@@ -63,7 +63,7 @@
     "stylelint-config-standard": "36.0.1",
     "ts-node": "10.9.2",
     "typescript": "5.9.2",
-    "vite": "7.1.5"
+    "vite": "7.1.7"
   },
   "peerDependencies": {
     "@tiptap/core": "^3.4.4",
