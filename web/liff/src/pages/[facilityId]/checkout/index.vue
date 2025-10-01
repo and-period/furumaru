@@ -194,7 +194,7 @@ const handlePay = async () => {
           />
 
           <!-- 受け取り日時選択 -->
-          <div class="flex flex-col px-4 gap-1">
+          <div class="flex flex-col px-2 gap-1">
             <label class=" font-semibold text-sm block mb-2">配達時間</label>
             <div>
               <input
@@ -202,7 +202,7 @@ const handlePay = async () => {
                 v-model="pickupAtFormData"
                 type="radio"
                 value="checkin"
-                class="mx-2"
+                class="mx-2 accent-orange"
               >
               <label for="checkin">
                 チェックイン時間（{{ lastCheckInAt }}）
@@ -214,10 +214,10 @@ const handlePay = async () => {
                 v-model="pickupAtFormData"
                 type="radio"
                 value="afternoon"
-                class="mx-2"
+                class="mx-2 accent-orange"
               >
               <label for="afternoon">
-                チェックイン当日午後（{{ checkinData }} 17:00）
+                当日午後（{{ checkinData }} 17:00）
               </label>
             </div>
             <div>
@@ -226,10 +226,10 @@ const handlePay = async () => {
                 v-model="pickupAtFormData"
                 type="radio"
                 value="morning"
-                class="mx-2"
+                class="mx-2 accent-orange"
               >
               <label for="morning">
-                チェックイン翌日午前（{{ nextDayAfterCheckinData }} 08:00）
+                翌日午前（{{ nextDayAfterCheckinData }} 08:00）
               </label>
             </div>
           </div>
