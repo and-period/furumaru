@@ -58,6 +58,12 @@
       ]
     },
     {
+      "description": "Pin github.com/sv-tools/openapi to v0.2.1",
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["github.com/sv-tools/openapi"],
+      "allowedVersions": "<=0.2.1"
+    },
+    {
       "groupName": "Functions dependencies",
       "matchFileNames": [
         "func/**"
