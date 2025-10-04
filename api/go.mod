@@ -23,7 +23,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/translate v1.33.6
 	github.com/casbin/casbin/v2 v2.127.0
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/coreos/go-oidc/v3 v3.15.0
+	github.com/coreos/go-oidc/v3 v3.16.0
 	github.com/dlclark/regexp2 v1.11.5
 	github.com/getsentry/sentry-go v0.35.3
 	github.com/getsentry/sentry-go/slog v0.35.3
@@ -186,7 +186,7 @@ require (
 	github.com/ghostiam/protogetter v0.3.16 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/go-critic/go-critic v0.13.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.2 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
