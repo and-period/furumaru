@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.20.13
 	github.com/aws/aws-sdk-go-v2/service/batch v1.57.10
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.57.7
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.50.5
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.51.0
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.47.6
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.82.6
 	github.com/aws/aws-sdk-go-v2/service/medialive v1.83.2
