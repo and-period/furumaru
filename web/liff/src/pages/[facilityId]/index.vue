@@ -7,7 +7,11 @@ import { useShoppingCartStore } from '~/stores/shopping';
 import { useLiffInit } from '~/composables/useLiffInit';
 
 const route = useRoute();
+const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
+
+const authStore = useAuthStore();
+const { isAuthenticated } = storeToRefs(authStore);
 
 const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 const { init: initLiff } = useLiffInit();
@@ -17,6 +21,13 @@ const productStore = useProductStore();
 const { products, isLoading, error } = storeToRefs(productStore);
 onMounted(async () => {
   await initLiff(runtimeConfig.public.LIFF_ID);
+
+  // 未認証ならチェックインページへリダイレクト
+  if (!isAuthenticated.value) {
+    router.push(`/${facilityId.value}/checkin/new`);
+    return;
+  }
+
   productStore.fetchProducts();
 });
 
