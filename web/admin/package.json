@@ -19,7 +19,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
     "@sentry/vue": "^7.120.4",
-    "@tiptap/pm": "^3.5.1",
+    "@tiptap/pm": "^3.6.2",
     "@tiptap/starter-kit": "^2.26.1",
     "@tiptap/vue-3": "^2.26.2",
     "@vuelidate/core": "^2.0.3",
@@ -39,7 +39,7 @@
     "universal-cookie": "^7.2.2",
     "vue-chart-3": "^3.1.8",
     "vue-echarts": "^6.7.3",
-    "vuetify": "^3.10.3"
+    "vuetify": "^3.10.4"
   },
   "devDependencies": {
     "@mdi/js": "7.4.47",
@@ -50,8 +50,8 @@
     "@nuxtjs/google-fonts": "3.2.0",
     "@nuxtjs/stylelint-module": "5.2.1",
     "@sentry/vite-plugin": "2.23.1",
-    "@types/node": "24.5.2",
-    "@vue/compiler-sfc": "3.5.21",
+    "@types/node": "24.6.1",
+    "@vue/compiler-sfc": "3.5.22",
     "@vueuse/core": "13.9.0",
     "@vueuse/nuxt": "13.9.0",
     "eslint": "9.36.0",
@@ -62,7 +62,7 @@
     "stylelint-config-recommended-vue": "1.6.1",
     "stylelint-config-standard": "36.0.1",
     "ts-node": "10.9.2",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "vite": "7.1.7"
   },
   "peerDependencies": {
