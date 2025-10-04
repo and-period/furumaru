@@ -1,5 +1,14 @@
 # Changelog
 
+## [v7.2.1](https://github.com/and-period/furumaru/compare/v7.2.0...v7.2.1) - 2025-10-04
+- fix(auth): 管理者アカウントの外部連携処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3095
+- Fix/liff/checkout by @wf-yamaday in https://github.com/and-period/furumaru/pull/3097
+- fix: フォームの体裁を整える by @wf-yamaday in https://github.com/and-period/furumaru/pull/3103
+- build(deps): bump the dependencies group in /web/admin with 22 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3101
+- chore(deps): Update LIFF Web dependencies - autoclosed by @renovate[bot] in https://github.com/and-period/furumaru/pull/3099
+- build(deps): bump actions/cache from 4.2.4 to 4.3.0 in the dependencies group by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3098
+- build(deps): bump the dependencies group across 1 directory with 83 updates by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3102
+
 ## [v7.1.4](https://github.com/and-period/furumaru/compare/v7.1.3...v7.1.4) - 2025-09-30
 - fix(api): Cognito外部認証プロバイダー連携の処理を改善 by @taba2424 in https://github.com/and-period/furumaru/pull/3075
 - fix(api): admin auth テストの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3078
