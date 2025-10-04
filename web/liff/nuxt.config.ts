@@ -14,7 +14,7 @@ export default defineNuxtConfig({
       },
     ],
   ],
-  plugins: ['~/plugins/api-client.ts'],
+  plugins: ['~/plugins/api-client.ts', '~/plugins/liff.client.ts'],
   ssr: true,
   app: {
     head: {

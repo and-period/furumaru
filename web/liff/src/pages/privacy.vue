@@ -4,6 +4,7 @@ const router = useRouter();
 definePageMeta({
   title: 'プライバシーポリシー',
   layout: 'init',
+  public: true,
 });
 </script>
 

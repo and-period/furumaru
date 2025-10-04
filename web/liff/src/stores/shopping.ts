@@ -116,7 +116,6 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
-        console.log('Fetching cart with access token:', accessToken);
         const config = new FacilityConfiguration({
           headers,
           basePath: runtimeConfig.public.API_BASE_URL,

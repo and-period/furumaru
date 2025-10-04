@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { useLiffInit } from '~/composables/useLiffInit';
-
 const route = useRoute();
-
-const { init: initLiff } = useLiffInit();
-const runtimeConfig = useRuntimeConfig();
+const { $liffReady } = useNuxtApp();
 
 onMounted(async () => {
-  await initLiff(runtimeConfig.public.LIFF_ID);
+  await $liffReady;
 });
 
 const loading = computed(() => 'liff.state' in route.query);
