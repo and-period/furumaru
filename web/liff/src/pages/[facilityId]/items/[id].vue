@@ -8,6 +8,7 @@ const router = useRouter();
 
 const productStore = useProductStore();
 const shoppingCartStore = useShoppingCartStore();
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
 
 // Get product ID from route parameter
 const productId = route.params.id as string;
@@ -34,7 +35,7 @@ const addToCart = async () => {
   if (product.value.inventory === 0) return;
   try {
     isAdding.value = true;
-    await shoppingCartStore.addCartItem(product.value.id, 1);
+    await shoppingCartStore.addCartItem(facilityId.value, product.value.id, 1);
   }
   catch (e) {
     console.error('Failed to add to cart', e);

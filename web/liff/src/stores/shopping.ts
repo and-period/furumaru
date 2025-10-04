@@ -135,14 +135,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     // カートにアイテムを追加
-    async addCartItem(productId: string, quantity: number = 1) {
+    async addCartItem(facilityId: string, productId: string, quantity: number = 1) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
-
         if (!facilityId) {
           console.warn('facilityId is not specified in params. Skipping addCartItem.');
           return;
@@ -179,14 +175,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     // カートからアイテムを削除
-    async removeCartItem(productId: string) {
+    async removeCartItem(facilityId: string, productId: string) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
-
         if (!facilityId) {
           console.warn('facilityId is not specified in params. Skipping removeCartItem.');
           return;

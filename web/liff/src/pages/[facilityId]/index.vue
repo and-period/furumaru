@@ -20,7 +20,7 @@ onMounted(async () => {
 const shoppingCartStore = useShoppingCartStore();
 async function handleAddToCart(productId: string, quantity: number) {
   try {
-    await shoppingCartStore.addCartItem(productId, quantity);
+    await shoppingCartStore.addCartItem(facilityId.value, productId, quantity);
   }
   catch (e) {
     console.error('Failed to add to cart:', e);

@@ -51,7 +51,7 @@ const handleRemoveItem = async (productId: string) => {
 
   removingProductId.value = productId;
   try {
-    await shoppingCartStore.removeCartItem(productId);
+    await shoppingCartStore.removeCartItem(facilityId.value, productId);
   }
   catch (e) {
     console.error('Failed to remove item:', e);
