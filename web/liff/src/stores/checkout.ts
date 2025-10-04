@@ -63,17 +63,13 @@ export const useCheckoutStore = defineStore('checkout', {
     },
 
     // チェックアウト開始
-    async startCheckout(payload: StartCheckoutPayload): Promise<CheckoutResponse> {
+    async startCheckout(facilityId: string, payload: StartCheckoutPayload): Promise<CheckoutResponse> {
       this.isLoading = true;
       this.error = null;
       this.redirectUrl = null;
       this.lastResponse = null;
 
       try {
-        const route = useRoute();
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) throw new Error('facilityId is not specified in params.');
-
         const cartStore = useShoppingCartStore();
 
         // coordinatorId 未指定の場合は、カートから推定（今回の要件: コーディネーターは1つ）
@@ -122,14 +118,10 @@ export const useCheckoutStore = defineStore('checkout', {
     },
 
     // 支払い状態の取得
-    async fetchCheckoutState(transactionId: string): Promise<CheckoutStateResponse> {
+    async fetchCheckoutState(facilityId: string, transactionId: string): Promise<CheckoutStateResponse> {
       this.isLoading = true;
       this.error = null;
       try {
-        const route = useRoute();
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) throw new Error('facilityId is not specified in params.');
-
         const api = this.checkoutApiClient();
         const res = await api.facilitiesFacilityIdCheckoutsTransactionIdGet({
           facilityId,

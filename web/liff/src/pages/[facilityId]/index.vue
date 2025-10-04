@@ -13,7 +13,7 @@ const facilityId = computed<string>(() => String(route.params.facilityId || ''))
 const productStore = useProductStore();
 const { products, isLoading, error } = storeToRefs(productStore);
 onMounted(async () => {
-  productStore.fetchProducts();
+  productStore.fetchProducts(facilityId.value);
 });
 
 // カート追加

@@ -111,7 +111,7 @@ const handlePay = async () => {
     const facilityId = String(route.params.facilityId || '');
     const callbackUrl = `${window.location.origin}/${facilityId}/complete`;
 
-    const res = await checkoutStore.startCheckout({
+    const res = await checkoutStore.startCheckout(facilityId, {
       callbackUrl,
       paymentMethod: PAYMENT_METHOD_CARD,
       creditCard: {

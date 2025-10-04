@@ -105,12 +105,6 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         const runtimeConfig = useRuntimeConfig();
         const authStore = useAuthStore();
 
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping cart fetch.');
-          this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
-          return;
-        }
-
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
         const config = new FacilityConfiguration({
@@ -139,11 +133,6 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       try {
         const runtimeConfig = useRuntimeConfig();
         const authStore = useAuthStore();
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping addCartItem.');
-          return;
-        }
-
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
 
@@ -179,11 +168,6 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       try {
         const runtimeConfig = useRuntimeConfig();
         const authStore = useAuthStore();
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping removeCartItem.');
-          return;
-        }
-
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
 
