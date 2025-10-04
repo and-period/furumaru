@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/api"
+    schedule:
+      interval: "daily"
+    ignore:
+      # sv-tools/openapi を v0.2.1 に固定（v0.3.0 以降をスキップ）
+      - dependency-name: "github.com/sv-tools/openapi"
+        versions: [">0.2.1"]
