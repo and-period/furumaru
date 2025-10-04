@@ -21,18 +21,11 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    async signIn(liffIDToken: string) {
+    async signIn(facilityId: string, liffIDToken: string) {
       this.isLoading = true;
       this.error = null;
 
       try {
-        const route = useRoute();
-
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) {
-          throw new Error('facilityId is not specified in params.');
-        }
-
         const api = this.facilityAuthApiClient();
 
         const payload: SignInRequest = {
@@ -68,17 +61,11 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signOut() {
+    async signOut(facilityId: string) {
       this.isLoading = true;
       this.error = null;
 
       try {
-        const route = useRoute();
-
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) {
-          throw new Error('facilityId is not specified in params.');
-        }
         const api = this.facilityAuthApiClient();
         await api.facilitiesFacilityIdAuthDelete({ facilityId });
 
