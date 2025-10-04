@@ -48,7 +48,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     await authStore.signIn(facilityId, idToken);
-    await shoppingCartStore.getCart();
+    await shoppingCartStore.getCart(facilityId);
     const accessToken = authStore.token!.accessToken;
     await userStore.fetchMe(facilityId, accessToken);
   }

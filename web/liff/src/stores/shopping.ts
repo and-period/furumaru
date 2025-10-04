@@ -100,13 +100,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
   actions: {
     // カート情報を取得（実API呼び出し）
-    async getCart() {
+    async getCart(facilityId: string) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
 
         if (!facilityId) {
           console.warn('facilityId is not specified in params. Skipping cart fetch.');
@@ -173,7 +170,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         });
 
         // 追加後にカート情報を更新
-        await this.getCart();
+        await this.getCart(facilityId);
       }
       catch (error) {
         console.error('Failed to add item to cart:', error);
@@ -212,7 +209,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         });
 
         // 削除後にカート情報を更新
-        await this.getCart();
+        await this.getCart(facilityId);
       }
       catch (error) {
         console.error('Failed to remove item from cart:', error);

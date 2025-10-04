@@ -36,8 +36,10 @@ const nextDayAfterCheckinData = computed(() => {
   });
 });
 
+const facilityId = computed<string>(() => String(route.params.facilityId || ''));
+
 onMounted(() => {
-  shoppingCartStore.getCart();
+  shoppingCartStore.getCart(facilityId.value);
 });
 
 const summary = computed(() => {
