@@ -8,6 +8,8 @@ interface AuthState {
   token: Pick<AuthResponse, 'accessToken' | 'refreshToken' | 'expiresIn' | 'tokenType' | 'userId'> | null;
   // アクセストークンの有効期限（UNIXエポックミリ秒）
   expiresAt: number | null;
+  // チェックインの登録が必要かどうかのフラグ
+  checkInRequired: boolean;
 }
 
 /**
@@ -21,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     token: null,
     expiresAt: null,
+    checkInRequired: true,
   }),
 
   getters: {
@@ -99,6 +102,10 @@ export const useAuthStore = defineStore('auth', {
       finally {
         this.isLoading = false;
       }
+    },
+
+    setCheckInRequired(required: boolean) {
+      this.checkInRequired = required;
     },
   },
 });
