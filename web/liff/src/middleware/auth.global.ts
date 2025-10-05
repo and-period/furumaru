@@ -48,6 +48,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     await authStore.signIn(facilityId, idToken);
+    const accessToken = authStore.token!.accessToken;
+    await userStore.fetchMe(facilityId, accessToken);
+    await shoppingCartStore.getCart(facilityId);
   }
   catch (err) {
     if (err instanceof ResponseError) {
@@ -60,10 +63,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return;
       }
     }
-
-    await shoppingCartStore.getCart(facilityId);
-    const accessToken = authStore.token!.accessToken;
-    await userStore.fetchMe(facilityId, accessToken);
 
     console.error('[auth.global] bootstrap failed:', err);
   }
