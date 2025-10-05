@@ -38,6 +38,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (authStore.isAuthenticated && !authStore.isTokenExpired) {
+    if (authStore.checkInRequired) {
+      const path = `/${facilityId}/checkin/new`;
+      return navigateTo(path);
+    }
     return;
   }
 
@@ -51,10 +55,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const accessToken = authStore.token!.accessToken;
     await userStore.fetchMe(facilityId, accessToken);
     await shoppingCartStore.getCart(facilityId);
+    authStore.setCheckInRequired(false);
   }
   catch (err) {
     if (err instanceof ResponseError) {
       if (err.response.status === 404) {
+        authStore.setCheckInRequired(true);
         const path = `/${facilityId}/checkin/new`;
         return navigateTo(path);
       }
