@@ -37,7 +37,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
 
-  if (authStore.isAuthenticated) {
+  if (authStore.isAuthenticated && !authStore.isTokenExpired) {
     return;
   }
 
@@ -48,9 +48,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     await authStore.signIn(facilityId, idToken);
-    await shoppingCartStore.getCart(facilityId);
-    const accessToken = authStore.token!.accessToken;
-    await userStore.fetchMe(facilityId, accessToken);
   }
   catch (err) {
     if (err instanceof ResponseError) {
@@ -63,6 +60,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return;
       }
     }
+
+    await shoppingCartStore.getCart(facilityId);
+    const accessToken = authStore.token!.accessToken;
+    await userStore.fetchMe(facilityId, accessToken);
 
     console.error('[auth.global] bootstrap failed:', err);
   }
