@@ -17,17 +17,11 @@ export const useProductStore = defineStore('product', {
   }),
 
   actions: {
-    async fetchProducts() {
+    async fetchProducts(facilityId: string) {
       this.isLoading = true;
       this.error = null;
 
       try {
-        const route = useRoute();
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) {
-          throw new Error('facilityId is not specified in params.');
-        }
-
         const api = this.facilityProductApiClient();
         const response = await api.facilitiesFacilityIdProductsGet({
           facilityId,

@@ -29,7 +29,8 @@ onMounted(async () => {
 
   try {
     isLoading.value = true;
-    const res = await checkoutStore.fetchCheckoutState(String(transactionId));
+    const facilityId = String(route.params.facilityId || '');
+    const res = await checkoutStore.fetchCheckoutState(facilityId, String(transactionId));
     orderId.value = res.orderId ?? null;
   }
   catch (e) {

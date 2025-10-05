@@ -100,23 +100,13 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
   actions: {
     // カート情報を取得（実API呼び出し）
-    async getCart() {
+    async getCart(facilityId: string) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
-
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping cart fetch.');
-          this._shoppingCart = { carts: [], coordinators: [], products: [] } as CartResponse;
-          return;
-        }
 
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
-        console.log('Fetching cart with access token:', accessToken);
         const config = new FacilityConfiguration({
           headers,
           basePath: runtimeConfig.public.API_BASE_URL,
@@ -139,19 +129,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     // カートにアイテムを追加
-    async addCartItem(productId: string, quantity: number = 1) {
+    async addCartItem(facilityId: string, productId: string, quantity: number = 1) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
-
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping addCartItem.');
-          return;
-        }
-
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
 
@@ -174,7 +155,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         });
 
         // 追加後にカート情報を更新
-        await this.getCart();
+        await this.getCart(facilityId);
       }
       catch (error) {
         console.error('Failed to add item to cart:', error);
@@ -183,19 +164,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     // カートからアイテムを削除
-    async removeCartItem(productId: string) {
+    async removeCartItem(facilityId: string, productId: string) {
       try {
         const runtimeConfig = useRuntimeConfig();
-        const route = useRoute();
         const authStore = useAuthStore();
-
-        const facilityId = String(route.params.facilityId ?? '');
-
-        if (!facilityId) {
-          console.warn('facilityId is not specified in params. Skipping removeCartItem.');
-          return;
-        }
-
         const accessToken = authStore.token?.accessToken;
         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined;
 
@@ -213,7 +185,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         });
 
         // 削除後にカート情報を更新
-        await this.getCart();
+        await this.getCart(facilityId);
       }
       catch (error) {
         console.error('Failed to remove item from cart:', error);

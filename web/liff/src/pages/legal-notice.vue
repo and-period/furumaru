@@ -4,6 +4,7 @@ const router = useRouter();
 definePageMeta({
   title: '特定商取引法に基づく表記',
   layout: 'init',
+  public: true,
 });
 </script>
 

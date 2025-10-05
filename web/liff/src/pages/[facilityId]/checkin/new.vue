@@ -10,6 +10,10 @@ import liff from '@line/liff';
 const route = useRoute();
 const router = useRouter();
 
+definePageMeta({
+  public: true,
+});
+
 // フォーム状態
 const lastName = ref('');
 const firstName = ref('');

@@ -6,6 +6,8 @@ interface AuthState {
   error: string | null;
   isAuthenticated: boolean;
   token: Pick<AuthResponse, 'accessToken' | 'refreshToken' | 'expiresIn' | 'tokenType' | 'userId'> | null;
+  // アクセストークンの有効期限（UNIXエポックミリ秒）
+  expiresAt: number | null;
 }
 
 /**
@@ -18,21 +20,25 @@ export const useAuthStore = defineStore('auth', {
     error: null,
     isAuthenticated: false,
     token: null,
+    expiresAt: null,
   }),
 
+  getters: {
+    // トークンの有効期限切れ判定
+    isTokenExpired: (state): boolean => {
+      if (!state.expiresAt) {
+        return true;
+      }
+      return Date.now() >= state.expiresAt;
+    },
+  },
+
   actions: {
-    async signIn(liffIDToken: string) {
+    async signIn(facilityId: string, liffIDToken: string) {
       this.isLoading = true;
       this.error = null;
 
       try {
-        const route = useRoute();
-
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) {
-          throw new Error('facilityId is not specified in params.');
-        }
-
         const api = this.facilityAuthApiClient();
 
         const payload: SignInRequest = {
@@ -52,6 +58,8 @@ export const useAuthStore = defineStore('auth', {
           tokenType: res.tokenType,
           userId: res.userId,
         };
+        // サーバー応答の expiresIn（秒）から期限時刻（ミリ秒）を算出
+        this.expiresAt = Date.now() + (res.expiresIn * 1000);
         this.isAuthenticated = Boolean(res.accessToken || res.userId);
         return res;
       }
@@ -60,6 +68,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = message;
         this.isAuthenticated = false;
         this.token = null;
+        this.expiresAt = null;
         console.error('Auth signIn failed:', e);
         throw e;
       }
@@ -68,23 +77,18 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signOut() {
+    async signOut(facilityId: string) {
       this.isLoading = true;
       this.error = null;
 
       try {
-        const route = useRoute();
-
-        const facilityId = String(route.params.facilityId ?? '');
-        if (!facilityId) {
-          throw new Error('facilityId is not specified in params.');
-        }
         const api = this.facilityAuthApiClient();
         await api.facilitiesFacilityIdAuthDelete({ facilityId });
 
         // サインアウト後はステートをクリア
         this.isAuthenticated = false;
         this.token = null;
+        this.expiresAt = null;
       }
       catch (e) {
         const message = e instanceof Error ? e.message : 'Failed to sign out';
