@@ -54,14 +54,20 @@ export const useCoordinatorStore = defineStore('coordinator', {
       })
     },
     archives(state) {
-      return {
-        ...state.coordinatorResponse.archives,
-      }
+      const archives = state.coordinatorResponse.archives ?? []
+      return archives.map((archive) => {
+        return {
+          ...archive,
+        }
+      })
     },
     lives(state) {
-      return {
-        ...state.coordinatorResponse.lives,
-      }
+      const lives = state.coordinatorResponse.lives ?? []
+      return lives.map((live) => {
+        return {
+          ...live,
+        }
+      })
     },
     producers(state) {
       return state.coordinatorResponse.producers?.map((producer) => {
@@ -75,9 +81,12 @@ export const useCoordinatorStore = defineStore('coordinator', {
       })
     },
     videos(state) {
-      return {
-        ...state.coordinatorResponse.videos,
-      }
+      const videos = state.coordinatorResponse.videos ?? []
+      return videos.map((video) => {
+        return {
+          ...video,
+        }
+      })
     },
   },
 })

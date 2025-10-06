@@ -40,7 +40,7 @@ const handleClick = () => {
           アーカイブ配信
         </span>
       </div>
-      <p class="line-clamp-3 break-words text-[14px] md:text-[16px] pl-4 pb-2">
+      <p class="line-clamp-3 break-words text-[14px] md:text-[16px] pl-2 pb-2">
         {{ title }}
       </p>
     </div>

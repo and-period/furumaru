@@ -37,6 +37,10 @@ const handleClickProductItem = (id: string) => {
   router.push(`/items/${id}`)
 }
 
+const handleClickVideoItem = (id: string) => {
+  router.push(`/video/${id}`)
+}
+
 useAsyncData(`coordinator-${id.value}`, () => {
   return fetchCoordinator(id.value)
 })
@@ -227,6 +231,31 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
             <div class="my-8 px-4">
               <div
+                v-if="videos.length > 0"
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+              >
+                関連動画
+              </div>
+            </div>
+            <div
+              v-if="videos.length > 0"
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
+            >
+              <the-video-item
+                v-for="video in videos"
+                :id="video.id"
+                :key="video.id"
+                :title="video.title"
+                :img-src="video.thumbnailUrl"
+                :width="368"
+                :end-at="video.publishedAt"
+                :archived-stream-text="tt('archivedStreamText')"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                @click="handleClickVideoItem(video.id)"
+              />
+            </div>
+            <div class="my-8 px-4">
+              <div
                 class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
                 過去の配信
@@ -244,27 +273,6 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 :width="320"
                 class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                 @click="handleClickLiveItem(archive.scheduleId)"
-              />
-            </div>
-            <div class="my-8 px-4">
-              <div
-                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
-              >
-                関連動画
-              </div>
-            </div>
-            <div
-              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
-            >
-              <the-video-item
-                v-for="video in videos"
-                :id="video.id"
-                :key="video.id"
-                :title="video.title"
-                :img-src="video.thumbnailUrl"
-                :width="368"
-                :archived-stream-text="tt('archivedStreamText')"
-                class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               />
             </div>
           </div>
