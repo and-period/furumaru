@@ -236,9 +236,16 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <div class="my-8 px-4">
               <div
                 v-if="experiences.length > 0"
-                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-blue-400 to-blue-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
               >
-                体験をする
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+                <span class="tracking-wide">体験をする</span>
               </div>
             </div>
             <div
@@ -271,9 +278,16 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <div class="my-8 px-4">
               <div
                 v-if="videos.length > 0"
-                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-red-400 to-pink-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
               >
-                関連動画
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                </svg>
+                <span class="tracking-wide">関連動画</span>
               </div>
             </div>
             <div
@@ -295,9 +309,20 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
             <div class="my-8 px-4">
               <div
-                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-purple-400 to-indigo-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
               >
-                過去の配信
+                <svg
+                  class="w-6 h-6 md:w-7 md:h-7"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="tracking-wide">過去の配信</span>
               </div>
             </div>
             <div
