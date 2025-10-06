@@ -19,6 +19,17 @@ const { fetchCoordinator } = coordinatorStore
 const { coordinatorInfo, archives, lives, producers, videos, experiences }
   = storeToRefs(coordinatorStore)
 
+// 商品がある生産者を先に、ない生産者を後に並び替え
+const sortedProducers = computed(() => {
+  return [...producers.value].sort((a, b) => {
+    const aHasProducts = a.products && a.products.length > 0
+    const bHasProducts = b.products && b.products.length > 0
+    if (aHasProducts && !bHasProducts) return -1
+    if (!aHasProducts && bHasProducts) return 1
+    return 0
+  })
+})
+
 const id = computed<string>(() => {
   const ids = route.params.id
   if (Array.isArray(ids)) {
@@ -361,7 +372,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             class="grid grid-cols-1 gap-x-4 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px] lg:gap-x-6"
           >
             <the-producer-list
-              v-for="producer in producers"
+              v-for="producer in sortedProducers"
               :id="producer.id"
               :key="producer.id"
               :name="producer.username"
