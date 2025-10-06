@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { FmTextInput } from '@furumaru/shared';
-import ApiClientFactory from '@/plugins/helper/factory';
 import { buildApiErrorMessage } from '@/plugins/helper/error';
-import { AuthUserApi } from '@/types/api/facility';
+import { useAuthStore } from '@/stores/auth';
+import { useUserStore } from '@/stores/user';
+import { useShoppingCartStore } from '@/stores/shopping';
 import type { CreateAuthUserRequest } from '@/types/api/facility';
 import liff from '@line/liff';
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
+const userStore = useUserStore();
+const cartStore = useShoppingCartStore();
 
 definePageMeta({
   public: true,
@@ -131,13 +135,11 @@ async function onSubmit() {
       lastCheckInAt: toUnixSecondsFromDateInput(stayDate.value),
     };
 
-    const factory = new ApiClientFactory();
-    const api = factory.createFacility<AuthUserApi>(AuthUserApi);
-    await api.facilitiesFacilityIdUsersPost({
-      facilityId,
-      createAuthUserRequest: payload,
-    });
-
+    await authStore.registerUser(facilityId, payload);
+    // 登録後にユーザー情報を取得
+    await userStore.fetchMe(facilityId);
+    // カートの中身を取得
+    await cartStore.getCart(facilityId);
     await router.push({ path: `/${facilityId}` });
   }
   catch (e) {

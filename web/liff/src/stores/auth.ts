@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
-import type { AuthApi, AuthResponse, SignInRequest } from '@/types/api/facility';
+import ApiClientFactory from '@/plugins/helper/factory';
+import type { AuthApi, AuthResponse, SignInRequest, CreateAuthUserRequest } from '@/types/api/facility';
+import { AuthUserApi } from '@/types/api/facility';
+import { buildApiErrorMessage } from '@/plugins/helper/error';
 
 interface AuthState {
   isLoading: boolean;
@@ -73,6 +76,34 @@ export const useAuthStore = defineStore('auth', {
         this.token = null;
         this.expiresAt = null;
         console.error('Auth signIn failed:', e);
+        throw e;
+      }
+      finally {
+        this.isLoading = false;
+      }
+    },
+
+    // チェックイン（ユーザー登録）
+    async registerUser(facilityId: string, payload: CreateAuthUserRequest) {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        const factory = new ApiClientFactory();
+        const api = factory.createFacility<AuthUserApi>(AuthUserApi);
+
+        await api.facilitiesFacilityIdUsersPost({
+          facilityId,
+          createAuthUserRequest: payload,
+        });
+
+        // チェックイン完了後はフラグをオフ
+        this.setCheckInRequired(false);
+        return true;
+      }
+      catch (e) {
+        console.error('Auth registerUser failed:', e);
+        this.error = await buildApiErrorMessage(e);
         throw e;
       }
       finally {
