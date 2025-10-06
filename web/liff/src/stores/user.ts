@@ -50,12 +50,13 @@ export const useUserStore = defineStore('user', {
       this.profile = null;
     },
 
-    async fetchMe(facilityId: string, accessToken: string) {
+    async fetchMe(facilityId: string, accessToken?: string) {
       this.isLoading = true;
       this.error = null;
       try {
         const factory = new ApiClientFactory();
-        const api = factory.createFacility<AuthUserApi>(AuthUserApi, accessToken);
+        const token = accessToken ?? useAuthStore().token?.accessToken;
+        const api = factory.createFacility<AuthUserApi>(AuthUserApi, token);
         const res = await api.facilitiesFacilityIdUsersMeGet({ facilityId });
         this.profile = res;
         return res;

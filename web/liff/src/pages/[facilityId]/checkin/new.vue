@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { FmTextInput } from '@furumaru/shared';
-import ApiClientFactory from '@/plugins/helper/factory';
 import { buildApiErrorMessage } from '@/plugins/helper/error';
-import { AuthUserApi } from '@/types/api/facility';
+import { useAuthStore } from '@/stores/auth';
+import { useShoppingCartStore } from '@/stores/shopping';
+import { useUserStore } from '@/stores/user';
 import type { CreateAuthUserRequest } from '@/types/api/facility';
-import liff from '@line/liff';
+import { FmTextInput } from '@furumaru/shared';
+import type { Liff } from '@line/liff';
+import { computed, ref } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
+const userStore = useUserStore();
+const cartStore = useShoppingCartStore();
+
+const nuxtApp = useNuxtApp();
+const liff = nuxtApp.$liff as Liff;
 
 definePageMeta({
   public: true,
@@ -131,13 +138,12 @@ async function onSubmit() {
       lastCheckInAt: toUnixSecondsFromDateInput(stayDate.value),
     };
 
-    const factory = new ApiClientFactory();
-    const api = factory.createFacility<AuthUserApi>(AuthUserApi);
-    await api.facilitiesFacilityIdUsersPost({
-      facilityId,
-      createAuthUserRequest: payload,
-    });
-
+    await authStore.registerUser(facilityId, payload);
+    await authStore.signIn(facilityId, liffToken);
+    // 登録後にユーザー情報を取得
+    await userStore.fetchMe(facilityId);
+    // カートの中身を取得
+    await cartStore.getCart(facilityId);
     await router.push({ path: `/${facilityId}` });
   }
   catch (e) {
