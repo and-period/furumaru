@@ -72,10 +72,10 @@ useAsyncData(`coordinator-${id.value}`, () => {
         class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12 bg-base"
       >
         <div class="col-span-2">
-          <div class="flex justify-center">
+          <div class="flex justify-center relative bottom-[30px] md:bottom-[40px]">
             <img
               :src="coordinatorInfo.thumbnailUrl"
-              class="block aspect-square w-[120px] rounded-full border-2 border-white md:w-[168px]"
+              class="block aspect-square w-[120px] rounded-full border-4 border-white md:w-[168px] shadow-lg"
             >
           </div>
           <p
