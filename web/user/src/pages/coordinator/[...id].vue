@@ -247,7 +247,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <div class="my-8 px-4">
               <div
                 v-if="experiences.length > 0"
-                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-blue-400 to-blue-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-blue-400 to-blue-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
               >
                 <svg
                   class="w-6 h-6 md:w-7 md:h-7"
@@ -289,7 +289,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <div class="my-8 px-4">
               <div
                 v-if="videos.length > 0"
-                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-red-400 to-pink-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-red-400 to-pink-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
               >
                 <svg
                   class="w-6 h-6 md:w-7 md:h-7"
@@ -320,7 +320,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
             <div class="my-8 px-4">
               <div
-                class="flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-purple-400 to-indigo-500 py-4 px-8 text-[18px] text-white font-bold shadow-lg md:mx-auto md:text-[20px]"
+                class="flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-purple-400 to-indigo-500 py-3 px-4 text-[16px] text-white font-bold shadow-lg md:gap-3 md:py-4 md:px-6 md:text-[18px]"
               >
                 <svg
                   class="w-6 h-6 md:w-7 md:h-7"
