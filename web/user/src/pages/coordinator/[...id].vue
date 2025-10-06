@@ -16,7 +16,7 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const { coordinatorInfo, archives, lives, producers, videos }
+const { coordinatorInfo, archives, lives, producers, videos, experiences }
   = storeToRefs(coordinatorStore)
 
 const id = computed<string>(() => {
@@ -39,6 +39,10 @@ const handleClickProductItem = (id: string) => {
 
 const handleClickVideoItem = (id: string) => {
   router.push(`/video/${id}`)
+}
+
+const handleClickExperienceItem = (id: string) => {
+  router.push(`/experiences/${id}`)
 }
 
 useAsyncData(`coordinator-${id.value}`, () => {
@@ -79,19 +83,19 @@ useAsyncData(`coordinator-${id.value}`, () => {
             >
           </div>
           <p
-            class="mt-4 text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
+            class="relative bottom-[20px] md:bottom-[25px] text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
           >
             {{ coordinatorInfo.marcheName }}
           </p>
           <div
-            class="flex justify-center pt-2 text-[12px] tracking-[1.4px] md:text-[14px]"
+            class="relative bottom-[16px] md:bottom-[20px] flex justify-center text-[12px] tracking-[1.4px] md:text-[14px]"
           >
             <p>{{ coordinatorInfo.prefecture }}</p>
             <p class="pl-2">
               {{ coordinatorInfo.city }}
             </p>
           </div>
-          <div class="my-2 flex justify-center tracking-[2.4px]">
+          <div class="relative bottom-[12px] md:bottom-[16px] flex justify-center tracking-[2.4px]">
             <p class="ml-2 text-[16px] font-bold md:text-[24px]">
               {{ coordinatorInfo.username }}
             </p>
@@ -228,6 +232,41 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 class="pt-10"
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
+            </div>
+            <div class="my-8 px-4">
+              <div
+                v-if="experiences.length > 0"
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+              >
+                体験をする
+              </div>
+            </div>
+            <div
+              v-if="experiences.length > 0"
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
+            >
+              <div
+                v-for="experience in experiences"
+                :key="experience.id"
+                class="cursor-pointer rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                @click="handleClickExperienceItem(experience.id)"
+              >
+                <div class="aspect-video relative overflow-hidden">
+                  <img
+                    :src="experience.thumbnailUrl"
+                    :alt="experience.title"
+                    class="w-full h-full object-cover"
+                  >
+                </div>
+                <div class="p-4">
+                  <h3 class="text-[16px] font-bold tracking-[1.6px] line-clamp-2">
+                    {{ experience.title }}
+                  </h3>
+                  <p class="text-[14px] text-gray-600 mt-2 line-clamp-2">
+                    {{ experience.description }}
+                  </p>
+                </div>
+              </div>
             </div>
             <div class="my-8 px-4">
               <div

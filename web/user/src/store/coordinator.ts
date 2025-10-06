@@ -80,6 +80,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
       })
     },
+    experiences(state) {
+      const experiences = state.coordinatorResponse.experiences ?? []
+      return experiences.map((experience) => {
+        return {
+          ...experience,
+        }
+      })
+    },
     videos(state) {
       const videos = state.coordinatorResponse.videos ?? []
       return videos.map((video) => {
