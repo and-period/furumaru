@@ -1,33 +1,5 @@
 components:
   schemas:
-    time.Weekday:
-      type: integer
-      x-enum-varnames:
-        - Sunday
-        - Monday
-        - Tuesday
-        - Wednesday
-        - Thursday
-        - Friday
-        - Saturday
-      enum:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 6
-      format: int32
-      nullable: false
-      x-enum-descriptions:
-        - 不明
-        - 不明
-        - 不明
-        - 不明
-        - 不明
-        - 不明
-        - 不明
     AddCartItemRequest:
       properties:
         productId:
@@ -338,7 +310,7 @@ components:
         businessDays:
           description: 営業曜日(発送可能日)
           items:
-            $ref: '#/components/schemas/time.Weekday'
+            type: integer
           type: array
           uniqueItems: false
         city:

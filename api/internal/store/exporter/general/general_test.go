@@ -101,7 +101,7 @@ func TestReceipts(t *testing.T) {
 				ProducerID:      "producer-id",
 				Name:            "新鮮なじゃがいも",
 				Description:     "新鮮なじゃがいもをお届けします。",
-				Public:          true,
+				Scope:           entity.ProductScopePublic,
 				Inventory:       100,
 				Weight:          100,
 				WeightUnit:      entity.WeightUnitGram,

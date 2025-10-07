@@ -359,7 +359,7 @@ type ListProductsParams struct {
 	ProducerIDs    []string
 	ProductTypeIDs []string
 	ProductTagID   string
-	OnlyPublished  bool
+	Scopes         []entity.ProductScope
 	ExcludeDeleted bool
 	EndAtGte       time.Time
 	Limit          int
@@ -377,7 +377,7 @@ type UpdateProductParams struct {
 	TagIDs               []string
 	Name                 string
 	Description          string
-	Public               bool
+	Scope                entity.ProductScope
 	Inventory            int64
 	Weight               int64
 	WeightUnit           entity.WeightUnit

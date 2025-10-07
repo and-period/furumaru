@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -151,7 +152,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		in := &store.ListProductsInput{
 			ShopID:           coordinator.ShopID,
-			OnlyPublished:    true,
+			Scopes:           []entity.ProductScope{entity.ProductScopePublic},
 			ExcludeOutOfSale: true,
 			NoLimit:          true,
 		}

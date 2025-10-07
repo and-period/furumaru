@@ -1686,6 +1686,8 @@ components:
         recommendedPoint3:
           description: おすすめポイント3
           type: string
+        scope:
+          $ref: '#/components/schemas/ProductScope'
         startAt:
           description: 販売開始日時
           type: integer
@@ -1728,6 +1730,7 @@ components:
         - recommendedPoint1
         - recommendedPoint2
         - recommendedPoint3
+        - scope
         - startAt
         - status
         - storageMethodType
@@ -4980,6 +4983,30 @@ components:
       required:
         - pickupAt
         - pickupLocation
+    ProductScope:
+      description: 公開範囲
+      type: integer
+      x-enum-comments:
+        ProductScopeLimited: 限定公開
+        ProductScopePrivate: 非公開
+        ProductScopePublic: 全体公開
+      x-enum-varnames:
+        - ProductScopeUnknown
+        - ProductScopePublic
+        - ProductScopeLimited
+        - ProductScopePrivate
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      format: int32
+      nullable: false
+      x-enum-descriptions:
+        - 不明
+        - 全体公開
+        - 限定公開
+        - 非公開
     ProductTagResponse:
       properties:
         productTag:

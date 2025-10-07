@@ -12,6 +12,16 @@ const (
 	ProductStatusArchived  ProductStatus = 5 // アーカイブ済み
 )
 
+// ProductScope - 公開範囲
+type ProductScope int32
+
+const (
+	ProductScopeUnknown ProductScope = 0
+	ProductScopePublic  ProductScope = 1 // 全体公開
+	ProductScopeLimited ProductScope = 2 // 限定公開
+	ProductScopePrivate ProductScope = 3 // 非公開
+)
+
 // StorageMethodType - 保存方法
 type StorageMethodType int32
 
@@ -44,6 +54,7 @@ type Product struct {
 	Name                 string            `json:"name"`                 // 商品名
 	Description          string            `json:"description"`          // 商品説明
 	Public               bool              `json:"public"`               // 公開フラグ
+	Scope                ProductScope      `json:"scope"`                // 公開範囲
 	Status               ProductStatus     `json:"status"`               // 販売状況
 	Inventory            int64             `json:"inventory"`            // 在庫数
 	Weight               float64           `json:"weight"`               // 重量(kg,少数第一位まで)

@@ -1203,7 +1203,7 @@ func checkoutProductMocks(
 				ID:        "product-id",
 				Name:      "じゃがいも",
 				Inventory: 30,
-				Public:    true,
+				Scope:     entity.ProductScopePublic,
 				Status:    entity.ProductStatusForSale,
 				ProductRevision: entity.ProductRevision{
 					ID:        1,
@@ -1347,7 +1347,7 @@ func TestCheckoutProduct(t *testing.T) {
 				ShopID:    "shop-id",
 				Name:      "じゃがいも",
 				Inventory: inventory,
-				Public:    true,
+				Scope:     entity.ProductScopePublic,
 				Status:    entity.ProductStatusForSale,
 				ProductRevision: entity.ProductRevision{
 					ID:        1,
@@ -1507,7 +1507,7 @@ func TestCheckoutProduct(t *testing.T) {
 						ID:        "product-id",
 						Name:      "じゃがいも",
 						Inventory: 30,
-						Public:    true,
+						Scope:     entity.ProductScopePublic,
 						Status:    entity.ProductStatusForSale,
 						ProductRevision: entity.ProductRevision{
 							ID:        1,
@@ -2259,7 +2259,7 @@ func TestCheckoutProduct(t *testing.T) {
 						ID:        "product-id",
 						Name:      "じゃがいも",
 						Inventory: 30,
-						Public:    true,
+						Scope:     entity.ProductScopePublic,
 						Status:    entity.ProductStatusForSale,
 						ProductRevision: entity.ProductRevision{
 							ID:        1,

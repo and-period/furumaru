@@ -53,8 +53,8 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ProductTagID != "" {
 		stmt = stmt.Where("JSON_SEARCH(product_tag_ids, 'all', ?) IS NOT NULL", p.ProductTagID)
 	}
-	if p.OnlyPublished {
-		stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
+	if len(p.Scopes) > 0 {
+		stmt = stmt.Where("scope IN (?)", p.Scopes)
 	}
 	if !p.EndAtGte.IsZero() {
 		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
@@ -205,7 +205,7 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"description":         params.Description,
 			"media":               nil,
 			"recommended_points":  points,
-			"public":              params.Public,
+			"scope":               params.Scope,
 			"inventory":           params.Inventory,
 			"weight":              params.Weight,
 			"weight_unit":         params.WeightUnit,
