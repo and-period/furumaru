@@ -1,5 +1,8 @@
 # Changelog
 
+## [v7.3.2](https://github.com/and-period/furumaru/compare/v7.3.1...v7.3.2) - 2025-10-08
+- コーディネーターページを修正 by @hamachans in https://github.com/and-period/furumaru/pull/3113
+
 ## [v7.3.1](https://github.com/and-period/furumaru/compare/v7.3.0...v7.3.1) - 2025-10-08
 - build(deps): bump github.com/go-playground/validator/v10 from 10.27.0 to 10.28.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3115
 - build(deps): bump google.golang.org/api from 0.251.0 to 0.252.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3117
