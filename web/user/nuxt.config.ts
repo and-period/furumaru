@@ -1,6 +1,4 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin'
-import { locale } from 'dayjs'
-import { s } from 'vitest/dist/index-761e769b'
 
 export default defineNuxtConfig({
   ssr: true,
