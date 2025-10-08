@@ -1,5 +1,10 @@
 # Changelog
 
+## [v7.3.1](https://github.com/and-period/furumaru/compare/v7.3.0...v7.3.1) - 2025-10-08
+- build(deps): bump github.com/go-playground/validator/v10 from 10.27.0 to 10.28.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3115
+- build(deps): bump google.golang.org/api from 0.251.0 to 0.252.0 in /api by @dependabot[bot] in https://github.com/and-period/furumaru/pull/3117
+- feat: 商品公開範囲機能の拡張 - PublicフィールドからScopeフィールドへの移行 by @taba2424 in https://github.com/and-period/furumaru/pull/3120
+
 ## [v7.2.1](https://github.com/and-period/furumaru/compare/v7.2.0...v7.2.1) - 2025-10-08
 - fix(auth): 管理者アカウントの外部連携処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/3095
 - Fix/liff/checkout by @wf-yamaday in https://github.com/and-period/furumaru/pull/3097
