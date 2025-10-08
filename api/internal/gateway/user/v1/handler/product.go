@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -62,7 +63,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	in := &store.ListProductsInput{
 		Limit:            limit,
 		Offset:           offset,
-		OnlyPublished:    true,
+		Scopes:           []entity.ProductScope{entity.ProductScopePublic},
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
 		ShopID:           shopID,
@@ -265,7 +266,7 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 	if err != nil {
 		return nil, err
 	}
-	if !product.Public {
+	if product.Scope != entity.ProductScopePublic {
 		// 非公開のものは利用者側に表示しない
 		return nil, exception.ErrNotFound
 	}
@@ -325,7 +326,7 @@ func (h *handler) GetMerchantCenterFeed(ctx *gin.Context) {
 
 	in := &store.ListProductsInput{
 		NoLimit:          true,
-		OnlyPublished:    true,
+		Scopes:           []entity.ProductScope{entity.ProductScopePublic},
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
 		Orders: []*store.ListProductsOrder{

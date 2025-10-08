@@ -25,6 +25,16 @@ const (
 	ProductStatusArchived  ProductStatus = 5 // アーカイブ済み
 )
 
+// ProductScope - 公開範囲
+type ProductScope int32
+
+const (
+	ProductScopeUnknown ProductScope = 0
+	ProductScopePublic  ProductScope = 1 // 全体公開
+	ProductScopeLimited ProductScope = 2 // 限定公開
+	ProductScopePrivate ProductScope = 3 // 非公開
+)
+
 // WeightUnit - 重量単位
 type WeightUnit int32
 
@@ -66,8 +76,8 @@ type Product struct {
 	TagIDs               []string          `gorm:"-"`                        // 商品タグID一覧
 	Name                 string            `gorm:""`                         // 商品名
 	Description          string            `gorm:""`                         // 商品説明
-	Public               bool              `gorm:""`                         // 公開フラグ
 	Status               ProductStatus     `gorm:"-"`                        // 販売状況
+	Scope                ProductScope      `gorm:""`                         // 公開範囲
 	Inventory            int64             `gorm:""`                         // 在庫数
 	Weight               int64             `gorm:""`                         // 重量
 	WeightUnit           WeightUnit        `gorm:""`                         // 重量単位
@@ -111,7 +121,7 @@ type NewProductParams struct {
 	TagIDs               []string
 	Name                 string
 	Description          string
-	Public               bool
+	Scope                ProductScope
 	Inventory            int64
 	Weight               int64
 	WeightUnit           WeightUnit
@@ -155,7 +165,7 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 		TagIDs:               params.TagIDs,
 		Name:                 params.Name,
 		Description:          params.Description,
-		Public:               params.Public,
+		Scope:                params.Scope,
 		Inventory:            params.Inventory,
 		Weight:               params.Weight,
 		WeightUnit:           params.WeightUnit,
@@ -208,7 +218,7 @@ func (p *Product) SetStatus(now time.Time) {
 	switch {
 	case !p.DeletedAt.Time.IsZero():
 		p.Status = ProductStatusArchived
-	case !p.Public:
+	case p.Scope == ProductScopePrivate:
 		p.Status = ProductStatusPrivate
 	case now.Before(p.StartAt):
 		p.Status = ProductStatusPresale

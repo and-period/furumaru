@@ -88,7 +88,7 @@ func TestTemplateBuilder(t *testing.T) {
 			TypeID:        "product-type-id",
 			TagIDs:        []string{"tag-id"},
 			Name:          "おいしいじゃがいも",
-			Public:        true,
+			Scope:         sentity.ProductScopePublic,
 			ThumbnailURL:  "http://example.com/image.png",
 		},
 	}

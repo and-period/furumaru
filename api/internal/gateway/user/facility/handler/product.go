@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/facility/types"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -52,7 +53,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	in := &store.ListProductsInput{
 		Limit:            limit,
 		Offset:           offset,
-		OnlyPublished:    true,
+		Scopes:           []entity.ProductScope{entity.ProductScopePublic, entity.ProductScopeLimited},
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
 		ProducerID:       h.getProducerID(ctx),
@@ -243,7 +244,7 @@ func (h *handler) getProduct(ctx context.Context, producerID, productID string) 
 	if err != nil {
 		return nil, err
 	}
-	if !product.Public {
+	if product.Scope != entity.ProductScopePrivate {
 		// 非公開のものは利用者側に表示しない
 		return nil, exception.ErrNotFound
 	}

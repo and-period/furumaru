@@ -571,17 +571,17 @@ const (
 )
 
 type ListProductsInput struct {
-	Name             string               `validate:"max=128"`
-	ShopID           string               `validate:""`
-	ProducerID       string               `validate:""`
-	ProducerIDs      []string             `validate:"dive,required"`
-	OnlyPublished    bool                 `validate:""`
-	ExcludeOutOfSale bool                 `validate:""`
-	ExcludeDeleted   bool                 `validate:""`
-	Limit            int64                `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset           int64                `validate:"min=0"`
-	NoLimit          bool                 `validate:""`
-	Orders           []*ListProductsOrder `validate:"dive,required"`
+	Name             string                `validate:"max=128"`
+	ShopID           string                `validate:""`
+	ProducerID       string                `validate:""`
+	ProducerIDs      []string              `validate:"dive,required"`
+	Scopes           []entity.ProductScope `validate:""`
+	ExcludeOutOfSale bool                  `validate:""`
+	ExcludeDeleted   bool                  `validate:""`
+	Limit            int64                 `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset           int64                 `validate:"min=0"`
+	NoLimit          bool                  `validate:""`
+	Orders           []*ListProductsOrder  `validate:"dive,required"`
 }
 
 type ListProductsOrder struct {
@@ -609,7 +609,7 @@ type CreateProductInput struct {
 	TagIDs               []string                 `validate:"max=8,dive,required"`
 	Name                 string                   `validate:"required,max=128"`
 	Description          string                   `validate:"required,max=20000"`
-	Public               bool                     `validate:""`
+	Scope                entity.ProductScope      `validate:""`
 	Inventory            int64                    `validate:"min=0"`
 	Weight               int64                    `validate:"min=0"`
 	WeightUnit           entity.WeightUnit        `validate:"required,oneof=1 2"`
@@ -643,7 +643,7 @@ type UpdateProductInput struct {
 	TagIDs               []string                 `validate:"max=8,dive,required"`
 	Name                 string                   `validate:"required,max=128"`
 	Description          string                   `validate:"required,max=20000"`
-	Public               bool                     `validate:""`
+	Scope                entity.ProductScope      `validate:""`
 	Inventory            int64                    `validate:"min=0"`
 	Weight               int64                    `validate:"min=0"`
 	WeightUnit           entity.WeightUnit        `validate:"required,oneof=1 2"`

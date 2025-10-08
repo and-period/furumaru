@@ -1,0 +1,2 @@
+ALTER TABLE `stores`.`products` ADD COLUMN `scope` INT NOT NULL DEFAULT 0;
+ALTER TABLE `stores`.`products` MODIFY COLUMN `public` TINYINT NOT NULL DEFAULT 0;

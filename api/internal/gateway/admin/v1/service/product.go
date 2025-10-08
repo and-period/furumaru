@@ -10,6 +10,9 @@ import (
 // ProductStatus - 商品販売状況
 type ProductStatus types.ProductStatus
 
+// ProductScope - 商品公開範囲
+type ProductScope types.ProductScope
+
 // StorageMethodType - 保存方法
 type StorageMethodType types.StorageMethodType
 
@@ -48,6 +51,32 @@ func NewProductStatus(status entity.ProductStatus) ProductStatus {
 
 func (s ProductStatus) Response() types.ProductStatus {
 	return types.ProductStatus(s)
+}
+
+func NewProductScope(scope entity.ProductScope) ProductScope {
+	switch scope {
+	case entity.ProductScopePublic:
+		return ProductScope(types.ProductScopePublic)
+	case entity.ProductScopePrivate:
+		return ProductScope(types.ProductScopePrivate)
+	default:
+		return ProductScope(types.ProductScopeUnknown)
+	}
+}
+
+func (s ProductScope) StoreEntity() entity.ProductScope {
+	switch types.ProductScope(s) {
+	case types.ProductScopePublic:
+		return entity.ProductScopePublic
+	case types.ProductScopePrivate:
+		return entity.ProductScopePrivate
+	default:
+		return entity.ProductScopeUnknown
+	}
+}
+
+func (s ProductScope) Response() types.ProductScope {
+	return types.ProductScope(s)
 }
 
 func NewStorageMethodType(typ entity.StorageMethodType) StorageMethodType {
@@ -143,6 +172,10 @@ func NewProductWeightFromRequest(weight float64) (int64, entity.WeightUnit) {
 }
 
 func NewProduct(product *entity.Product) *Product {
+	var public bool
+	if product.Scope == entity.ProductScopePublic {
+		public = true
+	}
 	var point1, point2, point3 string
 	if len(product.RecommendedPoints) > 0 {
 		point1 = product.RecommendedPoints[0]
@@ -163,7 +196,8 @@ func NewProduct(product *entity.Product) *Product {
 			ProductTagIDs:        product.TagIDs,
 			Name:                 product.Name,
 			Description:          product.Description,
-			Public:               product.Public,
+			Public:               public,
+			Scope:                NewProductScope(product.Scope).Response(),
 			Status:               NewProductStatus(product.Status).Response(),
 			Inventory:            product.Inventory,
 			Weight:               NewProductWeight(product.Weight, product.WeightUnit),
